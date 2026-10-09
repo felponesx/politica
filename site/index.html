@@ -1197,6 +1197,8 @@ a.rrow b{font-weight:500}
 .rtram{list-style:none;padding-left:0}.rtram li{padding-left:12px;border-left:2px solid var(--line)}
 .demobox{margin-top:22px;border:1px dashed var(--line);border-radius:12px;padding:0 16px}.demobox>summary{cursor:pointer;padding:14px 0;color:var(--muted);font-size:13.5px}.demobox[open]{padding-bottom:16px}
 .mmun{max-height:560px}.mmun path:hover{opacity:.75}
+.cfm{padding:14px 20px calc(env(safe-area-inset-bottom,0px) + 18px)}.cfm p{margin:6px 0 16px;color:var(--ink);font-size:15px}.cfm .cfg-acoes{justify-content:flex-end}
+@media (min-width:761px){.pk-ov:has(.cfm){align-items:center}.cfm{border-radius:16px}.cfm::before{display:none}}
 </style>
 </head>
 <body>
@@ -2422,6 +2424,14 @@ function campoSenha(id,ac,ph="Sua senha"){return`<div class="pw"><input id="${id
 function ligarOlhos(){document.querySelectorAll(".pw-v").forEach(b=>b.onclick=()=>{const i=$("#"+b.dataset.alvo);const v=i.type==="password";i.type=v?"text":"password";b.setAttribute("aria-label",v?"Ocultar senha":"Mostrar senha");b.classList.toggle("on",v)})}
 function erroAuth(m){const e=$("#authErro");e.textContent=m;e.hidden=!m}
 
+/* confirmação dentro da página (o confirm() do navegador é bloqueado em páginas incorporadas) */
+function confirmar(msg,ok="Confirmar"){return new Promise(res=>{const ov=document.createElement("div");ov.className="pk-ov open";
+ ov.innerHTML=`<div class="pk cfm" role="alertdialog" aria-modal="true" aria-labelledby="cfmT"><p id="cfmT">${esc(msg)}</p><div class="cfg-acoes"><button class="btn" type="button" data-r="0">Cancelar</button><button class="btn pri" type="button" data-r="1">${esc(ok)}</button></div></div>`;
+ const fim=v=>{ov.remove();travar("confirmar",false);res(v)};
+ ov.onclick=e=>{const b=e.target.closest("[data-r]");if(b)fim(b.dataset.r==="1");else if(e.target===ov)fim(false)};
+ ov.onkeydown=e=>{if(e.key==="Escape"){e.stopPropagation();fim(false)}};
+ document.body.appendChild(ov);travar("confirmar",true);ov.querySelector('[data-r="0"]').focus()})}
+
 /* tentativas: 5 erros bloqueiam por 30 s (o servidor real fará o mesmo por conta e por IP) */
 function bloqueio(){try{const b=JSON.parse(sessionStorage.getItem("bm-tent")||'{"n":0,"ate":0}');return b}catch(e){return{n:0,ate:0}}}
 function falhou(){const b=bloqueio();b.n++;if(b.n>=5){b.ate=Date.now()+30000;b.n=0}try{sessionStorage.setItem("bm-tent",JSON.stringify(b))}catch(e){}return b}
@@ -2516,15 +2526,15 @@ P.configuracoes=(sec)=>{const SEC=[["conta","Conta"],["seguranca","Segurança"],
   if(sec==="privacidade"){$("#cfLoc").onchange=e=>{const q=prefs();q.loc=e.target.checked;salvarPrefs(q)};
    $("#cfVer").onclick=()=>{const o={};try{Object.keys(localStorage).filter(k=>k.startsWith("bm-")).forEach(k=>{try{o[k]=JSON.parse(localStorage.getItem(k))}catch(e){o[k]=localStorage.getItem(k)}})}catch(e){}const j=$("#cfJson");j.textContent=JSON.stringify(o,null,2);j.hidden=!j.hidden};
    $("#cfVistos").onclick=()=>{try{localStorage.removeItem("bm-vistos")}catch(e){}toast("Vistos recentemente apagados.")};
-   $("#cfTudo").onclick=()=>{if(!confirm("Apagar preferências, estado salvo, vistos recentemente e sair da conta neste navegador?"))return;try{Object.keys(localStorage).filter(k=>k.startsWith("bm-")).forEach(k=>localStorage.removeItem(k))}catch(e){}aplicarPrefs();renderUsuario();toast("Todos os seus dados deste navegador foram apagados.");route()}}
+   $("#cfTudo").onclick=async()=>{if(!await confirmar("Apagar preferências, estado salvo, vistos recentemente e sair da conta neste navegador?","Apagar tudo"))return;try{Object.keys(localStorage).filter(k=>k.startsWith("bm-")).forEach(k=>localStorage.removeItem(k))}catch(e){}aplicarPrefs();renderUsuario();toast("Todos os seus dados deste navegador foram apagados.");route()}}
   if(sec==="conta"&&s){let uf="SP";try{uf=localStorage.getItem("bm-uf")||"SP"}catch(e){}$("#cfUF").value=uf;
    $("#fConta").onsubmit=e=>{e.preventDefault();const n=$("#cfN").value.trim();if(n.length<2)return toast("Informe seu nome.");CONTA.set({...CONTA.get(),nome:n.slice(0,80)});try{localStorage.setItem("bm-uf",$("#cfUF").value)}catch(e){}renderUsuario();toast("Alterações salvas.");route()};
-   $("#cfDel").onclick=()=>{if(!confirm("Excluir sua conta? Isso apaga seus dados e não dá para desfazer."))return;CONTA.set(null);try{["bm-prefs","bm-vistos","bm-uf"].forEach(k=>localStorage.removeItem(k))}catch(e){}aplicarPrefs();renderUsuario();toast("Conta excluída.");location.hash="#/inicio"}}
+   $("#cfDel").onclick=async()=>{if(!await confirmar("Excluir sua conta? Isso apaga seus dados e não dá para desfazer.","Excluir conta"))return;CONTA.set(null);try{["bm-prefs","bm-vistos","bm-uf"].forEach(k=>localStorage.removeItem(k))}catch(e){}aplicarPrefs();renderUsuario();toast("Conta excluída.");location.hash="#/inicio"}}
   if(sec==="seguranca"&&s){ligarOlhos();$("#cfMfa").onchange=e=>{const q=prefs();q.mfa=e.target.checked;salvarPrefs(q);toast(q.mfa?"Verificação em duas etapas ativada.":"Verificação em duas etapas desativada. Recomendamos mantê-la ativa.")};
    const f=$("#forca");$("#csN").oninput=e=>{const n=e.target.value?forcaSenha(e.target.value):-1;f.dataset.n=n;f.querySelector("span").textContent=n<0?"Use letras, números e símbolos":FORCA[n]};
    $("#fSenha").onsubmit=e=>{e.preventDefault();const a=$("#csA").value,n=$("#csN").value,c=$("#csC").value;if(a.length<8)return erroAuth("Senha atual incorreta.");if(n.length<8||forcaSenha(n)<2)return erroAuth("A nova senha precisa ser mais forte.");if(n===a)return erroAuth("A nova senha deve ser diferente da atual.");if(n!==c)return erroAuth("As senhas não são iguais.");e.target.reset();erroAuth("");f.dataset.n=-1;toast("Senha alterada. As outras sessões foram encerradas.")};
    document.querySelectorAll("[data-enc]").forEach(b=>b.onclick=()=>{b.closest("div").remove();toast("Sessão encerrada.")});
-   $("#cfTodas").onclick=()=>{if(confirm("Sair de todos os dispositivos, inclusive este?"))sair()}}}}};
+   $("#cfTodas").onclick=async()=>{if(await confirmar("Sair de todos os dispositivos, inclusive este?","Sair de todos"))sair()}}}}};
 
 /* ---------- partidos: logos, cadeiras, hemiciclo, mapa de bolhas e indicações ---------- */
 const PNOMES=["Partido A","Partido B","Partido C","Partido D","Partido E","Outros"];
