@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import Integer, cast, distinct, func, select
 from sqlalchemy.orm import Session
@@ -11,7 +13,33 @@ from app.utils import sem_acento
 router = APIRouter(prefix="/eleicoes", tags=["Eleições"])
 
 
+def _presidente_na_uf(db, ano, uf, turno):
+    """Presidente dentro de um estado: soma dos votos por município (o total do país fica com uf "BR")."""
+    votos = db.execute(select(VM.sq_candidato, func.sum(VM.votos))
+                       .where(VM.ano == ano, VM.uf == uf, VM.cargo == "PRESIDENTE", VM.turno == turno)
+                       .group_by(VM.sq_candidato)).all()
+    if not votos:
+        return []
+    cands = {r.sq_candidato: r for r in db.scalars(select(R).where(R.ano == ano, R.cargo == "PRESIDENTE",
+                                                                   R.turno == turno))}
+    linhas = []
+    for sq, v in votos:
+        r = cands.get(sq)
+        if r:
+            linhas.append(SimpleNamespace(sq_candidato=sq, nome=r.nome, numero=r.numero, partido=r.partido,
+                                          unidade=uf, votos=int(v or 0), situacao=r.situacao, eleito=r.eleito))
+    return sorted(linhas, key=lambda r: -r.votos)
+
+
 def _por_partido(db, ano, uf, cargo, turno, unidade=None):
+    if cargo == "PRESIDENTE" and uf != "BR":
+        linhas = {}
+        for r in _presidente_na_uf(db, ano, uf, turno):
+            v, e = linhas.get(r.partido, (0, 0))
+            linhas[r.partido] = (v + r.votos, e + int(r.eleito))
+        linhas = [(p, v, e) for p, (v, e) in linhas.items()]
+        total = sum(v for _, v, _ in linhas) or 1
+        return {p or "?": {"votos": v, "percentual": round(100 * v / total, 2), "eleitos": e} for p, v, e in linhas}
     stmt = (select(R.partido, func.sum(R.votos), func.sum(cast(R.eleito, Integer)))
             .where(R.ano == ano, R.uf == uf, R.cargo == cargo, R.turno == turno))
     if unidade:
@@ -46,7 +74,73 @@ def candidato(sq: str, db: Session = Depends(get_db)):
 
 @router.get("/{ano}/{uf}/cargos")
 def cargos(ano: int, uf: str, db: Session = Depends(get_db)):
-    return [c for (c,) in db.execute(select(distinct(R.cargo)).where(R.ano == ano, R.uf == uf.upper()))]
+    uf = uf.upper()
+    lista = [c for (c,) in db.execute(select(distinct(R.cargo)).where(R.ano == ano, R.uf == uf))]
+    # Presidente: o total fica em "BR", mas cada estado tem os votos por município
+    if "PRESIDENTE" not in lista and uf != "BR" and db.scalar(
+            select(VM.id).where(VM.ano == ano, VM.uf == uf, VM.cargo == "PRESIDENTE").limit(1)):
+        lista.insert(0, "PRESIDENTE")
+    return lista
+
+
+ORDEM_CARGOS = ["PRESIDENTE", "GOVERNADOR", "SENADOR", "DEPUTADO FEDERAL", "DEPUTADO ESTADUAL", "DEPUTADO DISTRITAL",
+                "PREFEITO", "VEREADOR"]
+
+
+@router.get("/{ano}/cargos")
+def cargos_do_ano(ano: int, db: Session = Depends(get_db)):
+    """Cargos disputados no ano, na ordem da cédula."""
+    lista = {c for (c,) in db.execute(select(distinct(R.cargo)).where(R.ano == ano))}
+    return sorted(lista, key=lambda c: (ORDEM_CARGOS.index(c) if c in ORDEM_CARGOS else 99, c))
+
+
+@router.get("/{ano}/estados")
+def estados(ano: int, cargo: str, turno: int = 1, db: Session = Depends(get_db)):
+    """Resumo por estado para o mapa do país: votos válidos, candidatos mais votados e votos por partido.
+    Para o Presidente, cada estado sai dos votos por município; nos demais cargos, da votação de cada UF.
+    Vereadores e prefeitos são somados por estado (para ver uma cidade, use /{ano}/{uf}?unidade=...)."""
+    cargo = sem_acento(cargo)
+    por_uf = {}
+    if cargo == "PRESIDENTE":
+        cands = {r.sq_candidato: r for r in db.scalars(select(R).where(R.ano == ano, R.cargo == cargo, R.turno == turno))}
+        linhas = db.execute(select(VM.uf, VM.sq_candidato, func.sum(VM.votos))
+                            .where(VM.ano == ano, VM.cargo == cargo, VM.turno == turno)
+                            .group_by(VM.uf, VM.sq_candidato)).all()
+        for uf, sq, v in linhas:
+            r = cands.get(sq)
+            if r:
+                por_uf.setdefault(uf, []).append((sq, r.nome, r.numero, r.partido, int(v or 0), r.situacao, r.eleito))
+    else:
+        for r in db.scalars(select(R).where(R.ano == ano, R.cargo == cargo, R.turno == turno, R.uf != "BR")):
+            por_uf.setdefault(r.uf, []).append((r.sq_candidato, r.nome, r.numero, r.partido, r.votos, r.situacao,
+                                                r.eleito))
+    if not por_uf:
+        raise HTTPException(404, "Sem resultados. Rode a coleta tse-resultados para esse ano.")
+
+    def resumo(linhas, n=8):
+        total = sum(l[4] for l in linhas) or 1
+        partidos = {}
+        for _, _, _, p, v, _, e in linhas:
+            a = partidos.setdefault(p or "?", {"partido": p or "?", "votos": 0, "eleitos": 0})
+            a["votos"] += v
+            a["eleitos"] += int(bool(e))
+        return {"votos_validos_nominais": total,
+                "candidatos": [{"sq_candidato": sq, "nome": nm, "numero": nr, "partido": p, "votos": v,
+                                "percentual": round(100 * v / total, 2), "situacao": st, "eleito": bool(e)}
+                               for sq, nm, nr, p, v, st, e in sorted(linhas, key=lambda l: -l[4])[:n]],
+                "partidos": [{**a, "percentual": round(100 * a["votos"] / total, 2)}
+                             for a in sorted(partidos.values(), key=lambda a: -a["votos"])[:n]],
+                "eleitos": sum(1 for l in linhas if l[6])}
+
+    pais = [l for ls in por_uf.values() for l in ls]
+    if cargo == "PRESIDENTE":  # o mesmo candidato aparece em todos os estados: soma por candidato
+        soma = {}
+        for l in pais:
+            a = soma.get(l[0])
+            soma[l[0]] = l if not a else (*a[:4], a[4] + l[4], *a[5:])
+        pais = list(soma.values())
+    return {"ano": ano, "cargo": cargo, "turno": turno, "brasil": resumo(pais, 12),
+            "estados": {uf: resumo(ls) for uf, ls in sorted(por_uf.items())}}
 
 
 @router.get("/{ano}/{uf}")
@@ -58,7 +152,11 @@ def resultado(ano: int, uf: str, cargo: str, turno: int = 1, unidade: str | None
     filtro = [R.ano == ano, R.uf == uf, R.cargo == cargo, R.turno == turno]
     if unidade:
         filtro.append(R.unidade == unidade.upper())
-    total = db.scalar(select(func.sum(R.votos)).where(*filtro))
+    if cargo == "PRESIDENTE" and uf != "BR":
+        linhas = _presidente_na_uf(db, ano, uf, turno)
+        total = sum(r.votos for r in linhas)
+    else:
+        total = db.scalar(select(func.sum(R.votos)).where(*filtro))
     if not total:
         raise HTTPException(404, "Sem resultados. Rode a coleta tse-resultados para esse ano/UF.")
 
@@ -67,8 +165,11 @@ def resultado(ano: int, uf: str, cargo: str, turno: int = 1, unidade: str | None
                 "unidade": r.unidade, "votos": r.votos, "percentual": round(100 * r.votos / total, 2),
                 "situacao": r.situacao}
 
-    eleitos = db.scalars(select(R).where(*filtro, R.eleito).order_by(R.votos.desc())).all()
-    mais_votados = db.scalars(select(R).where(*filtro).order_by(R.votos.desc()).limit(20)).all()
+    if cargo == "PRESIDENTE" and uf != "BR":
+        eleitos, mais_votados = [r for r in linhas if r.eleito], linhas[:20]
+    else:
+        eleitos = db.scalars(select(R).where(*filtro, R.eleito).order_by(R.votos.desc())).all()
+        mais_votados = db.scalars(select(R).where(*filtro).order_by(R.votos.desc()).limit(20)).all()
     atual = _por_partido(db, ano, uf, cargo, turno, unidade and unidade.upper())
     anterior = _por_partido(db, ano - 4, uf, cargo, turno, unidade and unidade.upper())
     comparativo = None
@@ -98,8 +199,8 @@ def mapa(ano: int, uf: str, cargo: str, turno: int = 1, db: Session = Depends(ge
                         .where(VM.ano == ano, VM.uf == uf, VM.cargo == cargo, VM.turno == turno)).all()
     if not linhas:
         raise HTTPException(404, "Sem dados por município para esse filtro.")
-    nomes = {r.sq_candidato: (r.nome, r.partido) for r in
-             db.scalars(select(R).where(R.ano == ano, R.uf == uf, R.cargo == cargo, R.turno == turno))}
+    nomes = {r.sq_candidato: (r.nome, r.partido) for r in  # Presidente: os nomes ficam no total do país ("BR")
+             db.scalars(select(R).where(R.ano == ano, R.uf.in_([uf, "BR"]), R.cargo == cargo, R.turno == turno))}
     por_mun = {}
     for cd, nm, sq, v in linhas:
         m = por_mun.setdefault(cd, {"cd_municipio": cd, "municipio": nm, "total": 0, "vencedor": None, "votos_vencedor": -1})

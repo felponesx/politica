@@ -284,3 +284,59 @@ def empresas(setor: str | None = None, uf: str | None = None, q: str | None = No
                                              "setor": setor_de_cnae(e.cnae), "municipio": e.municipio, "uf": e.uf,
                                              "situacao": e.situacao, "socios": len(e.socios or []),
                                              "total_contratos": round(totais.get(e.cnpj) or 0, 2)} for e in lista[offset:offset + limit]]}
+
+
+AVISO_RJ = ("Lista do cadastro de CNPJ da Receita Federal (campo \"situação especial\"). É o registro da Receita, "
+            "não a lista oficial do Judiciário: pode atrasar em relação ao processo, e estar em recuperação judicial "
+            "não é irregularidade — é o instrumento legal (Lei 11.101/2005) para a empresa renegociar dívidas.")
+
+
+def _rj_filtro(tipo, uf, q, situacao):
+    filtro = [Registro.fonte == "receita", Registro.tipo == ("falencia" if tipo == "falencia" else "recuperacao_judicial")]
+    if uf:
+        filtro.append(Registro.uf == uf.upper())
+    if q:
+        filtro.append(Registro.titulo.ilike(f"%{q}%"))
+    return filtro, (situacao or "").strip().lower()
+
+
+@router.get("/recuperacao-judicial", tags=["Empresas", "Dívidas"])
+def recuperacao_judicial(tipo: str = "recuperacao_judicial", uf: str | None = None, q: str | None = None,
+                         situacao: str | None = None, ordenar: str = "capital", limit: int = Query(50, le=500),
+                         offset: int = 0, db: Session = Depends(get_db)):
+    """Empresas em recuperação judicial (ou `tipo=falencia`) segundo a base aberta do CNPJ.
+    `situacao`: situação cadastral (Ativa, Baixada, Inapta...). `ordenar`: capital (padrão), data ou nome."""
+    from app.utils import formatar_documento
+    filtro, sit = _rj_filtro(tipo, uf, q, situacao)
+    regs = db.scalars(select(Registro).where(*filtro)).all()
+    if sit:
+        regs = [r for r in regs if (r.dados or {}).get("situacao_cadastral", "").lower() == sit]
+    chave = {"data": lambda r: (r.dados or {}).get("data_situacao_especial") or "",
+             "nome": lambda r: r.titulo or ""}.get(ordenar, lambda r: r.valor or 0)
+    regs.sort(key=chave, reverse=ordenar != "nome")
+    return {"total": len(regs), "aviso": AVISO_RJ,
+            "itens": [{**(r.dados or {}), "documento": formatar_documento(r.chave), "nome": r.titulo}
+                      for r in regs[offset:offset + limit]]}
+
+
+@router.get("/recuperacao-judicial/resumo", tags=["Empresas", "Dívidas"])
+def recuperacao_judicial_resumo(tipo: str = "recuperacao_judicial", db: Session = Depends(get_db)):
+    """Contagens por estado, porte, situação cadastral e ano em que a situação foi registrada."""
+    filtro, _ = _rj_filtro(tipo, None, None, None)
+    regs = db.scalars(select(Registro).where(*filtro)).all()
+    if not regs:
+        raise HTTPException(404, "Sem dados. Rode a coleta receita-recuperacao-judicial.")
+
+    def contar(fn):
+        out = {}
+        for r in regs:
+            k = fn(r) or "Não informado"
+            out[k] = out.get(k, 0) + 1
+        return dict(sorted(out.items(), key=lambda x: -x[1]))
+    ativas = [r for r in regs if (r.dados or {}).get("situacao_cadastral") == "Ativa"]
+    return {"total": len(regs), "ativas": len(ativas), "capital_social_ativas": round(sum(r.valor or 0 for r in ativas), 2),
+            "por_uf": contar(lambda r: r.uf), "por_porte": contar(lambda r: (r.dados or {}).get("porte")),
+            "por_situacao_cadastral": contar(lambda r: (r.dados or {}).get("situacao_cadastral")),
+            "por_ano": dict(sorted(contar(lambda r: str(r.ano) if r.ano else None).items())),
+            "mes_base": next(((r.dados or {}).get("mes_base") for r in regs), None), "aviso": AVISO_RJ,
+            "fonte": "Receita Federal — dados abertos do CNPJ"}

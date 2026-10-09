@@ -23,7 +23,7 @@ from app.collectors import TAREFAS
 from app.db import criar_tabelas
 
 DATAS = {"inicio", "fim", "dia"}
-INTEIROS = {"limite", "limite_por_uf", "ano", "ano_minimo", "bimestre", "quadrimestre", "tamanho", "tamanho_pagina", "trimestre", "dias", "anos", "dias_discursos"}
+INTEIROS = {"limite", "limite_por_uf", "ano", "ano_minimo", "bimestre", "quadrimestre", "tamanho", "tamanho_pagina", "trimestre", "dias", "anos", "dias_discursos", "minutos"}
 DECIMAIS = {"minimo_inscricao", "minimo_devedor"}
 LISTAS = {"ufs", "apenas_ids", "tipos", "nomes", "esferas"}
 

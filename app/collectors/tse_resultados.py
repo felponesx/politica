@@ -1,8 +1,10 @@
 """Resultados das eleições — TSE, arquivo "Votação nominal por município e zona".
 URL: https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_{ano}.zip
 (um CSV por UF, latin-1, separador ';'). Cada linha = candidato × município × zona × turno.
+O arquivo _BR traz o Presidente com os votos de todos os estados (SG_UF = estado do município).
 
 Aqui agregamos em memória: total por candidato/turno e, para cargos majoritários, total por município.
+O total do Presidente fica com uf "BR"; o resultado em cada estado sai dos votos por município.
 """
 import csv
 import io
@@ -41,11 +43,12 @@ def agregar(linhas):
         turno = _int(l.get("NR_TURNO")) or 1
         cargo = sem_acento(l.get("DS_CARGO") or "")
         votos = _int(l.get("QT_VOTOS_NOMINAIS_VALIDOS") or l.get("QT_VOTOS_NOMINAIS"))
+        uf = (l.get("SG_UF") or "")[:2]
         chave = (turno, sq)
         if chave not in cand:
             situacao = (l.get("DS_SIT_TOT_TURNO") or "").strip()
             cand[chave] = {
-                "turno": turno, "sq_candidato": sq, "uf": (l.get("SG_UF") or "")[:2],
+                "turno": turno, "sq_candidato": sq, "uf": "BR" if cargo == "PRESIDENTE" else uf,
                 "unidade": l.get("NM_UE"), "cargo": cargo, "numero": l.get("NR_CANDIDATO"),
                 "nome": l.get("NM_URNA_CANDIDATO") or l.get("NM_CANDIDATO") or "",
                 "partido": l.get("SG_PARTIDO"), "situacao": situacao,
@@ -53,7 +56,7 @@ def agregar(linhas):
             }
         cand[chave]["votos"] += votos
         if cargo in MAJORITARIOS:
-            mun[(turno, sq, l.get("CD_MUNICIPIO"), l.get("NM_MUNICIPIO"), cargo, (l.get("SG_UF") or "")[:2])] += votos
+            mun[(turno, sq, l.get("CD_MUNICIPIO"), l.get("NM_MUNICIPIO"), cargo, uf)] += votos
     return cand, mun
 
 
@@ -75,11 +78,18 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
                     pos = [(c, i) for i, c in enumerate(cab) if c in CAMPOS]
                     # só as colunas usadas (o arquivo de 2022 tem dezenas de milhões de linhas e ~50 colunas)
                     cand, mun = agregar({c: l[i] for c, i in pos} for l in leitor if len(l) >= len(cab))
-                ufs_arquivo = {c["uf"] for c in cand.values()}
-                # recarga idempotente: apaga o que havia daquele ano/UF e grava de novo
-                db.execute(delete(ResultadoEleicao).where(ResultadoEleicao.ano == ano,
-                                                          ResultadoEleicao.uf.in_(ufs_arquivo)))
-                db.execute(delete(VotoMunicipio).where(VotoMunicipio.ano == ano, VotoMunicipio.uf.in_(ufs_arquivo)))
+                # recarga idempotente: apaga o que havia daquele ano para os pares (UF, cargo) do arquivo e grava
+                # de novo. Por par, e não só por UF: o arquivo _BR (Presidente) tem votos de todos os estados e
+                # não pode apagar os governadores e deputados que vieram dos arquivos de cada UF.
+                # (o Presidente sai de qualquer UF: coletas antigas o gravavam com a UF da primeira linha)
+                for uf_c, cargo in {(c["uf"], c["cargo"]) for c in cand.values()}:
+                    filtro = [ResultadoEleicao.ano == ano, ResultadoEleicao.cargo == cargo]
+                    if cargo != "PRESIDENTE":
+                        filtro.append(ResultadoEleicao.uf == uf_c)
+                    db.execute(delete(ResultadoEleicao).where(*filtro))
+                for uf_m, cargo in {(k[5], k[4]) for k in mun}:
+                    db.execute(delete(VotoMunicipio).where(VotoMunicipio.ano == ano, VotoMunicipio.uf == uf_m,
+                                                           VotoMunicipio.cargo == cargo))
                 db.bulk_insert_mappings(ResultadoEleicao, [{"ano": ano, **c} for c in cand.values()])
                 db.bulk_insert_mappings(VotoMunicipio, [
                     {"ano": ano, "turno": t, "sq_candidato": sq, "cd_municipio": str(cd), "municipio": nm,

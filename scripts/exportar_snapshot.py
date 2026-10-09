@@ -51,6 +51,7 @@ LISTAS = {
     "/municipios": ([{}], 6000),  # a ordem por população ou PIB é feita no navegador
     "/empresas": ([{}], 2000),
     "/dividas/devedores": ([{}], 1000),
+    "/recuperacao-judicial": ([{"tipo": "recuperacao_judicial"}, {"tipo": "falencia"}], 8000),
 }
 # respostas guardadas exatamente como o site pede
 FIXAS = [
@@ -60,6 +61,7 @@ FIXAS = [
     "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
+    "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
 ]
 # quantos detalhes (popouts) guardar por tipo
 TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "contratos": 1200, "obras": 1500,
@@ -120,7 +122,8 @@ class Exportador:
 
     def lista(self, caminho, base, teto, passo=None):
         """Lista completa (até o teto), paginando com o maior `limit` que a rota aceita."""
-        passo = passo or {"/parlamentares": 600, "/municipios": 1000, "/empresas": 200, "/dividas/devedores": 200}.get(caminho, 500)
+        passo = passo or {"/parlamentares": 600, "/municipios": 1000, "/empresas": 200, "/dividas/devedores": 200,
+                          "/recuperacao-judicial": 500}.get(caminho, 500)
         itens, total, extra, off = [], 0, {}, 0
         while off < teto:
             r = self.get(caminho, {**base, "limit": min(passo, teto - off), "offset": off}, guardar=False)
@@ -232,6 +235,12 @@ class Exportador:
         if not self.ok(anos):
             return
         for ano in anos:
+            # mapa do país: resumo por estado de cada cargo (vereadores ficam de fora, como abaixo)
+            cargos_ano = self.get(f"/eleicoes/{ano}/cargos")
+            for cargo in cargos_ano if isinstance(cargos_ano, list) else []:
+                if cargo != "VEREADOR":
+                    for turno in (1, 2):
+                        self.get(f"/eleicoes/{ano}/estados", {"cargo": cargo, "turno": turno})
             for uf in [*UFS, "BR"]:
                 cargos = self.get(f"/eleicoes/{ano}/{uf}/cargos")
                 if not self.ok(cargos) or not cargos:

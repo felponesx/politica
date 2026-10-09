@@ -374,8 +374,11 @@ def riscos(uf: str | None = None, anos: int = Query(10, le=50), db: Session = De
 # ---------- composição partidária ----------
 
 def _eleitos_por_partido(db, cargos):
-    ano = db.scalar(select(func.max(ResultadoEleicao.ano)).where(ResultadoEleicao.cargo.in_(cargos),
-                                                                  ResultadoEleicao.eleito))
+    # quem está no cargo: a eleição mais recente cujo mandato já começou (os eleitos em outubro tomam posse
+    # no ano seguinte); sem ela, a mais recente que houver
+    filtro = [ResultadoEleicao.cargo.in_(cargos), ResultadoEleicao.eleito]
+    ano = (db.scalar(select(func.max(ResultadoEleicao.ano)).where(*filtro, ResultadoEleicao.ano < date.today().year))
+           or db.scalar(select(func.max(ResultadoEleicao.ano)).where(*filtro)))
     if not ano:
         return None
     linhas = db.execute(select(ResultadoEleicao.uf, ResultadoEleicao.partido, func.count(distinct(ResultadoEleicao.sq_candidato)))

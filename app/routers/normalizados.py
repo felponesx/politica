@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -101,7 +103,8 @@ def candidatos(ano: int | None = None, uf: str | None = None, cargo: str | None 
                q: str | None = None, eleitos: bool = False, limit: int = Query(50, le=500), offset: int = 0,
                db: Session = Depends(get_db)):
     """`cargo` aceita vários separados por vírgula. Com `eleitos=true` e sem `ano`, usa a eleição mais recente
-    daquele cargo (ex.: deputados estaduais eleitos em 2022, prefeitos eleitos em 2024)."""
+    daquele cargo cujo mandato já começou (ex.: em 2026, deputados estaduais eleitos em 2022 e prefeitos eleitos
+    em 2024; os eleitos em outubro de 2026 só tomam posse em 2027 — para vê-los, passe `ano=2026`)."""
     stmt = select(Candidato).order_by(Candidato.uf, Candidato.nome_urna)
     cargos = [c.strip().upper() for c in cargo.split(",") if c.strip()] if cargo else []
     if cargos:
@@ -109,8 +112,9 @@ def candidatos(ano: int | None = None, uf: str | None = None, cargo: str | None 
     if eleitos:
         stmt = stmt.where(Candidato.resultado.ilike("ELEITO%"))
         if not ano:
-            ano = db.scalar(select(func.max(Candidato.ano)).where(
-                Candidato.resultado.ilike("ELEITO%"), *([Candidato.cargo.in_(cargos)] if cargos else [])))
+            filtro = [Candidato.resultado.ilike("ELEITO%"), *([Candidato.cargo.in_(cargos)] if cargos else [])]
+            ano = (db.scalar(select(func.max(Candidato.ano)).where(*filtro, Candidato.ano < date.today().year))
+                   or db.scalar(select(func.max(Candidato.ano)).where(*filtro)))
     if ano:
         stmt = stmt.where(Candidato.ano == ano)
     if uf:

@@ -303,3 +303,52 @@ def test_capag_planilha_com_linhas_de_resumo(tmp_path):
     with SessionLocal() as db:  # o banco de teste é compartilhado: não deixa estes municípios para os outros testes
         db.query(Municipio).filter(Municipio.codigo_ibge.in_(["1100015", "1100023"])).delete()
         db.commit()
+
+
+# Base aberta do CNPJ (Receita, pasta AAAA-MM do compartilhamento do SERPRO): CSV sem cabeçalho, tudo entre aspas.
+# Campos do estabelecimento: básico;ordem;dv;matriz(1)/filial(2);fantasia;situação;data;motivo;cidade exterior;país;
+# início;cnae;cnaes secundárias;tipo logr.;logradouro;número;complemento;bairro;cep;uf;município;ddd1;tel1;ddd2;tel2;
+# ddd fax;fax;e-mail;situação especial;data da situação especial
+ESTAB_CNPJ = [
+    '"11222333";"0001";"81";"1";"LOJAS EXEMPLO";"02";"20050103";"00";"";"";"19990101";"4711302";"";"RUA";"DAS FLORES";'
+    '"10";"";"CENTRO";"01001000";"SP";"7107";"11";"12345678";"";"";"";"";"";"RECUPERACAO JUDICIAL";"20230119"',
+    '"11222333";"0002";"62";"2";"LOJAS EXEMPLO FILIAL";"02";"20050103";"00";"";"";"20010101";"4711302";"";"RUA";"B";'
+    '"1";"";"CENTRO";"20000000";"RJ";"6001";"21";"1";"";"";"";"";"";"RECUPERACAO JUDICIAL";"20230119"',
+    '"44555666";"0001";"00";"1";"";"08";"20200101";"01";"";"";"20100101";"4120400";"";"AV";"C";"2";"";"X";"30000000";'
+    '"MG";"4123";"31";"2";"";"";"";"";"";"FALIDO";"20190510"',
+    '"77888999";"0001";"10";"1";"PADARIA";"02";"20050103";"00";"";"";"20050103";"1091102";"";"RUA";"D";"3";"";"Y";'
+    '"40000000";"BA";"3849";"71";"3";"";"";"";"";"";"";""',
+]
+EMPRESAS_CNPJ = ['"11222333";"LOJAS EXEMPLO S.A.";"2046";"10";"1500000000,00";"05";""',
+                 '"44555666";"CONSTRUTORA EXEMPLO LTDA";"2062";"49";"100000,00";"03";""',
+                 '"77888999";"PADARIA DA ESQUINA LTDA";"2062";"49";"5000,00";"01";""']
+
+
+def test_cnpj_base_recuperacao_judicial(tmp_path):
+    import zipfile as zf
+
+    from app.collectors import cnpj_base
+
+    def zipar(nome, linhas, metodo=zf.ZIP_DEFLATED):  # a Receita usa deflate; o "stored" testa o outro caminho
+        with zf.ZipFile(tmp_path / nome, "w", compression=metodo) as z:
+            z.writestr(nome.replace(".zip", ".CSV"), ("\n".join(linhas) + "\n").encode("latin-1"))
+    zipar("Estabelecimentos0.zip", ESTAB_CNPJ)
+    zipar("Empresas0.zip", EMPRESAS_CNPJ)
+    zipar("Municipios.zip", ['"7107";"SAO PAULO"', '"4123";"BELO HORIZONTE"'], zf.ZIP_STORED)
+    zipar("Cnaes.zip", ['"4711302";"Comércio varejista de mercadorias em geral"'])
+    assert cnpj_base.coletar_recuperacao_judicial(pasta_local=str(tmp_path)) == 2
+    assert cnpj_base.coletar_recuperacao_judicial(pasta_local=str(tmp_path)) == 2  # idempotente
+
+    r = cliente.get("/recuperacao-judicial").json()
+    assert r["total"] == 1 and "irregularidade" in r["aviso"]
+    e = r["itens"][0]
+    assert e["cnpj"] == "11222333000181" and e["matriz"] is True and e["nome"] == "LOJAS EXEMPLO S.A."
+    assert e["municipio"] == "SAO PAULO" and e["porte"] == "Demais" and e["capital_social"] == 1500000000.0
+    assert e["data_situacao_especial"] == "2023-01-19" and e["situacao_cadastral"] == "Ativa"
+    linhas = list(cnpj_base.linhas_do_zip(cnpj_base.blocos_arquivo(tmp_path / "Estabelecimentos0.zip", 7)))
+    assert len(linhas) == 4 and linhas[3].endswith(b'"";""')  # lido em pedaços pequenos, como chega da rede
+    assert e["cnae_descricao"].startswith("Comércio varejista")
+    fal = cliente.get("/recuperacao-judicial", params={"tipo": "falencia"}).json()
+    assert fal["itens"][0]["nome"] == "CONSTRUTORA EXEMPLO LTDA" and fal["itens"][0]["situacao_cadastral"] == "Baixada"
+    res = cliente.get("/recuperacao-judicial/resumo").json()
+    assert res["por_uf"] == {"SP": 1} and res["ativas"] == 1 and res["por_ano"] == {"2023": 1}
