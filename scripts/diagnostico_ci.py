@@ -157,42 +157,60 @@ def ckan(nome, base, consulta):
         print("  json?", e, flush=True)
 
 
+def planilha(nome, url, linhas=6, abas=80, headers=None):
+    """Baixa uma planilha xlsx e mostra cada aba: nome, tamanho e as primeiras linhas."""
+    import openpyxl
+    t = time.monotonic()
+    try:
+        r = cli.get(url, headers=headers or {})
+        print(f"\n=== {nome}: HTTP {r.status_code} | {len(r.content)} bytes | {time.monotonic() - t:.1f}s", flush=True)
+        wb = openpyxl.load_workbook(io.BytesIO(r.content), read_only=True, data_only=True)
+        for ws in wb.worksheets[:abas]:
+            print(f"  --- aba {ws.title!r} ({ws.max_row}x{ws.max_column})", flush=True)
+            for k, row in enumerate(ws.iter_rows(values_only=True)):
+                if k >= linhas:
+                    break
+                vals = [str(v)[:40] for v in row if v not in (None, "")]
+                if vals:
+                    print("     ", " | ".join(vals)[:400], flush=True)
+    except Exception as e:
+        print(f"  ERRO {type(e).__name__}: {e}", flush=True)
+
+
+def inicio_csv(nome, url, kb=400, headers=None):
+    t = time.monotonic()
+    try:
+        with cli.stream("GET", url, headers=headers or {}) as r:
+            buf = b""
+            for b in r.iter_bytes():
+                buf += b
+                if len(buf) > kb * 1024:
+                    break
+        print(f"\n=== {nome}: HTTP {r.status_code} | {r.headers.get('content-length')} bytes | {time.monotonic() - t:.1f}s", flush=True)
+        txt = buf.decode("utf-8", "replace") if buf[:3] == b"\xef\xbb\xbf" else buf.decode("latin-1")
+        linhas = txt.splitlines()
+        cab = linhas[0].split(";")
+        print(f"  {len(cab)} colunas", flush=True)
+        for k, c in enumerate(cab):
+            print(f"   [{k}] {c[:150]}", flush=True)
+        for l in linhas[1:3]:
+            print("  linha:", l[:3000], flush=True)
+    except Exception as e:
+        print(f"  ERRO {type(e).__name__}: {e}", flush=True)
+
+
 def main():
     nav = {"User-Agent": UA_NAV}
-    # Sinesp e Sisdepen no CKAN do Ministério da Justiça
-    ckan("mj sinesp", "https://dados.mj.gov.br", "sinesp")
-    ckan("mj seguranca", "https://dados.mj.gov.br", "estatisticas seguranca publica")
-    ckan("mj sisdepen", "https://dados.mj.gov.br", "sisdepen")
-    ckan("mj penitenciario", "https://dados.mj.gov.br", "penitenciario")
-    links("senappen sisdepen", "https://www.gov.br/senappen/pt-br/servicos/sisdepen", headers=nav)
-    links("senappen bases", "https://www.gov.br/senappen/pt-br/servicos/sisdepen/bases-de-dados", headers=nav)
-    links("mj estatistica", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica", headers=nav)
-    links("mj dados nacionais", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados-nacionais-1", headers=nav)
-    # Atlas da Violência (IPEA): API
-    for u in ("https://www.ipea.gov.br/atlasviolencia/api/v1/temas", "https://www.ipea.gov.br/atlasviolencia/api/v1/series",
-              "https://www.ipea.gov.br/atlasviolencia/api/v1/valores-series/328/3",
-              "https://www.ipea.gov.br/atlasviolencia/api/v1/valores-series/20/3"):
-        ver("atlas " + u.rsplit("/v1/", 1)[1], u, n=1500)
-    # BNMP (CNJ): procurar a API usada pelo portal
-    import re
-    r = ver("bnmp portal", "https://portalbnmp.cnj.jus.br/", n=600, headers=nav)
-    if r is not None and r.status_code == 200:
-        for src in re.findall(r'src="([^"]+\.js)"', r.text)[:6]:
-            u = src if src.startswith("http") else "https://portalbnmp.cnj.jus.br/" + src.lstrip("/")
-            try:
-                js = cli.get(u, headers=nav).text
-                apis = sorted(set(re.findall(r'["\'](/?(?:bnmpportal/)?api/[A-Za-z0-9/_\-{}.]+)', js)))
-                print(f"  {u}: {len(js)} bytes, {len(apis)} rotas", flush=True)
-                for a in apis[:80]:
-                    print("    ", a, flush=True)
-            except Exception as e:
-                print("  js erro", e)
-    # IBGE: perfis dos estados (ESTADIC) e municípios (MUNIC) — efetivos das polícias e guardas municipais
-    links("ibge estadic", "https://ftp.ibge.gov.br/Perfil_Estados/", padrao=r'href="([^"?/][^"]*)"')
-    links("ibge munic", "https://ftp.ibge.gov.br/Perfil_Municipios/", padrao=r'href="([^"?/][^"]*)"')
-    # Fórum Brasileiro de Segurança Pública (Anuário): planilhas
-    links("fbsp anuario", "https://forumseguranca.org.br/estatisticas/", headers=nav)
-    links("fbsp publicacoes", "https://forumseguranca.org.br/anuario-brasileiro-seguranca-publica/", headers=nav)
+    planilha("fbsp anuario 2026", "https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.xlsx", headers=nav)
+    inicio_csv("sisdepen 2025-2", "https://www.gov.br/senappen/pt-br/servicos/sisdepen/bases-de-dados/2025/"
+               "19o-ciclo-base-de-dados-2025-2-semestre.csv/@@download/file", headers=nav)
+    for u in ("https://ftp.ibge.gov.br/Perfil_Estados/2024/", "https://ftp.ibge.gov.br/Perfil_Estados/2023/",
+              "https://ftp.ibge.gov.br/Perfil_Municipios/2024/", "https://ftp.ibge.gov.br/Perfil_Municipios/2023/"):
+        links("ibge " + u.split("br/")[1], u, padrao=r'href="([^"?/][^"]*)"', n=40)
+    r = links("mj estatistica (todos)", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica",
+              padrao=r'href="(https://www\.gov\.br/mj/[^"]*(?:estatistic|sinesp|dados)[^"]*)"', headers=nav)
+    links("mj sinesp", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/sinesp-1",
+          padrao=r'href="([^"]*(?:sinesp|dados|estatistic|\.xlsx|\.csv|\.zip)[^"]*)"', headers=nav)
 
 
 if __name__ == "__main__":
