@@ -199,18 +199,69 @@ def inicio_csv(nome, url, kb=400, headers=None):
         print(f"  ERRO {type(e).__name__}: {e}", flush=True)
 
 
+def colunas_xlsx(nome, url, procurar, linhas_cab=6, max_abas=40, headers=None, mostrar_linhas=0):
+    """Planilha grande: para cada aba, as colunas cujo cabeçalho casa com `procurar` (regex) e uma amostra."""
+    import re
+    import openpyxl
+    t = time.monotonic()
+    try:
+        r = cli.get(url, headers=headers or {})
+        print(f"\n=== {nome}: HTTP {r.status_code} | {len(r.content)} bytes | {time.monotonic() - t:.1f}s", flush=True)
+        wb = openpyxl.load_workbook(io.BytesIO(r.content), read_only=True, data_only=True)
+        for ws in wb.worksheets[:max_abas]:
+            cab = {}
+            amostra = []
+            for k, row in enumerate(ws.iter_rows(values_only=True)):
+                if k < linhas_cab:
+                    for c, v in enumerate(row):
+                        if v not in (None, ""):
+                            cab[c] = (cab.get(c, "") + " | " + str(v)).strip(" |")
+                elif len(amostra) < 2:
+                    amostra.append(row)
+                if k < mostrar_linhas:
+                    vals = [str(v)[:30] for v in row if v not in (None, "")]
+                    if vals:
+                        print("      ", " | ".join(vals)[:300], flush=True)
+                if k >= max(linhas_cab + 2, mostrar_linhas):
+                    break
+            achou = [(c, h) for c, h in cab.items() if re.search(procurar, h, re.I)]
+            print(f"  --- aba {ws.title!r} ({ws.max_row}x{ws.max_column}): {len(cab)} colunas, {len(achou)} casam", flush=True)
+            for c, h in achou[:60]:
+                ex = [str(a[c])[:20] if c < len(a) else "" for a in amostra]
+                print(f"     [{c}] {h[:160]}  ex: {ex}", flush=True)
+    except Exception as e:
+        print(f"  ERRO {type(e).__name__}: {e}", flush=True)
+
+
 def main():
     nav = {"User-Agent": UA_NAV}
-    planilha("fbsp anuario 2026", "https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.xlsx", headers=nav)
-    inicio_csv("sisdepen 2025-2", "https://www.gov.br/senappen/pt-br/servicos/sisdepen/bases-de-dados/2025/"
-               "19o-ciclo-base-de-dados-2025-2-semestre.csv/@@download/file", headers=nav)
-    for u in ("https://ftp.ibge.gov.br/Perfil_Estados/2024/", "https://ftp.ibge.gov.br/Perfil_Estados/2023/",
-              "https://ftp.ibge.gov.br/Perfil_Municipios/2024/", "https://ftp.ibge.gov.br/Perfil_Municipios/2023/"):
-        links("ibge " + u.split("br/")[1], u, padrao=r'href="([^"?/][^"]*)"', n=40)
-    r = links("mj estatistica (todos)", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica",
-              padrao=r'href="(https://www\.gov\.br/mj/[^"]*(?:estatistic|sinesp|dados)[^"]*)"', headers=nav)
-    links("mj sinesp", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/sinesp-1",
-          padrao=r'href="([^"]*(?:sinesp|dados|estatistic|\.xlsx|\.csv|\.zip)[^"]*)"', headers=nav)
+    pol = r"efetivo|polic|guarda|bombeir|perit|seguran|penal|delegad"
+    colunas_xlsx("estadic 2024", "https://ftp.ibge.gov.br/Perfil_Estados/2024/Base_Estadic_2024.xlsx", pol)
+    colunas_xlsx("estadic 2023", "https://ftp.ibge.gov.br/Perfil_Estados/2023/Base_Estadic_2023.xlsx", pol)
+    for ano in ("2024", "2023"):
+        r = links(f"munic {ano}", f"https://ftp.ibge.gov.br/Perfil_Municipios/{ano}/Base_de_Dados/", padrao=r'href="([^"?/][^"]*)"')
+    for u in ("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados_nacionais_de_seguranca_publica",
+              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados-nacionais-1/"
+              "base-de-dados-e-notas-metodologicas-dos-gestores-estaduais-sinesp-vde-2022-e-2023",
+              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados-nacionais-1/MAPA-2026/",
+              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/pesquisaperfil/"
+              "pesquisa-perfil-das-instituicoes-de-seguranca-publica-1"):
+        links("mj " + u.rsplit("/", 2)[-2][:40] + "/" + u.rsplit("/", 1)[-1][:40], u, headers=nav,
+              padrao=r'href="([^"]*(?:\.xlsx|\.xls|\.csv|\.zip|\.ods|\.pdf|dados-nacionais|perfil|sinesp|vde|@@download)[^"]*)"', n=80)
+    colunas_xlsx("anuario T01/T03", "https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.xlsx", r".",
+                 linhas_cab=0, max_abas=0, headers=nav)
+    import openpyxl
+    try:
+        rr = cli.get("https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.xlsx", headers=nav)
+        wb = openpyxl.load_workbook(io.BytesIO(rr.content), read_only=True, data_only=True)
+        for aba in ("T01", "T03"):
+            print(f"  --- {aba}", flush=True)
+            for row in wb[aba].iter_rows(values_only=True):
+                vals = [str(v)[:22] for v in row]
+                if any(v not in ("None", "") for v in vals):
+                    print("     ", " | ".join(vals)[:330], flush=True)
+    except Exception as e:
+        print("  anuario erro", e, flush=True)
 
 
 if __name__ == "__main__":
