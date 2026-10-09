@@ -1224,11 +1224,7 @@ a.rrow b{font-weight:500}
       </div>
       <div class="spacer"></div>
       <a class="apipill" id="apiPill" href="#/fontes" hidden><i></i><span>Demonstração</span></a>
-      <button class="ibtn" id="btnNotif" aria-label="Notificações"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="badge">3</span></button>
-      <a class="ibtn hide-m" href="#/fontes" aria-label="Ajuda e metodologia"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7"/><path d="M12 17h.01"/></svg></a>
-      <button class="ibtn hide-m" id="btnTheme" aria-label="Alternar tema claro ou escuro"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
-      <a class="ibtn hide-m" id="btnCfg" href="#/configuracoes" aria-label="Configurações"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
-      <button class="user" id="btnUser" aria-label="Perfil"><i class="avatar" style="font-style:normal">FB</i><span>Felipe Barros<small>Cidadão</small></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="ibtn" id="btnTheme" aria-label="Ativar o modo escuro" title="Ativar o modo escuro"></button>
     </header>
     <main class="page" id="view"></main>
   </div>
@@ -1248,10 +1244,8 @@ a.rrow b{font-weight:500}
     <div class="sres" id="sRes"></div>
   </div>
 </div>
-<div class="drawer" id="notif"></div>
-<div class="drawer" id="userMenu"></div>
 <div class="ov" id="sheetOv"></div>
-<div class="sheet" id="sheet"><div class="sheet-h"><b>Menu</b><button id="sheetX" aria-label="Fechar menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="sheet-acc" id="sheetAcc"></div><div class="nav" id="sheetNav"></div><a class="sheet-f" href="#/fontes">Fontes e metodologia</a></div>
+<div class="sheet" id="sheet"><div class="sheet-h"><b>Menu</b><button id="sheetX" aria-label="Fechar menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="nav" id="sheetNav"></div><a class="sheet-f" href="#/fontes">Fontes e metodologia</a></div>
 <div class="toast" id="toast"></div>
 <div class="pk-ov" id="pkOv"><div class="pk" id="pk" role="dialog" aria-modal="true" aria-labelledby="pkT"><div class="pk-h"><b id="pkT">Selecionar</b><button id="pkX" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><input id="pkQ" placeholder="Pesquisar" autocomplete="off"><div class="pk-l" id="pkL"></div></div></div>
 
@@ -2326,16 +2320,11 @@ $("#openSearch").onclick=()=>openSearch();$("#openSearch").onkeydown=e=>{if(e.ke
 $("#bSearch").onclick=()=>openSearch();
 document.addEventListener("keydown",e=>{if(((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k")||e.key==="/"&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();openSearch()}if(e.key==="Escape"){if($("#searchOv").classList.contains("open"))closeSearch();else if($("#popOv").classList.contains("open"))closePop();else closeAll()}});
 
-/* ---------- notificações, perfil, tema, menu móvel ---------- */
-$("#notif").innerHTML=`<b style="font-weight:600">Notificações</b><div class="small muted" style="margin-bottom:6px">Itens que você acompanha</div>${[["PL 1.234/2026 entrou na pauta do Plenário","#/projeto/1"],["Novo pagamento no contrato CT 045/2026","#/contrato/1"],["Obra em Uberlândia segue paralisada","#/obra/3"]].map(n=>`<a class="sitem" href="${n[1]}" style="padding:8px 4px">${n[0]}</a>`).join("")}`;
-function closeAll(){["#notif","#userMenu","#sheet"].forEach(s=>$(s).classList.remove("open"));$("#sheetOv").classList.remove("open");travar("menu",false)}
-$("#btnNotif").onclick=e=>{e.stopPropagation();const o=$("#notif").classList.contains("open");closeAll();if(!o)$("#notif").classList.add("open")};
-$("#btnUser").onclick=e=>{e.stopPropagation();if(!CONTA.get()){closeAll();if(!/#\/(entrar|cadastro)/.test(location.hash))voltarPara=location.hash;location.hash="#/entrar";return}const o=$("#userMenu").classList.contains("open");closeAll();if(!o)$("#userMenu").classList.add("open")};
-document.addEventListener("click",e=>{if(!e.target.closest(".drawer")&&!e.target.closest("#bMore")&&!e.target.closest(".sheet"))["#notif","#userMenu"].forEach(s=>$(s).classList.remove("open"))});
-function toggleTheme(){const q=prefs();q.tema=document.documentElement.dataset.theme==="dark"?"claro":"escuro";salvarPrefs(q);if(location.hash.startsWith("#/configuracoes"))route()}
+/* ---------- tema e menu móvel ---------- */
+function closeAll(){$("#sheet").classList.remove("open");$("#sheetOv").classList.remove("open");travar("menu",false)}
+function toggleTheme(){const q=prefs();q.tema=document.documentElement.dataset.theme==="dark"?"claro":"escuro";salvarPrefs(q)}
 
 $("#btnTheme").onclick=toggleTheme;
-document.addEventListener("click",e=>{if(e.target.id==="mSair"){e.preventDefault();sair()}});
 $("#bMore").onclick=()=>{closeSearch();closeAll();$("#sheet").classList.add("open");$("#sheetOv").classList.add("open");travar("menu",true)};
 $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEventListener("click",e=>{if(e.target.closest("a"))closeAll()});
 
@@ -2395,34 +2384,15 @@ function ufPorCoord(lat,lon){const x=(lon-GEOP.minx)*GEOP.k*GEOP.sx,y=(GEOP.maxy
 function vistos(){try{return JSON.parse(localStorage.getItem("bm-vistos")||"[]")}catch(e){return[]}}
 function registrarVisto(id){try{const v=vistos().filter(x=>x!==id);v.unshift(id);localStorage.setItem("bm-vistos",JSON.stringify(v.slice(0,8)))}catch(e){}}
 function cardVisto(p){return`<a class="rcard" href="#/pessoa/${p.id}"><div class="rtop">${fotoCand(p,52)}<div style="min-width:0"><b>${p.nome}</b><span>${p.cargo}</span><span>${p.partido?p.partido+", ":""}${p.uf}</span></div></div>${sitTag(p.sit)}<div class="rlinks"><span>Gastos</span><span>Votações</span><span>Projetos</span></div></a>`}
-/* ---------- conta, login e preferências (protótipo: tudo fica neste navegador; senha nunca é guardada) ---------- */
-const CONTA={get(){try{return JSON.parse(localStorage.getItem("bm-sessao")||"null")}catch(e){return null}},set(v){try{v?localStorage.setItem("bm-sessao",JSON.stringify(v)):localStorage.removeItem("bm-sessao")}catch(e){}}};
-const PREF_PADRAO={tema:"claro",fonte:"normal",movimento:true,loc:true,mfa:true,freq:"diario",notif:{votacoes:true,contratos:true,obras:false,leis:true,dividas:false}};
-function prefs(){let p={};try{p=JSON.parse(localStorage.getItem("bm-prefs")||"{}");if(!localStorage.getItem("bm-prefs")&&localStorage.getItem("bm-theme")==="dark")p.tema="escuro"}catch(e){}return{...PREF_PADRAO,...p,notif:{...PREF_PADRAO.notif,...(p.notif||{})}}}
+/* ---------- preferências (ficam só neste navegador) ---------- */
+const PREF_PADRAO={tema:"claro"};
+function prefs(){let p={};try{p=JSON.parse(localStorage.getItem("bm-prefs")||"{}");if(!localStorage.getItem("bm-prefs")&&localStorage.getItem("bm-theme")==="dark")p.tema="escuro"}catch(e){}return{...PREF_PADRAO,...p}}
 function salvarPrefs(p){try{localStorage.setItem("bm-prefs",JSON.stringify(p))}catch(e){}aplicarPrefs()}
-function aplicarPrefs(){const p=prefs(),r=document.documentElement;const esc=p.tema==="escuro"||(p.tema==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=esc?"dark":"light";r.classList.toggle("fonte-grande",p.fonte==="grande");r.classList.toggle("sem-animacao",!p.movimento)}
-const semMov=()=>matchMedia("(prefers-reduced-motion: reduce)").matches||document.documentElement.classList.contains("sem-animacao");
+const ICO_LUA='<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',ICO_SOL='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
+function aplicarPrefs(){const p=prefs(),r=document.documentElement;const esc=p.tema==="escuro"||(p.tema==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=esc?"dark":"light";r.classList.remove("fonte-grande","sem-animacao");
+ const b=document.getElementById("btnTheme");if(b){const t=esc?"Ativar o modo claro":"Ativar o modo escuro";b.innerHTML=esc?ICO_SOL:ICO_LUA;b.setAttribute("aria-label",t);b.title=t}}
+const semMov=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 const iniciais=n=>{const w=n.trim().split(/\s+/);return(w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase()};
-const mascEmail=e=>{const[a,b]=e.split("@");return b?a.slice(0,2)+"•••@"+b:e};
-function cpfValido(c){c=c.replace(/\D/g,"");if(c.length!==11||/^(\d)\1+$/.test(c))return false;for(const t of[9,10]){let s=0;for(let i=0;i<t;i++)s+=+c[i]*(t+1-i);if(((s*10)%11)%10!==+c[t])return false}return true}
-function forcaSenha(s){let n=0;if(s.length>=8)n++;if(s.length>=12)n++;if(/[A-Z]/.test(s)&&/[a-z]/.test(s))n++;if(/\d/.test(s))n++;if(/[^A-Za-z0-9]/.test(s))n++;return Math.min(4,n)}
-const FORCA=["Muito fraca","Fraca","Razoável","Boa","Forte"];
-const ICO_OLHO='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
-const ICO_ENG='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
-const ICO_PESSOA='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
-let voltarPara=null;
-
-function renderUsuario(){const s=CONTA.get();const b=$("#btnUser");
- b.innerHTML=s?`<i class="avatar" style="font-style:normal">${esc(iniciais(s.nome))}</i><span>${esc(s.nome)}<small>Cidadão</small></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6"/></svg>`:`<span class="entrar">${ICO_PESSOA}Entrar</span>`;
- b.classList.toggle("deslogado",!s);b.setAttribute("aria-label",s?"Menu da conta":"Entrar no BRASIL+");
- $("#userMenu").innerHTML=s?`<b style="font-weight:600">${esc(s.nome)}</b><div class="small muted" style="margin-bottom:8px">${esc(s.email)}</div><a class="sitem" href="#/configuracoes/conta" style="padding:8px 4px">Minha conta</a><a class="sitem" href="#/configuracoes/seguranca" style="padding:8px 4px">Segurança</a><a class="sitem" href="#/configuracoes" style="padding:8px 4px">Configurações</a><a class="sitem" href="#/fontes" style="padding:8px 4px">Ajuda e metodologia</a><a class="sitem sair" href="#" id="mSair" style="padding:8px 4px">Sair</a>`:"";
- const acc=$("#sheetAcc");if(acc)acc.innerHTML=s?`<a href="#/configuracoes/conta">${ICO_PESSOA}<span>${esc(s.nome)}</span></a><a href="#/configuracoes"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6">${ICO_ENG.replace(/^<svg viewBox="0 0 24 24">|<\/svg>$/g,"")}</svg><span>Configurações</span></a>`:`<a href="#/entrar" class="pri">${ICO_PESSOA}<span>Entrar</span></a><a href="#/configuracoes"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6">${ICO_ENG.replace(/^<svg viewBox="0 0 24 24">|<\/svg>$/g,"")}</svg><span>Configurações</span></a>`}
-function sair(){CONTA.set(null);renderUsuario();closeAll();toast("Você saiu da sua conta.");if(/configuracoes\/(conta|seguranca)/.test(location.hash))route()}
-
-function cartaoAuth(conteudo){return`<div class="auth-wrap"><div class="auth"><a class="auth-logo" href="#/inicio"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="12" r="7" fill="#2D5596"/><circle cx="27" cy="18" r="9" fill="#152A52"/><circle cx="14" cy="29" r="6" fill="#9AA9BE"/><circle cx="27" cy="18" r="3.2" fill="#fff"/></svg><b>BRASIL<em>+</em></b></a>${conteudo}</div><p class="auth-demo">Protótipo: use qualquer e-mail ou CPF válido e uma senha com 8 caracteres ou mais. Código de verificação: <b>123456</b>. Nenhuma senha é guardada.</p></div>`}
-function campoSenha(id,ac,ph="Sua senha"){return`<div class="pw"><input id="${id}" type="password" autocomplete="${ac}" placeholder="${ph}" required minlength="8" maxlength="128"><button type="button" class="pw-v" data-alvo="${id}" aria-label="Mostrar senha">${ICO_OLHO}</button></div>`}
-function ligarOlhos(){document.querySelectorAll(".pw-v").forEach(b=>b.onclick=()=>{const i=$("#"+b.dataset.alvo);const v=i.type==="password";i.type=v?"text":"password";b.setAttribute("aria-label",v?"Ocultar senha":"Mostrar senha");b.classList.toggle("on",v)})}
-function erroAuth(m){const e=$("#authErro");e.textContent=m;e.hidden=!m}
 
 /* confirmação dentro da página (o confirm() do navegador é bloqueado em páginas incorporadas) */
 function confirmar(msg,ok="Confirmar"){return new Promise(res=>{const ov=document.createElement("div");ov.className="pk-ov open";
@@ -2431,110 +2401,6 @@ function confirmar(msg,ok="Confirmar"){return new Promise(res=>{const ov=documen
  ov.onclick=e=>{const b=e.target.closest("[data-r]");if(b)fim(b.dataset.r==="1");else if(e.target===ov)fim(false)};
  ov.onkeydown=e=>{if(e.key==="Escape"){e.stopPropagation();fim(false)}};
  document.body.appendChild(ov);travar("confirmar",true);ov.querySelector('[data-r="0"]').focus()})}
-
-/* tentativas: 5 erros bloqueiam por 30 s (o servidor real fará o mesmo por conta e por IP) */
-function bloqueio(){try{const b=JSON.parse(sessionStorage.getItem("bm-tent")||'{"n":0,"ate":0}');return b}catch(e){return{n:0,ate:0}}}
-function falhou(){const b=bloqueio();b.n++;if(b.n>=5){b.ate=Date.now()+30000;b.n=0}try{sessionStorage.setItem("bm-tent",JSON.stringify(b))}catch(e){}return b}
-
-function etapaCodigo(dados){const box=$("#authBox");
- box.innerHTML=`<h1>Verificação em duas etapas</h1><p class="auth-sub">Enviamos um código de 6 dígitos para <b>${esc(mascEmail(dados.email))}</b>.</p>
- <form id="fCod" novalidate><div class="otp" id="otp">${[0,1,2,3,4,5].map(i=>`<input inputmode="numeric" autocomplete="${i?"off":"one-time-code"}" maxlength="1" aria-label="Dígito ${i+1}" pattern="[0-9]">`).join("")}</div>
- <div class="auth-erro" id="authErro" role="alert" hidden></div><button class="btn pri auth-btn" type="submit">Confirmar</button></form>
- <button class="lnk" id="reenviar" type="button" disabled>Reenviar código em <span id="cd">30</span>s</button>`;
- const ins=[...document.querySelectorAll("#otp input")];ins[0].focus();
- ins.forEach((inp,i)=>{inp.oninput=()=>{inp.value=inp.value.replace(/\D/g,"").slice(-1);if(inp.value&&ins[i+1])ins[i+1].focus()};inp.onkeydown=e=>{if(e.key==="Backspace"&&!inp.value&&ins[i-1])ins[i-1].focus()};
-  inp.onpaste=e=>{const t=(e.clipboardData.getData("text")||"").replace(/\D/g,"").slice(0,6);if(t.length>1){e.preventDefault();t.split("").forEach((c,k)=>{if(ins[k])ins[k].value=c});(ins[t.length]||ins[5]).focus()}}});
- let s=30;const tm=setInterval(()=>{const c=$("#cd");if(!c){clearInterval(tm);return}s--;c.textContent=s;if(s<=0){clearInterval(tm);const r=$("#reenviar");r.disabled=false;r.textContent="Reenviar código";r.onclick=()=>{toast("Código reenviado.");etapaCodigo(dados)}}},1000);
- $("#fCod").onsubmit=e=>{e.preventDefault();const cod=ins.map(i=>i.value).join("");if(cod.length<6)return erroAuth("Digite os 6 dígitos.");if(cod!=="123456"){falhou();ins.forEach(i=>i.value="");ins[0].focus();return erroAuth("Código incorreto ou expirado.")}clearInterval(tm);concluirLogin(dados)}}
-function concluirLogin(d){CONTA.set({nome:d.nome,email:d.email,desde:new Date().toISOString(),lembrar:!!d.lembrar});try{sessionStorage.removeItem("bm-tent")}catch(e){}renderUsuario();toast(`Bem-vindo, ${d.nome.split(" ")[0]}!`);const v=voltarPara;voltarPara=null;location.hash=v||"#/inicio"}
-
-P.entrar=(etapa)=>{if(CONTA.get()&&etapa!=="recuperar")return{html:cartaoAuth(`<div id="authBox"><h1>Você já entrou</h1><p class="auth-sub">Conectado como <b>${esc(CONTA.get().email)}</b>.</p><a class="btn pri auth-btn" href="#/inicio">Ir para o início</a><button class="lnk" type="button" id="lgSair">Sair desta conta</button></div>`),mount(){$("#lgSair").onclick=sair}};
- if(etapa==="recuperar")return{html:cartaoAuth(`<div id="authBox"><h1>Recuperar senha</h1><p class="auth-sub">Informe o e-mail da sua conta. Enviaremos um link para criar uma nova senha.</p>
- <form id="fRec" novalidate><label>E-mail<input id="rcE" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com"></label><div class="auth-erro" id="authErro" role="alert" hidden></div><button class="btn pri auth-btn" type="submit">Enviar link</button></form>
- <a class="lnk" href="#/entrar">Voltar para entrar</a></div>`),mount(){$("#fRec").onsubmit=e=>{e.preventDefault();const v=$("#rcE").value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v))return erroAuth("Digite um e-mail válido.");
-  $("#authBox").innerHTML=`<h1>Verifique seu e-mail</h1><p class="auth-sub">Se existir uma conta com <b>${esc(v)}</b>, você vai receber um link em instantes. O link vale por 30 minutos.</p><a class="btn pri auth-btn" href="#/entrar">Voltar para entrar</a>`}}};
- return{html:cartaoAuth(`<div id="authBox"><h1>Entrar</h1><p class="auth-sub">Acompanhe projetos, receba alertas e guarde suas preferências.</p>
- <form id="fLog" novalidate><label>E-mail ou CPF<input id="lgU" type="text" autocomplete="username" inputmode="email" required maxlength="120" placeholder="voce@exemplo.com ou 000.000.000-00"></label>
- <label>Senha${campoSenha("lgP","current-password")}</label>
- <div class="auth-row"><label class="chk"><input type="checkbox" id="lgL"> Manter conectado</label><a class="lnk" href="#/entrar/recuperar">Esqueci minha senha</a></div>
- <div class="auth-erro" id="authErro" role="alert" hidden></div><button class="btn pri auth-btn" type="submit" id="lgBtn">Entrar</button></form>
- <div class="auth-ou"><span>ou</span></div><button class="btn auth-google" type="button" id="lgGoogle"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>Entrar com Google</span></button>
- <p class="auth-fim">Não tem conta? <a href="#/cadastro">Criar conta</a></p></div>`),
- mount(){ligarOlhos();$("#lgU").focus();
-  const tick=()=>{const b=bloqueio(),btn=$("#lgBtn");if(!btn)return;const f=Math.ceil((b.ate-Date.now())/1000);if(f>0){btn.disabled=true;btn.textContent=`Aguarde ${f}s`;erroAuth("Muitas tentativas. Por segurança, aguarde para tentar de novo.");setTimeout(tick,1000)}else if(btn.disabled){btn.disabled=false;btn.textContent="Entrar";erroAuth("")}};tick();
-  $("#fLog").onsubmit=e=>{e.preventDefault();if(bloqueio().ate>Date.now())return;const u=$("#lgU").value.trim(),pw=$("#lgP").value;
-   const ehCPF=/^[\d.\-\s]+$/.test(u);if(!u)return erroAuth("Informe seu e-mail ou CPF.");
-   if(ehCPF?!cpfValido(u):!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(u))return erroAuth(ehCPF?"CPF inválido. Confira os números.":"Digite um e-mail válido.");
-   if(pw.length<8){const b=falhou();tick();return b.ate>Date.now()?null:erroAuth("E-mail, CPF ou senha incorretos.")}
-   const email=ehCPF?"cpf."+u.replace(/\D/g,"").slice(-4)+"@gov.br":u.toLowerCase();const base=ehCPF?"Cidadão":email.split("@")[0].replace(/[._-]+/g," ");
-   const nome=base.replace(/\b\w/g,c=>c.toUpperCase()).slice(0,40);const d={nome,email,lembrar:$("#lgL").checked};
-   prefs().mfa?etapaCodigo(d):concluirLogin(d)};
-  $("#lgGoogle").onclick=()=>{toast("Na versão real, abre a janela do Google para você escolher a conta.");setTimeout(()=>concluirLogin({nome:"Usuário Google",email:"usuario@gmail.com"}),900)}}}};
-
-P.cadastro=()=>{if(CONTA.get())return P.entrar();
- return{html:cartaoAuth(`<div id="authBox"><h1>Criar conta</h1><p class="auth-sub">Grátis. Usamos seus dados só para alertas e preferências.</p>
- <form id="fCad" novalidate><label>Nome<input id="cdN" autocomplete="name" required maxlength="80" placeholder="Seu nome"></label>
- <label>E-mail<input id="cdE" type="email" autocomplete="email" required maxlength="120" placeholder="voce@exemplo.com"></label>
- <label>Senha${campoSenha("cdP","new-password","Mínimo de 8 caracteres")}</label><div class="forca" id="forca"><i></i><i></i><i></i><i></i><span>Use letras, números e símbolos</span></div>
- <label>Confirmar senha${campoSenha("cdC","new-password","Repita a senha")}</label>
- <label class="chk"><input type="checkbox" id="cdT"> Li e aceito os termos de uso e a política de privacidade (LGPD).</label>
- <div class="auth-erro" id="authErro" role="alert" hidden></div><button class="btn pri auth-btn" type="submit">Criar conta</button></form>
- <div class="auth-ou"><span>ou</span></div><button class="btn auth-google" type="button" id="cdGoogle"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>Criar conta com Google</span></button><p class="auth-fim">Já tem conta? <a href="#/entrar">Entrar</a></p></div>`),
- mount(){ligarOlhos();$("#cdN").focus();const f=$("#forca");$("#cdGoogle").onclick=()=>{toast("Na versão real, abre a janela do Google para você escolher a conta.");setTimeout(()=>concluirLogin({nome:"Usuário Google",email:"usuario@gmail.com"}),900)};
-  $("#cdP").oninput=e=>{const n=e.target.value?forcaSenha(e.target.value):-1;f.dataset.n=n;f.querySelector("span").textContent=n<0?"Use letras, números e símbolos":FORCA[n]};
-  $("#fCad").onsubmit=e=>{e.preventDefault();const n=$("#cdN").value.trim(),em=$("#cdE").value.trim(),p=$("#cdP").value,c=$("#cdC").value;
-   if(n.length<2)return erroAuth("Informe seu nome.");if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em))return erroAuth("Digite um e-mail válido.");
-   if(p.length<8||forcaSenha(p)<2)return erroAuth("Escolha uma senha mais forte: pelo menos 8 caracteres, com letras e números.");
-   if(p!==c)return erroAuth("As senhas não são iguais.");if(!$("#cdT").checked)return erroAuth("Para criar a conta, aceite os termos e a política de privacidade.");
-   etapaCodigo({nome:n.slice(0,80),email:em.toLowerCase()})}}}};
-
-/* ---------- configurações ---------- */
-function tg(id,on,txt,sub=""){return`<label class="tgl"><span class="tgl-t"><b>${txt}</b>${sub?`<small>${sub}</small>`:""}</span><input type="checkbox" id="${id}" ${on?"checked":""}><i aria-hidden="true"></i></label>`}
-P.configuracoes=(sec)=>{const SEC=[["conta","Conta"],["seguranca","Segurança"],["aparencia","Aparência"],["notificacoes","Notificações"],["privacidade","Privacidade e dados"]];
- sec=SEC.some(x=>x[0]===sec)?sec:"aparencia";const s=CONTA.get(),p=prefs();
- const precisaEntrar=t=>`<div class="cfg-vazio">${ICO_PESSOA.replace('width="17" height="17"','width="30" height="30"')}<p>${t}</p><div><a class="btn pri" href="#/entrar">Entrar</a> <a class="btn" href="#/cadastro">Criar conta</a></div></div>`;
- const V={
- conta:()=>!s?precisaEntrar("Entre para ver e editar os dados da sua conta."):`<h2>Conta</h2><form id="fConta" class="cfg-form" novalidate>
-  <div class="cfg-perfil"><div class="ph2">${esc(iniciais(s.nome))}</div><div><b>${esc(s.nome)}</b><span>Conta criada em ${fd(s.desde.slice(0,10))}</span></div></div>
-  <label>Nome<input id="cfN" value="${esc(s.nome)}" maxlength="80" autocomplete="name"></label>
-  <label>E-mail<input value="${esc(s.email)}" disabled><small>Para trocar o e-mail, confirmamos o novo endereço antes.</small></label>
-  <label>Estado padrão<select id="cfUF" data-titulo="Estado padrão">${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select><small>Usado na Arrecadação e retorno da Início.</small></label>
-  <div class="cfg-acoes"><button class="btn pri" type="submit">Salvar alterações</button></div></form>
-  <div class="cfg-perigo"><div><b>Excluir conta</b><span>Apaga sua conta e preferências. Não dá para desfazer.</span></div><button class="btn perigo" id="cfDel" type="button">Excluir conta</button></div>`,
- seguranca:()=>!s?precisaEntrar("Entre para gerenciar senha, verificação em duas etapas e sessões."):`<h2>Segurança</h2>
-  ${tg("cfMfa",p.mfa,"Verificação em duas etapas","Pede um código enviado ao seu e-mail sempre que você entrar.")}
-  <h3>Alterar senha</h3><form id="fSenha" class="cfg-form" novalidate><label>Senha atual${campoSenha("csA","current-password")}</label><label>Nova senha${campoSenha("csN","new-password","Mínimo de 8 caracteres")}</label><div class="forca" id="forca"><i></i><i></i><i></i><i></i><span>Use letras, números e símbolos</span></div><label>Confirmar nova senha${campoSenha("csC","new-password","Repita a nova senha")}</label><div class="auth-erro" id="authErro" role="alert" hidden></div><div class="cfg-acoes"><button class="btn pri" type="submit">Alterar senha</button></div></form>
-  <h3>Sessões ativas</h3><div class="cfg-lista"><div><b>Este navegador</b><span>Agora</span><em class="tag sit-ex">Atual</em></div><div><b>Celular Android</b><span>São Paulo, há 2 dias</span><button class="btn" type="button" data-enc>Encerrar</button></div></div>
-  <div class="cfg-acoes"><button class="btn" type="button" id="cfTodas">Sair de todos os dispositivos</button></div>
-  <h3>Últimos acessos</h3><div class="cfg-lista"><div><b>Entrada com código</b><span>${new Date(s.desde).toLocaleString("pt-BR")}</span></div><div><b>Entrada com código</b><span>Há 2 dias, celular Android</span></div></div>`,
- aparencia:()=>`<h2>Aparência</h2><h3>Tema</h3><div class="cfg-opc" id="cfTema">${[["claro","Claro"],["escuro","Escuro"],["auto","Automático","Segue o aparelho"]].map(t=>`<button type="button" data-v="${t[0]}" class="${p.tema===t[0]?"on":""}"><i class="tema-${t[0]}"></i><b>${t[1]}</b>${t[2]?`<small>${t[2]}</small>`:""}</button>`).join("")}</div>
-  <h3>Tamanho do texto</h3><div class="seg" id="cfFonte"><button data-v="normal" class="${p.fonte==="normal"?"on":""}">Normal</button><button data-v="grande" class="${p.fonte==="grande"?"on":""}">Grande</button></div>
-  <h3>Movimento</h3>${tg("cfMov",p.movimento,"Animações e efeito de zoom nos mapas","Desligue se os movimentos incomodarem.")}`,
- notificacoes:()=>`<h2>Notificações</h2>${!s?'<p class="cfg-aviso">As escolhas ficam salvas neste navegador. Entre na sua conta para receber os alertas por e-mail.</p>':""}
-  ${tg("nfVot",p.notif.votacoes,"Votações de projetos que acompanho")}${tg("nfCtr",p.notif.contratos,"Novos contratos no meu estado")}${tg("nfObr",p.notif.obras,"Obras paralisadas no meu estado")}${tg("nfLei",p.notif.leis,"Novas leis publicadas")}${tg("nfDiv",p.notif.dividas,"Mudanças na dívida do meu estado")}
-  <h3>Frequência</h3><div class="seg" id="cfFreq">${[["agora","Na hora"],["diario","Resumo diário"],["semanal","Resumo semanal"]].map(f=>`<button data-v="${f[0]}" class="${p.freq===f[0]?"on":""}">${f[1]}</button>`).join("")}</div>`,
- privacidade:()=>{let n=0;try{n=Object.keys(localStorage).filter(k=>k.startsWith("bm-")).length}catch(e){}return`<h2>Privacidade e dados</h2>
-  ${tg("cfLoc",p.loc,"Usar minha localização","Para mostrar a arrecadação do seu estado. A posição não sai do seu aparelho.")}
-  <h3>Dados neste navegador</h3><p class="cfg-aviso">${n} ${n===1?"item guardado":"itens guardados"}: preferências, estado escolhido, perfis vistos recentemente${s?" e sua sessão":""}. Nenhuma senha é guardada.</p>
-  <div class="cfg-acoes"><button class="btn" type="button" id="cfVer">Ver meus dados</button><button class="btn" type="button" id="cfVistos">Limpar vistos recentemente</button><button class="btn perigo" type="button" id="cfTudo">Apagar todos os dados</button></div><pre class="cfg-json" id="cfJson" hidden></pre>
-  <p class="small muted">Seus direitos pela LGPD: acessar, corrigir e apagar seus dados a qualquer momento.</p>`}};
- return{html:`<div class="ph"><div><h1>Configurações</h1><p>${s?`Conectado como ${esc(s.email)}.`:"Ajuste o sistema do seu jeito. Entre para salvar na sua conta."}</p></div></div>
- <div class="cfg"><nav class="cfg-menu">${SEC.map(x=>`<a href="#/configuracoes/${x[0]}" class="${x[0]===sec?"on":""}">${x[1]}</a>`).join("")}</nav><div class="panel cfg-c" id="cfgC">${V[sec]()}</div></div>`,
- mount(){const P2=prefs();const seg=(id,campo)=>document.querySelectorAll(`#${id} button`).forEach(b=>b.onclick=()=>{const q=prefs();q[campo]=b.dataset.v;salvarPrefs(q);document.querySelectorAll(`#${id} button`).forEach(x=>x.classList.toggle("on",x===b))});
-  if(sec==="aparencia"){seg("cfTema","tema");seg("cfFonte","fonte");$("#cfMov").onchange=e=>{const q=prefs();q.movimento=e.target.checked;salvarPrefs(q)}}
-  if(sec==="notificacoes"){seg("cfFreq","freq");[["nfVot","votacoes"],["nfCtr","contratos"],["nfObr","obras"],["nfLei","leis"],["nfDiv","dividas"]].forEach(([id,k])=>$("#"+id).onchange=e=>{const q=prefs();q.notif[k]=e.target.checked;salvarPrefs(q);toast("Preferência salva.")})}
-  if(sec==="privacidade"){$("#cfLoc").onchange=e=>{const q=prefs();q.loc=e.target.checked;salvarPrefs(q)};
-   $("#cfVer").onclick=()=>{const o={};try{Object.keys(localStorage).filter(k=>k.startsWith("bm-")).forEach(k=>{try{o[k]=JSON.parse(localStorage.getItem(k))}catch(e){o[k]=localStorage.getItem(k)}})}catch(e){}const j=$("#cfJson");j.textContent=JSON.stringify(o,null,2);j.hidden=!j.hidden};
-   $("#cfVistos").onclick=()=>{try{localStorage.removeItem("bm-vistos")}catch(e){}toast("Vistos recentemente apagados.")};
-   $("#cfTudo").onclick=async()=>{if(!await confirmar("Apagar preferências, estado salvo, vistos recentemente e sair da conta neste navegador?","Apagar tudo"))return;try{Object.keys(localStorage).filter(k=>k.startsWith("bm-")).forEach(k=>localStorage.removeItem(k))}catch(e){}aplicarPrefs();renderUsuario();toast("Todos os seus dados deste navegador foram apagados.");route()}}
-  if(sec==="conta"&&s){let uf="SP";try{uf=localStorage.getItem("bm-uf")||"SP"}catch(e){}$("#cfUF").value=uf;
-   $("#fConta").onsubmit=e=>{e.preventDefault();const n=$("#cfN").value.trim();if(n.length<2)return toast("Informe seu nome.");CONTA.set({...CONTA.get(),nome:n.slice(0,80)});try{localStorage.setItem("bm-uf",$("#cfUF").value)}catch(e){}renderUsuario();toast("Alterações salvas.");route()};
-   $("#cfDel").onclick=async()=>{if(!await confirmar("Excluir sua conta? Isso apaga seus dados e não dá para desfazer.","Excluir conta"))return;CONTA.set(null);try{["bm-prefs","bm-vistos","bm-uf"].forEach(k=>localStorage.removeItem(k))}catch(e){}aplicarPrefs();renderUsuario();toast("Conta excluída.");location.hash="#/inicio"}}
-  if(sec==="seguranca"&&s){ligarOlhos();$("#cfMfa").onchange=e=>{const q=prefs();q.mfa=e.target.checked;salvarPrefs(q);toast(q.mfa?"Verificação em duas etapas ativada.":"Verificação em duas etapas desativada. Recomendamos mantê-la ativa.")};
-   const f=$("#forca");$("#csN").oninput=e=>{const n=e.target.value?forcaSenha(e.target.value):-1;f.dataset.n=n;f.querySelector("span").textContent=n<0?"Use letras, números e símbolos":FORCA[n]};
-   $("#fSenha").onsubmit=e=>{e.preventDefault();const a=$("#csA").value,n=$("#csN").value,c=$("#csC").value;if(a.length<8)return erroAuth("Senha atual incorreta.");if(n.length<8||forcaSenha(n)<2)return erroAuth("A nova senha precisa ser mais forte.");if(n===a)return erroAuth("A nova senha deve ser diferente da atual.");if(n!==c)return erroAuth("As senhas não são iguais.");e.target.reset();erroAuth("");f.dataset.n=-1;toast("Senha alterada. As outras sessões foram encerradas.")};
-   document.querySelectorAll("[data-enc]").forEach(b=>b.onclick=()=>{b.closest("div").remove();toast("Sessão encerrada.")});
-   $("#cfTodas").onclick=async()=>{if(await confirmar("Sair de todos os dispositivos, inclusive este?","Sair de todos"))sair()}}}}};
 
 /* ---------- partidos: logos, cadeiras, hemiciclo, mapa de bolhas e indicações ---------- */
 const PNOMES=["Partido A","Partido B","Partido C","Partido D","Partido E","Outros"];
@@ -3353,7 +3219,6 @@ document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 window.scrollTo(0,0)}
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
-renderUsuario();
 addEventListener("hashchange",route);detectarAPI().finally(route);
 </script>
 </body>

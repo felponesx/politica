@@ -56,43 +56,85 @@ def inicio_zip(nome, url, mb=4):
         print(f"\n=== {nome}: ERRO {type(e).__name__}: {e} ({time.monotonic() - t:.1f}s)", flush=True)
 
 
-def main():
-    # TSE 2026: arquivos de dados abertos e o serviço de divulgação de resultados
-    for nome in ("consulta_cand/consulta_cand_2026.zip", "votacao_candidato_munzona/votacao_candidato_munzona_2026.zip",
-                 "votacao_partido_munzona/votacao_partido_munzona_2026.zip",
-                 "detalhe_votacao_munzona/detalhe_votacao_munzona_2026.zip"):
-        ver(f"tse {nome}", f"https://cdn.tse.jus.br/estatistica/sead/odsele/{nome}", metodo="HEAD")
-    r = ver("tse resultados config", "https://resultados.tse.jus.br/oficial/comum/config/ele-c.json", n=4000)
-    if r is not None and r.status_code == 200:
-        try:
-            j = r.json()
-            for c in j.get("c", []):
-                for e in c.get("e", []):
-                    print("  eleicao:", c.get("ele"), c.get("cd"), e.get("cd"), e.get("nm"), e.get("t"), e.get("dt"))
-        except Exception as e:
-            print("  json?", e)
-    for cod in ("544", "546", "619", "620", "621"):
-        ver(f"tse ele2022 presidente {cod}", f"https://resultados.tse.jus.br/oficial/ele2022/{cod}/dados-simplificados/br/"
-            f"br-c0001-e000{cod}-r.json", n=300)
-    ver("tse ele2026 lista", "https://resultados.tse.jus.br/oficial/ele2026/", n=600)
-    ver("tse dados abertos 2026", "https://dadosabertos.tse.jus.br/dataset/?q=2026", n=600)
+def zip_remoto(nome, url, mostrar=(), linhas=6):
+    """Lista um zip remoto sem baixar tudo (pedidos Range no diretório central) e mostra o começo de alguns arquivos."""
+    import struct
+    import zlib
+    try:
+        h = cli.head(url)
+        tam = int(h.headers.get("content-length") or 0)
+        print(f"\n=== {nome}: HTTP {h.status_code} | {tam} bytes | {h.headers.get('last-modified')}", flush=True)
+        if h.status_code != 200 or not tam:
+            return
+        fim = cli.get(url, headers={"Range": f"bytes={max(0, tam - 262144)}-{tam - 1}"}).content
+        k = fim.rfind(b"PK\x05\x06")
+        n_ent, cd_tam, cd_ini = struct.unpack("<HII", fim[k + 10:k + 20])
+        cd = cli.get(url, headers={"Range": f"bytes={cd_ini}-{cd_ini + cd_tam - 1}"}).content
+        pos, entradas = 0, []
+        while pos < len(cd) and cd[pos:pos + 4] == b"PK\x01\x02":
+            comp, desc = struct.unpack("<II", cd[pos + 20:pos + 28])
+            nl, el, cl = struct.unpack("<HHH", cd[pos + 28:pos + 34])
+            off = struct.unpack("<I", cd[pos + 42:pos + 46])[0]
+            nm = cd[pos + 46:pos + 46 + nl].decode("latin-1")
+            entradas.append((nm, comp, desc, off))
+            pos += 46 + nl + el + cl
+        for nm, comp, desc, off in entradas[:80]:
+            print(f"  {nm}  {comp} -> {desc}", flush=True)
+        for nm, comp, desc, off in entradas:
+            if not any(m in nm for m in mostrar):
+                continue
+            loc = cli.get(url, headers={"Range": f"bytes={off}-{off + 300000}"}).content
+            nl, el = struct.unpack("<HH", loc[26:30])
+            txt = zlib.decompressobj(-15).decompress(loc[30 + nl + el:], 200000).decode("latin-1")
+            print(f"  --- {nm}:", flush=True)
+            for l in txt.splitlines()[:linhas]:
+                print("   ", l[:700], flush=True)
+    except Exception as e:
+        print(f"  ERRO {type(e).__name__}: {e}", flush=True)
 
-    # Receita: base aberta do CNPJ (situação especial = recuperação judicial)
-    for url in ("https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/",
-                "https://dadosabertos.rfb.gov.br/CNPJ/dados_abertos_cnpj/",
-                "https://arquivos.receitafederal.gov.br/index.php/s/YggdBLfdninEJX9",
-                "https://dados.gov.br/api/publico/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj"):
-        r = ver(f"receita cnpj {url}", url, n=2500)
-    r = cli.get("https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/")
-    if r.status_code == 200:
+
+def dav(nome, url, auth=None, n=4000):
+    """PROPFIND num compartilhamento Nextcloud (é onde a Receita publica o CNPJ)."""
+    try:
+        r = cli.request("PROPFIND", url, auth=auth, headers={"Depth": "1"})
         import re
-        meses = sorted(set(re.findall(r'href="(\d{4}-\d{2})/"', r.text)))
-        print("meses:", meses[-5:], flush=True)
-        if meses:
-            base = f"https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/{meses[-1]}/"
-            ver("receita cnpj mes", base, n=3000)
-            inicio_zip("receita estabelecimentos0", base + "Estabelecimentos0.zip")
-            inicio_zip("receita empresas0", base + "Empresas0.zip", mb=2)
+        itens = re.findall(r"<d:href>([^<]+)</d:href>", r.text)
+        print(f"\n=== {nome}: HTTP {r.status_code} | {len(itens)} itens", flush=True)
+        print("\n".join(itens[:60]) if itens else r.text[:n], flush=True)
+        return itens
+    except Exception as e:
+        print(f"\n=== {nome}: ERRO {type(e).__name__}: {e}", flush=True)
+        return []
+
+
+def main():
+    tse = "https://cdn.tse.jus.br/estatistica/sead/odsele/"
+    zip_remoto("tse cand 2026", tse + "consulta_cand/consulta_cand_2026.zip", mostrar=("_BRASIL", "_SP"), linhas=3)
+    zip_remoto("tse munzona 2026", tse + "votacao_candidato_munzona/votacao_candidato_munzona_2026.zip",
+               mostrar=("_BR.", "_SP."), linhas=4)
+    zip_remoto("tse munzona 2022", tse + "votacao_candidato_munzona/votacao_candidato_munzona_2022.zip",
+               mostrar=("_BR.",), linhas=4)
+
+    # Receita: o CNPJ agora fica num compartilhamento Nextcloud (SERPRO+)
+    token = "YggdBLfdninEJX9"
+    base = "https://arquivos.receitafederal.gov.br/public.php/webdav/"
+    itens = dav("receita cnpj raiz", base, auth=(token, ""))
+    import re
+    meses = sorted({m for i in itens for m in re.findall(r"(\d{4}-\d{2})/?$", i)})
+    print("pastas:", meses[-6:], flush=True)
+    if meses:
+        m = meses[-1]
+        dav("receita cnpj mes", base + m + "/", auth=(token, ""))
+        for arq in ("Estabelecimentos0.zip", "Empresas0.zip"):
+            url = f"https://arquivos.receitafederal.gov.br/index.php/s/{token}/download?path=%2F{m}&files={arq}"
+            ver(f"receita head {arq}", url, metodo="HEAD")
+            inicio_zip(f"receita {arq}", url, mb=3)
+            url2 = base + m + "/" + arq
+            try:
+                r = cli.head(url2, auth=(token, ""))
+                print("  webdav", arq, r.status_code, r.headers.get("content-length"), flush=True)
+            except Exception as e:
+                print("  webdav erro", e)
 
 
 if __name__ == "__main__":
