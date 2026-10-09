@@ -235,33 +235,80 @@ def colunas_xlsx(nome, url, procurar, linhas_cab=6, max_abas=40, headers=None, m
 
 def main():
     nav = {"User-Agent": UA_NAV}
-    pol = r"efetivo|polic|guarda|bombeir|perit|seguran|penal|delegad"
-    colunas_xlsx("estadic 2024", "https://ftp.ibge.gov.br/Perfil_Estados/2024/Base_Estadic_2024.xlsx", pol)
-    colunas_xlsx("estadic 2023", "https://ftp.ibge.gov.br/Perfil_Estados/2023/Base_Estadic_2023.xlsx", pol)
-    for ano in ("2024", "2023"):
-        r = links(f"munic {ano}", f"https://ftp.ibge.gov.br/Perfil_Municipios/{ano}/Base_de_Dados/", padrao=r'href="([^"?/][^"]*)"')
-    for u in ("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados_nacionais_de_seguranca_publica",
-              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados-nacionais-1/"
-              "base-de-dados-e-notas-metodologicas-dos-gestores-estaduais-sinesp-vde-2022-e-2023",
-              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados-nacionais-1/MAPA-2026/",
-              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/pesquisaperfil/"
-              "pesquisa-perfil-das-instituicoes-de-seguranca-publica-1"):
-        links("mj " + u.rsplit("/", 2)[-2][:40] + "/" + u.rsplit("/", 1)[-1][:40], u, headers=nav,
-              padrao=r'href="([^"]*(?:\.xlsx|\.xls|\.csv|\.zip|\.ods|\.pdf|dados-nacionais|perfil|sinesp|vde|@@download)[^"]*)"', n=80)
-    colunas_xlsx("anuario T01/T03", "https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.xlsx", r".",
-                 linhas_cab=0, max_abas=0, headers=nav)
     import openpyxl
+    import re
+    from collections import Counter
+
+    def wb_de(url):
+        r = cli.get(url, headers=nav)
+        print(f"\n=== {url.rsplit('/', 3)[-3:]}: HTTP {r.status_code} | {len(r.content)} bytes", flush=True)
+        return openpyxl.load_workbook(io.BytesIO(r.content), read_only=True, data_only=True)
+
+    # Sinesp (BancoVDE 2026): estrutura e eventos
     try:
-        rr = cli.get("https://forumseguranca.org.br/wp-content/uploads/2026/07/anuario-2026.xlsx", headers=nav)
-        wb = openpyxl.load_workbook(io.BytesIO(rr.content), read_only=True, data_only=True)
-        for aba in ("T01", "T03"):
-            print(f"  --- {aba}", flush=True)
-            for row in wb[aba].iter_rows(values_only=True):
-                vals = [str(v)[:22] for v in row]
-                if any(v not in ("None", "") for v in vals):
-                    print("     ", " | ".join(vals)[:330], flush=True)
+        wb = wb_de("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/download/"
+                   "dnsp-base-de-dados/bancovde-2026.xlsx/@@download/file")
+        for ws in wb.worksheets:
+            print(f"  --- aba {ws.title!r} ({ws.max_row}x{ws.max_column})", flush=True)
+            cab, eventos, ufs, meses, n = None, Counter(), Counter(), Counter(), 0
+            for k, row in enumerate(ws.iter_rows(values_only=True)):
+                if k < 4:
+                    print("     ", row, flush=True)
+                if cab is None and row and any(isinstance(v, str) and re.search(r"evento|uf", v, re.I) for v in row if v):
+                    cab = [str(v) for v in row]
+                    continue
+                if cab:
+                    d = dict(zip(cab, row))
+                    ev = next((d[c] for c in cab if re.search(r"evento", c, re.I)), None)
+                    eventos[ev] += 1
+                    uf = next((d[c] for c in cab if c.lower() in ("uf", "sigla_uf")), None)
+                    ufs[uf] += 1
+                    m = next((d[c] for c in cab if re.search(r"data|mes|m.s", c, re.I)), None)
+                    meses[str(m)[:7]] += 1
+                    n += 1
+            print("  cabeçalho:", cab, "| linhas:", n, flush=True)
+            print("  eventos:", eventos.most_common(60), flush=True)
+            print("  ufs:", len(ufs), "| meses:", sorted(meses)[:3], sorted(meses)[-3:], flush=True)
     except Exception as e:
-        print("  anuario erro", e, flush=True)
+        print("  vde erro", type(e).__name__, e, flush=True)
+
+    # ESTADIC 2023: dicionário da Segurança Pública (efetivos) e valores
+    try:
+        wb = wb_de("https://ftp.ibge.gov.br/Perfil_Estados/2023/Base_Estadic_2023.xlsx")
+        dic = wb["Dicionário"]
+        for row in dic.iter_rows(values_only=True):
+            t = " | ".join(str(v) for v in row if v not in (None, ""))
+            if re.search(r"ESEG", t) and re.search(r"efetiv|quantidade|n.mero|total", t, re.I):
+                print("   dic:", t[:260], flush=True)
+        ws = wb["Segurança Pública"]
+        linhas = list(ws.iter_rows(values_only=True))
+        print("  cab0:", [str(v)[:12] for v in linhas[0][:40]], flush=True)
+        for l in linhas[1:4]:
+            print("  lin:", [str(v)[:12] for v in l[:60]], flush=True)
+    except Exception as e:
+        print("  estadic erro", type(e).__name__, e, flush=True)
+
+    # MUNIC 2024 e 2023: guarda municipal
+    for url in ("https://ftp.ibge.gov.br/Perfil_Municipios/2024/Base_de_Dados/Base_MUNIC_2024_20251107.xlsx",
+                "https://ftp.ibge.gov.br/Perfil_Municipios/2023/Base_de_Dados/Base_MUNIC_2023.xlsx"):
+        try:
+            wb = wb_de(url)
+            print("  abas:", [w.title for w in wb.worksheets], flush=True)
+            for ws in wb.worksheets:
+                if re.search(r"dicion", ws.title, re.I):
+                    for row in ws.iter_rows(values_only=True):
+                        t = " | ".join(str(v) for v in row if v not in (None, ""))
+                        if re.search(r"guarda|seguran.a p", t, re.I):
+                            print("   dic:", t[:240], flush=True)
+        except Exception as e:
+            print("  munic erro", type(e).__name__, e, flush=True)
+
+    for u in ("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/pesquisaperfil/"
+              "pesquisa-perfil-das-instituicoes-de-seguranca-publica",
+              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/pesquisaperfil/"
+              "outras-pesquisas-perfis-das-instituicoes-de-seguranca-publica"):
+        links("mj perfil " + u.rsplit("/", 1)[-1][:30], u, headers=nav,
+              padrao=r'href="([^"]*(?:\.xlsx|\.xls|\.csv|\.zip|\.ods|\.pdf|@@download)[^"]*)"', n=60)
 
 
 if __name__ == "__main__":
