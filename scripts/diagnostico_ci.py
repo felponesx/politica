@@ -29,27 +29,70 @@ def ver(nome, url, params=None, headers=None, n=1200, metodo="GET"):
         return None
 
 
-def main():
-    # Banco Central: cada série, 1 ano (na 3ª coleta só 3 das 12 vieram)
-    from datetime import date, timedelta
-    fim = date.today()
-    ini = fim - timedelta(days=365)
-    for nome, cod in (("selic", 432), ("ipca_mes", 433), ("ipca_12m", 13522), ("dolar", 1), ("desemprego", 24369),
-                      ("divida_bruta_pib", 13762), ("divida_liquida_pib", 4513), ("juros_nominais_pib", 5727),
-                      ("pib_12m", 4382), ("endividamento_familias", 29037), ("inadimplencia_pf", 21084),
-                      ("inadimplencia_pj", 21083)):
-        ver(f"bcb {nome} ({cod})", f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{cod}/dados",
-            {"formato": "json", "dataInicial": f"{ini:%d/%m/%Y}", "dataFinal": f"{fim:%d/%m/%Y}"}, n=160)
-    ver("bcb selic 9 anos", "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados",
-        {"formato": "json", "dataInicial": f"{fim - timedelta(days=365 * 9):%d/%m/%Y}", "dataFinal": f"{fim:%d/%m/%Y}"}, n=120)
+def inicio_zip(nome, url, mb=4):
+    """Baixa só o começo de um zip grande e mostra os nomes dos arquivos e as primeiras linhas."""
+    t = time.monotonic()
+    try:
+        with cli.stream("GET", url) as r:
+            print(f"\n=== {nome}: HTTP {r.status_code} | {r.headers.get('content-length')} bytes | "
+                  f"{r.headers.get('last-modified')} | {r.url}", flush=True)
+            if r.status_code != 200:
+                return
+            buf = b""
+            for parte in r.iter_bytes():
+                buf += parte
+                if len(buf) > mb * 1024 * 1024:
+                    break
+        print(f"  {len(buf)} bytes em {time.monotonic() - t:.1f}s", flush=True)
+        # zip local header: nome do primeiro arquivo e começo descomprimido
+        import zlib
+        if buf[:4] == b"PK\x03\x04":
+            nlen = int.from_bytes(buf[26:28], "little")
+            elen = int.from_bytes(buf[28:30], "little")
+            print("  primeiro arquivo:", buf[30:30 + nlen].decode("latin-1"), flush=True)
+            dados = zlib.decompressobj(-15).decompress(buf[30 + nlen + elen:], 3000)
+            print(dados.decode("latin-1")[:1500], flush=True)
+    except Exception as e:
+        print(f"\n=== {nome}: ERRO {type(e).__name__}: {e} ({time.monotonic() - t:.1f}s)", flush=True)
 
-    # CNPJ em sequência (na coleta, só 3 de ~30 vieram em 20 min)
-    docs = ['17872922000191', '41391511000169', '13873535000119', '37257843000188', '00360305000104', '26756984000129',
-            '26921551000181', '02155735000110', '03021021000181', '20999087000160', '43805419000123', '29974747000122']
-    for d in docs:
-        ver(f"brasilapi {d}", f"https://brasilapi.com.br/api/cnpj/v1/{d}", n=120)
-        ver(f"minhareceita {d}", f"https://minhareceita.org/{d}", n=120)
-        time.sleep(1.5)
+
+def main():
+    # TSE 2026: arquivos de dados abertos e o serviço de divulgação de resultados
+    for nome in ("consulta_cand/consulta_cand_2026.zip", "votacao_candidato_munzona/votacao_candidato_munzona_2026.zip",
+                 "votacao_partido_munzona/votacao_partido_munzona_2026.zip",
+                 "detalhe_votacao_munzona/detalhe_votacao_munzona_2026.zip"):
+        ver(f"tse {nome}", f"https://cdn.tse.jus.br/estatistica/sead/odsele/{nome}", metodo="HEAD")
+    r = ver("tse resultados config", "https://resultados.tse.jus.br/oficial/comum/config/ele-c.json", n=4000)
+    if r is not None and r.status_code == 200:
+        try:
+            j = r.json()
+            for c in j.get("c", []):
+                for e in c.get("e", []):
+                    print("  eleicao:", c.get("ele"), c.get("cd"), e.get("cd"), e.get("nm"), e.get("t"), e.get("dt"))
+        except Exception as e:
+            print("  json?", e)
+    for cod in ("544", "546", "619", "620", "621"):
+        ver(f"tse ele2022 presidente {cod}", f"https://resultados.tse.jus.br/oficial/ele2022/{cod}/dados-simplificados/br/"
+            f"br-c0001-e000{cod}-r.json", n=300)
+    ver("tse ele2026 lista", "https://resultados.tse.jus.br/oficial/ele2026/", n=600)
+    ver("tse dados abertos 2026", "https://dadosabertos.tse.jus.br/dataset/?q=2026", n=600)
+
+    # Receita: base aberta do CNPJ (situação especial = recuperação judicial)
+    for url in ("https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/",
+                "https://dadosabertos.rfb.gov.br/CNPJ/dados_abertos_cnpj/",
+                "https://arquivos.receitafederal.gov.br/index.php/s/YggdBLfdninEJX9",
+                "https://dados.gov.br/api/publico/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj"):
+        r = ver(f"receita cnpj {url}", url, n=2500)
+    r = cli.get("https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/")
+    if r.status_code == 200:
+        import re
+        meses = sorted(set(re.findall(r'href="(\d{4}-\d{2})/"', r.text)))
+        print("meses:", meses[-5:], flush=True)
+        if meses:
+            base = f"https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/{meses[-1]}/"
+            ver("receita cnpj mes", base, n=3000)
+            inicio_zip("receita estabelecimentos0", base + "Estabelecimentos0.zip")
+            inicio_zip("receita empresas0", base + "Empresas0.zip", mb=2)
 
 
 if __name__ == "__main__":
