@@ -148,13 +148,22 @@ Se algo não bater, o erro aparece em `GET /coletas`; use o prompt 19 do `PROMPT
 Privacidade: pessoas físicas da dívida ativa só entram nos totais por estado; CPF de sócios vem mascarado da fonte.
 
 ## Validação com dados reais
-Validados com respostas reais (07/10/2026): votações da Câmara, senadores e votações do Senado (serviço novo
-`/votacao`), legislação, contratos do PNCP, obras do ObrasGov, dívida dos estados (SICONFI), indicadores do IBGE e
-transferências do Tesouro (`tests/test_formatos_reais.py`). Ainda não validados: Receita, TSE e Portal da Transparência
-(são arquivos grandes ou exigem chave — confira em `GET /coletas` na primeira execução).
-
-## Importante
-O código foi testado com respostas simuladas (`pytest -q`), mas **não contra as APIs reais** (o ambiente onde foi gerado não tinha acesso a esses sites). Na primeira execução, confira `GET /coletas`: se alguma fonte der erro ou vier com campos vazios, é ajuste de nome de campo — use o prompt 19 do `PROMPTS.md`.
+Rodadas completas contra as fontes reais em 09/10/2026, pelo robô do GitHub Actions (resumo de cada execução na aba
+Actions e em `GET /coletas`):
+- **Funcionando:** Câmara (deputados, órgãos, votações com votos nominais, proposições, detalhe e tramitação, atuação,
+  cota parlamentar pelo arquivo anual), Senado (senadores, votações, matérias, CEAPS, normas federais), agenda do dia,
+  IBGE (indicadores, 5.571 municípios, indicadores sociais, malhas), SICONFI (receitas, dívida e despesa por função),
+  Tesouro (transferências e CAPAG), Receita (arrecadação por UF), PNCP (~9.600 contratos por dia), ObrasGov,
+  Banco Central (séries do SGS), TSE (candidatos e resultados de 2022 e 2024) e Alesp.
+- **Corrigido a partir das respostas reais:** cota da Câmara (a API passou a responder vazio; agora vem do arquivo
+  `cotas/Ano-AAAA.csv.zip`, ligado pelo `ideCadastro`), votações simbólicas da Câmara (404 nos votos), Receita
+  (o gov.br responde 401 a `Accept: application/json`), CAPAG (linhas de resumo antes do cabeçalho), Banco Central
+  (páginas de erro intermitentes) e CNPJ (BrasilAPI com reserva na minhareceita.org). Amostras reais em
+  `tests/test_formatos_reais.py`.
+- **Bloqueados para servidores fora do Brasil ou para robôs:** LexML (verificação de segurança do Senado) e API da ALMG.
+  O cadastro de CNPJ depende da BrasilAPI/minhareceita.org, que às vezes ficam fora do ar.
+- **Não rodados:** Portal da Transparência (precisa de chave: crie o secret `TRANSPARENCIA_API_KEY` no repositório),
+  PGFN (arquivos de alguns GB) e planilhas da Defesa Civil.
 
 ### Eleições: carga recomendada
 Os arquivos do TSE são grandes. Comece por um estado e duas eleições para ter o comparativo:

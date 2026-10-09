@@ -18,11 +18,20 @@ Feito e testado (`pytest -q` passa em SQLite e em Postgres 16):
 - Fluxo federativo por estado: arrecadado × redistribuído × retornado (`app/fluxo.py`).
 - Lista completa de tarefas: `python -m scripts.coletar --help`. Log de cada coleta: tabela `coletas` / `GET /coletas`.
 
-Formatos JÁ validados com respostas reais (fixtures em `tests/test_formatos_reais.py`):
-Câmara (votações), Senado (senadores, votações), legislação, PNCP, ObrasGov, SICONFI (RGF), IBGE, Tesouro.
-**Ainda não validados contra as fontes reais:** Receita (CSV — o link em `app/config.py` pode ter mudado),
-TSE (zips grandes), Portal da Transparência (chave), SICONFI RREO, Câmara despesas/proposições/órgãos,
-Senado matérias, ObrasGov paginação longa, Tesouro `por_estado_municipio`.
+Validação contra as fontes reais (09/10/2026, robô do GitHub Actions — ver README, "Validação com dados reais"):
+todas as fontes da carga inicial, TSE 2022/2024 e Banco Central funcionam; corrigidos com as respostas reais: cota da
+Câmara (arquivo anual, `ideCadastro`), votos 404 de votação simbólica, Receita (Accept */*), CAPAG (cabeçalho),
+SGS (página HTML de erro), CNPJ (reserva). Bloqueados fora do Brasil/para robôs: LexML e ALMG.
+Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
+
+## Robô de coleta e site sem servidor (out/2026)
+- `.github/workflows/coletar-dados.yml` + `scripts/coleta_ci.py`: coleta no GitHub Actions (Postgres de serviço, banco
+  guardado no cache do Actions entre execuções), resumo em `/coletas` e cópia estática da API em `site/dados/`
+  (`scripts/exportar_snapshot.py`). Rodar só algumas tarefas: Actions > Run workflow > campo "tarefas".
+- `.github/workflows/diagnostico.yml` + `scripts/diagnostico_ci.py`: respostas brutas das fontes, para conferir antes
+  de corrigir um coletor (o ambiente do Claude Code na nuvem pode não ter acesso às fontes).
+- O site (`site/index.html`), sem servidor, lê `dados/manifest.json` e `dados/s<N>.json` (bloco "cópia estática").
+  Coletas com parte das fontes falhando ficam com status `parcial` (`Contador.avisos`).
 
 ## Novidades da v0.2 (out/2026)
 - O site completo está em `site/index.html`, servido em `/`. A ligação com a API fica no bloco
