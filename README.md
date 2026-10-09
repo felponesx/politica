@@ -74,6 +74,7 @@ Sem Docker? Use `DATABASE_URL=sqlite:///./brasilplus.db` no `.env`.
 | Gastos por função de qualquer prefeitura | SICONFI | `siconfi-despesas-funcao esferas=M` |
 | Contorno dos municípios (mapa de eleição por cidade) | IBGE (malhas) | `ibge-malhas` |
 | Deputados estaduais em exercício e votações das Assembleias | ALMG (API JSON) e Alesp (XML); demais por planilha | `assembleias`, `assembleia-arquivo uf=XX arquivo=...` |
+| Empresas em recuperação judicial e falidas | Receita Federal (dados abertos do CNPJ, campo "situação especial") | `receita-recuperacao-judicial` |
 
 Liste tudo com `python -m scripts.coletar --help`. Cada execução fica registrada em `GET /coletas`.
 
@@ -90,6 +91,9 @@ Liste tudo com `python -m scripts.coletar --help`. Cada execução fica registra
 - `GET /eleicoes/anos` · `GET /eleicoes/{ano}/{uf}/cargos`
 - `GET /eleicoes/{ano}/{uf}?cargo=governador&turno=1` (eleitos, mais votados, votos por partido, comparação com 4 anos antes; `unidade=` para município)
 - `GET /eleicoes/{ano}/{uf}/mapa?cargo=governador` (vencedor por município) · `GET /eleicoes/candidato/{sq}`
+- `GET /eleicoes/{ano}/cargos` · `GET /eleicoes/{ano}/estados?cargo=presidente&turno=1` (resumo por estado para o mapa
+  do país; o Presidente dentro de cada estado sai dos votos por município e o total do país fica em `uf=BR`)
+- `GET /recuperacao-judicial?tipo=recuperacao_judicial|falencia&uf=&situacao=Ativa&q=` · `GET /recuperacao-judicial/resumo`
 - `GET /busca?q=educacao` (busca única: parlamentares, candidatos, proposições, leis, votações, contratos, obras)
 - `GET /contratos?uf=BA&esfera=M&ordenar=valor` · `GET /contratos/{id}` (popout + outros contratos do fornecedor)
 - `GET /obras?uf=SP&tipo=rodovia` · `GET /obras/{id}` · `GET /obras-resumo/{uf}`
@@ -162,6 +166,13 @@ Actions e em `GET /coletas`):
   `tests/test_formatos_reais.py`.
 - **Bloqueados para servidores fora do Brasil ou para robôs:** LexML (verificação de segurança do Senado) e API da ALMG.
   O cadastro de CNPJ depende da BrasilAPI/minhareceita.org, que às vezes ficam fora do ar.
+- **Eleições de 2026 (1º turno, 04/10/2026):** o TSE publicou em 09/10/2026 os candidatos e a votação por município e
+  zona; o robô coleta os dois (`tse-candidatos ano=2026`, `tse-resultados ano=2026`). Corrigido com os arquivos reais:
+  o arquivo `_BR` (Presidente, votos de todos os estados) apagava governadores e deputados de BA, MG e PA, e quem foi
+  ao 2º turno ficava com a situação do 1º turno no cadastro de candidatos.
+- **Base aberta do CNPJ:** mudou para um compartilhamento do SERPRO (`arquivos.receitafederal.gov.br/index.php/s/
+  YggdBLfdninEJX9`, WebDAV em `public.php/webdav/AAAA-MM/`). O servidor entrega ~0,6 MB/s por conexão: o coletor baixa
+  os dez arquivos em paralelo e lê enquanto baixa.
 - **Não rodados:** Portal da Transparência (precisa de chave: crie o secret `TRANSPARENCIA_API_KEY` no repositório),
   PGFN (arquivos de alguns GB) e planilhas da Defesa Civil.
 
@@ -171,6 +182,9 @@ Os arquivos do TSE são grandes. Comece por um estado e duas eleições para ter
 python -m scripts.coletar tse-resultados ano=2022 uf=SP
 python -m scripts.coletar tse-resultados ano=2018 uf=SP
 ```
+O Presidente só sai completo com o ano inteiro (`tse-resultados ano=2026`, sem `uf`): os votos dele vêm no arquivo
+`_BR` do TSE. "Quem ocupa cada casa" usa a eleição cujo mandato já começou (em 2026, os eleitos de 2022 e 2024);
+para ver os eleitos de 2026, passe `ano=2026` em `/candidatos`.
 
 ## Banco de dados e migrações
 - A estrutura do banco é versionada com **Alembic** (`migrations/`). A API e a CLI aplicam as migrações pendentes

@@ -50,6 +50,15 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Site: aba Constituição e Leis; contadores, economia, agenda ao vivo, tramitação, atuação, comparação e exportação
   ligados à API (blocos "v0.3" no script do site).
 
+## Novidades da v0.5 (out/2026)
+- Site sem números de exemplo quando há servidor ou cópia dos dados: hemiciclo em que cada bola é uma pessoa (passar o
+  mouse mostra quem é), mapa dos partidos com cadeiras reais, Eleições com mapa do país, zoom no estado e resultado por
+  região, Dívidas com um quadro por tipo (pública, estados, cidades, famílias, empresas) e aba de recuperação judicial,
+  resumo de cada artigo da Constituição (`CF_RESUMO`), topo só com o botão lua/sol (sem login e configurações).
+  Código no bloco "v0.5" do script do site.
+- Eleições 2026 (1º turno) no robô; `tse-resultados` grava o total do Presidente em `uf=BR`; `/eleicoes/{ano}/estados`.
+- `receita-recuperacao-judicial` (`app/collectors/cnpj_base.py`) e `/recuperacao-judicial`.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.
