@@ -69,11 +69,17 @@ jobs:
         run: python -m scripts.coleta_ci resumo | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Gerar a cópia estática da API
         run: python -m scripts.exportar_snapshot site/dados
+      # grava num arquivo temporário: um dump interrompido nunca vai para o cache (a próxima coleta usaria um
+      # banco vazio). Se a coleta foi cancelada, guarda o que já tinha sido gravado.
       - name: Guardar o banco para a próxima coleta
-        if: always()
-        run: pg_dump -Fc -Z6 -f banco.dump "postgresql://brasil:brasil@localhost:5432/brasilplus"
+        id: dump
+        if: always() && steps.banco.outcome == 'success'
+        run: |
+          pg_dump -Fc -Z6 -f banco.tmp "postgresql://brasil:brasil@localhost:5432/brasilplus"
+          test "$(stat -c %s banco.tmp)" -gt 1000000
+          mv banco.tmp banco.dump
       - uses: actions/cache/save@v4
-        if: always()
+        if: always() && steps.dump.outcome == 'success'
         with:
           path: banco.dump
           key: banco-${{ github.run_id }}

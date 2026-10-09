@@ -27,6 +27,7 @@ def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | Non
             nomes = [m for m in z.namelist() if m.lower().endswith(".csv") and "brasil" not in m.lower()]
             if uf:
                 nomes = [m for m in nomes if m.upper().endswith(f"_{uf.upper()}.CSV")]
+            turnos = {}  # quem foi ao 2º turno tem uma linha por turno: vale a do último turno
             for nome in nomes:
                 with z.open(nome) as bruto:
                     leitor = csv.DictReader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
@@ -34,6 +35,13 @@ def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | Non
                         sq = linha.get("SQ_CANDIDATO")
                         if not sq:
                             continue
+                        try:
+                            turno = int(linha.get("NR_TURNO") or 1)
+                        except ValueError:
+                            turno = 1
+                        if turnos.get(sq, 0) > turno:
+                            continue
+                        turnos[sq] = turno
                         if apenas_eleitos and not sem_acento(linha.get("DS_SIT_TOT_TURNO") or "").startswith("ELEITO"):
                             continue
                         upsert(db, Registro, {"fonte": "tse", "tipo": "candidato", "chave": f"{ano}-{sq}"}, {

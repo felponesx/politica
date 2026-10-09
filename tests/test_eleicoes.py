@@ -95,3 +95,21 @@ def test_presidente_arquivo_br_nao_apaga_os_estados(tmp_path):
     gov = cliente.get("/eleicoes/2018/estados", params={"cargo": "governador"}).json()
     assert set(gov["estados"]) == {"SP", "RJ"} and gov["estados"]["RJ"]["partidos"][0]["partido"] == "PSC"
     assert cliente.get("/eleicoes/2018/cargos").json() == ["PRESIDENTE", "GOVERNADOR"]
+
+
+def test_candidato_do_segundo_turno_fica_com_o_resultado_final(tmp_path):
+    """No consulta_cand, quem foi ao 2º turno tem duas linhas (turno 1: "2º TURNO"; turno 2: "ELEITO")."""
+    from app.collectors import TAREFAS  # a tarefa registrada também normaliza (registros -> candidatos)
+    cab = "ANO_ELEICAO;NR_TURNO;SG_UF;NM_UE;DS_CARGO;SQ_CANDIDATO;NR_CANDIDATO;NM_CANDIDATO;NM_URNA_CANDIDATO;SG_PARTIDO;DS_SIT_TOT_TURNO\n"
+    linhas = ["2014;2;PI;PIAUÍ;GOVERNADOR;991;13;FULANO DE TAL;FULANO;PT;ELEITO",
+              "2014;1;PI;PIAUÍ;GOVERNADOR;991;13;FULANO DE TAL;FULANO;PT;2º TURNO",
+              "2014;1;PI;PIAUÍ;GOVERNADOR;992;45;BELTRANO;BELTRANO;PSDB;2º TURNO",
+              "2014;2;PI;PIAUÍ;GOVERNADOR;992;45;BELTRANO;BELTRANO;PSDB;NÃO ELEITO"]
+    caminho = tmp_path / "cand_2014.zip"
+    with zipfile.ZipFile(caminho, "w") as z:
+        z.writestr("consulta_cand_2014_PI.csv", (cab + "\n".join(linhas) + "\n").encode("latin-1"))
+    TAREFAS["tse-candidatos"](ano=2014, arquivo_local=str(caminho))
+    r = cliente.get("/candidatos", params={"ano": 2014, "cargo": "GOVERNADOR"}).json()
+    assert {c["nome_urna"]: c["resultado"] for c in r["itens"]} == {"FULANO": "ELEITO", "BELTRANO": "NÃO ELEITO"}
+    assert [c["nome_urna"] for c in cliente.get("/candidatos", params={"ano": 2014, "cargo": "GOVERNADOR",
+                                                                         "eleitos": "true"}).json()["itens"]] == ["FULANO"]

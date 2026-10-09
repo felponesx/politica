@@ -15,6 +15,7 @@ class ParlamentarOut(Base):
     uf: str | None
     foto_url: str | None
     email: str | None
+    em_exercicio: bool | None = None
 
 
 class VotacaoOut(Base):
