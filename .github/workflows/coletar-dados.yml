@@ -1,0 +1,70 @@
+name: Coletar dados oficiais
+
+# Roda as coletas nos servidores do GitHub (que acessam as fontes oficiais) e grava em site/dados uma cópia
+# estática da API. O site usa essa cópia quando é aberto sem servidor (link publicado, GitHub Pages).
+# Para rodar de novo: aba Actions > "Coletar dados oficiais" > Run workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tarefas:
+        description: "Tarefas separadas por ponto e vírgula (ex.: tse-resultados ano=2022 uf=SP). Vazio = carga inicial completa."
+        required: false
+        default: ""
+  push:
+    paths:
+      - .github/workflows/coletar-dados.yml
+      - scripts/coleta_ci.py
+
+permissions:
+  contents: write
+
+concurrency:
+  group: coletar-dados
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: brasil
+          POSTGRES_PASSWORD: brasil
+          POSTGRES_DB: brasilplus
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U brasil"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://brasil:brasil@localhost:5432/brasilplus
+      TRANSPARENCIA_API_KEY: ${{ secrets.TRANSPARENCIA_API_KEY }}
+      TAREFAS: ${{ inputs.tarefas }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Coletar
+        run: python -m scripts.coleta_ci coletar
+      - name: Resumo das coletas
+        if: always()
+        run: python -m scripts.coleta_ci resumo | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Gerar a cópia estática da API
+        run: python -m scripts.exportar_snapshot site/dados
+      - name: Gravar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A site/dados
+          git commit -q -m "Dados oficiais: cópia de $(date -u +%d/%m/%Y)" || { echo "Nada mudou."; exit 0; }
+          for i in 1 2 3; do
+            git pull -q --rebase origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            sleep 10
+          done
+          exit 1

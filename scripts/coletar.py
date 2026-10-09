@@ -46,10 +46,11 @@ def converter_params(brutos: dict) -> dict:
     return out
 
 
-def carga_inicial():
+def passos_iniciais():
+    """Tarefas da carga inicial, na ordem (usado aqui e pelo robô do GitHub em scripts/coleta_ci.py)."""
     hoje = date.today()
     inicio = hoje - timedelta(days=90)
-    passos = [
+    return [
         ("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
         ("camara-votacoes", {"inicio": inicio, "fim": hoje}),
         ("senado-votacoes", {"inicio": inicio, "fim": hoje}),
@@ -82,6 +83,10 @@ def carga_inicial():
         ("assembleias", {}),
         ("ibge-malhas", {}),
     ]
+
+
+def carga_inicial():
+    passos = passos_iniciais()
     # Arquivos grandes do TSE (rode por estado): tse-bens ano=2022 uf=SP · tse-contas ano=2022 uf=SP
     # Exigem chave ou arquivo grande — rode à parte:
     #   transparencia-orgaos / transparencia-gastos-todos ano=2025   (chave no .env)
