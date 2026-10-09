@@ -263,7 +263,8 @@ class Exportador:
             shards[fnv1a(k) % SHARDS][k] = v
         tamanho = 0
         for i, s in enumerate(shards):
-            texto = json.dumps(s, ensure_ascii=False, separators=(",", ":"), default=_json)
+            # algumas fontes (ex.: descrições do ObrasGov) já chegam com letras perdidas (U+FFFD); na cópia viram "?"
+            texto = json.dumps(s, ensure_ascii=False, separators=(",", ":"), default=_json).replace("\ufffd", "?")
             (pasta / f"s{i}.json").write_text(texto, encoding="utf-8")
             tamanho += len(texto.encode())
         with SessionLocal() as db:
