@@ -2702,6 +2702,8 @@ const SNAP_FILTROS={"/parlamentares":{casa:"=casa",uf:"=uf",partido:"=partido",q
  "/contratos":{uf:"=uf",ano:"=ano",esfera:"=esfera",municipio:"=municipio"},"/obras":{uf:"=uf",situacao:"=situacao",tipo:"~tipo"},
  "/candidatos":{uf:"=uf",partido:"=partido",q:"~nome,nome_urna"},"/municipios":{uf:"=uf",q:"~nome",capag:"=capag"},
  "/empresas":{setor:"=setor",uf:"=uf",q:"~razao_social"},"/dividas/devedores":{uf:"=uf",q:"~nome,cnpj"},despesas:{ano:"=ano"}};
+/* ordenações feitas aqui (a cópia guarda a lista numa ordem só): valor = campo ordenado do maior para o menor */
+const SNAP_ORDEM={"/municipios":{nome:null,populacao:"populacao",pib:"pib"}};
 const snapFalta=(o="Esta consulta")=>Object.assign(new Error(`${o} não faz parte da cópia dos dados oficiais publicada com o site. Para consultar tudo, abra o site pelo servidor BRASIL+`),{status:404});
 async function snapGet(p){const u=new URL(p,"https://copia.local");const cam=decodeURIComponent(u.pathname);const ps={};u.searchParams.forEach((v,k)=>{if(v!=="")ps[k]=v});
  if(cam==="/busca")return snapBusca(ps);
@@ -2709,13 +2711,15 @@ async function snapGet(p){const u=new URL(p,"https://copia.local");const cam=dec
  if(v===undefined||(v&&v.__completa)){const resto={...ps};delete resto.limit;delete resto.offset;let base=null;
   for(const b of(SNAP.m.bases||{})[cam]||[])if(Object.entries(b).every(([k,x])=>resto[k]===String(x))&&(!base||Object.keys(b).length>Object.keys(base).length))base=b;
   if(!base)throw snapFalta();
-  const spec=SNAP_FILTROS[cam]||(/^\/parlamentares\/\d+\/despesas$/.test(cam)?SNAP_FILTROS.despesas:{});const filtros=Object.entries(resto).filter(([k])=>!(k in base));
+  const ord=SNAP_ORDEM[cam]&&!("ordenar" in base)&&resto.ordenar in SNAP_ORDEM[cam]?SNAP_ORDEM[cam][resto.ordenar]:undefined;
+  const spec=SNAP_FILTROS[cam]||(/^\/parlamentares\/\d+\/despesas$/.test(cam)?SNAP_FILTROS.despesas:{});const filtros=Object.entries(resto).filter(([k])=>!(k in base)&&!(k==="ordenar"&&ord!==undefined));
   if(filtros.some(([k])=>!spec[k]))throw snapFalta("Este filtro");
   v=await snapLer(snapChave(cam,base));if(v===undefined)throw snapFalta();
   if(v.__status){const e=new Error(v.detail||("Erro "+v.__status));e.status=v.__status;throw e}
   let it=v.itens||[];
   for(const[k,x]of filtros){const op=spec[k][0],campos=spec[k].slice(1).split(","),alvo=op==="~"?snapNorm(x):String(x).toLowerCase();
    it=it.filter(o=>campos.some(c=>op==="~"?snapNorm(o[c]).includes(alvo):String(o[c]??"").toLowerCase()===alvo))}
+  if(ord)it=it.slice().sort((a,b)=>(b[ord]??-Infinity)-(a[ord]??-Infinity));
   const lim=+ps.limit||50,off=+ps.offset||0;const{itens,__completa,...meta}=v;return{...meta,total:it.length,itens:it.slice(off,off+lim)}}
  if(v&&v.__status){const e=new Error(v.detail||("Erro "+v.__status));e.status=v.__status;throw e}
  return v}

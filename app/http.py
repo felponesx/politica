@@ -45,9 +45,17 @@ def get_json(url: str, params: dict | None = None, headers: dict | None = None):
 
 def baixar(url: str, destino: str):
     """Download em streaming (arquivos grandes do TSE)."""
-    with _cliente.stream("GET", url, timeout=None) as r:
+    # Accept */*: o portal gov.br (Plone) trata "Accept: application/json" como chamada à API dele e responde 401
+    with _cliente.stream("GET", url, timeout=None, headers={"Accept": "*/*"}) as r:
         r.raise_for_status()
         with open(destino, "wb") as f:
             for bloco in r.iter_bytes(1 << 20):
                 f.write(bloco)
     return destino
+
+
+def get_json_uma_vez(url: str, params: dict | None = None, timeout: float = 20.0):
+    """GET sem retentativa (para consultas em lote que têm alternativa, como o cadastro de CNPJ)."""
+    r = _cliente.get(url, params=params, timeout=timeout)
+    r.raise_for_status()
+    return r.json() if r.content else None

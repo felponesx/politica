@@ -101,11 +101,12 @@ COTAS_URL = "https://www.camara.leg.br/cotas/Ano-{ano}.csv.zip"
 
 
 def ler_cotas(texto: str):
-    """Linhas do arquivo anual da cota (CEAP): CSV com ';', aspas e cabeçalho (txNomeParlamentar, nuDeputadoId...)."""
+    """Linhas do arquivo anual da cota (CEAP): CSV com ';', aspas e cabeçalho (txNomeParlamentar, ideCadastro...).
+    `ideCadastro` é o id do deputado na API de dados abertos; vem vazio nas notas de lideranças."""
     import csv
     import io
     for l in csv.DictReader(io.StringIO(texto.lstrip("\ufeff")), delimiter=";"):
-        if (l.get("nuDeputadoId") or "").strip():
+        if (l.get("ideCadastro") or "").strip():
             yield l
 
 
@@ -114,7 +115,7 @@ def coletar_despesas(ano: int, apenas_ids: list[str] | None = None, arquivo_loca
 
     Usa o arquivo anual da Câmara (Ano-AAAA.csv.zip, um download): desde out/2026 o endpoint
     /deputados/{id}/despesas da API responde lista vazia. Recarga idempotente: apaga as notas do ano
-    e grava de novo. Notas de lideranças (sem deputado) ficam de fora.
+    e grava de novo. Notas de lideranças (sem deputado) ficam de fora. Liga pelo `ideCadastro` do arquivo.
     """
     import os
     import tempfile
@@ -131,7 +132,7 @@ def coletar_despesas(ano: int, apenas_ids: list[str] | None = None, arquivo_loca
             deputados = {k: v for k, v in deputados.items() if k in apenas_ids}
         notas = {}
         for l in ler_cotas(texto):
-            dep = deputados.get(l["nuDeputadoId"].strip())
+            dep = deputados.get(l["ideCadastro"].strip())
             if not dep:
                 continue
             id_ext = (l.get("ideDocumento") or "").strip() or hash_curto(

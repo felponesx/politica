@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     capag_ckan_url: str = "https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=capag-municipios"
     # Cadastro CNPJ (dados abertos da Receita servidos pela BrasilAPI)
     cnpj_api_url: str = "https://brasilapi.com.br/api/cnpj/v1/{cnpj}"
+    cnpj_api_reserva: str = "https://minhareceita.org/{cnpj}"  # mesmo formato da BrasilAPI, usado se ela falhar
     cnpj_intervalo: float = 1.0          # segundos entre consultas na coleta em lote
     cnpj_sob_demanda: bool = True        # GET /empresas/{cnpj} consulta a fonte se o CNPJ estiver nas bases
     # Leis estaduais (LexML, SRU). Expressões CQL tentadas em ordem; ajuste se a primeira coleta vier vazia.

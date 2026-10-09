@@ -81,9 +81,10 @@ def cotas_zip(caminho, linhas):
 
 
 def linha_cota(nome, dep_id, doc, valor, mes="3", tipo="COMBUSTÍVEIS E LUBRIFICANTES.", fornecedor="POSTO X", cnpj="98.765.432/0001-10"):
-    return (f'"{nome}";"";"";"";"2023";"SP";"ABC";"57";"3";"{tipo}";"1";"";"{fornecedor}";"{cnpj}";"1";"0";'
-            f'"2026-0{mes}-10T00:00:00";"{valor}";"0";"{valor}";"{mes}";"2026";"0";"";"";"1";"";"";"";"{dep_id}";"{doc}";'
-            f'"https://www.camara.leg.br/cota-parlamentar/documentos/publ/{dep_id}/2026/{doc}.pdf"')
+    # ideCadastro (3ª coluna) = id do deputado na API; nuDeputadoId (antepenúltima) é outro número interno
+    return (f'"{nome}";"";"{dep_id}";"";"2023";"SP";"ABC";"57";"3";"{tipo}";"1";"";"{fornecedor}";"{cnpj}";"1";"0";'
+            f'"2026-0{mes}-10T00:00:00";"{valor}";"0";"{valor}";"{mes}";"2026";"0";"";"";"1";"";"";"";"3{dep_id}";"{doc}";'
+            f'"https://www.camara.leg.br/cota-parlamentar/documentos/publ/3{dep_id}/2026/{doc}.pdf"')
 
 
 def test_formatos_reais(monkeypatch):
@@ -250,7 +251,7 @@ def test_terceira_rodada(monkeypatch):
 
 
 def test_cota_camara_arquivo_anual(tmp_path):
-    """A cota vem do arquivo anual: liga pelo nuDeputadoId, ignora lideranças e soma parcelas do mesmo documento."""
+    """A cota vem do arquivo anual: liga pelo ideCadastro, ignora lideranças e soma parcelas do mesmo documento."""
     from app.collectors import camara
     from app.models import Despesa
     with SessionLocal() as db:

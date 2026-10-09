@@ -106,7 +106,7 @@ def test_capag_e_empresa(tmp_path, monkeypatch):
                     fornecedor="EMPRESA GRANDE LTDA", valor=10, uf="SP"))
     db.commit()
     db.close()
-    monkeypatch.setattr(http, "get_json", lambda url, **k: {
+    monkeypatch.setattr(http, "get_json_uma_vez", lambda url, **k: {
         "razao_social": "EMPRESA GRANDE LTDA", "cnae_fiscal": 4120400, "cnae_fiscal_descricao": "Construção de edifícios",
         "uf": "SP", "municipio": "SAO PAULO", "descricao_situacao_cadastral": "ATIVA", "data_inicio_atividade": "2001-05-10",
         "capital_social": 1000000, "qsa": [{"nome_socio": "SÓCIA EXEMPLO", "qualificacao_socio": "Sócio-Administrador",

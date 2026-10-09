@@ -33,19 +33,25 @@ def converter(d: dict) -> dict:
 
 
 def consultar(db, cnpj: str) -> EmpresaCadastro | None:
-    try:
-        d = http.get_json(settings.cnpj_api_url.format(cnpj=cnpj))
-    except Exception as e:
-        log.warning("CNPJ %s: %s", cnpj, e)
-        return None
+    """Uma tentativa na BrasilAPI e outra na reserva (minhareceita.org, mesmo formato). Em lote, repetir a mesma
+    fonte com espera só piora o limite de requisições dela."""
+    d = None
+    for modelo in dict.fromkeys(u for u in (settings.cnpj_api_url, settings.cnpj_api_reserva) if u):
+        try:
+            d = http.get_json_uma_vez(modelo.format(cnpj=cnpj))
+            if d:
+                break
+        except Exception as e:
+            log.warning("CNPJ %s em %s: %s", cnpj, modelo.split("/")[2], e)
     if not d:
         return None
     return upsert(db, EmpresaCadastro, {"cnpj": cnpj}, converter(d))
 
 
-def coletar_cnpj_fornecedores(limite: int = 300, dias: int = 90):
+def coletar_cnpj_fornecedores(limite: int = 300, dias: int = 90, minutos: int = 20):
     """Atualiza o cadastro dos maiores fornecedores (por valor contratado + cota) que estão sem cadastro
-    ou com cadastro mais velho que `dias`."""
+    ou com cadastro mais velho que `dias`. Para depois de `minutos` (o que já foi consultado fica gravado)."""
+    fim = time.monotonic() + minutos * 60
     with registrar_coleta("receita", "cnpj_fornecedores", limite=limite) as (db, n):
         corte = datetime.now() - timedelta(days=dias)
         recentes = {c for (c,) in db.execute(select(EmpresaCadastro.cnpj).where(EmpresaCadastro.atualizado_em >= corte))}
@@ -57,7 +63,7 @@ def coletar_cnpj_fornecedores(limite: int = 300, dias: int = 90):
             .group_by(Despesa.cnpj_cpf).order_by(func.sum(Despesa.valor).desc()).limit(limite))]
         feitos = 0
         for cnpj in dict.fromkeys(candidatos):
-            if feitos >= limite:
+            if feitos >= limite or time.monotonic() > fim:
                 break
             if cnpj in recentes:
                 continue

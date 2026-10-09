@@ -51,6 +51,17 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
+      # o banco da coleta anterior volta do cache: rodar só algumas tarefas (campo "tarefas") não apaga o resto
+      - name: Restaurar o banco da coleta anterior
+        id: banco
+        uses: actions/cache/restore@v4
+        with:
+          path: banco.dump
+          key: banco-${{ github.run_id }}
+          restore-keys: banco-
+      - name: Carregar o banco anterior
+        if: steps.banco.outputs.cache-matched-key != ''
+        run: pg_restore --no-owner --no-privileges -d "postgresql://brasil:brasil@localhost:5432/brasilplus" banco.dump || true
       - name: Coletar
         run: python -m scripts.coleta_ci coletar
       - name: Resumo das coletas
@@ -58,6 +69,14 @@ jobs:
         run: python -m scripts.coleta_ci resumo | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Gerar a cópia estática da API
         run: python -m scripts.exportar_snapshot site/dados
+      - name: Guardar o banco para a próxima coleta
+        if: always()
+        run: pg_dump -Fc -Z6 -f banco.dump "postgresql://brasil:brasil@localhost:5432/brasilplus"
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: banco.dump
+          key: banco-${{ github.run_id }}
       - name: Gravar no repositório
         run: |
           git config user.name "github-actions[bot]"

@@ -48,7 +48,7 @@ LISTAS = {
     "/obras": ([{}], 3000),
     "/candidatos": ([{"cargo": c, "eleitos": "true"} for c in
                      ("DEPUTADO ESTADUAL,DEPUTADO DISTRITAL", "GOVERNADOR", "PREFEITO", "PRESIDENTE")], 6000),
-    "/municipios": ([{}, {"ordenar": "populacao"}], 6000),
+    "/municipios": ([{}], 6000),  # a ordem por população ou PIB é feita no navegador
     "/empresas": ([{}], 2000),
     "/dividas/devedores": ([{}], 1000),
 }
@@ -65,6 +65,7 @@ FIXAS = [
 TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "contratos": 1200, "obras": 1500,
                 "fornecedores": 400, "municipios": 6000}
 TETO_BUSCA = 6000  # itens por tipo no índice de busca
+TETO_NOTAS = 50  # notas da cota por parlamentar
 
 
 def chave(caminho: str, params: dict | None = None) -> str:
@@ -153,7 +154,8 @@ class Exportador:
             for sufixo in ("", "/ligacoes", "/atuacao"):
                 self.get(f"/parlamentares/{pid}{sufixo}")
             if p["casa"] in ("camara", "senado"):
-                self.lista(f"/parlamentares/{pid}/despesas", {}, 5000, passo=1000)
+                # só as notas mais recentes (o resumo por tipo, no perfil, soma todas)
+                self.lista(f"/parlamentares/{pid}/despesas", {}, TETO_NOTAS, passo=TETO_NOTAS)
 
         # popouts (detalhes), na ordem em que as listas aparecem no site
         def detalhes(caminho, itens, teto, campo="id"):
@@ -252,8 +254,9 @@ class Exportador:
             for tabela, (expr, _modo, titulo, sub) in ENTIDADES.items():
                 linhas = db.execute(text(f"SELECT id, {titulo} AS titulo, {sub} AS subtitulo, {expr} AS texto "
                                          f"FROM {tabela} ORDER BY id DESC LIMIT :lim"), {"lim": TETO_BUSCA}).all()
-                if linhas:
-                    indice[tabela] = [[i, t or "", s or "", x or ""] for i, t, s, x in linhas]
+                if linhas:  # textos encurtados: o índice é baixado inteiro na primeira busca
+                    indice[tabela] = [[i, (t or "")[:140], (s or "")[:140], "" if (x or "") == (t or "") else (x or "")[:160]]
+                                      for i, t, s, x in linhas]
         self.dados["/busca#indice"] = indice
 
     # ---------- gravação ----------

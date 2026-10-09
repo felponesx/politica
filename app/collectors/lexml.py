@@ -73,7 +73,8 @@ def coletar_estaduais(ano: int, ufs: list[str] | None = None, limite_por_uf: int
                     r = http.get(settings.lexml_sru_url, params={
                         "operation": "searchRetrieve", "version": "1.1", "query": cql,
                         "startRecord": inicio, "maximumRecords": 100}, headers={"Accept": "application/xml"})
-                    if "<html" in r.text[:500].lower():
+                    inicio_txt = r.text[:500].lower()
+                    if "<html" in inicio_txt or "<!doctype html" in inicio_txt:
                         raise RuntimeError("O LexML respondeu com uma página HTML (\"Verificação de segurança\" do Senado, "
                                            "proteção contra robôs) em vez do XML da busca. A coleta automática está bloqueada "
                                            "a partir deste servidor.")
