@@ -30,26 +30,26 @@ def ver(nome, url, params=None, headers=None, n=1200, metodo="GET"):
 
 
 def main():
-    # cota parlamentar da Câmara: arquivos anuais (a API /deputados/{id}/despesas responde vazio)
-    for u in ("https://www.camara.leg.br/cotas/Ano-2026.csv.zip", "http://www.camara.leg.br/cotas/Ano-2026.csv.zip",
-              "https://www.camara.leg.br/cotas/Ano-2026.json.zip"):
-        ver(f"ceap {u}", u, metodo="HEAD")
-    z = cli.get("https://www.camara.leg.br/cotas/Ano-2026.csv.zip")
-    print("ceap zip:", z.status_code, len(z.content))
-    if z.status_code == 200:
-        with zipfile.ZipFile(io.BytesIO(z.content)) as arq:
-            print(arq.namelist())
-            nome = arq.namelist()[0]
-            with arq.open(nome) as f:
-                bruto = f.read(4000)
-            for enc in ("utf-8-sig", "latin-1"):
-                try:
-                    print(enc, "\n" + bruto.decode(enc)[:2500])
-                    break
-                except UnicodeDecodeError:
-                    pass
-    ver("tse votacao munzona 2018", "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/"
-        "votacao_candidato_munzona_2018.zip", metodo="HEAD")
+    # Banco Central: cada série, 1 ano (na 3ª coleta só 3 das 12 vieram)
+    from datetime import date, timedelta
+    fim = date.today()
+    ini = fim - timedelta(days=365)
+    for nome, cod in (("selic", 432), ("ipca_mes", 433), ("ipca_12m", 13522), ("dolar", 1), ("desemprego", 24369),
+                      ("divida_bruta_pib", 13762), ("divida_liquida_pib", 4513), ("juros_nominais_pib", 5727),
+                      ("pib_12m", 4382), ("endividamento_familias", 29037), ("inadimplencia_pf", 21084),
+                      ("inadimplencia_pj", 21083)):
+        ver(f"bcb {nome} ({cod})", f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{cod}/dados",
+            {"formato": "json", "dataInicial": f"{ini:%d/%m/%Y}", "dataFinal": f"{fim:%d/%m/%Y}"}, n=160)
+    ver("bcb selic 9 anos", "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados",
+        {"formato": "json", "dataInicial": f"{fim - timedelta(days=365 * 9):%d/%m/%Y}", "dataFinal": f"{fim:%d/%m/%Y}"}, n=120)
+
+    # CNPJ em sequência (na coleta, só 3 de ~30 vieram em 20 min)
+    docs = ['17872922000191', '41391511000169', '13873535000119', '37257843000188', '00360305000104', '26756984000129',
+            '26921551000181', '02155735000110', '03021021000181', '20999087000160', '43805419000123', '29974747000122']
+    for d in docs:
+        ver(f"brasilapi {d}", f"https://brasilapi.com.br/api/cnpj/v1/{d}", n=120)
+        ver(f"minhareceita {d}", f"https://minhareceita.org/{d}", n=120)
+        time.sleep(1.5)
 
 
 if __name__ == "__main__":
