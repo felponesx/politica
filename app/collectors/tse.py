@@ -10,7 +10,7 @@ import zipfile
 from app import http
 from app.collectors.base import registrar_coleta
 from app.models import Registro
-from app.utils import upsert
+from app.utils import sem_acento, upsert
 
 URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_{ano}.zip"
 CAMPOS = ["ANO_ELEICAO", "SQ_CANDIDATO", "NR_CANDIDATO", "NM_CANDIDATO", "NM_URNA_CANDIDATO",
@@ -18,9 +18,10 @@ CAMPOS = ["ANO_ELEICAO", "SQ_CANDIDATO", "NR_CANDIDATO", "NM_CANDIDATO", "NM_URN
           "DS_SIT_TOT_TURNO", "DS_GRAU_INSTRUCAO", "DS_OCUPACAO", "DS_GENERO", "DS_COR_RACA"]
 
 
-def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | None = None):
-    """Baixa (~centenas de MB) e importa. Use `uf` para importar só um estado."""
-    with registrar_coleta("tse", "candidatos", ano=ano, uf=uf or "todas") as (db, n):
+def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | None = None, apenas_eleitos: bool = False):
+    """Baixa (~centenas de MB) e importa. Use `uf` para importar só um estado e `apenas_eleitos=true` para
+    guardar só quem foi eleito (em 2024 são ~460 mil candidaturas e ~64 mil eleitos)."""
+    with registrar_coleta("tse", "candidatos", ano=ano, uf=uf or "todas", apenas_eleitos=apenas_eleitos) as (db, n):
         caminho = arquivo_local or http.baixar(URL.format(ano=ano), os.path.join(tempfile.gettempdir(), f"cand_{ano}.zip"))
         with zipfile.ZipFile(caminho) as z:
             nomes = [m for m in z.namelist() if m.lower().endswith(".csv") and "brasil" not in m.lower()]
@@ -32,6 +33,8 @@ def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | Non
                     for linha in leitor:
                         sq = linha.get("SQ_CANDIDATO")
                         if not sq:
+                            continue
+                        if apenas_eleitos and not sem_acento(linha.get("DS_SIT_TOT_TURNO") or "").startswith("ELEITO"):
                             continue
                         upsert(db, Registro, {"fonte": "tse", "tipo": "candidato", "chave": f"{ano}-{sq}"}, {
                             "uf": (linha.get("SG_UF") or "")[:2] or None, "ano": ano,

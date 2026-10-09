@@ -26,7 +26,7 @@ concurrency:
 jobs:
   coletar:
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 355
     services:
       postgres:
         image: postgres:16
@@ -43,6 +43,7 @@ jobs:
       TRANSPARENCIA_API_KEY: ${{ secrets.TRANSPARENCIA_API_KEY }}
       TAREFAS: ${{ inputs.tarefas }}
       PYTHONUNBUFFERED: "1"
+      CNPJ_INTERVALO: "1.5"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

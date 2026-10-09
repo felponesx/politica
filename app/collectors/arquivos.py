@@ -17,6 +17,25 @@ def baixar_temp(url: str, nome: str) -> str:
     return http.baixar(url, os.path.join(tempfile.gettempdir(), nome))
 
 
+def eh_cabecalho(linha) -> bool:
+    """Linha de cabeçalho: 3+ células preenchidas e quase todas com texto (não números).
+    Planilhas oficiais costumam ter antes linhas de título ou de resumo, como a da CAPAG:
+    (None, None, 'CAPAG Ano Base 2025', 70, 6, 7, 35, ...) e só depois 'Código Município Completo', 'UF', 'CAPAG'..."""
+    cheias = [c for c in linha if c is not None and str(c).strip()]
+    if len(cheias) < 3:
+        return False
+
+    def numero(c):
+        if isinstance(c, (int, float)):
+            return True
+        try:
+            float(str(c).strip().replace(".", "").replace(",", "."))
+            return True
+        except ValueError:
+            return False
+    return sum(1 for c in cheias if not numero(c)) >= 0.8 * len(cheias)
+
+
 def _decodificar(bruto: bytes) -> str:
     for enc in ("utf-8-sig", "latin-1"):
         try:
@@ -31,8 +50,9 @@ def _linhas_csv(texto: str):
     delim = max((";", ",", "\t", "|"), key=amostra.count)
     leitor = csv.reader(io.StringIO(texto), delimiter=delim)
     linhas = list(leitor)
-    # pula linhas de título até achar um cabeçalho com pelo menos 3 colunas preenchidas
-    i = next((k for k, l in enumerate(linhas[:30]) if sum(1 for c in l if str(c).strip()) >= 3), 0)
+    # pula linhas de título e de resumo até achar o cabeçalho (ver eh_cabecalho)
+    i = next((k for k, l in enumerate(linhas[:30]) if eh_cabecalho(l)),
+             next((k for k, l in enumerate(linhas[:30]) if sum(1 for c in l if str(c).strip()) >= 3), 0))
     cab = [str(c).strip() for c in linhas[i]]
     for l in linhas[i + 1:]:
         if any(str(c).strip() for c in l):
@@ -50,8 +70,10 @@ def _linhas_xlsx(caminho: str):
     buf = []
     for l in linhas:
         buf.append(l)
-        if sum(1 for c in l if c not in (None, "")) >= 3:
+        if eh_cabecalho(l) or len(buf) >= 30:
             break
+    if not eh_cabecalho(buf[-1]):  # sem cabeçalho claro: volta para a primeira linha com 3+ células
+        buf.append(next((l for l in buf if sum(1 for c in l if c not in (None, "")) >= 3), buf[-1]))
     cab = [str(c).strip() if c is not None else "" for c in buf[-1]]
     for l in linhas:
         if any(c not in (None, "") for c in l):

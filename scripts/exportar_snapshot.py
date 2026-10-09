@@ -234,6 +234,9 @@ class Exportador:
                 cargos = self.get(f"/eleicoes/{ano}/{uf}/cargos")
                 if not self.ok(cargos) or not cargos:
                     continue
+                # vereadores: dezenas de milhares de eleitos por estado; ficam fora da cópia (o servidor tem tudo)
+                cargos = [c for c in cargos if c != "VEREADOR"]
+                self.dados[chave(f"/eleicoes/{ano}/{uf}/cargos")] = cargos
                 for cargo in cargos:
                     for turno in (1, 2):
                         r = self.get(f"/eleicoes/{ano}/{uf}", {"cargo": cargo, "turno": turno})

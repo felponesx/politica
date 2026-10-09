@@ -97,27 +97,63 @@ def coletar_votacoes(inicio: date, fim: date, com_votos: bool = True):
     return n.itens
 
 
-def coletar_despesas(ano: int, apenas_ids: list[str] | None = None):
-    """Cota parlamentar (CEAP) de todos os deputados em exercício no ano."""
+COTAS_URL = "https://www.camara.leg.br/cotas/Ano-{ano}.csv.zip"
+
+
+def ler_cotas(texto: str):
+    """Linhas do arquivo anual da cota (CEAP): CSV com ';', aspas e cabeçalho (txNomeParlamentar, nuDeputadoId...)."""
+    import csv
+    import io
+    for l in csv.DictReader(io.StringIO(texto.lstrip("\ufeff")), delimiter=";"):
+        if (l.get("nuDeputadoId") or "").strip():
+            yield l
+
+
+def coletar_despesas(ano: int, apenas_ids: list[str] | None = None, arquivo_local: str | None = None):
+    """Cota parlamentar (CEAP) dos deputados no ano.
+
+    Usa o arquivo anual da Câmara (Ano-AAAA.csv.zip, um download): desde out/2026 o endpoint
+    /deputados/{id}/despesas da API responde lista vazia. Recarga idempotente: apaga as notas do ano
+    e grava de novo. Notas de lideranças (sem deputado) ficam de fora.
+    """
+    import os
+    import tempfile
+    import zipfile
+
+    from sqlalchemy import delete
     with registrar_coleta("camara", "despesas", ano=ano) as (db, n):
-        deputados = db.query(Parlamentar).filter_by(casa=CASA).all()
+        caminho = arquivo_local or http.baixar(COTAS_URL.format(ano=ano), os.path.join(tempfile.gettempdir(), f"cotas_{ano}.zip"))
+        with zipfile.ZipFile(caminho) as z:
+            nome = next(m for m in z.namelist() if m.lower().endswith(".csv"))
+            texto = z.read(nome).decode("utf-8-sig", errors="replace")
+        deputados = {d.id_externo: d for d in db.query(Parlamentar).filter_by(casa=CASA)}
         if apenas_ids:
-            deputados = [d for d in deputados if d.id_externo in apenas_ids]
-        for dep in deputados:
-            for d in paginar(f"/deputados/{dep.id_externo}/despesas", {"ano": ano, "itens": 100}):
-                id_ext = str(d.get("codDocumento") or hash_curto(
-                    d.get("numDocumento"), d.get("dataDocumento"), d.get("valorLiquido"), d.get("cnpjCpfFornecedor")))
-                upsert(db, Despesa, {"parlamentar_id": dep.id, "id_externo": id_ext}, {
-                    "ano": d.get("ano") or ano,
-                    "mes": d.get("mes"),
-                    "tipo": d.get("tipoDespesa"),
-                    "fornecedor": d.get("nomeFornecedor"),
-                    "cnpj_cpf": so_digitos(d.get("cnpjCpfFornecedor")),
-                    "valor": para_float(d.get("valorLiquido")) or 0.0,
-                    "url_documento": d.get("urlDocumento"),
-                })
-                n += 1
-            db.commit()
+            deputados = {k: v for k, v in deputados.items() if k in apenas_ids}
+        notas = {}
+        for l in ler_cotas(texto):
+            dep = deputados.get(l["nuDeputadoId"].strip())
+            if not dep:
+                continue
+            id_ext = (l.get("ideDocumento") or "").strip() or hash_curto(
+                l.get("txtNumero"), l.get("datEmissao"), l.get("vlrLiquido"), l.get("txtCNPJCPF"), l.get("numParcela"))
+            chave = (dep.id, id_ext[:80])
+            if chave in notas:  # parcelas e restituições repetem o documento: os valores se somam
+                notas[chave]["valor"] = round(notas[chave]["valor"] + (para_float(l.get("vlrLiquido")) or 0.0), 2)
+                continue
+            notas[chave] = {"parlamentar_id": dep.id, "id_externo": id_ext[:80], "ano": int(l.get("numAno") or ano),
+                           "mes": int(l["numMes"]) if (l.get("numMes") or "").strip().isdigit() else None,
+                           "tipo": (l.get("txtDescricao") or "")[:200] or None,
+                           "fornecedor": (l.get("txtFornecedor") or "")[:300] or None,
+                           "cnpj_cpf": so_digitos(l.get("txtCNPJCPF")) or None,
+                           "valor": para_float(l.get("vlrLiquido")) or 0.0,
+                           "url_documento": (l.get("urlDocumento") or "")[:500] or None}
+        linhas = list(notas.values())
+        ids = [d.id for d in deputados.values()]
+        db.execute(delete(Despesa).where(Despesa.ano == ano, Despesa.parlamentar_id.in_(ids or [0])))
+        for i in range(0, len(linhas), 5000):
+            db.bulk_insert_mappings(Despesa, linhas[i:i + 5000])
+        db.commit()
+        n += len(linhas)
     return n.itens
 
 

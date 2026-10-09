@@ -59,6 +59,32 @@ def falso(url, params=None, headers=None):
         return PNCP
     raise AssertionError(url)
 
+# Arquivo anual da cota (https://www.camara.leg.br/cotas/Ano-2026.csv.zip, conferido em 09/10/2026).
+# A 1ª linha é real (liderança, sem deputado); as outras seguem o mesmo formato com deputados de teste.
+COTAS_CABECALHO = ('"txNomeParlamentar";"cpf";"ideCadastro";"nuCarteiraParlamentar";"nuLegislatura";"sgUF";"sgPartido";'
+                   '"codLegislatura";"numSubCota";"txtDescricao";"numEspecificacaoSubCota";"txtDescricaoEspecificacao";'
+                   '"txtFornecedor";"txtCNPJCPF";"txtNumero";"indTipoDocumento";"datEmissao";"vlrDocumento";"vlrGlosa";'
+                   '"vlrLiquido";"numMes";"numAno";"numParcela";"txtPassageiro";"txtTrecho";"numLote";"numRessarcimento";'
+                   '"datPagamentoRestituicao";"vlrRestituicao";"nuDeputadoId";"ideDocumento";"urlDocumento"')
+COTAS_LINHAS = [
+    '"LID.GOV-CD";"";"";"";"2023";"NA";"";"57";"1";"MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR";"0";"";'
+    '"AMORETTO CAFES EXPRESSO LTDA";"085.324.290/0013-1";"2849";"0";"2026-01-08T00:00:00";"1467";"0";"1467";"1";"2026";'
+    '"0";"";"";"2205670";"";"";"";"2812";"8044688";"https://www.camara.leg.br/cota-parlamentar/documentos/publ/2812/2026/8044688.pdf"',
+]
+
+
+def cotas_zip(caminho, linhas):
+    import zipfile
+    with zipfile.ZipFile(caminho, "w") as z:
+        z.writestr("Ano-2026.csv", ("\ufeff" + COTAS_CABECALHO + "\n" + "\n".join(linhas) + "\n").encode("utf-8"))
+    return str(caminho)
+
+
+def linha_cota(nome, dep_id, doc, valor, mes="3", tipo="COMBUSTÍVEIS E LUBRIFICANTES.", fornecedor="POSTO X", cnpj="98.765.432/0001-10"):
+    return (f'"{nome}";"";"";"";"2023";"SP";"ABC";"57";"3";"{tipo}";"1";"";"{fornecedor}";"{cnpj}";"1";"0";'
+            f'"2026-0{mes}-10T00:00:00";"{valor}";"0";"{valor}";"{mes}";"2026";"0";"";"";"1";"";"";"";"{dep_id}";"{doc}";'
+            f'"https://www.camara.leg.br/cota-parlamentar/documentos/publ/{dep_id}/2026/{doc}.pdf"')
+
 
 def test_formatos_reais(monkeypatch):
     monkeypatch.setattr(http, "get_json", falso)
@@ -221,3 +247,58 @@ def test_terceira_rodada(monkeypatch):
                                Reg.titulo.in_(["Jales", "Franca"])).all()
     assert sorted(r.valor for r in mun) == [100.0, 200.0]
     db.close()
+
+
+def test_cota_camara_arquivo_anual(tmp_path):
+    """A cota vem do arquivo anual: liga pelo nuDeputadoId, ignora lideranças e soma parcelas do mesmo documento."""
+    from app.collectors import camara
+    from app.models import Despesa
+    with SessionLocal() as db:
+        for ide, nome in (("990001", "Deputada Cota"), ("990002", "Deputado Cota")):
+            if not db.query(Parlamentar).filter_by(casa="camara", id_externo=ide).first():
+                db.add(Parlamentar(casa="camara", id_externo=ide, nome=nome, uf="SP"))
+        db.commit()
+    arq = cotas_zip(tmp_path / "cotas.zip", COTAS_LINHAS + [
+        linha_cota("Deputada Cota", "990001", "77001", "250.5"),
+        linha_cota("Deputado Cota", "990002", "77002", "100", tipo="PASSAGEM AÉREA - SIGEPA"),
+        linha_cota("Deputado Cota", "990002", "77002", "-20", tipo="PASSAGEM AÉREA - SIGEPA"),
+    ])
+    assert camara.coletar_despesas(2026, apenas_ids=["990001", "990002"], arquivo_local=arq) == 2
+    assert camara.coletar_despesas(2026, apenas_ids=["990001", "990002"], arquivo_local=arq) == 2  # recarga sem duplicar
+    with SessionLocal() as db:
+        notas = {d.id_externo: d for d in db.query(Despesa).filter(Despesa.id_externo.in_(["77001", "77002"]))}
+    assert notas["77001"].valor == 250.5 and notas["77001"].cnpj_cpf == "98765432000110" and notas["77001"].mes == 3
+    assert notas["77002"].valor == 80.0
+
+
+def test_capag_planilha_com_linhas_de_resumo(tmp_path):
+    """Planilha real da CAPAG (posição set/2026): 2 linhas de resumo antes do cabeçalho."""
+    import openpyxl
+
+    from app.collectors import capag
+    from app.models import Municipio
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    for linha in [(None, None, "CAPAG Ano Base 2025", 70, 6, 7, 35, 37, 64, 67, None, None, "DCA Obrigatória", None),
+                  (None, None, "CAPAG Ano Base 2024", 95, 10, 11, 49, 50, 88, 89, None, None, True, None),
+                  ("Código Município Completo", "Nome_Município", "UF", "CAPAG", "Indicador 1", "Nota 1", "Indicador 2",
+                   "Nota 2", "Indicador 3", "Nota 3", "ICF", "Observação", "Origem da Nota Final", "Possui DCA 2025?"),
+                  (1100015, "Alta Floresta D'Oeste", "RO", "C", 0.0443, "A", 0.9716, "C", 0, "C", "Cicf", None,
+                   "CAPAG Ano Base 2025", "Sim"),
+                  (1100023, "Ariquemes", "RO", "B+", 0.1085, "A", 0.8822, "B", 0.0191, "B", "Aicf", None,
+                   "CAPAG Ano Base 2025", "Sim")]:
+        ws.append(linha)
+    arq = tmp_path / "capag.xlsx"
+    wb.save(arq)
+    with SessionLocal() as db:
+        for cod, nome in (("1100015", "Alta Floresta D'Oeste"), ("1100023", "Ariquemes")):
+            if not db.query(Municipio).filter_by(codigo_ibge=cod).first():
+                db.add(Municipio(codigo_ibge=cod, nome=nome, uf="RO"))
+        db.commit()
+    assert capag.coletar_capag(arquivo_local=str(arq), ano=2025) == 2
+    with SessionLocal() as db:
+        m = db.query(Municipio).filter_by(codigo_ibge="1100023").one()
+    assert m.capag == "B+" and m.capag_ano == 2025 and m.capag_detalhe.get("Nota 1") == "A"
+    with SessionLocal() as db:  # o banco de teste é compartilhado: não deixa estes municípios para os outros testes
+        db.query(Municipio).filter(Municipio.codigo_ibge.in_(["1100015", "1100023"])).delete()
+        db.commit()

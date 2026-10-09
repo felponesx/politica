@@ -46,8 +46,16 @@ def falso_get_json(url, params=None, headers=None):
     raise AssertionError(f"URL inesperada: {url}")
 
 
+def falso_baixar(url, destino):
+    from tests.test_formatos_reais import cotas_zip, linha_cota
+    assert "cotas/Ano-2026" in url
+    return cotas_zip(destino, [linha_cota("Fulana Silva", "1", "99", "250.5"),
+                               linha_cota("Beltrano Souza", "2", "100", "80", tipo="TELEFONIA")])
+
+
 def test_coleta_e_api(monkeypatch):
     monkeypatch.setattr(http, "get_json", falso_get_json)
+    monkeypatch.setattr(http, "baixar", falso_baixar)
     assert camara.coletar_deputados() == 2
     assert camara.coletar_votacoes(date(2026, 9, 1), date(2026, 9, 30)) == 1
     assert camara.coletar_despesas(2026) == 2

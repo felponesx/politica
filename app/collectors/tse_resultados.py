@@ -19,6 +19,8 @@ from app.utils import sem_acento
 
 URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_{ano}.zip"
 MAJORITARIOS = {"PRESIDENTE", "GOVERNADOR", "SENADOR", "PREFEITO"}
+CAMPOS = {"SQ_CANDIDATO", "NR_TURNO", "DS_CARGO", "QT_VOTOS_NOMINAIS_VALIDOS", "QT_VOTOS_NOMINAIS", "DS_SIT_TOT_TURNO",
+          "SG_UF", "NM_UE", "NR_CANDIDATO", "NM_URNA_CANDIDATO", "NM_CANDIDATO", "SG_PARTIDO", "CD_MUNICIPIO", "NM_MUNICIPIO"}
 
 
 def _int(v) -> int:
@@ -68,8 +70,11 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
                 nomes = [m for m in nomes if m.upper().endswith(f"_{uf.upper()}.CSV")]
             for nome in nomes:
                 with z.open(nome) as bruto:
-                    leitor = csv.DictReader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
-                    cand, mun = agregar(leitor)
+                    leitor = csv.reader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
+                    cab = next(leitor, [])
+                    pos = [(c, i) for i, c in enumerate(cab) if c in CAMPOS]
+                    # só as colunas usadas (o arquivo de 2022 tem dezenas de milhões de linhas e ~50 colunas)
+                    cand, mun = agregar({c: l[i] for c, i in pos} for l in leitor if len(l) >= len(cab))
                 ufs_arquivo = {c["uf"] for c in cand.values()}
                 # recarga idempotente: apaga o que havia daquele ano/UF e grava de novo
                 db.execute(delete(ResultadoEleicao).where(ResultadoEleicao.ano == ano,

@@ -12,10 +12,10 @@ import os
 import subprocess
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 
 LIMITE_TAREFA = int(os.environ.get("LIMITE_TAREFA_MIN", "45")) * 60
-ORCAMENTO = int(os.environ.get("ORCAMENTO_MIN", "270")) * 60
+ORCAMENTO = int(os.environ.get("ORCAMENTO_MIN", "300")) * 60
 
 
 def _arg(v):
@@ -26,15 +26,29 @@ def _arg(v):
     return str(v)
 
 
+# limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
+LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "cnpj-fornecedores": 25}
+# eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
+ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, "apenas_eleitos": "true"}),
+            ("tse-resultados", {"ano": 2024})]
+
+
 def comandos():
     pedidas = os.environ.get("TAREFAS", "").strip()
     if pedidas:
         return [linha.split() for linha in pedidas.split(";") if linha.strip()]
     from scripts.coletar import passos_iniciais
-    passos = passos_iniciais()
-    # as mais demoradas vão para o fim, para o resto não esperar por elas (a cota antes dos CNPJs, que dependem dela)
-    lentas = [p for nome in ("camara-despesas", "cnpj-fornecedores") for p in passos if p[0] == nome]
-    passos = [p for p in passos if p not in lentas] + lentas
+    hoje = date.today()
+    passos = []
+    for nome, kw in passos_iniciais():
+        if nome == "pncp-contratos":  # ~9.600 contratos por dia: no robô, só a última semana
+            kw = {**kw, "inicio": hoje - timedelta(days=int(os.environ.get("PNCP_DIAS", "7")))}
+        if nome == "cnpj-fornecedores":
+            kw = {**kw, "limite": int(os.environ.get("CNPJ_LIMITE", "150"))}
+        passos.append((nome, kw))
+    # os CNPJs dependem da cota e dos contratos; o resultado de 2022 (arquivo de ~580 MB) fica por último
+    cnpj = [p for p in passos if p[0] == "cnpj-fornecedores"]
+    passos = [p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + cnpj + [("tse-resultados", {"ano": 2022})]
     return [[nome, *(f"{k}={_arg(v)}" for k, v in kw.items())] for nome, kw in passos]
 
 
@@ -48,7 +62,8 @@ def coletar():
         ini = time.monotonic()
         print(f"::group::{' '.join(cmd)}", flush=True)
         try:
-            r = subprocess.run([sys.executable, "-m", "scripts.coletar", *cmd], timeout=min(LIMITE_TAREFA, resto))
+            limite = LIMITES.get(cmd[0], LIMITE_TAREFA // 60) * 60
+            r = subprocess.run([sys.executable, "-m", "scripts.coletar", *cmd], timeout=min(limite, resto))
             situacao = "ok" if r.returncode == 0 else f"saiu com código {r.returncode}"
         except subprocess.TimeoutExpired:
             situacao = "interrompida por tempo"
