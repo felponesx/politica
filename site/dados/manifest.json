@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-09T12:45+00:00",
+ "gerado_em": "2026-10-09T23:52+00:00",
  "shards": 128,
  "bases": {
   "/parlamentares": [
@@ -52,6 +52,14 @@
   ],
   "/dividas/devedores": [
    {}
+  ],
+  "/recuperacao-judicial": [
+   {
+    "tipo": "recuperacao_judicial"
+   },
+   {
+    "tipo": "falencia"
+   }
   ],
   "/parlamentares/1/despesas": [
    {}
@@ -1909,8 +1917,8 @@
    "no_banco": 1059
   },
   "/candidatos?cargo=GOVERNADOR&eleitos=true": {
-   "na_copia": 21,
-   "no_banco": 21
+   "na_copia": 27,
+   "no_banco": 27
   },
   "/candidatos?cargo=PREFEITO&eleitos=true": {
    "na_copia": 5563,
@@ -1931,6 +1939,14 @@
   "/dividas/devedores": {
    "na_copia": 0,
    "no_banco": 0
+  },
+  "/recuperacao-judicial?tipo=recuperacao_judicial": {
+   "na_copia": 7418,
+   "no_banco": 7418
+  },
+  "/recuperacao-judicial?tipo=falencia": {
+   "na_copia": 8000,
+   "no_banco": 13062
   },
   "/parlamentares/1/despesas": {
    "na_copia": 50,
@@ -4367,6 +4383,6 @@
   "proposicoes": 8068,
   "normas": 1047
  },
- "consultas": 17659,
- "bytes": 51941366
+ "consultas": 18575,
+ "bytes": 70133621
 }
