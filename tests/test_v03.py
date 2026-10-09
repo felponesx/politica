@@ -139,3 +139,26 @@ def test_exportar_csv():
     linhas = r.content.decode("utf-8-sig").splitlines()
     assert linhas[0].startswith("id;casa;") and len(linhas) >= 2
     assert cliente.get("/exportar/xyz.csv").status_code == 404
+
+
+def test_bcb_pagina_de_erro_e_coleta_parcial(monkeypatch):
+    """O SGS às vezes responde HTML no lugar do JSON: tenta de novo; série que não volta deixa a coleta 'parcial'."""
+    from app.collectors import bcb
+    from app.db import SessionLocal
+    from app.models import Coleta
+    chamadas = {"n": 0}
+
+    def falso(url, params=None, headers=None):
+        if "sgs.433/" in url:
+            chamadas["n"] += 1
+            if chamadas["n"] == 1:
+                raise ValueError("Expecting value: line 1 column 1 (char 0)")  # página HTML de erro
+            return [{"data": "01/08/2026", "valor": "0.2"}]
+        raise ValueError("Expecting value")  # a outra série nunca volta
+
+    monkeypatch.setattr(http, "get_json", falso)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    assert bcb.coletar_series(anos=1, nomes=["ipca_mes", "ipca_12m"]) >= 1
+    with SessionLocal() as db:
+        c = db.query(Coleta).filter_by(fonte="bcb").order_by(Coleta.id.desc()).first()
+    assert c.status == "parcial" and "ipca_12m" in c.erro and "página de erro" in c.erro

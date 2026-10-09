@@ -32,6 +32,20 @@ SERIES = {
 }
 
 
+def _baixar(codigo: int, ini: date, fim: date, tentativas: int = 4):
+    """A API do SGS às vezes responde HTTP 200 com uma página HTML de erro no lugar do JSON (visto em out/2026,
+    de forma intermitente e mais em consultas longas): nesse caso espera e tenta de novo."""
+    import time
+    for t in range(1, tentativas + 1):
+        try:
+            return http.get_json(URL.format(codigo=codigo), params={
+                "formato": "json", "dataInicial": f"{ini:%d/%m/%Y}", "dataFinal": f"{fim:%d/%m/%Y}"}) or []
+        except ValueError:
+            if t == tentativas:
+                raise RuntimeError("a API do Banco Central respondeu uma página de erro em vez dos dados") from None
+            time.sleep(5 * t)
+
+
 def coletar_series(anos: int = 10, nomes: list[str] | None = None):
     fim = date.today()
     with registrar_coleta("bcb", "series", anos=anos) as (db, n):
@@ -41,11 +55,10 @@ def coletar_series(anos: int = 10, nomes: list[str] | None = None):
                 continue
             try:
                 ini = fim - timedelta(days=365 * anos)
-                janela = timedelta(days=365 * 9)
+                janela = timedelta(days=365 * 3)  # consultas curtas falham bem menos
                 while ini <= fim:
                     f = min(ini + janela, fim)
-                    dados = http.get_json(URL.format(codigo=codigo), params={
-                        "formato": "json", "dataInicial": f"{ini:%d/%m/%Y}", "dataFinal": f"{f:%d/%m/%Y}"}) or []
+                    dados = _baixar(codigo, ini, f)
                     # séries diárias: guarda só o último valor de cada mês (suficiente para gráficos)
                     por_chave = {}
                     for d in dados:
@@ -66,4 +79,5 @@ def coletar_series(anos: int = 10, nomes: list[str] | None = None):
                 log.warning("Série %s (%s) falhou: %s", nome, codigo, e)
         if falhas and not n.itens:
             raise RuntimeError("; ".join(falhas))
+        n.avisos += falhas
     return n.itens

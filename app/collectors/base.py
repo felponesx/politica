@@ -11,6 +11,7 @@ log = logging.getLogger("brasilplus.coleta")
 class Contador:
     def __init__(self):
         self.itens = 0
+        self.avisos: list[str] = []  # falhas parciais: a coleta termina como "parcial" e o texto vai para o erro
 
     def __iadd__(self, n):
         self.itens += n
@@ -29,7 +30,9 @@ def registrar_coleta(fonte: str, tarefa: str, **parametros):
     try:
         yield db, cont
         db.commit()
-        coleta.status = "ok"
+        coleta.status = "parcial" if cont.avisos else "ok"
+        if cont.avisos:
+            coleta.erro = "; ".join(cont.avisos)[:4000]
     except Exception as e:
         db.rollback()
         coleta.status = "erro"

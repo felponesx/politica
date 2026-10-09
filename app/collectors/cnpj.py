@@ -61,14 +61,21 @@ def coletar_cnpj_fornecedores(limite: int = 300, dias: int = 90, minutos: int = 
         candidatos += [c for (c, _) in db.execute(
             select(Despesa.cnpj_cpf, func.sum(Despesa.valor)).where(func.length(Despesa.cnpj_cpf) == 14)
             .group_by(Despesa.cnpj_cpf).order_by(func.sum(Despesa.valor).desc()).limit(limite))]
-        feitos = 0
+        feitos, seguidas = 0, 0
         for cnpj in dict.fromkeys(candidatos):
             if feitos >= limite or time.monotonic() > fim:
+                break
+            if seguidas >= 8:  # BrasilAPI e reserva sem responder: o serviço está fora do ar
+                n.avisos.append(f"o cadastro de CNPJ (BrasilAPI e minhareceita.org) não respondeu a {seguidas} "
+                                "consultas seguidas; a coleta parou e tenta de novo na próxima vez")
                 break
             if cnpj in recentes:
                 continue
             if consultar(db, cnpj):
                 n += 1
+                seguidas = 0
+            else:
+                seguidas += 1
             feitos += 1
             db.commit()
             time.sleep(settings.cnpj_intervalo)

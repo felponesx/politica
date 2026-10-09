@@ -180,6 +180,7 @@ def coletar_assembleias(ufs: list[str] | None = None, inicio: date | None = None
                 log.warning("Assembleia %s falhou: %s", uf, e)
         if falhas and not n.itens:
             raise RuntimeError("; ".join(falhas))
+        n.avisos += falhas
     return n.itens
 
 
