@@ -2711,10 +2711,10 @@ function demoComAviso(fn,args,msg){const r=fn(...args);$("#view").innerHTML=`<di
 function maisBtn(id){return`<div style="text-align:center;margin-top:12px"><button class="btn" id="${id}" type="button" hidden>Carregar mais</button></div>`}
 /* lista paginada genérica */
 function listaPaginada({url,alvo,mais,render,vazio,limite=50,aoCarregar}){let off=0,tot=0,itens=[];
- const pg=async(reset)=>{if(reset){off=0;itens=[];$(alvo).innerHTML=rload()}
-  try{const sep=url().includes("?")?"&":"?";const r=await apiGet(url()+sep+"limit="+limite+"&offset="+off);tot=r.total;itens=itens.concat(r.itens);off+=r.itens.length;
+ const pg=async(reset)=>{if(!$(alvo))return;if(reset){off=0;itens=[];$(alvo).innerHTML=rload()}
+  try{const sep=url().includes("?")?"&":"?";const r=await apiGet(url()+sep+"limit="+limite+"&offset="+off);if(!$(alvo))return;tot=r.total;itens=itens.concat(r.itens);off+=r.itens.length;
    $(alvo).innerHTML=itens.length?render(itens,tot):rvazio(vazio);rowLinks();const b=$(mais);if(b)b.hidden=off>=tot;aoCarregar&&aoCarregar(itens,tot)}
-  catch(e){$(alvo).innerHTML=rerro(e)}};
+  catch(e){const el=$(alvo);if(el)el.innerHTML=rerro(e)}};
  const b=$(mais);if(b)b.onclick=()=>pg(false);return pg}
 const debounce=(f,ms=350)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}};
 
