@@ -2288,7 +2288,7 @@ ${n.relac.length?`<div class="small muted" style="margin:14px 0 6px">Normas rela
 P.relatorios=()=>{const ds=[["Despesas por órgão e função","Gastos públicos","Mensal","05/10/2026"],["Contratos publicados","Contratos","Diária","06/10/2026"],["Cadastro nacional de obras","Obras","Semanal","01/10/2026"],["Proposições e tramitação","Projetos","Diária","06/10/2026"],["Votações nominais","Votações","Diária","06/10/2026"],["Fornecedores com contrato","Empresas","Mensal","30/09/2026"]];
 return{html:`<div class="ph"><div><h1>Relatórios e dados</h1><p>Tabelas completas para baixar, cruzar e verificar. Cada conjunto indica de onde veio e quando foi atualizado.</p></div></div>
 <div class="panel">${table([["Conjunto de dados",r=>`<b style="font-weight:600">${r[0]}</b><div class="small muted">${r[1]}</div>`],["Atualização",r=>r[2]],["Última carga",r=>r[3]],["Exportar",r=>`<div style="display:flex;gap:6px"><button class="btn" data-exp>CSV</button><button class="btn" data-exp>JSON</button><a class="btn" href="#/fontes">Fonte</a></div>`]],ds)}${SRC}</div>`,
-mount(){document.querySelectorAll("[data-exp]").forEach(b=>b.onclick=()=>toast("A exportação será liberada quando as fontes oficiais estiverem conectadas."))}}};
+mount(){document.querySelectorAll("[data-exp]").forEach(b=>b.onclick=()=>toast(API.snap?"Os arquivos CSV saem do servidor BRASIL+. Abra o site por ele para baixar.":"A exportação será liberada quando as fontes oficiais estiverem conectadas."))}}};
 
 P.fontes=()=>({html:`<div class="ph"><div><h1>Fontes e metodologia</h1><p>De onde vem cada número, quando foi atualizado e o que ele não mostra.</p></div></div>
 <div class="panel" style="border-color:var(--p3);background:color-mix(in srgb,var(--p3) 14%,var(--surface))"><b style="font-weight:600">Esta é uma versão de demonstração.</b> Todos os nomes de pessoas, partidos, empresas, contratos e valores exibidos são fictícios ou ilustrativos e servem apenas para mostrar a estrutura da plataforma. Populações estaduais aproximadas ao Censo 2022.</div>
@@ -2680,16 +2680,58 @@ function nomesMinistros(){return`<div class="small muted pn-t">Quem ocupa cada p
 const API={base:null,on:false,checado:false,erro:""};
 const lerApiSalva=()=>{try{return localStorage.getItem("bm-api")||""}catch(e){return""}};
 const salvarApi=v=>{try{v?localStorage.setItem("bm-api",v):localStorage.removeItem("bm-api")}catch(e){}};
-async function apiGet(p,{timeout=9000}={}){const c=new AbortController();const t=setTimeout(()=>c.abort(),timeout);
+async function apiGet(p,{timeout=9000}={}){if(API.snap)return snapGet(p);const c=new AbortController();const t=setTimeout(()=>c.abort(),timeout);
  try{const r=await fetch(API.base+p,{signal:c.signal,headers:{Accept:"application/json"}});
   if(!r.ok){let m="";try{m=(await r.json()).detail||""}catch(e){}const er=new Error(m||("Erro "+r.status));er.status=r.status;throw er}
   if(!(r.headers.get("content-type")||"").includes("json"))throw new Error("O endereço não respondeu como a API do BRASIL+.");
   return await r.json()}finally{clearTimeout(t)}}
-async function detectarAPI(){API.on=false;API.erro="";const cand=[];const s=lerApiSalva();if(s&&s!=="demo")cand.push(s.replace(/\/+$/,""));
+/* ---------- cópia estática dos dados oficiais (dados/*.json, gerada por scripts/exportar_snapshot.py) ----------
+   Sem servidor, o site lê a cópia publicada ao lado da página. Cada resposta da API fica guardada pela consulta
+   (caminho + parâmetros em ordem alfabética), em arquivos escolhidos pelo hash FNV-1a da consulta. As listas vêm
+   completas (até um teto) e os filtros e a paginação são aplicados aqui, com as mesmas regras da API. */
+const SNAP={m:null,cache:{}};
+const snapChave=(cam,ps)=>{const k=Object.keys(ps).filter(x=>ps[x]!=="").sort();return cam+(k.length?"?"+k.map(x=>x+"="+ps[x]).join("&"):"")};
+function snapHash(s){let h=0x811c9dc5;for(const ch of s){h^=ch.codePointAt(0);h=Math.imul(h,0x01000193)>>>0}return h}
+async function snapLer(k){const n=snapHash(k)%SNAP.m.shards;
+ if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
+ return(await SNAP.cache[n])[k]}
+const snapNorm=t=>String(t??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+/* filtros das listas: "=campo" compara sem diferenciar maiúsculas; "~campo1,campo2" procura o texto em qualquer um */
+const SNAP_FILTROS={"/parlamentares":{casa:"=casa",uf:"=uf",partido:"=partido",q:"~nome"},"/votacoes":{casa:"=casa",q:"~descricao,materia"},
+ "/proposicoes":{casa:"=casa",ano:"=ano",tipo:"=sigla_tipo",q:"~ementa"},"/legislacao":{tipo:"=tipo",ano:"=ano",esfera:"=esfera",uf:"=uf",q:"~ementa,numero"},
+ "/contratos":{uf:"=uf",ano:"=ano",esfera:"=esfera",municipio:"=municipio"},"/obras":{uf:"=uf",situacao:"=situacao",tipo:"~tipo"},
+ "/candidatos":{uf:"=uf",partido:"=partido",q:"~nome,nome_urna"},"/municipios":{uf:"=uf",q:"~nome",capag:"=capag"},
+ "/empresas":{setor:"=setor",uf:"=uf",q:"~razao_social"},"/dividas/devedores":{uf:"=uf",q:"~nome,cnpj"},despesas:{ano:"=ano"}};
+const snapFalta=(o="Esta consulta")=>Object.assign(new Error(`${o} não faz parte da cópia dos dados oficiais publicada com o site. Para consultar tudo, abra o site pelo servidor BRASIL+`),{status:404});
+async function snapGet(p){const u=new URL(p,"https://copia.local");const cam=decodeURIComponent(u.pathname);const ps={};u.searchParams.forEach((v,k)=>{if(v!=="")ps[k]=v});
+ if(cam==="/busca")return snapBusca(ps);
+ let v=await snapLer(snapChave(cam,ps));
+ if(v===undefined||(v&&v.__completa)){const resto={...ps};delete resto.limit;delete resto.offset;let base=null;
+  for(const b of(SNAP.m.bases||{})[cam]||[])if(Object.entries(b).every(([k,x])=>resto[k]===String(x))&&(!base||Object.keys(b).length>Object.keys(base).length))base=b;
+  if(!base)throw snapFalta();
+  const spec=SNAP_FILTROS[cam]||(/^\/parlamentares\/\d+\/despesas$/.test(cam)?SNAP_FILTROS.despesas:{});const filtros=Object.entries(resto).filter(([k])=>!(k in base));
+  if(filtros.some(([k])=>!spec[k]))throw snapFalta("Este filtro");
+  v=await snapLer(snapChave(cam,base));if(v===undefined)throw snapFalta();
+  if(v.__status){const e=new Error(v.detail||("Erro "+v.__status));e.status=v.__status;throw e}
+  let it=v.itens||[];
+  for(const[k,x]of filtros){const op=spec[k][0],campos=spec[k].slice(1).split(","),alvo=op==="~"?snapNorm(x):String(x).toLowerCase();
+   it=it.filter(o=>campos.some(c=>op==="~"?snapNorm(o[c]).includes(alvo):String(o[c]??"").toLowerCase()===alvo))}
+  const lim=+ps.limit||50,off=+ps.offset||0;const{itens,__completa,...meta}=v;return{...meta,total:it.length,itens:it.slice(off,off+lim)}}
+ if(v&&v.__status){const e=new Error(v.detail||("Erro "+v.__status));e.status=v.__status;throw e}
+ return v}
+async function snapBusca(ps){const idx=await snapLer("/busca#indice")||{};const termos=snapNorm(ps.q||"").split(/\s+/).filter(Boolean);const lim=+ps.limite||8;const res={};
+ const tipos=ps.tipos?ps.tipos.split(","):Object.keys(idx);
+ for(const t of tipos){const linhas=idx[t]||[];const ach=[];for(const l of linhas){if(l[4]===undefined)l[4]=snapNorm(l[1]+" "+l[2]+" "+l[3]);if(termos.every(x=>l[4].includes(x))){ach.push({id:l[0],titulo:l[1],subtitulo:l[2]});if(ach.length>=lim)break}}
+  if(ach.length)res[t]=ach}
+ return{q:ps.q,resultados:res}}
+const dataCopia=()=>SNAP.m&&SNAP.m.gerado_em?new Date(SNAP.m.gerado_em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"";
+async function detectarAPI(){API.on=false;API.snap=false;API.erro="";const cand=[];const s=lerApiSalva();if(s&&s!=="demo")cand.push(s.replace(/\/+$/,""));
  if(s!=="demo"&&/^https?:$/.test(location.protocol)&&!/claude\.ai|claudeusercontent/.test(location.hostname))cand.push("");
  for(const b of cand){API.base=b;try{const r=await apiGet("/saude",{timeout:3000});if(r&&r.status==="ok"){API.on=true;break}}catch(e){API.erro=e.name==="AbortError"?"O servidor não respondeu a tempo.":e.message}}
+ if(!API.on&&s!=="demo"&&/^https?:$/.test(location.protocol)){try{const r=await fetch("dados/manifest.json",{headers:{Accept:"application/json"}});
+  if(r.ok){const m=await r.json();if(m&&m.versao&&m.shards){SNAP.m=m;SNAP.cache={};API.on=true;API.snap=true;API.base=""}}}catch(e){}}
  if(!API.on)API.base=null;API.checado=true;document.documentElement.classList.toggle("api-on",API.on);
- const b=$("#apiPill");if(b){b.hidden=false;b.classList.toggle("on",API.on);b.title=API.on?"Dados oficiais do servidor BRASIL+":"Dados de demonstração";b.querySelector("span").textContent=API.on?"Dados oficiais":"Demonstração"}}
+ const b=$("#apiPill");if(b){b.hidden=false;b.classList.toggle("on",API.on);b.title=API.snap?"Cópia dos dados oficiais de "+dataCopia():API.on?"Dados oficiais do servidor BRASIL+":"Dados de demonstração";b.querySelector("span").textContent=API.on?"Dados oficiais":"Demonstração"}}
 
 /* utilidades */
 const RSRC=(f)=>`<div class="src">Fonte: ${f}. Dados coletados pelo servidor BRASIL+. <a href="#/fontes">Ver coletas e metodologia</a></div>`;
@@ -2933,7 +2975,8 @@ return{html:`<div class="panel" style="margin-bottom:18px" id="srvPanel"><h2>Ser
 <form class="filters" id="srvForm" style="margin:0"><input id="srvUrl" placeholder="https://api.seudominio.com.br" style="flex:1;min-width:200px" autocomplete="off" value="${esc(lerApiSalva().replace(/^demo$/,""))}"><button class="btn pri" type="submit">Conectar</button><button class="btn" type="button" id="srvLimpar">Usar demonstração</button></form>
 <div id="srvSt" class="mt small"></div><div id="srvCol" class="mt"></div></div>`+r.html,
 mount(){r.mount&&r.mount();
- const st=()=>{$("#srvSt").innerHTML=API.on?`<span class="rdot on"></span> Conectado${API.base?" a <b>"+esc(API.base)+"</b>":" ao servidor que abriu esta página"}. As telas usam dados oficiais.`:`<span class="rdot"></span> Sem servidor conectado. As telas mostram a demonstração.${API.erro?" ("+esc(API.erro)+")":""}`;
+ const tetos=()=>Object.entries(SNAP.m.totais||{}).filter(([k,t])=>t.no_banco>t.na_copia&&!/despesas/.test(k)).map(([k,t])=>`${esc(k.split("?")[0].slice(1))} (${nf(t.na_copia)} de ${nf(t.no_banco)})`).join(", ");
+ const st=()=>{$("#srvSt").innerHTML=API.snap?`<span class="rdot on"></span> Usando a cópia dos dados oficiais gerada em <b>${esc(dataCopia())}</b> pelo robô de coleta (GitHub Actions). As telas usam dados oficiais; filtros que não cabem na cópia avisam e pedem o servidor.${tetos()?" Listas com os itens mais recentes ou de maior valor: "+tetos()+".":""}`:API.on?`<span class="rdot on"></span> Conectado${API.base?" a <b>"+esc(API.base)+"</b>":" ao servidor que abriu esta página"}. As telas usam dados oficiais.`:`<span class="rdot"></span> Sem servidor conectado. As telas mostram a demonstração.${API.erro?" ("+esc(API.erro)+")":""}`;
   if(API.on)apiGet("/coletas?limit=30").then(c=>{$("#srvCol").innerHTML=c.length?`<h3 style="font-size:15px;margin:0 0 6px">Últimas coletas</h3>`+table([["Fonte",x=>esc(x.fonte)],["Tarefa",x=>esc(x.tarefa)],["Início",x=>x.inicio?new Date(x.inicio).toLocaleString("pt-BR"):"—"],["Situação",x=>`<span class="tag" style="background:${x.status==="ok"?"var(--p2)":x.status==="erro"?"var(--p6)":"var(--p3)"}">${esc(x.status)}</span>${x.erro?`<div class="small muted rclamp">${esc(x.erro)}</div>`:""}`],["Itens",x=>nf(x.itens),"n"]],c):rvazio("Nenhuma coleta registrada. Rode python -m scripts.coletar inicial no servidor.")}).catch(e=>{$("#srvCol").innerHTML=rerro(e)});else $("#srvCol").innerHTML=""};
  st();$("#srvForm").onsubmit=async e=>{e.preventDefault();const v=$("#srvUrl").value.trim().replace(/\/+$/,"");if(v&&!/^https?:\/\//.test(v)){$("#srvSt").innerHTML=`<span class="rdot"></span> Use um endereço começando com http:// ou https://.`;return}salvarApi(v);$("#srvSt").innerHTML=rload("Testando a conexão…");await detectarAPI();st()};
  $("#srvLimpar").onclick=async()=>{salvarApi("demo");$("#srvUrl").value="";await detectarAPI();st()}}}};
@@ -3239,7 +3282,7 @@ mount(){$("#cpA").value=A;$("#cpB").value=B;
 
 /* Relatórios e Dados: exportação em CSV */
 const _rel=P.relatorios;
-P.relatorios=(...a)=>API.on?{html:`<div class="ph"><div><h1>Relatórios e Dados</h1><p>Baixe as bases do BRASIL+ em CSV, prontas para abrir no Excel ou no Google Planilhas.</p></div></div>
+P.relatorios=(...a)=>API.on&&!API.snap?{html:`<div class="ph"><div><h1>Relatórios e Dados</h1><p>Baixe as bases do BRASIL+ em CSV, prontas para abrir no Excel ou no Google Planilhas.</p></div></div>
 <div class="panel"><div class="filters">${UFSel("exuf")}<select id="exano" data-titulo="Ano"><option value="">Todos os anos</option>${Array.from({length:8},(_,i)=>new Date().getFullYear()-i).map(x=>`<option>${x}</option>`).join("")}</select></div><div id="exl">${rload()}</div>
 <p class="small muted" style="margin:10px 0 0">Separador ponto e vírgula, acentos em UTF-8. Cada arquivo traz até 200 mil linhas; use os filtros de estado e ano para recortar.</p>${RSRC("bases oficiais coletadas")}</div>`,
 mount(){let lista=[];const des=()=>{const uf=$("#exuf").value,ano=$("#exano").value;$("#exl").innerHTML=table([["Base",c=>`<b style="font-weight:500">${esc(c.descricao)}</b>`],["Linhas",c=>nf(c.linhas),"n"],["Arquivo",c=>c.linhas?`<a class="btn" href="${esc(API.base+c.csv+qs({uf,ano}))}" download>Baixar CSV</a>`:'<span class="small muted">sem dados</span>']],lista)};
