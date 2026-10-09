@@ -1,0 +1,85 @@
+"""Resultados das eleições — TSE, arquivo "Votação nominal por município e zona".
+URL: https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_{ano}.zip
+(um CSV por UF, latin-1, separador ';'). Cada linha = candidato × município × zona × turno.
+
+Aqui agregamos em memória: total por candidato/turno e, para cargos majoritários, total por município.
+"""
+import csv
+import io
+import os
+import tempfile
+from collections import defaultdict
+
+from sqlalchemy import delete
+
+from app import http
+from app.collectors.base import registrar_coleta
+from app.models import ResultadoEleicao, VotoMunicipio
+from app.utils import sem_acento
+
+URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_{ano}.zip"
+MAJORITARIOS = {"PRESIDENTE", "GOVERNADOR", "SENADOR", "PREFEITO"}
+
+
+def _int(v) -> int:
+    try:
+        return int(str(v).strip() or 0)
+    except ValueError:
+        return 0
+
+
+def agregar(linhas):
+    """Recebe dicts do CSV e devolve (candidatos, municipios)."""
+    cand = {}
+    mun = defaultdict(int)
+    for l in linhas:
+        sq = l.get("SQ_CANDIDATO")
+        if not sq:
+            continue
+        turno = _int(l.get("NR_TURNO")) or 1
+        cargo = sem_acento(l.get("DS_CARGO") or "")
+        votos = _int(l.get("QT_VOTOS_NOMINAIS_VALIDOS") or l.get("QT_VOTOS_NOMINAIS"))
+        chave = (turno, sq)
+        if chave not in cand:
+            situacao = (l.get("DS_SIT_TOT_TURNO") or "").strip()
+            cand[chave] = {
+                "turno": turno, "sq_candidato": sq, "uf": (l.get("SG_UF") or "")[:2],
+                "unidade": l.get("NM_UE"), "cargo": cargo, "numero": l.get("NR_CANDIDATO"),
+                "nome": l.get("NM_URNA_CANDIDATO") or l.get("NM_CANDIDATO") or "",
+                "partido": l.get("SG_PARTIDO"), "situacao": situacao,
+                "eleito": sem_acento(situacao).startswith("ELEITO"), "votos": 0,
+            }
+        cand[chave]["votos"] += votos
+        if cargo in MAJORITARIOS:
+            mun[(turno, sq, l.get("CD_MUNICIPIO"), l.get("NM_MUNICIPIO"), cargo, (l.get("SG_UF") or "")[:2])] += votos
+    return cand, mun
+
+
+def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | None = None):
+    with registrar_coleta("tse", "resultados", ano=ano, uf=uf or "todas") as (db, n):
+        import zipfile
+        caminho = arquivo_local or http.baixar(URL.format(ano=ano),
+                                               os.path.join(tempfile.gettempdir(), f"munzona_{ano}.zip"))
+        with zipfile.ZipFile(caminho) as z:
+            nomes = [m for m in z.namelist() if m.lower().endswith(".csv")]
+            # o arquivo _BRASIL repete os dados das UFs; usamos só os por UF (e o _BR/_ZZ do exterior, se houver)
+            nomes = [m for m in nomes if "brasil" not in m.lower()]
+            if uf:
+                nomes = [m for m in nomes if m.upper().endswith(f"_{uf.upper()}.CSV")]
+            for nome in nomes:
+                with z.open(nome) as bruto:
+                    leitor = csv.DictReader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
+                    cand, mun = agregar(leitor)
+                ufs_arquivo = {c["uf"] for c in cand.values()}
+                # recarga idempotente: apaga o que havia daquele ano/UF e grava de novo
+                db.execute(delete(ResultadoEleicao).where(ResultadoEleicao.ano == ano,
+                                                          ResultadoEleicao.uf.in_(ufs_arquivo)))
+                db.execute(delete(VotoMunicipio).where(VotoMunicipio.ano == ano, VotoMunicipio.uf.in_(ufs_arquivo)))
+                db.bulk_insert_mappings(ResultadoEleicao, [{"ano": ano, **c} for c in cand.values()])
+                db.bulk_insert_mappings(VotoMunicipio, [
+                    {"ano": ano, "turno": t, "sq_candidato": sq, "cd_municipio": str(cd), "municipio": nm,
+                     "cargo": cargo, "uf": u, "votos": v}
+                    for (t, sq, cd, nm, cargo, u), v in mun.items()])
+                db.commit()
+                n += len(cand)
+    return n.itens

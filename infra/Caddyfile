@@ -1,0 +1,11 @@
+{$DOMINIO} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+	# as coletas só são disparadas pelo agendador, nunca pela internet
+	@coletas method POST
+	respond @coletas "Método não permitido" 405
+	reverse_proxy api:8000
+}
