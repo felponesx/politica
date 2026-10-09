@@ -107,34 +107,48 @@ def dav(nome, url, auth=None, n=4000):
         return []
 
 
-def main():
-    tse = "https://cdn.tse.jus.br/estatistica/sead/odsele/"
-    zip_remoto("tse cand 2026", tse + "consulta_cand/consulta_cand_2026.zip", mostrar=("_BRASIL", "_SP"), linhas=3)
-    zip_remoto("tse munzona 2026", tse + "votacao_candidato_munzona/votacao_candidato_munzona_2026.zip",
-               mostrar=("_BR.", "_SP."), linhas=4)
-    zip_remoto("tse munzona 2022", tse + "votacao_candidato_munzona/votacao_candidato_munzona_2022.zip",
-               mostrar=("_BR.",), linhas=4)
+def amostra_webdav(nome, url, auth, mb=6, procurar=None):
+    """Começo de um zip grande do WebDAV: primeiras linhas e, se pedido, linhas que contêm `procurar`."""
+    import struct
+    import zlib
+    t = time.monotonic()
+    try:
+        r = cli.get(url, auth=auth, headers={"Range": f"bytes=0-{mb * 1024 * 1024}"})
+        buf = r.content
+        print(f"\n=== {nome}: HTTP {r.status_code} | {len(buf)} bytes em {time.monotonic() - t:.1f}s "
+              f"({len(buf) / 1e6 / max(time.monotonic() - t, 0.01):.1f} MB/s)", flush=True)
+        nl, el = struct.unpack("<HH", buf[26:30])
+        print("  arquivo:", buf[30:30 + nl].decode("latin-1"), flush=True)
+        txt = zlib.decompressobj(-15).decompress(buf[30 + nl + el:]).decode("latin-1")
+        linhas = txt.splitlines()[:-1]
+        print(f"  {len(linhas)} linhas descomprimidas", flush=True)
+        for l in linhas[:3]:
+            print("   ", l[:400], flush=True)
+        if procurar:
+            achou = [l for l in linhas if not l.endswith(';"";""')]
+            print(f"  linhas com situação especial: {len(achou)}", flush=True)
+            for l in achou[:12]:
+                print("   ", l[:400], flush=True)
+    except Exception as e:
+        print(f"  ERRO {type(e).__name__}: {e}", flush=True)
 
-    # Receita: o CNPJ agora fica num compartilhamento Nextcloud (SERPRO+)
+
+def main():
     token = "YggdBLfdninEJX9"
-    base = "https://arquivos.receitafederal.gov.br/public.php/webdav/"
-    itens = dav("receita cnpj raiz", base, auth=(token, ""))
-    import re
-    meses = sorted({m for i in itens for m in re.findall(r"(\d{4}-\d{2})/?$", i)})
-    print("pastas:", meses[-6:], flush=True)
-    if meses:
-        m = meses[-1]
-        dav("receita cnpj mes", base + m + "/", auth=(token, ""))
-        for arq in ("Estabelecimentos0.zip", "Empresas0.zip"):
-            url = f"https://arquivos.receitafederal.gov.br/index.php/s/{token}/download?path=%2F{m}&files={arq}"
-            ver(f"receita head {arq}", url, metodo="HEAD")
-            inicio_zip(f"receita {arq}", url, mb=3)
-            url2 = base + m + "/" + arq
-            try:
-                r = cli.head(url2, auth=(token, ""))
-                print("  webdav", arq, r.status_code, r.headers.get("content-length"), flush=True)
-            except Exception as e:
-                print("  webdav erro", e)
+    base = "https://arquivos.receitafederal.gov.br/public.php/webdav/2026-09/"
+    amostra_webdav("estabelecimentos0", base + "Estabelecimentos0.zip", (token, ""), mb=8, procurar=True)
+    amostra_webdav("estabelecimentos5", base + "Estabelecimentos5.zip", (token, ""), mb=8, procurar=True)
+    amostra_webdav("empresas0", base + "Empresas0.zip", (token, ""), mb=1)
+    amostra_webdav("municipios", base + "Municipios.zip", (token, ""), mb=1)
+    amostra_webdav("cnaes", base + "Cnaes.zip", (token, ""), mb=1)
+    # velocidade de download de um arquivo inteiro (Empresas9 costuma ser o menor)
+    t = time.monotonic()
+    try:
+        with cli.stream("GET", base + "Empresas9.zip", auth=(token, "")) as r:
+            tam = sum(len(b) for b in r.iter_bytes(1 << 20))
+        print(f"\nEmpresas9.zip inteiro: {tam / 1e6:.0f} MB em {time.monotonic() - t:.0f}s", flush=True)
+    except Exception as e:
+        print("download inteiro: ERRO", e, flush=True)
 
 
 if __name__ == "__main__":
