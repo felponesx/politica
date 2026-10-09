@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-09T06:47+00:00",
+ "gerado_em": "2026-10-09T09:34+00:00",
  "shards": 128,
  "bases": {
   "/parlamentares": [
@@ -614,7 +614,7 @@
   "/parlamentares/165/despesas": [
    {}
   ],
-  "/parlamentares/602/despesas": [
+  "/parlamentares/603/despesas": [
    {}
   ],
   "/parlamentares/535/despesas": [
@@ -857,7 +857,7 @@
   "/parlamentares/234/despesas": [
    {}
   ],
-  "/parlamentares/603/despesas": [
+  "/parlamentares/604/despesas": [
    {}
   ],
   "/parlamentares/235/despesas": [
@@ -1079,7 +1079,7 @@
   "/parlamentares/292/despesas": [
    {}
   ],
-  "/parlamentares/604/despesas": [
+  "/parlamentares/605/despesas": [
    {}
   ],
   "/parlamentares/293/despesas": [
@@ -1100,7 +1100,7 @@
   "/parlamentares/298/despesas": [
    {}
   ],
-  "/parlamentares/606/despesas": [
+  "/parlamentares/607/despesas": [
    {}
   ],
   "/parlamentares/558/despesas": [
@@ -1601,7 +1601,7 @@
   "/parlamentares/443/despesas": [
    {}
   ],
-  "/parlamentares/605/despesas": [
+  "/parlamentares/606/despesas": [
    {}
   ],
   "/parlamentares/444/despesas": [
@@ -1635,6 +1635,9 @@
    {}
   ],
   "/parlamentares/451/despesas": [
+   {}
+  ],
+  "/parlamentares/602/despesas": [
    {}
   ],
   "/parlamentares/452/despesas": [
@@ -1877,12 +1880,12 @@
  },
  "totais": {
   "/parlamentares": {
-   "na_copia": 700,
-   "no_banco": 700
+   "na_copia": 778,
+   "no_banco": 778
   },
   "/votacoes": {
-   "na_copia": 182,
-   "no_banco": 182
+   "na_copia": 1086,
+   "no_banco": 1086
   },
   "/proposicoes": {
    "na_copia": 4000,
@@ -1893,32 +1896,32 @@
    "no_banco": 1047
   },
   "/contratos?ordenar=valor": {
-   "na_copia": 0,
-   "no_banco": 0
+   "na_copia": 3000,
+   "no_banco": 41489
   },
   "/contratos?ordenar=data": {
-   "na_copia": 0,
-   "no_banco": 0
+   "na_copia": 3000,
+   "no_banco": 41489
   },
   "/obras": {
    "na_copia": 2700,
    "no_banco": 2700
   },
   "/candidatos?cargo=DEPUTADO ESTADUAL,DEPUTADO DISTRITAL&eleitos=true": {
-   "na_copia": 0,
-   "no_banco": 0
+   "na_copia": 1059,
+   "no_banco": 1059
   },
   "/candidatos?cargo=GOVERNADOR&eleitos=true": {
-   "na_copia": 0,
-   "no_banco": 0
+   "na_copia": 21,
+   "no_banco": 21
   },
   "/candidatos?cargo=PREFEITO&eleitos=true": {
-   "na_copia": 0,
-   "no_banco": 0
+   "na_copia": 5563,
+   "no_banco": 5563
   },
   "/candidatos?cargo=PRESIDENTE&eleitos=true": {
-   "na_copia": 0,
-   "no_banco": 0
+   "na_copia": 1,
+   "no_banco": 1
   },
   "/municipios": {
    "na_copia": 5571,
@@ -1929,8 +1932,8 @@
    "no_banco": 5571
   },
   "/empresas": {
-   "na_copia": 4,
-   "no_banco": 4
+   "na_copia": 1,
+   "no_banco": 1
   },
   "/dividas/devedores": {
    "na_copia": 0,
@@ -2680,7 +2683,7 @@
    "na_copia": 0,
    "no_banco": 0
   },
-  "/parlamentares/602/despesas": {
+  "/parlamentares/603/despesas": {
    "na_copia": 33,
    "no_banco": 33
   },
@@ -3004,7 +3007,7 @@
    "na_copia": 0,
    "no_banco": 0
   },
-  "/parlamentares/603/despesas": {
+  "/parlamentares/604/despesas": {
    "na_copia": 140,
    "no_banco": 140
   },
@@ -3300,7 +3303,7 @@
    "na_copia": 0,
    "no_banco": 0
   },
-  "/parlamentares/604/despesas": {
+  "/parlamentares/605/despesas": {
    "na_copia": 192,
    "no_banco": 192
   },
@@ -3328,7 +3331,7 @@
    "na_copia": 0,
    "no_banco": 0
   },
-  "/parlamentares/606/despesas": {
+  "/parlamentares/607/despesas": {
    "na_copia": 6,
    "no_banco": 6
   },
@@ -3996,7 +3999,7 @@
    "na_copia": 0,
    "no_banco": 0
   },
-  "/parlamentares/605/despesas": {
+  "/parlamentares/606/despesas": {
    "na_copia": 263,
    "no_banco": 263
   },
@@ -4041,6 +4044,10 @@
    "no_banco": 0
   },
   "/parlamentares/451/despesas": {
+   "na_copia": 0,
+   "no_banco": 0
+  },
+  "/parlamentares/602/despesas": {
    "na_copia": 0,
    "no_banco": 0
   },
@@ -4362,11 +4369,11 @@
   }
  },
  "contagem": {
-  "parlamentares": 700,
-  "votacoes": 182,
+  "parlamentares": 778,
+  "votacoes": 1086,
   "proposicoes": 8068,
   "normas": 1047
  },
- "consultas": 13846,
- "bytes": 26360341
+ "consultas": 17658,
+ "bytes": 50709442
 }
