@@ -117,6 +117,21 @@ Liste tudo com `python -m scripts.coletar --help`. Cada execução fica registra
   `--listar` mostra a agenda. Falhou 3 vezes seguidas → alerta no Telegram/webhook configurado no `.env`.
 - Deploy com HTTPS, usuário de banco só leitura e backup diário: veja **DEPLOY.md**.
 
+## Site sem servidor: robô de coleta no GitHub e cópia dos dados
+Para o site mostrar dados oficiais sem um servidor no ar (link publicado, GitHub Pages ou qualquer hospedagem
+estática), o repositório tem um robô no GitHub Actions:
+- **Coletar dados oficiais** (`.github/workflows/coletar-dados.yml`): sobe um Postgres, roda a carga inicial e as
+  eleições (`scripts/coleta_ci.py`, cada tarefa com limite de tempo), mostra o resumo das coletas e grava em
+  `site/dados/` uma cópia estática da API (`scripts/exportar_snapshot.py`). Rode pela aba **Actions > Coletar dados
+  oficiais > Run workflow**; o campo "tarefas" aceita uma lista própria, ex.: `tse-resultados ano=2018`.
+- **Diagnóstico das fontes** (`.github/workflows/diagnostico.yml`): mostra as respostas brutas das fontes
+  (`scripts/diagnostico_ci.py`) para conferir formato e bloqueios antes de corrigir um coletor.
+- O site procura `dados/manifest.json` ao lado da página quando não acha um servidor. As listas da cópia vêm completas
+  até um teto (ex.: 3.000 contratos, os de maior valor e os mais recentes) e os filtros rodam no navegador; uma consulta
+  que não está na cópia avisa e pede o servidor. Aberto pelo `uvicorn`, o site continua usando a API ao vivo.
+- Fontes que bloqueiam os servidores do GitHub (não dá para coletar pelo robô): LexML (verificação de segurança do
+  Senado) e a API da ALMG (não responde fora do Brasil). No seu servidor no Brasil elas podem funcionar normalmente.
+
 ## Fontes da v0.2 e v0.3: o que conferir na primeira coleta
 Assembleias: a ALMG e a Alesp não publicam um formato de votos estável; os adaptadores procuram os campos pelo nome
 (`app/collectors/assembleias.py`). Para outro estado, importe a planilha de deputados da casa ou crie um adaptador seguindo o de MG.
