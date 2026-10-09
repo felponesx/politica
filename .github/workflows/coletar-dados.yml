@@ -36,7 +36,7 @@ jobs:
           POSTGRES_DB: brasilplus
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U brasil"
+          --health-cmd "pg_isready -U brasil -d brasilplus"
           --health-interval 5s --health-timeout 5s --health-retries 20
     env:
       DATABASE_URL: postgresql+psycopg://brasil:brasil@localhost:5432/brasilplus

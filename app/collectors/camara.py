@@ -1,6 +1,8 @@
 """Coletor da Câmara dos Deputados — https://dadosabertos.camara.leg.br/swagger/api.html"""
 from datetime import date
 
+import httpx
+
 from app import http
 from app.collectors.base import registrar_coleta
 from app.models import Despesa, Parlamentar, Proposicao, Registro, Votacao, Voto
@@ -75,7 +77,13 @@ def coletar_votacoes(inicio: date, fim: date, com_votos: bool = True):
                 db.flush()
                 n += 1
                 if com_votos:
-                    for voto in http.get_json(f"{BASE}/votacoes/{v['id']}/votos").get("dados", []):
+                    try:
+                        votos = http.get_json(f"{BASE}/votacoes/{v['id']}/votos") or {}
+                    except httpx.HTTPStatusError as e:
+                        if e.response.status_code != 404:
+                            raise
+                        votos = {}  # votação simbólica: a API responde 404 em vez de lista vazia
+                    for voto in votos.get("dados", []):
                         dep = voto.get("deputado_") or {}
                         if not dep.get("id"):
                             continue
