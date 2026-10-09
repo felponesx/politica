@@ -3592,7 +3592,11 @@ function csvDe(itens){const cols=[...new Set(itens.flatMap(o=>Object.keys(o).fil
  <div class="panel">${table([["Conjunto de dados",x=>`<b style="font-weight:600">${esc(REL_NOMES[x.cam])}</b><div class="small muted">${esc(Object.values(x.b).join(" · "))}</div>`],["Linhas",x=>x.n==null?"—":nf(x.n)+(x.tot&&x.tot>x.n?` <span class="small muted">de ${nf(x.tot)}</span>`:""),"n"],["Arquivo",x=>`<button class="btn" type="button" data-csv="${esc(x.k)}">Baixar CSV</button>`]],bases)}
  <p class="small muted" style="margin:10px 0 0">Cópia gerada em ${esc(dataCopia())}. Separador ponto e vírgula, acentos em UTF-8. Listas grandes têm na cópia uma parte das linhas; pelo servidor BRASIL+ saem completas.</p></div>`,
  mount(){document.querySelectorAll("#view [data-csv]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{const v=await snapLer(b.dataset.csv);const it=(v&&v.itens)||[];
-   const url=URL.createObjectURL(new Blob([csvDe(it)],{type:"text/csv;charset=utf-8"}));const l=document.createElement("a");l.href=url;l.download="brasilplus"+b.dataset.csv.replace(/[^a-z0-9]+/gi,"_").replace(/_+$/,"")+".csv";document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),4000)}
+   const nome="brasilplus"+b.dataset.csv.replace(/[^a-z0-9]+/gi,"_").replace(/_+$/,"")+".csv",blob=new Blob([csvDe(it)],{type:"text/csv;charset=utf-8"});
+   // dentro do visualizador do claude.ai o download passa pela confirmação dele; fora dele, link comum
+   const dl=window.claude&&window.claude.use?await window.claude.use("downloads").catch(()=>null):null;
+   if(dl){try{await dl.save({filename:nome,data:blob})}catch(e){if(e&&e.code!=="declined")toast(e.code==="rate_limited"?"Já há um download esperando confirmação.":"Download indisponível aqui.")}}
+   else{const url=URL.createObjectURL(blob);const l=document.createElement("a");l.href=url;l.download=nome;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),4000)}}
   catch(e){toast("Não foi possível gerar o arquivo: "+(e.message||e))}b.disabled=false})}}}}
 
 /* Constituição Federal de 1988: resumo de cada artigo (texto explicativo do BRASIL+; o que vale é o texto oficial) */
