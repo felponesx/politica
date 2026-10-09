@@ -133,22 +133,66 @@ def amostra_webdav(nome, url, auth, mb=6, procurar=None):
         print(f"  ERRO {type(e).__name__}: {e}", flush=True)
 
 
-def main():
-    token = "YggdBLfdninEJX9"
-    base = "https://arquivos.receitafederal.gov.br/public.php/webdav/2026-09/"
-    amostra_webdav("estabelecimentos0", base + "Estabelecimentos0.zip", (token, ""), mb=8, procurar=True)
-    amostra_webdav("estabelecimentos5", base + "Estabelecimentos5.zip", (token, ""), mb=8, procurar=True)
-    amostra_webdav("empresas0", base + "Empresas0.zip", (token, ""), mb=1)
-    amostra_webdav("municipios", base + "Municipios.zip", (token, ""), mb=1)
-    amostra_webdav("cnaes", base + "Cnaes.zip", (token, ""), mb=1)
-    # velocidade de download de um arquivo inteiro (Empresas9 costuma ser o menor)
-    t = time.monotonic()
+def links(nome, url, padrao=r'href="([^"]+\.(?:csv|xlsx?|zip|json|ods)[^"]*)"', n=60, headers=None):
+    """Página HTML: mostra os links para arquivos de dados."""
+    import re
+    r = ver(nome, url, n=300, headers=headers)
+    if r is not None and r.status_code == 200:
+        achados = list(dict.fromkeys(re.findall(padrao, r.text, re.I)))
+        print(f"  {len(achados)} links", flush=True)
+        for a in achados[:n]:
+            print("   ", a, flush=True)
+    return r
+
+
+def ckan(nome, base, consulta):
+    """Busca num CKAN (dados.mj.gov.br etc.) e lista os recursos de cada conjunto."""
+    r = ver(nome, f"{base}/api/3/action/package_search", {"q": consulta, "rows": 8}, n=200)
     try:
-        with cli.stream("GET", base + "Empresas9.zip", auth=(token, "")) as r:
-            tam = sum(len(b) for b in r.iter_bytes(1 << 20))
-        print(f"\nEmpresas9.zip inteiro: {tam / 1e6:.0f} MB em {time.monotonic() - t:.0f}s", flush=True)
+        for p in r.json()["result"]["results"]:
+            print(f"  ## {p['name']} | {p.get('title')} | {p.get('metadata_modified')}", flush=True)
+            for rec in p.get("resources", [])[:25]:
+                print(f"     - {rec.get('name')} | {rec.get('format')} | {rec.get('url')}", flush=True)
     except Exception as e:
-        print("download inteiro: ERRO", e, flush=True)
+        print("  json?", e, flush=True)
+
+
+def main():
+    nav = {"User-Agent": UA_NAV}
+    # Sinesp e Sisdepen no CKAN do Ministério da Justiça
+    ckan("mj sinesp", "https://dados.mj.gov.br", "sinesp")
+    ckan("mj seguranca", "https://dados.mj.gov.br", "estatisticas seguranca publica")
+    ckan("mj sisdepen", "https://dados.mj.gov.br", "sisdepen")
+    ckan("mj penitenciario", "https://dados.mj.gov.br", "penitenciario")
+    links("senappen sisdepen", "https://www.gov.br/senappen/pt-br/servicos/sisdepen", headers=nav)
+    links("senappen bases", "https://www.gov.br/senappen/pt-br/servicos/sisdepen/bases-de-dados", headers=nav)
+    links("mj estatistica", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica", headers=nav)
+    links("mj dados nacionais", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/dados-nacionais-1", headers=nav)
+    # Atlas da Violência (IPEA): API
+    for u in ("https://www.ipea.gov.br/atlasviolencia/api/v1/temas", "https://www.ipea.gov.br/atlasviolencia/api/v1/series",
+              "https://www.ipea.gov.br/atlasviolencia/api/v1/valores-series/328/3",
+              "https://www.ipea.gov.br/atlasviolencia/api/v1/valores-series/20/3"):
+        ver("atlas " + u.rsplit("/v1/", 1)[1], u, n=1500)
+    # BNMP (CNJ): procurar a API usada pelo portal
+    import re
+    r = ver("bnmp portal", "https://portalbnmp.cnj.jus.br/", n=600, headers=nav)
+    if r is not None and r.status_code == 200:
+        for src in re.findall(r'src="([^"]+\.js)"', r.text)[:6]:
+            u = src if src.startswith("http") else "https://portalbnmp.cnj.jus.br/" + src.lstrip("/")
+            try:
+                js = cli.get(u, headers=nav).text
+                apis = sorted(set(re.findall(r'["\'](/?(?:bnmpportal/)?api/[A-Za-z0-9/_\-{}.]+)', js)))
+                print(f"  {u}: {len(js)} bytes, {len(apis)} rotas", flush=True)
+                for a in apis[:80]:
+                    print("    ", a, flush=True)
+            except Exception as e:
+                print("  js erro", e)
+    # IBGE: perfis dos estados (ESTADIC) e municípios (MUNIC) — efetivos das polícias e guardas municipais
+    links("ibge estadic", "https://ftp.ibge.gov.br/Perfil_Estados/", padrao=r'href="([^"?/][^"]*)"')
+    links("ibge munic", "https://ftp.ibge.gov.br/Perfil_Municipios/", padrao=r'href="([^"?/][^"]*)"')
+    # Fórum Brasileiro de Segurança Pública (Anuário): planilhas
+    links("fbsp anuario", "https://forumseguranca.org.br/estatisticas/", headers=nav)
+    links("fbsp publicacoes", "https://forumseguranca.org.br/anuario-brasileiro-seguranca-publica/", headers=nav)
 
 
 if __name__ == "__main__":
