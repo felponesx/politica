@@ -133,3 +133,18 @@ def test_presidente_espalhado_nos_arquivos_dos_estados(tmp_path):
     br = cliente.get("/eleicoes/2006/BR", params={"cargo": "PRESIDENTE"}).json()
     assert [(c["nome"], c["votos"]) for c in br["mais_votados"]] == [("LULA", 1500), ("ALCKMIN", 1100)]
     assert cliente.get("/eleicoes/2006/SP", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["nome"] == "SERRA"
+
+
+def test_codigo_do_candidato_de_2000_a_2008_vira_unico(tmp_path):
+    """De 2000 a 2008 o SQ_CANDIDATO se repete entre estados (2006: 10112 em mais de uma UF)."""
+    from app.collectors.tse import sq_unico
+    assert sq_unico("10112", "SP", 2006) == "SP-10112" and sq_unico("10112", "RJ", 2006) == "RJ-10112"
+    assert sq_unico("61", "BR", 2006) == "61" and sq_unico("250002541303", "SP", 2026) == "250002541303"
+    caminho = tmp_path / "munzona_2006.zip"
+    with zipfile.ZipFile(caminho, "w") as z:
+        for uf, nome in (("SP", "FULANO SP"), ("RJ", "FULANO RJ")):
+            txt = CAB_BR + f"2006;1;{uf};{uf};X;1;CAPITAL;1;Governador;10112;45;{nome};PSDB;100;ELEITO\n"
+            z.writestr(f"votacao_candidato_munzona_2006_{uf}.csv", txt.encode("latin-1"))
+    tse_resultados.coletar_resultados(2006, arquivo_local=str(caminho))
+    assert cliente.get("/eleicoes/2006/RJ", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["nome"] == "FULANO RJ"
+    assert cliente.get("/eleicoes/2006/SP", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["nome"] == "FULANO SP"

@@ -16,13 +16,14 @@ from sqlalchemy import delete
 
 from app import http
 from app.collectors.base import registrar_coleta
+from app.collectors.tse import sq_unico
 from app.models import ResultadoEleicao, VotoMunicipio
 from app.utils import sem_acento
 
 URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_{ano}.zip"
 MAJORITARIOS = {"PRESIDENTE", "GOVERNADOR", "SENADOR", "PREFEITO"}
 CAMPOS = {"SQ_CANDIDATO", "NR_TURNO", "DS_CARGO", "QT_VOTOS_NOMINAIS_VALIDOS", "QT_VOTOS_NOMINAIS", "DS_SIT_TOT_TURNO",
-          "SG_UF", "NM_UE", "NR_CANDIDATO", "NM_URNA_CANDIDATO", "NM_CANDIDATO", "SG_PARTIDO", "CD_MUNICIPIO", "NM_MUNICIPIO"}
+          "SG_UF", "SG_UE", "NM_UE", "NR_CANDIDATO", "NM_URNA_CANDIDATO", "NM_CANDIDATO", "SG_PARTIDO", "CD_MUNICIPIO", "NM_MUNICIPIO"}
 
 
 def _int(v) -> int:
@@ -32,12 +33,12 @@ def _int(v) -> int:
         return 0
 
 
-def agregar(linhas):
+def agregar(linhas, ano=None):
     """Recebe dicts do CSV e devolve (candidatos, municipios)."""
     cand = {}
     mun = defaultdict(int)
     for l in linhas:
-        sq = l.get("SQ_CANDIDATO")
+        sq = sq_unico(l.get("SQ_CANDIDATO"), l.get("SG_UE"), ano)
         if not sq:
             continue
         turno = _int(l.get("NR_TURNO")) or 1
@@ -80,7 +81,7 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
                     cab = next(leitor, [])
                     pos = [(c, i) for i, c in enumerate(cab) if c in CAMPOS]
                     # só as colunas usadas (o arquivo de 2022 tem dezenas de milhões de linhas e ~50 colunas)
-                    cand, mun = agregar({c: l[i] for c, i in pos} for l in leitor if len(l) >= len(cab))
+                    cand, mun = agregar(({c: l[i] for c, i in pos} for l in leitor if len(l) >= len(cab)), ano)
                 for k, c in [(k, c) for k, c in cand.items() if c["cargo"] == "PRESIDENTE"]:
                     del cand[k]
                     if k in presidente:

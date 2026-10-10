@@ -14,8 +14,17 @@ from app.utils import sem_acento, upsert
 
 URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_{ano}.zip"
 CAMPOS = ["ANO_ELEICAO", "SQ_CANDIDATO", "NR_CANDIDATO", "NM_CANDIDATO", "NM_URNA_CANDIDATO",
-          "SG_PARTIDO", "SG_UF", "NM_UE", "DS_CARGO", "DS_SITUACAO_CANDIDATURA",
+          "SG_PARTIDO", "SG_UF", "SG_UE", "NM_UE", "DS_CARGO", "DS_SITUACAO_CANDIDATURA",
           "DS_SIT_TOT_TURNO", "DS_GRAU_INSTRUCAO", "DS_OCUPACAO", "DS_GENERO", "DS_COR_RACA"]
+
+
+def sq_unico(sq, sg_ue, ano) -> str:
+    """Código do candidato único no país. De 2000 a 2008 o TSE numerava por unidade eleitoral (o mesmo SQ_CANDIDATO
+    aparece em estados e cidades diferentes); nesses anos o código vira "<SG_UE>-<SQ>". O Presidente (SG_UE "BR") e
+    os códigos longos dos outros anos ficam como estão."""
+    sq = str(sq or "").strip()
+    ue = str(sg_ue or "").strip()
+    return f"{ue}-{sq}" if sq and 2000 <= int(ano or 0) <= 2008 and ue and ue != "BR" else sq
 
 
 def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | None = None, apenas_eleitos: bool = False):
@@ -27,14 +36,19 @@ def coletar_candidatos(ano: int, uf: str | None = None, arquivo_local: str | Non
             nomes = [m for m in z.namelist() if m.lower().endswith(".csv") and "brasil" not in m.lower()]
             if uf:
                 nomes = [m for m in nomes if m.upper().endswith(f"_{uf.upper()}.CSV")]
+            if not uf and 2000 <= int(ano) <= 2008:  # códigos antigos gravados sem a unidade eleitoral: refaz o ano
+                from sqlalchemy import delete
+                db.execute(delete(Registro).where(Registro.fonte == "tse", Registro.tipo == "candidato", Registro.ano == int(ano)))
+                db.commit()
             turnos = {}  # quem foi ao 2º turno tem uma linha por turno: vale a do último turno
             for nome in nomes:
                 with z.open(nome) as bruto:
                     leitor = csv.DictReader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
                     for linha in leitor:
-                        sq = linha.get("SQ_CANDIDATO")
+                        sq = sq_unico(linha.get("SQ_CANDIDATO"), linha.get("SG_UE"), ano)
                         if not sq:
                             continue
+                        linha["SQ_CANDIDATO"] = sq
                         try:
                             turno = int(linha.get("NR_TURNO") or 1)
                         except ValueError:
