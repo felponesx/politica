@@ -59,7 +59,34 @@ NOMES_UF = {"AC": "Acre", "AL": "Alagoas", "AP": "Amapá", "AM": "Amazonas", "BA
             "RS": "Rio Grande do Sul", "RO": "Rondônia", "RR": "Roraima", "SC": "Santa Catarina", "SP": "São Paulo",
             "SE": "Sergipe", "TO": "Tocantins"}
 
-cli = httpx.Client(timeout=60, follow_redirects=True, headers=UA)
+_cli = httpx.Client(timeout=60, follow_redirects=True, headers=UA)
+
+
+class _Educado:
+    """Pedidos à Wikipédia/Wikimedia sem pressa: pausa entre pedidos e nova tentativa quando pedem para esperar (429)."""
+    def __init__(self, pausa=0.6):
+        self.pausa, self.ultimo = pausa, 0.0
+
+    def get(self, url, **kw):
+        import time
+        wiki = "wiki" in url
+        for tentativa in range(6):
+            if wiki:
+                espera = self.pausa - (time.monotonic() - self.ultimo)
+                if espera > 0:
+                    time.sleep(espera)
+                self.ultimo = time.monotonic()
+            r = _cli.get(url, **kw)
+            if r.status_code not in (429, 503) or not wiki:
+                return r
+            time.sleep(min(60, float(r.headers.get("retry-after") or 0) or 5 * 2 ** tentativa))
+        return r
+
+    def stream(self, *a, **kw):
+        return _cli.stream(*a, **kw)
+
+
+cli = _Educado()
 
 
 def fnv1a(texto: str) -> int:
