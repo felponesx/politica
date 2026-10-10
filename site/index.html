@@ -3975,7 +3975,7 @@ function aplicarMidia(){
   bolas.forEach(svg=>{svg.dataset.mok=1;const defs=svg.querySelector("defs")||svg.insertBefore(document.createElementNS("http://www.w3.org/2000/svg","defs"),svg.firstChild);const feitos={};
    svg.querySelectorAll("circle[data-p]").forEach(c=>{const sg=c.dataset.p,l=logoPart(L,sg);if(!l||+c.getAttribute("r")<2.2)return;const id="pl-"+normSig(sg);
     if(!feitos[id]){feitos[id]=1;const pt=document.createElementNS("http://www.w3.org/2000/svg","pattern");pt.setAttribute("id",id);pt.setAttribute("patternContentUnits","objectBoundingBox");pt.setAttribute("width","1");pt.setAttribute("height","1");
-     pt.innerHTML=`<rect width="1" height="1" fill="#fff"/><image href="${l.img}" x=".1" y=".1" width=".8" height=".8" preserveAspectRatio="xMidYMid meet"/>`;defs.appendChild(pt)}
+     pt.innerHTML=`<rect width="1" height="1" fill="${misturaBranco(corSigla(sg),.5)}"/><image href="${l.img}" x=".14" y=".14" width=".72" height=".72" preserveAspectRatio="xMidYMid meet"/>`;defs.appendChild(pt)}
     c.setAttribute("fill",`url(#${id})`);c.setAttribute("stroke",c.getAttribute("data-cor")||corSigla(sg));c.setAttribute("stroke-width",Math.max(.6,+c.getAttribute("r")*.18).toFixed(2))})});
   pol.forEach(el=>{el.dataset.mok=1;const l=L.policias[el.dataset.pol];if(!l||!el.isConnected)return;const h=parseInt(el.dataset.h||"54");const im=document.createElement("img");im.className="pol-logo";im.src=l.img;im.alt=l.titulo||"";im.style.height=h+"px";im.style.width="auto";im.title=`${l.titulo} — imagem: Wikimedia Commons (${l.arquivo||""})`;el.replaceWith(im);
    const info=document.querySelector(`[data-polinfo="${el.dataset.pol}"]`);if(info&&l.efetivo_wikipedia)info.textContent=`Efetivo informado na Wikipédia: ${nf(l.efetivo_wikipedia)}`})})}
