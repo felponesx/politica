@@ -1249,6 +1249,19 @@ a.rrow b{font-weight:500}
 .cfa.rev b,.cfa.rev p{color:var(--muted)}
 .cflinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 @media (max-width:600px){.cfa{grid-template-columns:1fr;gap:4px}}
+/* v0.6: segurança pública */
+.seg-h{font-size:15px;margin:18px 0 8px;font-weight:600}.seg-h small{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}
+.seg-ef{display:grid;gap:9px}
+.seg-efl{display:grid;grid-template-columns:minmax(150px,34%) 1fr auto;gap:4px 10px;align-items:center;font-size:13.5px}
+.seg-efl b{font-variant-numeric:tabular-nums}
+.seg-efl em{grid-column:1/-1;font-style:normal;font-size:12px;color:var(--muted)}
+.seg-efn i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.seg-efb{height:8px;background:var(--line2);border-radius:5px;overflow:hidden}.seg-efb i{display:block;height:100%;background:#7FA9DE;border-radius:5px}
+.embl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
+.embl{flex:none}
+#hsegcard{margin-top:16px}
+@media(max-width:760px){.seg-efl{grid-template-columns:minmax(110px,42%) 1fr auto}.embl-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1309,6 +1322,7 @@ gastos:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.5-.9-1.5-1.4-2.6-1.4
 arrecadacao:'<path d="M4 7h16v12H4z"/><path d="M4 11h16M8 15h3"/><path d="M12 3v4"/>',
 dividas:'<path d="M3 7h18v12H3z"/><path d="M3 11h18"/><path d="M7 15h4"/><path d="M17 3l-3 4M7 3l3 4"/>',
 indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4l2 2 4-4"/><path d="M17 11h4M19 9v4"/>',
+seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
 orgaos:'<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>',
 pessoas:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
@@ -1323,7 +1337,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -3627,6 +3641,152 @@ function vigiarLeisUF(){const box=$("#cfufc");if(!box)return;const add=()=>{cons
   pnl.insertAdjacentHTML("beforeend",`<div class="cflinks"><a class="btn" href="${lexBusca((uf==="DF"?"Lei Orgânica do Distrito Federal":"Constituição do Estado "+deUF(uf)))}" target="_blank" rel="noopener">${uf==="DF"?"Lei Orgânica do DF":"Constituição estadual"} no LexML</a><a class="btn" href="${lexBusca("lei estadual "+deUF(uf).replace(/^d[aeo] /,""))}" target="_blank" rel="noopener">Todas as leis ${esc(deUF(uf))} no LexML</a></div>
   <p class="small muted" style="margin:8px 0 0">O LexML é a rede oficial de informação legislativa (Senado e Assembleias). A coleta automática das leis estaduais por ele só funciona de um servidor no Brasil; quando o BRASIL+ rodar no servidor próprio, as leis de todos os estados aparecem aqui.</p>`)};
  add();new MutationObserver(add).observe(box,{childList:true,subtree:true})}
+
+/* ===================== v0.6: segurança pública ===================== */
+/* unidades especializadas conhecidas (lista não exaustiva; os emblemas são ilustrativos, não os brasões oficiais) */
+const UNIDADES=[
+ ["SP","pm","ROTA","Rondas Ostensivas Tobias de Aguiar","1º Batalhão de Polícia de Choque da PM paulista: patrulhamento tático e ocorrências de alto risco."],
+ ["SP","pm","COE","Comando de Operações Especiais","Operações em mata, resgates e ações especiais da PM de São Paulo."],
+ ["SP","pm","GATE","Grupo de Ações Táticas Especiais","Sequestros com reféns, bombas e explosivos (PM de São Paulo)."],
+ ["SP","pm","BAEP","Batalhões de Ações Especiais de Polícia","Batalhões táticos regionais da PM paulista, no interior e na Grande São Paulo."],
+ ["SP","pm","Águia","Comando de Aviação da PM","Helicópteros e aviões da Polícia Militar de São Paulo."],
+ ["SP","pc","GOE","Grupo de Operações Especiais","Tropa tática da Polícia Civil de São Paulo."],
+ ["SP","pc","GARRA","Grupo Armado de Repressão a Roubos e Assaltos","Unidade do DEIC da Polícia Civil de São Paulo."],
+ ["SP","penal","GIR","Grupo de Intervenção Rápida","Controle de rebeliões e escoltas no sistema prisional paulista."],
+ ["SP","gcm","ROMU","Rondas Ostensivas Municipais","Grupo tático da Guarda Civil Metropolitana de São Paulo."],
+ ["RJ","pm","BOPE","Batalhão de Operações Policiais Especiais","Tropa de elite da PM do Rio de Janeiro."],
+ ["RJ","pm","BPChq","Batalhão de Polícia de Choque","Controle de distúrbios e apoio a operações da PM do Rio."],
+ ["RJ","pm","GAM","Grupamento Aeromóvel","Helicópteros da PM do Rio de Janeiro."],
+ ["RJ","pc","CORE","Coordenadoria de Recursos Especiais","Tropa tática da Polícia Civil do Rio de Janeiro."],
+ ["MG","pm","ROTAM","Rondas Táticas Metropolitanas","Batalhão tático da PM de Minas Gerais em Belo Horizonte."],
+ ["MG","pm","GATE","Grupamento de Ações Táticas Especiais","Crises com reféns e explosivos (PM de Minas Gerais)."],
+ ["CE","pm","RAIO","Rondas de Ações Intensivas e Ostensivas","Comando de policiamento em motocicletas da PM do Ceará."],
+ ["GO","pm","ROTAM","Rondas Ostensivas Táticas Metropolitanas","Batalhão tático da PM de Goiás."],
+ ["DF","pm","ROTAM","Rondas Ostensivas Táticas Motorizadas","Batalhão tático da PM do Distrito Federal."],
+ ["DF","pm","BOPE","Batalhão de Operações Especiais","Tropa de elite da PM do Distrito Federal."],
+ ["BA","pm","RONDESP","Rondas Especiais","Companhias táticas da PM da Bahia."],
+ ["PE","pm","GATI","Grupo de Apoio Tático Itinerante","Grupos táticos da PM de Pernambuco."],
+ ["RS","pm","BOE","Batalhão de Operações Especiais","Tropa especial da Brigada Militar do Rio Grande do Sul."],
+ ["PR","pm","BOPE","Batalhão de Operações Policiais Especiais","Tropa de elite da PM do Paraná."],
+ ["ES","pm","BME","Batalhão de Missões Especiais","Tropa especial da PM do Espírito Santo."],
+ ["AM","pm","ROCAM","Rondas Ostensivas Cândido Mariano","Policiamento tático em motocicletas da PM do Amazonas."],
+ ["BR","pf","COT","Comando de Operações Táticas","Tropa de elite da Polícia Federal, atua em todo o país."],
+ ["BR","fn","FNSP","Força Nacional de Segurança Pública","Policiais e bombeiros dos estados cedidos à União para missões temporárias."],
+ ["BR","penal","SPF","Sistema Penitenciário Federal","Cinco penitenciárias federais de segurança máxima: Catanduvas (PR), Campo Grande (MS), Porto Velho (RO), Mossoró (RN) e Brasília (DF)."]];
+const CORP={pm:["Polícia Militar","#1F3A68"],pc:["Polícia Civil","#3B3F46"],penal:["Polícia Penal","#2F5D46"],gcm:["Guarda Municipal","#2C6FB0"],pf:["Polícia Federal","#16284D"],fn:["Força Nacional","#5B4A2E"],prf:["Polícia Rodoviária Federal","#8A6D12"]};
+function emblema(sigla,corp,w=54){const c=(CORP[corp]||CORP.pm)[1],n=sigla.length,fs=n<=3?16:n<=4?13:n<=5?10.5:9;
+ return`<svg class="embl" viewBox="0 0 64 72" width="${w}" height="${Math.round(w*72/64)}" role="img" aria-label="Emblema ilustrativo: ${esc(sigla)}"><path d="M32 3 58 12v20c0 17-11 30-26 37C17 62 6 49 6 32V12z" fill="${c}"/><path d="M32 8.5 53 16v16c0 14-9 25-21 31C20 57 11 46 11 32V16z" fill="none" stroke="#D9C27A" stroke-width="1.6"/><path d="m32 14 2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="#D9C27A"/><text x="32" y="${44+fs*.32}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#fff" font-family="inherit" letter-spacing=".3">${esc(sigla)}</text></svg>`}
+
+let SEG=null;
+function segDados(){return SEG?Promise.resolve(SEG):apiGet("/seguranca").then(d=>{if(!d||!d.estados)throw new Error("sem dados de segurança na cópia");SEG=d;return d})}
+const n1=v=>v==null?"—":v.toLocaleString("pt-BR",{maximumFractionDigits:1});
+const n0=v=>v==null?"—":Math.round(v).toLocaleString("pt-BR");
+const mesCurto=m=>{const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m?M[+m.slice(5,7)-1]+"/"+m.slice(2,4):""};
+const gv=(o,...k)=>k.reduce((a,x)=>a&&a[x]!=null?a[x]:null,o);
+const SEG_MET={
+ hom:["Homicídios por 100 mil hab.",e=>gv(e,"ocorrencias","taxa_homicidio"),n1,"últimos 12 meses, Sinesp"],
+ mvi:["Mortes violentas por 100 mil",e=>gv(e,"violencia","taxa_mvi"),n1,"Anuário de Segurança Pública"],
+ presos:["Presos por 100 mil hab.",e=>gv(e,"prisional","taxa_aprisionamento"),n1,"Sisdepen"],
+ detidos:["Presos por mandado, por dia",e=>gv(e,"ocorrencias","detidos_por_dia"),n1,"mandados de prisão cumpridos, Sinesp"],
+ deficit:["Déficit de vagas nas prisões",e=>gv(e,"prisional","deficit_vagas"),n0,"presos em celas menos vagas, Sisdepen"],
+ naovolta:["Não voltaram, por mil saídas",e=>gv(e,"prisional","nao_voltaram_por_mil_saidas"),n1,"abandonos por mil saídas temporárias"],
+ policia:["Policiais por mil habitantes",e=>gv(e,"efetivo","policiais_por_mil"),v=>v==null?"—":v.toLocaleString("pt-BR",{maximumFractionDigits:2}),"PM e Polícia Civil, Raio-X do FBSP"]};
+function segMetricas(d){return Object.keys(SEG_MET).filter(k=>UFS.filter(u=>SEG_MET[k][1](d.estados[u.uf])!=null).length>=15)}
+const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
+function segRefs(d){const r=d.referencias||{},o=r.ocorrencias;return{prisional:r.prisional&&r.prisional.includes("/")?`${r.prisional.split("/")[1]}º semestre de ${r.prisional.split("/")[0]}`:(r.prisional||""),
+ ocorr:o?`${mesCurto(o.de)} a ${mesCurto(o.ate)}`:"",violencia:r.violencia||"",efetivo:r.efetivo||""}}
+
+/* resumo de um lugar (Brasil ou estado): blocos de KPIs */
+function segBlocos(e,br,ref){const o=e.ocorrencias||{},p=e.prisional||{},v=e.violencia||{},f=e.efetivo||{},B=br||{};
+ const cmp=(val,bv,fmt=n1)=>br&&bv!=null&&val!=null?`Brasil: ${fmt(bv)}`:"";
+ const out=[];
+ if(e.ocorrencias)out.push(`<h3 class="seg-h">Crimes e prisões <small>${ref.ocorr}</small></h3><div class="kpis kpis-c">
+  ${kp("Homicídios dolosos",n0(o.homicidio_doloso),`${n1(o.homicidios_por_dia)} por dia`)}
+  ${kp("Taxa de homicídio",n1(o.taxa_homicidio),cmp(o.taxa_homicidio,gv(B,"ocorrencias","taxa_homicidio"))||"por 100 mil habitantes")}
+  ${kp("Presos por mandado, por dia",n1(o.detidos_por_dia),`${n0(o.mandados_cumpridos)} mandados cumpridos`)}
+  ${kp("Feminicídios",n0(o.feminicidio))}${kp("Latrocínios",n0(o.latrocinio),"roubo seguido de morte")}
+  ${kp("Mortes por intervenção policial",n0(o.mortes_intervencao))}${kp("Agentes de segurança mortos",n0(o.agentes_mortos))}
+  ${kp("Pessoas desaparecidas",n0(o.desaparecidos),o.localizados!=null?`${n0(o.localizados)} localizadas`:"")}</div>`);
+ if(e.prisional)out.push(`<h3 class="seg-h">Sistema prisional <small>${ref.prisional}</small></h3><div class="kpis kpis-c">
+  ${kp("Presos",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`)}
+  ${kp("Em celas",n0(p.populacao_celas),`${n0(p.vagas)} vagas`)}
+  ${kp("Déficit de vagas",n0(p.deficit_vagas),p.vagas?`${n1(100*(p.populacao_celas||0)/p.vagas)} presos por 100 vagas`:"")}
+  ${kp("Prisão domiciliar",n0(p.populacao_domiciliar),"com ou sem tornozeleira")}
+  ${kp("Entradas no sistema por dia",n1(p.presos_por_dia),`${n0(p.entradas)} no semestre`)}
+  ${kp("Saídas temporárias",n0(p.saidas_temporarias),"autorizadas no semestre")}
+  ${kp("Não voltaram",n0(p.abandonos),p.nao_voltaram_por_mil_saidas!=null?`${n1(p.nao_voltaram_por_mil_saidas)} por mil saídas`:"")}
+  ${kp("Mortes no sistema",n0(p.obitos),"no semestre")}</div>`);
+ if(e.violencia)out.push(`<h3 class="seg-h">Mortes violentas intencionais <small>${v.ano||ref.violencia}, Anuário Brasileiro de Segurança Pública</small></h3><div class="kpis kpis-c">
+  ${kp("Mortes violentas",n0(v.mvi),v.variacao_mvi!=null?`${v.variacao_mvi>0?"+":""}${n1(v.variacao_mvi)}% em um ano`:"")}
+  ${kp("Taxa por 100 mil",n1(v.taxa_mvi),cmp(v.taxa_mvi,gv(B,"violencia","taxa_mvi")))}
+  ${kp("Homicídios dolosos",n0(v.homicidio_doloso))}${kp("Mortes por intervenção policial",n0(v.mortes_intervencao))}
+  ${kp("Policiais mortos",n0(v.policiais_mortos))}</div>`);
+ return out.join("")}
+function segEfetivo(f,uf){if(!f)return"";const P=f.previsto||{};
+ const L=[["policia_militar","Polícia Militar","pm"],["policia_civil","Polícia Civil (judiciária)","pc"],["policia_penal","Polícia Penal (penitenciária)","penal"],["guardas_municipais","Guardas municipais (GCM)","gcm"],["bombeiros","Corpo de Bombeiros","pm"],["pericia","Perícia oficial","pc"],
+  ["policia_federal","Polícia Federal","pf"],["prf","Polícia Rodoviária Federal","prf"],["policia_penal_federal","Polícia Penal Federal","penal"],["policia_legislativa","Polícia Legislativa (Câmara e Senado)","pf"]].filter(x=>f[x[0]]!=null&&f[x[0]]>0);
+ const mx=Math.max(...L.map(x=>f[x[0]]));
+ return`<div class="seg-ef">${L.map(([k,t,c])=>`<div class="seg-efl"><span class="seg-efn"><i style="background:${(CORP[c]||CORP.pm)[1]}"></i>${t}</span><span class="seg-efb"><i style="width:${Math.max(2,100*f[k]/mx)}%"></i></span><b>${n0(f[k])}</b>${P[k]?`<em>previsto em lei: ${n0(P[k])} (${Math.round(100*f[k]/P[k])}% preenchido)</em>`:""}</div>`).join("")}</div>
+ <p class="small muted" style="margin:10px 0 0">${f.policiais_por_mil?`${n1(f.policiais_por_mil)} policiais (PM e Civil) por mil habitantes: um para cada ${n0(f.habitantes_por_policial)} pessoas. `:""}${uf==="SP"?"Em São Paulo, os bombeiros fazem parte da Polícia Militar. ":""}${uf?"":"Polícia Federal, PRF e Polícia Penal Federal só têm o total do país. "}A Receita Federal (auditores e analistas) não é força de segurança e não entra nesta conta.</p>`}
+function segUnidades(uf){const l=UNIDADES.filter(u=>uf?u[0]===uf:u[0]==="BR");if(!l.length)return"";
+ return`<div class="embl-grid">${l.map(([u,c,s,n,d])=>`<div class="embl-card">${emblema(s,c)}<div><b>${esc(s)}</b> <span class="small muted">${u==="BR"?"Nacional":u} · ${(CORP[c]||CORP.pm)[0]}</span><div class="small">${esc(n)}</div><div class="small muted">${esc(d)}</div></div></div>`).join("")}</div>
+ <p class="small muted" style="margin:8px 0 0">Emblemas ilustrativos, desenhados pelo BRASIL+ (não são os brasões oficiais). Lista das unidades especializadas mais conhecidas, não completa.</p>`}
+function segEstado(uf){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04,d=SEG,e=d.estados[uf]||{},ref=segRefs(d);
+ const uns=segUnidades(uf);
+ return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Segurança pública</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${e.populacao?nf(Math.round(e.populacao))+" habitantes. ":""}Taxas por 100 mil habitantes; ao lado, a média do Brasil.</p></div></div>
+ <div class="ufrest">${segBlocos(e,d.brasil,ref)||rvazio("Sem dados de segurança deste estado ainda.")}
+ ${e.efetivo?`<h3 class="seg-h">Quem faz a segurança <small>efetivo da ativa, ${ref.efetivo}</small></h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:""}
+ ${uns?`<h3 class="seg-h">Unidades especiais</h3>${uns}`:""}
+ <p class="small" style="margin:12px 0 0"><a href="#/seguranca">Ver a segurança pública do Brasil</a> · <a href="#/uf/${uf}">Ficha completa ${esc(deUF(uf))}</a></p></div>`}}
+const SEG_SEM=`<div class="rbanner">Os números de segurança pública aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
+
+P.seguranca=()=>{let met=null,serie="homicidio_doloso";const SZ={card:"#segcard",main:"#segmain",holder:"#segstate",map:"#segmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>segEstado(uf)};
+ return{html:`<div class="ph"><div><h1>Segurança Pública</h1><p>Presos, homicídios, prisões por dia, saídas temporárias e o efetivo das polícias em cada estado, com dados oficiais.</p></div></div><div id="segbox">${API.on?rload():SEG_SEM}</div>`,
+ mount(){if(!API.on)return;segDados().then(d=>{const box=$("#segbox");if(!box)return;const ref=segRefs(d),B=d.brasil||{},mets=segMetricas(d);met=mets[0];
+  const SERIES={homicidio_doloso:"Homicídios dolosos",mandados_cumpridos:"Mandados de prisão cumpridos",feminicidio:"Feminicídios",mortes_intervencao:"Mortes por intervenção policial",desaparecidos:"Pessoas desaparecidas"};
+  const sm=(B.serie_mensal||[]);const sOk=Object.keys(SERIES).filter(k=>sm.some(x=>x[k]));
+  box.innerHTML=`${segBlocos(B,null,ref)}
+  <div class="panel mt" id="segcard"><div id="segmain" class="zmain"><div class="hd"><div><h2>Mapa da segurança</h2><p id="segsub"></p></div></div>
+   <div class="seg" id="segmet" style="margin-bottom:10px">${mets.map(k=>`<button data-m="${k}" class="${k===met?"on":""}">${SEG_MET[k][0]}</button>`).join("")}</div>
+   <div class="mapwrap mapbig"><div id="segmap"></div><div class="zside" id="segside"></div></div>
+   <p class="small muted" style="margin:8px 0 0">Toque em um estado para ver todas as taxas dele.</p></div><div id="segstate" style="display:none"></div></div>
+  ${sOk.length?`<div class="panel mt"><div class="hd"><div><h2>Mês a mês no Brasil</h2><p>Soma dos estados, Sinesp (${ref.ocorr})</p></div></div><div class="seg" id="segser" style="margin-bottom:10px">${sOk.map(k=>`<button data-s="${k}" class="${k===serie?"on":""}">${SERIES[k]}</button>`).join("")}</div><div id="segchart"></div></div>`:""}
+  ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais</p></div></div>${segEfetivo(B.efetivo,null)}
+   <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["PM",r=>n0(gv(d.estados[r.uf],"efetivo","policia_militar")),"num"],["Civil",r=>n0(gv(d.estados[r.uf],"efetivo","policia_civil")),"num"],["Penal",r=>n0(gv(d.estados[r.uf],"efetivo","policia_penal")),"num"],["Bombeiros",r=>n0(gv(d.estados[r.uf],"efetivo","bombeiros")),"num"],["Guardas",r=>n0(gv(d.estados[r.uf],"efetivo","guardas_municipais")),"num"],["Por mil hab.",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"num"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
+  <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos</p></div></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt"><summary class="small">Ver as dos estados</summary>${`<div class="embl-grid">${UNIDADES.filter(u=>u[0]!=="BR").map(([u,c,s,n,dd])=>`<div class="embl-card">${emblema(s,c)}<div><b>${esc(s)}</b> <span class="small muted">${u} · ${(CORP[c]||CORP.pm)[0]}</span><div class="small">${esc(n)}</div><div class="small muted">${esc(dd)}</div></div></div>`).join("")}</div>`}</details>`:""}</div>
+  <div class="panel mt"><h2>Procurados pela Justiça</h2><p class="small" style="margin:6px 0 0">O número de mandados de prisão em aberto vem do Banco Nacional de Medidas Penais e Prisões (BNMP), do Conselho Nacional de Justiça. O BNMP não responde a servidores fora do Brasil; o número entra aqui quando o BRASIL+ rodar no servidor próprio. Enquanto isso, a consulta pública está no <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener">portal do BNMP</a>.</p></div>
+  <div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:6px 0 0;padding-left:18px">${(d.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>
+  ${RSRC(Object.values(d.fontes||{}).join("; "))}`;
+  const desenha=()=>{const[nome,f,fmt,sub]=SEG_MET[met];const vals={};UFS.forEach(u=>{vals[u.uf]=f(d.estados[u.uf])});
+   $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt);
+   const ord=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);
+   const linha=(u,i)=>`<div class="rl"><i style="background:${SCALE[Math.min(4,Math.floor(5*(ord.length-1-i)/ord.length))]};border-radius:50%"></i><a href="#/seguranca" data-segz="${u.uf}">${u.nome}</a><b>${fmt(vals[u.uf])}</b><span></span></div>`;
+   $("#segside").innerHTML=`<div class="small muted" style="margin-bottom:4px">Maiores</div>${ord.slice(0,5).map(linha).join("")}<div class="small muted" style="margin:10px 0 4px">Menores</div>${ord.slice(-5).map((u,i)=>linha(u,ord.length-5+i)).join("")}${f(B)!=null?`<p class="small muted" style="margin:10px 0 0">Brasil: <b>${fmt(f(B))}</b></p>`:""}`;
+   bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ()};
+  const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
+  const graf=()=>{if(!$("#segchart"))return;const pts=sm.filter(x=>x[serie]!=null).map(x=>({data:x.mes,valor:x[serie]}));$("#segchart").innerHTML=pts.length>1?lineChart([{n:SERIES[serie],v:pts.map(p=>p.valor),c:"#4A7FC1"}],pts.map(p=>mesCurto(p.data)),{h:200,fmt:n0}):rvazio("Poucos meses para o gráfico.")};
+  document.querySelectorAll("#segmet button").forEach(b=>b.onclick=()=>{met=b.dataset.m;document.querySelectorAll("#segmet button").forEach(x=>x.classList.toggle("on",x===b));desenha()});
+  document.querySelectorAll("#segser button").forEach(b=>b.onclick=()=>{serie=b.dataset.s;document.querySelectorAll("#segser button").forEach(x=>x.classList.toggle("on",x===b));graf()});
+  if(met)desenha();else{$("#segcard").remove()}graf();rowLinks()}).catch(e=>{const b=$("#segbox");if(b)b.innerHTML=rerro(e)})}}};
+
+/* Início: resumo da segurança do país; tocar no estado mostra as taxas dele */
+{const _i6=P.inicio;P.inicio=(...a)=>{const r=_i6(...a);if(!API.on)return r;
+ return{html:r.html,mount(){r.mount&&r.mount();segDados().then(d=>{const alvo=document.querySelector("#view .meters");if(!alvo||$("#hsegcard"))return;const B=d.brasil||{},o=B.ocorrencias||{},p=B.prisional||{},ref=segRefs(d);
+  const vals={};UFS.forEach(u=>{vals[u.uf]=gv(d.estados[u.uf],"ocorrencias","taxa_homicidio")??gv(d.estados[u.uf],"violencia","taxa_mvi")});
+  const temMapa=Object.values(vals).filter(v=>v!=null).length>=15;
+  const HZ={card:"#hsegcard",main:"#hsegmain",holder:"#hsegstate",map:"#hsegmap",back:"‹ Voltar ao Brasil",render:uf=>segEstado(uf)};
+  alvo.insertAdjacentHTML("afterend",`<div class="panel" id="hsegcard"><div id="hsegmain" class="zmain"><div class="hd"><div><h2>Segurança pública no Brasil</h2><p>${ref.ocorr?`Sinesp, ${ref.ocorr}`:""}${ref.prisional?`${ref.ocorr?"; ":""}presos: ${ref.prisional}`:""}</p></div><a href="#/seguranca">Ver tudo</a></div>
+   <div class="kpis kpis-c">${o.homicidios_por_dia!=null?kp("Homicídios por dia",n1(o.homicidios_por_dia),`${n1(o.taxa_homicidio)} por 100 mil hab.`):""}${o.detidos_por_dia!=null?kp("Presos por mandado, por dia",n1(o.detidos_por_dia)):""}${p.populacao!=null?kp("Presos no país",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`):""}${p.presos_por_dia!=null?kp("Entram nas prisões por dia",n1(p.presos_por_dia)):""}${p.saidas_temporarias?kp("Saídas temporárias",n0(p.saidas_temporarias),`${n0(p.abandonos)} não voltaram`):""}${gv(B,"efetivo","policiais_por_mil")!=null?kp("Policiais por mil hab.",n1(B.efetivo.policiais_por_mil)):""}</div>
+   ${temMapa?`<div class="mapwrap" style="margin-top:12px"><div id="hsegmap">${mapaValores(vals,n1)}</div><div class="zside"><p class="small muted" style="margin:0">Cor: ${gv(d.estados.SP,"ocorrencias","taxa_homicidio")!=null?"homicídios por 100 mil habitantes nos últimos 12 meses":"mortes violentas por 100 mil habitantes"}. Toque em um estado para ver as taxas dele: presos, homicídios, prisões por dia, saídas temporárias e policiais.</p></div></div>`:""}
+   </div><div id="hsegstate" style="display:none"></div></div>`);
+  if(temMapa)bindMap($("#hsegmap"),null,null,(u,el)=>inlineZoomIn(HZ,u,el))}).catch(()=>{})}}}}
+
+/* Estado: seção de segurança na ficha */
+{const _u6=P.uf;P.uf=(id,gs)=>{const r=_u6(id,gs);if(!API.on)return r;const uf=(UF[id]||UF.SP).uf;
+ let html=r.html.replace(/(<button class="chip[^"]*" data-s="arrecadacao">)/,`<button class="chip" data-s="seguranca">Segurança</button>$1`)
+  .replace(/(<section id="s-arrecadacao")/,`<section id="s-seguranca" class="ufsec"><h2 class="ufsec-h">Segurança pública</h2><div id="ufseg-${uf}">${rload()}</div></section>$1`);
+ return{html,mount(){r.mount&&r.mount();segDados().then(d=>{const el=document.getElementById("ufseg-"+uf);if(!el)return;const e=d.estados[uf]||{};
+  el.innerHTML=(segBlocos(e,d.brasil,segRefs(d))||rvazio("Sem dados de segurança deste estado ainda."))+(e.efetivo?`<h3 class="seg-h">Quem faz a segurança</h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:"")+`<p class="small" style="margin:10px 0 0"><a href="#/seguranca">Mapa da segurança do Brasil</a></p>`}).catch(()=>{const el=document.getElementById("ufseg-"+uf);if(el)el.innerHTML=rvazio("Dados de segurança indisponíveis.")})}}}}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
