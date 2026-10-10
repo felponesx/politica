@@ -59,6 +59,19 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Eleições 2026 (1º turno) no robô; `tse-resultados` grava o total do Presidente em `uf=BR`; `/eleicoes/{ano}/estados`.
 - `receita-recuperacao-judicial` (`app/collectors/cnpj_base.py`) e `/recuperacao-judicial`.
 
+## Novidades da v0.6 (out/2026)
+- Segurança pública: `app/collectors/seguranca.py` (Sisdepen semestral, Anuário FBSP T01, Sinesp VDE mensal desde 2015,
+  Raio-X das forças/efetivo) e `GET /seguranca` (por estado, Brasil, últimos 12 meses, histórico por ano). Site: aba
+  Segurança Pública (primeiro "por dia"), quadro no Início e seção na ficha do estado. Procurados (BNMP/CNJ) bloqueado
+  fora do Brasil.
+- Sem chave: `transparencia-orcamento` (arquivo anual do Portal, orçamento por órgão → aba Órgãos), `noticias-politica`
+  (RSS; robô a cada 6 h), `bcb-scr-estados` (SCR.data: dívida e inadimplência por UF → mapa das famílias em Dívidas).
+- Fotos e logos: `scripts/midia_site.py` gera `site/midia/` (fotos oficiais Câmara/Senado/TSE, retratos da Wikipédia de
+  ministros e tribunais, logos de partidos e brasões das polícias da Wikimedia Commons). O site publicado não carrega
+  imagens de fora: o bloco "fotos oficiais e logos" do script troca as iniciais e as cores pelas imagens de `midia/`.
+- Eleições 2018 e 2020 no robô; Dívidas numa tela só (seletor + mapa + zoom); Obras com abas por situação e barra de
+  etapas/prazo; hemiciclo com bolas que se mexem e ministros/tribunais com uma bola por pessoa.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.
