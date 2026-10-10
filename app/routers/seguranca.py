@@ -20,6 +20,12 @@ NOTAS = [
     "Sisdepen (presos dos regimes semiaberto e aberto que não retornaram, inclusive de saída temporária).",
     "Mortes violentas intencionais (Anuário Brasileiro de Segurança Pública): homicídios dolosos, latrocínios, "
     "lesões corporais seguidas de morte e mortes decorrentes de intervenção policial.",
+    "Ocorrências (Sinesp VDE, Ministério da Justiça): registros mensais das secretarias estaduais. 'Presos por "
+    "mandado por dia' são os mandados de prisão cumpridos nos últimos 12 meses divididos pelos dias do período. "
+    "A taxa de homicídio do Sinesp considera os homicídios dolosos dos últimos 12 meses (feminicídios à parte).",
+    "Efetivo (Raio-X das Forças de Segurança Pública, FBSP): profissionais da ativa, a partir dos portais da "
+    "transparência. Polícia Federal, PRF e Polícia Penal Federal só têm o total nacional. A Receita Federal não é "
+    "força de segurança e não entra na conta.",
     "Procurados (mandados de prisão em aberto): o Banco Nacional de Medidas Penais e Prisões (BNMP/CNJ) não "
     "responde a servidores fora do Brasil; o número entra quando o BRASIL+ rodar num servidor no Brasil.",
 ]
@@ -42,6 +48,14 @@ def _dias(ref: str | None) -> int:
         return 184 if sem.strip() == "2" else (182 if bissexto else 181)
     except Exception:
         return 182
+
+
+def _dias_mes(mes: str) -> int:
+    import calendar
+    try:
+        return calendar.monthrange(int(mes[:4]), int(mes[5:7]))[1]
+    except Exception:
+        return 30
 
 
 def _taxa(v, pop):
@@ -103,6 +117,50 @@ def seguranca(db: Session = Depends(get_db)):
             elif r.uf in estados:
                 estados[r.uf]["violencia"] = d
 
+    # ocorrências do Sinesp: últimos 12 meses com dados (pode juntar dois anos)
+    meses_uf = {}
+    for r in db.scalars(select(Registro).where(Registro.fonte == "sinesp", Registro.tipo == "vde")):
+        for mes, evs in ((r.dados or {}).get("meses") or {}).items():
+            meses_uf.setdefault(r.uf, {})[mes] = evs
+    serie = {}
+    if meses_uf:
+        todos = sorted({m for ms in meses_uf.values() for m in ms})
+        janela = todos[-12:]
+        refs["ocorrencias"] = {"de": janela[0], "ate": janela[-1], "meses": len(janela)}
+        dias = sum(_dias_mes(m) for m in janela)
+        for uf, ms in meses_uf.items():
+            tot = {}
+            for m in janela:
+                for ev, v in (ms.get(m) or {}).items():
+                    tot[ev] = tot.get(ev, 0) + v
+                    if uf in estados:
+                        serie.setdefault(m, {}).setdefault(ev, 0)
+                        serie[m][ev] += v
+            if uf not in estados:
+                continue
+            tot["meses_com_dados"] = sum(1 for m in janela if m in ms)
+            tot["detidos_por_dia"] = round(tot.get("mandados_cumpridos", 0) / dias, 1) if tot.get("mandados_cumpridos") else None
+            tot["homicidios_por_dia"] = round(tot.get("homicidio_doloso", 0) / dias, 1) if tot.get("homicidio_doloso") else None
+            tot["taxa_homicidio"] = _taxa(tot.get("homicidio_doloso"), estados[uf]["populacao"]) if tot.get("homicidio_doloso") else None
+            estados[uf]["ocorrencias"] = tot
+
+    # efetivo das forças de segurança (Raio-X do FBSP), com policiais por mil habitantes
+    ano_ef = _ultimo(db, "fbsp", "efetivo")
+    brasil_ef = None
+    if ano_ef:
+        refs["efetivo"] = ano_ef
+        for r in db.scalars(select(Registro).where(Registro.fonte == "fbsp", Registro.tipo == "efetivo",
+                                                   Registro.ano == ano_ef)):
+            d = {k: v for k, v in (r.dados or {}).items() if k != "url"}
+            p = pop.get(r.uf) if r.uf != "BR" else (sum(pop.values()) if pop else None)
+            pol = sum(d.get(k) or 0 for k in ("policia_militar", "policia_civil"))
+            d["policiais_por_mil"] = round(pol / p * 1000, 2) if p and pol else None
+            d["habitantes_por_policial"] = round(p / pol) if p and pol else None
+            if r.uf == "BR":
+                brasil_ef = d
+            elif r.uf in estados:
+                estados[r.uf]["efetivo"] = d
+
     # Brasil: soma dos estados
     def soma(bloco, campo):
         vals = [e[bloco].get(campo) for e in estados.values() if e.get(bloco) and e[bloco].get(campo) is not None]
@@ -122,10 +180,27 @@ def seguranca(db: Session = Depends(get_db)):
         if brasil["violencia"] is not None:
             brasil["violencia"]["taxa_homicidio"] = _taxa(brasil["violencia"].get("homicidio_doloso"), pop_br)
 
+    if brasil_ef:
+        brasil["efetivo"] = brasil_ef
+    if refs.get("ocorrencias"):
+        o = {}
+        for e in estados.values():
+            for k, v in (e.get("ocorrencias") or {}).items():
+                if isinstance(v, int) and k != "meses_com_dados":
+                    o[k] = o.get(k, 0) + v
+        dias = sum(_dias_mes(m) for m in serie)
+        o["detidos_por_dia"] = round(o.get("mandados_cumpridos", 0) / dias, 1) if o.get("mandados_cumpridos") else None
+        o["homicidios_por_dia"] = round(o.get("homicidio_doloso", 0) / dias, 1) if o.get("homicidio_doloso") else None
+        o["taxa_homicidio"] = _taxa(o.get("homicidio_doloso"), pop_br)
+        brasil["ocorrencias"] = o
+        brasil["serie_mensal"] = [{"mes": m, **serie[m]} for m in sorted(serie)]
+
     if not refs:
-        raise HTTPException(404, "Sem dados. Rode as coletas seguranca-prisional e seguranca-anuario.")
+        raise HTTPException(404, "Sem dados. Rode as coletas seguranca-prisional, seguranca-anuario, seguranca-sinesp e seguranca-efetivo.")
     return {"referencias": refs, "brasil": brasil, "estados": estados, "notas": NOTAS,
             "fontes": {"prisional": "Sisdepen — Secretaria Nacional de Políticas Penais (Ministério da Justiça)",
                        "violencia": "Anuário Brasileiro de Segurança Pública (Fórum Brasileiro de Segurança Pública), "
                                     "com dados das secretarias estaduais de segurança",
+                       "efetivo": "Raio-X das Forças de Segurança Pública do Brasil (Fórum Brasileiro de Segurança Pública)",
+                       "ocorrencias": "Sinesp VDE — Ministério da Justiça e Segurança Pública",
                        "populacao": "IBGE"}}

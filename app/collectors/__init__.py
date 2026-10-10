@@ -52,6 +52,8 @@ _TAREFAS_BRUTAS = {
     "receita-recuperacao-judicial": cnpj_base.coletar_recuperacao_judicial,  # mes (AAAA-MM), minutos, pasta_local
     "seguranca-prisional": seguranca.coletar_sisdepen,                 # url, arquivo_local
     "seguranca-anuario": seguranca.coletar_anuario,                    # url, arquivo_local
+    "seguranca-sinesp": seguranca.coletar_sinesp,                      # ano, arquivo_local
+    "seguranca-efetivo": seguranca.coletar_raiox,                      # ano, url, arquivo_local
 }
 
 

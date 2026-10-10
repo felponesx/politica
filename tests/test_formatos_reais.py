@@ -435,3 +435,61 @@ def test_rota_seguranca(tmp_path):
     assert ac["taxa_aprisionamento"] == round(1155 / 900000 * 1e5, 1) and ac["presos_por_dia"] == round(355 / 184, 1)
     assert ac["deficit_vagas"] == 950 - 1005 and ac["nao_voltaram_por_mil_saidas"] == round(1000 * 12 / 180, 1)
     assert d["brasil"]["prisional"]["populacao"] == 2655 and d["referencias"]["prisional"] == "2025/2"
+
+
+# Sinesp VDE 2026 (bancovde-2026.xlsx): cabeçalho e linhas reais, resumidos
+VDE_CAB = ("uf", "municipio", "evento", "data_referencia", "agente", "arma", "faixa_etaria", "feminino", "masculino",
+           "nao_informado", "total_vitima", "total", "total_peso", "abrangencia")
+
+
+def test_sinesp_vde_por_estado_e_mes(tmp_path):
+    import datetime
+    from app.collectors import seguranca
+    d = lambda m: datetime.datetime(2026, m, 1)
+    linhas = [VDE_CAB,
+              ("AC", "ACRELÂNDIA", "Feminicídio", d(1), None, None, None, 0, 0, 0, 0, None, None, "Estadual"),
+              ("AC", "RIO BRANCO", "Homicídio doloso", d(1), None, None, None, 1, 6, 0, 7, None, None, "Estadual"),
+              ("AC", "XAPURI", "Homicídio doloso", d(1), None, None, None, 0, 2, 0, 2, None, None, "Estadual"),
+              ("AC", "RIO BRANCO", "Homicídio doloso", d(2), None, None, None, 0, 3, 0, 3, None, None, "Estadual"),
+              ("AC", "RIO BRANCO", "Mandado de prisão cumprido", d(1), None, None, None, None, None, None, None, 40, None, "Estadual"),
+              ("AC", "XAPURI", "Mandado de prisão cumprido", d(2), None, None, None, None, None, None, None, 5, None, "Estadual"),
+              ("AC", "RIO BRANCO", "Suicídio", d(1), None, None, None, 0, 1, 0, 1, None, None, "Estadual")]
+    r = seguranca.agregar_sinesp(linhas)
+    assert r["AC"]["2026-01"] == {"feminicidio": 0, "homicidio_doloso": 9, "mandados_cumpridos": 40}
+    assert r["AC"]["2026-02"] == {"homicidio_doloso": 3, "mandados_cumpridos": 5}
+    import openpyxl
+    wb = openpyxl.Workbook()
+    for l in linhas:
+        wb.active.append(l)
+    wb.save(tmp_path / "vde.xlsx")
+    seguranca.coletar_sinesp(ano=2026, arquivo_local=str(tmp_path / "vde.xlsx"))
+    o = cliente.get("/seguranca").json()
+    ac = o["estados"]["AC"]["ocorrencias"]
+    assert ac["homicidio_doloso"] == 12 and ac["mandados_cumpridos"] == 45 and ac["detidos_por_dia"] == round(45 / 59, 1)
+    assert o["referencias"]["ocorrencias"] == {"de": "2026-01", "ate": "2026-02", "meses": 2}
+    assert o["brasil"]["serie_mensal"][0]["homicidio_doloso"] == 9
+
+
+# Raio-X das Forças de Segurança Pública 2026 (FBSP), Tabela 02 resumida; SP sem bombeiros (fazem parte da PM)
+RAIOX_T02 = [
+    ("TABELA 02", "(Voltar ao índice)"),
+    ("Efetivo da ativa das agências de segurança pública",),
+    ("Brasil e Unidades da Federação - 2025",),
+    ("Brasil e Unidades da Federação", "Polícia Militar (1)", "Corpo de Bombeiros (1)", "Polícia Civil (1)",
+     "Perícia Técnica (1)", "Polícia Penal (1)", "Polícia Federal (2)", "Polícia Rodoviária Federal (1)",
+     "Polícia Penal Federal (3)", "Polícia Legislativa (4)", "Guarda Civil \nMunicipal (5)", "Total"),
+    ("Brasil", 413319, 63002, 96902, 19340, 91850, 12536, 12328, 1224, 563, 107457, 818521),
+    ("Acre (6)", 2375, 680, 994, 78, 1155, "...", "...", "...", "...", "-", 5282),
+    ("São Paulo (7)", 82250, None, 19420, 4785, 24898, "...", "...", "...", "...", 30184, 161537),
+    ("Fonte: Portais da Transparência do Governo Federal e dos Estados",),
+]
+
+
+def test_raiox_efetivo_por_estado():
+    from app.collectors import seguranca
+    ano, d = seguranca.ler_raiox_t02([tuple(l) + (None,) * (12 - len(l)) for l in RAIOX_T02])
+    assert ano == 2025 and set(d) == {"BR", "AC", "SP"}
+    assert d["BR"]["policia_federal"] == 12536 and d["BR"]["policia_penal_federal"] == 1224
+    assert d["BR"]["policia_penal"] == 91850 and d["BR"]["guardas_municipais"] == 107457
+    assert d["AC"]["guardas_municipais"] == 0 and d["AC"]["policia_federal"] is None
+    assert d["SP"]["bombeiros"] is None and d["SP"]["policia_militar"] == 82250 and d["SP"]["total"] == 161537

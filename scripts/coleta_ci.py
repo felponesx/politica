@@ -32,6 +32,9 @@ LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "c
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
 ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, "apenas_eleitos": "true"}),
             ("tse-resultados", {"ano": 2024}), ("tse-candidatos", {"ano": 2026}), ("tse-resultados", {"ano": 2026})]
+# segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
+SEGURANCA = [("seguranca-prisional", {}), ("seguranca-anuario", {}), ("seguranca-efetivo", {}),
+             ("seguranca-sinesp", {"ano": date.today().year - 1}), ("seguranca-sinesp", {"ano": date.today().year})]
 
 
 def comandos():
@@ -50,7 +53,7 @@ def comandos():
     # os CNPJs dependem da cota e dos contratos; o resultado de 2022 (arquivo de ~580 MB) fica por último
     cnpj = [p for p in passos if p[0] == "cnpj-fornecedores"]
     # a base do CNPJ (recuperação judicial) baixa vários GB devagar: fica no fim, com o tempo que sobrar
-    passos = ([p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + cnpj + [("tse-resultados", {"ano": 2022})]
+    passos = ([p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + SEGURANCA + cnpj + [("tse-resultados", {"ano": 2022})]
               + [("receita-recuperacao-judicial", {"minutos": 150})])
     return [[nome, *(f"{k}={_arg(v)}" for k, v in kw.items())] for nome, kw in passos]
 

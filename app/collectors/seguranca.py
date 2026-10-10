@@ -184,3 +184,186 @@ def coletar_anuario(arquivo_local: str | None = None, url: str | None = None):
                         "dados": {**d, "edicao": edicao, "url": url}})
                 n += 1
     return n.itens
+
+
+# ---------------- Sinesp VDE (Ministério da Justiça) ----------------
+# Base mensal por município, enviada pelas secretarias estaduais: uf, municipio, evento, data_referencia, ...,
+# total_vitima (eventos com vítima), total (ocorrências e apreensões). Uma planilha por ano.
+SINESP_URL = ("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/download/"
+              "dnsp-base-de-dados/bancovde-{ano}.xlsx/@@download/file")
+EVENTOS_SINESP = {
+    "homicidio doloso": "homicidio_doloso",
+    "feminicidio": "feminicidio",
+    "roubo seguido de morte (latrocinio)": "latrocinio",
+    "lesao corporal seguida de morte": "lesao_morte",
+    "morte por intervencao de agente do estado": "mortes_intervencao",
+    "morte de agente do estado": "agentes_mortos",
+    "tentativa de homicidio": "tentativa_homicidio",
+    "mandado de prisao cumprido": "mandados_cumpridos",
+    "pessoa desaparecida": "desaparecidos",
+    "pessoa localizada": "localizados",
+    "arma de fogo apreendida": "armas_apreendidas",
+    "estupro": "estupro",
+    "estupro de vulneravel": "estupro_vulneravel",
+    "roubo de veiculo": "roubo_veiculo",
+    "furto de veiculo": "furto_veiculo",
+    "roubo de carga": "roubo_carga",
+    "trafico de drogas": "trafico_drogas",
+}
+
+
+def agregar_sinesp(linhas) -> dict:
+    """{uf: {"AAAA-MM": {evento: n}}} a partir das linhas da planilha (a primeira é o cabeçalho).
+    Para cada evento vale a soma de total_vitima; se o evento não tem vítimas (apreensões, mandados), a de total."""
+    it = iter(linhas)
+    cab = [_norm(str(c or "")) for c in next(it)]
+    i = {c: cab.index(c) for c in ("uf", "evento", "data_referencia", "total_vitima", "total") if c in cab}
+    if not {"uf", "evento", "data_referencia"} <= set(i):
+        raise ValueError(f"Planilha do Sinesp mudou: cabeçalho {cab}")
+    vit, tot = {}, {}
+    for l in it:
+        uf = str(l[i["uf"]] or "").strip().upper()
+        ev = EVENTOS_SINESP.get(_norm(str(l[i["evento"]] or "")))
+        dt = l[i["data_referencia"]]
+        if len(uf) != 2 or not ev or dt is None:
+            continue
+        mes = dt.strftime("%Y-%m") if hasattr(dt, "strftime") else str(dt)[:7]
+        k = (uf, mes, ev)
+        for alvo, col in ((vit, "total_vitima"), (tot, "total")):
+            v = l[i[col]] if col in i and i[col] < len(l) else None
+            if isinstance(v, (int, float)):
+                alvo[k] = alvo.get(k, 0) + v
+    eventos_com_vitima = {k[2] for k, v in vit.items() if v}
+    out = {}
+    for k in set(vit) | set(tot):
+        uf, mes, ev = k
+        v = vit.get(k, 0) if ev in eventos_com_vitima else tot.get(k, 0)
+        out.setdefault(uf, {}).setdefault(mes, {})[ev] = int(round(v))
+    return out
+
+
+def coletar_sinesp(ano: int | None = None, arquivo_local: str | None = None):
+    """Ocorrências do Sinesp VDE por estado e mês (ano corrente por padrão; se ainda não publicado, o anterior)."""
+    import datetime as _dt
+    import openpyxl
+    ano = int(ano) if ano else _dt.date.today().year
+    with registrar_coleta("sinesp", "vde", ano=ano) as (db, n):
+        if arquivo_local:
+            bruto = open(arquivo_local, "rb").read()
+        else:
+            r = http._cliente.get(SINESP_URL.format(ano=ano), headers=UA, timeout=300, follow_redirects=True)
+            r.raise_for_status()
+            bruto = r.content
+        wb = openpyxl.load_workbook(io.BytesIO(bruto), read_only=True, data_only=True)
+        por_uf = agregar_sinesp(wb.worksheets[0].iter_rows(values_only=True))
+        if not por_uf:
+            raise RuntimeError("Planilha do Sinesp sem linhas reconhecidas")
+        for uf, meses in por_uf.items():
+            totais = {}
+            for m in meses.values():
+                for ev, v in m.items():
+                    totais[ev] = totais.get(ev, 0) + v
+            upsert(db, Registro, {"fonte": "sinesp", "tipo": "vde", "chave": f"{ano}-{uf}"},
+                   {"uf": uf, "ano": ano, "titulo": f"Sinesp {uf} {ano}", "valor": totais.get("homicidio_doloso"),
+                    "dados": {"meses": dict(sorted(meses.items())), "totais": totais,
+                              "primeiro_mes": min(meses), "ultimo_mes": max(meses),
+                              "url": SINESP_URL.format(ano=ano) if not arquivo_local else None}})
+            n += 1
+    return n.itens
+
+
+# ---------------- Raio-X das Forças de Segurança Pública (FBSP) ----------------
+# Tabela 02: efetivo da ativa por UF (PM, bombeiros, Polícia Civil, perícia, Polícia Penal, guardas municipais) e os
+# totais federais (PF, PRF, Polícia Penal Federal, Polícia Legislativa). Tabelas 03 a 05: efetivo previsto em lei.
+RAIOX_PAGINA = "https://forumseguranca.org.br/publicacoes/raio-x-das-forcas-de-seguranca-publica-do-brasil-{ano}/"
+RAIOX_COLUNAS = [("policia_militar", r"policia militar"), ("bombeiros", r"bombeiro"), ("policia_civil", r"policia civil"),
+                 ("pericia", r"pericia"), ("policia_penal_federal", r"penal federal"), ("policia_penal", r"policia penal"),
+                 ("policia_federal", r"policia federal"), ("prf", r"rodoviaria"), ("policia_legislativa", r"legislativa"),
+                 ("guardas_municipais", r"guarda"), ("total", r"^total")]
+
+
+def _valor_tabela(v):
+    if v in (None, "", "...", "…"):
+        return None
+    if v == "-":
+        return 0
+    try:
+        return int(round(float(v)))
+    except (TypeError, ValueError):
+        return None
+
+
+def _linhas_uf(linhas, desde):
+    """(uf, linha) das linhas de estado (e "BR") depois do cabeçalho, até a fonte/notas."""
+    from app.utils import para_uf
+    for l in linhas[desde:]:
+        nome = re.sub(r"\(\d+\)", "", str(l[0] or "")).strip()
+        if not nome:
+            continue
+        if nome.startswith(("Fonte", "(")):
+            break
+        uf = "BR" if nome == "Brasil" else para_uf(nome)
+        if uf:
+            yield uf, l
+
+
+def ler_raiox_t02(linhas: list) -> tuple[int | None, dict]:
+    """(ano, {UF: {força: efetivo}}) da Tabela 02 do Raio-X."""
+    ano = next((int(m.group(1)) for l in linhas[:6] for v in l if v
+                for m in [re.search(r"Federa..o\s*-\s*(\d{4})", str(v))] if m), None)
+    ic = next(i for i, l in enumerate(linhas) if l and any("militar" in _norm(str(v or "")) for v in l))
+    cab = [_norm(str(v or "")) for v in linhas[ic]]
+    pos = {}
+    for c, h in enumerate(cab[1:], 1):
+        h = re.sub(r"\(\d+\)", "", h).strip()
+        campo = next((k for k, expr in RAIOX_COLUNAS if re.search(expr, h)), None)
+        if campo and campo not in pos:
+            pos[campo] = c
+    if not {"policia_militar", "policia_civil", "total"} <= set(pos):
+        raise ValueError(f"Tabela 02 do Raio-X mudou: {cab}")
+    out = {uf: {k: _valor_tabela(l[c]) if c < len(l) else None for k, c in pos.items()}
+           for uf, l in _linhas_uf(linhas, ic + 1)}
+    return ano, out
+
+
+def ler_raiox_previsto(linhas: list) -> dict:
+    """{UF: (previsto, existente)} das Tabelas 03 a 05."""
+    ic = next(i for i, l in enumerate(linhas) if l and any("previsto" in _norm(str(v or "")) for v in l))
+    return {uf: (_valor_tabela(l[1]), _valor_tabela(l[2])) for uf, l in _linhas_uf(linhas, ic + 1)}
+
+
+def coletar_raiox(ano: int | None = None, arquivo_local: str | None = None, url: str | None = None):
+    """Efetivo das forças de segurança por estado (Raio-X do FBSP mais recente, ou `ano`)."""
+    import datetime as _dt
+    import openpyxl
+    with registrar_coleta("fbsp", "efetivo", ano=ano or "mais recente") as (db, n):
+        if arquivo_local:
+            bruto = open(arquivo_local, "rb").read()
+        else:
+            if not url:
+                for a in ([int(ano)] if ano else range(_dt.date.today().year, _dt.date.today().year - 4, -1)):
+                    p = http._cliente.get(RAIOX_PAGINA.format(ano=a), headers=UA, timeout=60, follow_redirects=True)
+                    achados = re.findall(r'(https://[^"\' ]+raio-x[^"\' ]*\.xlsx)', p.text) if p.status_code == 200 else []
+                    if achados:
+                        url = achados[0]
+                        break
+                if not url:
+                    raise RuntimeError("Planilha do Raio-X das Forças de Segurança não encontrada")
+            r = http._cliente.get(url, headers=UA, timeout=120, follow_redirects=True)
+            r.raise_for_status()
+            bruto = r.content
+        wb = openpyxl.load_workbook(io.BytesIO(bruto), read_only=True, data_only=True)
+        ano_dados, por_uf = ler_raiox_t02(list(wb["T02"].iter_rows(values_only=True)))
+        previsto = {}
+        for aba, forca in (("T03", "policia_militar"), ("T04", "policia_civil"), ("T05", "policia_penal")):
+            try:
+                for uf, (prev, _) in ler_raiox_previsto(list(wb[aba].iter_rows(values_only=True))).items():
+                    previsto.setdefault(uf, {})[forca] = prev
+            except (KeyError, StopIteration):
+                n.avisos.append(f"aba {aba} (efetivo previsto) não encontrada")
+        for uf, d in por_uf.items():
+            upsert(db, Registro, {"fonte": "fbsp", "tipo": "efetivo", "chave": f"{ano_dados}-{uf}"},
+                   {"uf": uf, "ano": ano_dados, "titulo": f"Efetivo das forças de segurança {uf} {ano_dados}",
+                    "valor": d.get("total"), "dados": {**d, "previsto": previsto.get(uf, {}), "url": url}})
+            n += 1
+    return n.itens
