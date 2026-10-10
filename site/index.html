@@ -1261,7 +1261,8 @@ a.rrow b{font-weight:500}
 .seg-efb{height:8px;background:var(--line2);border-radius:5px;overflow:hidden}.seg-efb i{display:block;height:100%;background:#7FA9DE;border-radius:5px}
 .embl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
-.embl{flex:none}.pol-logo{flex:none;object-fit:contain}.seg-efn .pol-logo{margin-right:7px;vertical-align:middle}
+.embl{flex:none}
+.kpis-dia .kpi strong{font-size:28px}.seg-ano .seg-h{font-size:13.5px;margin-top:14px}.seg-ano .kpi strong{font-size:17px}.seg-ano .kpi span,.seg-ano .kpi em{font-size:11.5px}.seg-ano .kpi{padding:10px 12px}.seg-anos{padding:6px 12px}.pol-logo{flex:none;object-fit:contain}.seg-efn .pol-logo{margin-right:7px;vertical-align:middle}
 #hsegcard{margin-top:16px}
 .dvq-linha .dvq{margin-top:14px;max-width:420px}
 
@@ -3762,22 +3763,49 @@ function cartaoUnidade([u,c,s,n,d]){const k=`u:${u}:${s}`;return`<div class="emb
 function segEstado(uf){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04,d=SEG,e=d.estados[uf]||{},ref=segRefs(d);
  const uns=segUnidades(uf);
  return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Segurança pública</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${e.populacao?nf(Math.round(e.populacao))+" habitantes. ":""}Taxas por 100 mil habitantes; ao lado, a média do Brasil.</p></div></div>
- <div class="ufrest">${segBlocos(e,d.brasil,ref)||rvazio("Sem dados de segurança deste estado ainda.")}
+ <div class="ufrest">${segCompleto(e,d,uf)||rvazio("Sem dados de segurança deste estado ainda.")}
  ${e.efetivo?`<h3 class="seg-h">Quem faz a segurança <small>efetivo da ativa, ${ref.efetivo}</small></h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:""}
  ${uns?`<h3 class="seg-h">Unidades especiais</h3>${uns}`:""}
  <p class="small" style="margin:12px 0 0"><a href="#/seguranca">Ver a segurança pública do Brasil</a> · <a href="#/uf/${uf}">Ficha completa ${esc(deUF(uf))}</a></p></div>`}}
 const SEG_SEM=`<div class="rbanner">Os números de segurança pública aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
+
+/* segurança: primeiro o que acontece por dia (média dos últimos 12 meses), depois os totais, depois ano a ano */
+const SEG_DIA=[["homicidio_doloso","Homicídios dolosos"],["mandados_cumpridos","Presos por mandado de prisão"],["feminicidio","Feminicídios"],["latrocinio","Latrocínios"],
+ ["mortes_intervencao","Mortes por intervenção policial"],["tentativa_homicidio","Tentativas de homicídio"],["estupro","Estupros"],["estupro_vulneravel","Estupros de vulnerável"],
+ ["roubo_veiculo","Roubos de veículo"],["furto_veiculo","Furtos de veículo"],["roubo_carga","Roubos de carga"],["trafico_drogas","Ocorrências de tráfico"],
+ ["armas_apreendidas","Armas apreendidas"],["desaparecidos","Pessoas desaparecidas"],["localizados","Pessoas localizadas"]];
+function diasPeriodo(oc){if(!oc)return null;if(oc.dias)return oc.dias;if(!oc.de||!oc.ate)return null;let[a,m]=oc.de.split("-").map(Number);const[a2,m2]=oc.ate.split("-").map(Number);let n=0;
+ while(a<a2||(a===a2&&m<=m2)){n+=new Date(a,m,0).getDate();m++;if(m>12){m=1;a++}}return n||null}
+function segPorDia(e,d){const o=e.ocorrencias||{},p=e.prisional||{},R=d.referencias||{},dias=diasPeriodo(R.ocorrencias),ref=segRefs(d);
+ const fd=v=>v==null?"—":v>=10?nf(Math.round(v)):v.toLocaleString("pt-BR",{maximumFractionDigits:1});
+ const it=SEG_DIA.filter(([k])=>dias&&o[k]).map(([k,t])=>`<div class="kpi"><span>${t}</span><strong>${fd(o[k]/dias)}</strong><em>por dia · ${nf(o[k])} em 12 meses</em></div>`);
+ const sem=p.populacao?_dias(R.prisional):null;
+ if(p.entradas&&sem)it.splice(2,0,`<div class="kpi"><span>Entram nas prisões</span><strong>${fd(p.entradas/sem)}</strong><em>por dia · ${ref.prisional}</em></div>`);
+ if(p.saidas_temporarias&&sem)it.push(`<div class="kpi"><span>Saídas temporárias</span><strong>${fd(p.saidas_temporarias/sem)}</strong><em>por dia · ${nf(p.abandonos||0)} não voltaram no semestre</em></div>`);
+ if(p.abandonos&&sem)it.push(`<div class="kpi"><span>Não voltaram para a prisão</span><strong>${fd(p.abandonos/sem)}</strong><em>por dia · ${ref.prisional}</em></div>`);
+ return it.length?`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="kpis kpis-c kpis-dia">${it.join("")}</div>`:""}
+function _dias(ref){if(!ref)return 182;const[a,sm]=String(ref).split("/");return sm==="2"?184:((+a%4===0&&+a%100!==0)||+a%400===0?182:181)}
+function segAnoAno(d,uf){const H=d.historico||{},O=H.ocorrencias||{},V=H.violencia||{},Pr=H.prisional||{};const anos=[...new Set([...Object.keys(O),...Object.keys(V)])].sort().reverse();if(!anos.length)return"";
+ const pick=(a,k)=>{const x=O[a];if(!x)return null;const b=uf?x.estados[uf]:x.brasil;return b?b[k]:null};
+ const mvi=a=>{const x=V[a];if(!x)return null;const b=uf?x.estados[uf]:x.brasil;return b?b.mvi:null};
+ const pres=a=>{const k=Object.keys(Pr).filter(r=>r.startsWith(a)).sort().pop();if(!k)return null;const b=uf?Pr[k].estados[uf]:Pr[k].brasil;return b?b.populacao:null};
+ const rows=anos.map(a=>({a,m:O[a]?O[a].meses:null}));
+ return`<h3 class="seg-h">Ano a ano <small>${uf?esc(UF[uf].nome):"Brasil"}</small></h3><div class="panel seg-anos">${table([["Ano",r=>`<b>${r.a}</b>${r.m&&r.m<12?` <small class="muted">(${r.m} meses)</small>`:""}`],
+  ["Homicídios",r=>n0(pick(r.a,"homicidio_doloso")),"num"],["Feminicídios",r=>n0(pick(r.a,"feminicidio")),"num"],["Presos por mandado",r=>n0(pick(r.a,"mandados_cumpridos")),"num"],
+  ["Mortes violentas (Anuário)",r=>n0(mvi(r.a)),"num"],["Presos (fim do ano)",r=>n0(pres(r.a)),"num"]],rows)}</div>`}
+function segCompleto(e,d,uf){return segPorDia(e,d)+`<div class="seg-ano">${segBlocos(e,uf?d.brasil:null,segRefs(d))}</div>`+segAnoAno(d,uf)}
 
 P.seguranca=()=>{let met=null,serie="homicidio_doloso";const SZ={card:"#segcard",main:"#segmain",holder:"#segstate",map:"#segmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>segEstado(uf)};
  return{html:`<div class="ph"><div><h1>Segurança Pública</h1><p>Presos, homicídios, prisões por dia, saídas temporárias e o efetivo das polícias em cada estado, com dados oficiais.</p></div></div><div id="segbox">${API.on?rload():SEG_SEM}</div>`,
  mount(){if(!API.on)return;segDados().then(d=>{const box=$("#segbox");if(!box)return;const ref=segRefs(d),B=d.brasil||{},mets=segMetricas(d);met=mets[0];
   const SERIES={homicidio_doloso:"Homicídios dolosos",mandados_cumpridos:"Mandados de prisão cumpridos",feminicidio:"Feminicídios",mortes_intervencao:"Mortes por intervenção policial",desaparecidos:"Pessoas desaparecidas"};
   const sm=(B.serie_mensal||[]);const sOk=Object.keys(SERIES).filter(k=>sm.some(x=>x[k]));
-  box.innerHTML=`${segBlocos(B,null,ref)}
+  box.innerHTML=`${segPorDia(B,d)}<div class="seg-ano">${segBlocos(B,null,ref)}</div>
   <div class="panel mt" id="segcard"><div id="segmain" class="zmain"><div class="hd"><div><h2>Mapa da segurança</h2><p id="segsub"></p></div></div>
    <div class="seg" id="segmet" style="margin-bottom:10px">${mets.map(k=>`<button data-m="${k}" class="${k===met?"on":""}">${SEG_MET[k][0]}</button>`).join("")}</div>
    <div class="mapwrap mapbig"><div id="segmap"></div><div class="zside" id="segside"></div></div>
    <p class="small muted" style="margin:8px 0 0">Toque em um estado para ver todas as taxas dele.</p></div><div id="segstate" style="display:none"></div></div>
+  ${segAnoAno(d,null)}
   ${sOk.length?`<div class="panel mt"><div class="hd"><div><h2>Mês a mês no Brasil</h2><p>Soma dos estados, Sinesp (${ref.ocorr})</p></div></div><div class="seg" id="segser" style="margin-bottom:10px">${sOk.map(k=>`<button data-s="${k}" class="${k===serie?"on":""}">${SERIES[k]}</button>`).join("")}</div><div id="segchart"></div></div>`:""}
   ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais</p></div></div>${segEfetivo(B.efetivo,null)}
    <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["PM",r=>n0(gv(d.estados[r.uf],"efetivo","policia_militar")),"num"],["Civil",r=>n0(gv(d.estados[r.uf],"efetivo","policia_civil")),"num"],["Penal",r=>n0(gv(d.estados[r.uf],"efetivo","policia_penal")),"num"],["Bombeiros",r=>n0(gv(d.estados[r.uf],"efetivo","bombeiros")),"num"],["Guardas",r=>n0(gv(d.estados[r.uf],"efetivo","guardas_municipais")),"num"],["Por mil hab.",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"num"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
@@ -3814,7 +3842,7 @@ P.seguranca=()=>{let met=null,serie="homicidio_doloso";const SZ={card:"#segcard"
  let html=r.html.replace(/(<button class="chip[^"]*" data-s="arrecadacao">)/,`<button class="chip" data-s="seguranca">Segurança</button>$1`)
   .replace(/(<section id="s-arrecadacao")/,`<section id="s-seguranca" class="ufsec"><h2 class="ufsec-h">Segurança pública</h2><div id="ufseg-${uf}">${rload()}</div></section>$1`);
  return{html,mount(){r.mount&&r.mount();segDados().then(d=>{const el=document.getElementById("ufseg-"+uf);if(!el)return;const e=d.estados[uf]||{};
-  el.innerHTML=(segBlocos(e,d.brasil,segRefs(d))||rvazio("Sem dados de segurança deste estado ainda."))+(e.efetivo?`<h3 class="seg-h">Quem faz a segurança</h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:"")+`<p class="small" style="margin:10px 0 0"><a href="#/seguranca">Mapa da segurança do Brasil</a></p>`}).catch(()=>{const el=document.getElementById("ufseg-"+uf);if(el)el.innerHTML=rvazio("Dados de segurança indisponíveis.")})}}}}
+  el.innerHTML=(segCompleto(e,d,uf)||rvazio("Sem dados de segurança deste estado ainda."))+(e.efetivo?`<h3 class="seg-h">Quem faz a segurança</h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:"")+`<p class="small" style="margin:10px 0 0"><a href="#/seguranca">Mapa da segurança do Brasil</a></p>`}).catch(()=>{const el=document.getElementById("ufseg-"+uf);if(el)el.innerHTML=rvazio("Dados de segurança indisponíveis.")})}}}}
 
 /* ===================== v0.6: Dívidas numa tela só — seletor de tipo, mapa que muda e zoom no estado ===================== */
 let DV_MAPA_EST=null;
