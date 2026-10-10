@@ -1262,6 +1262,7 @@ a.rrow b{font-weight:500}
 .embl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
 .embl{flex:none}
+.nw-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}.nw{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit;text-decoration:none!important}.nw:hover{border-color:#B9D1EE}.nw b{font-weight:600;font-size:15px;line-height:1.35}.nw-v{font-size:12px;color:var(--muted)}.nw-r{font-size:13px;color:var(--ink2);line-height:1.45}
 .kpis-dia .kpi strong{font-size:28px}.seg-ano .seg-h{font-size:13.5px;margin-top:14px}.seg-ano .kpi strong{font-size:17px}.seg-ano .kpi span,.seg-ano .kpi em{font-size:11.5px}.seg-ano .kpi{padding:10px 12px}.seg-anos{padding:6px 12px}.pol-logo{flex:none;object-fit:contain}.seg-efn .pol-logo{margin-right:7px;vertical-align:middle}
 #hsegcard{margin-top:16px}
 .dvq-linha .dvq{margin-top:14px;max-width:420px}
@@ -1340,6 +1341,7 @@ arrecadacao:'<path d="M4 7h16v12H4z"/><path d="M4 11h16M8 15h3"/><path d="M12 3v
 dividas:'<path d="M3 7h18v12H3z"/><path d="M3 11h18"/><path d="M7 15h4"/><path d="M17 3l-3 4M7 3l3 4"/>',
 indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4l2 2 4-4"/><path d="M17 11h4M19 9v4"/>',
 seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
 orgaos:'<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>',
 pessoas:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
@@ -1354,7 +1356,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -2647,7 +2649,7 @@ const SNAP_FILTROS={"/parlamentares":{casa:"=casa",uf:"=uf",partido:"=partido",q
  "/proposicoes":{casa:"=casa",ano:"=ano",tipo:"=sigla_tipo",q:"~ementa"},"/legislacao":{tipo:"=tipo",ano:"=ano",esfera:"=esfera",uf:"=uf",q:"~ementa,numero"},
  "/contratos":{uf:"=uf",ano:"=ano",esfera:"=esfera",municipio:"=municipio"},"/obras":{uf:"=uf",situacao:"=situacao",tipo:"~tipo"},
  "/candidatos":{uf:"=uf",partido:"=partido",q:"~nome,nome_urna"},"/municipios":{uf:"=uf",q:"~nome",capag:"=capag"},
- "/empresas":{setor:"=setor",uf:"=uf",q:"~razao_social"},"/dividas/devedores":{uf:"=uf",q:"~nome,cnpj"},"/recuperacao-judicial":{uf:"=uf",situacao:"=situacao_cadastral",q:"~nome,nome_fantasia,documento"},despesas:{ano:"=ano"}};
+ "/empresas":{setor:"=setor",uf:"=uf",q:"~razao_social"},"/dividas/devedores":{uf:"=uf",q:"~nome,cnpj"},"/recuperacao-judicial":{uf:"=uf",situacao:"=situacao_cadastral",q:"~nome,nome_fantasia,documento"},"/noticias":{veiculo:"=veiculo",q:"~titulo,resumo"},despesas:{ano:"=ano"}};
 /* ordenações feitas aqui (a cópia guarda a lista numa ordem só): valor = campo ordenado do maior para o menor */
 const SNAP_ORDEM={"/municipios":{nome:null,populacao:"populacao",pib:"pib"}};
 const snapFalta=(o="Esta consulta")=>Object.assign(new Error(`${o} não faz parte da cópia dos dados oficiais publicada com o site. Para consultar tudo, abra o site pelo servidor BRASIL+`),{status:404});
@@ -3893,6 +3895,21 @@ function hemiIndicados(casa){let grupos=[],lista=[];
    lista.push(m?{nome:m[0],cargo:m[1]||(m[0]==="Vaga aberta"?"Cadeira sem ocupante":"Ministro(a)"),foto:m[0]==="Vaga aberta"?null:"wiki:"+m[0],sit:m[0]==="Vaga aberta"?"Vaga":"No cargo",extra:[["Grupo",g[0]],["Origem",m[2]||""],["Órgão",c.n]]}:{nome:"Cadeira",cargo:g[0],sit:"",extra:[["Órgão",c.n]]})}})}
  const T=grupos.reduce((a,g)=>a+g[1],0);
  return{lista,html:hemiciclo(grupos,{w:320,h:170,dot:T<=12?12:T<=40?9:undefined}).replace(/<title>[^<]*<\/title>/g,"")+`<div class="hleg">${grupos.map(g=>`<span><i style="background:${g[2]}"></i>${esc(g[0])}<b>${g[1]}</b></span>`).join("")}</div>`}}
+
+/* ---------- Notícias de política (feeds públicos dos veículos; o texto completo fica no site de cada um) ---------- */
+function quandoNw(iso){if(!iso)return"";const d=new Date(iso),m=(Date.now()-d)/6e4;if(m<1)return"agora";if(m<60)return`há ${Math.round(m)} min`;if(m<1440)return`há ${Math.round(m/60)} h`;
+ return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
+P.noticias=()=>{let f={veiculo:"",q:""};
+ return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política nos principais veículos: g1, CNN Brasil, O Globo, Folha, TV e Agência Câmara, Agência Senado, Agência Brasil e UOL. Toque na manchete para ler no site do veículo.</p></div></div>
+ <div id="nwBox">${API.on?rload():`<div class="rbanner">As notícias aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ mount(){if(!API.on)return;apiGet("/noticias?limit=500").then(t=>{const box=$("#nwBox");if(!box)return;const cont={};(t.itens||[]).forEach(i=>cont[i.veiculo]=(cont[i.veiculo]||0)+1);
+  const vs=Object.entries(cont).sort((a,b)=>b[1]-a[1]);
+  box.innerHTML=`<div class="filters" style="margin-bottom:12px"><div class="seg seg-grupo" id="nwV"><button class="on" data-v="">Todos <small>${nf(t.total||0)}</small></button>${vs.map(([v,n])=>`<button data-v="${esc(v)}">${esc(v)} <small>${n}</small></button>`).join("")}</div><input id="nwQ" placeholder="Buscar nas manchetes" style="flex:1;min-width:180px" autocomplete="off"></div>
+   <div id="nwL"></div>${maisBtn("nwM")}<p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} Atualizado a cada 6 horas pelo robô do BRASIL+.</p>`;
+  const pg=listaPaginada({url:()=>"/noticias"+qs(f),alvo:"#nwL",mais:"#nwM",limite:40,vazio:"Nenhuma notícia com esse filtro.",
+   render:it=>`<div class="nw-lista">${it.map(n=>`<a class="nw" href="${esc(n.link)}" target="_blank" rel="noopener"><span class="nw-v">${esc(n.veiculo)} · ${quandoNw(n.data)}</span><b>${esc(n.titulo)}</b>${n.resumo?`<span class="nw-r">${esc(n.resumo.slice(0,220))}${n.resumo.length>220?"…":""}</span>`:""}</a>`).join("")}</div>`});
+  pg(true);document.querySelectorAll("#nwV button").forEach(b=>b.onclick=()=>{f.veiculo=b.dataset.v;document.querySelectorAll("#nwV button").forEach(x=>x.classList.toggle("on",x===b));pg(true)});
+  $("#nwQ").oninput=debounce(e=>{f.q=e.target.value.trim();pg(true)})}).catch(e=>{const b=$("#nwBox");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("As notícias entram na próxima coleta do robô."):rerro(e)})}}};
 
 /* ===================== v0.6: fotos oficiais e logos (site/midia, gerados pelo robô) ===================== */
 const MIDIA={idx:undefined,logos:null,blocos:{}};
