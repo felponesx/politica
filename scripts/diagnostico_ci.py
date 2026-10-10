@@ -233,82 +233,105 @@ def colunas_xlsx(nome, url, procurar, linhas_cab=6, max_abas=40, headers=None, m
         print(f"  ERRO {type(e).__name__}: {e}", flush=True)
 
 
+def entrada_zip(url, nome_parte):
+    """Baixa só um arquivo de dentro de um zip remoto (pedidos Range) e devolve o texto."""
+    import struct
+    import zlib
+    tam = int(cli.head(url).headers.get("content-length") or 0)
+    fim = cli.get(url, headers={"Range": f"bytes={max(0, tam - 262144)}-{tam - 1}"}).content
+    k = fim.rfind(b"PK\x05\x06")
+    n_ent, cd_tam, cd_ini = struct.unpack("<HII", fim[k + 10:k + 20])
+    cd = cli.get(url, headers={"Range": f"bytes={cd_ini}-{cd_ini + cd_tam - 1}"}).content
+    pos = 0
+    while pos < len(cd) and cd[pos:pos + 4] == b"PK\x01\x02":
+        metodo = struct.unpack("<H", cd[pos + 10:pos + 12])[0]
+        comp, desc = struct.unpack("<II", cd[pos + 20:pos + 28])
+        nl, el, cl = struct.unpack("<HHH", cd[pos + 28:pos + 34])
+        off = struct.unpack("<I", cd[pos + 42:pos + 46])[0]
+        nm = cd[pos + 46:pos + 46 + nl].decode("latin-1")
+        pos += 46 + nl + el + cl
+        if nome_parte in nm:
+            loc = cli.get(url, headers={"Range": f"bytes={off}-{off + 30 + 1024 + comp}"}).content
+            nl2, el2 = struct.unpack("<HH", loc[26:30])
+            dado = loc[30 + nl2 + el2:30 + nl2 + el2 + comp]
+            bruto = zlib.decompress(dado, -15) if metodo == 8 else dado
+            print(f"  {nm}: {comp} -> {desc} bytes", flush=True)
+            return bruto.decode("latin-1")
+    return None
+
+
 def main():
     nav = {"User-Agent": UA_NAV}
+    import csv
     import openpyxl
     import re
-    from collections import Counter
+    from collections import Counter, defaultdict
 
-    def wb_de(url):
-        r = cli.get(url, headers=nav)
-        print(f"\n=== {url.rsplit('/', 3)[-3:]}: HTTP {r.status_code} | {len(r.content)} bytes", flush=True)
-        return openpyxl.load_workbook(io.BytesIO(r.content), read_only=True, data_only=True)
+    # 1) Raio-X das Forças de Segurança Pública 2026 (FBSP): efetivos por UF
+    pag = "https://forumseguranca.org.br/publicacoes/raio-x-das-forcas-de-seguranca-publica-do-brasil-2026/"
+    r = ver("raio-x pagina", pag, headers=nav, n=300)
+    urls = []
+    if r is not None:
+        urls = sorted(set(re.findall(r'(https://[^"\' ]+\.(?:xlsx|xls|csv))', r.text)))
+        print("  planilhas:", urls, flush=True)
+    for u in urls[:3]:
+        planilha("raio-x " + u.rsplit("/", 1)[-1], u, linhas=45, headers=nav)
 
-    # Sinesp (BancoVDE 2026): estrutura e eventos
+    # 2) Sinesp VDE 2026: linhas de mandados cumpridos e homicídios
     try:
-        wb = wb_de("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/download/"
-                   "dnsp-base-de-dados/bancovde-2026.xlsx/@@download/file")
-        for ws in wb.worksheets:
-            print(f"  --- aba {ws.title!r} ({ws.max_row}x{ws.max_column})", flush=True)
-            cab, eventos, ufs, meses, n = None, Counter(), Counter(), Counter(), 0
-            for k, row in enumerate(ws.iter_rows(values_only=True)):
-                if k < 4:
-                    print("     ", row, flush=True)
-                if cab is None and row and any(isinstance(v, str) and re.search(r"evento|uf", v, re.I) for v in row if v):
-                    cab = [str(v) for v in row]
-                    continue
-                if cab:
-                    d = dict(zip(cab, row))
-                    ev = next((d[c] for c in cab if re.search(r"evento", c, re.I)), None)
-                    eventos[ev] += 1
-                    uf = next((d[c] for c in cab if c.lower() in ("uf", "sigla_uf")), None)
-                    ufs[uf] += 1
-                    m = next((d[c] for c in cab if re.search(r"data|mes|m.s", c, re.I)), None)
-                    meses[str(m)[:7]] += 1
-                    n += 1
-            print("  cabeçalho:", cab, "| linhas:", n, flush=True)
-            print("  eventos:", eventos.most_common(60), flush=True)
-            print("  ufs:", len(ufs), "| meses:", sorted(meses)[:3], sorted(meses)[-3:], flush=True)
+        r = cli.get("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/download/"
+                    "dnsp-base-de-dados/bancovde-2026.xlsx/@@download/file", headers=nav)
+        print(f"\n=== vde 2026: HTTP {r.status_code} | {len(r.content)} bytes", flush=True)
+        ws = openpyxl.load_workbook(io.BytesIO(r.content), read_only=True, data_only=True).worksheets[0]
+        it = ws.iter_rows(values_only=True)
+        cab = [str(v) for v in next(it)]
+        amostras = defaultdict(list)
+        valores = defaultdict(lambda: defaultdict(Counter))
+        soma = defaultdict(lambda: defaultdict(float))
+        for row in it:
+            d = dict(zip(cab, row))
+            ev = d["evento"]
+            if len(amostras[ev]) < 3:
+                amostras[ev].append(row)
+            for c in ("municipio", "agente", "arma", "faixa_etaria", "abrangencia"):
+                v = d.get(c)
+                valores[ev][c][str(v)[:25] if c != "municipio" else ("None" if v is None else "nome")] += 1
+            for c in ("total_vitima", "total", "total_peso"):
+                if isinstance(d.get(c), (int, float)):
+                    soma[ev][c] += d[c]
+            if d.get("uf") == "SP" and isinstance(d.get("total"), (int, float)):
+                soma[ev]["SP_total"] += d["total"]
+            if d.get("uf") == "SP" and isinstance(d.get("total_vitima"), (int, float)):
+                soma[ev]["SP_total_vitima"] += d["total_vitima"]
+        for ev in sorted(amostras, key=str):
+            print(f"  ## {ev}", flush=True)
+            for a in amostras[ev]:
+                print("     ", a, flush=True)
+            for c, cnt in valores[ev].items():
+                print(f"     {c}: {cnt.most_common(8)}", flush=True)
+            print("     somas:", dict(soma[ev]), flush=True)
     except Exception as e:
         print("  vde erro", type(e).__name__, e, flush=True)
 
-    # ESTADIC 2023: dicionário da Segurança Pública (efetivos) e valores
+    # 3) TSE 2026, Amazonas: quais cargos vêm no arquivo de votação
     try:
-        wb = wb_de("https://ftp.ibge.gov.br/Perfil_Estados/2023/Base_Estadic_2023.xlsx")
-        dic = wb["Dicionário"]
-        for row in dic.iter_rows(values_only=True):
-            t = " | ".join(str(v) for v in row if v not in (None, ""))
-            if re.search(r"ESEG", t) and re.search(r"efetiv|quantidade|n.mero|total", t, re.I):
-                print("   dic:", t[:260], flush=True)
-        ws = wb["Segurança Pública"]
-        linhas = list(ws.iter_rows(values_only=True))
-        print("  cab0:", [str(v)[:12] for v in linhas[0][:40]], flush=True)
-        for l in linhas[1:4]:
-            print("  lin:", [str(v)[:12] for v in l[:60]], flush=True)
+        print("\n=== tse 2026 AM", flush=True)
+        txt = entrada_zip("https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/"
+                          "votacao_candidato_munzona_2026.zip", "_AM.csv")
+        if txt:
+            leitor = csv.DictReader(io.StringIO(txt), delimiter=";")
+            cargos = Counter((l.get("DS_CARGO"), l.get("NR_TURNO")) for l in leitor)
+            print("  cargos:", cargos.most_common(), flush=True)
+        for nome in ("consulta_cand_2026", "votacao_partido_munzona_2026", "detalhe_votacao_munzona_2026"):
+            base = {"consulta_cand_2026": "consulta_cand", "votacao_partido_munzona_2026": "votacao_partido_munzona",
+                    "detalhe_votacao_munzona_2026": "detalhe_votacao_munzona"}[nome]
+            txt = entrada_zip(f"https://cdn.tse.jus.br/estatistica/sead/odsele/{base}/{nome}.zip", "_AM.csv")
+            if txt:
+                leitor = csv.DictReader(io.StringIO(txt), delimiter=";")
+                col = "DS_SITUACAO_CANDIDATURA" if base == "consulta_cand" else "NR_TURNO"
+                print(f"  {nome}:", Counter((l.get("DS_CARGO"), l.get(col)) for l in leitor).most_common(20), flush=True)
     except Exception as e:
-        print("  estadic erro", type(e).__name__, e, flush=True)
-
-    # MUNIC 2024 e 2023: guarda municipal
-    for url in ("https://ftp.ibge.gov.br/Perfil_Municipios/2024/Base_de_Dados/Base_MUNIC_2024_20251107.xlsx",
-                "https://ftp.ibge.gov.br/Perfil_Municipios/2023/Base_de_Dados/Base_MUNIC_2023.xlsx"):
-        try:
-            wb = wb_de(url)
-            print("  abas:", [w.title for w in wb.worksheets], flush=True)
-            for ws in wb.worksheets:
-                if re.search(r"dicion", ws.title, re.I):
-                    for row in ws.iter_rows(values_only=True):
-                        t = " | ".join(str(v) for v in row if v not in (None, ""))
-                        if re.search(r"guarda|seguran.a p", t, re.I):
-                            print("   dic:", t[:240], flush=True)
-        except Exception as e:
-            print("  munic erro", type(e).__name__, e, flush=True)
-
-    for u in ("https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/pesquisaperfil/"
-              "pesquisa-perfil-das-instituicoes-de-seguranca-publica",
-              "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/pesquisaperfil/"
-              "outras-pesquisas-perfis-das-instituicoes-de-seguranca-publica"):
-        links("mj perfil " + u.rsplit("/", 1)[-1][:30], u, headers=nav,
-              padrao=r'href="([^"]*(?:\.xlsx|\.xls|\.csv|\.zip|\.ods|\.pdf|@@download)[^"]*)"', n=60)
+        print("  tse erro", type(e).__name__, e, flush=True)
 
 
 if __name__ == "__main__":

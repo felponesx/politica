@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from app.config import settings
 from app.db import criar_tabelas
 from app.seguranca import Protecao
-from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, v02, v03
+from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -38,6 +38,7 @@ app.include_router(normalizados.router)
 app.include_router(ligacoes.router)
 app.include_router(v02.router)
 app.include_router(v03.router)
+app.include_router(seguranca.router)
 
 
 # Site (frontend) servido pelo próprio backend: abra http://localhost:8000 e as telas já usam a API.

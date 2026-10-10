@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (agenda, assembleias, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, desastres, ibge, legislacao, lexml,
+from app.collectors import (agenda, assembleias, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -50,6 +50,8 @@ _TAREFAS_BRUTAS = {
     "ibge-malhas": malhas.coletar_malhas,                              # ufs, qualidade
     # v0.5
     "receita-recuperacao-judicial": cnpj_base.coletar_recuperacao_judicial,  # mes (AAAA-MM), minutos, pasta_local
+    "seguranca-prisional": seguranca.coletar_sisdepen,                 # url, arquivo_local
+    "seguranca-anuario": seguranca.coletar_anuario,                    # url, arquivo_local
 }
 
 

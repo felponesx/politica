@@ -352,3 +352,86 @@ def test_cnpj_base_recuperacao_judicial(tmp_path):
     assert fal["itens"][0]["nome"] == "CONSTRUTORA EXEMPLO LTDA" and fal["itens"][0]["situacao_cadastral"] == "Baixada"
     res = cliente.get("/recuperacao-judicial/resumo").json()
     assert res["por_uf"] == {"SP": 1} and res["ativas"] == 1 and res["por_ano"] == {"2023": 1}
+
+
+# Sisdepen (Senappen), base semestral por estabelecimento: CSV UTF-8, ';', ~1.700 colunas; trecho com as que usamos
+SISDEPEN_CAB = ["ciclo", "Ano", "Referência", "Tipo do Estabelecimento", "Nome do Estabelecimento", "UF",
+                "1.3 Capacidade do estabelecimento | Masculino | Total", "1.3 Capacidade do estabelecimento | Feminino | Total",
+                "4.1 População prisional | Presos provisórios (sem condenação) | Total", "4.1 População prisional | Total",
+                "4.5 Movimentação no Sistema Prisional (total do período de referência) | Entradas | Número de inclusões originárias | Total",
+                "4.5 Movimentação no Sistema Prisional (total do período de referência) | Saídas | Alvarás de soltura | Total",
+                "4.5 Movimentação no Sistema Prisional (total do período de referência) | Saídas | Abandonos | Total",
+                "4.5 Movimentação no Sistema Prisional (total do período de referência) | Saídas | Total de óbitos | Total",
+                "4.5 Movimentação no Sistema Prisional (total do período de referência) | Autorizações de saída | Permissão de saída | Total",
+                "4.5 Movimentação no Sistema Prisional (total do período de referência) | Autorizações de saída | Saída temporária | Total"]
+SISDEPEN_LINHAS = [
+    ["19", "2025", "2025/2", "Domiciliar com monitoramento eletrônico", "NÚCLEO DE MONITORAMENTO DE BRASILÉIA", "AC",
+     "190.0", "15.0", "38.0", "205", "55.0", "61.0", "0.0", "4.0", "0.0", "0.0"],
+    ["19", "2025", "2025/2", "Penitenciária", "PENITENCIÁRIA ESTADUAL DE RIO BRANCO", "AC",
+     "800.0", "", "120.0", "950", "300.0", "250.0", "12.0", "3.0", "40.0", "180.0"],
+    ["19", "2025", "2025/2", "Penitenciária", "PENITENCIÁRIA DE TESTE", "SP", "1000", "0", "10", "1500", "400", "380", "20", "1", "0", "90"],
+]
+
+
+def test_sisdepen_soma_por_estado(tmp_path):
+    from app.collectors import seguranca
+    texto = "﻿" + ";".join(SISDEPEN_CAB) + "\n" + "\n".join(";".join(l) for l in SISDEPEN_LINHAS) + "\n"
+    r = seguranca.agregar_sisdepen(texto.lstrip("﻿"))
+    assert r["referencia"] == "2025/2" and r["colunas_faltando"] == []
+    ac = r["por_uf"]["AC"]
+    assert ac["populacao"] == 1155 and ac["populacao_domiciliar"] == 205 and ac["populacao_celas"] == 950
+    assert ac["vagas"] == 1005 and ac["entradas"] == 355 and ac["abandonos"] == 12 and ac["saidas_temporarias"] == 180
+    caminho = tmp_path / "sisdepen.csv"
+    caminho.write_bytes(texto.encode("utf-8"))
+    assert seguranca.coletar_sisdepen(arquivo_local=str(caminho)) == 2
+    html = ('<a href="/senappen/pt-br/servicos/sisdepen/bases-de-dados/2025/18o-ciclo-base-de-dados-2025-1-semestre.csv/@@download/file">'
+            '<a href="/senappen/pt-br/servicos/sisdepen/bases-de-dados/2025/19o-ciclo-base-de-dados-2025-2-semestre.csv/@@download/file">')
+    assert seguranca.links_sisdepen(html)[0].endswith("19o-ciclo-base-de-dados-2025-2-semestre.csv/@@download/file")
+
+
+# Anuário Brasileiro de Segurança Pública 2026, aba T01 (linhas como o openpyxl entrega; trecho real)
+T01 = [("TABELA 01", None), ("Mortes violentas intencionais (1)",), ("Brasil e Unidades da Federação - 2024-2025",), (None,),
+       ("Brasil e Unidades da Federação", "Crimes Violentos Letais Intencionais", None, None, None, None, None,
+        "Policiais Civis e Militares vítimas de CVLI", None, "Morte Decorrente de Intervenção Policial", None,
+        "Mortes Violentas Intencionais", None, None, None, None),
+       (None, "Homicídio Doloso", None, "Latrocínio", None, "Lesão Corporal Seguida de Morte", None, None, None, None, None,
+        None, None, None, None, None),
+       (None, "Ns. Absolutos", None, "Ns. Absolutos", None, "Ns. Absolutos", None, "Ns. Absolutos", None, "Ns. Absolutos",
+        None, "Ns. Absolutos", None, "Taxa (2)", None, "Variação (%)"),
+       (None, "2024 (3)", 2025, "2024 (3)", 2025, "2024 (3)", 2025, "2024 (3)", 2025, "2024 (3)", 2025, "2024 (3)", 2025,
+        "2024 (3)", 2025, None),
+       ("Brasil", 36440, 32914, 969, 807, 774, 659, 144, 139, 6237, 6602, 44220, 40775, 20.80121363933038, 19.105426800076884, -8.15),
+       ("Acre", 165, 175, 1, 6, 3, 1, "-", "-", 10, 9, 179, 191, 20.3263341853739, 21.59724640762032, 6.25),
+       ("São Paulo (5)", 2630, 2527, 170, 131, 138, 122, 32, 30, 813, 835, 3751, 3615, 8.159102454356336, 7.844745477721238, -3.85),
+       ("Fonte: Secretarias Estaduais de Segurança Pública e/ou Defesa Social",)]
+
+
+def test_anuario_tabela_01():
+    from app.collectors import seguranca
+    d = seguranca.ler_t01([tuple(l) + (None,) * (16 - len(l)) for l in T01])
+    assert set(d) == {2024, 2025}
+    assert d[2025]["BR"]["mvi"] == 40775 and d[2025]["BR"]["taxa_mvi"] == 19.11
+    assert d[2025]["SP"]["homicidio_doloso"] == 2527 and d[2024]["AC"]["policiais_mortos"] is None
+    assert d[2025]["AC"]["mortes_intervencao"] == 9
+
+
+def test_rota_seguranca(tmp_path):
+    """Junta prisional e mortes violentas por estado, com taxas pela população do IBGE."""
+    from app.collectors import seguranca
+    from app.models import Indicador
+    db = SessionLocal()
+    for uf, pop in (("AC", 900000), ("SP", 46000000)):
+        reg = Registro(fonte="ibge", tipo="indicador_teste_seg", chave=f"pop-{uf}", dados={})
+        db.add(reg)
+        db.flush()
+        db.add(Indicador(registro_id=reg.id, nome="populacao", uf=uf, periodo="2099", ano=2099, valor=pop))
+    db.commit()
+    db.close()
+    texto = ";".join(SISDEPEN_CAB) + "\n" + "\n".join(";".join(l) for l in SISDEPEN_LINHAS) + "\n"
+    (tmp_path / "s.csv").write_text(texto, encoding="utf-8")
+    seguranca.coletar_sisdepen(arquivo_local=str(tmp_path / "s.csv"))
+    d = cliente.get("/seguranca").json()
+    ac = d["estados"]["AC"]["prisional"]
+    assert ac["taxa_aprisionamento"] == round(1155 / 900000 * 1e5, 1) and ac["presos_por_dia"] == round(355 / 184, 1)
+    assert ac["deficit_vagas"] == 950 - 1005 and ac["nao_voltaram_por_mil_saidas"] == round(1000 * 12 / 180, 1)
+    assert d["brasil"]["prisional"]["populacao"] == 2655 and d["referencias"]["prisional"] == "2025/2"
