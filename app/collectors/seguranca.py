@@ -86,8 +86,19 @@ def agregar_sisdepen(texto: str) -> dict:
     return {"referencia": ref, "por_uf": por_uf, "colunas_faltando": faltam}
 
 
-def coletar_sisdepen(arquivo_local: str | None = None, url: str | None = None):
-    """Base mais recente do Sisdepen (ou `url`/`arquivo_local`), somada por estado."""
+def coletar_sisdepen(arquivo_local: str | None = None, url: str | None = None, todos: bool = False):
+    """Base mais recente do Sisdepen (ou `url`/`arquivo_local`), somada por estado. `todos`: todos os semestres."""
+    if todos and not (arquivo_local or url):
+        pagina = http._cliente.get(SISDEPEN_PAGINA, headers=UA, timeout=60)
+        pagina.raise_for_status()
+        total = 0
+        for u in links_sisdepen(pagina.text):
+            try:
+                total += coletar_sisdepen(url=u)
+            except Exception as e:  # um semestre com formato diferente não derruba os outros
+                import logging
+                logging.getLogger("brasilplus.seguranca").warning("Sisdepen %s: %s", u, e)
+        return total
     with registrar_coleta("sisdepen", "prisional", url=url or "mais recente") as (db, n):
         if arquivo_local:
             bruto = open(arquivo_local, "rb").read()
@@ -157,9 +168,22 @@ def ler_t01(linhas: list) -> dict:
     return out
 
 
-def coletar_anuario(arquivo_local: str | None = None, url: str | None = None):
-    """Mortes violentas intencionais por estado (Tabela 01 do Anuário mais recente)."""
+def coletar_anuario(arquivo_local: str | None = None, url: str | None = None, todas: bool = False):
+    """Mortes violentas intencionais por estado (Tabela 01 do Anuário mais recente). `todas`: todas as edições
+    publicadas em planilha (cada uma traz dois anos)."""
     import openpyxl
+    if todas and not (arquivo_local or url):
+        pagina = http._cliente.get(ANUARIO_PAGINA, headers=UA, timeout=60)
+        pagina.raise_for_status()
+        urls = sorted(set(re.findall(r'(https://[^"]+/anuario-\d{4}\.xlsx)', pagina.text)))
+        total = 0
+        for u in urls:  # da mais antiga para a mais nova: a edição nova corrige os números do ano anterior
+            try:
+                total += coletar_anuario(url=u)
+            except Exception as e:
+                import logging
+                logging.getLogger("brasilplus.seguranca").warning("Anuário %s: %s", u, e)
+        return total
     with registrar_coleta("fbsp", "anuario", url=url or "mais recente") as (db, n):
         if arquivo_local:
             bruto = open(arquivo_local, "rb").read()

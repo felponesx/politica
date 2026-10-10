@@ -66,6 +66,38 @@ def _ultimo(db, fonte, tipo, campo=Registro.ano):
     return db.scalar(select(func.max(campo)).where(Registro.fonte == fonte, Registro.tipo == tipo))
 
 
+def _historico(db, pop) -> dict:
+    """Série por ano: ocorrências do Sinesp (anos completos ou parciais), presos por semestre e mortes violentas."""
+    out = {"ocorrencias": {}, "prisional": {}, "violencia": {}}
+    for r in db.scalars(select(Registro).where(Registro.fonte == "sinesp", Registro.tipo == "vde")):
+        d = r.dados or {}
+        a = out["ocorrencias"].setdefault(str(r.ano), {"meses": 0, "estados": {}, "brasil": {}})
+        a["meses"] = max(a["meses"], len(d.get("meses") or {}))
+        tot = d.get("totais") or {}
+        a["estados"][r.uf] = tot
+        for k, v in tot.items():
+            a["brasil"][k] = a["brasil"].get(k, 0) + (v or 0)
+    for r in db.scalars(select(Registro).where(Registro.fonte == "sisdepen", Registro.tipo == "prisional")):
+        d = r.dados or {}
+        ref = d.get("referencia")
+        if not ref:
+            continue
+        a = out["prisional"].setdefault(ref, {"brasil": {}, "estados": {}})
+        a["estados"][r.uf] = {k: d.get(k) for k in ("populacao", "vagas", "entradas", "abandonos", "saidas_temporarias")}
+        for k, v in a["estados"][r.uf].items():
+            a["brasil"][k] = a["brasil"].get(k, 0) + (v or 0)
+    for r in db.scalars(select(Registro).where(Registro.fonte == "fbsp", Registro.tipo == "violencia")):
+        d = r.dados or {}
+        a = out["violencia"].setdefault(str(r.ano), {"brasil": None, "estados": {}})
+        v = {k: d.get(k) for k in ("mvi", "taxa_mvi", "homicidio_doloso", "latrocinio", "mortes_intervencao",
+                                     "policiais_mortos")}
+        if r.uf == "BR":
+            a["brasil"] = v
+        else:
+            a["estados"][r.uf] = v
+    return out
+
+
 @router.get("/seguranca")
 def seguranca(db: Session = Depends(get_db)):
     """Por estado e no Brasil: presos (total, em celas, em casa com tornozeleira, vagas, déficit, taxa por 100 mil,
@@ -126,8 +158,8 @@ def seguranca(db: Session = Depends(get_db)):
     if meses_uf:
         todos = sorted({m for ms in meses_uf.values() for m in ms})
         janela = todos[-12:]
-        refs["ocorrencias"] = {"de": janela[0], "ate": janela[-1], "meses": len(janela)}
         dias = sum(_dias_mes(m) for m in janela)
+        refs["ocorrencias"] = {"de": janela[0], "ate": janela[-1], "meses": len(janela), "dias": dias}
         for uf, ms in meses_uf.items():
             tot = {}
             for m in janela:
@@ -195,9 +227,11 @@ def seguranca(db: Session = Depends(get_db)):
         brasil["ocorrencias"] = o
         brasil["serie_mensal"] = [{"mes": m, **serie[m]} for m in sorted(serie)]
 
+    historico = _historico(db, pop)
+
     if not refs:
         raise HTTPException(404, "Sem dados. Rode as coletas seguranca-prisional, seguranca-anuario, seguranca-sinesp e seguranca-efetivo.")
-    return {"referencias": refs, "brasil": brasil, "estados": estados, "notas": NOTAS,
+    return {"referencias": refs, "brasil": brasil, "estados": estados, "historico": historico, "notas": NOTAS,
             "fontes": {"prisional": "Sisdepen — Secretaria Nacional de Políticas Penais (Ministério da Justiça)",
                        "violencia": "Anuário Brasileiro de Segurança Pública (Fórum Brasileiro de Segurança Pública), "
                                     "com dados das secretarias estaduais de segurança",

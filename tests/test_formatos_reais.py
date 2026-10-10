@@ -467,7 +467,8 @@ def test_sinesp_vde_por_estado_e_mes(tmp_path):
     o = cliente.get("/seguranca").json()
     ac = o["estados"]["AC"]["ocorrencias"]
     assert ac["homicidio_doloso"] == 12 and ac["mandados_cumpridos"] == 45 and ac["detidos_por_dia"] == round(45 / 59, 1)
-    assert o["referencias"]["ocorrencias"] == {"de": "2026-01", "ate": "2026-02", "meses": 2}
+    assert o["referencias"]["ocorrencias"] == {"de": "2026-01", "ate": "2026-02", "meses": 2, "dias": 59}
+    assert o["historico"]["ocorrencias"]["2026"]["brasil"]["homicidio_doloso"] == 12
     assert o["brasil"]["serie_mensal"][0]["homicidio_doloso"] == 9
 
 

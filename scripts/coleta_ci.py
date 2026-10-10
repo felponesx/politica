@@ -31,10 +31,12 @@ LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "c
            "receita-recuperacao-judicial": 170}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
 ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, "apenas_eleitos": "true"}),
-            ("tse-resultados", {"ano": 2024}), ("tse-candidatos", {"ano": 2026}), ("tse-resultados", {"ano": 2026})]
+            ("tse-resultados", {"ano": 2024}), ("tse-candidatos", {"ano": 2026}), ("tse-resultados", {"ano": 2026}),
+            ("tse-candidatos", {"ano": 2018}), ("tse-resultados", {"ano": 2018}),
+            ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
-SEGURANCA = [("seguranca-prisional", {}), ("seguranca-anuario", {}), ("seguranca-efetivo", {}),
-             ("seguranca-sinesp", {"ano": date.today().year - 1}), ("seguranca-sinesp", {"ano": date.today().year})]
+SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}),
+             *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 
 
 def comandos():
