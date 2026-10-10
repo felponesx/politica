@@ -542,3 +542,17 @@ def test_orcamento_por_orgao():
     assert o["orgaoSuperior"] == "Tribunal de Contas da União" and o["pago"] == round(2368.56 + 484104.03, 2)
     assert o["orcamento_atualizado"] == 2000.5 and o["empenhado"] == round(4317.26 + 837808.44, 2)
     assert o["funcoes"] == {"Legislativa": round(2368.56 + 484104.03, 2)}
+
+
+def test_rota_orgaos_com_orcamento():
+    from app.collectors import orcamento
+    db = SessionLocal()
+    # ano antigo de propósito: o banco dos testes é compartilhado e o "ano mais recente" das outras rotas não muda
+    orcamento.gravar_orcamento(db, 2001, orcamento.agregar_orcamento(ORC_CAB + "\n" + "\n".join(ORC_LINHAS) + "\n"))
+    db.commit()
+    db.close()
+    d = cliente.get("/orgaos", params={"ano": 2001}).json()
+    tcu = next(i for i in d["itens"] if i["codigo"] == "03000")
+    assert tcu["orcamento_atualizado"] == 2000.5 and tcu["pago"] == round(2368.56 + 484104.03, 2)
+    det = cliente.get("/orgaos/03000").json()
+    assert det["funcoes"][0]["funcao"] == "Legislativa" and det["por_ano"][-1]["orcamento_atualizado"] == 2000.5

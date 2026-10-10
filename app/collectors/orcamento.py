@@ -88,15 +88,18 @@ def coletar_orcamento_orgaos(ano: int):
             texto = bruto.decode("utf-8-sig")
         except UnicodeDecodeError:
             texto = bruto.decode("latin-1")
-        orgaos = agregar_orcamento(texto)
-        superiores = {}
-        for cod, d in orgaos.items():
-            upsert(db, Registro, {"fonte": "transparencia", "tipo": "gasto_orgao", "chave": f"orc-{ano}-{cod}"},
-                   {"ano": ano, "titulo": d["orgao"], "valor": d["pago"],
-                    "dados": {**d, "fonte": "orcamento-despesa", "url": URL.format(ano=ano)}})
-            superiores[d["codigoOrgaoSuperior"]] = d["orgaoSuperior"]
-            n += 1
-        for cod, nome in superiores.items():  # nomes dos órgãos superiores, para a lista e a busca
-            upsert(db, Registro, {"fonte": "transparencia", "tipo": "orgao", "chave": cod},
-                   {"titulo": nome, "dados": {"codigo": cod, "descricao": nome}})
+        n += gravar_orcamento(db, ano, agregar_orcamento(texto))
     return n.itens
+
+
+def gravar_orcamento(db, ano: int, orgaos: dict) -> int:
+    superiores = {}
+    for cod, d in orgaos.items():
+        upsert(db, Registro, {"fonte": "transparencia", "tipo": "gasto_orgao", "chave": f"orc-{ano}-{cod}"},
+               {"ano": ano, "titulo": d["orgao"], "valor": d["pago"],
+                "dados": {**d, "fonte": "orcamento-despesa", "url": URL.format(ano=ano)}})
+        superiores[d["codigoOrgaoSuperior"]] = d["orgaoSuperior"]
+    for cod, nome in superiores.items():  # nomes dos órgãos superiores, para a lista e a busca
+        upsert(db, Registro, {"fonte": "transparencia", "tipo": "orgao", "chave": cod},
+               {"titulo": nome, "dados": {"codigo": cod, "descricao": nome}})
+    return len(orgaos)

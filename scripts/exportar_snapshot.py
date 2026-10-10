@@ -194,6 +194,8 @@ class Exportador:
             self.get("/riscos", {"uf": uf})
 
         # órgãos federais
+        for a in range(date.today().year - 3, date.today().year + 1):  # o site troca de ano na lista
+            self.get("/orgaos", {"ano": a})
         orgaos = self.dados.get("/orgaos")
         if self.ok(orgaos):
             for o in orgaos.get("itens", []):

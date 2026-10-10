@@ -2984,18 +2984,28 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[];$("#gsu
 
 /* ---------- Órgãos federais ---------- */
 const _orgaos=P.orgaos,_orgao=P.orgao;
-P.orgaos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios e demais órgãos superiores do governo federal: quanto reservaram e quanto pagaram no ano.</p></div></div>
-<div class="panel"><div class="filters"><input id="orq" placeholder="Nome do órgão" style="flex:1;min-width:180px" autocomplete="off"></div><div id="orl">${rload()}</div>${RSRC("Portal da Transparência (CGU), despesas por órgão")}</div>`,
-mount(){apiGet("/orgaos").then(d=>{if(!d.itens.length){demoComAviso(_orgaos,a,"Nenhum órgão coletado ainda (coletas transparencia-orgaos e transparencia-gastos-todos, com a chave do Portal da Transparência).");return}
- const des=q=>{const it=d.itens.filter(o=>!q||(o.nome||"").toLowerCase().includes(q.toLowerCase()));$("#orl").innerHTML=(d.total_pago?`<p class="small muted" style="margin:0 0 8px">${it.length} órgãos · pago em ${d.ano}: ${brl(d.total_pago)}</p>`:"")+table([["Órgão",o=>`<a href="#/orgao/r${o.codigo}">${esc(o.nome||o.codigo)}</a><div class="small muted">Código ${esc(o.codigo)}${o.vinculados?` · ${o.vinculados} unidades`:""}</div>`],["Empenhado",o=>brlR(o.empenhado),"n"],["Pago",o=>brlR(o.pago),"n"],["% do total",o=>o.pago==null?"—":pctR(o.pago,d.total_pago),"n"]],it,o=>"#/orgao/r"+o.codigo);rowLinks()};
- des("");$("#orq").oninput=debounce(e=>des(e.target.value.trim()),200)}).catch(e=>{$("#orl").innerHTML=rerro(e)})}}:_orgaos(...a);
+P.orgaos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios, tribunais, Congresso e demais órgãos federais: o orçamento autorizado, quanto já foi empenhado e quanto foi pago no ano.</p></div></div>
+<div class="panel"><div class="filters"><div class="seg seg-grupo" id="oranos"></div><input id="orq" placeholder="Nome do órgão" style="flex:1;min-width:180px" autocomplete="off"></div><div id="orl">${rload()}</div>${RSRC("Portal da Transparência (CGU), arquivo de dados abertos do orçamento da despesa (não precisa de chave)")}</div>`,
+mount(){const hoje=new Date().getFullYear();let ano=null,q="";const cache={};
+ const pedir=a=>cache[a]||(cache[a]=apiGet("/orgaos"+(a?qs({ano:a}):"")).catch(()=>null));
+ const des=d=>{const it=d.itens.filter(o=>!q||(o.nome||"").toLowerCase().includes(q.toLowerCase()));const tot=d.total_orcamento||0;
+  $("#orl").innerHTML=`<div class="kpis kpis-c" style="margin:6px 0 12px"><div class="kpi"><span>Orçamento autorizado em ${d.ano}</span><strong>${brlR(tot||null)}</strong></div><div class="kpi"><span>Pago até agora</span><strong>${brlR(d.total_pago)}</strong>${tot?`<em>${pct(d.total_pago/tot*100)} do autorizado</em>`:""}</div><div class="kpi"><span>Órgãos</span><strong>${nf(it.length)}</strong></div></div>`+
+  table([["Órgão",o=>`<a href="#/orgao/r${o.codigo}">${esc(o.nome||o.codigo)}</a><div class="small muted">Código ${esc(o.codigo)}${o.vinculados?` · ${o.vinculados} unidades`:""}</div>`],["Autorizado",o=>brlR(o.orcamento_atualizado),"n"],["Empenhado",o=>brlR(o.empenhado),"n"],["Pago",o=>brlR(o.pago),"n"],
+   ["Executado",o=>o.orcamento_atualizado?`<div class="bar" style="min-width:70px"><i style="width:${Math.min(100,o.pago/o.orcamento_atualizado*100).toFixed(0)}%"></i></div><div class="small muted">${pct(o.pago/o.orcamento_atualizado*100)}</div>`:"—"]],it,o=>"#/orgao/r"+o.codigo);rowLinks()};
+ const ir=async a=>{$("#orl").innerHTML=rload();const d=await pedir(a);if(!d||!d.itens||!d.itens.length){$("#orl").innerHTML=rvazio("Sem dados de órgãos para este ano.");return}ano=d.ano;des(d);
+  document.querySelectorAll("#oranos button").forEach(b=>b.classList.toggle("on",+b.dataset.a===ano))};
+ Promise.all([hoje,hoje-1,hoje-2,hoje-3].map(a=>pedir(a).then(d=>d&&d.itens&&d.itens.length?a:null))).then(as=>{const ok=as.filter(Boolean);
+  $("#oranos").innerHTML=ok.map(a=>`<button data-a="${a}">${a}</button>`).join("");document.querySelectorAll("#oranos button").forEach(b=>b.onclick=()=>ir(+b.dataset.a));
+  if(ok.length)ir(ok[0]);else pedir(null).then(d=>{if(d&&d.itens&&d.itens.length){ano=d.ano;des(d)}else $("#orl").innerHTML=rvazio("Órgãos ainda não coletados (tarefa transparencia-orcamento do robô).")})});
+ $("#orq").oninput=debounce(e=>{q=e.target.value.trim();pedir(ano).then(d=>d&&des(d))},200)}}:_orgaos(...a);
 P.orgao=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _orgao(id,...r);
 return{html:`<div class="crumb"><a href="#/orgaos">Órgãos</a> / Órgão</div><div id="rog">${rload()}</div>`,
-mount(){apiGet("/orgaos/"+String(id).slice(1)).then(d=>{const u=d.por_ano[d.por_ano.length-1];
+mount(){apiGet("/orgaos/"+String(id).slice(1)).then(d=>{const u=d.por_ano[d.por_ano.length-1];const ex=u&&u.orcamento_atualizado?u.pago/u.orcamento_atualizado*100:null;
  $("#rog").innerHTML=`<div class="ph"><div><span class="tag">Federal</span><h1 style="margin-top:6px">${esc(d.nome||d.codigo)}</h1><p>Código SIAFI ${esc(d.codigo)}</p></div></div>
- ${u?`<div class="kpis"><div class="kpi"><span>Empenhado em ${u.ano}</span><strong>${brl(u.empenhado)}</strong></div><div class="kpi"><span>Liquidado</span><strong>${brl(u.liquidado)}</strong></div><div class="kpi"><span>Pago</span><strong>${brl(u.pago)}</strong></div></div>
- <div class="grid g2 mt"><div class="panel"><h2>Pago por ano</h2>${anosChart(d.por_ano.map(x=>[x.ano,x.pago]))}</div><div class="panel"><h2>Unidades em ${d.ano_vinculados}</h2>${d.vinculados.length?hbars(d.vinculados.slice(0,8).map(v=>[v.nome||v.codigo,v.pago])):rvazio("Sem unidades.")}</div></div>
- ${d.vinculados.length>8?`<div class="panel mt">${table([["Unidade",v=>esc(v.nome||v.codigo)],["Empenhado",v=>brl(v.empenhado),"n"],["Pago",v=>brl(v.pago),"n"]],d.vinculados)}</div>`:""}`:`<div class="panel">${rvazio("Sem despesas coletadas para este órgão.")}</div>`}${RSRC(d.fonte)}`}).catch(e=>{$("#rog").innerHTML=rerro(e)})}}};
+ ${u?`<div class="kpis kpis-c"><div class="kpi"><span>Orçamento autorizado em ${u.ano}</span><strong>${brlR(u.orcamento_atualizado||null)}</strong></div><div class="kpi"><span>Empenhado</span><strong>${brl(u.empenhado)}</strong><em>reservado para pagar</em></div><div class="kpi"><span>Pago</span><strong>${brl(u.pago)}</strong>${ex!=null?`<em>${pct(ex)} do autorizado</em>`:""}</div></div>
+ ${ex!=null?`<div class="panel mt"><h2>Execução do orçamento em ${u.ano}</h2><div class="bar" style="height:12px"><i style="width:${Math.min(100,ex).toFixed(1)}%"></i></div><p class="small muted" style="margin:6px 0 0">${pct(ex)} do orçamento autorizado já foi pago.</p></div>`:""}
+ <div class="grid g2 mt"><div class="panel"><h2>Pago por ano</h2>${anosChart(d.por_ano.map(x=>[x.ano,x.pago]))}</div><div class="panel"><h2>Para onde vai o dinheiro em ${d.ano_vinculados}</h2>${(d.funcoes||[]).length?hbars(d.funcoes.slice(0,10).map(f=>[f.funcao,f.pago])):rvazio("Sem divisão por função.")}</div></div>
+ <div class="panel mt"><h2>Unidades em ${d.ano_vinculados}</h2>${d.vinculados.length?table([["Unidade",v=>esc(v.nome||v.codigo)],["Autorizado",v=>brlR(v.orcamento_atualizado||null),"n"],["Empenhado",v=>brl(v.empenhado),"n"],["Pago",v=>brl(v.pago),"n"]],d.vinculados):rvazio("Sem unidades.")}</div>`:`<div class="panel">${rvazio("Sem despesas coletadas para este órgão.")}</div>`}${RSRC(d.fonte)}`}).catch(e=>{$("#rog").innerHTML=rerro(e)})}}};
 
 /* ---------- Dívidas: PGFN, CAPAG e maiores devedores ---------- */
 const _dividas=P.dividas;
