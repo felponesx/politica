@@ -262,105 +262,21 @@ def entrada_zip(url, nome_parte):
 
 def main():
     nav = {"User-Agent": UA_NAV}
-    import json
     import re
-
-    # 1) Notícias de política (RSS)
-    for nome, url in [("g1 politica", "https://g1.globo.com/rss/g1/politica/"),
-                      ("cnn politica", "https://www.cnnbrasil.com.br/politica/feed/"),
-                      ("oglobo politica", "https://oglobo.globo.com/rss/politica/"),
-                      ("oglobo rss geral", "https://oglobo.globo.com/rss.xml"),
-                      ("camara noticias", "https://www.camara.leg.br/noticias/rss/ultimas-noticias"),
-                      ("camara politica", "https://www.camara.leg.br/noticias/rss/dinamico/POLITICA"),
-                      ("senado noticias", "https://www12.senado.leg.br/noticias/rss"),
-                      ("agencia brasil politica", "https://agenciabrasil.ebc.com.br/rss/politica/feed.xml"),
-                      ("folha poder", "https://feeds.folha.uol.com.br/poder/rss091.xml"),
-                      ("uol politica", "https://rss.uol.com.br/feed/noticias.xml")]:
-        r = ver("rss " + nome, url, headers=nav, n=200)
+    # SCR.data (Banco Central): carteira de crédito e inadimplência por UF, pessoa física e jurídica
+    for pid in ("scr_data", "scr-data", "scrdata"):
+        r = ver("ckan bcb " + pid, "https://dadosabertos.bcb.gov.br/api/3/action/package_show", params={"id": pid}, n=200)
         if r is not None and r.status_code == 200:
-            itens = re.findall(r"<item>(.*?)</item>", r.text, re.S)
-            print("  itens:", len(itens), flush=True)
-            for it in itens[:2]:
-                print("   ", re.sub(r"\s+", " ", it)[:500], flush=True)
-
-    # 2) Logos e brasões na Wikipédia (pageimages) + efetivo na caixa de informações
-    titulos = ["Partido dos Trabalhadores", "Partido Liberal (2006)", "União Brasil", "Progressistas",
-               "Movimento Democrático Brasileiro (1980)", "Partido Social Democrático (2011)", "Republicanos (partido político)",
-               "Partido da Social Democracia Brasileira", "Partido Democrático Trabalhista", "Partido Socialista Brasileiro",
-               "Partido Socialismo e Liberdade", "Podemos (Brasil)", "Avante (partido político)", "Partido Comunista do Brasil",
-               "Partido Verde (Brasil)", "Cidadania (partido político)", "Partido Novo", "Solidariedade (partido político)",
-               "Partido Renovação Democrática", "Rede Sustentabilidade", "Agir (partido político)", "Mobiliza",
-               "Democracia Cristã (Brasil)", "Partido da Mulher Brasileira", "Partido Socialista dos Trabalhadores Unificado",
-               "Partido da Causa Operária", "Unidade Popular", "Partido Comunista Brasileiro", "Missão (partido político)",
-               "Partido Renovador Trabalhista Brasileiro", "Partido da Mobilização Nacional", "Partido Social Liberal",
-               "Democratas (Brasil)", "Partido Trabalhista Brasileiro", "Partido Social Cristão",
-               "Partido Republicano da Ordem Social", "Patriota (partido político)", "Partido Trabalhista Cristão",
-               "Partido Humanista da Solidariedade", "Partido Pátria Livre", "Partido Republicano Progressista",
-               "Partido da República", "Partido Popular Socialista",
-               "Polícia Militar do Estado de São Paulo", "Polícia Militar do Estado do Rio de Janeiro",
-               "Polícia Militar de Minas Gerais", "Polícia Militar do Ceará", "Brigada Militar",
-               "Polícia Civil do Estado de São Paulo", "Polícia Federal do Brasil", "Polícia Rodoviária Federal",
-               "Força Nacional de Segurança Pública", "Polícia Penal Federal", "Guarda Civil Metropolitana de São Paulo",
-               "Rondas Ostensivas Tobias de Aguiar", "Batalhão de Operações Policiais Especiais",
-               "Comando de Operações Táticas", "Grupo de Ações Táticas Especiais",
-               "Comando de Operações Especiais (PMESP)", "Coordenadoria de Recursos Especiais",
-               "Grupo de Operações Especiais (PCESP)", "Batalhão de Polícia de Choque (PMERJ)",
-               "Rondas Ostensivas Táticas Metropolitanas", "Sistema Penitenciário Federal", "Receita Federal do Brasil"]
-    api = "https://pt.wikipedia.org/w/api.php"
-    for k in range(0, len(titulos), 20):
-        try:
-            r = cli.get(api, params={"action": "query", "format": "json", "redirects": 1, "prop": "pageimages|revisions",
-                                     "piprop": "thumbnail|name", "pithumbsize": 160, "rvprop": "content", "rvslots": "main",
-                                     "rvsection": 0, "titles": "|".join(titulos[k:k + 20])},
-                        headers={"User-Agent": "BRASIL+ (dados publicos; contato via GitHub felponesx/politica)"})
-            print(f"\n=== wikipedia lote {k}: HTTP {r.status_code}", flush=True)
-            d = r.json()
-            for red in d.get("query", {}).get("redirects", []):
-                print("   redir:", red.get("from"), "->", red.get("to"), flush=True)
-            for pg in d.get("query", {}).get("pages", {}).values():
-                txt = ((pg.get("revisions") or [{}])[0].get("slots", {}).get("main", {}).get("*") or "")
-                ef = re.findall(r"\|\s*(efetivo|membros|filiados|fundação|criação|concurso)[^=\n]*=\s*([^\n|]{0,80})", txt, re.I)
-                print(f"   {pg.get('title')!r} | missing={'missing' in pg} | img={pg.get('pageimage')} | "
-                      f"thumb={(pg.get('thumbnail') or {}).get('source')} | {ef[:4]}", flush=True)
-        except Exception as e:
-            print("  wiki erro", type(e).__name__, e, flush=True)
-    for u in ("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Logo_do_PT.svg/160px-Logo_do_PT.svg.png",):
-        ver("upload.wikimedia", u, headers={"User-Agent": "BRASIL+ (dados publicos)"}, n=40)
-
-    # 3) Fotos: TSE (zip por UF), Câmara e Senado
-    for ano in (2026, 2024, 2022):
-        for u in (f"https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes{ano}/fotos/foto_cand{ano}_SP_div.zip",
-                  f"https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes{ano}/fotos/foto_cand{ano}_BR_div.zip"):
-            ver(f"tse fotos {ano}", u, metodo="HEAD")
-    zip_remoto("tse fotos 2026 AC", "https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/fotos/foto_cand2026_AC_div.zip")
-    ver("camara foto", "https://www.camara.leg.br/internet/deputado/bandep/204554.jpg", metodo="HEAD")
-    ver("senado foto", "https://www.senado.leg.br/senadores/img/fotos-oficiais/senador5672.jpg", metodo="HEAD")
-
-    # 4) Despesa federal por órgão sem chave (downloads do Portal da Transparência)
-    for u in ("https://portaldatransparencia.gov.br/download-de-dados/despesas-execucao/202608",
-              "https://portaldatransparencia.gov.br/download-de-dados/despesas-execucao/2025",
-              "https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa/2026",
-              "https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa/2025"):
-        r = ver("portal download " + u.rsplit("/", 2)[-2] + "/" + u.rsplit("/", 1)[-1], u, headers=nav, metodo="HEAD")
-    zip_remoto("orcamento-despesa 2026", "https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa/2026",
-               mostrar=(".csv",), linhas=3)
-    zip_remoto("despesas-execucao 202608", "https://portaldatransparencia.gov.br/download-de-dados/despesas-execucao/202608",
-               mostrar=(".csv",), linhas=3)
-
-    # 5) Anos anteriores: TSE 2018/2020 e Sinesp/Sisdepen/Raio-X
-    for ano in (2018, 2020):
-        ver(f"tse munzona {ano}", f"https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_{ano}.zip", metodo="HEAD")
-        ver(f"tse cand {ano}", f"https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_{ano}.zip", metodo="HEAD")
-    for ano in (2015, 2018, 2020, 2022, 2024):
-        ver(f"sinesp {ano}", "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica/download/"
-            f"dnsp-base-de-dados/bancovde-{ano}.xlsx/@@download/file", headers=nav, metodo="HEAD")
-    links("sisdepen bases", "https://www.gov.br/senappen/pt-br/servicos/sisdepen/bases-de-dados", headers=nav,
-          padrao=r'href="([^"]*bases-de-dados/\d{4}/[^"]*\.csv/@@download/file)"', n=40)
-    for a in (2024, 2025):
-        links(f"raio-x {a}", f"https://forumseguranca.org.br/publicacoes/raio-x-das-forcas-de-seguranca-publica-do-brasil-{a}/",
-              headers=nav, padrao=r'href="([^"]+\.xlsx)"', n=5)
-    links("anuarios", "https://forumseguranca.org.br/publicacoes/anuario-brasileiro-de-seguranca-publica/", headers=nav,
-          padrao=r'href="([^"]+anuario[^"]*\.xlsx)"', n=20)
+            try:
+                for rec in r.json()["result"]["resources"][:40]:
+                    print("   ", rec.get("name"), "|", rec.get("format"), "|", rec.get("url"), flush=True)
+            except Exception as e:
+                print("  json?", e, flush=True)
+    ver("ckan busca scr", "https://dadosabertos.bcb.gov.br/api/3/action/package_search", params={"q": "SCR.data", "rows": 5}, n=3000)
+    for ano in (2026, 2025):
+        u = f"https://www.bcb.gov.br/pda/desig/planilha_{ano}.zip"
+        ver(f"scr planilha {ano}", u, metodo="HEAD")
+        zip_remoto(f"scr planilha {ano}", u, mostrar=(".csv",), linhas=4)
 
 
 if __name__ == "__main__":
