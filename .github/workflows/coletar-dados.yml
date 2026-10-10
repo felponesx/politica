@@ -97,7 +97,9 @@ jobs:
           git add -A site/dados site/midia
           git commit -q -m "Dados oficiais: cópia de $(date -u +%d/%m/%Y)" || { echo "Nada mudou."; exit 0; }
           for i in 1 2 3; do
-            git pull -q --rebase origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            # outra coleta pode ter gravado a cópia no meio do caminho: vale a desta (gerada do banco mais recente)
+            git pull -q --rebase -X theirs origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            git rebase --abort 2>/dev/null || true
             sleep 10
           done
           exit 1
