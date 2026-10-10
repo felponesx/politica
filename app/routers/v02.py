@@ -248,6 +248,30 @@ def orgao(codigo: str, db: Session = Depends(get_db)):
 
 # ---------- dívidas ----------
 
+@router.get("/dividas/familias-estados", tags=["Dívidas"])
+def dividas_familias_estados(db: Session = Depends(get_db)):
+    """Dívida de pessoas e empresas com bancos e inadimplência (atraso acima de 90 dias), por estado (SCR.data)."""
+    regs = db.scalars(select(Registro).where(Registro.fonte == "bcb", Registro.tipo == "scr_uf")).all()
+    if not regs:
+        raise HTTPException(404, "Sem dados. Rode a coleta bcb-scr-estados.")
+    ref = max((r.dados or {}).get("referencia") or "" for r in regs)
+    estados = {r.uf: {k: (r.dados or {}).get(k) for k in ("pf", "pj")} for r in regs
+               if (r.dados or {}).get("referencia") == ref}
+    tot = {}
+    for e in estados.values():
+        for k in ("pf", "pj"):
+            if e.get(k):
+                t = tot.setdefault(k, {"carteira": 0.0, "inadimplida": 0.0})
+                t["carteira"] += e[k]["carteira"] or 0
+                t["inadimplida"] += e[k]["inadimplida"] or 0
+    for t in tot.values():
+        t["inadimplencia"] = round(100 * t["inadimplida"] / t["carteira"], 2) if t["carteira"] else None
+    return {"referencia": ref, "estados": estados, "brasil": tot,
+            "fonte": "Banco Central do Brasil — SCR.data (Sistema de Informações de Créditos)",
+            "nota": "Carteira ativa: tudo o que as pessoas (ou empresas) do estado devem aos bancos. Inadimplência: "
+                    "parte com atraso acima de 90 dias."}
+
+
 @router.get("/dividas/estados", tags=["Dívidas"])
 def dividas_estados(db: Session = Depends(get_db)):
     """Dívida ativa da União por estado (pessoas físicas e empresas) + dívida consolidada dos governos estaduais."""

@@ -37,7 +37,7 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
 EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(date.today().year - 3, date.today().year + 1)],
-          ("noticias-politica", {})]
+          ("noticias-politica", {}), ("bcb-scr-estados", {})]
 SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}),
              *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 

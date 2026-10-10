@@ -556,3 +556,27 @@ def test_rota_orgaos_com_orcamento():
     assert tcu["orcamento_atualizado"] == 2000.5 and tcu["pago"] == round(2368.56 + 484104.03, 2)
     det = cliente.get("/orgaos/03000").json()
     assert det["funcoes"][0]["funcao"] == "Legislativa" and det["por_ano"][-1]["orcamento_atualizado"] == 2000.5
+
+
+# SCR.data (Banco Central), planilha_202603.csv: cabeçalho real e linhas resumidas
+SCR_LINHAS = [
+    "﻿data_base;uf;tcb;sr;cliente;ocupacao;cnae_secao;cnae_subclasse;porte;modalidade;origem;indexador;numero_de_operacoes;"
+    "a_vencer_ate_90_dias;a_vencer_de_91_ate_360_dias;a_vencer_de_361_ate_1080_dias;a_vencer_de_1081_ate_1800_dias;"
+    "a_vencer_de_1801_ate_5400_dias;a_vencer_acima_de_5400_dias;vencido_acima_de_15_dias;carteira_ativa;"
+    "carteira_inadimplida_arrastada;ativo_problematico",
+    '2026-03-31;AC;-;S1;PF;PF - Aposentado/pensionista;"-";"-";PF - Acima de 20 salários mínimos            ;PF - Cartão de crédito;'
+    'Sem destinação específica;Prefixado;621;5098891,65;1513370,81;57469,66;874,51;1128,42;0,00;303671,42;6975406,47;251431,29;330069,52',
+    '2026-03-31;AC;-;S1;PF;PF - Aposentado/pensionista;"-";"-";PF - Acima de 20 salários mínimos            ;PF - Empréstimo com '
+    'consignação em folha;Sem destinação específica;Prefixado;515;1568792,70;5088565,71;11118144,02;7276579,65;6476836,67;0,00;'
+    '85598,08;31614516,83;408834,68;484833,04',
+    '2026-03-31;AC;-;S1;PJ;-;"C";"-";PJ - Médio;PJ - Capital de giro;Sem destinação específica;Prefixado;<= 15;0,00;0,00;0,00;0,00;0,00;0,00;0,00;1000,00;100,00;100,00',
+]
+
+
+def test_scr_por_estado():
+    from app.collectors import bcb_scr
+    ref, d = bcb_scr.agregar_scr(l.lstrip("﻿") if i == 0 else l for i, l in enumerate(SCR_LINHAS))
+    assert ref == "2026-03-31"
+    assert d["AC"]["pf"]["carteira"] == round(6975406.47 + 31614516.83, 2)
+    assert d["AC"]["pf"]["inadimplencia"] == round(100 * (251431.29 + 408834.68) / (6975406.47 + 31614516.83), 2)
+    assert d["AC"]["pj"] == {"carteira": 1000.0, "inadimplida": 100.0, "inadimplencia": 10.0}

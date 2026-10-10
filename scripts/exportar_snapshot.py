@@ -63,7 +63,7 @@ FIXAS = [
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
-    "/seguranca",
+    "/seguranca", "/dividas/familias-estados",
 ]
 # quantos detalhes (popouts) guardar por tipo
 TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "contratos": 1200, "obras": 1500,
