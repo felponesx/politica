@@ -1266,6 +1266,18 @@ a.rrow b{font-weight:500}
 .dvq-linha .dvq{margin-top:14px;max-width:420px}
 
 @media(max-width:760px){.seg-efl{grid-template-columns:minmax(110px,42%) 1fr auto}.embl-grid{grid-template-columns:1fr}}
+
+/* v0.6: grupos de botões unidos (cada escolha num grupo: ano, cargo, turno; tipos de dívida) */
+.segj-w{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%}
+.segj-l{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.seg.segj,.seg.seg-grupo{display:inline-flex;flex-wrap:nowrap;gap:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow-x:auto;max-width:100%;scrollbar-width:none;margin-bottom:0}
+.seg.segj::-webkit-scrollbar,.seg.seg-grupo::-webkit-scrollbar{display:none}
+@media (max-width:760px){.seg.segj,.seg.seg-grupo{margin-left:0;margin-right:0;padding-left:0;padding-right:0}}
+.seg.segj button,.seg.seg-grupo button{border:0;border-radius:0;border-left:1px solid var(--line);white-space:nowrap;padding:7px 13px;background:transparent}
+.seg.segj button:first-child,.seg.seg-grupo button:first-child{border-left:0}
+.seg.segj button.on,.seg.seg-grupo button.on{background:#E3EEFA;color:var(--ink);font-weight:600}
+[data-theme="dark"] .seg.segj button.on,[data-theme="dark"] .seg.seg-grupo button.on{background:#27385A;color:#E7EAF0}
+.el-ctl{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -3449,7 +3461,7 @@ async function cargosEleicao(ano){try{const c=await apiGet(`/eleicoes/${ano}/car
 
 P.eleicoes=(...a)=>{if(!API.on)return _eleicoes(...a);let f={ano:null,cargo:null,turno:1,modo:"cand"},dados=null,cores={},anos=[];
 return{html:`<div class="ph"><div><h1>Eleições</h1><p>Resultados oficiais do TSE. Toque em um estado para aproximar e ver só os candidatos de lá.</p></div></div>
-<div class="panel" id="elcard"><div id="elmain" class="zmain"><div class="el-ctl"><div class="seg" id="elanos"></div><div class="seg" id="elcargos"></div><div class="seg" id="elturnos"><button data-t="1" class="on">1º turno</button><button data-t="2">2º turno</button></div></div>
+<div class="panel" id="elcard"><div id="elmain" class="zmain"><div class="el-ctl"><div class="segj-w"><span class="segj-l">Ano</span><div class="seg segj" id="elanos"></div></div><div class="segj-w"><span class="segj-l">Cargo</span><div class="seg segj" id="elcargos"></div></div><div class="segj-w"><span class="segj-l">Turno</span><div class="seg segj" id="elturnos"><button data-t="1" class="on">1º turno</button><button data-t="2">2º turno</button></div></div></div>
 <div class="hd" style="margin-top:12px"><div><h2 id="elT">Carregando…</h2><p id="elSub"></p></div></div>
 <div class="mapwrap mapbig"><div id="elmap">${rload()}</div><div class="zside" id="elside"></div></div><div id="elreg" class="elreg"></div></div><div id="elstate" style="display:none"></div></div>
 <div class="panel mt" id="elbr"></div>${RSRC("Tribunal Superior Eleitoral (votação nominal por município e zona)")}`,
