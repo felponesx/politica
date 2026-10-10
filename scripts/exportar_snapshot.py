@@ -52,6 +52,7 @@ LISTAS = {
     "/empresas": ([{}], 2000),
     "/dividas/devedores": ([{}], 1000),
     "/recuperacao-judicial": ([{"tipo": "recuperacao_judicial"}, {"tipo": "falencia"}], 8000),
+    "/noticias": ([{}], 1500),
 }
 # respostas guardadas exatamente como o site pede
 FIXAS = [

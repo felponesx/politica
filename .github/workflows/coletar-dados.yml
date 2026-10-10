@@ -11,6 +11,9 @@ on:
         description: "Tarefas separadas por ponto e vírgula (ex.: tse-resultados ano=2022 uf=SP). Vazio = carga inicial completa."
         required: false
         default: ""
+  # notícias de política: a cada 6 horas, só os feeds (rápido)
+  schedule:
+    - cron: "17 */6 * * *"
   push:
     paths:
       - .github/workflows/coletar-dados.yml
@@ -41,7 +44,7 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg://brasil:brasil@localhost:5432/brasilplus
       TRANSPARENCIA_API_KEY: ${{ secrets.TRANSPARENCIA_API_KEY }}
-      TAREFAS: ${{ inputs.tarefas }}
+      TAREFAS: ${{ github.event_name == 'schedule' && 'noticias-politica' || inputs.tarefas }}
       PYTHONUNBUFFERED: "1"
       CNPJ_INTERVALO: "1.5"
     steps:
@@ -69,6 +72,10 @@ jobs:
         run: python -m scripts.coleta_ci resumo | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Gerar a cópia estática da API
         run: python -m scripts.exportar_snapshot site/dados
+      # fotos oficiais e logos (o site publicado não carrega imagens de fora): na carga completa ou se pedido
+      - name: Fotos e logos para o site
+        if: env.TAREFAS == '' || contains(env.TAREFAS, 'midia')
+        run: python -m scripts.midia_site site/midia || echo "Fotos e logos não atualizados nesta coleta."
       # grava num arquivo temporário: um dump interrompido nunca vai para o cache (a próxima coleta usaria um
       # banco vazio). Se a coleta foi cancelada, guarda o que já tinha sido gravado.
       - name: Guardar o banco para a próxima coleta
@@ -87,7 +94,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site/dados
+          git add -A site/dados site/midia
           git commit -q -m "Dados oficiais: cópia de $(date -u +%d/%m/%Y)" || { echo "Nada mudou."; exit 0; }
           for i in 1 2 3; do
             git pull -q --rebase origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0

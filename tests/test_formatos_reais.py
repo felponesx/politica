@@ -495,3 +495,50 @@ def test_raiox_efetivo_por_estado():
     assert d["BR"]["policia_penal"] == 91850 and d["BR"]["guardas_municipais"] == 107457
     assert d["AC"]["guardas_municipais"] == 0 and d["AC"]["policia_federal"] is None
     assert d["SP"]["bombeiros"] is None and d["SP"]["policia_militar"] == 82250 and d["SP"]["total"] == 161537
+
+
+# RSS do g1 Política (10/10/2026), resumido: o resumo vem em atom:subtitle
+G1_RSS = """<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">  <channel>
+<title>g1 &gt; Política</title> <item> <title>Justiça italiana marca para o fim de outubro novo julgamento sobre extradição de Zambelli</title>
+<atom:subtitle>Justiça da Itália vai reavaliar, em 29 de outubro, um pedido de extradição feito pelo Brasil.</atom:subtitle>
+<link>https://g1.globo.com/politica/noticia/2026/10/10/justica-italiana.ghtml</link>
+<guid isPermaLink="true">https://g1.globo.com/politica/noticia/2026/10/10/justica-italiana.ghtml</guid>
+<pubDate>Sat, 10 Oct 2026 13:41:00 -0000</pubDate></item></channel></rss>"""
+UOL_RSS = """<rss><channel><item><title><![CDATA[Chuva forte atinge capital paulista]]></title><link>https://noticias.uol.com.br/a</link>
+<description>Temporal</description><pubDate>Sat, 10 Oct 2026 10:00:00 -0300</pubDate></item>
+<item><title><![CDATA[Senado aprova projeto de lei da reforma]]></title><link>https://noticias.uol.com.br/b</link>
+<description>Votação no plenário</description><pubDate>Sat, 10 Oct 2026 11:00:00 -0300</pubDate></item></channel></rss>"""
+
+
+def test_noticias_rss():
+    from app.collectors import noticias
+    it = noticias.ler_feed(G1_RSS, "g1", True)
+    assert len(it) == 1 and it[0]["resumo"].startswith("Justiça da Itália") and it[0]["data"].startswith("2026-10-10T13:41")
+    uol = noticias.ler_feed(UOL_RSS, "UOL", False)  # feed geral: só a de política fica
+    assert [i["titulo"] for i in uol] == ["Senado aprova projeto de lei da reforma"]
+
+
+# Orçamento da despesa 2026 (Portal da Transparência, arquivo de dados abertos), cabeçalho real e 2 linhas
+ORC_CAB = ('"EXERCÍCIO";"CÓDIGO ÓRGÃO SUPERIOR";"NOME ÓRGÃO SUPERIOR";"CÓDIGO ÓRGÃO SUBORDINADO";"NOME ÓRGÃO SUBORDINADO";'
+           '"CÓDIGO UNIDADE ORÇAMENTÁRIA";"NOME UNIDADE ORÇAMENTÁRIA";"CÓDIGO FUNÇÃO";"NOME FUNÇÃO";"CÓDIGO SUBFUNÇÃO";'
+           '"NOME SUBFUNÇÃO";"CÓDIGO PROGRAMA ORÇAMENTÁRIO";"NOME PROGRAMA ORÇAMENTÁRIO";"CÓDIGO AÇÃO";"NOME AÇÃO";'
+           '"CÓDIGO CATEGORIA ECONÔMICA";"NOME CATEGORIA ECONÔMICA";"CÓDIGO GRUPO DE DESPESA";"NOME GRUPO DE DESPESA";'
+           '"CÓDIGO ELEMENTO DE DESPESA";"NOME ELEMENTO DE DESPESA";"ORÇAMENTO INICIAL (R$)";"ORÇAMENTO ATUALIZADO (R$)";'
+           '"ORÇAMENTO EMPENHADO (R$)";"ORÇAMENTO REALIZADO (R$)";"% REALIZADO DO ORÇAMENTO (COM RELAÇÃO AO ORÇAMENTO ATUALIZADO)"')
+ORC_LINHAS = [
+    '"2026";"03000";"Tribunal de Contas da União";"03000";"Tribunal de Contas da União - Unidades com vínculo direto";"03101";'
+    '"TRIBUNAL DE CONTAS DA UNIAO";"01";"Legislativa";"032";"Controle externo";"0034";"PROGRAMA";"4018";"FISCALIZACAO";"3";'
+    '"DESPESAS CORRENTES";"3";"Outras Despesas Correntes";"40";"TI";"0,00";"0,00";"4317,26";"2368,56";"0,00%"',
+    '"2026";"03000";"Tribunal de Contas da União";"03000";"Tribunal de Contas da União - Unidades com vínculo direto";"03101";'
+    '"TRIBUNAL DE CONTAS DA UNIAO";"01";"Legislativa";"032";"Controle externo";"0034";"PROGRAMA";"4018";"FISCALIZACAO";"3";'
+    '"DESPESAS CORRENTES";"3";"Outras Despesas Correntes";"39";"Serviços";"1.000,00";"2.000,50";"837808,44";"484104,03";"0,00%"']
+
+
+def test_orcamento_por_orgao():
+    from app.collectors import orcamento
+    d = orcamento.agregar_orcamento(ORC_CAB + "\n" + "\n".join(ORC_LINHAS) + "\n")
+    o = d["03000"]
+    assert o["orgaoSuperior"] == "Tribunal de Contas da União" and o["pago"] == round(2368.56 + 484104.03, 2)
+    assert o["orcamento_atualizado"] == 2000.5 and o["empenhado"] == round(4317.26 + 837808.44, 2)
+    assert o["funcoes"] == {"Legislativa": round(2368.56 + 484104.03, 2)}

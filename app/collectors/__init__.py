@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (agenda, assembleias, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, desastres, ibge, legislacao, lexml,
+from app.collectors import (agenda, assembleias, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -54,6 +54,8 @@ _TAREFAS_BRUTAS = {
     "seguranca-anuario": seguranca.coletar_anuario,                    # url, arquivo_local
     "seguranca-sinesp": seguranca.coletar_sinesp,                      # ano, arquivo_local
     "seguranca-efetivo": seguranca.coletar_raiox,                      # ano, url, arquivo_local
+    "noticias-politica": noticias.coletar_noticias,                    # dias
+    "transparencia-orcamento": orcamento.coletar_orcamento_orgaos,     # ano (sem chave)
 }
 
 

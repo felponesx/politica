@@ -202,8 +202,8 @@ def orgaos(q: str | None = None, ano: int | None = None, db: Session = Depends(g
         d = r.dados or {}
         cod = str(d.get("codigoOrgaoSuperior") or "")
         s = sup.setdefault(cod, {"codigo": cod, "nome": d.get("orgaoSuperior") or nomes.get(cod), "empenhado": 0.0,
-                                 "liquidado": 0.0, "pago": 0.0, "vinculados": 0})
-        for k in ("empenhado", "liquidado", "pago"):
+                                 "liquidado": 0.0, "pago": 0.0, "orcamento_atualizado": 0.0, "vinculados": 0})
+        for k in ("empenhado", "liquidado", "pago", "orcamento_atualizado"):
             s[k] += _num(d, k)
         s["vinculados"] += 1
     itens = list(sup.values())
@@ -213,8 +213,9 @@ def orgaos(q: str | None = None, ano: int | None = None, db: Session = Depends(g
     if q:
         itens = [i for i in itens if q.lower() in (i["nome"] or "").lower()]
     itens.sort(key=lambda i: -(i["pago"] or 0))
-    return {"ano": ano, "total_pago": round(sum(i["pago"] or 0 for i in itens), 2), "itens": itens,
-            "fonte": "Portal da Transparência (CGU) — despesas por órgão"}
+    return {"ano": ano, "total_pago": round(sum(i["pago"] or 0 for i in itens), 2),
+            "total_orcamento": round(sum(i.get("orcamento_atualizado") or 0 for i in itens), 2), "itens": itens,
+            "fonte": "Portal da Transparência (CGU) — orçamento e execução por órgão (arquivo de dados abertos)"}
 
 
 @router.get("/orgaos/{codigo}", tags=["Órgãos"])
@@ -224,19 +225,24 @@ def orgao(codigo: str, db: Session = Depends(get_db)):
     nome = db.scalar(select(Registro.titulo).where(Registro.tipo == "orgao", Registro.chave == codigo))
     if not linhas and not nome:
         raise HTTPException(404, "Órgão não encontrado. Rode transparencia-orgaos e transparencia-gastos-todos.")
-    por_ano, vinc = {}, {}
+    por_ano, vinc, funcoes = {}, {}, {}
     ultimo = max((r.ano for r in linhas), default=None)
     for r in linhas:
         d = r.dados or {}
-        a = por_ano.setdefault(r.ano, {"ano": r.ano, "empenhado": 0.0, "liquidado": 0.0, "pago": 0.0})
-        for k in ("empenhado", "liquidado", "pago"):
+        a = por_ano.setdefault(r.ano, {"ano": r.ano, "empenhado": 0.0, "liquidado": 0.0, "pago": 0.0,
+                                       "orcamento_atualizado": 0.0})
+        for k in ("empenhado", "liquidado", "pago", "orcamento_atualizado"):
             a[k] += _num(d, k)
         if r.ano == ultimo:
             vinc[str(d.get("codigoOrgao"))] = {"codigo": str(d.get("codigoOrgao")), "nome": d.get("orgao"),
-                                               "pago": _num(d, "pago"), "empenhado": _num(d, "empenhado")}
+                                               "pago": _num(d, "pago"), "empenhado": _num(d, "empenhado"),
+                                               "orcamento_atualizado": _num(d, "orcamento_atualizado")}
+            for f, v in (d.get("funcoes") or {}).items():
+                funcoes[f] = funcoes.get(f, 0.0) + (v or 0)
         nome = nome or d.get("orgaoSuperior")
     return {"codigo": codigo, "nome": nome, "por_ano": sorted(por_ano.values(), key=lambda x: x["ano"]),
             "vinculados": sorted(vinc.values(), key=lambda x: -x["pago"]), "ano_vinculados": ultimo,
+            "funcoes": [{"funcao": f, "pago": round(v, 2)} for f, v in sorted(funcoes.items(), key=lambda x: -x[1])],
             "fonte": "Portal da Transparência (CGU)"}
 
 

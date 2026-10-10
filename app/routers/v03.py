@@ -340,3 +340,26 @@ def recuperacao_judicial_resumo(tipo: str = "recuperacao_judicial", db: Session 
             "por_ano": dict(sorted(contar(lambda r: str(r.ano) if r.ano else None).items())),
             "mes_base": next(((r.dados or {}).get("mes_base") for r in regs), None), "aviso": AVISO_RJ,
             "fonte": "Receita Federal — dados abertos do CNPJ"}
+
+
+# ---------- notícias de política ----------
+
+@router.get("/noticias", tags=["Notícias"])
+def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Query(50, le=500), offset: int = 0,
+             db: Session = Depends(get_db)):
+    """Últimas matérias de política dos principais veículos (título, resumo, data e link para o original)."""
+    from app.utils import sem_acento
+    itens = [r.dados or {} for r in db.scalars(select(Registro).where(Registro.fonte == "noticias",
+                                                                       Registro.tipo == "materia"))]
+    if veiculo:
+        itens = [i for i in itens if i.get("veiculo") == veiculo]
+    if q:
+        termo = sem_acento(q).lower()
+        itens = [i for i in itens if termo in sem_acento(f"{i.get('titulo')} {i.get('resumo')}").lower()]
+    itens.sort(key=lambda i: i.get("data") or "", reverse=True)
+    veiculos = {}
+    for r in db.scalars(select(Registro).where(Registro.fonte == "noticias", Registro.tipo == "materia")):
+        v = (r.dados or {}).get("veiculo")
+        veiculos[v] = veiculos.get(v, 0) + 1
+    return {"total": len(itens), "itens": itens[offset:offset + limit], "veiculos": veiculos,
+            "aviso": "Títulos e resumos dos feeds públicos de cada veículo; a matéria completa fica no site original."}

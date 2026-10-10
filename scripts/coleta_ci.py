@@ -35,6 +35,9 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
             ("tse-candidatos", {"ano": 2018}), ("tse-resultados", {"ano": 2018}),
             ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
+# sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
+EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(date.today().year - 3, date.today().year + 1)],
+          ("noticias-politica", {})]
 SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}),
              *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 
@@ -42,7 +45,8 @@ SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {
 def comandos():
     pedidas = os.environ.get("TAREFAS", "").strip()
     if pedidas:
-        return [linha.split() for linha in pedidas.split(";") if linha.strip()]
+        # "midia" só liga o passo de fotos e logos do robô; não é uma coleta
+        return [linha.split() for linha in pedidas.split(";") if linha.strip() and linha.strip() != "midia"]
     from scripts.coletar import passos_iniciais
     hoje = date.today()
     passos = []
@@ -55,7 +59,7 @@ def comandos():
     # os CNPJs dependem da cota e dos contratos; o resultado de 2022 (arquivo de ~580 MB) fica por último
     cnpj = [p for p in passos if p[0] == "cnpj-fornecedores"]
     # a base do CNPJ (recuperação judicial) baixa vários GB devagar: fica no fim, com o tempo que sobrar
-    passos = ([p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + SEGURANCA + cnpj + [("tse-resultados", {"ano": 2022})]
+    passos = ([p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + SEGURANCA + EXTRAS + cnpj + [("tse-resultados", {"ano": 2022})]
               + [("receita-recuperacao-judicial", {"minutos": 150})])
     return [[nome, *(f"{k}={_arg(v)}" for k, v in kw.items())] for nome, kw in passos]
 
