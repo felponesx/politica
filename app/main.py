@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
 from app.db import criar_tabelas
@@ -43,6 +44,8 @@ app.include_router(seguranca.router)
 
 # Site (frontend) servido pelo próprio backend: abra http://localhost:8000 e as telas já usam a API.
 SITE = Path(__file__).resolve().parent.parent / "site" / "index.html"
+# fotos e logos gerados pelo robô (scripts/midia_site.py); o site busca em midia/
+app.mount("/midia", StaticFiles(directory=SITE.parent / "midia", check_dir=False), name="midia")
 
 
 @app.get("/", include_in_schema=False)

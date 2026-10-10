@@ -1076,7 +1076,8 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 .prep{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:center;margin-bottom:14px}
 .prep h2{margin-bottom:4px}.prep .pctl{margin:12px 0 0}
 .prep-b{border-left:1px solid var(--line2);padding-left:20px}
-.hemi{display:block;max-width:340px;margin:4px auto 0}
+.hemi{display:block;max-width:340px;margin:4px auto 0;overflow:visible;position:relative;z-index:2}
+.hemi-viva circle[data-i]{transition:transform .45s cubic-bezier(.25,1.6,.45,1),opacity .15s}.prep-b,#hemiMini{overflow:visible}
 .hleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12.5px;justify-content:center}
 .hleg span{display:inline-flex;align-items:center;gap:5px;color:var(--ink2)}
 .hleg span>i{width:10px;height:10px;border-radius:50%;display:inline-block}
@@ -1141,7 +1142,7 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 .rbanner.warn{border-color:var(--warn);background:var(--surface)}
 .rbanner code,.small code{font-size:12px;background:var(--line2);padding:1px 5px;border-radius:4px}
 .rsig{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,var(--c) 22%,var(--surface));color:var(--ink);white-space:nowrap}
-.rsig .pband{margin-right:5px;border-radius:2px;flex:none}.hleg .pband{margin-right:5px;border-radius:2px;vertical-align:-1px}.pband{display:inline-block}
+.plg{display:inline-block;border-radius:50%;vertical-align:-1px;margin-right:5px;flex:none}.plogo-img{display:inline-block;object-fit:contain;vertical-align:-3px;margin-right:5px;flex:none;background:#fff;border-radius:3px}.rsig .plg,.rsig .plogo-img{margin-right:5px}
 .rsig.big{font-size:12.5px;padding:3px 9px;margin-bottom:6px}
 .rfoto{width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--line2);flex:none}
 .rfoto.ini{display:inline-flex;align-items:center;justify-content:center;font-weight:600;color:var(--slate);font-size:18px}
@@ -1260,7 +1261,7 @@ a.rrow b{font-weight:500}
 .seg-efb{height:8px;background:var(--line2);border-radius:5px;overflow:hidden}.seg-efb i{display:block;height:100%;background:#7FA9DE;border-radius:5px}
 .embl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
-.embl{flex:none}
+.embl{flex:none}.pol-logo{flex:none;object-fit:contain}.seg-efn .pol-logo{margin-right:7px;vertical-align:middle}
 #hsegcard{margin-top:16px}
 .dvq-linha .dvq{margin-top:14px;max-width:420px}
 
@@ -2081,7 +2082,7 @@ function comoCasa(casa){let t,f,extra="";
  else[t,f]=COMO[casa];
  return`<h2>${t}</h2><div class="facts">${f.map(x=>`<div><span>${x[0]}</span>${x[1]}</div>`).join("")}</div>${extra}`}
 const avIni=(n,vaga)=>`<span class="rfoto ini${vaga?" vaga":""}" style="width:52px;height:52px">${vaga?"":esc(iniciais(n))}</span>`;
-function cardIndicado(nome,linha1,linha2,tags){const vaga=nome==="Vaga aberta";return`<div class="pcard2 indc2${vaga?" vaga":""}">${avIni(nome,vaga)}<div style="min-width:0"><b>${esc(nome)}</b><div class="small muted">${esc(linha1)}</div><div style="margin-top:4px">${tags}</div>${linha2?`<div class="small muted" style="margin-top:2px">${esc(linha2)}</div>`:""}</div></div>`}
+function cardIndicado(nome,linha1,linha2,tags){const vaga=nome==="Vaga aberta";return`<div class="pcard2 indc2${vaga?" vaga":""}">${vaga?avIni(nome,vaga):fotoR("wiki:"+nome,nome,52)}<div style="min-width:0"><b>${esc(nome)}</b><div class="small muted">${esc(linha1)}</div><div style="margin-top:4px">${tags}</div>${linha2?`<div class="small muted" style="margin-top:2px">${esc(linha2)}</div>`:""}</div></div>`}
 function pessoasDaCasa(casa){
  if(casa==="ministros")return MINISTROS.map(m=>cardIndicado(m[1].replace(/ \(.*\)$/,""),m[0],"",`<span class="tag tind">Indicado</span> <span class="tag">${esc(pastaCurta(m[0]))}</span>${m[2]?"":' <span class="tag">a confirmar</span>'}`));
  if(casa[0]==="t"){const c=COLEGIADOS[+casa.slice(1)],nc=NO_CARGO.find(x=>x.n===c.n);if(!nc)return null;
@@ -2117,7 +2118,7 @@ mount(){const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
   listaPaginada({url:()=>tse?"/candidatos"+qs({cargo:tse,eleitos:"true",...filtros()}):"/parlamentares"+qs({casa:alCasa||casa,...filtros()}),alvo:"#plist",mais:"#plm",limite:60,
    vazio:"Ninguém com esses filtros.",
    render:it=>tse?it.map(c=>{const n=c.nome_urna||c.nome||"";const card=`<div style="min-width:0"><b>${esc(n)}</b><div class="small muted">${esc(CARGON(c.cargo))}${c.unidade&&c.unidade!==c.uf?", "+esc(c.unidade):""}. ${esc(c.uf||"")}</div><div style="margin-top:4px"><span class="tag sit-ex">Eleito em ${c.ano}</span> ${c.partido?sigla(c.partido):""}</div>${c.nome&&c.nome!==n?`<div class="small muted" style="margin-top:2px">${esc(c.nome)}</div>`:""}</div>`;
-     return c.parlamentar_id?`<a class="pcard2" href="#/parlamentar/${c.parlamentar_id}">${avIni(n)}${card}</a>`:`<div class="pcard2 indc2">${avIni(n)}${card}</div>`}).join("")
+     const ft=c.sq_candidato?fotoR("tse:"+c.sq_candidato,n,52):avIni(n);return c.parlamentar_id?`<a class="pcard2" href="#/parlamentar/${c.parlamentar_id}">${ft}${card}</a>`:`<div class="pcard2 indc2">${ft}${card}</div>`}).join("")
     :it.map(p=>`<a class="pcard2" href="#/parlamentar/${p.id}">${fotoR(p.foto_url,p.nome,52)}<div style="min-width:0"><b>${esc(p.nome)}</b><div class="small muted">${cargoParl(alCasa||casa)}${p.partido?", "+esc(p.partido):""}. ${esc(p.uf||"")}</div><div style="margin-top:4px"><span class="tag sit-ex">Em exercício</span> ${sigla(p.partido)}</div></div></a>`).join(""),
    aoCarregar:(it,tot)=>{$("#plistN").textContent=tot?`${nf(tot)} ${tot===1?"pessoa":"pessoas"}`:"";if(!tot&&!uf&&!pt&&!q){$("#plistMais").innerHTML="";demo();$("#plistN").textContent="Ainda não há dados coletados para esta casa. Mostrando a demonstração."}}})(true)};
  const lista=()=>{$("#plistT").textContent=casa[0]==="t"?COLEGIADOS[+casa.slice(1)].n:CASA_LISTA[casa];$("#pinfo").innerHTML=comoCasa(casa);$("#plistMais").innerHTML="";
@@ -2131,9 +2132,7 @@ mount(){const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
   const ehTrib=()=>casa[0]==="t"||casa==="ministros";
   const mini=()=>{const trib=ehTrib();const realC=typeof COMP_REAL!=="undefined"&&COMP_REAL&&COMP_REAL[casa]&&Object.keys(COMP_REAL[casa].partidos).length?COMP_REAL[casa]:null;
    const semMapa=trib||!!realC&&(!realC.por_uf||casa==="presidente");$("#pmpart").disabled=semMapa;$("#btnMapaP").disabled=semMapa;$("#pmpart").closest(".psel").style.display=semMapa?"none":"";$("#btnMapaP").hidden=semMapa;
-   if(casa==="ministros"){$("#hemiT").textContent="Ministros de Estado";$("#hemiMini").innerHTML=painelMinistros();$("#pmapcard").hidden=true;return}
-   if(trib){const c=COLEGIADOS[+casa.slice(1)],T=c.g.reduce((a,g)=>a+g[1],0);$("#hemiT").textContent=c.n;
-    $("#hemiMini").innerHTML=hemiciclo(c.g,{w:320,h:170,dot:T<=12?12:T<=40?7:undefined})+`<div class="hleg">${c.g.map(g=>`<span><i style="background:${g[2]}"></i>${g[0]}<b>${g[1]}</b></span>`).join("")}</div>`;$("#pmapcard").hidden=true;return}
+   if(casa==="ministros"||trib){$("#hemiT").textContent=casa==="ministros"?"Ministros de Estado":COLEGIADOS[+casa.slice(1)].n;const h=hemiIndicados(casa);$("#hemiMini").innerHTML=h.html+dicaHemi();ligarHemiciclo($("#hemiMini"),h.lista);$("#pmapcard").hidden=true;return}
    $("#hemiT").textContent=CASAS[casa].n+(realC?" · dados oficiais":"");
    if(realC){const g=Object.entries(realC.partidos).map(([p,n])=>[p,n,corSigla(p)]);const T=g.reduce((s,x)=>s+x[1],0);$("#hemiMini").innerHTML=hemiciclo(g,{w:320,h:170,dot:T<=30?9:undefined})+`<div class="hleg">${g.slice(0,12).map(x=>`<span><i style="background:${x[2]}"></i>${esc(x[0])}<b>${x[1]}</b></span>`).join("")}${g.length>12?`<span class="muted">+${g.length-12} partidos</span>`:""}</div>`;$("#pmapcard").hidden=true;foco=-1;
     if(typeof hemiReal==="function")hemiReal(casa);$("#pmpart").innerHTML='<option value="-1">Todos os partidos</option>'+Object.keys(realC.partidos).map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join("")}
@@ -2497,8 +2496,8 @@ function hemiciclo(grupos,{w=300,h=160,dot}={}){const N=grupos.reduce((a,g)=>a+g
  rs.forEach((r,i)=>{const n=cap[i];for(let j=0;j<n;j++){const a=n===1?Math.PI/2:Math.PI*(1-(j)/(n-1));pts.push({a,r,x:cx+Math.cos(a)*r*R,y:cy-Math.sin(a)*r*R})}});
  pts.sort((p,q)=>q.a-p.a||p.r-q.r);
 
- let k=0,out="";grupos.forEach(g=>{for(let j=0;j<g[1];j++){const p=pts[k++];if(!p)continue;const fl=dr>=2.4&&bandDe(g[0])?`url(#${padraoId(g[0])})`:g[2];out+=`<circle data-i="${k-1}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${dr.toFixed(1)}" fill="${fl}"${fl!==g[2]?` stroke="rgba(0,0,0,.22)" stroke-width=".5"`:""}><title>${esc(g[0])}</title></circle>`}});
- return`<svg class="hemi" viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Composição: ${N} cadeiras"><defs>${padroesPartidos(grupos.map(x=>x[0]))}</defs>${out}<text x="${cx}" y="${cy-(rows===1?R*.28:2)}" text-anchor="middle" font-size="${Math.max(13,R*.2)}" font-weight="700" fill="var(--ink)">${nf(N)}</text></svg>`}
+ let k=0,out="";grupos.forEach(g=>{for(let j=0;j<g[1];j++){const p=pts[k++];if(!p)continue;out+=`<circle data-i="${k-1}" data-p="${esc(g[0])}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${dr.toFixed(1)}" fill="${g[2]}"><title>${esc(g[0])}</title></circle>`}});
+ return`<svg class="hemi" viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Composição: ${N} cadeiras"><defs></defs>${out}<text x="${cx}" y="${cy-(rows===1?R*.28:2)}" text-anchor="middle" font-size="${Math.max(13,R*.2)}" font-weight="700" fill="var(--ink)">${nf(N)}</text></svg>`}
 function legendaPartidos(vals,total){return`<div class="hleg">${vals.map((n,i)=>n?`<span>${logoPartido(PNOMES[i],16)}${PNOMES[i]}<b>${n}</b><em>${pct(n/total*100)}</em></span>`:"").join("")}</div>`}
 function miniCamara(casa){const v=cadeirasBR(casa),T=v.reduce((a,b)=>a+b,0);return hemiciclo(v.map((n,i)=>[PNOMES[i],n,i===5?"#C9CFD8":PCOL[i]]),{w:320,h:170})+legendaPartidos(v,T)}
 function mapaPartidos(casa,foco){const svg=brMap(null,null,null,{fillFn:()=>"#F1F3F6",legend:false,labels:false});let b="";
@@ -2686,7 +2685,7 @@ const cargoParl=c=>c==="senado"?"Senador(a)":c==="camara"?"Deputado(a) federal":
 const ESFN={F:"Federal",E:"Estadual",M:"Municipal"};
 const qs=o=>{const p=Object.entries(o).filter(([,v])=>v!==""&&v!=null);return p.length?"?"+p.map(([k,v])=>k+"="+encodeURIComponent(v)).join("&"):""};
 const RCOR=["#A9C8EC","#F2BCAE","#B3DCC9","#F3D9A4","#D3C2EA","#C8D7A6","#E8B9B0","#B5D6CE","#DDE1E7","#F0C9DE"];
-/* bandeiras ilustrativas dos partidos: cores de cada partido desenhadas pelo site (não são as bandeiras oficiais) */
+/* cores de referência de cada partido (o logo oficial vem de site/midia/logos.json) */
 const PART_BAND={PT:["#C8102E","#FFFFFF","estrela"],PL:["#1A3D8F","#F4C300","h"],UNIAO:["#0B2D6B","#19A7CE","diag"],PP:["#1C5AA6","#8CC2EC","h"],
  MDB:["#007A3D","#F2C500","h"],PSD:["#0E6F4E","#F4C300","diag"],REPUBLICANOS:["#1C4E9C","#2E9E4F","diag"],PSDB:["#1660A8","#F6C200","circ"],
  PDT:["#D52B1E","#1D3E8A","h"],PSB:["#F7C600","#D32F2F","circ"],PSOL:["#D7262E","#F6C200","circ"],PODE:["#1E9E57","#0B5F8A","h"],
@@ -2698,21 +2697,10 @@ const PART_BAND={PT:["#C8102E","#FFFFFF","estrela"],PL:["#1A3D8F","#F4C300","h"]
 const ALIAS_PART={UNIAOBRASIL:"UNIAO",PODEMOS:"PODE",SD:"SOLIDARIEDADE",PCDOBR:"PCDOB",REPUBLICANO:"REPUBLICANOS"};
 const normSig=s=>{const k=String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z]/g,"");return ALIAS_PART[k]||k};
 const bandDe=s=>PART_BAND[normSig(s)];
-function estrelaD(cx,cy,r){let d="";for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.42:r;d+=(i?"L":"M")+(cx+Math.cos(a)*q).toFixed(3)+" "+(cy+Math.sin(a)*q).toFixed(3)}return d+"Z"}
-function bandInner(b,W,H){const[c1,c2,t,c3]=b;const r=(x,y,w,h,c)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;
- if(t==="h")return r(0,0,W,H/2,c1)+r(0,H/2,W,H/2,c2);
- if(t==="h3")return r(0,0,W,H/3,c1)+r(0,H/3,W,H/3,c2)+r(0,2*H/3,W,H/3+.01,c3);
- if(t==="diag")return r(0,0,W,H,c1)+`<path d="M${W} 0L${W} ${H}L0 ${H}Z" fill="${c2}"/>`;
- if(t==="circ")return r(0,0,W,H,c1)+`<circle cx="${W/2}" cy="${H/2}" r="${Math.min(W,H)*.3}" fill="${c2}"/>`;
- return r(0,0,W,H,c1)+`<path d="${estrelaD(W/2,H/2,Math.min(W,H)*.36)}" fill="${c2}"/>`}
-function bandPart(s,h=12){const b=bandDe(s);if(!b)return"";const w=Math.round(h*1.5);
- return`<svg class="pband" viewBox="0 0 30 20" width="${w}" height="${h}" aria-hidden="true"><g>${bandInner(b,30,20)}</g><rect x=".5" y=".5" width="29" height="19" fill="none" stroke="rgba(0,0,0,.18)"/></svg>`}
-const padraoId=s=>"pf-"+normSig(s);
-function padroesPartidos(siglas){const vistos=new Set();return siglas.map(s=>{const b=bandDe(s),id=padraoId(s);if(!b||vistos.has(id))return"";vistos.add(id);
- return`<pattern id="${id}" patternContentUnits="objectBoundingBox" width="1" height="1">${bandInner(b,1,1)}</pattern>`}).join("")}
+function bandPart(s,h=12){if(!s)return"";return`<i class="plg" data-plogo="${esc(s)}" style="background:${corSigla(s)};width:${h}px;height:${h}px"></i>`}
 const corSigla=s=>{const b=bandDe(s);return b?(b[0]==="#FFFFFF"?b[1]:b[0]):RCOR[hs(String(s||"?"))%RCOR.length]};
 const sigla=(s,big)=>s?`<span class="rsig${big?" big":""}" style="--c:${corSigla(s)}">${bandPart(s,big?13:11)}${esc(s)}</span>`:"";
-const fotoR=(url,nome,sz=84)=>url?`<img class="rfoto" src="${esc(url)}" alt="Foto de ${esc(nome)}" width="${sz}" height="${sz}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'rfoto ini',textContent:'${esc(String(nome||'?').trim()[0]||'?')}'}))">`:`<span class="rfoto ini" style="width:${sz}px;height:${sz}px">${esc(String(nome||"?").trim()[0]||"?")}</span>`;
+const fotoR=(url,nome,sz=84)=>`<span class="rfoto ini" style="width:${sz}px;height:${sz}px"${url?` data-foto="${esc(url)}" data-nome="${esc(nome||"")}"`:""}>${esc(String(nome||"?").trim()[0]||"?")}</span>`;
 const UFSel=(id,lab="Todos os estados")=>`<select id="${id}" data-titulo="Estado"><option value="">${lab}</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select>`;
 const VCOR={Sim:"var(--p2)","Não":"var(--p6)",Abstenção:"var(--p3)",Obstrução:"var(--p4)"};
 const vcor=v=>VCOR[v]||"var(--line)";
@@ -3308,7 +3296,7 @@ const PESSOAS_CASA={camara:"/parlamentares?casa=camara",senado:"/parlamentares?c
  governador:"/candidatos?cargo=GOVERNADOR&eleitos=true",prefeito:"/candidatos?cargo=PREFEITO&eleitos=true",presidente:"/candidatos?cargo=PRESIDENTE&eleitos=true"};
 function pessoaDe(x){if(x.casa)return{nome:x.nome,partido:x.partido||"Sem partido",uf:x.uf,foto:x.foto_url,cargo:cargoParl(x.casa),href:"#/parlamentar/"+x.id,sit:x.em_exercicio===false?"Fora do exercício":"Em exercício",ativo:x.em_exercicio!==false};
  const n=tit(x.nome_urna||x.nome);return{nome:n,completo:tit(x.nome),partido:x.partido||"Sem partido",uf:x.uf==="BR"?null:x.uf,cargo:CARGON(x.cargo)+(x.cargo==="PREFEITO"&&x.unidade?" de "+tit(x.unidade):""),
-  href:x.parlamentar_id?"#/parlamentar/"+x.parlamentar_id:null,sit:"Eleito(a) em "+x.ano,ativo:true,ocupacao:x.ocupacao,instrucao:x.instrucao}}
+  href:x.parlamentar_id?"#/parlamentar/"+x.parlamentar_id:null,sit:"Eleito(a) em "+x.ano,ativo:true,ocupacao:x.ocupacao,instrucao:x.instrucao,foto:x.sq_candidato?"tse:"+x.sq_candidato:null}}
 async function pessoasCasa(casa){const u=PESSOAS_CASA[casa];if(!u)return[];return(await todosItens(u)).map(pessoaDe).filter(p=>p.ativo)}
 const iniFoto=(n,sz=48)=>`<span class="rfoto ini" style="width:${sz}px;height:${sz}px">${esc(iniciais(n||"?"))}</span>`;
 
@@ -3320,21 +3308,28 @@ function hemiPessoas(pessoas,{w=320,h=170,ordem=[]}={}){const g={};pessoas.forEa
  const svg=hemiciclo(siglas.map(s=>[s,g[s].length,corSigla(s)]),{w,h,dot:N<=12?12:N<=40?9:undefined}).replace(/<title>[^<]*<\/title>/g,"");
  return{lista,html:svg+`<div class="hleg">${siglas.slice(0,14).map(s=>`<span>${bandPart(s,12)||`<i style="background:${corSigla(s)}"></i>`}${esc(s)}<b>${g[s].length}</b></span>`).join("")}${siglas.length>14?`<span class="muted">+${siglas.length-14} partidos</span>`:""}</div>`}}
 const ehMouse=()=>matchMedia("(hover:hover) and (pointer:fine)").matches;
-function dicaHemi(){return`<p class="small muted hemi-dica">${ehMouse()?"Passe o mouse em uma bola para ver quem é; clique para abrir o perfil.":"Toque em uma bola para ver quem é; toque de novo para abrir o perfil."} Cada bola leva a bandeira do partido (desenho ilustrativo nas cores do partido, não a bandeira oficial).</p>`}
+function dicaHemi(){return`<p class="small muted hemi-dica">${ehMouse()?"Passe o mouse em uma bola para ver quem é; clique para abrir o perfil.":"Toque em uma bola para ver quem é; toque de novo para abrir o perfil."} Cada bola leva o logo oficial do partido (Wikimedia Commons) quando ele existe.</p>`}
 function cartaoHemi(p){const pn=PARTIDO_NOME[p.partido];const l=(a,b)=>b?`<div class="ht-l"><span>${a}</span><b>${b}</b></div>`:"";
  return`<div class="ht-top">${p.foto?fotoR(p.foto,p.nome,48):iniFoto(p.nome)}<div><b>${esc(p.nome)}</b><span>${esc(p.cargo)}</span></div></div>
- ${l("Partido",`${sigla(p.partido)}${pn?`<small>${esc(pn)}</small>`:""}`)}${l("Estado",p.uf&&UF[p.uf]?bandeiraImg(p.uf,"flag flag-sm")+esc(UF[p.uf].nome):"Brasil")}${l("Situação",esc(p.sit||""))}
- ${p.completo&&p.completo!==p.nome?l("Nome completo",esc(p.completo)):""}${l("Profissão",p.ocupacao?esc(tit(p.ocupacao)):"")}${l("Escolaridade",p.instrucao?esc(tit(p.instrucao)):"")}
- <em>${p.href?(ehMouse()?"Clique para abrir o perfil completo":"Toque de novo para abrir o perfil"):"Dados da candidatura eleita (TSE)"}</em>`}
+ ${l("Partido",`${sigla(p.partido)}${pn?`<small>${esc(pn)}</small>`:""}`)}${p.extra?"":l("Estado",p.uf&&UF[p.uf]?bandeiraImg(p.uf,"flag flag-sm")+esc(UF[p.uf].nome):"Brasil")}${l("Situação",esc(p.sit||""))}
+ ${(p.extra||[]).map(([a,b])=>l(a,esc(b))).join("")}${p.completo&&p.completo!==p.nome?l("Nome completo",esc(p.completo)):""}${l("Profissão",p.ocupacao?esc(tit(p.ocupacao)):"")}${l("Escolaridade",p.instrucao?esc(tit(p.instrucao)):"")}
+ <em>${p.href?(ehMouse()?"Clique para abrir o perfil completo":"Toque de novo para abrir o perfil"):p.extra?"Fonte: portais oficiais e Diário Oficial (out/2026)":"Dados da candidatura eleita (TSE)"}</em>`}
 function dicaFlutuante(){let t=$("#hemiTip");if(!t){t=document.createElement("div");t.id="hemiTip";t.className="hemi-tip";t.setAttribute("role","tooltip");document.body.appendChild(t)}return t}
 function posDica(t,x,y){const r=t.getBoundingClientRect();let l=x+18,tp=y+18;if(l+r.width>innerWidth-8)l=x-r.width-18;if(l<8)l=8;if(tp+r.height>innerHeight-8)tp=Math.max(8,y-r.height-18);t.style.left=l+"px";t.style.top=tp+"px"}
 function fecharDica(){V5.fechar&&V5.fechar()}
 addEventListener("scroll",fecharDica,{passive:true});addEventListener("hashchange",fecharDica);
 /* passa o mouse: a bola cresce (cópia por cima das outras) e aparece o cartão da pessoa */
-function ligarHemiciclo(box,lista){const svg=box&&box.querySelector("svg.hemi");if(!svg||!lista.length)return;svg.classList.add("hemi-viva");
+function agitaHemi(svg){if(semMov()||svg.dataset.agita)return;svg.dataset.agita=1;const cs=[...svg.querySelectorAll("circle[data-i]")].map(c=>({c,x:+c.getAttribute("cx"),y:+c.getAttribute("cy")}));let t=null,lx=null,ly=null;
+ const calma=()=>cs.forEach(o=>{if(o.m){o.c.style.transform="";o.m=0}});
+ svg.addEventListener("mousemove",e=>{if(!ehMouse())return;const r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal,k=vb.width/r.width;const x=(e.clientX-r.left)*k,y=(e.clientY-r.top)*k;
+  const vel=lx==null?0:Math.min(1,Math.hypot(x-lx,y-ly)/6);lx=x;ly=y;const R=vb.width*.12;
+  cs.forEach(o=>{const dx=o.x-x,dy=o.y-y,d=Math.hypot(dx,dy);if(d<R&&d>.5){const f=(1-d/R)*(1.2+3.5*vel);o.c.style.transform=`translate(${(dx/d*f).toFixed(2)}px,${(dy/d*f).toFixed(2)}px)`;o.m=1}else if(o.m){o.c.style.transform="";o.m=0}});
+  clearTimeout(t);t=setTimeout(calma,160)});
+ svg.addEventListener("mouseleave",()=>{clearTimeout(t);calma();lx=ly=null})}
+function ligarHemiciclo(box,lista){const svg=box&&box.querySelector("svg.hemi");if(!svg||!lista.length)return;svg.classList.add("hemi-viva");agitaHemi(svg);
  const tip=dicaFlutuante();let at=null,big=null;
  const fora=()=>{at=null;if(big)big.remove();big=null;tip.classList.remove("on");svg.classList.remove("hemi-foco")};
- const ver=(c,x,y)=>{const p=lista[+c.dataset.i];if(!p)return;if(at!==c){fecharDica();V5.fechar=fora;at=c;big=c.cloneNode(false);big.removeAttribute("data-i");big.setAttribute("class","hemi-big");
+ const ver=(c,x,y)=>{const p=lista[+c.dataset.i];if(!p)return;if(at!==c){fecharDica();V5.fechar=fora;at=c;big=c.cloneNode(false);big.removeAttribute("data-i");big.style.transform="";big.style.transition="none";big.setAttribute("class","hemi-big");
    big.setAttribute("r",Math.max(6,+c.getAttribute("r")*2.4).toFixed(1));svg.appendChild(big);svg.classList.add("hemi-foco");tip.innerHTML=cartaoHemi(p);tip.classList.add("on")}posDica(tip,x,y)};
  svg.addEventListener("mousemove",e=>{if(!ehMouse())return;const c=e.target.closest&&e.target.closest("circle[data-i]");if(c)ver(c,e.clientX,e.clientY);else if(at)posDica(tip,e.clientX,e.clientY)});
  svg.addEventListener("mouseleave",()=>{if(ehMouse())fora()});
@@ -3744,11 +3739,14 @@ function segEfetivo(f,uf){if(!f)return"";const P=f.previsto||{};
  const L=[["policia_militar","Polícia Militar","pm"],["policia_civil","Polícia Civil (judiciária)","pc"],["policia_penal","Polícia Penal (penitenciária)","penal"],["guardas_municipais","Guardas municipais (GCM)","gcm"],["bombeiros","Corpo de Bombeiros","pm"],["pericia","Perícia oficial","pc"],
   ["policia_federal","Polícia Federal","pf"],["prf","Polícia Rodoviária Federal","prf"],["policia_penal_federal","Polícia Penal Federal","penal"],["policia_legislativa","Polícia Legislativa (Câmara e Senado)","pf"]].filter(x=>f[x[0]]!=null&&f[x[0]]>0);
  const mx=Math.max(...L.map(x=>f[x[0]]));
- return`<div class="seg-ef">${L.map(([k,t,c])=>`<div class="seg-efl"><span class="seg-efn"><i style="background:${(CORP[c]||CORP.pm)[1]}"></i>${t}</span><span class="seg-efb"><i style="width:${Math.max(2,100*f[k]/mx)}%"></i></span><b>${n0(f[k])}</b>${P[k]?`<em>previsto em lei: ${n0(P[k])} (${Math.round(100*f[k]/P[k])}% preenchido)</em>`:""}</div>`).join("")}</div>
+ const POLK={policia_militar:"pm",policia_civil:"pc",policia_penal:"pp",bombeiros:"cbm",guardas_municipais:"gcm",policia_federal:"pf",prf:"prf",policia_penal_federal:"spf"};
+ const chP=k=>{const b=POLK[k];if(!b)return null;if(["pf","prf","spf"].includes(b))return b;return uf?`${b}:${uf}`:null};
+ return`<div class="seg-ef">${L.map(([k,t,c])=>`<div class="seg-efl"><span class="seg-efn">${chP(k)?`<span data-pol="${chP(k)}" data-h="22"><i style="background:${(CORP[c]||CORP.pm)[1]}"></i></span>`:`<i style="background:${(CORP[c]||CORP.pm)[1]}"></i>`}${t}</span><span class="seg-efb"><i style="width:${Math.max(2,100*f[k]/mx)}%"></i></span><b>${n0(f[k])}</b>${P[k]?`<em>previsto em lei: ${n0(P[k])} (${Math.round(100*f[k]/P[k])}% preenchido)</em>`:""}</div>`).join("")}</div>
  <p class="small muted" style="margin:10px 0 0">${f.policiais_por_mil?`${n1(f.policiais_por_mil)} policiais (PM e Civil) por mil habitantes: um para cada ${n0(f.habitantes_por_policial)} pessoas. `:""}${uf==="SP"?"Em São Paulo, os bombeiros fazem parte da Polícia Militar. ":""}${uf?"":"Polícia Federal, PRF e Polícia Penal Federal só têm o total do país. "}A Receita Federal (auditores e analistas) não é força de segurança e não entra nesta conta.</p>`}
 function segUnidades(uf){const l=UNIDADES.filter(u=>uf?u[0]===uf:u[0]==="BR");if(!l.length)return"";
- return`<div class="embl-grid">${l.map(([u,c,s,n,d])=>`<div class="embl-card">${emblema(s,c)}<div><b>${esc(s)}</b> <span class="small muted">${u==="BR"?"Nacional":u} · ${(CORP[c]||CORP.pm)[0]}</span><div class="small">${esc(n)}</div><div class="small muted">${esc(d)}</div></div></div>`).join("")}</div>
- <p class="small muted" style="margin:8px 0 0">Emblemas ilustrativos, desenhados pelo BRASIL+ (não são os brasões oficiais). Lista das unidades especializadas mais conhecidas, não completa.</p>`}
+ return`<div class="embl-grid">${l.map(cartaoUnidade).join("")}</div>
+ <p class="small muted" style="margin:8px 0 0">Brasões oficiais da Wikimedia Commons; quando a unidade não tem brasão lá, aparece só a sigla num escudo. Lista das unidades especializadas mais conhecidas, não completa. O efetivo de cada batalhão e a data do último concurso não são publicados em base de dados aberta; quando a Wikipédia informa o efetivo, ele aparece no cartão.</p>`}
+function cartaoUnidade([u,c,s,n,d]){const k=`u:${u}:${s}`;return`<div class="embl-card"><span data-pol="${esc(k)}" data-h="58">${emblema(s,c)}</span><div><b>${esc(s)}</b> <span class="small muted">${u==="BR"?"Nacional":u} · ${(CORP[c]||CORP.pm)[0]}</span><div class="small">${esc(n)}</div><div class="small muted">${esc(d)}</div><div class="small" data-polinfo="${esc(k)}"></div></div></div>`}
 function segEstado(uf){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04,d=SEG,e=d.estados[uf]||{},ref=segRefs(d);
  const uns=segUnidades(uf);
  return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Segurança pública</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${e.populacao?nf(Math.round(e.populacao))+" habitantes. ":""}Taxas por 100 mil habitantes; ao lado, a média do Brasil.</p></div></div>
@@ -3771,7 +3769,7 @@ P.seguranca=()=>{let met=null,serie="homicidio_doloso";const SZ={card:"#segcard"
   ${sOk.length?`<div class="panel mt"><div class="hd"><div><h2>Mês a mês no Brasil</h2><p>Soma dos estados, Sinesp (${ref.ocorr})</p></div></div><div class="seg" id="segser" style="margin-bottom:10px">${sOk.map(k=>`<button data-s="${k}" class="${k===serie?"on":""}">${SERIES[k]}</button>`).join("")}</div><div id="segchart"></div></div>`:""}
   ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais</p></div></div>${segEfetivo(B.efetivo,null)}
    <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["PM",r=>n0(gv(d.estados[r.uf],"efetivo","policia_militar")),"num"],["Civil",r=>n0(gv(d.estados[r.uf],"efetivo","policia_civil")),"num"],["Penal",r=>n0(gv(d.estados[r.uf],"efetivo","policia_penal")),"num"],["Bombeiros",r=>n0(gv(d.estados[r.uf],"efetivo","bombeiros")),"num"],["Guardas",r=>n0(gv(d.estados[r.uf],"efetivo","guardas_municipais")),"num"],["Por mil hab.",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"num"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
-  <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos</p></div></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt"><summary class="small">Ver as dos estados</summary>${`<div class="embl-grid">${UNIDADES.filter(u=>u[0]!=="BR").map(([u,c,s,n,dd])=>`<div class="embl-card">${emblema(s,c)}<div><b>${esc(s)}</b> <span class="small muted">${u} · ${(CORP[c]||CORP.pm)[0]}</span><div class="small">${esc(n)}</div><div class="small muted">${esc(dd)}</div></div></div>`).join("")}</div>`}</details>`:""}</div>
+  <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos</p></div></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt" open><summary class="small">Unidades dos estados</summary><div class="embl-grid">${UNIDADES.filter(u=>u[0]!=="BR").map(cartaoUnidade).join("")}</div></details>`:""}</div>
   <div class="panel mt"><h2>Procurados pela Justiça</h2><p class="small" style="margin:6px 0 0">O número de mandados de prisão em aberto vem do Banco Nacional de Medidas Penais e Prisões (BNMP), do Conselho Nacional de Justiça. O BNMP não responde a servidores fora do Brasil; o número entra aqui quando o BRASIL+ rodar no servidor próprio. Enquanto isso, a consulta pública está no <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener">portal do BNMP</a>.</p></div>
   <div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:6px 0 0;padding-left:18px">${(d.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>
   ${RSRC(Object.values(d.fontes||{}).join("; "))}`;
@@ -3844,6 +3842,43 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
    $("#dvDet").innerHTML=TELA_DIV[tipo](D,sub);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};
   document.querySelectorAll("#dvSeg button").forEach(b=>b.onclick=()=>{tipo=b.dataset.k;sub=undefined;document.querySelectorAll("#dvSeg button").forEach(x=>x.classList.toggle("on",x===b));try{history.replaceState(null,"","#/dividas/"+tipo)}catch(e){}desenha()});
   desenha()}).catch(e=>{const b=$("#dvT");if(b)b.innerHTML=rerro(e)})}}};
+
+/* ---------- ministros, tribunais e colegiados: uma bola por pessoa, com cartão, numa só paleta (não têm partido) ---------- */
+const SEM_PARTIDO=["#3F72B5","#6E9BD3","#A3C2E8","#2E4F7F","#8AA6C8","#C7D8EE"];
+function hemiIndicados(casa){let grupos=[],lista=[];
+ if(casa==="ministros"){AREA_MIN.forEach((a,i)=>{const ms=MINISTROS.filter(m=>areaMin(m[0])===i);if(!ms.length)return;grupos.push([a[0],ms.length,SEM_PARTIDO[i%SEM_PARTIDO.length]]);
+   ms.forEach(m=>lista.push({nome:m[1].replace(/ \(.*\)$/,""),cargo:m[0],foto:"wiki:"+m[1].replace(/ \(.*\)$/,""),sit:m[2]?"No cargo (out/2026)":"A confirmar",extra:[["Área",a[0]],["Indicação","Nomeado pelo Presidente da República"]]}))})}
+ else{const c=COLEGIADOS[+casa.slice(1)],nc=NO_CARGO.find(x=>x.n===c.n);const pessoas=nc?nc.lista:[];let k=0;
+  c.g.forEach((g,i)=>{const cor=SEM_PARTIDO[i%SEM_PARTIDO.length];grupos.push([g[0],g[1],cor]);for(let j=0;j<g[1];j++){const m=pessoas[k++];
+   lista.push(m?{nome:m[0],cargo:m[1]||(m[0]==="Vaga aberta"?"Cadeira sem ocupante":"Ministro(a)"),foto:m[0]==="Vaga aberta"?null:"wiki:"+m[0],sit:m[0]==="Vaga aberta"?"Vaga":"No cargo",extra:[["Grupo",g[0]],["Origem",m[2]||""],["Órgão",c.n]]}:{nome:"Cadeira",cargo:g[0],sit:"",extra:[["Órgão",c.n]]})}})}
+ const T=grupos.reduce((a,g)=>a+g[1],0);
+ return{lista,html:hemiciclo(grupos,{w:320,h:170,dot:T<=12?12:T<=40?9:undefined}).replace(/<title>[^<]*<\/title>/g,"")+`<div class="hleg">${grupos.map(g=>`<span><i style="background:${g[2]}"></i>${esc(g[0])}<b>${g[1]}</b></span>`).join("")}</div>`}}
+
+/* ===================== v0.6: fotos oficiais e logos (site/midia, gerados pelo robô) ===================== */
+const MIDIA={idx:undefined,logos:null,blocos:{}};
+async function midiaJSON(n){try{const r=await fetch("midia/"+n,{headers:{Accept:"application/json"}});return r.ok?await r.json():null}catch(e){return null}}
+async function midiaIdx(){if(MIDIA.idx===undefined)MIDIA.idx=midiaJSON("indice.json");return MIDIA.idx}
+function midiaLogos(){if(!MIDIA.logos)MIDIA.logos=midiaIdx().then(i=>i?midiaJSON("logos.json"):null).then(L=>{const o={partidos:{},policias:(L&&L.policias)||{}};Object.entries((L&&L.partidos)||{}).forEach(([k,v])=>o.partidos[normSig(k)]=v);return o});return MIDIA.logos}
+async function fotoDe(chave){const i=await midiaIdx();if(!i||!i.blocos)return null;const b=snapHash(chave)%i.blocos;if(!MIDIA.blocos[b])MIDIA.blocos[b]=midiaJSON("fotos_"+b+".json").then(x=>x||{});return(await MIDIA.blocos[b])[chave]||null}
+const logoPart=(L,s)=>L&&L.partidos[normSig(s)];
+function imgLogo(l,h,alt){const im=document.createElement("img");im.className="plogo-img";im.src=l.img;im.alt=alt||"";im.height=h;im.style.height=h+"px";im.style.width="auto";im.title=alt?`${alt} (logo: Wikimedia Commons)`:"";return im}
+function aplicarMidia(){
+ document.querySelectorAll("[data-foto]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const k=el.dataset.foto;
+  fotoDe(k).then(src=>{if(!el.isConnected)return;const sz=el.style.width;
+   if(!src&&/^https?:/.test(k)){src=k}if(!src)return;const im=document.createElement("img");im.className="rfoto";im.alt="Foto de "+(el.dataset.nome||"");im.style.width=sz;im.style.height=el.style.height;im.width=parseInt(sz)||48;im.height=parseInt(el.style.height)||48;
+   im.onerror=()=>{if(im.isConnected)im.replaceWith(el)};im.src=src;el.replaceWith(im)})});
+ const marcas=document.querySelectorAll("[data-plogo]:not([data-mok])"),bolas=document.querySelectorAll("svg.hemi:not([data-mok])"),pol=document.querySelectorAll("[data-pol]:not([data-mok])");
+ if(!marcas.length&&!bolas.length&&!pol.length)return;
+ midiaLogos().then(L=>{
+  marcas.forEach(el=>{el.dataset.mok=1;const l=logoPart(L,el.dataset.plogo);if(l&&el.isConnected){const h=parseInt(el.style.height)||12;el.replaceWith(imgLogo(l,h+3,el.dataset.plogo))}});
+  bolas.forEach(svg=>{svg.dataset.mok=1;const defs=svg.querySelector("defs")||svg.insertBefore(document.createElementNS("http://www.w3.org/2000/svg","defs"),svg.firstChild);const feitos={};
+   svg.querySelectorAll("circle[data-p]").forEach(c=>{const sg=c.dataset.p,l=logoPart(L,sg);if(!l||+c.getAttribute("r")<2.2)return;const id="pl-"+normSig(sg);
+    if(!feitos[id]){feitos[id]=1;const pt=document.createElementNS("http://www.w3.org/2000/svg","pattern");pt.setAttribute("id",id);pt.setAttribute("patternContentUnits","objectBoundingBox");pt.setAttribute("width","1");pt.setAttribute("height","1");
+     pt.innerHTML=`<rect width="1" height="1" fill="#fff"/><image href="${l.img}" x=".1" y=".1" width=".8" height=".8" preserveAspectRatio="xMidYMid meet"/>`;defs.appendChild(pt)}
+    c.setAttribute("fill",`url(#${id})`);c.setAttribute("stroke",c.getAttribute("data-cor")||corSigla(sg));c.setAttribute("stroke-width",Math.max(.6,+c.getAttribute("r")*.18).toFixed(2))})});
+  pol.forEach(el=>{el.dataset.mok=1;const l=L.policias[el.dataset.pol];if(!l||!el.isConnected)return;const h=parseInt(el.dataset.h||"54");const im=document.createElement("img");im.className="pol-logo";im.src=l.img;im.alt=l.titulo||"";im.style.height=h+"px";im.style.width="auto";im.title=`${l.titulo} — imagem: Wikimedia Commons (${l.arquivo||""})`;el.replaceWith(im);
+   const info=document.querySelector(`[data-polinfo="${el.dataset.pol}"]`);if(info&&l.efetivo_wikipedia)info.textContent=`Efetivo informado na Wikipédia: ${nf(l.efetivo_wikipedia)}`})})}
+{let t=null;new MutationObserver(()=>{clearTimeout(t);t=setTimeout(aplicarMidia,40)}).observe(document.documentElement,{childList:true,subtree:true})}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();

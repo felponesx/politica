@@ -230,6 +230,62 @@ def fotos_tse(db, anos=(2022, 2026)) -> dict:
     return out
 
 
+def nomes_indicados(site="site/index.html") -> list[str]:
+    """Nomes de ministros, tribunais e colegiados que o site lista (NO_CARGO e MINISTROS)."""
+    try:
+        txt = open(site, encoding="utf-8").read()
+    except OSError:
+        return []
+    nomes = set()
+    for ini, fim in (("const NO_CARGO=[", "function painelNoCargo"), ("const MINISTROS=[", "const AREA_MIN")):
+        i = txt.find(ini)
+        j = txt.find(fim, i)
+        if i < 0 or j < 0:
+            continue
+        bloco = txt[i:j]
+        if ini.startswith("const MINISTROS"):
+            nomes |= {re.sub(r" \(.*\)$", "", m) for m in re.findall(r'\["[^"]+","([^"]+)",\d\]', bloco)}
+        else:
+            nomes |= set(re.findall(r'\[\s*"([^"]+)",\s*"[^"]*",\s*"[^"]*"\s*\]', bloco))
+    return sorted(n for n in nomes if n != "Vaga aberta")
+
+
+def fotos_wikipedia(nomes: list[str]) -> dict:
+    """Retrato da Wikipédia de cada nome, só quando o verbete é de uma autoridade brasileira (evita homônimos)."""
+    out = {}
+    pista = re.compile(r"(ministr|jurista|juiz|magistrad|polític|advogad|economist|militar|diplomat|servidor|presidente|"
+                       r"desembargad|procurador|governador|deputad|senador|general|almirante|brigadeiro)", re.I)
+    for k in range(0, len(nomes), 20):
+        lote = nomes[k:k + 20]
+        try:
+            d = cli.get(WIKI, params={"action": "query", "format": "json", "redirects": 1, "prop": "pageimages|extracts",
+                                      "piprop": "thumbnail", "pithumbsize": 200, "exintro": 1, "explaintext": 1,
+                                      "exsentences": 2, "titles": "|".join(lote)}).json()
+        except Exception as e:
+            log.warning("Wikipédia (retratos): %s", e)
+            continue
+        alias = {r["from"]: r["to"] for r in d.get("query", {}).get("redirects", [])}
+        alias.update({n["from"]: n["to"] for n in d.get("query", {}).get("normalized", [])})
+        paginas = {pg.get("title"): pg for pg in d.get("query", {}).get("pages", {}).values()}
+        for nome in lote:
+            pg = paginas.get(alias.get(alias.get(nome, nome), alias.get(nome, nome)))
+            if not pg or "missing" in pg:
+                continue
+            ext = pg.get("extract") or ""
+            thumb = (pg.get("thumbnail") or {}).get("source")
+            if not thumb or "brasil" not in ext.lower() or not pista.search(ext) or "desambigua" in ext.lower():
+                continue
+            try:
+                r = cli.get(thumb)
+                img = miniatura(r.content, 96) if r.status_code == 200 else None
+            except Exception:
+                img = None
+            if img:
+                out["wiki:" + nome] = img
+    log.info("retratos da Wikipédia: %d de %d", len(out), len(nomes))
+    return out
+
+
 def main(pasta: str):
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     from app.db import SessionLocal
@@ -238,7 +294,7 @@ def main(pasta: str):
     with open(os.path.join(pasta, "logos.json"), "w", encoding="utf-8") as f:
         json.dump(lg, f, ensure_ascii=False, separators=(",", ":"))
     with SessionLocal() as db:
-        fotos = {**fotos_congresso(db), **fotos_tse(db)}
+        fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_wikipedia(nomes_indicados())}
     blocos = [{} for _ in range(BLOCOS)]
     for k, v in fotos.items():
         blocos[fnv1a(k) % BLOCOS][k] = v
@@ -248,7 +304,8 @@ def main(pasta: str):
     with open(os.path.join(pasta, "indice.json"), "w", encoding="utf-8") as f:
         json.dump({"gerado_em": date.today().isoformat(), "blocos": BLOCOS, "fotos": len(fotos),
                    "partidos": len(lg["partidos"]), "policias": len(lg["policias"]),
-                   "fontes": {"fotos": "Câmara dos Deputados, Senado Federal e TSE (DivulgaCand)",
+                   "fontes": {"fotos": "Câmara dos Deputados, Senado Federal, TSE (DivulgaCand) e, para ministros e "
+                                       "tribunais, retratos da Wikipédia/Wikimedia Commons",
                               "logos": "Wikipédia / Wikimedia Commons (arquivo indicado em cada logo)"}}, f, ensure_ascii=False)
 
 
