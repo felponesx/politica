@@ -1262,6 +1262,15 @@ a.rrow b{font-weight:500}
 .embl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
 .embl{flex:none}
+.obcards{display:grid;gap:10px}.obc{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:12px;color:inherit;text-decoration:none!important;background:var(--surface)}.obc:hover{border-color:#B9D1EE}
+.obc-t{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.obc-t b{font-weight:600}
+.obet{display:flex;margin:12px 0 4px}.obet.canc{opacity:.8}.obs{flex:1;position:relative;padding-top:16px;font-size:12px;color:var(--muted)}
+.obs::before{content:"";position:absolute;top:5px;left:0;right:0;height:3px;background:var(--line);border-radius:2px}.obs i{position:absolute;top:0;left:0;width:13px;height:13px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.obs.feito::before{background:#7FA9DE}.obs.feito i{background:#4A7FC1;border-color:#4A7FC1}.obs.feito span{color:var(--ink)}
+.obs.parou::before{background:#E9A23B}.obs.parou i{background:#E06C4F;border-color:#E06C4F}.obs.parou span{color:#B24A2E;font-weight:600}
+.obp{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:4px}.obp .bar{flex:0 0 140px;height:6px}.obp.venc .bar i{background:#E06C4F}.obp.venc span{color:#B24A2E}
+.tag.ob-ok{background:#E3F2EA;color:#25683F}.tag.ob-and{background:#E3EEFA}.tag.ob-par{background:#FBE6DF;color:#9A3B22}.tag.ob-canc{background:#EEF0F3;color:var(--muted)}
+
 .nw-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}.nw{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit;text-decoration:none!important}.nw:hover{border-color:#B9D1EE}.nw b{font-weight:600;font-size:15px;line-height:1.35}.nw-v{font-size:12px;color:var(--muted)}.nw-r{font-size:13px;color:var(--ink2);line-height:1.45}
 .kpis-dia .kpi strong{font-size:28px}.seg-ano .seg-h{font-size:13.5px;margin-top:14px}.seg-ano .kpi strong{font-size:17px}.seg-ano .kpi span,.seg-ano .kpi em{font-size:11.5px}.seg-ano .kpi{padding:10px 12px}.seg-anos{padding:6px 12px}.pol-logo{flex:none;object-fit:contain}.seg-efn .pol-logo{margin-right:7px;vertical-align:middle}
 #hsegcard{margin-top:16px}
@@ -2868,14 +2877,19 @@ mount(){apiGet("/fornecedores/"+encodeURIComponent(doc)).then(d=>{const c=d.cont
 const _obras=P.obras,_obra=P.obra;
 P.obras=(...a)=>API.on?{html:`<div class="ph"><div><h1>Obras públicas</h1><p>Obras com recursos federais cadastradas no ObrasGov.br: onde estão, quanto custam e em que situação.</p></div></div>
 <div class="grid g2"><div class="panel"><h2>Obras por estado</h2><div id="obmap">${rload()}</div><p class="small muted" style="margin:8px 0 0">Toque em um estado para filtrar a lista.</p></div><div class="panel"><h2>Situação</h2><div id="obsit">${rload()}</div></div></div>
-<div class="panel mt"><div class="filters">${UFSel("obuf")}<input id="obtipo" placeholder="Tipo (ex.: rodovia, escola)" style="flex:1;min-width:160px" autocomplete="off"></div><div id="obl">${rload()}</div>${maisBtn("obm")}${RSRC("ObrasGov.br (Ministério da Gestão)")}</div>`,
-mount(){let f={uf:"",tipo:""};
+<div class="panel mt"><div class="seg seg-grupo" id="obsits" style="margin-bottom:12px"></div><div class="filters">${UFSel("obuf")}<input id="obtipo" placeholder="Tipo (ex.: rodovia, escola)" style="flex:1;min-width:160px" autocomplete="off"></div><div id="obl">${rload()}</div>${maisBtn("obm")}${RSRC("ObrasGov.br (Ministério da Gestão)")}</div>`,
+mount(){let f={uf:"",tipo:"",situacao:""};
  apiGet("/obras?limit=500").then(r=>{if(!r.total){demoComAviso(_obras,a,"Nenhuma obra coletada ainda (coleta obrasgov-obras).");return}
   const cnt={},sit={};r.itens.forEach(o=>{if(o.uf)cnt[o.uf]=(cnt[o.uf]||0)+1;const s=o.situacao||"Não informada";sit[s]=(sit[s]||0)+1});
+  const ABAS=[["","Todas"],["Inacabada","Inacabadas"],["Paralisada","Paralisadas"],["Em execução","Em andamento"],["Concluída","Prontas"],["Cadastrada","Cadastradas"],["Cancelada","Canceladas"],["Inativada","Inativadas"]];
+  Promise.all(ABAS.map(([k])=>k?apiGet("/obras"+qs({situacao:k,limit:1})).then(x=>x.total).catch(()=>0):Promise.resolve(r.total))).then(ns=>{const tot={};ABAS.forEach(([k],i)=>tot[k]=ns[i]);
+   $("#obsits").innerHTML=ABAS.filter(([k])=>!k||tot[k]).map(([k,t])=>`<button data-s="${esc(k)}" class="${k===f.situacao?"on":""}">${t} <small>${nf(tot[k])}</small></button>`).join("");
+   document.querySelectorAll("#obsits button").forEach(b=>b.onclick=()=>{f.situacao=b.dataset.s;document.querySelectorAll("#obsits button").forEach(x=>x.classList.toggle("on",x===b));pg(true)});
+   $("#obsit").innerHTML=hbars(ABAS.filter(([k])=>k&&tot[k]).map(([k,t])=>[k,tot[k]]).sort((x,y)=>y[1]-x[1]),{fmt:nf})+`<p class="small muted">Todas as ${nf(r.total)} obras coletadas.</p>`});
   $("#obmap").innerHTML=mapaValores(cnt,nf);$("#obsit").innerHTML=hbars(Object.entries(sit).sort((x,y)=>y[1]-x[1]).slice(0,8),{fmt:nf})+(r.total>500?`<p class="small muted">Contagem das 500 obras de maior valor de ${nf(r.total)}.</p>`:"");
   bindMap($("#obmap"),null,null,u=>{f.uf=u;$("#obuf").value=u;pg(true);$("#obl").scrollIntoView({behavior:semMov()?"auto":"smooth",block:"start"})})}).catch(e=>{$("#obmap").innerHTML=rerro(e);$("#obsit").innerHTML=""});
  const pg=listaPaginada({url:()=>"/obras"+qs(f),alvo:"#obl",mais:"#obm",vazio:"Nenhuma obra com esses filtros.",
-  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} obras</p>`+table([["Obra",o=>`<a href="#/obra/r${o.id}" class="rclamp">${esc(o.nome||"Obra")}</a><div class="small muted">${esc(o.executor||"")}</div>`],["Tipo",o=>esc(o.tipo||"—")],["Situação",o=>`<span class="tag">${esc(o.situacao||"—")}</span>`],["Estado",o=>esc(o.uf||"")],["Previsto",o=>brlR(o.valor_previsto),"n"]],it,o=>"#/obra/r"+o.id)});
+  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} obras</p><div class="obcards">${it.map(o=>`<a class="obc" href="#/obra/r${o.id}"><div class="obc-t"><b class="rclamp">${esc(o.nome||"Obra")}</b><span class="tag ob-${obSitK(o.situacao)}">${esc(o.situacao||"—")}</span></div><div class="small muted">${esc(o.executor||"")}${o.uf?" · "+esc(o.uf):""}${o.tipo?" · "+esc(o.tipo):""} · previsto ${brlR(o.valor_previsto)}</div>${etapasObra(o)}</a>`).join("")}</div>`});
  pg(true);$("#obuf").onchange=e=>{f.uf=e.target.value;pg(true)};$("#obtipo").oninput=debounce(e=>{f.tipo=e.target.value.trim();pg(true)})}}:_obras(...a);
 P.obra=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _obra(id,...r);
 return{html:`<div class="crumb"><a href="#/obras">Obras</a> / Obra</div><div id="ro">${rload()}</div>`,
@@ -3035,9 +3049,9 @@ mount(){r.mount&&r.mount();Promise.all([apiGet("/indicadores-sociais/nomes").cat
  $("#insel").innerHTML=ufNomes.map(n=>`<option value="uf:${n}">${INDUF[n][0]} (por estado)</option>`).join("")+soc.map(s=>`<option value="mun:${esc(s.nome)}">${esc(s.descricao||s.nome)} (por município)</option>`).join("");
  const des=async v=>{const[t,n]=v.split(/:(.+)/);$("#inBody").innerHTML=rload();
   try{if(t==="uf"){const it=ibge.filter(i=>i.nome===n);const ano=Math.max(...it.map(i=>i.ano));const val={};it.filter(i=>i.ano===ano).forEach(i=>val[i.uf]=i.valor*(n==="pib"?1e3:1));const f=n==="populacao"?nf:brl;
-    $("#inBody").innerHTML=`<div class="grid g2"><div><p class="small muted" style="margin:0 0 6px">${INDUF[n][0]}, ${ano} (IBGE)</p>${mapaValores(val,x=>f(Math.round(x)))}</div><div>${table([["Estado",x=>esc(UF[x[0]]?UF[x[0]].nome:x[0])],[INDUF[n][0],x=>f(Math.round(x[1])),"n"]],Object.entries(val).sort((x,y)=>y[1]-x[1]))}</div></div>`}
+    $("#inBody").innerHTML=`<p class="small muted" style="margin:0 0 6px">${INDUF[n][0]}, ${ano} (IBGE). Toque em um estado para abrir a ficha.</p><div style="max-width:640px;margin:0 auto">${mapaValores(val,x=>f(Math.round(x)))}</div><h3 class="seg-h">Estados <small>do maior para o menor</small></h3>${table([["Estado",x=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(x[0],"flag flag-sm")}${esc(UF[x[0]]?UF[x[0]].nome:x[0])}</span>`],[INDUF[n][0],x=>f(Math.round(x[1])),"n"]],Object.entries(val).sort((x,y)=>y[1]-x[1]),x=>"#/uf/"+x[0])}`;bindMap($("#inBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks()}
    else{const d=await apiGet("/indicadores-sociais"+qs({nome:n}));const ms=d.municipios.filter(m=>m.valor!=null);
-    $("#inBody").innerHTML=`<div class="grid g2"><div><p class="small muted" style="margin:0 0 6px">${esc(d.descricao||n)}, ${d.ano}. Média por estado ponderada pela população.</p>${mapaValores(d.media_por_uf,x=>fmtVal(x,d.unidade))}</div><div><h3 class="rh3">Maiores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(0,8),m=>"#/municipio/"+m.codigo_ibge)}<h3 class="rh3 mt">Menores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(-8).reverse(),m=>"#/municipio/"+m.codigo_ibge)}</div></div><p class="small muted">Fonte: ${esc(d.fonte||"")}</p>`;rowLinks()}
+    $("#inBody").innerHTML=`<div><div><p class="small muted" style="margin:0 0 6px">${esc(d.descricao||n)}, ${d.ano}. Média por estado ponderada pela população.</p><div style="max-width:640px;margin:0 auto">${mapaValores(d.media_por_uf,x=>fmtVal(x,d.unidade))}</div></div><div class="grid g2 mt"><div><h3 class="rh3">Maiores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(0,8),m=>"#/municipio/"+m.codigo_ibge)}</div><div><h3 class="rh3">Menores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(-8).reverse(),m=>"#/municipio/"+m.codigo_ibge)}</div></div></div><p class="small muted">Fonte: ${esc(d.fonte||"")}</p>`;rowLinks()}
    bindMap($("#inBody"),null,null,u=>{location.hash="#/uf/"+u})}catch(e){$("#inBody").innerHTML=rerro(e)}};
  des($("#insel").value);$("#insel").onchange=e=>des(e.target.value)})}}};
 
@@ -3244,17 +3258,26 @@ P.comparar=(pre,...a)=>{if(!API.on)return _comparar(pre,...a);let A=pre&&UF[pre]
 return{html:`<div class="ph"><div><h1>Comparar estados</h1><p>Dois estados lado a lado com os dados oficiais coletados.</p></div></div>
 <div class="panel"><div class="filters" style="margin:0">${UFSel("cpA","Estado 1")}<span class="muted" style="align-self:center">com</span>${UFSel("cpB","Estado 2")}</div></div><div id="cpR" class="mt">${rload()}</div>`,
 mount(){$("#cpA").value=A;$("#cpB").value=B;
- const um=async uf=>{const[res,fl,ga,mu]=await Promise.all([apiGet("/estados/"+uf+"/resumo").catch(()=>null),apiGet("/estados/"+uf+"/fluxo").catch(()=>null),apiGet("/gastos/funcao?esfera=E&uf="+uf).catch(()=>null),apiGet("/municipios?uf="+uf+"&limit=1").catch(()=>null)]);return{res,fl,ga,mu}};
- const carregar=async()=>{$("#cpR").innerHTML=rload();const[x,y]=await Promise.all([um(A),um(B)]);const dv=await apiGet("/dividas/estados").catch(()=>null);const dva=u=>dv&&(dv.estados.find(e=>e.uf===u)||{}).total;
+ let MP=null;const mapa=async()=>MP||(MP=await apiGet("/mapa/estados").catch(()=>({estados:{},anos:{}})));
+ const gf=async(esf,uf)=>{const m=await mapa();const a=m.anos&&m.anos.gasto;for(const q of [a?{ano:a,esfera:esf,uf}:null,{esfera:esf,uf}].filter(Boolean)){try{return await apiGet("/gastos/funcao"+qs(q))}catch(e){}}return null};
+ const um=async uf=>{const[res,fl,ga,gc,mu]=await Promise.all([apiGet("/estados/"+uf+"/resumo").catch(()=>null),apiGet("/estados/"+uf+"/fluxo").catch(()=>null),gf("E",uf),gf("C",uf),apiGet("/municipios?uf="+uf+"&limit=1").catch(()=>null)]);return{uf,res,fl,ga,gc,mu}};
+ const carregar=async()=>{$("#cpR").innerHTML=rload();const[x,y]=await Promise.all([um(A),um(B)]);const[dv,sg,dm,rj]=await Promise.all([apiGet("/dividas/estados").catch(()=>null),segDados().catch(()=>null),apiGet("/dividas/municipios").catch(()=>null),apiGet("/recuperacao-judicial/resumo").catch(()=>null)]);const dva=u=>dv&&(dv.estados.find(e=>e.uf===u)||{}).total;
+  const S=(d,...k)=>sg&&sg.estados&&sg.estados[d.uf]?gv(sg.estados[d.uf],...k):null;
+  const cap=d=>{const o=dm&&dm.por_uf&&dm.por_uf[d.uf];if(!o)return null;const n=Object.entries(o).filter(([k])=>/^[ABCD]/.test(k)).reduce((a,v)=>a+v[1],0);return n?Object.entries(o).filter(([k])=>/^[AB]/.test(k)).reduce((a,v)=>a+v[1],0)/n*100:null};
   const I=(d,k)=>d.res&&d.res.indicadores&&d.res.indicadores[k]?d.res.indicadores[k].valor:null;const fun=(d,f)=>d.ga?((d.ga.funcoes.find(z=>z.funcao===f)||{}).liquidado):null;
   const pop=d=>I(d,"populacao");const pc=(v,d)=>v!=null&&pop(d)?"R$ "+nf(Math.round(v/pop(d))):"—";
-  const linhas=[["População",d=>nfR(pop(d)&&Math.round(pop(d)))],["PIB",d=>I(d,"pib")!=null?brl(I(d,"pib")*1e3):"—"],["PIB por habitante",d=>I(d,"pib_per_capita")!=null?"R$ "+nf(Math.round(I(d,"pib_per_capita"))):"—"],
+  const linhas=[["População",d=>nfR(pop(d)&&Math.round(pop(d)))],["PIB",d=>I(d,"pib")!=null?brl(I(d,"pib")*1e3):"—"],["PIB por habitante",d=>I(d,"pib_per_capita")!=null?"R$ "+nf(Math.round(I(d,"pib_per_capita"))):I(d,"pib")&&pop(d)?"R$ "+nf(Math.round(I(d,"pib")*1e3/pop(d))):"—"],
    ["Municípios",d=>d.mu?nf(d.mu.total):"—"],["Deputados federais",d=>d.res?nfR(d.res.bancada.deputados):"—"],
    ["Gasto do governo estadual",d=>d.ga?brl(d.ga.total_liquidado)+` <span class="small muted">${d.ga.ano}</span>`:"—"],["Por habitante",d=>d.ga?pc(d.ga.total_liquidado,d):"—"],
    ["Saúde por habitante",d=>pc(fun(d,"Saúde"),d)],["Educação por habitante",d=>pc(fun(d,"Educação"),d)],["Segurança pública por habitante",d=>pc(fun(d,"Segurança Pública"),d)],
+   ["Gasto da prefeitura da capital",d=>d.gc?brl(d.gc.total_liquidado)+` <span class="small muted">${esc((d.gc.ente||"").replace(/^Prefeitura Municipal de /,""))}</span>`:"—"],
+   ["Homicídios por 100 mil hab.",d=>n1(S(d,"ocorrencias","taxa_homicidio"))],["Homicídios por dia",d=>n1(S(d,"ocorrencias","homicidios_por_dia"))],["Presos por 100 mil hab.",d=>n1(S(d,"prisional","taxa_aprisionamento"))],
+   ["Policiais (PM e Civil) por mil hab.",d=>{const v=S(d,"efetivo","policiais_por_mil");return v==null?"—":v.toLocaleString("pt-BR",{maximumFractionDigits:2})}],
+   ["Cidades com nota A ou B (CAPAG)",d=>{const v=cap(d);return v==null?"—":pct(v)}],["Empresas em recuperação judicial",d=>rj&&rj.por_uf&&rj.por_uf[d.uf]!=null?nf(rj.por_uf[d.uf]):"—"],
    ["Dívida consolidada do estado",d=>d.res&&d.res.divida&&d.res.divida.consolidada?brl(d.res.divida.consolidada.valor):"—"],["Tributos federais arrecadados",d=>d.fl&&d.fl.arrecadado!=null?brl(d.fl.arrecadado):"—"],
    ["Retorno por R$ 1 arrecadado",d=>d.fl&&d.fl.retorno_por_real_arrecadado!=null?"R$ "+d.fl.retorno_por_real_arrecadado.toFixed(2):"—"],["Contratos no PNCP",d=>d.res?brlR(d.res.contratos_pncp_total):"—"],
    ["Obras federais",d=>d.res?nfR(d.res.obras_federais):"—"],["Dívida ativa com a União",d=>{const v=dva(d===x?A:B);return v?brl(v):"—"}]];
+  for(let i=linhas.length-1;i>=0;i--){if(linhas[i][1](x)==="—"&&linhas[i][1](y)==="—")linhas.splice(i,1)}
   $("#cpR").innerHTML=`<div class="panel"><div class="tw"><table class="cpt"><thead><tr><th></th><th>${bandeiraImg(A,"flag flag-sm")} ${esc(UF[A].nome)}</th><th>${bandeiraImg(B,"flag flag-sm")} ${esc(UF[B].nome)}</th></tr></thead><tbody>${linhas.map(l=>`<tr><td>${l[0]}</td><td>${l[1](x)}</td><td>${l[1](y)}</td></tr>`).join("")}</tbody></table></div>${RSRC("IBGE, SICONFI, Receita Federal, Tesouro, PGFN, PNCP, ObrasGov e Câmara")}</div>`};
  carregar();$("#cpA").onchange=e=>{if(e.target.value){A=e.target.value;carregar()}};$("#cpB").onchange=e=>{if(e.target.value){B=e.target.value;carregar()}}}}};
 
@@ -3920,6 +3943,17 @@ P.noticias=()=>{let f={veiculo:"",q:""};
    render:it=>`<div class="nw-lista">${it.map(n=>`<a class="nw" href="${esc(n.link)}" target="_blank" rel="noopener"><span class="nw-v">${esc(n.veiculo)} · ${quandoNw(n.data)}</span><b>${esc(n.titulo)}</b>${n.resumo?`<span class="nw-r">${esc(n.resumo.slice(0,220))}${n.resumo.length>220?"…":""}</span>`:""}</a>`).join("")}</div>`});
   pg(true);document.querySelectorAll("#nwV button").forEach(b=>b.onclick=()=>{f.veiculo=b.dataset.v;document.querySelectorAll("#nwV button").forEach(x=>x.classList.toggle("on",x===b));pg(true)});
   $("#nwQ").oninput=debounce(e=>{f.q=e.target.value.trim();pg(true)})}).catch(e=>{const b=$("#nwBox");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("As notícias entram na próxima coleta do robô."):rerro(e)})}}};
+
+/* ---------- obras: etapas (como o andamento das leis) e prazo ---------- */
+const obSitK=s=>({"Concluída":"ok","Em execução":"and","Paralisada":"par","Inacabada":"par","Cancelada":"canc","Inativada":"canc"})[s]||"cad";
+function etapasObra(o){const k=obSitK(o.situacao);const n=k==="ok"?3:k==="and"||k==="par"?2:k==="canc"?0:1;
+ const E=["Cadastrada","Em execução","Concluída"];
+ const st=E.map((e,i)=>`<div class="obs ${i<n?"feito":""} ${i===n-1&&k==="par"?"parou":""}"><i></i><span>${i===1&&k==="par"?esc(o.situacao):e}</span></div>`).join("");
+ let prazo="";const ini=o.inicio_previsto&&new Date(o.inicio_previsto),fim=o.fim_previsto&&new Date(o.fim_previsto);
+ if(ini&&fim&&fim>ini&&k!=="canc"){const hoje=new Date(),p=Math.max(0,Math.min(100,(hoje-ini)/(fim-ini)*100));const venc=hoje>fim&&k!=="ok";
+  const meses=Math.round((hoje-fim)/2.63e9);
+  prazo=`<div class="obp ${venc?"venc":""}"><div class="bar"><i style="width:${(k==="ok"?100:p).toFixed(0)}%"></i></div><span>${k==="ok"?`Prazo previsto: ${fim.toLocaleDateString("pt-BR",{month:"short",year:"numeric"})}`:venc?`Prazo vencido há ${meses>=1?meses+(meses===1?" mês":" meses"):"menos de um mês"} (${fim.toLocaleDateString("pt-BR",{month:"short",year:"numeric"})})`:`${Math.round(p)}% do prazo previsto até ${fim.toLocaleDateString("pt-BR",{month:"short",year:"numeric"})}`}</span></div>`}
+ return`<div class="obet ${k==="canc"?"canc":""}">${k==="canc"?`<span class="small muted">Obra ${esc((o.situacao||"").toLowerCase())}</span>`:st}</div>${prazo}`}
 
 /* ===================== v0.6: fotos oficiais e logos (site/midia, gerados pelo robô) ===================== */
 const MIDIA={idx:undefined,logos:null,blocos:{}};
