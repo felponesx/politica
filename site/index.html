@@ -1262,6 +1262,8 @@ a.rrow b{font-weight:500}
 .embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
 .embl{flex:none}
 #hsegcard{margin-top:16px}
+.dvq-linha .dvq{margin-top:14px;max-width:420px}
+
 @media(max-width:760px){.seg-efl{grid-template-columns:minmax(110px,42%) 1fr auto}.embl-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -2897,9 +2899,9 @@ P.arrecadacao=(...a)=>{const r=_arrec(...a);if(!API.on)return r;
 return{html:`<div class="panel" id="flReal" style="margin-bottom:18px"><h2>Arrecadado × retornado por estado (dados oficiais)</h2><div id="flBody">${rload()}</div></div>`+r.html,
 mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estados.filter(e=>e.status==="ok");if(!es.length)throw new Error("dados incompletos. Rode as coletas receita-arrecadacao e tesouro-transferencias");
  const val={};es.forEach(e=>val[e.uf]=e.retorno_por_real_arrecadado);
- $("#flBody").innerHTML=`<div class="grid g2"><div><p class="small muted" style="margin:0 0 6px">Quanto volta em transferências obrigatórias para cada R$ 1 de tributo federal arrecadado no estado, em ${d.ano}.</p>${mapaValores(val,x=>"R$ "+x.toFixed(2))}</div><div>${table([["Estado",e=>esc(UF[e.uf]?UF[e.uf].nome:e.uf)],["Arrecadado",e=>brl(e.arrecadado),"n"],["Retornado",e=>brl(e.retornado),"n"],["Por R$ 1",e=>"R$ "+e.retorno_por_real_arrecadado.toFixed(2),"n"]],es)}</div></div>
+ $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 6px">Quanto volta em transferências obrigatórias para cada R$ 1 de tributo federal arrecadado no estado, em ${d.ano}. Toque em um estado para abrir a ficha.</p><div id="flMapa" style="max-width:640px;margin:0 auto">${mapaValores(val,x=>"R$ "+x.toFixed(2))}</div><h3 class="seg-h">Todos os estados <small>do que mais recebe de volta ao que menos recebe</small></h3>${table([["Estado",e=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span>`],["Arrecadado",e=>brl(e.arrecadado),"n"],["Retornado",e=>brl(e.retornado),"n"],["Saldo",e=>brl(e.retornado-e.arrecadado),"n"],["Por R$ 1",e=>"R$ "+e.retorno_por_real_arrecadado.toFixed(2).replace(".",","),"n"]],es,e=>"#/uf/"+e.uf)}
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}<p class="small muted" style="margin:6px 0 0">Abaixo, o painel de demonstração com as demais visões.</p>`;
- bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
+ bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks()}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
 
 /* ---------- eleições reais (TSE) ---------- */
 const _eleicoes=P.eleicoes;
@@ -3290,15 +3292,6 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
   $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span>${bandPart(p,12)||`<i style="background:${corSigla(p)}"></i>`}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
  catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":"Mapa indisponível: "+esc(e.message))}}
 
-/* Empresas: fornecedores por setor (CNAE da Receita) */
-const _emp4=P.empresas;
-P.empresas=(v,...a)=>{const r=_emp4(v,...a);if(!API.on||v==="contratos")return r;
-return{html:r.html,mount(){r.mount&&r.mount();apiGet("/empresas-setores").then(ss=>{const tot=ss.reduce((s,x)=>s+x.empresas,0);if(!tot)return;const tabs=document.querySelector("#view .tabs");if(!tabs)return;
- tabs.insertAdjacentHTML("afterend",`<div class="panel" id="setP" style="margin-bottom:14px"><h2>Fornecedores por setor</h2><div class="seg" id="setS"><button class="on" data-s="">Todos <small>${nf(tot)}</small></button>${ss.filter(x=>x.empresas).map(x=>`<button data-s="${esc(x.setor)}">${esc(x.setor)} <small>${nf(x.empresas)}</small></button>`).join("")}</div><div class="filters mt">${UFSel("setUF")}<input id="setQ" placeholder="Nome da empresa" style="flex:1;min-width:160px" autocomplete="off"></div><div id="setL">${rload()}</div>${maisBtn("setM")}<p class="small muted" style="margin:8px 0 0">Setor definido pela atividade principal (CNAE) no cadastro da Receita Federal.</p></div>`);
- let f={setor:"",uf:"",q:""};const pg=listaPaginada({url:()=>"/empresas"+qs(f),alvo:"#setL",mais:"#setM",limite:30,vazio:"Nenhuma empresa com esses filtros.",
-  render:(it,t)=>`<p class="small muted" style="margin:0 0 8px">${nf(t)} empresas</p>`+table([["Empresa",e=>`<a href="#/fornecedor/${e.cnpj}">${esc(e.razao_social||e.documento)}</a><div class="small muted">${esc(e.cnae_descricao||"")}</div>`],["Setor",e=>`<span class="tag">${esc(e.setor)}</span>`],["Sede",e=>esc((e.municipio||"")+(e.uf?", "+e.uf:""))],["Sócios",e=>nf(e.socios),"n"],["Contratos públicos",e=>brl(e.total_contratos),"n"]],it,e=>"#/fornecedor/"+e.cnpj)});
- pg(true);document.querySelectorAll("#setS button").forEach(b=>b.onclick=()=>{f.setor=b.dataset.s;document.querySelectorAll("#setS button").forEach(x=>x.classList.toggle("on",x===b));pg(true)});
- $("#setUF").onchange=e=>{f.uf=e.target.value;pg(true)};$("#setQ").oninput=debounce(e=>{f.q=e.target.value.trim();pg(true)})}).catch(()=>{})}}};
 
 /* ---------- roteador ---------- */
 
@@ -3550,14 +3543,14 @@ const TELA_DIV={
  estados:D=>{const g=govEstados(D.es),ufs=Object.keys(g);if(!ufs.length)return rvazio("Dívida dos estados ainda não coletada (SICONFI).");
   const tot=ufs.reduce((a,u)=>a+g[u].c,0),ord=ufs.sort((a,b)=>g[b].c-g[a].c),neg=ufs.filter(u=>g[u].l!=null&&g[u].l<0),top3=ord.slice(0,3);
   return resumoBox(`<p>Os ${ufs.length} governos estaduais somavam <b>${brl(tot)}</b> em dívida consolidada (${esc(g[ord[0]].ref||"")} de ${g[ord[0]].ano}). Os três maiores devedores — ${top3.map(u=>`${UF[u].nome} (${brl(g[u].c)})`).join(", ")} — concentram ${pct(top3.reduce((a,u)=>a+g[u].c,0)/tot*100)} do total.${neg.length?` ${neg.length} ${neg.length===1?"estado tem":"estados têm"} dívida líquida negativa (mais dinheiro em caixa e a receber do que dívidas).`:""}</p><p class="small muted" style="margin:0">Dívida consolidada: empréstimos, financiamentos e parcelamentos com prazo maior que um ano. Líquida: descontado o dinheiro em caixa e os créditos. O limite da Lei de Responsabilidade Fiscal é de duas vezes a receita corrente líquida.</p>`)+
-  `<div class="grid g2 mt"><div class="panel"><h2>Dívida consolidada por estado</h2>${mapaValores(Object.fromEntries(ufs.map(u=>[u,g[u].c])),brl)}</div><div class="panel"><h2>Maiores dívidas</h2>${hbars(ord.slice(0,12).map(u=>[UF[u].nome,g[u].c,"#/uf/"+u]))}</div></div>
+  `<div class="panel mt"><h2>Maiores dívidas</h2>${hbars(ord.slice(0,12).map(u=>[UF[u].nome,g[u].c,"#/uf/"+u]))}</div>
   <div class="panel mt"><h2>Todos os estados</h2>${table([["Estado",u=>`<a href="#/uf/${u}">${esc(UF[u].nome)}</a>`],["Dívida consolidada",u=>brl(g[u].c),"n"],["Dívida líquida",u=>g[u].l==null?"—":brl(g[u].l),"n"],["Período",u=>esc((g[u].ref||"")+" "+g[u].ano)]],ord,u=>"#/uf/"+u)}</div>${RSRC("Tesouro Nacional, SICONFI (Relatório de Gestão Fiscal, Anexo 2)")}`},
  municipios:D=>{const mu=D.mu;const t=capagTot(mu),n=capagNota(t);if(!n)return rvazio("CAPAG ainda não coletada.");const ufs=Object.keys(mu.por_uf).filter(u=>UF[u]);
   const boa=u=>{const o=mu.por_uf[u];const nn=Object.entries(o).filter(([k])=>/^[ABCD]/.test(k)).reduce((a,x)=>a+x[1],0);return nn?Object.entries(o).filter(([k])=>/^[AB]/.test(k)).reduce((a,x)=>a+x[1],0)/nn*100:null};
   const r=ufs.map(u=>[u,boa(u)]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
   return resumoBox(`<p>Das ${nf(n)} prefeituras com nota, <b>${pct(capagBoa(t)/n*100)}</b> têm capacidade de pagamento <b>A ou B</b> — podem pegar empréstimos com garantia da União. ${nf(Object.entries(t).filter(([k])=>/^[CD]/.test(k)).reduce((a,x)=>a+x[1],0))} têm nota C ou D. Melhor situação: ${r.slice(0,3).map(([u,v])=>`${UF[u].nome} (${pct(v)})`).join(", ")}. Pior: ${r.slice(-3).reverse().map(([u,v])=>`${UF[u].nome} (${pct(v)})`).join(", ")}.</p><p class="small muted" style="margin:0">A CAPAG, do Tesouro Nacional, avalia o endividamento, a poupança corrente e a liquidez de cada prefeitura. "N.D.": dados não disponíveis; "N.E.": não enviou os dados.</p>`)+
   `<div class="kpis kpis-c mt">${Object.entries(t).sort().map(([k,v])=>`<div class="kpi"><span>CAPAG ${esc(k)}</span><strong>${nf(v)}</strong></div>`).join("")}</div>
-  <div class="grid g2 mt"><div class="panel"><h2>Cidades com nota A ou B, por estado</h2>${mapaValores(Object.fromEntries(r),pct)}</div><div class="panel"><h2>Ranking</h2>${hbars(r.slice(0,27).map(([u,v])=>[UF[u].nome,v,"#/uf/"+u]),{fmt:pct})}</div></div>${RSRC("Tesouro Nacional, Capacidade de Pagamento (CAPAG) dos municípios")}`},
+  <div class="panel mt"><h2>Ranking dos estados</h2>${hbars(r.slice(0,27).map(([u,v])=>[UF[u].nome,v,"#/uf/"+u]),{fmt:pct})}</div>${RSRC("Tesouro Nacional, Capacidade de Pagamento (CAPAG) dos municípios")}`},
  familias:D=>{const s=D.s,e=s.endividamento_familias,i=s.inadimplencia_pf;if(!e&&!i)return rvazio("Séries do Banco Central ainda não coletadas.");
   return resumoBox(`<p>${e?`As dívidas das famílias com bancos e financeiras equivalem a <b>${pctF(e.ultimo.valor)} da renda</b> de um ano (${mesAno(e.ultimo.data)}), ${txtVar(varPP(e))}.`:""}${i?` A <b>inadimplência</b> das pessoas — empréstimos com atraso de mais de 90 dias — está em <b>${pctF(i.ultimo.valor)}</b> da carteira de crédito, ${txtVar(varPP(i))}.`:""}</p><p class="small muted" style="margin:0">Endividamento: saldo das dívidas no sistema financeiro dividido pela renda das famílias nos 12 meses anteriores. Inadimplência: parcela do crédito às pessoas com parcelas atrasadas há mais de 90 dias.</p>`)+
   `<div class="kpis kpis-c mt">${kpiS("Endividamento das famílias (% da renda)",e)}${kpiS("Inadimplência das pessoas",i)}</div><div class="grid g2 mt">${e?`<div class="panel"><h2>Endividamento das famílias, % da renda</h2>${serieChart(e.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${i?`<div class="panel"><h2>Inadimplência das pessoas, % da carteira</h2>${serieChart(i.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 29037 e 21084 do SGS")}`},
@@ -3812,6 +3805,45 @@ P.seguranca=()=>{let met=null,serie="homicidio_doloso";const SZ={card:"#segcard"
   .replace(/(<section id="s-arrecadacao")/,`<section id="s-seguranca" class="ufsec"><h2 class="ufsec-h">Segurança pública</h2><div id="ufseg-${uf}">${rload()}</div></section>$1`);
  return{html,mount(){r.mount&&r.mount();segDados().then(d=>{const el=document.getElementById("ufseg-"+uf);if(!el)return;const e=d.estados[uf]||{};
   el.innerHTML=(segBlocos(e,d.brasil,segRefs(d))||rvazio("Sem dados de segurança deste estado ainda."))+(e.efetivo?`<h3 class="seg-h">Quem faz a segurança</h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:"")+`<p class="small" style="margin:10px 0 0"><a href="#/seguranca">Mapa da segurança do Brasil</a></p>`}).catch(()=>{const el=document.getElementById("ufseg-"+uf);if(el)el.innerHTML=rvazio("Dados de segurança indisponíveis.")})}}}}
+
+/* ===================== v0.6: Dívidas numa tela só — seletor de tipo, mapa que muda e zoom no estado ===================== */
+let DV_MAPA_EST=null;
+async function dvPop(){if(DV_MAPA_EST)return DV_MAPA_EST;try{DV_MAPA_EST=(await apiGet("/mapa/estados")).estados||{}}catch(e){DV_MAPA_EST={}}return DV_MAPA_EST}
+const DIV_MAPA={
+ publica:(D,M)=>{const g=govEstados(D.es),v={};Object.keys(g).forEach(u=>{const p=M[u]&&M[u].pop;if(p)v[u]=g[u].c/p});return Object.keys(v).length?{t:"Dívida do governo do estado por habitante",s:"Dívida consolidada estadual dividida pela população (IBGE). A dívida federal não se divide por estado.",v,f:x=>"R$ "+nf(Math.round(x))}:null},
+ estados:D=>{const g=govEstados(D.es),v={};Object.keys(g).forEach(u=>v[u]=g[u].c);return Object.keys(v).length?{t:"Dívida consolidada de cada governo estadual",s:"Relatório de Gestão Fiscal (Tesouro, SICONFI).",v,f:brl}:null},
+ municipios:D=>{const mu=D.mu;if(!mu||!mu.por_uf)return null;const v={};Object.entries(mu.por_uf).forEach(([u,o])=>{const n=Object.entries(o).filter(([k])=>/^[ABCD]/.test(k)).reduce((a,x)=>a+x[1],0);if(n&&UF[u])v[u]=Object.entries(o).filter(([k])=>/^[AB]/.test(k)).reduce((a,x)=>a+x[1],0)/n*100});return{t:"Cidades com boa capacidade de pagamento (nota A ou B)",s:"CAPAG do Tesouro Nacional, por estado.",v,f:pct}},
+ familias:D=>{const f=D.scr&&D.scr.estados;if(!f)return null;const v={};Object.entries(f).forEach(([u,o])=>{if(o.pf&&o.pf.inadimplencia!=null)v[u]=o.pf.inadimplencia});return Object.keys(v).length?{t:"Inadimplência das pessoas, por estado",s:`Empréstimos com atraso de mais de 90 dias, % da carteira (Banco Central, SCR.data, ${esc(D.scr.referencia||"")}).`,v,f:pctF}:null},
+ empresas:D=>{const r=D.rj&&D.rj.por_uf;if(!r)return null;const v={};Object.entries(r).forEach(([u,n])=>{if(UF[u])v[u]=n});return{t:"Empresas em recuperação judicial, por estado",s:"Cadastro de CNPJ da Receita Federal (situação especial).",v,f:nf}}};
+function dvEstado(uf,D,M){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;const g=govEstados(D.es)[uf],p=M[uf]&&M[uf].pop;
+ const cap=D.mu&&D.mu.por_uf&&D.mu.por_uf[uf]||{},nCap=Object.entries(cap).filter(([k])=>/^[ABCD]/.test(k)).reduce((a,x)=>a+x[1],0),boa=Object.entries(cap).filter(([k])=>/^[AB]/.test(k)).reduce((a,x)=>a+x[1],0);
+ const rj=D.rj&&D.rj.por_uf&&D.rj.por_uf[uf],fa=D.fa&&D.fa.por_uf&&D.fa.por_uf[uf],sc=D.scr&&D.scr.estados&&D.scr.estados[uf];
+ const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
+ return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Dívidas</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>Governo do estado, cidades, pessoas e empresas.</p></div></div>
+ <div class="ufrest"><h3 class="seg-h">Governo do estado</h3><div class="kpis kpis-c">${g?kp("Dívida consolidada",brl(g.c),`${esc(g.ref||"")} ${g.ano}`)+(g.l!=null?kp("Dívida líquida",brl(g.l),g.l<0?"tem mais a receber do que deve":"descontado o que tem a receber"):"")+(p?kp("Por habitante","R$ "+nf(Math.round(g.c/p))):""):kp("Dívida consolidada","—","não coletada")}</div>
+ <h3 class="seg-h">Cidades <small>nota de capacidade de pagamento (CAPAG)</small></h3>${nCap?`<div class="kpis kpis-c">${kp("Com nota A ou B",pct(boa/nCap*100),`${nf(boa)} de ${nf(nCap)} cidades`)}${Object.entries(cap).sort().map(([k,v])=>kp("Nota "+esc(k),nf(v))).join("")}</div>`:rvazio("Sem notas CAPAG deste estado.")}
+ ${sc?`<h3 class="seg-h">Pessoas e empresas com bancos <small>${esc(D.scr.referencia||"")}</small></h3><div class="kpis kpis-c">${sc.pf?kp("Dívida das pessoas",brl(sc.pf.carteira),`inadimplência: ${pctF(sc.pf.inadimplencia)}`):""}${sc.pj?kp("Dívida das empresas",brl(sc.pj.carteira),`inadimplência: ${pctF(sc.pj.inadimplencia)}`):""}</div>`:""}
+ <h3 class="seg-h">Empresas em dificuldade</h3><div class="kpis kpis-c">${kp("Em recuperação judicial",rj!=null?nf(rj):"—")}${kp("Em falência",fa!=null?nf(fa):"—")}</div>
+ <p class="small" style="margin:10px 0 0"><a href="#/dividas/empresas/recuperacao">Lista de empresas em recuperação judicial</a> · <a href="#/uf/${uf}">Ficha completa ${esc(deUF(uf))}</a></p></div>`}}
+P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"];return _divDemo(ok.includes(t)?t:undefined)}
+ let tipo=DIV_TIPOS.some(x=>x[0]===t)?t:"publica";
+ return{html:`<div class="ph"><div><h1>Dívidas</h1><p>Quanto devem o governo, os estados, as cidades, as famílias e as empresas. Escolha o tipo: o mapa muda; toque em um estado para ver todas as dívidas dele.</p></div></div><div id="dvT">${rload()}</div>`,
+ mount(){Promise.all([dadosDividas(),dvPop(),apiGet("/dividas/familias-estados").catch(()=>null)]).then(([D,M,scr])=>{const box=$("#dvT");if(!box)return;D.scr=scr;
+  const DZ={card:"#dvcard",main:"#dvmain",holder:"#dvstate",map:"#dvmap",back:"‹ Voltar ao mapa",render:uf=>dvEstado(uf,D,M)};
+  box.innerHTML=`<div class="seg seg-grupo" id="dvSeg">${DIV_TIPOS.map(([k,n])=>`<button data-k="${k}" class="${k===tipo?"on":""}">${n}</button>`).join("")}</div>
+  <div class="dvq-linha" id="dvQ"></div>
+  <div class="panel mt" id="dvcard"><div id="dvmain" class="zmain"><div class="hd"><div><h2 id="dvmT"></h2><p id="dvmS"></p></div></div><div class="mapwrap mapbig"><div id="dvmap"></div><div class="zside" id="dvside"></div></div></div><div id="dvstate" style="display:none"></div></div>
+  <div id="dvDet" class="mt"></div>`;
+  const desenha=()=>{const q=quadroDivida(tipo,D);$("#dvQ").innerHTML=q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"";
+   const m=DIV_MAPA[tipo](D,M);const card=$("#dvcard");if($("#dvstate").style.display!=="none")inlineZoomOut(DZ);
+   if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f);
+    const o=UFS.filter(u=>m.v[u.uf]!=null).sort((a,b)=>m.v[b.uf]-m.v[a.uf]);const ln=u=>`<div class="rl"><i style="background:var(--p1);border-radius:50%"></i><a href="#/dividas" data-dvz="${u.uf}">${u.nome}</a><b>${m.f(m.v[u.uf])}</b><span></span></div>`;
+    $("#dvside").innerHTML=`<div class="small muted" style="margin-bottom:4px">Maiores</div>${o.slice(0,5).map(ln).join("")}<div class="small muted" style="margin:10px 0 4px">Menores</div>${o.slice(-5).map(ln).join("")}`;
+    bindMap($("#dvmap"),null,null,(u,el)=>inlineZoomIn(DZ,u,el));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})}
+   else{card.hidden=true}
+   $("#dvDet").innerHTML=TELA_DIV[tipo](D,sub);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};
+  document.querySelectorAll("#dvSeg button").forEach(b=>b.onclick=()=>{tipo=b.dataset.k;sub=undefined;document.querySelectorAll("#dvSeg button").forEach(x=>x.classList.toggle("on",x===b));try{history.replaceState(null,"","#/dividas/"+tipo)}catch(e){}desenha()});
+  desenha()}).catch(e=>{const b=$("#dvT");if(b)b.innerHTML=rerro(e)})}}};
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
