@@ -261,22 +261,11 @@ def entrada_zip(url, nome_parte):
 
 
 def main():
-    nav = {"User-Agent": UA_NAV}
-    import re
-    # SCR.data (Banco Central): carteira de crédito e inadimplência por UF, pessoa física e jurídica
-    for pid in ("scr_data", "scr-data", "scrdata"):
-        r = ver("ckan bcb " + pid, "https://dadosabertos.bcb.gov.br/api/3/action/package_show", params={"id": pid}, n=200)
-        if r is not None and r.status_code == 200:
-            try:
-                for rec in r.json()["result"]["resources"][:40]:
-                    print("   ", rec.get("name"), "|", rec.get("format"), "|", rec.get("url"), flush=True)
-            except Exception as e:
-                print("  json?", e, flush=True)
-    ver("ckan busca scr", "https://dadosabertos.bcb.gov.br/api/3/action/package_search", params={"q": "SCR.data", "rows": 5}, n=3000)
-    for ano in (2026, 2025):
-        u = f"https://www.bcb.gov.br/pda/desig/planilha_{ano}.zip"
-        ver(f"scr planilha {ano}", u, metodo="HEAD")
-        zip_remoto(f"scr planilha {ano}", u, mostrar=(".csv",), linhas=4)
+    # TSE: anos antigos (1994 a 2016) — tamanho e cabeçalho dos arquivos de votação e de candidatos
+    for ano in (1994, 1996, 1998, 2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016):
+        for base in ("votacao_candidato_munzona", "consulta_cand"):
+            url = f"https://cdn.tse.jus.br/estatistica/sead/odsele/{base}/{base}_{ano}.zip"
+            zip_remoto(f"{base} {ano}", url, mostrar=("_SP.csv", "_BRASIL.csv"), linhas=2)
 
 
 if __name__ == "__main__":
