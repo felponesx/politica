@@ -71,6 +71,9 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
             nomes = [m for m in nomes if "brasil" not in m.lower()]
             if uf:
                 nomes = [m for m in nomes if m.upper().endswith(f"_{uf.upper()}.CSV")]
+            # Presidente: desde 2018 vem só no arquivo _BR; antes, cada UF traz os votos do Presidente no estado.
+            # Somamos o total de todos os arquivos e gravamos no fim (numa coleta de uma UF só, o total não muda).
+            presidente = {}
             for nome in nomes:
                 with z.open(nome) as bruto:
                     leitor = csv.reader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
@@ -78,15 +81,19 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
                     pos = [(c, i) for i, c in enumerate(cab) if c in CAMPOS]
                     # só as colunas usadas (o arquivo de 2022 tem dezenas de milhões de linhas e ~50 colunas)
                     cand, mun = agregar({c: l[i] for c, i in pos} for l in leitor if len(l) >= len(cab))
+                for k, c in [(k, c) for k, c in cand.items() if c["cargo"] == "PRESIDENTE"]:
+                    del cand[k]
+                    if k in presidente:
+                        presidente[k]["votos"] += c["votos"]
+                    else:
+                        presidente[k] = dict(c)
                 # recarga idempotente: apaga o que havia daquele ano para os pares (UF, cargo) do arquivo e grava
                 # de novo. Por par, e não só por UF: o arquivo _BR (Presidente) tem votos de todos os estados e
                 # não pode apagar os governadores e deputados que vieram dos arquivos de cada UF.
                 # (o Presidente sai de qualquer UF: coletas antigas o gravavam com a UF da primeira linha)
                 for uf_c, cargo in {(c["uf"], c["cargo"]) for c in cand.values()}:
-                    filtro = [ResultadoEleicao.ano == ano, ResultadoEleicao.cargo == cargo]
-                    if cargo != "PRESIDENTE":
-                        filtro.append(ResultadoEleicao.uf == uf_c)
-                    db.execute(delete(ResultadoEleicao).where(*filtro))
+                    db.execute(delete(ResultadoEleicao).where(ResultadoEleicao.ano == ano, ResultadoEleicao.cargo == cargo,
+                                                              ResultadoEleicao.uf == uf_c))
                 for uf_m, cargo in {(k[5], k[4]) for k in mun}:
                     db.execute(delete(VotoMunicipio).where(VotoMunicipio.ano == ano, VotoMunicipio.uf == uf_m,
                                                            VotoMunicipio.cargo == cargo))
@@ -97,4 +104,10 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
                     for (t, sq, cd, nm, cargo, u), v in mun.items()])
                 db.commit()
                 n += len(cand)
+            if presidente and not uf:
+                # (coletas antigas gravavam o Presidente com a UF da primeira linha: apaga de qualquer UF)
+                db.execute(delete(ResultadoEleicao).where(ResultadoEleicao.ano == ano, ResultadoEleicao.cargo == "PRESIDENTE"))
+                db.bulk_insert_mappings(ResultadoEleicao, [{"ano": ano, **c} for c in presidente.values()])
+                db.commit()
+                n += len(presidente)
     return n.itens

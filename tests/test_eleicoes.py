@@ -113,3 +113,23 @@ def test_candidato_do_segundo_turno_fica_com_o_resultado_final(tmp_path):
     assert {c["nome_urna"]: c["resultado"] for c in r["itens"]} == {"FULANO": "ELEITO", "BELTRANO": "NÃO ELEITO"}
     assert [c["nome_urna"] for c in cliente.get("/candidatos", params={"ano": 2014, "cargo": "GOVERNADOR",
                                                                          "eleitos": "true"}).json()["itens"]] == ["FULANO"]
+
+
+def test_presidente_espalhado_nos_arquivos_dos_estados(tmp_path):
+    """Até 2016 não há arquivo _BR: cada UF traz os votos do Presidente no estado (formato real de 2006)."""
+    linhas = {"SP": [("SP", "71072", "SÃO PAULO", "1", "Presidente", "61", "13", "LULA", "PT", 700, "2º TURNO"),
+                     ("SP", "71072", "SÃO PAULO", "1", "Presidente", "62", "45", "ALCKMIN", "PSDB", 900, "2º TURNO"),
+                     ("SP", "71072", "SÃO PAULO", "1", "Governador", "63", "45", "SERRA", "PSDB", 1000, "ELEITO")],
+              "BA": [("BA", "38490", "SALVADOR", "1", "Presidente", "61", "13", "LULA", "PT", 800, "2º TURNO"),
+                     ("BA", "38490", "SALVADOR", "1", "Presidente", "62", "45", "ALCKMIN", "PSDB", 200, "2º TURNO")]}
+    caminho = tmp_path / "munzona_2006.zip"
+    with zipfile.ZipFile(caminho, "w") as z:
+        for uf, ls in linhas.items():
+            txt = CAB_BR + "".join(f"2006;{t};{u};{u if c != 'Presidente' else 'BR'};X;{cd};{mun};{t};{c};{sq};{nr};{nm};{p};{v};{sit}\n"
+                                   for u, cd, mun, t, c, sq, nr, nm, p, v, sit in ls)
+            z.writestr(f"votacao_candidato_munzona_2006_{uf}.csv", txt.encode("latin-1"))
+    for _ in range(2):  # idempotente
+        tse_resultados.coletar_resultados(2006, arquivo_local=str(caminho))
+    br = cliente.get("/eleicoes/2006/BR", params={"cargo": "PRESIDENTE"}).json()
+    assert [(c["nome"], c["votos"]) for c in br["mais_votados"]] == [("LULA", 1500), ("ALCKMIN", 1100)]
+    assert cliente.get("/eleicoes/2006/SP", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["nome"] == "SERRA"
