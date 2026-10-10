@@ -3326,7 +3326,7 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
   const por={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});const cont={};v.forEach(x=>{const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
   const paths=m.municipios.map(c=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido;return`<path d="${c.d}" fill="${p?corSigla(p):"var(--line2)"}" stroke="var(--surface)" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
   $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span>${bandPart(p,12)||`<i style="background:${corSigla(p)}"></i>`}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
- catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":"Mapa indisponível: "+esc(e.message))}}
+ catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2018 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
 
 
 /* ---------- roteador ---------- */

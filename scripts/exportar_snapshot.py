@@ -257,7 +257,8 @@ class Exportador:
                         r = self.get(f"/eleicoes/{ano}/{uf}", {"cargo": cargo, "turno": turno})
                         if turno == 1:  # a página do estado pede sem o turno
                             self.dados[chave(f"/eleicoes/{ano}/{uf}", {"cargo": cargo})] = r
-                        self.get(f"/eleicoes/{ano}/{uf}/mapa", {"cargo": cargo, "turno": turno})
+                        if ano >= 2018:  # mapa por cidade só nas eleições recentes (tamanho da cópia)
+                            self.get(f"/eleicoes/{ano}/{uf}/mapa", {"cargo": cargo, "turno": turno})
 
     def _busca(self):
         """Índice para a busca do site (o navegador faz a busca nesta lista)."""
