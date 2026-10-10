@@ -67,21 +67,34 @@ def coletar_resultados(ano: int, uf: str | None = None, arquivo_local: str | Non
         caminho = arquivo_local or http.baixar(URL.format(ano=ano),
                                                os.path.join(tempfile.gettempdir(), f"munzona_{ano}.zip"))
         with zipfile.ZipFile(caminho) as z:
-            nomes = [m for m in z.namelist() if m.lower().endswith(".csv")]
+            todos = [m for m in z.namelist() if m.lower().endswith(".csv")]
             # o arquivo _BRASIL repete os dados das UFs; usamos só os por UF (e o _BR/_ZZ do exterior, se houver)
-            nomes = [m for m in nomes if "brasil" not in m.lower()]
+            nomes = [m for m in todos if "brasil" not in m.lower()]
+            brasil = [m for m in todos if "brasil" in m.lower()]
             if uf:
                 nomes = [m for m in nomes if m.upper().endswith(f"_{uf.upper()}.CSV")]
             # Presidente: desde 2018 vem só no arquivo _BR; antes, cada UF traz os votos do Presidente no estado.
             # Somamos o total de todos os arquivos e gravamos no fim (numa coleta de uma UF só, o total não muda).
             presidente = {}
-            for nome in nomes:
+            # 1998: o Presidente só aparece no arquivo _BRASIL; se nenhum arquivo de UF o trouxer, lemos só as
+            # linhas do Presidente de lá (no fim da fila)
+            fila = [(m, False) for m in nomes]
+            ja_tem_presidente = False
+            while fila:
+                nome, so_presidente = fila.pop(0)
                 with z.open(nome) as bruto:
                     leitor = csv.reader(io.TextIOWrapper(bruto, encoding="latin-1"), delimiter=";")
                     cab = next(leitor, [])
                     pos = [(c, i) for i, c in enumerate(cab) if c in CAMPOS]
+                    i_cargo = cab.index("DS_CARGO") if "DS_CARGO" in cab else None
                     # só as colunas usadas (o arquivo de 2022 tem dezenas de milhões de linhas e ~50 colunas)
-                    cand, mun = agregar(({c: l[i] for c, i in pos} for l in leitor if len(l) >= len(cab)), ano)
+                    linhas = (l for l in leitor if len(l) >= len(cab))
+                    if so_presidente and i_cargo is not None:
+                        linhas = (l for l in linhas if sem_acento(l[i_cargo]).upper() == "PRESIDENTE")
+                    cand, mun = agregar(({c: l[i] for c, i in pos} for l in linhas), ano)
+                ja_tem_presidente = ja_tem_presidente or any(c["cargo"] == "PRESIDENTE" for c in cand.values())
+                if not fila and not ja_tem_presidente and not uf and brasil and not so_presidente:
+                    fila.append((brasil[0], True))
                 for k, c in [(k, c) for k, c in cand.items() if c["cargo"] == "PRESIDENTE"]:
                     del cand[k]
                     if k in presidente:

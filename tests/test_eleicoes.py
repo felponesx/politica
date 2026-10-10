@@ -148,3 +148,21 @@ def test_codigo_do_candidato_de_2000_a_2008_vira_unico(tmp_path):
     tse_resultados.coletar_resultados(2006, arquivo_local=str(caminho))
     assert cliente.get("/eleicoes/2006/RJ", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["nome"] == "FULANO RJ"
     assert cliente.get("/eleicoes/2006/SP", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["nome"] == "FULANO SP"
+
+
+def test_presidente_so_no_arquivo_brasil_1998(tmp_path):
+    """Em 1998 o Presidente só vem no arquivo _BRASIL (que também repete as UFs)."""
+    gov = CAB_BR + "1998;1;SP;SP;SÃO PAULO;1;CAPITAL;1;Governador;250002503000161;45;COVAS;PSDB;900;ELEITO\n"
+    bra = CAB_BR + "".join([
+        "1998;1;SP;SP;SÃO PAULO;1;CAPITAL;1;Governador;250002503000161;45;COVAS;PSDB;900;ELEITO\n",
+        "1998;1;SP;BR;BRASIL;1;CAPITAL;1;Presidente;280002801000045;45;FHC;PSDB;800;ELEITO\n",
+        "1998;1;RJ;BR;BRASIL;2;RIO;1;Presidente;280002801000045;45;FHC;PSDB;300;ELEITO\n",
+        "1998;1;RJ;BR;BRASIL;2;RIO;1;Presidente;280002801000013;13;LULA;PT;500;NÃO ELEITO\n"])
+    caminho = tmp_path / "munzona_1998.zip"
+    with zipfile.ZipFile(caminho, "w") as z:
+        z.writestr("votacao_candidato_munzona_1998_SP.csv", gov.encode("latin-1"))
+        z.writestr("votacao_candidato_munzona_1998_BRASIL.csv", bra.encode("latin-1"))
+    tse_resultados.coletar_resultados(1998, arquivo_local=str(caminho))
+    br = cliente.get("/eleicoes/1998/BR", params={"cargo": "PRESIDENTE"}).json()
+    assert [(c["nome"], c["votos"]) for c in br["mais_votados"]] == [("FHC", 1100), ("LULA", 500)]
+    assert cliente.get("/eleicoes/1998/SP", params={"cargo": "GOVERNADOR"}).json()["mais_votados"][0]["votos"] == 900
