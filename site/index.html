@@ -1140,7 +1140,8 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 .rbanner{background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13.5px;color:var(--ink2);margin-bottom:14px}
 .rbanner.warn{border-color:var(--warn);background:var(--surface)}
 .rbanner code,.small code{font-size:12px;background:var(--line2);padding:1px 5px;border-radius:4px}
-.rsig{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,var(--c) 55%,var(--surface));color:var(--ink);white-space:nowrap}
+.rsig{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,var(--c) 22%,var(--surface));color:var(--ink);white-space:nowrap}
+.rsig .pband{margin-right:5px;border-radius:2px;flex:none}.hleg .pband{margin-right:5px;border-radius:2px;vertical-align:-1px}.pband{display:inline-block}
 .rsig.big{font-size:12.5px;padding:3px 9px;margin-bottom:6px}
 .rfoto{width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--line2);flex:none}
 .rfoto.ini{display:inline-flex;align-items:center;justify-content:center;font-weight:600;color:var(--slate);font-size:18px}
@@ -2494,8 +2495,8 @@ function hemiciclo(grupos,{w=300,h=160,dot}={}){const N=grupos.reduce((a,g)=>a+g
  rs.forEach((r,i)=>{const n=cap[i];for(let j=0;j<n;j++){const a=n===1?Math.PI/2:Math.PI*(1-(j)/(n-1));pts.push({a,r,x:cx+Math.cos(a)*r*R,y:cy-Math.sin(a)*r*R})}});
  pts.sort((p,q)=>q.a-p.a||p.r-q.r);
 
- let k=0,out="";grupos.forEach(g=>{for(let j=0;j<g[1];j++){const p=pts[k++];if(p)out+=`<circle data-i="${k-1}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${dr.toFixed(1)}" fill="${g[2]}"><title>${esc(g[0])}</title></circle>`}});
- return`<svg class="hemi" viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Composição: ${N} cadeiras">${out}<text x="${cx}" y="${cy-(rows===1?R*.28:2)}" text-anchor="middle" font-size="${Math.max(13,R*.2)}" font-weight="700" fill="var(--ink)">${nf(N)}</text></svg>`}
+ let k=0,out="";grupos.forEach(g=>{for(let j=0;j<g[1];j++){const p=pts[k++];if(!p)continue;const fl=dr>=2.4&&bandDe(g[0])?`url(#${padraoId(g[0])})`:g[2];out+=`<circle data-i="${k-1}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${dr.toFixed(1)}" fill="${fl}"${fl!==g[2]?` stroke="rgba(0,0,0,.22)" stroke-width=".5"`:""}><title>${esc(g[0])}</title></circle>`}});
+ return`<svg class="hemi" viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Composição: ${N} cadeiras"><defs>${padroesPartidos(grupos.map(x=>x[0]))}</defs>${out}<text x="${cx}" y="${cy-(rows===1?R*.28:2)}" text-anchor="middle" font-size="${Math.max(13,R*.2)}" font-weight="700" fill="var(--ink)">${nf(N)}</text></svg>`}
 function legendaPartidos(vals,total){return`<div class="hleg">${vals.map((n,i)=>n?`<span>${logoPartido(PNOMES[i],16)}${PNOMES[i]}<b>${n}</b><em>${pct(n/total*100)}</em></span>`:"").join("")}</div>`}
 function miniCamara(casa){const v=cadeirasBR(casa),T=v.reduce((a,b)=>a+b,0);return hemiciclo(v.map((n,i)=>[PNOMES[i],n,i===5?"#C9CFD8":PCOL[i]]),{w:320,h:170})+legendaPartidos(v,T)}
 function mapaPartidos(casa,foco){const svg=brMap(null,null,null,{fillFn:()=>"#F1F3F6",legend:false,labels:false});let b="";
@@ -2683,8 +2684,32 @@ const cargoParl=c=>c==="senado"?"Senador(a)":c==="camara"?"Deputado(a) federal":
 const ESFN={F:"Federal",E:"Estadual",M:"Municipal"};
 const qs=o=>{const p=Object.entries(o).filter(([,v])=>v!==""&&v!=null);return p.length?"?"+p.map(([k,v])=>k+"="+encodeURIComponent(v)).join("&"):""};
 const RCOR=["#A9C8EC","#F2BCAE","#B3DCC9","#F3D9A4","#D3C2EA","#C8D7A6","#E8B9B0","#B5D6CE","#DDE1E7","#F0C9DE"];
-const corSigla=s=>RCOR[hs(String(s||"?"))%RCOR.length];
-const sigla=(s,big)=>s?`<span class="rsig${big?" big":""}" style="--c:${corSigla(s)}">${esc(s)}</span>`:"";
+/* bandeiras ilustrativas dos partidos: cores de cada partido desenhadas pelo site (não são as bandeiras oficiais) */
+const PART_BAND={PT:["#C8102E","#FFFFFF","estrela"],PL:["#1A3D8F","#F4C300","h"],UNIAO:["#0B2D6B","#19A7CE","diag"],PP:["#1C5AA6","#8CC2EC","h"],
+ MDB:["#007A3D","#F2C500","h"],PSD:["#0E6F4E","#F4C300","diag"],REPUBLICANOS:["#1C4E9C","#2E9E4F","diag"],PSDB:["#1660A8","#F6C200","circ"],
+ PDT:["#D52B1E","#1D3E8A","h"],PSB:["#F7C600","#D32F2F","circ"],PSOL:["#D7262E","#F6C200","circ"],PODE:["#1E9E57","#0B5F8A","h"],
+ AVANTE:["#F07D00","#1D4F91","diag"],PCDOB:["#C8102E","#F6C200","estrela"],PV:["#1E9E3A","#FFFFFF","circ"],CIDADANIA:["#D6247A","#1D4F91","circ"],
+ NOVO:["#F26C21","#FFFFFF","h"],SOLIDARIEDADE:["#F58220","#1A3A8A","h"],PRD:["#1D3E8A","#2E9E4F","h3","#F4C300"],REDE:["#0F8C8C","#F7A600","circ"],
+ AGIR:["#123B7A","#F28C00","diag"],MOBILIZA:["#0B7A4B","#1D4F91","diag"],DC:["#1D4F91","#F4C300","estrela"],PMB:["#7B2D8E","#F2B8D8","h"],
+ PSTU:["#C8102E","#111111","estrela"],PCO:["#B71C1C","#111111","h"],UP:["#D7262E","#F6C200","estrela"],PCB:["#C8102E","#F6C200","circ"],
+ MISSAO:["#1B1B1B","#F2C200","diag"],PRTB:["#1E9E3A","#F4C300","h3","#1D3E8A"],PMN:["#D32F2F","#1D3E8A","h"]};
+const ALIAS_PART={UNIAOBRASIL:"UNIAO",PODEMOS:"PODE",SD:"SOLIDARIEDADE",PCDOBR:"PCDOB",REPUBLICANO:"REPUBLICANOS"};
+const normSig=s=>{const k=String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z]/g,"");return ALIAS_PART[k]||k};
+const bandDe=s=>PART_BAND[normSig(s)];
+function estrelaD(cx,cy,r){let d="";for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.42:r;d+=(i?"L":"M")+(cx+Math.cos(a)*q).toFixed(3)+" "+(cy+Math.sin(a)*q).toFixed(3)}return d+"Z"}
+function bandInner(b,W,H){const[c1,c2,t,c3]=b;const r=(x,y,w,h,c)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;
+ if(t==="h")return r(0,0,W,H/2,c1)+r(0,H/2,W,H/2,c2);
+ if(t==="h3")return r(0,0,W,H/3,c1)+r(0,H/3,W,H/3,c2)+r(0,2*H/3,W,H/3+.01,c3);
+ if(t==="diag")return r(0,0,W,H,c1)+`<path d="M${W} 0L${W} ${H}L0 ${H}Z" fill="${c2}"/>`;
+ if(t==="circ")return r(0,0,W,H,c1)+`<circle cx="${W/2}" cy="${H/2}" r="${Math.min(W,H)*.3}" fill="${c2}"/>`;
+ return r(0,0,W,H,c1)+`<path d="${estrelaD(W/2,H/2,Math.min(W,H)*.36)}" fill="${c2}"/>`}
+function bandPart(s,h=12){const b=bandDe(s);if(!b)return"";const w=Math.round(h*1.5);
+ return`<svg class="pband" viewBox="0 0 30 20" width="${w}" height="${h}" aria-hidden="true"><g>${bandInner(b,30,20)}</g><rect x=".5" y=".5" width="29" height="19" fill="none" stroke="rgba(0,0,0,.18)"/></svg>`}
+const padraoId=s=>"pf-"+normSig(s);
+function padroesPartidos(siglas){const vistos=new Set();return siglas.map(s=>{const b=bandDe(s),id=padraoId(s);if(!b||vistos.has(id))return"";vistos.add(id);
+ return`<pattern id="${id}" patternContentUnits="objectBoundingBox" width="1" height="1">${bandInner(b,1,1)}</pattern>`}).join("")}
+const corSigla=s=>{const b=bandDe(s);return b?(b[0]==="#FFFFFF"?b[1]:b[0]):RCOR[hs(String(s||"?"))%RCOR.length]};
+const sigla=(s,big)=>s?`<span class="rsig${big?" big":""}" style="--c:${corSigla(s)}">${bandPart(s,big?13:11)}${esc(s)}</span>`:"";
 const fotoR=(url,nome,sz=84)=>url?`<img class="rfoto" src="${esc(url)}" alt="Foto de ${esc(nome)}" width="${sz}" height="${sz}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'rfoto ini',textContent:'${esc(String(nome||'?').trim()[0]||'?')}'}))">`:`<span class="rfoto ini" style="width:${sz}px;height:${sz}px">${esc(String(nome||"?").trim()[0]||"?")}</span>`;
 const UFSel=(id,lab="Todos os estados")=>`<select id="${id}" data-titulo="Estado"><option value="">${lab}</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select>`;
 const VCOR={Sim:"var(--p2)","Não":"var(--p6)",Abstenção:"var(--p3)",Obstrução:"var(--p4)"};
@@ -3262,7 +3287,7 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
  try{const[m,v]=await Promise.all([apiGet("/malhas/"+f.uf),apiGet(`/eleicoes/${f.ano}/${f.uf}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]);
   const por={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});const cont={};v.forEach(x=>{const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
   const paths=m.municipios.map(c=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido;return`<path d="${c.d}" fill="${p?corSigla(p):"var(--line2)"}" stroke="var(--surface)" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
-  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corSigla(p)}"></i>${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
+  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span>${bandPart(p,12)||`<i style="background:${corSigla(p)}"></i>`}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
  catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":"Mapa indisponível: "+esc(e.message))}}
 
 /* Empresas: fornecedores por setor (CNAE da Receita) */
@@ -3300,9 +3325,9 @@ function hemiPessoas(pessoas,{w=320,h=170,ordem=[]}={}){const g={};pessoas.forEa
  const siglas=Object.keys(g).sort((a,b)=>pos(a)-pos(b)||g[b].length-g[a].length||a.localeCompare(b));
  const lista=siglas.flatMap(s=>g[s].sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR")));const N=lista.length;
  const svg=hemiciclo(siglas.map(s=>[s,g[s].length,corSigla(s)]),{w,h,dot:N<=12?12:N<=40?9:undefined}).replace(/<title>[^<]*<\/title>/g,"");
- return{lista,html:svg+`<div class="hleg">${siglas.slice(0,14).map(s=>`<span><i style="background:${corSigla(s)}"></i>${esc(s)}<b>${g[s].length}</b></span>`).join("")}${siglas.length>14?`<span class="muted">+${siglas.length-14} partidos</span>`:""}</div>`}}
+ return{lista,html:svg+`<div class="hleg">${siglas.slice(0,14).map(s=>`<span>${bandPart(s,12)||`<i style="background:${corSigla(s)}"></i>`}${esc(s)}<b>${g[s].length}</b></span>`).join("")}${siglas.length>14?`<span class="muted">+${siglas.length-14} partidos</span>`:""}</div>`}}
 const ehMouse=()=>matchMedia("(hover:hover) and (pointer:fine)").matches;
-function dicaHemi(){return`<p class="small muted hemi-dica">${ehMouse()?"Passe o mouse em uma bola para ver quem é; clique para abrir o perfil.":"Toque em uma bola para ver quem é; toque de novo para abrir o perfil."}</p>`}
+function dicaHemi(){return`<p class="small muted hemi-dica">${ehMouse()?"Passe o mouse em uma bola para ver quem é; clique para abrir o perfil.":"Toque em uma bola para ver quem é; toque de novo para abrir o perfil."} Cada bola leva a bandeira do partido (desenho ilustrativo nas cores do partido, não a bandeira oficial).</p>`}
 function cartaoHemi(p){const pn=PARTIDO_NOME[p.partido];const l=(a,b)=>b?`<div class="ht-l"><span>${a}</span><b>${b}</b></div>`:"";
  return`<div class="ht-top">${p.foto?fotoR(p.foto,p.nome,48):iniFoto(p.nome)}<div><b>${esc(p.nome)}</b><span>${esc(p.cargo)}</span></div></div>
  ${l("Partido",`${sigla(p.partido)}${pn?`<small>${esc(pn)}</small>`:""}`)}${l("Estado",p.uf&&UF[p.uf]?bandeiraImg(p.uf,"flag flag-sm")+esc(UF[p.uf].nome):"Brasil")}${l("Situação",esc(p.sit||""))}
@@ -3344,7 +3369,7 @@ function cartaoBolha(uf,casa,c,ps){const o=c.por_uf[uf]||{};const T=Object.value
 async function mapaReal(casa,c,foco,PZ){const nome=CASAS[casa]?CASAS[casa].n:casa;$("#pmapT").textContent=`Mapa dos partidos: ${nome}${foco!==-1?", "+foco:""}`;
  $("#pmap").innerHTML=mapaPartidosReal(c,foco);bindMap($("#pmap"),null,null,(u,el)=>inlineZoomIn(PZ,u,el));
  const tp=Object.entries(c.partidos),T=tp.reduce((a,x)=>a+x[1],0);
- $("#pmapside").innerHTML=foco===-1?`<div class="small muted" style="margin-bottom:6px">${nf(T)} ${CASAS[casa].exec?(casa==="prefeito"?"prefeituras":"governadores"):"cadeiras"} no total${c.ano?` (eleição de ${c.ano})`:""}</div><div class="hleg">${tp.slice(0,14).map(([s,n])=>`<span><i style="background:${corSigla(s)}"></i>${esc(s)}<b>${n}</b><em>${pct(n/T*100)}</em></span>`).join("")}</div><p class="small muted" style="margin:8px 0 0">${casa==="governador"?"Em cada estado aparece o partido do governador.":"Em cada estado aparece o partido com mais "+(casa==="prefeito"?"prefeituras":"cadeiras")+"; o número é o total do estado."} Passe o mouse numa bola para ver os nomes.</p>`
+ $("#pmapside").innerHTML=foco===-1?`<div class="small muted" style="margin-bottom:6px">${nf(T)} ${CASAS[casa].exec?(casa==="prefeito"?"prefeituras":"governadores"):"cadeiras"} no total${c.ano?` (eleição de ${c.ano})`:""}</div><div class="hleg">${tp.slice(0,14).map(([s,n])=>`<span>${bandPart(s,12)||`<i style="background:${corSigla(s)}"></i>`}${esc(s)}<b>${n}</b><em>${pct(n/T*100)}</em></span>`).join("")}</div><p class="small muted" style="margin:8px 0 0">${casa==="governador"?"Em cada estado aparece o partido do governador.":"Em cada estado aparece o partido com mais "+(casa==="prefeito"?"prefeituras":"cadeiras")+"; o número é o total do estado."} Passe o mouse numa bola para ver os nomes.</p>`
   :`<div class="pdest"><i style="background:${corSigla(foco)}"></i><div><span>${sigla(foco)} ${esc(PARTIDO_NOME[foco]||"")}</span><b>${nf(c.partidos[foco]||0)}</b><small>de ${nf(T)} (${pct((c.partidos[foco]||0)/T*100)})</small></div></div><div class="small muted" style="margin:12px 0 4px">Estados com mais cadeiras</div>${ufsDe(c).map(u=>[u,(c.por_uf[u]||{})[foco]||0]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([u,n])=>`<div class="ptop"><span>${bandeiraImg(u,"flag flag-sm")}${UF[u].nome}</span><b>${n}</b></div>`).join("")}`;
  const svg=$("#pmap svg");if(!svg)return;let ps=[];pessoasCasa(casa).then(l=>ps=l).catch(()=>{});const tip=dicaFlutuante();let at=null;
  const fora=()=>{if(at)at.classList.remove("on");at=null;tip.classList.remove("on")};
@@ -3357,7 +3382,7 @@ function partidosEstadoReal(uf,casa,foco){const u=UF[uf],b=geoBBox(uf),pad=Math.
  const cor=foco!==-1?corSigla(foco):(C[casa]&&C[casa].por_uf&&C[casa].por_uf[uf]?corSigla(lider(C[casa].por_uf[uf])[0]):REGCOL[u.reg]);
  const nomeK=k=>({camara:"Câmara dos Deputados",senado:"Senado Federal",assembleia:uf==="DF"?"Câmara Legislativa":"Assembleia Legislativa",governador:"Governo do estado",prefeito:"Prefeituras"})[k];
  return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${cor}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Divisão dos partidos</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${foco!==-1?`${sigla(foco)} tem ${nf(((C[casa]||{}).por_uf||{})[uf]?.[foco]||0)} ${CASAS[casa].un} no estado (${CASAS[casa].curto.toLowerCase()}).`:"Cadeiras por partido no Congresso, na Assembleia, no governo do estado e nas prefeituras."}</p></div></div>
- <div class="ufrest"><div class="grid g3 casas">${casas.map(k=>{const o=C[k].por_uf[uf],T=Object.values(o).reduce((a,x)=>a+x,0);return`<div class="panel ${k===casa?"casa-on":""}"><h2>${nomeK(k)} <small>${nf(T)} ${k==="prefeito"?"prefeituras":k==="governador"?"cargo":T===1?"cadeira":"cadeiras"}</small></h2><div class="pe-hemi" data-k="${k}">${hemiciclo(Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([s,n])=>[s,n,corSigla(s)]),{w:300,h:150,dot:T<=12?11:undefined}).replace(/<title>[^<]*<\/title>/g,"")}<div class="hleg">${Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([s,n])=>`<span><i style="background:${corSigla(s)}"></i>${esc(s)}<b>${n}</b></span>`).join("")}</div></div></div>`}).join("")}</div>
+ <div class="ufrest"><div class="grid g3 casas">${casas.map(k=>{const o=C[k].por_uf[uf],T=Object.values(o).reduce((a,x)=>a+x,0);return`<div class="panel ${k===casa?"casa-on":""}"><h2>${nomeK(k)} <small>${nf(T)} ${k==="prefeito"?"prefeituras":k==="governador"?"cargo":T===1?"cadeira":"cadeiras"}</small></h2><div class="pe-hemi" data-k="${k}">${hemiciclo(Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([s,n])=>[s,n,corSigla(s)]),{w:300,h:150,dot:T<=12?11:undefined}).replace(/<title>[^<]*<\/title>/g,"")}<div class="hleg">${Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([s,n])=>`<span>${bandPart(s,12)||`<i style="background:${corSigla(s)}"></i>`}${esc(s)}<b>${n}</b></span>`).join("")}</div></div></div>`}).join("")}</div>
  <div class="panel mt"><h2>Quem representa ${esc(u.nome)}: ${esc(CASA_LISTA[casa]||"")}</h2><div id="peLista">${rload()}</div></div>
  <p class="small muted" style="margin-top:12px">Câmara e Senado: mandatos em exercício. Assembleia, governo e prefeituras: eleitos na última eleição (TSE).</p>${RSRC("Câmara dos Deputados, Senado Federal e TSE")}</div>`,
  mount(){casas.forEach(k=>{if(!PESSOAS_CASA[k]||k==="prefeito"&&(NMUN[uf]||0)>400)return;pessoasCasa(k).then(ps=>{const box=document.querySelector(`.pe-hemi[data-k="${k}"]`);if(!box)return;const l=ps.filter(p=>p.uf===uf);if(!l.length)return;
@@ -3445,7 +3470,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
  const corDe=k=>cores[k]||"#B9C0CA";
  const forte=(cor,p)=>chave()?misturaBranco(cor,Math.max(0,Math.min(.62,(62-p)/45))):cor;
  const venc=s=>s?(chave()?(s.candidatos[0]?[s.candidatos[0].sq_candidato,s.candidatos[0].percentual,s.candidatos[0]]:null):(s.partidos[0]?[s.partidos[0].partido,s.partidos[0].percentual,s.partidos[0]]:null)):null;
- const nomeK=x=>chave()?`${esc(tit(x.nome))} <small>${esc(x.partido||"")}</small>`:`${sigla(x.partido)}`;
+ const nomeK=x=>chave()?`${esc(tit(x.nome))} <small>${bandPart(x.partido,10)} ${esc(x.partido||"")}</small>`:`${sigla(x.partido)}`;
  const desenhar=()=>{const d=dados;if(!d||!$("#elmap"))return;const br=d.brasil;
   // modo: presidente compara candidatos; os demais cargos comparam partidos (cada estado tem seus candidatos)
   const lista=chave()?br.candidatos:br.partidos;cores={};if(chave())lista.slice(0,ELCOR.length).forEach((x,i)=>cores[x.sq_candidato]=ELCOR[i]);
