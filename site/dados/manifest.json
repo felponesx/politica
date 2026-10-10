@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-10T14:45+00:00",
+ "gerado_em": "2026-10-10T16:18+00:00",
  "shards": 128,
  "bases": {
   "/parlamentares": [
@@ -60,6 +60,9 @@
    {
     "tipo": "falencia"
    }
+  ],
+  "/noticias": [
+   {}
   ],
   "/parlamentares/1/despesas": [
    {}
@@ -1947,6 +1950,10 @@
   "/recuperacao-judicial?tipo=falencia": {
    "na_copia": 8000,
    "no_banco": 13062
+  },
+  "/noticias": {
+   "na_copia": 318,
+   "no_banco": 318
   },
   "/parlamentares/1/despesas": {
    "na_copia": 50,
@@ -4383,6 +4390,6 @@
   "proposicoes": 8068,
   "normas": 1047
  },
- "consultas": 19458,
- "bytes": 81345356
+ "consultas": 19367,
+ "bytes": 81550066
 }
