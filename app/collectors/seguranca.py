@@ -143,10 +143,10 @@ def ler_t01(linhas: list) -> dict:
     out = {a: {} for a in anos}
     for l in linhas[ib:]:
         nome = re.sub(r"\(\d+\)", "", str(l[0] or "")).strip()
-        if not nome or nome.startswith(("Fonte", "(")):
+        if nome.startswith(("Fonte", "Nota")):
             break
-        uf = "BR" if nome == "Brasil" else para_uf(nome)
-        if not uf:
+        uf = "BR" if nome == "Brasil" else para_uf(nome) if nome else None
+        if not uf or not any(isinstance(v, (int, float)) for v in l[1:]):  # linhas em branco, regiões, notas
             continue
         for k, ano in enumerate(anos):
             d = {}
