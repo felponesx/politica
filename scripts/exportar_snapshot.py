@@ -42,7 +42,7 @@ VERSAO = 1
 LISTAS = {
     "/parlamentares": ([{}], 3000),
     "/votacoes": ([{}], 3000),
-    "/proposicoes": ([{}], 4000),
+    "/proposicoes": ([{}, *[{"tipo": t} for t in ("PEC", "PLP", "MPV", "PDL", "PDC")]], 4000),
     "/legislacao": ([{}], 6000),
     "/contratos": ([{"ordenar": "valor"}, {"ordenar": "data"}], 3000),
     "/obras": ([{}], 3000),
@@ -70,6 +70,9 @@ TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "cont
                 "fornecedores": 400, "municipios": 6000}
 TETO_BUSCA = 6000  # itens por tipo no índice de busca
 TETO_NOTAS = 50  # notas da cota por parlamentar
+
+
+CARGOS_COM_PERFIL = ("PRESIDENTE", "GOVERNADOR", "SENADOR")
 
 
 def chave(caminho: str, params: dict | None = None) -> str:
@@ -194,7 +197,7 @@ class Exportador:
             self.get("/riscos", {"uf": uf})
 
         # órgãos federais
-        for a in range(date.today().year - 3, date.today().year + 1):  # o site troca de ano na lista
+        for a in range(2014, date.today().year + 1):  # o site troca de ano na lista
             self.get("/orgaos", {"ano": a})
         orgaos = self.dados.get("/orgaos")
         if self.ok(orgaos):
@@ -235,6 +238,7 @@ class Exportador:
                 self.get("/gastos/funcao", {"esfera": "M", "ano": linha["ano"], "municipio": cod})
 
     def _eleicoes(self):
+        self.perfis = set()
         anos = self.dados.get("/eleicoes/anos")
         if not self.ok(anos):
             return
@@ -255,10 +259,22 @@ class Exportador:
                 for cargo in cargos:
                     for turno in (1, 2):
                         r = self.get(f"/eleicoes/{ano}/{uf}", {"cargo": cargo, "turno": turno})
-                        if turno == 1:  # a página do estado pede sem o turno
-                            self.dados[chave(f"/eleicoes/{ano}/{uf}", {"cargo": cargo})] = r
+                        if cargo in CARGOS_COM_PERFIL and self.ok(r):  # perfil de quem disputou presidência, governo e Senado
+                            for c in r.get("mais_votados", []):
+                                self._candidato(c.get("sq_candidato"))
                         if ano >= 2018:  # mapa por cidade só nas eleições recentes (tamanho da cópia)
                             self.get(f"/eleicoes/{ano}/{uf}/mapa", {"cargo": cargo, "turno": turno})
+
+    def _candidato(self, sq):
+        """Perfil de um candidato (/eleicoes/candidato/{sq}); listas longas de bens e movimentações ficam de fora."""
+        if not sq or sq in self.perfis:
+            return
+        self.perfis.add(sq)
+        r = self.get(f"/eleicoes/candidato/{sq}")
+        if self.ok(r) and isinstance(r.get("financas"), dict):
+            for campo in ("bens", "receitas", "despesas"):
+                if isinstance(r["financas"].get(campo), list):
+                    r["financas"][campo] = r["financas"][campo][:15]
 
     def _busca(self):
         """Índice para a busca do site (o navegador faz a busca nesta lista)."""

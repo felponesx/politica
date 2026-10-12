@@ -46,7 +46,8 @@ def _baixar(codigo: int, ini: date, fim: date, tentativas: int = 4):
             time.sleep(5 * t)
 
 
-def coletar_series(anos: int = 10, nomes: list[str] | None = None):
+def coletar_series(anos: int = 42, nomes: list[str] | None = None):
+    """Séries do SGS desde 1985 (volta das eleições diretas); as que começam depois vêm do ano em que existem."""
     fim = date.today()
     with registrar_coleta("bcb", "series", anos=anos) as (db, n):
         falhas = []
@@ -54,11 +55,17 @@ def coletar_series(anos: int = 10, nomes: list[str] | None = None):
             if nomes and nome not in nomes:
                 continue
             try:
-                ini = fim - timedelta(days=365 * anos)
+                ini = date(1985, 1, 1) if anos >= 40 else fim - timedelta(days=365 * anos)
                 janela = timedelta(days=365 * 3)  # consultas curtas falham bem menos
                 while ini <= fim:
                     f = min(ini + janela, fim)
-                    dados = _baixar(codigo, ini, f)
+                    try:
+                        dados = _baixar(codigo, ini, f)
+                    except Exception:
+                        if f.year >= 2005:  # séries que só existem a partir de certo ano respondem erro nas janelas antigas
+                            raise
+                        ini = f + timedelta(days=1)
+                        continue
                     # séries diárias: guarda só o último valor de cada mês (suficiente para gráficos)
                     por_chave = {}
                     for d in dados:

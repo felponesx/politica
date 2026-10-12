@@ -72,6 +72,20 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Eleições 2018 e 2020 no robô; Dívidas numa tela só (seletor + mapa + zoom); Obras com abas por situação e barra de
   etapas/prazo; hemiciclo com bolas que se mexem e ministros/tribunais com uma bola por pessoa.
 
+## Novidades da v0.7 (out/2026)
+- Segurança: um seletor único (mortes e crimes / prisões / polícia) comanda os números do país, o mapa, o ranking e o gráfico
+  mensal; a ficha do estado não mostra dados do país e arredonda os valores. O Início tem só os quadros (sem mapa do país).
+  Batalhões: `scripts/midia_site.py` acha as unidades na Wikipédia (`descobrir_unidades`) e grava em `logos.json` (`unidades`);
+  o site junta com a lista fixa `UNIDADES`. Efetivo só quando a Wikipédia informa; data do último concurso não existe em base aberta.
+- Eleições: candidatos clicáveis (`#/candidato/<sq>`, `P.candidato`, API `/eleicoes/candidato/{sq}`); governadores e senadores
+  ganham a tabela de mais votados por estado. O snapshot guarda o perfil de presidente, governador e senador (`_candidato`) e não
+  duplica mais a resposta sem `turno` (a ficha do estado pede `turno=1`).
+- Órgãos: todos os anos desde 2014 e botões por tipo de órgão. Notícias: 5 assuntos, escolha do veículo com logo
+  (`logos.json` → `veiculos`), mais veículos em `app/collectors/noticias.py` (feeds por tema, charset ISO-8859-1 e HTML escapado tratados).
+- Desde 1985: `bcb-series` (SGS) desde 1985 com seletor de período em Indicadores; proposições PEC/PLP/MPV/PDL/PDC/PLN desde 1985
+  (`HISTORICO` em `scripts/coleta_ci.py`). Eleições: o TSE só publica dados abertos a partir de 1994 (1989 e antes não existem em base aberta).
+- Fotos do site passaram a 128 px de altura (JPEG 74).
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.

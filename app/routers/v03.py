@@ -22,7 +22,7 @@ SEG_ANO = 365 * 24 * 3600
 def economia(nomes: str | None = None, desde: int | None = None, db: Session = Depends(get_db)):
     """Séries do Banco Central: último valor, valor de 12 meses antes e histórico mensal."""
     lista = [n for n in (nomes.split(",") if nomes else SERIES) if n in SERIES]
-    desde = desde or date.today().year - 10
+    desde = desde or 1985  # desde a volta das eleições diretas; o site deixa escolher o período
     out = {}
     for nome in lista:
         regs = db.scalars(select(Registro).where(Registro.tipo == f"serie:{nome}", Registro.ano >= desde)
@@ -345,7 +345,7 @@ def recuperacao_judicial_resumo(tipo: str = "recuperacao_judicial", db: Session 
 # ---------- notícias de política ----------
 
 @router.get("/noticias", tags=["Notícias"])
-def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Query(50, le=500), offset: int = 0,
+def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Query(50, le=1500), offset: int = 0,
              db: Session = Depends(get_db)):
     """Últimas matérias de política dos principais veículos (título, resumo, data e link para o original)."""
     from app.utils import sem_acento

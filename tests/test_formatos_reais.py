@@ -594,3 +594,14 @@ def test_unidades_da_wikipedia():
     # de outro estado não entra
     assert unidade_de_resultado("Batalhão de Choque", "da Polícia Militar da Bahia", "Ceará", "CE") is None
     assert sigla_de("Batalhão de Missões Especiais") == "BME"
+
+
+def test_noticias_charset_e_html_escapado():
+    from app.collectors import noticias
+    xml = ('<?xml version="1.0" encoding="ISO-8859-1"?><rss><channel><item><title>Decisão jurídica do TSE</title>'
+           '<link>https://www1.folha.uol.com.br/a</link><description>O presidente do &lt;a href="https://x.com/tse/"&gt;TSE&lt;/a&gt; disse</description>'
+           '<pubDate>Mon, 12 Oct 2026 10:00:00 -0300</pubDate></item></channel></rss>').encode("latin-1")
+    texto = noticias.decodificar(xml)
+    it = noticias.ler_feed(texto, "Folha de S.Paulo", True, "economia")[0]
+    assert it["titulo"] == "Decisão jurídica do TSE" and it["tema"] == "economia"
+    assert it["resumo"] == "O presidente do TSE disse"

@@ -36,8 +36,12 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
             ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
-EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(date.today().year - 3, date.today().year + 1)],
+EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
           ("noticias-politica", {}), ("bcb-scr-estados", {})]
+# histórico desde 1985 (volta das eleições diretas) dos tipos de proposição de maior peso; os PLs ordinários são volume demais
+HISTORICO = [("camara-proposicoes", {"inicio": date(a, 1, 1), "fim": min(date(a + 4, 12, 31), date.today()),
+                                       "tipos": ["PEC", "PLP", "MPV", "PDL", "PDC", "PLN"]})
+             for a in range(1985, date.today().year + 1, 5)]
 SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}),
              *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 
@@ -59,7 +63,7 @@ def comandos():
     # os CNPJs dependem da cota e dos contratos; o resultado de 2022 (arquivo de ~580 MB) fica por último
     cnpj = [p for p in passos if p[0] == "cnpj-fornecedores"]
     # a base do CNPJ (recuperação judicial) baixa vários GB devagar: fica no fim, com o tempo que sobrar
-    passos = ([p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + SEGURANCA + EXTRAS + cnpj + [("tse-resultados", {"ano": 2022})]
+    passos = ([p for p in passos if p[0] != "cnpj-fornecedores"] + ELEICOES + SEGURANCA + EXTRAS + HISTORICO + cnpj + [("tse-resultados", {"ano": 2022})]
               + [("receita-recuperacao-judicial", {"minutos": 150})])
     return [[nome, *(f"{k}={_arg(v)}" for k, v in kw.items())] for nome, kw in passos]
 

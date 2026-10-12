@@ -40,12 +40,15 @@ def coletar_deputados():
     return n.itens
 
 
-def coletar_proposicoes(inicio: date, fim: date):
-    with registrar_coleta("camara", "proposicoes", inicio=inicio, fim=fim) as (db, n):
+def coletar_proposicoes(inicio: date, fim: date, tipos: list[str] | None = None):
+    """Proposições apresentadas no período. `tipos` (ex.: PEC,PLP,MPV) limita a coleta aos tipos pedidos: serve para o
+    histórico longo, em que tudo (requerimentos, indicações) seria grande demais."""
+    with registrar_coleta("camara", "proposicoes", inicio=inicio, fim=fim, tipos=",".join(tipos or [])) as (db, n):
         for ini, f in meses(inicio, fim):
             for p in paginar("/proposicoes", {
                 "dataApresentacaoInicio": ini.isoformat(), "dataApresentacaoFim": f.isoformat(),
                 "itens": 100, "ordem": "ASC", "ordenarPor": "id",
+                **({"siglaTipo": ",".join(tipos)} if tipos else {}),
             }):
                 upsert(db, Proposicao, {"casa": CASA, "id_externo": str(p["id"])}, {
                     "sigla_tipo": p.get("siglaTipo"),

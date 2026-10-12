@@ -53,6 +53,15 @@ POLICIAS_FIXAS = {
     "u:BR:FNSP": "Força Nacional de Segurança Pública", "u:SP:ROMU": "Guarda Civil Metropolitana de São Paulo",
     "u:BR:SPF": "Sistema Penitenciário Federal", "gcm:SP": "Guarda Civil Metropolitana de São Paulo",
 }
+# veículos de notícias: nome usado no site -> título do artigo na Wikipédia (o logo vem do artigo)
+VEICULOS = {
+    "g1": "G1", "CNN Brasil": "CNN Brasil", "O Globo": "O Globo", "Folha de S.Paulo": "Folha de S.Paulo",
+    "Estadão": "O Estado de S. Paulo", "Agência Câmara / TV Câmara": "TV Câmara", "Agência Senado": "Agência Senado",
+    "Agência Brasil": "Agência Brasil", "UOL": "UOL", "Poder360": "Poder360", "Metrópoles": "Metrópoles (site)",
+    "CartaCapital": "CartaCapital", "Congresso em Foco": "Congresso em Foco", "InfoMoney": "InfoMoney",
+    "Exame": "Exame (revista)", "Consultor Jurídico (Conjur)": "Consultor Jurídico", "Migalhas": "Migalhas",
+    "Conselho Nacional de Justiça": "Conselho Nacional de Justiça",
+}
 NOMES_UF = {"AC": "Acre", "AL": "Alagoas", "AP": "Amapá", "AM": "Amazonas", "BA": "Bahia", "CE": "Ceará",
             "DF": "Distrito Federal", "ES": "Espírito Santo", "GO": "Goiás", "MA": "Maranhão", "MT": "Mato Grosso",
             "MS": "Mato Grosso do Sul", "MG": "Minas Gerais", "PA": "Pará", "PB": "Paraíba", "PR": "Paraná",
@@ -109,7 +118,7 @@ def miniatura(bruto: bytes, altura: int, formato: str = "JPEG") -> str | None:
         im = im.resize((max(1, round(im.width * altura / im.height)), altura), Image.LANCZOS)
     out = io.BytesIO()
     if formato == "JPEG":
-        im.convert("RGB").save(out, "JPEG", quality=70, optimize=True, progressive=True)
+        im.convert("RGB").save(out, "JPEG", quality=74, optimize=True, progressive=True)
         mime = "image/jpeg"
     else:
         if im.mode not in ("RGBA", "LA", "P"):
@@ -126,7 +135,7 @@ def wiki_imagens(titulos: list[str]) -> dict:
         lote = titulos[k:k + 20]
         try:
             d = cli.get(WIKI, params={"action": "query", "format": "json", "redirects": 1, "prop": "pageimages|revisions",
-                                      "piprop": "thumbnail|name", "pithumbsize": 200, "rvprop": "content", "rvslots": "main",
+                                      "piprop": "thumbnail|name", "pithumbsize": 260, "rvprop": "content", "rvslots": "main",
                                       "rvsection": 0, "titles": "|".join(lote)}).json()
         except Exception as e:
             log.warning("Wikipédia: %s", e)
@@ -260,6 +269,15 @@ def logos() -> dict:
             t = buscar_titulo(f"{base} {nome}", extra + [nome.split()[-1]])
             if t:
                 titulos_pol[f"{chave}:{uf}"] = t
+    titulos_vei = dict(VEICULOS)
+    info_v = wiki_imagens(sorted(set(titulos_vei.values())))
+    for nome, t in VEICULOS.items():  # sem imagem no título direto: tenta achar o artigo pela busca
+        if not (info_v.get(t) or {}).get("thumb"):
+            alt = buscar_titulo(nome.split(" (")[0].split(" / ")[-1], [nome.split(" (")[0].split(" / ")[-1].split()[0]])
+            if alt and alt != t:
+                titulos_vei[nome] = alt
+                info_v.update(wiki_imagens([alt]))
+    out["veiculos"] = {}
     unidades = descobrir_unidades()
     for u in unidades:
         titulos_pol[f"u:{u['uf']}:{u['sigla']}"] = u["titulo"]
@@ -284,10 +302,15 @@ def logos() -> dict:
         if cache[t]:
             out["policias"][chave] = {"img": cache[t], "titulo": t, "arquivo": info[t].get("arquivo"),
                                       "pagina": info[t]["pagina"], "efetivo_wikipedia": info[t].get("efetivo_wikipedia")}
+    for nome, t in titulos_vei.items():
+        meta = info_v.get(t)
+        img = baixar(meta, 64)
+        if img:
+            out["veiculos"][nome] = {"img": img, "arquivo": meta.get("arquivo"), "pagina": meta["pagina"]}
     resumos = wiki_resumos([u["titulo"] for u in unidades])
     out["unidades"] = [{**{k: u[k] for k in ("uf", "corp", "sigla", "nome")}, "desc": resumos.get(u["titulo"], "")}
                        for u in unidades if f"u:{u['uf']}:{u['sigla']}" in out["policias"] or resumos.get(u["titulo"])]
-    log.info("logos: %d partidos, %d polícias, %d unidades", len(out["partidos"]), len(out["policias"]), len(out["unidades"]))
+    log.info("logos: %d partidos, %d polícias, %d unidades, %d veículos", len(out["partidos"]), len(out["policias"]), len(out["unidades"]), len(out["veiculos"]))
     return out
 
 
@@ -300,7 +323,7 @@ def fotos_congresso(db) -> dict:
                                                          Parlamentar.em_exercicio.is_(True))):
         try:
             r = cli.get(url)
-            img = miniatura(r.content, 96) if r.status_code == 200 else None
+            img = miniatura(r.content, 128) if r.status_code == 200 else None
         except Exception:
             img = None
         if img:
@@ -337,7 +360,7 @@ def fotos_tse(db, anos=(2022, 2026)) -> dict:
                     for nome in z.namelist():
                         m = re.match(r"F[A-Z]{2}(\d+)_div\.\w+$", os.path.basename(nome))
                         if m and m.group(1) in sqs:
-                            img = miniatura(z.read(nome), 96)
+                            img = miniatura(z.read(nome), 128)
                             if img:
                                 out[f"tse:{m.group(1)}"] = img
                 os.remove(caminho)
@@ -376,7 +399,7 @@ def fotos_wikipedia(nomes: list[str]) -> dict:
         lote = nomes[k:k + 20]
         try:
             d = cli.get(WIKI, params={"action": "query", "format": "json", "redirects": 1, "prop": "pageimages|extracts",
-                                      "piprop": "thumbnail", "pithumbsize": 200, "exintro": 1, "explaintext": 1,
+                                      "piprop": "thumbnail", "pithumbsize": 260, "exintro": 1, "explaintext": 1,
                                       "exsentences": 2, "titles": "|".join(lote)}).json()
         except Exception as e:
             log.warning("Wikipédia (retratos): %s", e)
@@ -394,7 +417,7 @@ def fotos_wikipedia(nomes: list[str]) -> dict:
                 continue
             try:
                 r = cli.get(thumb)
-                img = miniatura(r.content, 96) if r.status_code == 200 else None
+                img = miniatura(r.content, 128) if r.status_code == 200 else None
             except Exception:
                 img = None
             if img:
