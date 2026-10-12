@@ -1305,7 +1305,7 @@ a.rrow b{font-weight:500}
 .pill-m .segj-grupos{display:block!important;margin:0!important;border:0!important}
 .pill-m .segj-w{display:block!important;margin:0 0 6px}.pill-m .segj-l{display:block!important;margin:6px 10px 4px}
 .pbar{display:inline-flex!important;flex-wrap:wrap;gap:0!important;border:1px solid var(--line);border-radius:12px;background:var(--surface);max-width:100%}
-.pbar>.pill-w>.pill{border:0;border-radius:0;background:none}.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)}
+.pbar>.pill-w>.pill{border:0;border-radius:0;background:none}.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)}.pbar>.pill-w[hidden]{display:none}
 .pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px}.pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0}
 @media (max-width:760px){.pbar{display:flex!important}.pbar>.pill-w{flex:1 1 auto}.pill .pill-v{max-width:150px}.pill-m{min-width:0;width:calc(100vw - 24px)}.pill-m .seg{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
 a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a.clk:hover{color:var(--blue);border-bottom-color:var(--blue)}
@@ -3010,7 +3010,7 @@ function anosChart(pts,fmt=curto){return pts.length>=2?lineChart([{n:"Valor",v:p
 /* ---------- Gastos públicos: despesa por função (SICONFI) ---------- */
 const _gastos=P.gastos;
 P.gastos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Gastos públicos</h1><p>Quanto a União, cada governo estadual e cada capital gastaram em saúde, educação, previdência e nas demais funções.</p></div></div>
-<div class="panel"><div class="filters" style="margin:0"><select id="gsesf" data-titulo="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado")}<select id="gsmun" data-titulo="Cidade" hidden></select><select id="gsano" data-titulo="Ano"></select></div></div>
+<div class="panel"><div class="segj-grupos" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<select id="gsmun" data-pill="Cidade" hidden></select><select id="gsano" data-pill="Ano"></select></div></div>
 <div id="gsres" class="mt">${rload()}</div>${RSRC("SICONFI (Tesouro Nacional), RREO Anexo 02: despesa liquidada por função")}`,
 mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[];$("#gsuf").hidden=true;
  const anosDo=()=>{if(f.esfera==="M")return anosMun;const e=entes.find(x=>x.esfera===f.esfera&&(f.esfera==="U"||x.uf===f.uf));return e?e.anos:[]};
@@ -4088,8 +4088,17 @@ function fazPilula(w,src,rotulo){w.dataset.pok=1;src.dataset.pok=1;w.classList.a
   m.style.left="0px";const r=m.getBoundingClientRect();if(r.right>innerWidth-12)m.style.left=Math.min(0,innerWidth-12-r.right)+"px"};
  m.addEventListener("click",e=>{e.stopPropagation();if(e.target.closest("button"))setTimeout(fecharPilulas,0)});
  const par=w.parentElement;if(par&&par.matches(".segj-grupos,.el-ctl")&&[...par.children].every(c=>c.classList.contains("pill-w")||c.hidden))par.classList.add("pbar")}
+function fazPilulaSelect(sel){sel.dataset.pok=1;const w=document.createElement("div");w.className="pill-w pill-sel";sel.parentNode.insertBefore(w,sel);w.appendChild(sel);
+ const b=document.createElement("button");b.type="button";b.className="pill";b.innerHTML=`<span class="pill-l">${esc(sel.dataset.pill)}</span><b class="pill-v"></b><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>`;
+ const m=document.createElement("div");m.className="pill-m";m.hidden=true;const g=document.createElement("div");g.className="seg";m.appendChild(g);w.insertBefore(b,sel);w.insertBefore(m,sel);sel.style.display="none";
+ const monta=()=>{const ops=[...sel.options];g.innerHTML=ops.map(o=>`<button type="button" data-v="${esc(o.value)}" class="${o.value===sel.value?"on":""}"${o.disabled?" disabled":""}>${esc(o.textContent)}</button>`).join("");m.classList.toggle("larga",ops.length>8);
+  const o=sel.options[sel.selectedIndex];b.querySelector(".pill-v").textContent=o?o.textContent:"—";w.hidden=sel.hidden||!ops.length};
+ monta();new MutationObserver(monta).observe(sel,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]});sel.addEventListener("change",monta);
+ b.onclick=e=>{e.stopPropagation();const abrir=m.hidden;fecharPilulas();if(!abrir)return;monta();m.hidden=false;w.classList.add("open");m.style.left="0px";const r=m.getBoundingClientRect();if(r.right>innerWidth-12)m.style.left=Math.min(0,innerWidth-12-r.right)+"px"};
+ g.addEventListener("click",e=>{e.stopPropagation();const x=e.target.closest("button[data-v]");if(!x)return;sel.value=x.dataset.v;sel.dispatchEvent(new Event("change",{bubbles:true}));setTimeout(fecharPilulas,0)})}
 function pilulas(){
- document.querySelectorAll("[data-pill]:not([data-pok])").forEach(src=>{const w=document.createElement("div");src.parentNode.insertBefore(w,src);w.appendChild(src);fazPilula(w,src,src.dataset.pill)});
+ document.querySelectorAll("select[data-pill]:not([data-pok])").forEach(fazPilulaSelect);
+ document.querySelectorAll("[data-pill]:not(select):not([data-pok])").forEach(src=>{const w=document.createElement("div");src.parentNode.insertBefore(w,src);w.appendChild(src);fazPilula(w,src,src.dataset.pill)});
  document.querySelectorAll(".segj-w:not([data-pok])").forEach(w=>{const l=w.querySelector(":scope>.segj-l"),src=w.querySelector(":scope>.seg");if(!l||!src)return;fazPilula(w,src,l.textContent.trim())});
  document.querySelectorAll(".segj-grupos,.el-ctl").forEach(par=>{if(!par.classList.contains("pbar")&&par.children.length&&[...par.children].every(c=>c.classList.contains("pill-w")))par.classList.add("pbar")})}
 document.addEventListener("click",fecharPilulas);document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharPilulas()});
