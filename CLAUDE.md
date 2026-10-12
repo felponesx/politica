@@ -84,7 +84,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   (`logos.json` → `veiculos`), mais veículos em `app/collectors/noticias.py` (feeds por tema, charset ISO-8859-1 e HTML escapado tratados).
 - Desde 1985: `bcb-series` (SGS) desde 1985 com seletor de período em Indicadores; proposições PEC/PLP/MPV/PDL/PDC/PLN desde 1985
   (`HISTORICO` em `scripts/coleta_ci.py`). Eleições: o TSE só publica dados abertos a partir de 1994 (1989 e antes não existem em base aberta).
-- Fotos do site passaram a 128 px de altura (JPEG 74).
+- Imagens: retratos até 360 px de altura (JPEG 78; Câmara usa a versão `jpgmaior`) e logos até 256 px (PNG); nunca amplia. 720p/1080p reais não cabem no limite de 256 MB do Artifact.
 
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`

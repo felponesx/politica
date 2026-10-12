@@ -106,6 +106,17 @@ def fnv1a(texto: str) -> int:
     return h
 
 
+# tamanhos máximos (nunca amplia: se a fonte for menor, fica como veio). 360 px de altura é o que cabe na cópia publicada
+# (limite de 256 MB por versão do Artifact); 720p/1080p reais de milhares de retratos passariam de 500 MB.
+ALTURA_FOTO = 360
+ALTURA_LOGO = 256
+
+
+def foto_maior(url: str) -> str:
+    """A Câmara serve o retrato pequeno em .../bandep/ID.jpg e o grande em .../bandep/ID.jpgmaior.jpg."""
+    return url + "maior.jpg" if re.search(r"camara\.leg\.br/internet/deputado/bandep/\d+\.jpg$", url) else url
+
+
 def miniatura(bruto: bytes, altura: int, formato: str = "JPEG") -> str | None:
     """Imagem reduzida como data URI (JPEG para fotos, PNG com transparência para logos)."""
     from PIL import Image
@@ -118,7 +129,7 @@ def miniatura(bruto: bytes, altura: int, formato: str = "JPEG") -> str | None:
         im = im.resize((max(1, round(im.width * altura / im.height)), altura), Image.LANCZOS)
     out = io.BytesIO()
     if formato == "JPEG":
-        im.convert("RGB").save(out, "JPEG", quality=74, optimize=True, progressive=True)
+        im.convert("RGB").save(out, "JPEG", quality=78, optimize=True, progressive=True)
         mime = "image/jpeg"
     else:
         if im.mode not in ("RGBA", "LA", "P"):
@@ -135,7 +146,7 @@ def wiki_imagens(titulos: list[str]) -> dict:
         lote = titulos[k:k + 20]
         try:
             d = cli.get(WIKI, params={"action": "query", "format": "json", "redirects": 1, "prop": "pageimages|revisions",
-                                      "piprop": "thumbnail|name", "pithumbsize": 260, "rvprop": "content", "rvslots": "main",
+                                      "piprop": "thumbnail|name", "pithumbsize": 800, "rvprop": "content", "rvslots": "main",
                                       "rvsection": 0, "titles": "|".join(lote)}).json()
         except Exception as e:
             log.warning("Wikipédia: %s", e)
@@ -293,18 +304,18 @@ def logos() -> dict:
     cache = {}
     for sigla, t in PARTIDOS.items():
         if t not in cache:
-            cache[t] = baixar(info.get(t), 64)
+            cache[t] = baixar(info.get(t), ALTURA_LOGO)
         if cache[t]:
             out["partidos"][sigla] = {"img": cache[t], "arquivo": info[t].get("arquivo"), "pagina": info[t]["pagina"]}
     for chave, t in titulos_pol.items():
         if t not in cache:
-            cache[t] = baixar(info.get(t), 96)
+            cache[t] = baixar(info.get(t), ALTURA_LOGO)
         if cache[t]:
             out["policias"][chave] = {"img": cache[t], "titulo": t, "arquivo": info[t].get("arquivo"),
                                       "pagina": info[t]["pagina"], "efetivo_wikipedia": info[t].get("efetivo_wikipedia")}
     for nome, t in titulos_vei.items():
         meta = info_v.get(t)
-        img = baixar(meta, 64)
+        img = baixar(meta, ALTURA_LOGO)
         if img:
             out["veiculos"][nome] = {"img": img, "arquivo": meta.get("arquivo"), "pagina": meta["pagina"]}
     resumos = wiki_resumos([u["titulo"] for u in unidades])
@@ -322,8 +333,10 @@ def fotos_congresso(db) -> dict:
     for url, in db.execute(select(Parlamentar.foto_url).where(Parlamentar.foto_url.is_not(None),
                                                          Parlamentar.em_exercicio.is_(True))):
         try:
-            r = cli.get(url)
-            img = miniatura(r.content, 128) if r.status_code == 200 else None
+            r = cli.get(foto_maior(url))
+            if r.status_code != 200 and foto_maior(url) != url:
+                r = cli.get(url)
+            img = miniatura(r.content, ALTURA_FOTO) if r.status_code == 200 else None
         except Exception:
             img = None
         if img:
@@ -360,7 +373,7 @@ def fotos_tse(db, anos=(2022, 2026)) -> dict:
                     for nome in z.namelist():
                         m = re.match(r"F[A-Z]{2}(\d+)_div\.\w+$", os.path.basename(nome))
                         if m and m.group(1) in sqs:
-                            img = miniatura(z.read(nome), 128)
+                            img = miniatura(z.read(nome), ALTURA_FOTO)
                             if img:
                                 out[f"tse:{m.group(1)}"] = img
                 os.remove(caminho)
@@ -399,7 +412,7 @@ def fotos_wikipedia(nomes: list[str]) -> dict:
         lote = nomes[k:k + 20]
         try:
             d = cli.get(WIKI, params={"action": "query", "format": "json", "redirects": 1, "prop": "pageimages|extracts",
-                                      "piprop": "thumbnail", "pithumbsize": 260, "exintro": 1, "explaintext": 1,
+                                      "piprop": "thumbnail", "pithumbsize": 800, "exintro": 1, "explaintext": 1,
                                       "exsentences": 2, "titles": "|".join(lote)}).json()
         except Exception as e:
             log.warning("Wikipédia (retratos): %s", e)
@@ -417,7 +430,7 @@ def fotos_wikipedia(nomes: list[str]) -> dict:
                 continue
             try:
                 r = cli.get(thumb)
-                img = miniatura(r.content, 128) if r.status_code == 200 else None
+                img = miniatura(r.content, ALTURA_FOTO) if r.status_code == 200 else None
             except Exception:
                 img = None
             if img:
