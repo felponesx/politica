@@ -1289,6 +1289,25 @@ a.rrow b{font-weight:500}
 .vlogo i{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--tint);color:var(--muted);font-style:normal;font-weight:700}
 .nw-veic{display:flex;flex-wrap:wrap;gap:8px}.vch{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;font-size:13px}.vch.on{background:#E3EEFA;font-weight:600}[data-theme="dark"] .vch.on{background:#27385A}
 .vch small{color:var(--muted)}.nw-v{display:flex;align-items:center;gap:6px}
+/* ===== seletores enxutos: cada grupo de botões vira uma pílula "Rótulo: valor ▾" com menu ===== */
+.pill-w{position:relative;display:inline-flex;flex-direction:column;min-width:0}
+.pill-w>.segj-l{display:none}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap;max-width:100%}
+.pill .pill-l{color:var(--muted);font-size:12.5px}.pill .pill-v{font-weight:600;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+.pill svg{flex:none;opacity:.6;transition:transform .15s}.pill-w.open .pill svg{transform:rotate(180deg)}
+.pill-m{position:absolute;top:calc(100% + 6px);left:0;z-index:60;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(20,30,50,.14);padding:8px;min-width:240px;width:max-content;max-width:min(560px,calc(100vw - 24px));max-height:min(60vh,460px);overflow:auto}
+.pill-m.larga{width:min(470px,calc(100vw - 24px))}
+.pill-m .seg,.pill-m .seg.segj,.pill-m .seg.seg-grupo{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:2px!important;border:0!important;background:none!important;overflow:visible!important;margin:0!important;padding:0!important;max-width:none}
+.pill-m .seg button{border:0!important;border-radius:8px!important;text-align:left;padding:8px 10px!important;background:none;white-space:normal;font-size:13px;display:flex;align-items:center;gap:6px}
+.pill-m .seg button:hover{background:var(--tint)}.pill-m .seg button[hidden]{display:none!important}
+.pill-m .seg button.on{background:#E3EEFA;font-weight:600}[data-theme="dark"] .pill-m .seg button.on{background:#27385A}
+.pill-m .seg button small{margin-left:auto;color:var(--muted)}
+.pill-m .segj-grupos{display:block!important;margin:0!important;border:0!important}
+.pill-m .segj-w{display:block!important;margin:0 0 6px}.pill-m .segj-l{display:block!important;margin:6px 10px 4px}
+.pbar{display:inline-flex!important;flex-wrap:wrap;gap:0!important;border:1px solid var(--line);border-radius:12px;background:var(--surface);max-width:100%}
+.pbar>.pill-w>.pill{border:0;border-radius:0;background:none}.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)}
+.pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px}.pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0}
+@media (max-width:760px){.pbar{display:flex!important}.pbar>.pill-w{flex:1 1 auto}.pill .pill-v{max-width:150px}.pill-m{min-width:0;width:calc(100vw - 24px)}.pill-m .seg{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
 a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a.clk:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .segj-grupos{display:flex;flex-wrap:wrap;gap:12px 22px;margin-bottom:12px}
 .segj-grupos .segj-w{max-width:100%}
@@ -1503,7 +1522,7 @@ return`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg
 function spark(v){const mx=Math.max(...v),mn=Math.min(...v);return`<svg viewBox="0 0 100 28" width="100%" height="28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--slate)" stroke-width="1.6" points="${v.map((x,i)=>i*100/(v.length-1)+","+(26-(x-mn)/(mx-mn||1)*22)).join(" ")}"/></svg>`}
 
 /* ---------- mapa ---------- */
-const METRICS={gasto:["Gastos",u=>u.gasto,brl],pop:["População",u=>u.pop,v=>nf(Math.round(v/1e3))+" mil"],pc:["Gasto por habitante",u=>u.pc,v=>"R$ "+nf(Math.round(v))],contratos:["Contratos",u=>u.contratos,nf],obras:["Obras",u=>u.obras,nf],projetos:["Projetos",u=>u.projetos,nf],arr:["Arrecadação federal",u=>u.arr,brl],dclr:["Dívida do estado (% da receita)",u=>u.dclr,v=>v.toFixed(0)+"%"],inad:["Adultos inadimplentes",u=>u.inad,v=>v.toFixed(1).replace(".",",")+"%"],ret:["Retorno da União",u=>u.ret,brl]};
+const METRICS={gasto:["Gastos",u=>u.gasto,brl],pop:["População",u=>u.pop,v=>nf(Math.round(v/1e3))+" mil"],pc:["Gasto por habitante",u=>u.pc,v=>"R$ "+nf(Math.round(v))],contratos:["Contratos",u=>u.contratos,nf],obras:["Obras",u=>u.obras,nf],projetos:["Projetos",u=>u.projetos,nf],arr:["Arrecadação federal",u=>u.arr,brl],dclr:["Dívida do estado (% da receita)",u=>u.dclr,v=>v.toFixed(0)+"%"],inad:["Adultos inadimplentes",u=>u.inad,v=>v.toFixed(1).replace(".",",")+"%"],ret:["Retorno da União",u=>u.ret,brl],vio:["Homicídios por 100 mil habitantes",u=>u.vio||0,v=>v.toLocaleString("pt-BR",{maximumFractionDigits:1})]};
 const SCALE=["#EDF4FC","#D6E6F8","#BCD5F2","#A0C2EA","#85AEE0"];
 const REGCOL={N:"#BFE3CF",NE:"#F6DCAA",CO:"#F5C3B4",SE:"#AFCDEF",S:"#D3C3EC"};
 function brMap(metric,sel,regFilter,o={}){const f=metric?METRICS[metric][1]:null;let mn=0,mx=1;if(f){const v=UFS.map(f);mn=Math.min(...v);mx=Math.max(...v)}
@@ -1537,7 +1556,7 @@ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c
 at:'<circle cx="12" cy="12" r="4"/><path d="M16 12v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-3.5 7.1"/>',
 link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'};
 const hi=k=>`<svg viewBox="0 0 24 24">${HI[k]||I[k]}</svg>`;
-const HMET=[["reg","Regiões"],["gasto","Gastos"],["pc","Por habitante"],["pop","População"],["contratos","Contratos"],["obras","Obras"],["projetos","Projetos"],["arr","Arrecadação"],["ret","Retorno da União"],["dclr","Dívida do estado"],["inad","Inadimplência"]];
+const HMET=[["reg","Regiões"],["gasto","Gastos"],["pc","Por habitante"],["pop","População"],["vio","Violência"],["contratos","Contratos"],["obras","Obras"],["projetos","Projetos"],["arr","Arrecadação"],["ret","Retorno da União"],["dclr","Dívida do estado"],["inad","Inadimplência"]];
 const REGV={N:124.8e9,NE:402.6e9,CO:213.4e9,SE:615.2e9,S:149.7e9};
 const CMP={desp:["Despesas",REGV,brl],pc:["Gasto por habitante",{N:712,NE:1042,CO:968,SE:1824,S:1236},v=>"R$ "+nf(v)],contratos:["Contratos",{N:18420,NE:61230,CO:29880,SE:104510,S:47390},nf],obras:["Obras",{N:1210,NE:3480,CO:1650,SE:4120,S:2020},nf]};
 function vbars(obj,fmt){const W=460,H=190,ks=Object.keys(REG);const mx=Math.max(...ks.map(k=>obj[k]));const bw=58,gap=(W-bw*5)/5;
@@ -1556,8 +1575,8 @@ const html=`<div class="home"><div class="hl">
 <svg class="outline" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="150" aria-hidden="true"><path d="${GEO.o}"/></svg>
 <div class="hstats"><div class="hstat">${hi("orgaos")}<div>União<br><b>+ 4.000</b> órgãos</div></div><div class="hstat">${hi("mapa")}<div>Estados e DF<br><b>27</b> unidades</div></div><div class="hstat">${hi("pin")}<div>Municípios<br><b>5.568</b> cidades</div></div></div></section>
 
-<div class="panel" id="hmapcard"><div id="hmapmain" class="zmain"><div class="hd"><div><h2>Mapa do Brasil</h2><p id="hmsub">Gastos públicos por região (2025). Toque em um estado para abrir a ficha completa.</p></div><select id="hreg" class="cardfoot-sel"><option value="">Brasil</option>${Object.entries(REG).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></div>
-<div class="seg" id="hmet" style="margin-bottom:10px">${HMET.map((m,i)=>`<button data-m="${m[0]}" class="${i?"":"on"}">${m[1]}</button>`).join("")}</div>
+<div class="panel" id="hmapcard"><div id="hmapmain" class="zmain"><div class="hd"><div><h2>Mapa do Brasil</h2><p id="hmsub">Gastos públicos por região (2025). Toque em um estado para abrir a ficha completa.</p></div><select id="hreg" class="cardfoot-sel" hidden><option value="">Brasil</option>${Object.entries(REG).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></div>
+<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Mostrar</span><div class="seg segj" id="hmet">${HMET.map((m,i)=>`<button data-m="${m[0]}" class="${i?"":"on"}"${m[0]==="vio"?" hidden":""}>${m[1]}</button>`).join("")}</div></div><div class="segj-w"><span class="segj-l">Região</span><div class="seg segj" id="hregb"><button data-r="" class="on">Brasil</button>${Object.entries(REG).map(([k,v])=>`<button data-r="${k}">${v}</button>`).join("")}</div></div></div>
 <div class="mapwrap mapbig"><div id="hmap"></div><div id="hside" class="zside"></div></div>
 <div class="cardfoot"><span class="small muted" id="hmleg"></span><a class="small" href="#/gastos" id="hmlink">Ver detalhes</a></div></div><div id="hstate" style="display:none"></div></div>
 <div class="meters"><div class="panel meter2 imp"><div class="m-h"><span class="m-dot"></span><h2>Impostômetro</h2><span class="small muted">desde 1º de janeiro</span></div><div class="m-v" id="impV">R$ 0</div><div class="m-sub">pagos em tributos por pessoas e empresas em <span class="yr"></span></div>
@@ -1595,7 +1614,7 @@ return{html,mount(){
    iv.textContent=full(IMP/Y*el);$("#gasV").textContent=full(GAS/Y*el);$("#impD").textContent=brl(IMP/Y*td);$("#gasD").textContent=brl(GAS/Y*td);
    $("#impP").textContent="R$ "+nf(Math.round(IMP/Y*el/POP));$("#gasP").textContent="R$ "+nf(Math.round(GAS/Y*el/POP));
    setTimeout(()=>requestAnimationFrame(run),90)};run()})();
- const dm=()=>{HOMEZ.sec={gasto:"gastos",pc:"gastos",pop:null,contratos:"contratos",obras:"obras",projetos:"projetos",arr:"arrecadacao",ret:"arrecadacao",dclr:"dividas",inad:"dividas",reg:null}[met];const regMode=met==="reg";const m=regMode?null:met;
+ const dm=()=>{document.querySelectorAll("#hregb button").forEach(b=>b.classList.toggle("on",b.dataset.r===(reg||"")));HOMEZ.sec={vio:"seguranca",gasto:"gastos",pc:"gastos",pop:null,contratos:"contratos",obras:"obras",projetos:"projetos",arr:"arrecadacao",ret:"arrecadacao",dclr:"dividas",inad:"dividas",reg:null}[met];const regMode=met==="reg";const m=regMode?null:met;
   $("#hmap").innerHTML=brMap(m,null,reg,regMode?{byRegion:true}:{legend:false});bindMap($("#hmap"),null,null,(u,el)=>showStateInline(u,el));
   if(regMode){$("#hside").innerHTML=Object.keys(REG).map(k=>`<div class="rl" data-reg="${k}" style="cursor:pointer;opacity:${!reg||reg===k?1:.4}"><i style="background:${REGCOL[k]}"></i><span>${REG[k]}</span><b>${brl(REGV[k])}</b><span>${(REGV[k]/Object.values(REGV).reduce((x,y)=>x+y,0)*100).toFixed(1).replace(".",",")}%</span></div>`).join("");
    document.querySelectorAll("#hside .rl").forEach(r=>r.onclick=()=>{reg=reg===r.dataset.reg?"":r.dataset.reg;$("#hreg").value=reg;dm()});
@@ -1604,8 +1623,8 @@ return{html,mount(){
    $("#hside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?REG[reg]:"Brasil"}: maiores valores</div>`+hbars(rows.map(u=>[u.nome,f(u),"#/uf/"+u.uf]),{fmt:fm});
    $("#hmsub").textContent=n+" por estado. Toque em um estado para abrir a ficha completa.";
    $("#hmleg").innerHTML=`<span class="legend" style="justify-content:flex-start;margin:0">menor ${SCALE.map(c=>`<i style="background:${c}"></i>`).join("")} maior</span>`;
-   $("#hmlink").setAttribute("href",m==="dclr"?"#/dividas/estados":m==="inad"?"#/dividas/pessoas":["arr","ret"].includes(m)?"#/arrecadacao":m==="contratos"?"#/contratos":m==="obras"?"#/obras":m==="projetos"?"#/projetos":"#/gastos")}};dm();
- $("#hreg").onchange=e=>{reg=e.target.value;dm()};
+   $("#hmlink").setAttribute("href",m==="vio"?"#/seguranca":m==="dclr"?"#/dividas/estados":m==="inad"?"#/dividas/pessoas":["arr","ret"].includes(m)?"#/arrecadacao":m==="contratos"?"#/contratos":m==="obras"?"#/obras":m==="projetos"?"#/projetos":"#/gastos")}};dm();
+ $("#hreg").onchange=e=>{reg=e.target.value;dm()};document.querySelectorAll("#hregb button").forEach(b=>b.onclick=()=>{reg=b.dataset.r;$("#hreg").value=reg;dm()});
  document.querySelectorAll("#hmet button").forEach(b=>b.onclick=()=>{met=b.dataset.m;document.querySelectorAll("#hmet button").forEach(x=>x.classList.toggle("on",x===b));dm()});
  {const ids=vistos().map(i=>pessoa(i)).filter(Boolean);const lista=[...ids,...PESSOAS.filter(x=>x.sit==="Em exercício"&&!ids.includes(x))];$("#rsub").textContent=ids.length?"Deputados e candidatos que você abriu por último":"Sugestões para começar: abra um perfil e ele aparece aqui";$("#rgrid").innerHTML=lista.slice(0,4).map(cardVisto).join("")}
  const da=()=>{const u=UF[$("#harr").value];$("#harrv").innerHTML=`<div class="facts" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px"><div><span>Arrecadou</span>${brl(u.arr)}</div><div><span>Retornou</span>${brl(u.ret)}</div><div><span>${u.arr>=u.ret?"Redistribuiu":"Recebeu a mais"}</span>${brl(Math.abs(u.arr-u.ret))}</div></div>${arrSplit(u)}<p class="small muted" style="margin:10px 0 0">${u.arr>=u.ret?"A diferença ficou com a União para uso no restante do país.":"A diferença veio da arrecadação de outros estados."} <a href="#/uf/${u.uf}">Ver detalhes</a></p>`};const setUF=(uf,orig)=>{if(!UF[uf])return;$("#harr").value=uf;da();$("#hloc").innerHTML=orig==="gps"?`${hi("pin")} Pela sua localização: <b>${UF[uf].nome}</b>`:orig==="salvo"?`Seu estado: <b>${UF[uf].nome}</b>`:"Escolha seu estado ou use a localização.";try{localStorage.setItem("bm-uf",uf)}catch(e){}};
@@ -2893,7 +2912,7 @@ mount(){apiGet("/fornecedores/"+encodeURIComponent(doc)).then(d=>{const c=d.cont
 const _obras=P.obras,_obra=P.obra;
 P.obras=(...a)=>API.on?{html:`<div class="ph"><div><h1>Obras públicas</h1><p>Obras com recursos federais cadastradas no ObrasGov.br: onde estão, quanto custam e em que situação.</p></div></div>
 <div class="grid g2"><div class="panel"><h2>Obras por estado</h2><div id="obmap">${rload()}</div><p class="small muted" style="margin:8px 0 0">Toque em um estado para filtrar a lista.</p></div><div class="panel"><h2>Situação</h2><div id="obsit">${rload()}</div></div></div>
-<div class="panel mt"><div class="seg seg-grupo" id="obsits" style="margin-bottom:12px"></div><div class="filters">${UFSel("obuf")}<input id="obtipo" placeholder="Tipo (ex.: rodovia, escola)" style="flex:1;min-width:160px" autocomplete="off"></div><div id="obl">${rload()}</div>${maisBtn("obm")}${RSRC("ObrasGov.br (Ministério da Gestão)")}</div>`,
+<div class="panel mt"><div class="seg seg-grupo" id="obsits" data-pill="Situação" style="margin-bottom:12px"></div><div class="filters">${UFSel("obuf")}<input id="obtipo" placeholder="Tipo (ex.: rodovia, escola)" style="flex:1;min-width:160px" autocomplete="off"></div><div id="obl">${rload()}</div>${maisBtn("obm")}${RSRC("ObrasGov.br (Ministério da Gestão)")}</div>`,
 mount(){let f={uf:"",tipo:"",situacao:""};
  apiGet("/obras?limit=500").then(r=>{if(!r.total){demoComAviso(_obras,a,"Nenhuma obra coletada ainda (coleta obrasgov-obras).");return}
   const cnt={},sit={};r.itens.forEach(o=>{if(o.uf)cnt[o.uf]=(cnt[o.uf]||0)+1;const s=o.situacao||"Não informada";sit[s]=(sit[s]||0)+1});
@@ -3329,7 +3348,7 @@ return{html:r.html,mount(){r.mount&&r.mount();apiGet("/mapa/estados").then(d=>{c
  Object.entries(MAPA_REAL).forEach(([k,[nome,campo,fmt]])=>{const n=UFS.filter(u=>E[u.uf]&&E[u.uf][campo]!=null).length;if(n>=20){METRICS[k]=[nome,u=>(E[u.uf]&&E[u.uf][campo])||0,fmt];usados.push(k)}});
  if(!usados.length)return;
  if(usados.includes("gasto")){window.REG_TXT=`Gasto dos governos estaduais por região (${d.anos.gasto})`}if(usados.includes("gasto"))Object.keys(REGV).forEach(rg=>{REGV[rg]=UFS.filter(u=>u.reg===rg).reduce((s,u)=>s+((E[u.uf]&&E[u.uf].gasto)||0),0)});
- document.querySelectorAll("#hmet button").forEach(b=>{const m=b.dataset.m;if(m!=="reg"&&!usados.includes(m))b.remove();if(m==="reg"&&!usados.includes("gasto"))b.remove()});
+ document.querySelectorAll("#hmet button").forEach(b=>{const m=b.dataset.m;if(m!=="reg"&&m!=="vio"&&!usados.includes(m))b.remove();if(m==="reg"&&!usados.includes("gasto"))b.remove()});
  const on=document.querySelector("#hmet button.on")||document.querySelector("#hmet button");if(on)on.click();
  const pe=document.querySelector("#hmapcard .cardfoot");if(pe&&!document.querySelector("#hmapReal"))pe.insertAdjacentHTML("afterend",`<p class="small muted" id="hmapReal" style="margin:8px 0 0">Mapa com dados oficiais${d.anos.gasto?` (gastos de ${d.anos.gasto})`:""}. Fonte: ${esc(d.fonte)}.</p>`)}).catch(()=>{})}}};
 
@@ -3879,7 +3898,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
  mount(){if(!API.on)return;segDados().then(d=>{const box=$("#segbox");if(!box)return;const ref=segRefs(d),B=d.brasil||{},mets=segMetricas(d);met=mets[0];
   const sm=(B.serie_mensal||[]);
   box.innerHTML=`<div class="panel" id="segcard"><div id="segmain" class="zmain"><div class="hd"><div><h2>Segurança pública no Brasil</h2><p id="segsub"></p></div></div>
-   <div class="segj-grupos">${SEG_GRUPOS.map(([g,ks])=>{const ok=ks.filter(k=>mets.includes(k));return ok.length?`<div class="segj-w"><span class="segj-l">${g}</span><div class="seg segj">${ok.map(k=>`<button data-m="${k}" class="${k===met?"on":""}">${SEG_MET[k][4]||SEG_MET[k][0]}</button>`).join("")}</div></div>`:""}).join("")}</div>
+   <div class="segj-grupos" data-pill="Indicador">${SEG_GRUPOS.map(([g,ks])=>{const ok=ks.filter(k=>mets.includes(k));return ok.length?`<div class="segj-w"><span class="segj-l">${g}</span><div class="seg segj">${ok.map(k=>`<button data-m="${k}" class="${k===met?"on":""}">${SEG_MET[k][4]||SEG_MET[k][0]}</button>`).join("")}</div></div>`:""}).join("")}</div>
    <div class="kpis kpis-c" id="segkpi" style="margin-bottom:12px"></div>
    <div class="mapwrap mapbig"><div id="segmap"></div><div class="zside" id="segside"></div></div>
    <p class="small muted" style="margin:8px 0 0">Toque em um estado para ver todas as taxas dele.</p>
@@ -3912,7 +3931,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
 {const _i6=P.inicio;P.inicio=(...a)=>{const r=_i6(...a);if(!API.on)return r;
  return{html:r.html,mount(){r.mount&&r.mount();segDados().then(d=>{let alvo=document.querySelector("#view .meters");if(!alvo||$("#hsegcard"))return;const nx=alvo.nextElementSibling;if(nx&&nx.tagName==="P"&&/Impostômetro|Gastômetro/.test(nx.textContent))alvo=nx;const B=d.brasil||{},o=B.ocorrencias||{},p=B.prisional||{},ref=segRefs(d);
   const vals={};UFS.forEach(u=>{vals[u.uf]=gv(d.estados[u.uf],"ocorrencias","taxa_homicidio")??gv(d.estados[u.uf],"violencia","taxa_mvi")});
-  const temMapa=Object.values(vals).filter(v=>v!=null).length>=15;
+  const temMapa=Object.values(vals).filter(v=>v!=null).length>=15;UFS.forEach(u=>{u.vio=vals[u.uf]});{const vb=document.querySelector('#hmet button[data-m="vio"]');if(vb&&temMapa)vb.hidden=false}{const b=document.querySelector('#hmet button.on[data-m="vio"]');if(b)b.click()}
   const HZ={card:"#hsegcard",main:"#hsegmain",holder:"#hsegstate",map:"#hsegmap",back:"‹ Voltar ao Brasil",render:uf=>segEstado(uf)};
   alvo.insertAdjacentHTML("afterend",`<div class="panel" id="hsegcard"><div id="hsegmain" class="zmain"><div class="hd"><div><h2>Segurança pública no Brasil</h2><p>${ref.ocorr?`Sinesp, ${ref.ocorr}`:""}${ref.prisional?`${ref.ocorr?"; ":""}presos: ${ref.prisional}`:""}</p></div><a href="#/seguranca">Ver tudo</a></div>
    <div class="kpis kpis-c">${o.homicidios_por_dia!=null?kp("Homicídios por dia",n1(o.homicidios_por_dia),`${n1(o.taxa_homicidio)} por 100 mil hab.`):""}${o.detidos_por_dia!=null?kp("Presos por mandado, por dia",n1(o.detidos_por_dia)):""}${p.populacao!=null?kp("Presos no país",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`):""}${p.presos_por_dia!=null?kp("Entram nas prisões por dia",n1(p.presos_por_dia)):""}${p.saidas_temporarias?kp("Saídas temporárias",n0(p.saidas_temporarias),`${n0(p.abandonos)} não voltaram`):""}${gv(B,"efetivo","policiais_por_mil")!=null?kp("Policiais por mil hab.",n1(B.efetivo.policiais_por_mil)):""}</div>
@@ -3954,7 +3973,7 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
  return{html:`<div class="ph"><div><h1>Dívidas</h1><p>Quanto devem o governo, os estados, as cidades, as famílias e as empresas. Escolha o tipo: o mapa muda; toque em um estado para ver todas as dívidas dele.</p></div></div><div id="dvT">${rload()}</div>`,
  mount(){Promise.all([dadosDividas(),dvPop(),apiGet("/dividas/familias-estados").catch(()=>null)]).then(([D,M,scr])=>{const box=$("#dvT");if(!box)return;D.scr=scr;
   const DZ={card:"#dvcard",main:"#dvmain",holder:"#dvstate",map:"#dvmap",back:"‹ Voltar ao mapa",render:uf=>dvEstado(uf,D,M)};
-  box.innerHTML=`<div class="seg seg-grupo" id="dvSeg">${DIV_TIPOS.map(([k,n])=>`<button data-k="${k}" class="${k===tipo?"on":""}">${n}</button>`).join("")}</div>
+  box.innerHTML=`<div class="seg seg-grupo" id="dvSeg" data-pill="Tipo de dívida">${DIV_TIPOS.map(([k,n])=>`<button data-k="${k}" class="${k===tipo?"on":""}">${n}</button>`).join("")}</div>
   <div class="dvq-linha" id="dvQ"></div>
   <div class="panel mt" id="dvcard"><div id="dvmain" class="zmain"><div class="hd"><div><h2 id="dvmT"></h2><p id="dvmS"></p></div></div><div class="mapwrap mapbig"><div id="dvmap"></div><div class="zside" id="dvside"></div></div></div><div id="dvstate" style="display:none"></div></div>
   <div id="dvDet" class="mt"></div>`;
@@ -3984,7 +4003,7 @@ function hemiIndicados(casa){let grupos=[],lista=[];
 function quandoNw(iso){if(!iso)return"";const d=new Date(iso),m=(Date.now()-d)/6e4;if(m<1)return"agora";if(m<60)return`há ${Math.round(m)} min`;if(m<1440)return`há ${Math.round(m/60)} h`;
  return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
 const normNw=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-const limpaNw=t=>String(t||"").replace(/<!\[CDATA\[|\]\]>/g," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+const limpaNw=t=>String(t||"").replace(/<!\[CDATA\[|\]\]>/g," ").replace(/<[^>]*>/g," ").replace(/<[^>]*$/,"").replace(/\s+/g," ").trim();
 const NW_TEMAS=[["geral","Notícias em geral"],["economia","Notícias econômicas"],["juridico","Notícias jurídicas"],["executivo","Notícias do Executivo"],["legislativo","Notícias do Legislativo"]];
 const NW_RE={economia:/\b(econom|inflacao|ipca|juros|selic|dolar|pib\b|orcamento|fiscal|imposto|tributari|haddad|banco central|bolsa|mercado|tarifa|divida|arrecad|salario minimo|desemprego|petrobras|receita federal|reajuste|precos?\b)/,
  juridico:/\b(stf|stj|tse\b|tribunal|supremo|justica|juiz|juiza|desembargad|pgr\b|cnj\b|oab\b|julgamento|condenad|inquerito|denuncia|habeas|moraes|barroso|toffoli|mendonca|gilmar|fux|dino|zanin|policia federal|ministerio publico|sentenca|prisao)/,
@@ -3997,8 +4016,7 @@ P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>
  <div id="nwBox">${API.on?rload():`<div class="rbanner">As notícias aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/noticias?limit=1500").then(t=>{const box=$("#nwBox");if(!box)return;todas=(t.itens||[]).map(n=>{const m={...n,titulo:limpaNw(n.titulo),resumo:limpaNw(n.resumo)};m._t=temasNw(m);return m});
-  box.innerHTML=`<div class="segj-grupos"><div class="segj-w" style="max-width:100%"><span class="segj-l">Assunto</span><div class="seg segj" id="nwT"></div></div></div>
-   <div class="segj-w" style="margin:10px 0"><span class="segj-l">Veículo</span><div class="nw-veic" id="nwV"></div></div>
+  box.innerHTML=`<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Assunto</span><div class="seg segj" id="nwT"></div></div><div class="segj-w"><span class="segj-l">Veículo</span><div class="seg segj nw-veic" id="nwV"></div></div></div>
    <div class="filters" style="margin-bottom:12px"><input id="nwQ" placeholder="Buscar nas manchetes" style="flex:1;min-width:180px" autocomplete="off"></div>
    <div id="nwL"></div><div id="nwMw"></div><p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} Atualizado a cada 6 horas pelo robô do BRASIL+. Logos: Wikimedia Commons.</p>`;
   const noTema=()=>todas.filter(n=>n._t.has(f.tema));
@@ -4053,7 +4071,26 @@ midiaLogos().then(L=>{
     c.setAttribute("fill",`url(#${id})`);c.setAttribute("stroke",c.getAttribute("data-cor")||corSigla(sg));c.setAttribute("stroke-width",Math.max(.6,+c.getAttribute("r")*.18).toFixed(2))})});
   pol.forEach(el=>{el.dataset.mok=1;const l=L.policias[el.dataset.pol];if(!l||!el.isConnected)return;const h=parseInt(el.dataset.h||"54");const im=document.createElement("img");im.className="pol-logo";im.src=l.img;im.alt=l.titulo||"";im.style.height=h+"px";im.style.width="auto";im.title=`${l.titulo} — imagem: Wikimedia Commons (${l.arquivo||""})`;el.replaceWith(im);
    const info=document.querySelector(`[data-polinfo="${el.dataset.pol}"]`);if(info&&l.efetivo_wikipedia)info.textContent=`Efetivo informado na Wikipédia: ${nf(l.efetivo_wikipedia)}`})})}
-{let t=null;new MutationObserver(()=>{clearTimeout(t);t=setTimeout(aplicarMidia,40)}).observe(document.documentElement,{childList:true,subtree:true})}
+/* seletores enxutos: transforma cada grupo de botões (.segj-w ou [data-pill]) numa pílula com menu; os botões originais
+   continuam os mesmos (só mudam de lugar), então cada tela segue com os seus próprios cliques */
+function fecharPilulas(){document.querySelectorAll(".pill-w.open").forEach(w=>{w.classList.remove("open");const m=w.querySelector(":scope>.pill-m");if(m)m.hidden=true;const b=w.querySelector(":scope>.pill");if(b)b.setAttribute("aria-expanded","false")})}
+function textoPil(btn){const c=btn.cloneNode(true);c.querySelectorAll("small,.vlogo,img").forEach(x=>x.remove());return c.textContent.replace(/\s+/g," ").trim()}
+function fazPilula(w,src,rotulo){w.dataset.pok=1;src.dataset.pok=1;w.classList.add("pill-w");src.querySelectorAll(".segj-w").forEach(x=>x.dataset.pok=1);
+ const b=document.createElement("button");b.type="button";b.className="pill";b.setAttribute("aria-haspopup","true");b.setAttribute("aria-expanded","false");
+ b.innerHTML=`<span class="pill-l">${esc(rotulo)}</span><b class="pill-v"></b><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>`;
+ const m=document.createElement("div");m.className="pill-m";m.hidden=true;w.insertBefore(b,src);w.insertBefore(m,src);m.appendChild(src);
+ const atual=()=>{m.classList.toggle("larga",src.querySelectorAll("button").length>8);const on=src.querySelector("button.on");b.querySelector(".pill-v").textContent=on?textoPil(on):"Escolher";b.hidden=!src.querySelector("button")};atual();
+ new MutationObserver(atual).observe(src,{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+ b.onclick=e=>{e.stopPropagation();const abrir=m.hidden;fecharPilulas();if(!abrir)return;m.hidden=false;w.classList.add("open");b.setAttribute("aria-expanded","true");
+  m.style.left="0px";const r=m.getBoundingClientRect();if(r.right>innerWidth-12)m.style.left=Math.min(0,innerWidth-12-r.right)+"px"};
+ m.addEventListener("click",e=>{e.stopPropagation();if(e.target.closest("button"))setTimeout(fecharPilulas,0)});
+ const par=w.parentElement;if(par&&par.matches(".segj-grupos,.el-ctl")&&[...par.children].every(c=>c.classList.contains("pill-w")||c.hidden))par.classList.add("pbar")}
+function pilulas(){
+ document.querySelectorAll("[data-pill]:not([data-pok])").forEach(src=>{const w=document.createElement("div");src.parentNode.insertBefore(w,src);w.appendChild(src);fazPilula(w,src,src.dataset.pill)});
+ document.querySelectorAll(".segj-w:not([data-pok])").forEach(w=>{const l=w.querySelector(":scope>.segj-l"),src=w.querySelector(":scope>.seg");if(!l||!src)return;fazPilula(w,src,l.textContent.trim())});
+ document.querySelectorAll(".segj-grupos,.el-ctl").forEach(par=>{if(!par.classList.contains("pbar")&&par.children.length&&[...par.children].every(c=>c.classList.contains("pill-w")))par.classList.add("pbar")})}
+document.addEventListener("click",fecharPilulas);document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharPilulas()});
+{let t=null;new MutationObserver(()=>{pilulas();clearTimeout(t);t=setTimeout(aplicarMidia,40)}).observe(document.documentElement,{childList:true,subtree:true})}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
