@@ -580,3 +580,17 @@ def test_scr_por_estado():
     assert d["AC"]["pf"]["carteira"] == round(6975406.47 + 31614516.83, 2)
     assert d["AC"]["pf"]["inadimplencia"] == round(100 * (251431.29 + 408834.68) / (6975406.47 + 31614516.83), 2)
     assert d["AC"]["pj"] == {"carteira": 1000.0, "inadimplida": 100.0, "inadimplencia": 10.0}
+
+
+def test_unidades_da_wikipedia():
+    from scripts.midia_site import sigla_de, unidade_de_resultado
+    u = unidade_de_resultado("Batalhão de Operações Policiais Especiais (Rio de Janeiro)",
+                             'O <span class="searchmatch">BOPE</span> é uma unidade da Polícia Militar do Estado do Rio de Janeiro',
+                             "Rio de Janeiro", "RJ")
+    assert u and u["sigla"] == "BOPE" and u["corp"] == "pm" and u["uf"] == "RJ"
+    # unidade do Exército não entra
+    assert unidade_de_resultado("Batalhão de Infantaria Blindado", "Exército Brasileiro em Santa Maria, Rio Grande do Sul",
+                                "Rio Grande do Sul", "RS") is None
+    # de outro estado não entra
+    assert unidade_de_resultado("Batalhão de Choque", "da Polícia Militar da Bahia", "Ceará", "CE") is None
+    assert sigla_de("Batalhão de Missões Especiais") == "BME"

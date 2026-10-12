@@ -9,6 +9,7 @@ Chaves das fotos: a URL oficial (Câmara/Senado, como está em `foto_url`) ou `t
 Uso: python -m scripts.midia_site site/midia
 """
 import base64
+import html
 import io
 import json
 import logging
@@ -150,6 +151,24 @@ def wiki_imagens(titulos: list[str]) -> dict:
     return out
 
 
+def wiki_resumos(titulos: list[str]) -> dict:
+    """{título: primeira frase do verbete} para os artigos pedidos."""
+    out = {}
+    for k in range(0, len(titulos), 20):
+        lote = titulos[k:k + 20]
+        try:
+            d = cli.get(WIKI, params={"action": "query", "format": "json", "redirects": 1, "prop": "extracts",
+                                      "exintro": 1, "explaintext": 1, "exsentences": 1, "titles": "|".join(lote)}).json()
+        except Exception:
+            continue
+        alias = {r["from"]: r["to"] for r in d.get("query", {}).get("redirects", [])}
+        alias.update({n["from"]: n["to"] for n in d.get("query", {}).get("normalized", [])})
+        por = {pg.get("title"): _limpa(pg.get("extract") or "")[:240] for pg in d.get("query", {}).get("pages", {}).values()}
+        for t in lote:
+            out[t] = por.get(alias.get(alias.get(t, t), alias.get(t, t)), "")
+    return out
+
+
 def buscar_titulo(consulta: str, deve_ter: list[str]) -> str | None:
     """Primeiro artigo da busca da Wikipédia cujo título contém todas as palavras pedidas."""
     try:
@@ -164,6 +183,71 @@ def buscar_titulo(consulta: str, deve_ter: list[str]) -> str | None:
     return None
 
 
+# ---- batalhões e unidades especiais: descobertos na Wikipédia, só entram os que têm artigo ----
+TIPOS_UNIDADE = ["Batalhão de Operações Especiais", "Batalhão de Operações Policiais Especiais", "Batalhão de Choque",
+                 "Batalhão de Polícia de Choque", "Rondas Ostensivas", "Rondas Táticas", "Grupo de Ações Táticas",
+                 "Grupo Tático", "Comando de Operações Especiais", "Batalhão de Missões Especiais",
+                 "Batalhão de Ações com Cães", "Comando de Aviação", "Esquadrão antibombas", "Batalhão Rodoviário",
+                 "Batalhão Ambiental", "Companhia de Operações Especiais"]
+_RE_UNID = re.compile(r"^(Batalh[ãa]o|Rondas?|Grupo|Comando|Companhia|Esquadr[ãa]o|Grupamento|Coordenadoria|Regimento|"
+                      r"Delegacia|Divis[ãa]o|Tropa|Pelot[ãa]o)\b", re.I)
+_PROIBIDO = re.compile(r"ex[eé]rcito|marinha|fuzileiros|for[cç]a a[eé]rea|\bFAB\b|desambigua|lista de", re.I)
+
+
+def _limpa(txt: str) -> str:
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", txt or ""))).strip()
+
+
+def sigla_de(titulo: str, trecho: str = "") -> str:
+    """Sigla da unidade: a que vier entre parênteses no título ou no trecho; senão as iniciais do nome."""
+    for t in (titulo, trecho):
+        m = re.search(r"\(([A-ZÁÉÍÓÚÂÊÔÃÕÇ0-9º.\-]{2,10})\)", t or "")
+        if m:
+            return m.group(1)
+    nome = re.sub(r"\s*\(.*\)", "", titulo)
+    ini = "".join(w[0] for w in re.split(r"\s+", nome) if w[:1].isupper() and len(w) > 3)
+    return ini.upper() if len(ini) >= 2 else nome[:12]
+
+
+def unidade_de_resultado(titulo: str, trecho: str, nome_uf: str, uf: str) -> dict | None:
+    """Decide se um resultado da busca é uma unidade policial do estado e devolve {uf, corp, sigla, nome}."""
+    trecho = _limpa(trecho)
+    texto = f"{titulo} {trecho}"
+    if not _RE_UNID.match(titulo) or _PROIBIDO.search(texto):
+        return None
+    if nome_uf.lower() not in texto.lower() and f"({uf})" not in titulo:
+        return None
+    if not re.search(r"pol[ií]cia|bombeiro|guarda", texto, re.I):
+        return None
+    corp = "cbm" if re.search(r"bombeiro", texto, re.I) and not re.search(r"pol[ií]cia militar", texto, re.I) else \
+        "pc" if re.search(r"pol[ií]cia civil", texto, re.I) else "pm"
+    return {"uf": uf, "corp": corp, "sigla": sigla_de(titulo, trecho), "nome": re.sub(r"\s*\(.*\)", "", titulo).strip(),
+            "titulo": titulo}
+
+
+def descobrir_unidades(maximo_por_uf: int = 8) -> list[dict]:
+    achadas, vistos = [], set()
+    for uf, nome in NOMES_UF.items():
+        n = 0
+        for tipo in TIPOS_UNIDADE:
+            if n >= maximo_por_uf:
+                break
+            try:
+                d = cli.get(WIKI, params={"action": "query", "format": "json", "list": "search", "srlimit": 5,
+                                          "srsearch": f"{tipo} Polícia {nome}"}).json()
+            except Exception:
+                continue
+            for r in d.get("query", {}).get("search", []):
+                u = unidade_de_resultado(r["title"], r.get("snippet", ""), nome, uf)
+                if u and u["titulo"] not in vistos and n < maximo_por_uf:
+                    vistos.add(u["titulo"])
+                    achadas.append(u)
+                    n += 1
+    log.info("unidades encontradas na Wikipédia: %d", len(achadas))
+    return achadas
+
+
+
 def logos() -> dict:
     out = {"partidos": {}, "policias": {}}
     titulos_pol = dict(POLICIAS_FIXAS)
@@ -176,6 +260,9 @@ def logos() -> dict:
             t = buscar_titulo(f"{base} {nome}", extra + [nome.split()[-1]])
             if t:
                 titulos_pol[f"{chave}:{uf}"] = t
+    unidades = descobrir_unidades()
+    for u in unidades:
+        titulos_pol[f"u:{u['uf']}:{u['sigla']}"] = u["titulo"]
     info = wiki_imagens(sorted(set(PARTIDOS.values()) | set(titulos_pol.values())))
     def baixar(meta, altura):
         if not meta or not meta.get("thumb"):
@@ -197,7 +284,10 @@ def logos() -> dict:
         if cache[t]:
             out["policias"][chave] = {"img": cache[t], "titulo": t, "arquivo": info[t].get("arquivo"),
                                       "pagina": info[t]["pagina"], "efetivo_wikipedia": info[t].get("efetivo_wikipedia")}
-    log.info("logos: %d partidos, %d polícias", len(out["partidos"]), len(out["policias"]))
+    resumos = wiki_resumos([u["titulo"] for u in unidades])
+    out["unidades"] = [{**{k: u[k] for k in ("uf", "corp", "sigla", "nome")}, "desc": resumos.get(u["titulo"], "")}
+                       for u in unidades if f"u:{u['uf']}:{u['sigla']}" in out["policias"] or resumos.get(u["titulo"])]
+    log.info("logos: %d partidos, %d polícias, %d unidades", len(out["partidos"]), len(out["policias"]), len(out["unidades"]))
     return out
 
 
