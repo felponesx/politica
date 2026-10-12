@@ -4005,6 +4005,8 @@ function quandoNw(iso){if(!iso)return"";const d=new Date(iso),m=(Date.now()-d)/6
 const normNw=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const limpaNw=t=>{let x=String(t||"").replace(/<!\[CDATA\[|\]\]>/g," ").replace(/<[^>]*$/,"");for(let k=0;k<2;k++){try{x=new DOMParser().parseFromString(x,"text/html").body.textContent||""}catch(e){x=x.replace(/<[^>]*>/g," ")}}
  return x.replace(/<[^>]*>?/g," ").replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim()};
+/* matérias que chegaram com a acentuação perdida ("jur?dicas"): não dá para recuperar as letras, então não aparecem */
+const quebradaNw=t=>/\uFFFD|\p{L}\?\p{L}|\p{L}\?\?\p{L}/u.test(t||"");
 const NW_TEMAS=[["geral","Notícias em geral"],["economia","Notícias econômicas"],["juridico","Notícias jurídicas"],["executivo","Notícias do Executivo"],["legislativo","Notícias do Legislativo"]];
 const NW_RE={economia:/\b(econom|inflacao|ipca|juros|selic|dolar|pib\b|orcamento|fiscal|imposto|tributari|haddad|banco central|bolsa|mercado|tarifa|divida|arrecad|salario minimo|desemprego|petrobras|receita federal|reajuste|precos?\b)/,
  juridico:/\b(stf|stj|tse\b|tribunal|supremo|justica|juiz|juiza|desembargad|pgr\b|cnj\b|oab\b|julgamento|condenad|inquerito|denuncia|habeas|moraes|barroso|toffoli|mendonca|gilmar|fux|dino|zanin|policia federal|ministerio publico|sentenca|prisao)/,
@@ -4016,7 +4018,7 @@ const vlogo=(v,h=22)=>`<span class="vlogo" data-vlogo="${esc(v)}" data-h="${h}" 
 P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>
  <div id="nwBox">${API.on?rload():`<div class="rbanner">As notícias aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
- mount(){if(!API.on)return;apiGet("/noticias?limit=1500").then(t=>{const box=$("#nwBox");if(!box)return;todas=(t.itens||[]).map(n=>{const m={...n,titulo:limpaNw(n.titulo),resumo:limpaNw(n.resumo)};m._t=temasNw(m);return m});
+ mount(){if(!API.on)return;apiGet("/noticias?limit=1500").then(t=>{const box=$("#nwBox");if(!box)return;todas=(t.itens||[]).map(n=>{const m={...n,titulo:limpaNw(n.titulo),resumo:limpaNw(n.resumo)};m._t=temasNw(m);return m}).filter(n=>!quebradaNw(n.titulo+" "+n.resumo));
   box.innerHTML=`<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Assunto</span><div class="seg segj" id="nwT"></div></div><div class="segj-w"><span class="segj-l">Veículo</span><div class="seg segj nw-veic" id="nwV"></div></div></div>
    <div class="filters" style="margin-bottom:12px"><input id="nwQ" placeholder="Buscar nas manchetes" style="flex:1;min-width:180px" autocomplete="off"></div>
    <div id="nwL"></div><div id="nwMw"></div><p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} Atualizado a cada 6 horas pelo robô do BRASIL+. Logos: Wikimedia Commons.</p>`;

@@ -47,6 +47,7 @@ FEEDS = [
     ("Migalhas", "https://www.migalhas.com.br/rss/quentes", True, "juridico"),
     ("Conselho Nacional de Justiça", "https://www.cnj.jus.br/feed/", True, "juridico"),
 ]
+QUEBRADA = re.compile(r"\ufffd|[^\W\d_]\?{1,2}[^\W\d_]")
 PALAVRAS = re.compile(r"\b(congresso|camara|senado|deputad|senador|governo|presiden|ministr|stf|supremo|tse|eleic|"
                       r"eleitor|partido|planalto|lula|bolsonaro|governador|prefeit|lei\b|projeto de lei|pec\b|cpi\b|"
                       r"votac|reforma|orcamento|politic)", re.I)
@@ -135,6 +136,11 @@ def coletar_noticias(dias: int = 14):
         faltaram = sorted({f"{v} ({t})" for v, _, _, t in FEEDS} - {f"{v} ({t})" for v, t in feitos})
         if faltaram:
             n.avisos.append("sem resposta: " + ", ".join(faltaram))
+        # matérias gravadas antes da correção de charset, com letras trocadas por "?" ("jur?dicas"): não têm conserto
+        quebradas = [r.id for r in db.query(Registro).filter(Registro.fonte == "noticias", Registro.tipo == "materia")
+                     if QUEBRADA.search(f"{(r.dados or {}).get('titulo', '')} {(r.dados or {}).get('resumo', '')}")]
+        if quebradas:
+            db.execute(delete(Registro).where(Registro.id.in_(quebradas)))
         limite = (datetime.now(timezone.utc) - timedelta(days=int(dias))).isoformat()
         velhas = [r.id for r in db.query(Registro).filter(Registro.fonte == "noticias", Registro.tipo == "materia")
                   if (r.dados or {}).get("data") and r.dados["data"] < limite]
