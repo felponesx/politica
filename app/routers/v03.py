@@ -42,6 +42,39 @@ def economia(nomes: str | None = None, desde: int | None = None, db: Session = D
     return {"series": out, "fonte": "Banco Central do Brasil — SGS (inclui dados do IBGE: IPCA e PNAD)"}
 
 
+def _tributos_subnacionais(db):
+    """Impostos estaduais e municipais em 12 meses (último ano com estados no SICONFI). Prefeituras que não entregaram
+    o relatório entram estimadas pela média por habitante das que entregaram, na mesma UF."""
+    from app.models import Municipio
+    anos = [a for (a,) in db.execute(select(Registro.ano).where(Registro.tipo == "tributos_ente").distinct()
+                                     .order_by(Registro.ano.desc()))]
+    for ano in anos:
+        regs = db.scalars(select(Registro).where(Registro.tipo == "tributos_ente", Registro.ano == ano)).all()
+        est = [r for r in regs if (r.dados or {}).get("esfera") == "E"]
+        if len(est) < 20:
+            continue
+        estadual = sum(r.valor or 0 for r in est) * (27 / len(est))
+        mun = {int((r.dados or {}).get("id_ente")): r.valor or 0 for r in regs if (r.dados or {}).get("esfera") == "M"}
+        cidades = db.execute(select(Municipio.codigo_ibge, Municipio.uf, Municipio.populacao)).all()
+        municipal, faltam = sum(mun.values()), 0
+        if cidades and mun:
+            pc = {}
+            for cod, uf, pop in cidades:
+                if int(cod) in mun and pop:
+                    a = pc.setdefault(uf, [0.0, 0])
+                    a[0] += mun[int(cod)]
+                    a[1] += pop
+            for cod, uf, pop in cidades:
+                if int(cod) not in mun and pop and uf in pc and pc[uf][1]:
+                    municipal += pc[uf][0] / pc[uf][1] * pop
+                    faltam += 1
+        nota = (f"Estados: {len(est)} de 27 relatórios. Municípios: {len(mun)} relatórios"
+                + (f"; {faltam} prefeituras sem relatório estimadas pela média por habitante do estado." if faltam else ".")
+                if mun else f"Estados: {len(est)} de 27 relatórios. Municípios ainda não coletados (ISS e IPTU fora da conta).")
+        return {"estadual": round(estadual, 2), "municipal": round(municipal, 2), "ate": f"12/{ano}", "nota": nota}
+    return None
+
+
 @router.get("/contadores", tags=["Economia"])
 def contadores(db: Session = Depends(get_db)):
     """Base real do impostômetro e do gastômetro: valor por segundo calculado com os últimos dados oficiais."""
@@ -60,6 +93,20 @@ def contadores(db: Session = Depends(get_db)):
                "fonte": "Receita Federal (arrecadação federal por estado)",
                "nota": "Só tributos federais: o ICMS dos estados e o ISS e IPTU dos municípios não entram."}
         break
+    if imp:
+        sub = _tributos_subnacionais(db)
+        if sub:
+            fed_ano = imp["por_segundo"] * SEG_ANO
+            partes = {"federal": round(fed_ano, 2), "estadual": sub["estadual"], "municipal": sub["municipal"]}
+            tot = sum(partes.values())
+            imp.update({
+                "por_segundo": round(tot / SEG_ANO, 2), "partes_ano": partes,
+                "partes_pct": {k: round(100 * v / tot, 1) for k, v in partes.items()},
+                "base": f"tributos federais (janeiro a {imp['meses']:02d}/{imp['ano']}), estaduais e municipais "
+                        f"(12 meses até {sub['ate']})",
+                "fonte": "Receita Federal (tributos federais) e SICONFI/Tesouro Nacional, RREO Anexo 03 "
+                         "(impostos, taxas e contribuições de melhoria de cada estado e município)",
+                "nota": "Federal, estadual e municipal somados, no ritmo dos últimos dados publicados. " + sub["nota"]})
     gas = None
     anos = sorted({a for (a,) in db.execute(select(Registro.ano).where(Registro.tipo == "despesa_funcao").distinct())}, reverse=True)
     for ano in anos:

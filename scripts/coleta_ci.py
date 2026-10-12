@@ -28,7 +28,7 @@ def _arg(v):
 
 # limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
 LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "cnpj-fornecedores": 25,
-           "receita-recuperacao-judicial": 170}
+           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
 ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, "apenas_eleitos": "true"}),
             ("tse-resultados", {"ano": 2024}), ("tse-candidatos", {"ano": 2026}), ("tse-resultados", {"ano": 2026}),
@@ -40,7 +40,10 @@ EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.to
           ("noticias-politica", {}), ("bcb-scr-estados", {}),
           # gastos por função (SICONFI RREO, desde 2015): anos fechados e o ano atual até o último bimestre publicado
           *[("siconfi-despesas-funcao", {"ano": a}) for a in range(2015, date.today().year)],
-          ("siconfi-despesas-funcao", {"ano": date.today().year, "bimestre": max(1, (date.today().month - 2) // 2)})]
+          ("siconfi-despesas-funcao", {"ano": date.today().year, "bimestre": max(1, (date.today().month - 2) // 2)}),
+          # impostômetro: impostos de cada estado e de cada prefeitura no último ano fechado (RREO Anexo 03)
+          ("siconfi-tributos", {"ano": date.today().year - 1, "esferas": "E"}),
+          ("siconfi-tributos", {"ano": date.today().year - 1, "esferas": "M"})]
 # histórico desde 1985 (volta das eleições diretas) dos tipos de proposição de maior peso; os PLs ordinários são volume demais
 HISTORICO = [("camara-proposicoes", {"inicio": date(a, 1, 1), "fim": min(date(a + 4, 12, 31), date.today()),
                                        "tipos": ["PEC", "PLP", "MPV", "PDL", "PDC", "PLN"]})

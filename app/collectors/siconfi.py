@@ -144,3 +144,69 @@ def coletar_despesas_funcao(ano: int, bimestre: int = 6, esferas: list[str] | No
                 n += 1
             db.commit()
     return n.itens
+
+
+# ---------- tributos próprios de estados e municípios (RREO Anexo 03, últimos 12 meses) ----------
+# O impostômetro precisa dos impostos estaduais (ICMS, IPVA, ITCD) e municipais (ISS, IPTU, ITBI), que a Receita
+# Federal não arrecada. O Anexo 03 (Receita Corrente Líquida) traz cada um com a coluna "TOTAL (ÚLTIMOS 12 MESES)".
+TRIBUTOS = {"icms": r"^icms\b", "ipva": r"^ipva\b", "itcd": r"^itc(m)?d\b", "iss": r"^iss(qn)?\b", "iptu": r"^iptu\b",
+            "itbi": r"^itbi\b", "irrf": r"^irrf\b"}
+
+
+def tributos_anexo03(itens: list[dict]) -> dict | None:
+    """{"total": impostos, taxas e contribuições de melhoria em 12 meses, "por_tributo": {...}} de um ente."""
+    import re as _re
+    total, por = None, {}
+    for it in itens:
+        if not _re.search(r"total.*12\s*meses", sem_acento(str(it.get("coluna") or "")).lower()):
+            continue
+        conta = sem_acento(str(it.get("conta") or "")).lower().strip()
+        cod = str(it.get("cod_conta") or "").lower()
+        v = para_float(it.get("valor"))
+        if v is None:
+            continue
+        if total is None and (conta.startswith("impostos, taxas e contribuicoes de melhoria")
+                              or "impostostaxasecontribuicoesdemelhoria" in cod):
+            total = v
+            continue
+        for k, rx in TRIBUTOS.items():
+            if k not in por and _re.search(rx, conta):
+                por[k] = v
+    if total is None and por:
+        total = sum(por.values())
+    return {"total": round(total, 2), "por_tributo": {k: round(v, 2) for k, v in por.items()}} if total else None
+
+
+def coletar_tributos_entes(ano: int, bimestre: int = 6, esferas: list[str] | None = None, ufs: list[str] | None = None):
+    """Impostos próprios em 12 meses de cada estado (E) e de cada município (M; precisa de ibge-municipios)."""
+    esferas = [e.upper() for e in (esferas or ["E", "M"])]
+    entes = [("E", CODIGO_IBGE_POR_UF[uf], uf) for uf in (ufs or UFS) if "E" in esferas]
+    if "M" in esferas:
+        from sqlalchemy import select as _sel
+
+        from app.db import SessionLocal
+        from app.models import Municipio
+        with SessionLocal() as _db:
+            entes += [("M", int(m.codigo_ibge), m.uf) for m in _db.scalars(_sel(Municipio).where(Municipio.uf.in_(ufs or UFS)))]
+    with registrar_coleta("siconfi", "tributos_entes", ano=ano, bimestre=bimestre, esferas=",".join(esferas)) as (db, n):
+        sem = 0
+        for k, (esfera, id_ente, uf) in enumerate(entes):
+            try:
+                itens = list(paginar("rreo", {"an_exercicio": ano, "nr_periodo": bimestre, "co_tipo_demonstrativo": "RREO",
+                                              "no_anexo": "RREO-Anexo 03", "co_esfera": esfera, "id_ente": id_ente}))
+            except Exception:
+                sem += 1
+                continue
+            t = tributos_anexo03(itens)
+            if not t:
+                sem += 1
+                continue
+            upsert(db, Registro, {"fonte": "siconfi", "tipo": "tributos_ente", "chave": f"{esfera}-{id_ente}-{ano}"},
+                   {"uf": uf, "ano": ano, "titulo": (itens[0].get("instituicao") if itens else None) or str(id_ente),
+                    "valor": t["total"], "dados": {**t, "esfera": esfera, "id_ente": id_ente, "bimestre": bimestre}})
+            n += 1
+            if k % 200 == 0:
+                db.commit()
+        if sem:
+            n.avisos.append(f"{sem} de {len(entes)} entes sem o Anexo 03 de {ano} (não entregaram ou mudou o formato)")
+    return n.itens

@@ -3258,7 +3258,11 @@ P.inicio=(...a)=>{const r=_inicio(...a);if(!API.on)return r;
 return{html:r.html,mount(){r.mount&&r.mount();apiGet("/contadores").then(c=>{const i=c.impostometro,g=c.gastometro;if(!i&&!g)return;
  CONT_REAL={imp:i&&i.por_segundo,gas:g&&g.por_segundo};
  const imp=document.querySelector(".meter2.imp"),gas=document.querySelector(".meter2.gas");
- if(i&&imp){imp.querySelector(".m-sub").textContent=`ritmo calculado com os ${i.base}`;imp.querySelectorAll(".m-bar,.m-leg").forEach(e=>e.remove())}
+ if(i&&imp){imp.querySelector(".m-sub").textContent=`ritmo calculado com os ${i.base}`;const P=i.partes_pct;
+  if(P){const nomes=[["federal","Federal (Receita)"],["estadual","Estados (ICMS, IPVA…)"],["municipal","Municípios (ISS, IPTU…)"]],cores=["#A9C8EC","#B5DCC8","#F3D9A4"];
+   let b=imp.querySelector(".m-bar"),l=imp.querySelector(".m-leg");if(!b){imp.insertAdjacentHTML("beforeend",`<div class="m-bar"></div><div class="m-leg"></div>`);b=imp.querySelector(".m-bar");l=imp.querySelector(".m-leg")}
+   b.innerHTML=stack(nomes.map(([k])=>P[k]||0),nomes.map(x=>x[1]),cores,8);l.innerHTML=nomes.map(([k,n],j)=>`<span><i style="background:${cores[j]}"></i>${n} ${(P[k]||0).toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
+  else imp.querySelectorAll(".m-bar,.m-leg").forEach(e=>e.remove())}
  if(g&&gas){gas.querySelector(".m-sub").textContent=`ritmo calculado com a ${g.base}`;const b=gas.querySelector(".m-bar"),l=gas.querySelector(".m-leg");
   const cores=["#F2BCAE","#F3D9A4","#A9C8EC","#D3C2EA","#E3E6EB"],fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
   if(b)b.innerHTML=stack([...fs.map(x=>x.percentual),outros],[...fs.map(x=>x.funcao),"Outras"],cores,8);if(l)l.innerHTML=[...fs,{funcao:"Outras",percentual:outros}].map((x,k)=>`<span><i style="background:${cores[k]}"></i>${esc(x.funcao)} ${x.percentual.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}

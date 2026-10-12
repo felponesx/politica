@@ -162,3 +162,34 @@ def test_bcb_pagina_de_erro_e_coleta_parcial(monkeypatch):
     with SessionLocal() as db:
         c = db.query(Coleta).filter_by(fonte="bcb").order_by(Coleta.id.desc()).first()
     assert c.status == "parcial" and "ipca_12m" in c.erro and "página de erro" in c.erro
+
+
+def test_impostometro_soma_estados_e_municipios(monkeypatch):
+    from app.collectors import siconfi
+    from app.models import Municipio
+    # Anexo 03 resumido (formato do SICONFI): linhas por conta e coluna; vale a coluna dos últimos 12 meses
+    def anexo(esfera, id_ente):
+        base = [("RREO3ImpostosTaxasEContribuicoesDeMelhoria", "Impostos, Taxas e Contribuições de Melhoria")]
+        base += [("RREO3ICMS", "ICMS"), ("RREO3IPVA", "IPVA")] if esfera == "E" else [("RREO3ISS", "ISS"), ("RREO3IPTU", "IPTU")]
+        tot = 300e9 if esfera == "E" else 20e9
+        itens = []
+        for cod, conta in base:
+            v = tot if "Impostos" in conta else tot / 3
+            itens += [{"instituicao": f"Ente {id_ente}", "cod_conta": cod, "conta": conta, "coluna": "<MR>", "valor": v / 12},
+                      {"instituicao": f"Ente {id_ente}", "cod_conta": cod, "conta": conta, "coluna": "TOTAL (ÚLTIMOS 12 MESES)", "valor": v}]
+        return {"items": itens, "hasMore": False}
+    monkeypatch.setattr(http, "get_json", lambda url, params=None, headers=None: anexo(params["co_esfera"], params["id_ente"]))
+    t = siconfi.tributos_anexo03(anexo("E", 35)["items"])
+    assert t["total"] == 300e9 and t["por_tributo"]["icms"] == 100e9
+    db = SessionLocal()
+    for cod, uf, pop in (("3550308", "SP", 12_000_000), ("3509502", "SP", 1_200_000)):
+        if not db.query(Municipio).filter_by(codigo_ibge=cod).first():
+            db.add(Municipio(codigo_ibge=cod, nome=cod, uf=uf, populacao=pop))
+    db.commit()
+    db.close()
+    assert siconfi.coletar_tributos_entes(2025, esferas=["E"]) == 27
+    assert siconfi.coletar_tributos_entes(2025, esferas=["M"], ufs=["SP"]) >= 2
+    imp = cliente.get("/contadores").json()["impostometro"]
+    assert imp["partes_ano"]["estadual"] == round(300e9 * 27, 2)
+    assert imp["partes_ano"]["municipal"] >= 40e9 and "municipais" in imp["base"]
+    assert imp["por_segundo"] > imp["partes_ano"]["federal"] / (365 * 24 * 3600)

@@ -31,6 +31,7 @@ _TAREFAS_BRUTAS = {
     "ibge-indicadores-sociais": municipios.coletar_indicadores_sociais,  # periodos, nomes
     "indicador-arquivo": municipios.importar_indicador_arquivo,        # arquivo, nome, descricao, ano, unidade, fonte
     "siconfi-despesas-funcao": siconfi.coletar_despesas_funcao,        # ano, bimestre, esferas=U,E,C
+    "siconfi-tributos": siconfi.coletar_tributos_entes,              # ano, bimestre, esferas=E,M (impostômetro)
     "transparencia-gastos-todos": transparencia.coletar_gastos_todos_orgaos,  # ano
     "pgfn-divida-ativa": pgfn.coletar_divida_ativa,                    # ano, trimestre, tipos, arquivo_local
     "tesouro-capag": capag.coletar_capag,                              # arquivo_local, url, ano
