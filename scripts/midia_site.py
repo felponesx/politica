@@ -268,7 +268,10 @@ def descobrir_unidades(maximo_por_uf: int = 8) -> list[dict]:
                 continue
             for r in d.get("query", {}).get("search", []):
                 u = unidade_de_resultado(r["title"], r.get("snippet", ""), nome, uf)
-                if u and u["titulo"] not in vistos and n < maximo_por_uf:
+                if u and re.match(r"^(PM|PC|CBM|BM)[A-Z]{0,4}$", u["sigla"]):  # a própria corporação, não uma unidade
+                    u = None
+                if u and (u["titulo"] not in vistos and f"{uf}:{u['sigla']}" not in vistos) and n < maximo_por_uf:
+                    vistos.add(f"{uf}:{u['sigla']}")
                     vistos.add(u["titulo"])
                     achadas.append(u)
                     n += 1

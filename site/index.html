@@ -4068,7 +4068,7 @@ function aplicarMidia(){
 midiaLogos().then(L=>{
   vls.forEach(el=>{el.dataset.mok=1;const l=(L.veiculos||{})[el.dataset.vlogo];if(!l||!el.isConnected)return;const im=document.createElement("img");im.src=l.img;im.alt=el.dataset.vlogo;im.style.height=(el.dataset.h||20)+"px";im.title="Logo: Wikimedia Commons";el.replaceChildren(im)});
   unids.forEach(g=>{g.dataset.uok=1;if(!g.isConnected)return;const q=g.dataset.unids,tem=new Set(UNIDADES.map(u=>`u:${u[0]}:${u[2]}`));
-   const novas=(L.unidades||[]).filter(u=>!tem.has(`u:${u.uf}:${u.sigla}`)&&(q==="ALL"?u.uf!=="BR":u.uf===q)&&L.policias[`u:${u.uf}:${u.sigla}`]);
+   const novas=(L.unidades||[]).filter(u=>{const k=`u:${u.uf}:${u.sigla}`;if(tem.has(k)||/^(PM|PC|CBM|BM)[A-Z]{0,4}$/.test(u.sigla)&&!/BOPE|ROTA/.test(u.sigla))return false;tem.add(k);return true}).filter(u=>(q==="ALL"?u.uf!=="BR":u.uf===q)&&L.policias[`u:${u.uf}:${u.sigla}`]);
    if(!novas.length)return;g.insertAdjacentHTML("beforeend",novas.map(u=>cartaoUnidade([u.uf,u.corp,u.sigla,u.nome,u.desc||"Unidade com artigo na Wikipédia."])).join(""));const w=g.closest(".un-w");if(w)w.hidden=false});
   marcas.forEach(el=>{el.dataset.mok=1;const l=logoPart(L,el.dataset.plogo);if(l&&el.isConnected){const h=parseInt(el.style.height)||12;el.replaceWith(imgLogo(l,h+3,el.dataset.plogo))}});
   bolas.forEach(svg=>{svg.dataset.mok=1;const defs=svg.querySelector("defs")||svg.insertBefore(document.createElementNS("http://www.w3.org/2000/svg","defs"),svg.firstChild);const feitos={};
