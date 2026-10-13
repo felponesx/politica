@@ -1308,12 +1308,13 @@ a.rrow b{font-weight:500}
 .pbar>.pill-w>.pill{border:0;border-radius:0;background:none}.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)}.pbar>.pill-w[hidden]{display:none}
 .pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px}.pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0}
 @media (max-width:760px){.pbar{display:flex!important}.pbar>.pill-w{flex:1 1 auto}.pill .pill-v{max-width:150px}.pill-m{min-width:0;width:calc(100vw - 24px)}.pill-m .seg{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
-.hier{display:flex;flex-direction:column;gap:0}
-.hier-n{position:relative;padding:0 0 18px 30px}.hier-n::before{content:"";position:absolute;left:11px;top:26px;bottom:0;width:2px;background:var(--line)}.hier-n:last-child::before{display:none}
-.hier-h{display:flex;align-items:flex-start;gap:10px;margin:0 0 10px -30px}.hier-h h3{margin:2px 0 0;font-size:16px}.hier-h p{margin:2px 0 0}
-.hier-i{flex:none;width:24px;height:24px;border-radius:50%;background:#E3EEFA;color:var(--navy);display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
-[data-theme="dark"] .hier-i{background:#27385A;color:#E7EAF0}
+.hier{display:flex;flex-direction:column;gap:18px}
+.hier-h{margin:0 0 8px}.hier-h h3{margin:0;font-size:16px}.hier-h p{margin:2px 0 0}
 .hier-c{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.hier-sub{margin:16px 0 8px;font-size:14px}.hier-busca{width:100%;max-width:360px;margin-bottom:10px}
+.hier-gov{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:6px 0 4px}
+.gov-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 26px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none;min-width:220px}
+.gov-card b{font-size:18px}.gov-card .rfoto{border-radius:50%}
 a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a.clk:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .segj-grupos{display:flex;flex-wrap:wrap;gap:12px 22px;margin-bottom:12px}
 .segj-grupos .segj-w{max-width:100%}
@@ -2949,7 +2950,7 @@ P.uf=(id,goSec)=>{const r=_uf(id,goSec);if(!API.on)return r;const u=UF[id]||UF.S
   box.innerHTML=`<div class="kpis kpis-c">${k("População",I.populacao?nf(Math.round(I.populacao.valor)):"—",I.populacao?"IBGE "+I.populacao.ano:"")}${k("PIB",I.pib?brl(I.pib.valor*(/mil/i.test(I.pib.unidade||"")?1e3:1)):"—",I.pib?"IBGE "+I.pib.ano:"")}${k("PIB por habitante",I.pib_per_capita&&I.pib_per_capita.valor?"R$ "+nf(Math.round(I.pib_per_capita.valor)):I.pib&&I.populacao&&I.populacao.valor?"R$ "+nf(Math.round(I.pib.valor*(/mil/i.test(I.pib.unidade||"")?1e3:1)/I.populacao.valor)):"—",I.pib_per_capita&&I.pib_per_capita.valor?"":I.pib?"PIB ÷ população":"")}${k("Deputados federais",nfR(s.bancada.deputados))}${k("Senadores",nfR(s.bancada.senadores))}${k("Dívida consolidada",dv&&dv.consolidada?brl(dv.consolidada.valor):"—",dv&&dv.consolidada?esc(dv.consolidada.referencia+" "+dv.ano):"SICONFI")}${k("Contratos no PNCP",brlR(s.contratos_pncp_total))}${k("Obras federais",nfR(s.obras_federais))}</div>
   ${temFl?`<div class="panel mt"><h2>Arrecadado × retornado (${fl.ano})</h2><div class="kpis kpis-c">${k("Tributos federais arrecadados",brl(fl.arrecadado))}${k("Transferências recebidas",brl(fl.retornado),"estado + municípios")}${k("Retorno por R$ 1 arrecadado","R$ "+(fl.retorno_por_real_arrecadado||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}))}${k("Saldo",brl(fl.saldo))}</div><p class="small muted" style="margin:10px 0 0">Só entram transferências obrigatórias. A Receita registra o tributo na sede da empresa. <a href="#/arrecadacao">Ver metodologia</a></p></div>`:""}
   ${ob.length?`<div class="panel mt"><h2>Obras federais por situação</h2>${hbars(ob.map(o=>[o.situacao||"Não informada",o.quantidade]),{fmt:nf})}</div>`:""}
-  ${ps.itens.length?`<div class="panel mt"><h2>Bancada no Congresso</h2><div class="xgrid">${ps.itens.map(p=>`<a class="xcard" href="#/parlamentar/${p.id}">${fotoR(p.foto_url,p.nome,40)}<span><b>${esc(p.nome)}</b><small>${casaCurta(p.casa)}</small></span>${sigla(p.partido)}</a>`).join("")}</div></div>`:""}${RSRC("IBGE, SICONFI, PNCP, ObrasGov, Receita Federal, Tesouro Nacional, Câmara e Senado")}`}).catch(e=>{const b=$("#ufReal");if(b)b.innerHTML=rerro(e)})}}};
+  ${RSRC("IBGE, SICONFI, PNCP, ObrasGov, Receita Federal, Tesouro Nacional, Câmara e Senado")}`}).catch(e=>{const b=$("#ufReal");if(b)b.innerHTML=rerro(e)})}}};
 
 /* ---------- arrecadação: fluxo federativo real ---------- */
 const _arrec=P.arrecadacao;
@@ -3504,24 +3505,27 @@ async function vistosInicio(){if(!$("#rgrid"))return;let l=vistosReais();const s
   representantesUF(u.uf)}}}}
 async function representantesUF(uf){const box=$("#ufRep");if(!box)return;
  try{const[cam,sen,gov,pre,al]=await Promise.all([pessoasCasa("camara"),pessoasCasa("senado"),pessoasCasa("governador").catch(()=>[]),pessoasCasa("prefeito").catch(()=>[]),pessoasCasa("assembleia").catch(()=>[])]);if(!$("#ufRep"))return;
-  const daUF=l=>l.filter(p=>p.uf===uf);const cd=daUF(cam),sd=daUF(sen),gd=daUF(gov),ad=daUF(al);
+  const daUF=l=>l.filter(p=>p.uf===uf);const nome=(a,b)=>a.nome.localeCompare(b.nome);const cd=daUF(cam).sort(nome),sd=daUF(sen),gd=daUF(gov),ad=daUF(al).sort(nome);
   const nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();const cap=nrm(UF[uf].cap);
   const pd=daUF(pre).sort((a,b)=>(nrm(b.cargo).endsWith(" "+cap)?1:0)-(nrm(a.cargo).endsWith(" "+cap)?1:0)||a.cargo.localeCompare(b.cargo));
   const card=p=>`<${p.href?`a href="${p.href}"`:"div"} class="xcard">${p.foto?fotoR(p.foto,p.nome,40):iniFoto(p.nome,40)}<span><b>${esc(p.nome)}</b><small>${esc(p.cargo)}</small></span>${sigla(p.partido)}</${p.href?"a":"div"}>`;
   const hc=cd.length?hemiPessoas(cd,{w:300,h:150}):null,ha=ad.length?hemiPessoas(ad,{w:300,h:150}):null;
-  const nivel=(n,t,sub,corpo)=>`<div class="hier-n"><div class="hier-h"><span class="hier-i">${n}</span><div><h3>${t}</h3>${sub?`<p class="small muted">${sub}</p>`:""}</div></div><div class="hier-c">${corpo}</div></div>`;
+  const nivel=(t,sub,corpo,cls="")=>`<div class="hier-n ${cls}"><div class="hier-h"><h3>${t}</h3>${sub?`<p class="small muted">${sub}</p>`:""}</div><div class="hier-c">${corpo}</div></div>`;
+  const lista=(id,n,ph)=>n?`<input id="${id}q" placeholder="${ph}" autocomplete="off" class="hier-busca"><div class="xgrid" id="${id}"></div><div id="${id}m"></div>`:"";
+  const gov1=gd[0];
   box.innerHTML=`<div class="hier">
-   ${nivel(1,"Governador",gd.length?"Chefe do Poder Executivo do estado":"",gd.length?`<div class="xgrid">${gd.map(card).join("")}</div>`:rvazio("Governador ainda não coletado."))}
-   ${nivel(2,"Senadores",`${sd.length} no Senado Federal`,sd.length?`<div class="xgrid">${sd.map(card).join("")}</div>`:rvazio("Sem dados."))}
-   ${nivel(3,"Prefeitos",pd.length?`${nf(pd.length)} prefeituras${pd[0]&&nrm(pd[0].cargo).endsWith(" "+cap)?"; primeiro, o da capital":""}`:"",pd.length?`<input id="ufRepPq" placeholder="Buscar cidade ou prefeito" autocomplete="off" style="width:100%;max-width:360px;margin-bottom:10px"><div class="xgrid" id="ufRepP"></div><div id="ufRepPm"></div>`:rvazio("Prefeitos ainda não coletados."))}
-   ${nivel(4,"Deputados federais",`${cd.length} na Câmara dos Deputados`,hc?`<div id="ufRepC">${hc.html}</div>`:rvazio("Sem dados."))}
-   ${nivel(5,uf==="DF"?"Deputados distritais":"Deputados estaduais",`${ad.length} na ${uf==="DF"?"Câmara Legislativa":"Assembleia Legislativa"}`,ha?`<div id="ufRepA">${ha.html}</div>`:rvazio("Sem dados."))}
+   <div class="hier-gov">${gov1?`<div class="small muted">Governador${gd.length>1?"es":""}</div>${gd.map(p=>`<${p.href?`a href="${p.href}"`:"div"} class="gov-card">${p.foto?fotoR(p.foto,p.nome,88):iniFoto(p.nome,88)}<b>${esc(p.nome)}</b><span class="small muted">${esc(p.cargo)}${p.sit?" · "+esc(p.sit):""}</span>${sigla(p.partido,1)}</${p.href?"a":"div"}>`).join("")}`:rvazio("Governador ainda não coletado.")}</div>
+   ${nivel("Senadores",`${sd.length} no Senado Federal`,sd.length?`<div class="xgrid">${sd.map(card).join("")}</div>`:rvazio("Sem dados."))}
+   ${nivel("Prefeitos",pd.length?`${nf(pd.length)} prefeituras${pd[0]&&nrm(pd[0].cargo).endsWith(" "+cap)?"; primeiro, o da capital":""}`:"",pd.length?lista("ufRepP",pd.length,"Buscar cidade ou prefeito"):rvazio("Prefeitos ainda não coletados."))}
+   ${nivel("Deputados federais",`${cd.length} na Câmara dos Deputados`,hc?`<div id="ufRepC">${hc.html}</div><h4 class="hier-sub">Bancada no Congresso</h4>${lista("ufRepCl",cd.length,"Buscar deputado ou partido")}`:rvazio("Sem dados."))}
+   ${nivel(uf==="DF"?"Deputados distritais":"Deputados estaduais",`${ad.length} na ${uf==="DF"?"Câmara Legislativa":"Assembleia Legislativa"}`,ha?`<div id="ufRepA">${ha.html}</div><h4 class="hier-sub">${uf==="DF"?"Bancada na Câmara Legislativa":"Bancada na Assembleia"}</h4>${lista("ufRepAl",ad.length,"Buscar deputado ou partido")}`:rvazio("Sem dados."))}
   </div>${dicaHemi()}${RSRC("TSE (governador, prefeitos e deputados estaduais eleitos), Câmara dos Deputados e Senado Federal")}`;
   if(hc)ligarHemiciclo($("#ufRepC"),hc.lista);if(ha)ligarHemiciclo($("#ufRepA"),ha.lista);
-  if(pd.length){let mostra=24;const des=()=>{const q=nrm($("#ufRepPq").value.trim());const l=pd.filter(p=>!q||nrm(p.nome+" "+p.cargo).includes(q));
-   $("#ufRepP").innerHTML=l.slice(0,mostra).map(card).join("")||rvazio("Nenhuma cidade com esse nome.");
-   $("#ufRepPm").innerHTML=l.length>mostra?`<button class="btn" type="button" style="margin-top:10px">Ver mais (${nf(l.length-mostra)})</button>`:"";const b=$("#ufRepPm button");if(b)b.onclick=()=>{mostra+=48;des()}};
-   des();$("#ufRepPq").oninput=debounce(()=>{mostra=24;des()},150)}}
+  const liga=(id,arr,ini)=>{if(!arr.length||!$("#"+id))return;let mostra=ini;const des=()=>{const q=nrm($("#"+id+"q").value.trim());const l=arr.filter(p=>!q||nrm(p.nome+" "+p.cargo+" "+p.partido).includes(q));
+    $("#"+id).innerHTML=l.slice(0,mostra).map(card).join("")||rvazio("Ninguém com esse nome.");
+    $("#"+id+"m").innerHTML=l.length>mostra?`<button class="btn" type="button" style="margin-top:10px">Ver mais (${nf(l.length-mostra)})</button>`:"";const b=$("#"+id+"m button");if(b)b.onclick=()=>{mostra+=48;des()}};
+   des();$("#"+id+"q").oninput=debounce(()=>{mostra=ini;des()},150)};
+  liga("ufRepP",pd,24);liga("ufRepCl",cd,cd.length>80?24:cd.length);liga("ufRepAl",ad,ad.length>100?24:ad.length)}
  catch(e){box.innerHTML=rerro(e)}}
 
 /* ---------- demonstração fora quando há dados oficiais; busca só com dados oficiais ---------- */
