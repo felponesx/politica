@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-12T15:45+00:00",
+ "gerado_em": "2026-10-12T22:14+00:00",
  "shards": 128,
  "bases": {
   "/parlamentares": [
@@ -10,7 +10,22 @@
    {}
   ],
   "/proposicoes": [
-   {}
+   {},
+   {
+    "tipo": "PEC"
+   },
+   {
+    "tipo": "PLP"
+   },
+   {
+    "tipo": "MPV"
+   },
+   {
+    "tipo": "PDL"
+   },
+   {
+    "tipo": "PDC"
+   }
   ],
   "/legislacao": [
    {}
@@ -1897,7 +1912,27 @@
   },
   "/proposicoes": {
    "na_copia": 4000,
-   "no_banco": 8068
+   "no_banco": 37859
+  },
+  "/proposicoes?tipo=PEC": {
+   "na_copia": 3745,
+   "no_banco": 3745
+  },
+  "/proposicoes?tipo=PLP": {
+   "na_copia": 4000,
+   "no_banco": 4882
+  },
+  "/proposicoes?tipo=MPV": {
+   "na_copia": 1395,
+   "no_banco": 1395
+  },
+  "/proposicoes?tipo=PDL": {
+   "na_copia": 4000,
+   "no_banco": 5862
+  },
+  "/proposicoes?tipo=PDC": {
+   "na_copia": 4000,
+   "no_banco": 13525
   },
   "/legislacao": {
    "na_copia": 1047,
@@ -1952,8 +1987,8 @@
    "no_banco": 13062
   },
   "/noticias": {
-   "na_copia": 627,
-   "no_banco": 627
+   "na_copia": 995,
+   "no_banco": 995
   },
   "/parlamentares/1/despesas": {
    "na_copia": 50,
@@ -4387,9 +4422,9 @@
  "contagem": {
   "parlamentares": 778,
   "votacoes": 1086,
-  "proposicoes": 8068,
+  "proposicoes": 37859,
   "normas": 1047
  },
- "consultas": 22834,
- "bytes": 203438256
+ "consultas": 25110,
+ "bytes": 130568363
 }
