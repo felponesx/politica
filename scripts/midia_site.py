@@ -89,6 +89,15 @@ class _Educado:
             r = _cli.get(url, **kw)
             if r.status_code not in (429, 503) or not wiki:
                 return r
+            # arquivo original (sem miniatura) no upload.wikimedia.org: o limite para robôs é duro e cada espera custa
+            # um minuto. Pede a miniatura padrão de 120 px do mesmo arquivo e segue em frente.
+            m = re.match(r"(https://upload\.wikimedia\.org/wikipedia/commons)/(\w)/(\w\w)/([^/?]+)", url)
+            if m and "/thumb/" not in url:
+                alt = f"{m.group(1)}/thumb/{m.group(2)}/{m.group(3)}/{m.group(4)}/120px-{m.group(4)}"
+                if m.group(4).lower().endswith(".svg"):
+                    alt += ".png"
+                r2 = _cli.get(alt, **kw)
+                return r2 if r2.status_code == 200 else r
             time.sleep(min(60, float(r.headers.get("retry-after") or 0) or 5 * 2 ** tentativa))
         return r
 
