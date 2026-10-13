@@ -11,6 +11,10 @@ on:
         description: "Tarefas separadas por ponto e vírgula (ex.: tse-resultados ano=2022 uf=SP). Vazio = carga inicial completa."
         required: false
         default: ""
+      banco:
+        description: "Chave do cache do banco para começar (ex.: banco-38270264957). Vazio = o mais recente."
+        required: false
+        default: ""
   # notícias de política: a cada 6 horas, só os feeds (rápido)
   schedule:
     - cron: "17 */6 * * *"
@@ -61,10 +65,18 @@ jobs:
         with:
           path: banco.dump
           key: banco-${{ github.run_id }}
-          restore-keys: banco-
+          restore-keys: ${{ inputs.banco || 'banco-' }}
+      # pediu um banco específico e ele não está no cache: para aqui (seguir com o banco vazio apagaria o site)
+      - name: Conferir o banco pedido
+        if: inputs.banco != '' && steps.banco.outputs.cache-matched-key != inputs.banco
+        run: |
+          echo "::error::O banco ${{ inputs.banco }} não está no cache (achou: '${{ steps.banco.outputs.cache-matched-key }}')."
+          exit 1
       - name: Carregar o banco anterior
         if: steps.banco.outputs.cache-matched-key != ''
-        run: pg_restore --no-owner --no-privileges -d "postgresql://brasil:brasil@localhost:5432/brasilplus" banco.dump || true
+        run: |
+          pg_restore --no-owner --no-privileges -d "postgresql://brasil:brasil@localhost:5432/brasilplus" banco.dump || true
+          touch .banco_carregado
       - name: Coletar
         run: python -m scripts.coleta_ci coletar
       - name: Resumo das coletas
@@ -82,6 +94,10 @@ jobs:
         id: dump
         if: always() && steps.banco.outcome == 'success'
         run: |
+          # cancelada no meio da carga do banco anterior: o banco está pela metade e não pode virar o próximo ponto de partida
+          if [ -n "${{ steps.banco.outputs.cache-matched-key }}" ] && [ ! -f .banco_carregado ]; then
+            echo "::warning::Banco anterior não foi carregado inteiro; não guardo esta cópia."; exit 1
+          fi
           pg_dump -Fc -Z6 -f banco.tmp "postgresql://brasil:brasil@localhost:5432/brasilplus"
           test "$(stat -c %s banco.tmp)" -gt 1000000
           mv banco.tmp banco.dump
