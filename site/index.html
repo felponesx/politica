@@ -1308,6 +1308,12 @@ a.rrow b{font-weight:500}
 .pbar>.pill-w>.pill{border:0;border-radius:0;background:none}.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)}.pbar>.pill-w[hidden]{display:none}
 .pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px}.pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0}
 @media (max-width:760px){.pbar{display:flex!important}.pbar>.pill-w{flex:1 1 auto}.pill .pill-v{max-width:150px}.pill-m{min-width:0;width:calc(100vw - 24px)}.pill-m .seg{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+.hier{display:flex;flex-direction:column;gap:0}
+.hier-n{position:relative;padding:0 0 18px 30px}.hier-n::before{content:"";position:absolute;left:11px;top:26px;bottom:0;width:2px;background:var(--line)}.hier-n:last-child::before{display:none}
+.hier-h{display:flex;align-items:flex-start;gap:10px;margin:0 0 10px -30px}.hier-h h3{margin:2px 0 0;font-size:16px}.hier-h p{margin:2px 0 0}
+.hier-i{flex:none;width:24px;height:24px;border-radius:50%;background:#E3EEFA;color:var(--navy);display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+[data-theme="dark"] .hier-i{background:#27385A;color:#E7EAF0}
+.hier-c{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
 a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a.clk:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .segj-grupos{display:flex;flex-wrap:wrap;gap:12px 22px;margin-bottom:12px}
 .segj-grupos .segj-w{max-width:100%}
@@ -3389,7 +3395,7 @@ const PESSOAS_CASA={camara:"/parlamentares?casa=camara",senado:"/parlamentares?c
  governador:"/candidatos?cargo=GOVERNADOR&eleitos=true",prefeito:"/candidatos?cargo=PREFEITO&eleitos=true",presidente:"/candidatos?cargo=PRESIDENTE&eleitos=true"};
 function pessoaDe(x){if(x.casa)return{nome:x.nome,partido:x.partido||"Sem partido",uf:x.uf,foto:x.foto_url,cargo:cargoParl(x.casa),href:"#/parlamentar/"+x.id,sit:x.em_exercicio===false?"Fora do exercício":"Em exercício",ativo:x.em_exercicio!==false};
  const n=tit(x.nome_urna||x.nome);return{nome:n,completo:tit(x.nome),partido:x.partido||"Sem partido",uf:x.uf==="BR"?null:x.uf,cargo:CARGON(x.cargo)+(x.cargo==="PREFEITO"&&x.unidade?" de "+tit(x.unidade):""),
-  href:x.parlamentar_id?"#/parlamentar/"+x.parlamentar_id:null,sit:"Eleito(a) em "+x.ano,ativo:true,ocupacao:x.ocupacao,instrucao:x.instrucao,foto:x.sq_candidato?"tse:"+x.sq_candidato:null}}
+  href:x.parlamentar_id?"#/parlamentar/"+x.parlamentar_id:x.sq_candidato?(typeof ELCAND!=="undefined"&&(ELCAND[x.sq_candidato]=ELCAND[x.sq_candidato]||{sq_candidato:x.sq_candidato,nome:x.nome_urna||x.nome,partido:x.partido,cargo:x.cargo,ano:x.ano,uf:x.uf,unidade:x.unidade,situacao:x.resultado,numero:x.numero}),"#/candidato/"+encodeURIComponent(x.sq_candidato)):null,sit:"Eleito(a) em "+x.ano,ativo:true,ocupacao:x.ocupacao,instrucao:x.instrucao,foto:x.sq_candidato?"tse:"+x.sq_candidato:null}}
 async function pessoasCasa(casa){const u=PESSOAS_CASA[casa];if(!u)return[];return(await todosItens(u)).map(pessoaDe).filter(p=>p.ativo)}
 const iniFoto=(n,sz=48)=>`<span class="rfoto ini" style="width:${sz}px;height:${sz}px">${esc(iniciais(n||"?"))}</span>`;
 
@@ -3497,16 +3503,25 @@ async function vistosInicio(){if(!$("#rgrid"))return;let l=vistosReais();const s
   document.querySelectorAll("#view .src").forEach(e=>{if(/demonstrativ/i.test(e.textContent))e.hidden=true});
   representantesUF(u.uf)}}}}
 async function representantesUF(uf){const box=$("#ufRep");if(!box)return;
- try{const[cam,sen,gov,al,c]=await Promise.all([pessoasCasa("camara"),pessoasCasa("senado"),pessoasCasa("governador").catch(()=>[]),pessoasCasa("assembleia").catch(()=>[]),compReal()]);if(!$("#ufRep"))return;
+ try{const[cam,sen,gov,pre,al]=await Promise.all([pessoasCasa("camara"),pessoasCasa("senado"),pessoasCasa("governador").catch(()=>[]),pessoasCasa("prefeito").catch(()=>[]),pessoasCasa("assembleia").catch(()=>[])]);if(!$("#ufRep"))return;
   const daUF=l=>l.filter(p=>p.uf===uf);const cd=daUF(cam),sd=daUF(sen),gd=daUF(gov),ad=daUF(al);
+  const nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();const cap=nrm(UF[uf].cap);
+  const pd=daUF(pre).sort((a,b)=>(nrm(b.cargo).endsWith(" "+cap)?1:0)-(nrm(a.cargo).endsWith(" "+cap)?1:0)||a.cargo.localeCompare(b.cargo));
   const card=p=>`<${p.href?`a href="${p.href}"`:"div"} class="xcard">${p.foto?fotoR(p.foto,p.nome,40):iniFoto(p.nome,40)}<span><b>${esc(p.nome)}</b><small>${esc(p.cargo)}</small></span>${sigla(p.partido)}</${p.href?"a":"div"}>`;
   const hc=cd.length?hemiPessoas(cd,{w:300,h:150}):null,ha=ad.length?hemiPessoas(ad,{w:300,h:150}):null;
-  box.innerHTML=`<div class="grid g3">${gd.length?`<div class="panel"><h2>Governo do estado</h2><div class="xgrid">${gd.map(card).join("")}</div></div>`:""}
-  <div class="panel"><h2>Senado <small>${sd.length}</small></h2><div class="xgrid">${sd.map(card).join("")||rvazio("Sem dados.")}</div></div>
-  ${hc?`<div class="panel"><h2>Deputados federais <small>${cd.length}</small></h2><div id="ufRepC">${hc.html}</div></div>`:""}
-  ${ha?`<div class="panel"><h2>${uf==="DF"?"Deputados distritais":"Deputados estaduais"} <small>${ad.length}</small></h2><div id="ufRepA">${ha.html}</div></div>`:""}</div>${dicaHemi()}
-  ${RSRC("Câmara dos Deputados, Senado Federal e TSE (eleitos na última eleição)")}`;
-  if(hc)ligarHemiciclo($("#ufRepC"),hc.lista);if(ha)ligarHemiciclo($("#ufRepA"),ha.lista)}
+  const nivel=(n,t,sub,corpo)=>`<div class="hier-n"><div class="hier-h"><span class="hier-i">${n}</span><div><h3>${t}</h3>${sub?`<p class="small muted">${sub}</p>`:""}</div></div><div class="hier-c">${corpo}</div></div>`;
+  box.innerHTML=`<div class="hier">
+   ${nivel(1,"Governador",gd.length?"Chefe do Poder Executivo do estado":"",gd.length?`<div class="xgrid">${gd.map(card).join("")}</div>`:rvazio("Governador ainda não coletado."))}
+   ${nivel(2,"Senadores",`${sd.length} no Senado Federal`,sd.length?`<div class="xgrid">${sd.map(card).join("")}</div>`:rvazio("Sem dados."))}
+   ${nivel(3,"Prefeitos",pd.length?`${nf(pd.length)} prefeituras${pd[0]&&nrm(pd[0].cargo).endsWith(" "+cap)?"; primeiro, o da capital":""}`:"",pd.length?`<input id="ufRepPq" placeholder="Buscar cidade ou prefeito" autocomplete="off" style="width:100%;max-width:360px;margin-bottom:10px"><div class="xgrid" id="ufRepP"></div><div id="ufRepPm"></div>`:rvazio("Prefeitos ainda não coletados."))}
+   ${nivel(4,"Deputados federais",`${cd.length} na Câmara dos Deputados`,hc?`<div id="ufRepC">${hc.html}</div>`:rvazio("Sem dados."))}
+   ${nivel(5,uf==="DF"?"Deputados distritais":"Deputados estaduais",`${ad.length} na ${uf==="DF"?"Câmara Legislativa":"Assembleia Legislativa"}`,ha?`<div id="ufRepA">${ha.html}</div>`:rvazio("Sem dados."))}
+  </div>${dicaHemi()}${RSRC("TSE (governador, prefeitos e deputados estaduais eleitos), Câmara dos Deputados e Senado Federal")}`;
+  if(hc)ligarHemiciclo($("#ufRepC"),hc.lista);if(ha)ligarHemiciclo($("#ufRepA"),ha.lista);
+  if(pd.length){let mostra=24;const des=()=>{const q=nrm($("#ufRepPq").value.trim());const l=pd.filter(p=>!q||nrm(p.nome+" "+p.cargo).includes(q));
+   $("#ufRepP").innerHTML=l.slice(0,mostra).map(card).join("")||rvazio("Nenhuma cidade com esse nome.");
+   $("#ufRepPm").innerHTML=l.length>mostra?`<button class="btn" type="button" style="margin-top:10px">Ver mais (${nf(l.length-mostra)})</button>`:"";const b=$("#ufRepPm button");if(b)b.onclick=()=>{mostra+=48;des()}};
+   des();$("#ufRepPq").oninput=debounce(()=>{mostra=24;des()},150)}}
  catch(e){box.innerHTML=rerro(e)}}
 
 /* ---------- demonstração fora quando há dados oficiais; busca só com dados oficiais ---------- */
