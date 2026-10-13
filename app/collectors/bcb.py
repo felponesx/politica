@@ -61,8 +61,9 @@ def coletar_series(anos: int = 42, nomes: list[str] | None = None):
                     f = min(ini + janela, fim)
                     try:
                         dados = _baixar(codigo, ini, f)
-                    except Exception:
-                        if f.year >= 2005:  # séries que só existem a partir de certo ano respondem erro nas janelas antigas
+                    except Exception as e:
+                        # séries que só existem a partir de certo ano respondem erro (ex.: 404) nas janelas antigas
+                        if f.year >= 2005 and "404" not in str(e):
                             raise
                         ini = f + timedelta(days=1)
                         continue
