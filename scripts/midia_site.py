@@ -456,6 +456,17 @@ def main(pasta: str):
     from app.db import SessionLocal
     os.makedirs(pasta, exist_ok=True)
     lg = logos()
+    # a Wikimedia às vezes limita os pedidos (429): o que não veio desta vez fica como estava na cópia anterior
+    try:
+        with open(os.path.join(pasta, "logos.json"), encoding="utf-8") as f:
+            antes = json.load(f)
+        for k in ("partidos", "policias", "veiculos"):
+            for chave, v in (antes.get(k) or {}).items():
+                lg.setdefault(k, {}).setdefault(chave, v)
+        tem = {(u["uf"], u["sigla"]) for u in lg.get("unidades", [])}
+        lg.setdefault("unidades", []).extend(u for u in antes.get("unidades", []) if (u["uf"], u["sigla"]) not in tem)
+    except (OSError, ValueError, KeyError):
+        pass
     with open(os.path.join(pasta, "logos.json"), "w", encoding="utf-8") as f:
         json.dump(lg, f, ensure_ascii=False, separators=(",", ":"))
     with SessionLocal() as db:
