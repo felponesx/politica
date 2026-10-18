@@ -114,3 +114,14 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Votação secreta no Senado: usar o placar oficial, nunca inferir voto individual.
 - Fluxo federativo: sempre devolver a metodologia e as limitações junto dos números.
 - Nunca commitar `.env` nem chaves.
+
+## IA do BRASIL+ (out/2026)
+- Tela `#/ia` (bloco "IA do BRASIL+" do script do site; caixa no menu lateral e botão "Perguntar à IA" nos perfis).
+  No site publicado como Artifact usa o Claude pela capacidade `sample` (declarar `capabilities: {downloads: true, sample: {}}`
+  ao publicar), com ferramentas que leem os dados do site: ranking_gastos, mais_votados, tempo_no_poder, perfil_parlamentar,
+  noticias, politicos_em_alta, resultado_eleicao, resumo_estado, buscar. Sem o Claude, o "modo simples" (`iaLocal`) responde
+  gastos, mais votados, tempo no poder e notícias com as mesmas ferramentas.
+- Índice `/ia/indice` (`app/ia_indice.py`): ranking da cota parlamentar, até 40 mais votados por eleição e cargo e mandatos
+  por pessoa desde 1994. O robô grava junto da cópia (`exportar_snapshot.py`); para uma cópia pronta: `python -m scripts.indice_ia`.
+  Limitações: TSE 2002 marca todos os candidatos como eleitos (2002 só conta para presidente); faltam presidente 2006/2010;
+  a pessoa é reconhecida pelo nome no mesmo estado (homônimos não são unidos).

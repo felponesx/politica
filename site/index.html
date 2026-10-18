@@ -258,7 +258,26 @@ tbody tr[data-href]:hover{background:var(--bg)}
 .side-foot{margin-top:auto;padding-top:18px;display:grid;gap:10px}
 .ia{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12.5px;color:var(--ink2)}
 .ia b{display:block;color:var(--navy);font-size:13.5px;margin-bottom:2px}
-.ia button{margin-top:8px;width:100%;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--muted);cursor:pointer}
+.ia button,.ia input{margin-top:8px;width:100%;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--ink);cursor:text}
+.ia input::placeholder{color:var(--muted)}.ia b a{color:inherit;text-decoration:none}
+/* IA do Brasil+ */
+.ia-chat{display:flex;flex-direction:column;gap:12px}
+.ia-msgs{display:flex;flex-direction:column;gap:14px;max-height:min(62vh,640px);overflow-y:auto;padding:4px 2px}
+.ia-vazio{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 0;color:var(--muted)}.ia-vazio .lgmark{width:46px;height:46px;opacity:.85}
+.ia-msg{display:flex;gap:10px;align-items:flex-start}.ia-msg.eu{justify-content:flex-end}
+.ia-av{width:26px;height:26px;margin-top:4px}
+.ia-bal{max-width:min(720px,88%);background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:14.5px;line-height:1.55;color:var(--ink);overflow-wrap:anywhere}
+.ia-msg.eu .ia-bal{background:var(--tint);border-color:transparent}
+.ia-bal p{margin:0 0 8px}.ia-bal p:last-child{margin-bottom:0}.ia-bal ul,.ia-bal ol{margin:4px 0 8px;padding-left:20px}.ia-bal li{margin:3px 0}
+.ia-bal a{color:var(--blue)}
+.ia-modo{margin-top:8px;font-size:11.5px;color:var(--muted)}
+.ia-passos{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ia-passos span{font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+.ia-sug{display:flex;flex-wrap:wrap;gap:6px}.ia-sug .chip{font-size:12.5px}
+@media (max-width:700px){.ia-chat.tem .ia-sug{display:none}.ia-msgs{max-height:none}.ia-bal{max-width:100%}}
+.ia-form{display:flex;gap:8px;align-items:flex-end}
+.ia-form textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font:inherit;font-size:15px;line-height:1.4;min-height:46px;max-height:140px}
+.ia-perg{margin-top:10px;display:inline-flex;align-items:center;gap:6px}.ia-perg svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+.ia-rodape{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .trust{display:flex;gap:10px;background:var(--bg);border-radius:12px;padding:12px;font-size:12px;color:var(--ink2)}
 .trust svg{width:22px;height:22px;flex:none;fill:var(--navy)}
 .top{background:var(--surface);padding:14px 28px;gap:14px}
@@ -706,7 +725,7 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 [data-theme="dark"] .btn.pri{background:#E7EAF0;color:#11151C;border-color:#E7EAF0}
 [data-theme="dark"] .user .avatar,[data-theme="dark"] .avatar,[data-theme="dark"] .prof .ph2,[data-theme="dark"] .photo{background:#232B3A;color:var(--ink)}
 [data-theme="dark"] .gsearch,[data-theme="dark"] .hsearch,[data-theme="dark"] .sbox{background:var(--surface);border-color:var(--line)}
-[data-theme="dark"] .ia button{background:var(--soft)}
+[data-theme="dark"] .ia button,[data-theme="dark"] .ia input{background:var(--soft)}
 [data-theme="dark"] .ufhero-svg path{stroke:#161B23}
 [data-theme="dark"] tbody tr[data-href]:hover,[data-theme="dark"] .lk:hover,[data-theme="dark"] .aproj-row:hover,[data-theme="dark"] .pcard2:hover{background:#1C2230}
 [data-theme="dark"] .vgrid i[style*="var(--line)"]{background:#2A3240!important}
@@ -751,10 +770,10 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .side-foot{padding-top:10px;gap:8px}
 .ia{padding:10px 12px;font-size:12px}
 .ia b{font-size:13px}
-.ia button{margin-top:6px;padding:6px 10px}
+.ia button,.ia input{margin-top:6px;padding:6px 10px}
 .trust{padding:9px 12px;font-size:11.5px;align-items:center}
 .trust svg{width:18px;height:18px}
-@media (max-height:860px){.ia{font-size:0}.ia b{font-size:13px;margin:0}.ia button{font-size:12.5px}}
+@media (max-height:860px){.ia{font-size:0}.ia b{font-size:13px;margin:0}.ia button,.ia input{font-size:12.5px}}
 @media (max-height:760px){.trust{display:none}}
 @media (max-height:660px){.side-foot{display:none}}
 @media (max-height:560px){.nav a{padding:3px 12px;font-size:12.5px}.brand small{display:none}}
@@ -1355,7 +1374,7 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
     <a class="brand" href="#/inicio" style="text-decoration:none"><i class="lgmark" aria-hidden="true"></i><div><b>BRASIL<em>+</em></b><small>Transparência em um só lugar</small></div></a>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <div class="ia"><b>IA do Brasil+</b>Assistente de pesquisa para encontrar e explicar informações públicas. Sempre indica a fonte.<button data-open-search>Digite sua pergunta…</button></div>
+      <div class="ia"><b><a href="#/ia">IA do Brasil+</a></b>Pergunte sobre gastos, votos, mandatos e notícias de qualquer político. Sempre indica a fonte.<form data-ia-mini><input type="text" placeholder="Digite sua pergunta…" aria-label="Pergunta para a IA do Brasil+" enterkeyhint="send"></form></div>
       <div class="trust"><svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5z"/></svg><div>Dados oficiais, fontes públicas e atualizadas.<br><a href="#/fontes">Saiba mais</a></div></div>
     </div>
   </aside>
@@ -1398,6 +1417,7 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 /* ---------- ícones ---------- */
 const I={
 inicio:'<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
+ia:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
 agora:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 mapa:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
 gastos:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.5-.9-1.5-1.4-2.6-1.4-1.5 0-2.6.8-2.6 2s1 1.7 2.7 2c1.7.4 2.8.9 2.8 2.2s-1.2 2.2-2.8 2.2c-1.2 0-2.3-.6-2.8-1.6M12 6v1.8M12 16.2V18"/>',
@@ -1420,7 +1440,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["ia","IA do Brasil+"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -2856,7 +2876,7 @@ mount(){Promise.all([apiGet("/parlamentares/"+id),apiGet("/parlamentares/"+id+"/
   Eleições:()=>`<div class="panel">${lg&&lg.candidaturas.length?table([["Ano",c=>c.ano],["Cargo",c=>esc(c.cargo||"")],["Partido",c=>sigla(c.partido)],["Votos",c=>nfR(c.votos),"n"],["Patrimônio declarado",c=>brlR(c.patrimonio),"n"],["Arrecadou na campanha",c=>brlR(c.receitas_campanha),"n"],["Gastou na campanha",c=>brlR(c.despesas_campanha),"n"],["Resultado",c=>esc(c.resultado||"—")]],lg.candidaturas)+((c=>c&&(c.bens_por_tipo||c.receitas_por_fonte)?`<div class="grid g2 mt">${c.bens_por_tipo?`<div><h3 class="rh3">Bens declarados em ${c.ano}</h3>${hbars(Object.entries(c.bens_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${c.receitas_por_fonte?`<div><h3 class="rh3">De onde veio o dinheiro da campanha</h3>${hbars(Object.entries(c.receitas_por_fonte).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}</div>`:"")(lg.candidaturas.find(c=>c.patrimonio!=null||c.receitas_campanha!=null))):rvazio("Nenhuma candidatura ligada no TSE. A ligação é feita por nome de urna, estado e cargo; homônimos ficam sem ligação.")}</div>`,
   Atuação:()=>`<div id="rpat">${rload()}</div>`,
   Fornecedores:()=>`<div class="panel">${lg&&lg.fornecedores_com_contratos_publicos.length?table([["Fornecedor",f=>`<a href="#/fornecedor/${f.cnpj}">${esc(f.nome||f.documento)}</a><div class="small muted">${esc(f.documento)}</div>`],["Pago pela cota",f=>brl(f.pago_pela_cota),"n"],["Contratos públicos",f=>nf(f.contratos_publicos),"n"],["Valor dos contratos",f=>brl(f.valor_contratos_publicos),"n"]],lg.fornecedores_com_contratos_publicos,f=>"#/fornecedor/"+f.cnpj):rvazio("Nenhum fornecedor da cota aparece também em contratos públicos coletados.")}<p class="small muted">${esc((lg&&lg.aviso)||"")}</p></div>`};
- $("#rp").innerHTML=`<div class="pcard keep">${fotoR(p.foto_url,p.nome,92)}<div style="flex:1;min-width:0">${sigla(p.partido,1)}<h1>${esc(p.nome)}</h1><div class="muted pline">${cargoParl(p.casa)}${p.partido?", "+esc(p.partido):""}${p.uf?". "+esc(p.uf):""}.</div></div></div>
+ $("#rp").innerHTML=`<div class="pcard keep">${fotoR(p.foto_url,p.nome,92)}<div style="flex:1;min-width:0">${sigla(p.partido,1)}<h1>${esc(p.nome)}</h1><div class="muted pline">${cargoParl(p.casa)}${p.partido?", "+esc(p.partido):""}${p.uf?". "+esc(p.uf):""}.</div>${iaBotao(p.nome)}</div></div>
  <div class="tabs keep" id="tabs">${Object.keys(TABS).map(x=>`<button class="${x===tab?"on":""}">${x}</button>`).join("")}</div><div id="tabc"></div>${RSRC(p.casa==="senado"?"Senado Federal; TSE":"Câmara dos Deputados; TSE; PNCP")}`;
  const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks();if(tab==="Atuação")apiGet("/parlamentares/"+id+"/atuacao").then(x=>{const b=$("#rpat");if(!b)return;b.innerHTML=`<div class="grid g2"><div class="panel"><h2>Comissões</h2>${x.comissoes.length?x.comissoes.map(c=>`<div class="list-row"><span class="tag">${esc(c.sigla||"")}</span><div style="flex:1;min-width:0"><b style="font-weight:500">${esc(c.nome||"")}</b><div class="small muted">${esc(c.cargo||"")}${c.inicio?" · desde "+fdr(c.inicio):""}</div></div></div>`).join(""):rvazio("Nenhuma comissão coletada (coleta congresso-atuacao).")}</div>
   <div class="panel"><h2>Discursos</h2>${x.discursos_12_meses!=null?`<p style="margin:0 0 8px"><b>${nf(x.discursos_12_meses)}</b> discursos nos últimos 12 meses.</p>`:""}${x.ultimos_discursos.length?x.ultimos_discursos.map(d=>`<div class="list-row"><div style="flex:1;min-width:0"><b style="font-weight:500">${fdr(d.data)}</b> <span class="small muted">${esc(d.tipo||"")}</span><div class="small muted rclamp">${esc(d.resumo||"")}</div></div></div>`).join(""):rvazio(p.casa==="senado"?"Discursos do Senado ainda não entram nesta versão.":"Nenhum discurso coletado.")}</div></div>
@@ -3663,7 +3683,7 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
     "Votos por cidade":()=>`<div class="panel">${mun.length?`<h2>Cidades com mais votos</h2>${hbars(mun.slice(0,15).map(m=>[tit(m.municipio),m.votos]),{fmt:nf})}`:rvazio("Votos por cidade não disponíveis para este candidato.")}</div>`,
     "Patrimônio e campanha":()=>`<div class="panel">${fin?`<div class="kpis kpis-c"><div class="kpi"><span>Patrimônio declarado</span><strong>${brlR(fin.patrimonio)}</strong></div><div class="kpi"><span>Arrecadou na campanha</span><strong>${brlR(fin.receitas)}</strong></div><div class="kpi"><span>Gastou na campanha</span><strong>${brlR(fin.despesas)}</strong></div></div>
       <div class="grid g2 mt">${fin.bens_por_tipo?`<div><h3 class="rh3">Bens declarados</h3>${hbars(Object.entries(fin.bens_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${fin.receitas_por_fonte?`<div><h3 class="rh3">De onde veio o dinheiro</h3>${hbars(Object.entries(fin.receitas_por_fonte).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${fin.despesas_por_tipo?`<div><h3 class="rh3">Em que foi gasto</h3>${hbars(Object.entries(fin.despesas_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}</div>`:rvazio("Bens e contas de campanha não disponíveis para esta candidatura.")}</div>`};
-   let tab="Resumo";$("#rcd").innerHTML=`<div class="pcard keep">${fotoR("tse:"+id,nome,92)}<div style="flex:1;min-width:0">${sigla(part,1)}<h1>${esc(tit(nome))}</h1><div class="muted pline">${esc(ELN[cargo]||tit(cargo||""))}${ano?" "+esc(ano):""}${uf&&UF[uf]?". "+esc(UF[uf].nome):""}${turnos.length?`. ${esc(tit(turnos[turnos.length-1].situacao||""))}`:""}.</div></div></div>
+   let tab="Resumo";$("#rcd").innerHTML=`<div class="pcard keep">${fotoR("tse:"+id,nome,92)}<div style="flex:1;min-width:0">${sigla(part,1)}<h1>${esc(tit(nome))}</h1><div class="muted pline">${esc(ELN[cargo]||tit(cargo||""))}${ano?" "+esc(ano):""}${uf&&UF[uf]?". "+esc(UF[uf].nome):""}${turnos.length?`. ${esc(tit(turnos[turnos.length-1].situacao||""))}`:""}.</div>${iaBotao(tit(nome))}</div></div>
     <div class="tabs keep" id="tabs">${Object.keys(TABS).map(x=>`<button class="${x===tab?"on":""}">${x}</button>`).join("")}</div><div id="tabc"></div>${parcial?`<p class="small muted">Só os dados da lista estão disponíveis; o perfil completo aparece quando o site estiver ligado ao servidor BRASIL+ ou à cópia completa dos dados.</p>`:""}${RSRC("Tribunal Superior Eleitoral")}`;
    const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks()};des();document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{tab=b.textContent;document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));des()})};
   apiGet("/eleicoes/candidato/"+encodeURIComponent(id)).then(d=>desenha(d,false)).catch(e=>{if(ELCAND[id])desenha({},true);else $("#rcd").innerHTML=rerro(e)})}});
@@ -4169,6 +4189,188 @@ document.addEventListener("click",fecharPilulas);document.addEventListener("keyd
 {let t=null;new MutationObserver(()=>{pilulas();clearTimeout(t);t=setTimeout(aplicarMidia,40)}).observe(document.documentElement,{childList:true,subtree:true})}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
+const iaBotao=nome=>`<a class="btn ia-perg" href="#/ia/${encodeURIComponent(`O que as notícias recentes dizem sobre ${nome}? E quantos mandatos já ganhou?`)}">${svgI("ia")}Perguntar à IA sobre ${esc(nome)}</a>`;
+/* ===================== IA do BRASIL+ =====================
+   Perguntas em português sobre os dados do site. Com o Claude (capacidade "sample" da página publicada), a IA
+   chama as ferramentas abaixo, que leem o índice /ia/indice (rankings de gastos, mais votados e mandatos, montado
+   pelo robô), as fichas dos parlamentares, os resultados do TSE e as notícias. Sem o Claude, o modo simples
+   responde as perguntas mais comuns com as mesmas ferramentas. */
+const IA={ix:null,nw:null,hist:[],turnos:[],ctl:null,sample:undefined,ocupada:false};
+const iaN=t=>snapNorm(t).replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+const iaTem=(texto,termo)=>{const a=" "+iaN(texto)+" ",ts=iaN(termo).split(" ").filter(x=>x.length>1);return ts.length>0&&ts.every(t=>a.includes(" "+t+" "))};
+const iaLim=(v,pad,max)=>Math.max(1,Math.min(max,+v||pad));
+function iaIndice(){if(!API.on)return Promise.reject(new Error("a IA precisa dos dados oficiais (servidor BRASIL+ ou cópia dos dados)"));
+ return IA.ix||(IA.ix=apiGet("/ia/indice",{timeout:60000}).catch(e=>{IA.ix=null;throw e}))}
+function iaNoticias(){return IA.nw||(IA.nw=apiGet("/noticias?limit=1500",{timeout:30000}).then(t=>(t.itens||[]).filter(n=>!quebradaNw(n.titulo)&&!quebradaNw(n.resumo))
+ .map(n=>({...n,titulo:limpaNw(n.titulo),resumo:limpaNw(n.resumo)})).sort((a,b)=>String(b.data||"").localeCompare(String(a.data||"")))).catch(e=>{IA.nw=null;throw e}))}
+function iaCargo(c,ix){const n=iaN(c),L=ix.mandatos.cargos;if(!n)return"";const ex=L.find(x=>iaN(x)===n);if(ex)return ex;
+ if(n.includes("distrit"))return"DEPUTADO DISTRITAL";if(n.includes("estadu"))return"DEPUTADO ESTADUAL";if(n.startsWith("deput"))return"DEPUTADO FEDERAL";
+ if(n.startsWith("senad"))return"SENADOR";if(n.startsWith("govern"))return"GOVERNADOR";if(n.startsWith("prefeit"))return"PREFEITO";if(n.startsWith("presid"))return"PRESIDENTE";return String(c).toUpperCase()}
+
+/* ---------- ferramentas (também usadas pelo modo simples) ---------- */
+async function iaGastos({ordem="maior",limite=10,uf="",partido="",casa="",ano=""}={}){const g=(await iaIndice()).gastos;
+ let it=g.itens.map(x=>({id:x[0],nome:x[1],partido:x[2],uf:x[3],casa:x[4]==="senado"?"Senado":"Câmara",total:ano?(x[6][String(ano)]||0):x[5],link:"#/parlamentar/"+x[0]}));
+ if(uf)it=it.filter(x=>x.uf===String(uf).toUpperCase());if(partido)it=it.filter(x=>iaN(x.partido)===iaN(partido));
+ if(casa)it=it.filter(x=>iaN(x.casa).slice(0,4)===iaN(casa).slice(0,4));
+ it=it.filter(x=>x.total>0).sort((a,b)=>ordem==="menor"?a.total-b.total:b.total-a.total);
+ return{anos_com_dados:g.anos,parlamentares_no_filtro:it.length,itens:it.slice(0,iaLim(limite,10,30)).map(x=>({...x,total:Math.round(x.total)})),fonte:g.fonte,nota:g.nota}}
+async function iaMaisVotados({cargo="DEPUTADO FEDERAL",ano="",uf="",limite=10}={}){const ix=await iaIndice(),mv=ix.mais_votados,C=iaCargo(cargo,ix),por=mv.por_cargo[C];
+ if(!por)throw new Error(`sem dados para o cargo "${cargo}"; cargos com dados: ${Object.keys(mv.por_cargo).join(", ")}`);
+ const anos=Object.keys(por).sort(),a=String(ano||anos[anos.length-1]);if(!por[a])throw new Error(`sem ${C} em ${a}; anos com dados: ${anos.join(", ")}`);
+ let it=por[a].map(x=>({nome:tit(x[0]),partido:x[1],uf:x[2],cidade:x[3]?tit(x[3]):undefined,votos:x[4],percentual:x[5],turno:x[6],link:"#/candidato/"+encodeURIComponent(x[7])}));
+ if(uf)it=it.filter(x=>x.uf===String(uf).toUpperCase());
+ return{cargo:C,ano:+a,anos_com_dados:anos,itens:it.slice(0,iaLim(limite,10,40)),fonte:mv.fonte,
+  nota:mv.nota+(a==="2026"?" 2026: votos do 1º turno.":"")+(uf?" Para todos os candidatos de um estado use a ferramenta resultado_eleicao.":"")}}
+async function iaMandatos({nome="",uf="",cargo="",limite=10}={}){const ix=await iaIndice(),M=ix.mandatos,C=M.cargos,hoje=new Date().getFullYear(),cg=cargo?iaCargo(cargo,ix):"";
+ const fmt=p=>({nome:tit(p[0]),uf:p[1],partido_mais_recente:p[2],anos_no_poder_ate_hoje:p[3],mandatos_ganhos:p[4],
+  mandatos:p[5].map(m=>({eleicao:m[0],cargo:tit(C[m[1]]),partido:m[2],votos:m[3],...(m[4]?{cidade:tit(m[4])}:{}),...(m[5]?{estado:m[5]}:{}),...(m[0]>=hoje?{obs:"eleito agora; o mandato começa no ano seguinte"}:{})}))});
+ let it=M.itens;if(uf)it=it.filter(p=>p[1]===String(uf).toUpperCase());if(cg){const i=C.indexOf(cg);it=it.filter(p=>p[5].some(m=>m[1]===i))}
+ if(nome){it=it.filter(p=>iaTem(p[0],nome));return{encontrados:it.length,itens:it.slice(0,8).map(fmt),fonte:M.fonte,nota:M.nota}}
+ return{itens:it.slice(0,iaLim(limite,10,30)).map(fmt),fonte:M.fonte,nota:M.nota}}
+async function iaParlamentar({id,nome}={}){let pid=parseInt(id,10);
+ if(!pid&&nome){const l=(await apiGet("/parlamentares?limit=10&q="+encodeURIComponent(nome))).itens||[];if(!l.length)throw new Error("nenhum parlamentar com esse nome na base");
+  const ex=l.filter(x=>iaN(x.nome)===iaN(nome));if(l.length>1&&ex.length!==1)return{varios_com_esse_nome:l.map(x=>({id:x.id,nome:x.nome,partido:x.partido,uf:x.uf,casa:casaN(x.casa)}))};pid=(ex[0]||l[0]).id}
+ if(!pid)throw new Error("informe o id ou o nome do parlamentar");
+ const[d,at]=await Promise.all([apiGet("/parlamentares/"+pid),apiGet(`/parlamentares/${pid}/atuacao`).catch(()=>null)]);const p=d.perfil||{};
+ return{id:pid,link:"#/parlamentar/"+pid,nome:p.nome,partido:p.partido,uf:p.uf,casa:casaN(p.casa),em_exercicio:p.em_exercicio,total_gasto_cota:d.total_gasto,
+  gastos_por_tipo:(d.gastos_por_tipo||[]).slice(0,8),
+  ultimos_votos:(d.ultimos_votos||[]).slice(0,8).map(v=>({data:v.votacao.data,materia:v.votacao.materia,voto:v.voto,resultado:v.votacao.resultado,descricao:String(v.votacao.descricao||"").slice(0,160)})),
+  comissoes:at&&at.comissoes?at.comissoes.slice(0,8).map(c=>`${c.nome} (${c.cargo})`):[],discursos_12_meses:at?at.discursos_12_meses:undefined,
+  fonte:"Câmara dos Deputados, Senado Federal e Assembleias Legislativas"}}
+async function iaNoticiasSobre({termo="",dias=30,limite=8}={}){const L=await iaNoticias(),de=Date.now()-iaLim(dias,30,365)*864e5;
+ const it=L.filter(n=>(!termo||iaTem(n.titulo+" "+n.resumo,termo))&&(!n.data||Date.parse(n.data)>=de));
+ return{termo,dias:iaLim(dias,30,365),encontradas:it.length,noticia_mais_recente_da_base:L[0]&&String(L[0].data||"").slice(0,10),
+  itens:it.slice(0,iaLim(limite,8,15)).map(n=>({data:String(n.data||"").slice(0,10),veiculo:n.veiculo,titulo:n.titulo,resumo:String(n.resumo||"").slice(0,240),link:n.link})),
+  fonte:"Feeds públicos dos veículos (só título e resumo; a matéria completa fica no site do veículo)"}}
+async function iaEmAlta({dias=7,limite=10}={}){const[L,ix]=await Promise.all([iaNoticias(),iaIndice()]);const de=Date.now()-iaLim(dias,7,90)*864e5;
+ const rec=L.filter(n=>!n.data||Date.parse(n.data)>=de).map(n=>({n,t:" "+iaN(n.titulo+" "+n.resumo)+" "}));
+ const nomes=new Map(),add=(nome,info,curto)=>{const k=iaN(nome);if((k.split(" ").length>=2&&k.length>=7||curto&&k.length>=4)&&!nomes.has(k))nomes.set(k,info)};
+ for(const c of["PRESIDENTE","GOVERNADOR","SENADOR"]){const p=ix.mais_votados.por_cargo[c]||{};for(const a of["2026","2022"])(p[a]||[]).forEach(x=>add(x[0],{nome:tit(x[0]),cargo:tit(c),partido:x[1],uf:x[2],link:"#/candidato/"+encodeURIComponent(x[7])},c==="PRESIDENTE"))}
+ ix.gastos.itens.forEach(x=>add(x[1],{nome:x[1],cargo:x[4]==="senado"?"Senador(a)":"Deputado(a) federal",partido:x[2],uf:x[3],link:"#/parlamentar/"+x[0]}));
+ const cont=[];for(const[k,info]of nomes){const hits=rec.filter(r=>r.t.includes(" "+k+" "));
+  if(hits.length)cont.push({...info,noticias:hits.length,manchetes:hits.slice(0,3).map(h=>({data:String(h.n.data||"").slice(0,10),veiculo:h.n.veiculo,titulo:h.n.titulo,link:h.n.link}))})}
+ cont.sort((a,b)=>b.noticias-a.noticias);
+ return{dias:iaLim(dias,7,90),noticias_analisadas:rec.length,itens:cont.slice(0,iaLim(limite,10,20)),
+  nota:"Conta quantas notícias recentes citam o nome de cada deputado federal, senador e candidato a presidente, governador ou senador (2022 e 2026).",fonte:"Feeds públicos dos veículos"}}
+async function iaEleicao({ano,uf="BR",cargo="PRESIDENTE",turno=1}={}){const ix=await iaIndice(),C=iaCargo(cargo,ix),U=String(uf||"BR").toUpperCase();
+ if(!+ano)throw new Error("informe o ano da eleição");
+ const d=await apiGet(`/eleicoes/${+ano}/${C==="PRESIDENTE"&&!UF[U]?"BR":U}?cargo=${encodeURIComponent(C)}&turno=${+turno===2?2:1}`);
+ const m=x=>({nome:tit(x.nome),partido:x.partido,cidade:x.unidade&&C==="PREFEITO"?tit(x.unidade):undefined,votos:x.votos,percentual:x.percentual,situacao:x.situacao,link:"#/candidato/"+encodeURIComponent(x.sq_candidato)});
+ return{ano:d.ano,uf:d.uf,cargo:C,turno:d.turno,votos_validos_nominais:d.votos_validos_nominais,
+  eleitos:+ano===2002&&C!=="PRESIDENTE"?"o arquivo do TSE de 2002 não informa corretamente quem foi eleito para este cargo":(d.eleitos||[]).slice(0,20).map(m),
+  mais_votados:(d.mais_votados||[]).slice(0,10).map(m),fonte:"Tribunal Superior Eleitoral"}}
+async function iaEstado({uf}={}){const U=String(uf||"").toUpperCase();if(!UF[U])throw new Error("UF inválida");
+ return JSON.parse(JSON.stringify(await apiGet(`/estados/${U}/resumo`),(k,v)=>Array.isArray(v)?v.slice(0,8):typeof v==="string"?v.slice(0,300):v))}
+async function iaBuscar({termo}={}){const r=await apiGet("/busca?limite=5&q="+encodeURIComponent(termo||""));return r.resultados||r}
+
+const IA_FERR=[
+ ["ranking_gastos","Ranking de quem mais (ou menos) gastou a cota parlamentar (Câmara e Senado). Devolve nome, partido, UF, casa, total em reais e link do perfil.",
+  {ordem:{type:"string",enum:["maior","menor"]},limite:{type:"integer"},uf:{type:"string",description:"sigla, ex. SP"},partido:{type:"string"},casa:{type:"string",enum:["camara","senado"]},ano:{type:"integer"}},iaGastos,"Somando os gastos da cota parlamentar"],
+ ["mais_votados","Os mais votados do país numa eleição e cargo (presidente, governador, senador, deputado federal, estadual ou distrital, prefeito). Sem ano: a eleição mais recente.",
+  {cargo:{type:"string"},ano:{type:"integer"},uf:{type:"string"},limite:{type:"integer"}},iaMaisVotados,"Vendo os mais votados"],
+ ["tempo_no_poder","Mandatos ganhos em eleições desde 1994 e anos somados no poder. Com nome: o histórico da pessoa. Sem nome: ranking de quem está há mais tempo (pode filtrar por UF e cargo).",
+  {nome:{type:"string"},uf:{type:"string"},cargo:{type:"string"},limite:{type:"integer"}},iaMandatos,"Contando os mandatos"],
+ ["perfil_parlamentar","Ficha de um deputado ou senador: partido, gastos da cota por tipo, últimos votos, comissões e discursos. Use o id de outra ferramenta ou o nome.",
+  {id:{type:"integer"},nome:{type:"string"}},iaParlamentar,"Abrindo a ficha do parlamentar"],
+ ["noticias","Notícias recentes de política que citam um nome ou assunto (título, resumo, veículo, data e link). Sem termo: as mais recentes.",
+  {termo:{type:"string"},dias:{type:"integer"},limite:{type:"integer"}},iaNoticiasSobre,"Lendo as notícias"],
+ ["politicos_em_alta","Políticos mais citados nas notícias dos últimos dias, com as manchetes.",
+  {dias:{type:"integer"},limite:{type:"integer"}},iaEmAlta,"Vendo quem está em alta nas notícias"],
+ ["resultado_eleicao","Resultado de uma eleição num estado (ou no Brasil para presidente): eleitos e mais votados, com votos e percentuais.",
+  {ano:{type:"integer"},uf:{type:"string",description:"sigla do estado ou BR"},cargo:{type:"string"},turno:{type:"integer"}},iaEleicao,"Abrindo o resultado da eleição"],
+ ["resumo_estado","Resumo de um estado: população, gastos, arrecadação e outros números do BRASIL+.",{uf:{type:"string"}},iaEstado,"Abrindo o resumo do estado"],
+ ["buscar","Busca no site por pessoa, órgão, empresa, lei, contrato ou município; devolve ids e títulos.",{termo:{type:"string"}},iaBuscar,"Buscando no site"]];
+const iaTools=passo=>IA_FERR.map(([name,description,props,fn,rotulo])=>({name,description,inputSchema:{type:"object",properties:props},
+ async execute(input){passo(rotulo);const r=await fn(input||{});const s=JSON.stringify(r);return s.length>30000?s.slice(0,30000):r}}));
+const IA_REGRAS=()=>`Você é a IA do BRASIL+, site independente de transparência com dados públicos oficiais do Brasil. Hoje é ${new Date().toLocaleDateString("pt-BR")}.
+Regras:
+- Responda em português do Brasil, simples e direto, como para alguém sem conhecimento técnico.
+- Para números, rankings, pessoas, eleições, gastos e notícias, SEMPRE consulte as ferramentas antes de responder. Nunca invente números, nomes ou datas; se a ferramenta não tiver o dado, diga que o BRASIL+ não tem essa informação.
+- Diga o período e a fonte de cada número (campos "fonte", "nota", "anos_com_dados") e as limitações quando importarem para a resposta.
+- Seja neutro e apartidário: não dê opinião sobre quem é melhor ou pior, não recomende voto e apresente os fatos de forma equilibrada.
+- Aparecer num ranking ou numa notícia não indica irregularidade. Notícias: são títulos e resumos dos feeds; cite veículo e data e coloque o link; não afirme como fato o que é acusação ou investigação.
+- Homônimos: se houver mais de uma pessoa com o nome, mostre as opções ou pergunte qual.
+- Formato: comece com a resposta em 1 ou 2 frases; depois uma lista curta (até 10 itens) com nomes em negrito; termine com "Fonte: ...". Links: perfil de parlamentar [nome](#/parlamentar/ID), candidato [nome](#/candidato/SQ), notícias com o link original. Valores em reais no formato R$ 1.234,56 (milhões como R$ 1,2 milhão).
+- Perguntas fora de dados públicos brasileiros: responda em uma frase que você só cobre esses dados.`;
+
+/* ---------- texto da resposta: Markdown simples, sem HTML de fora ---------- */
+function iaMd(md){const linha=t=>esc(t).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\[([^\]]+)\]\(((?:https?:\/\/|#\/)[^\s)]+)\)/g,(m,a,u)=>`<a href="${u}"${u[0]==="#"?"":' target="_blank" rel="noopener"'}>${a}</a>`);
+ const out=[];let lista=null;
+ for(const l of String(md||"").split(/\n/)){const m=/^\s*(?:[-*•]|\d+[.)])\s+(.*)/.exec(l);const tag=/^\s*\d/.test(l)?"ol":"ul";
+  if(m){if(!lista||lista.t!==tag){if(lista)out.push(`</${lista.t}>`);lista={t:tag};out.push(`<${tag}>`)}out.push(`<li>${linha(m[1])}</li>`);continue}
+  if(lista){out.push(`</${lista.t}>`);lista=null}
+  const h=/^#{1,4}\s+(.*)/.exec(l);if(h)out.push(`<p><b>${linha(h[1])}</b></p>`);else if(l.trim())out.push(`<p>${linha(l)}</p>`)}
+ if(lista)out.push(`</${lista.t}>`);return out.join("")}
+
+/* ---------- modo simples: entende as perguntas mais comuns ---------- */
+const brlC=v=>"R$ "+Math.round(v).toLocaleString("pt-BR");
+// nome próprio na pergunta: palavras com inicial maiúscula (menos a 1ª palavra da frase e os nomes de estado)
+function iaNome(q){const ig=/^(quem|qual|quais|quantos?|quantas?|onde|como|o|a|os|as|me|mostre|liste|e|em|no|na|por|que|quando)$/i;
+ const seqs=String(q).match(/[A-ZÁÉÍÓÚÂÊÔÃÕÇ][\p{L}'.]+(?:\s+(?:d[aeo]s?\s+)?[A-ZÁÉÍÓÚÂÊÔÃÕÇ][\p{L}'.]+)*/gu)||[];
+ return seqs.map(x=>x.split(/\s+/).filter((w,i)=>!(i===0&&ig.test(w))).join(" ").trim()).find(x=>x.length>=3&&!UFS.some(u=>iaN(u.nome)===iaN(x))&&!/^(Brasil|Senado|Câmara|Camara|Congresso|IA)$/i.test(x))||""}
+function iaUF(q){for(const u of UFS)if(iaTem(q,u.nome))return u.uf;const m=String(q).match(/\b([A-Z]{2})\b/g)||[];return(m.find(x=>UF[x])||"")}
+async function iaLocal(q){const n=iaN(q),ano=(String(q).match(/\b(19|20)\d{2}\b/)||[])[0],uf=iaUF(q);
+ const sobre=iaNome(q);
+ if(/em alta|mais falad|mais citad|bombando|repercut/.test(n)){const r=await iaEmAlta({dias:7});
+  return`Os políticos mais citados nas notícias dos últimos ${r.dias} dias (${nf(r.noticias_analisadas)} notícias lidas):\n${r.itens.map((x,i)=>`${i+1}. **[${x.nome}](${x.link})** (${x.partido||"?"}-${x.uf}): ${x.noticias} notícia${x.noticias>1?"s":""}. Ex.: [${x.manchetes[0].titulo}](${x.manchetes[0].link}), ${x.manchetes[0].veiculo}`).join("\n")||"Nenhum político citado no período."}\n\n${r.nota}\nFonte: ${r.fonte}.`}
+ if(/noticia|manchete|falando|imprensa/.test(n)){const termo=sobre||q.replace(/.*(not[ií]cias?|manchetes?)\s*(de|do|da|sobre)?/i,"").replace(/[?!.]/g,"").trim();const r=await iaNoticiasSobre({termo,dias:30});
+  if(!r.itens.length)return`Não achei notícias dos últimos 30 dias que citem **${termo}** (a notícia mais recente da base é de ${r.noticia_mais_recente_da_base}).`;
+  return`Achei ${r.encontradas} notícia${r.encontradas>1?"s":""} dos últimos 30 dias que citam **${termo}**. As mais recentes:\n${r.itens.map(x=>`- ${x.data.split("-").reverse().join("/")}, ${x.veiculo}: [${x.titulo}](${x.link})`).join("\n")}\n\nFonte: ${r.fonte}.`}
+ if(/gast|cota|despes/.test(n)){const r=await iaGastos({ordem:/menos|menor/.test(n)?"menor":"maior",uf,casa:/senad/.test(n)?"senado":/deputad|camara/.test(n)?"camara":"",ano:ano||""});
+  const t=r.itens[0];if(!t)return"Não achei gastos da cota com esse filtro.";
+  return`Quem ${/menos|menor/.test(n)?"menos":"mais"} gastou a cota parlamentar${uf?" em "+UF[uf].nome:""}${ano?" em "+ano:" ("+r.anos_com_dados.join(", ")+")"} foi **[${t.nome}](${t.link})** (${t.partido}-${t.uf}, ${t.casa}): ${brlC(t.total)}.\n${r.itens.slice(0,10).map((x,i)=>`${i+1}. **[${x.nome}](${x.link})** (${x.partido}-${x.uf}, ${x.casa}): ${brlC(x.total)}`).join("\n")}\n\n${r.nota}\nFonte: ${r.fonte}.`}
+ if(/tempo|mandat|no poder|mais anos|veteran|carreira/.test(n)){const cargo=/prefeit/.test(n)?"PREFEITO":/senad/.test(n)?"SENADOR":/governad/.test(n)?"GOVERNADOR":/deputad/.test(n)?(/estadu/.test(n)?"DEPUTADO ESTADUAL":"DEPUTADO FEDERAL"):"";
+  if(sobre&&!/^quem/.test(n)){const r=await iaMandatos({nome:sobre});if(r.itens.length)return`${r.itens.map(p=>`**${p.nome}** (${p.uf}): ${p.mandatos_ganhos} mandato${p.mandatos_ganhos>1?"s":""} ganho${p.mandatos_ganhos>1?"s":""}, ${p.anos_no_poder_ate_hoje} anos no poder até hoje.\n${p.mandatos.map(m=>`- ${m.eleicao}: ${m.cargo}${m.cidade?" de "+m.cidade:""} (${m.partido})${m.obs?", "+m.obs:""}`).join("\n")}`).join("\n\n")}\n\n${r.nota}\nFonte: ${r.fonte}.`}
+  const r=await iaMandatos({uf,cargo});
+  return`Quem está há mais tempo no poder${uf?" em "+UF[uf].nome:""}${cargo?" (entre quem já foi "+tit(cargo).toLowerCase()+")":""}, pelas eleições desde 1994:\n${r.itens.map((p,i)=>`${i+1}. **${p.nome}** (${p.uf}, ${p.partido_mais_recente}): ${p.anos_no_poder_ate_hoje} anos, ${p.mandatos_ganhos} mandatos (${[...new Set(p.mandatos.map(m=>m.cargo))].join(", ")})`).join("\n")}\n\n${r.nota}\nFonte: ${r.fonte}.`}
+ if(/votad|votos|venceu|ganhou|eleit/.test(n)){const cargo=/prefeit/.test(n)?"PREFEITO":/senad/.test(n)?"SENADOR":/governad/.test(n)?"GOVERNADOR":/presid/.test(n)?"PRESIDENTE":/estadu/.test(n)?"DEPUTADO ESTADUAL":"DEPUTADO FEDERAL";
+  const r=await iaMaisVotados({cargo,ano:ano||"",uf});const t=r.itens[0];if(!t)return`Não achei ${tit(cargo).toLowerCase()} mais votado com esse filtro.`;
+  return`O mais votado para ${tit(r.cargo).toLowerCase()}${uf?" em "+UF[uf].nome:""} em ${r.ano} foi **[${t.nome}](${t.link})** (${t.partido}-${t.uf}), com ${nf(t.votos)} votos.\n${r.itens.slice(0,10).map((x,i)=>`${i+1}. **[${x.nome}](${x.link})** (${x.partido}-${x.uf}${x.cidade&&r.cargo==="PREFEITO"?", "+x.cidade:""}): ${nf(x.votos)} votos`).join("\n")}\n\n${r.nota}\nFonte: ${r.fonte}.`}
+ const r=await iaBuscar({termo:q});const L=Object.entries(r||{}).flatMap(([t,l])=>(l||[]).map(x=>`- ${x.titulo}${x.subtitulo?" ("+x.subtitulo+")":""}`)).slice(0,10);
+ return L.length?`No modo simples eu entendo perguntas sobre gastos, mais votados, tempo no poder e notícias. Para "${q}", achei no site:\n${L.join("\n")}`:
+  "No modo simples eu entendo perguntas sobre **gastos da cota**, **mais votados**, **tempo no poder** e **notícias** (ex.: \"quem mais gastou?\", \"deputado federal mais votado em 2022\", \"quem está há mais tempo no poder em SP?\", \"notícias sobre Nikolas Ferreira\")."}
+
+/* ---------- conversa ---------- */
+async function iaSample(){if(IA.sample!==undefined)return IA.sample;let s=null;
+ try{if(window.claude&&typeof claude.use==="function"){s=await claude.use("sample");if(s){const lim=await s.limits().catch(()=>null);if(!lim||!lim.tools)s=null}}}catch(e){s=null}
+ return IA.sample=s}
+const IA_SEM={not_granted:1,sampling_disabled:1,not_declared:1,capability_disabled:1,capability_removed:1,tools_unavailable:1,session_expired:1};
+const IA_ERRO={rate_limited:"Muitas perguntas seguidas ou limite de uso do Claude atingido. Tente de novo daqui a pouco.",refused:"O Claude não respondeu a esta pergunta. Tente perguntar de outro jeito.",
+ empty_completion:"O Claude não escreveu resposta. Tente perguntar de outro jeito.",prompt_too_large:"A conversa ficou longa demais. Clique em \"Nova conversa\".",upstream_error:"A conexão com o Claude falhou. Tente de novo."};
+function iaMsgHTML(m){return m.role==="user"?`<div class="ia-msg eu"><div class="ia-bal">${esc(m.text)}</div></div>`:
+ `<div class="ia-msg"><span class="ia-av lgmark" aria-hidden="true"></span><div class="ia-bal">${m.html||iaMd(m.text)}${m.modo?`<div class="ia-modo">${m.modo}</div>`:""}</div></div>`}
+async function iaPerguntar(q){q=String(q||"").trim();if(!q||IA.ocupada)return;const box=$("#iaMsgs");if(!box)return;IA.ocupada=true;
+ const vz=box.querySelector(".ia-vazio");if(vz)vz.remove();box.closest(".ia-chat").classList.add("tem");const um={role:"user",text:q},resp={role:"assistant",text:"",html:`<p class="muted">Pensando…</p>`};IA.hist.push(um,resp);
+ box.insertAdjacentHTML("beforeend",iaMsgHTML(um)+`<div class="ia-msg" id="iaAt"><span class="ia-av lgmark" aria-hidden="true"></span><div class="ia-bal"><p class="muted">Pensando…</p><div class="ia-passos"></div></div></div>`);
+ const at=$("#iaAt"),bal=at.querySelector(".ia-bal"),passos=at.querySelector(".ia-passos");at.removeAttribute("id");at.scrollIntoView({block:"end",behavior:"smooth"});
+ const passo=t=>{if(passos.isConnected)passos.insertAdjacentHTML("beforeend",`<span>${esc(t)}…</span>`)};
+ const pronto=(text,modo)=>{resp.text=text;resp.html=null;resp.modo=modo;bal.innerHTML=iaMd(text)+(modo?`<div class="ia-modo">${modo}</div>`:"")};
+ const stop=$("#iaStop"),env=$("#iaEnv");if(stop)stop.hidden=false;if(env)env.disabled=true;
+ try{const sample=await iaSample();
+  if(sample){IA.ctl=new AbortController();IA.turnos.push({role:"user",content:q});
+   try{const{text,truncated}=await sample([{role:"user",content:IA_REGRAS()},...IA.turnos.slice(-10)],{tools:iaTools(passo),signal:IA.ctl.signal,modelTier:"default",
+     onText:({text})=>{if(bal.isConnected)bal.innerHTML=iaMd(text)}});
+    IA.turnos.push({role:"assistant",content:text});pronto(text+(truncated?"\n\n(A resposta foi cortada; pergunte uma parte de cada vez.)":""),"Respondido pelo Claude com os dados oficiais do BRASIL+.")}
+   catch(e){IA.turnos.pop();if(e&&e.code==="cancelled"){pronto((e.text||"")+"\n\n(Parado.)","");return}
+    if(!(e&&IA_SEM[e.code]))throw e;IA.sample=null;pronto(await iaLocal(q),"Modo simples: o Claude não está liberado nesta página; resposta direta dos dados.")}}
+  else pronto(await iaLocal(q),"Modo simples: respostas diretas dos dados oficiais. Com o site aberto no Claude, a IA responde qualquer pergunta.")}
+ catch(e){const t=(e&&(IA_ERRO[e.code]||e.message))||"Não consegui responder agora.";pronto((e&&e.text?e.text+"\n\n":"")+"Não consegui responder: "+t,"")}
+ finally{IA.ocupada=false;IA.ctl=null;if(stop)stop.hidden=true;if(env)env.disabled=false}}
+const IA_SUG=["Quem mais gastou a cota parlamentar este ano?","Quem foi o deputado federal mais votado em 2022?","Quem está há mais tempo no poder em São Paulo?","Quais políticos estão em alta nas notícias?","O que as notícias dizem sobre Nikolas Ferreira?","Quem foram os senadores mais votados em 2022?"];
+P.ia=(q0)=>({html:`<div class="ph"><div><h1>IA do Brasil+</h1><p>Pergunte sobre gastos, votos, mandatos, eleições e notícias de qualquer político. A IA consulta os dados oficiais do site e sempre mostra a fonte.</p></div></div>
+<div class="panel ia-chat${IA.hist.length?" tem":""}"><div id="iaMsgs" class="ia-msgs">${IA.hist.length?IA.hist.map(iaMsgHTML).join(""):`<div class="ia-vazio"><span class="lgmark" aria-hidden="true"></span><p>Faça uma pergunta ou toque numa sugestão.</p></div>`}</div>
+<div class="ia-sug">${IA_SUG.map(s=>`<button type="button" class="chip">${esc(s)}</button>`).join("")}</div>
+<form id="iaF" class="ia-form"><textarea id="iaQ" rows="1" placeholder="Pergunte qualquer coisa sobre os dados públicos…" aria-label="Pergunta para a IA"></textarea><button class="btn pri" id="iaEnv">Perguntar</button><button type="button" class="btn" id="iaStop" hidden>Parar</button></form>
+<div class="ia-rodape small muted"><span>As respostas usam só os dados do BRASIL+ e podem ter limitações; confira sempre a fonte.</span>${IA.hist.length?`<button type="button" class="chip" id="iaNova">Nova conversa</button>`:""}</div></div>`,
+ mount(){const f=$("#iaF"),t=$("#iaQ");const vai=v=>{t.value="";t.style.height="";iaPerguntar(v)};
+  f.onsubmit=e=>{e.preventDefault();vai(t.value)};t.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();vai(t.value)}};
+  t.oninput=()=>{t.style.height="auto";t.style.height=Math.min(140,t.scrollHeight)+"px"};
+  document.querySelectorAll(".ia-sug .chip").forEach(b=>b.onclick=()=>vai(b.textContent));
+  $("#iaStop").onclick=()=>IA.ctl&&IA.ctl.abort();const nv=$("#iaNova");if(nv)nv.onclick=()=>{IA.hist=[];IA.turnos=[];renderRoute("ia")};
+  const q=q0?decodeURIComponent(q0):"";if(q){history.replaceState(null,"","#/ia");vai(q)}else{const m=$("#iaMsgs");m.scrollTop=m.scrollHeight;t.focus({preventScroll:true})}}});
+// caixa "IA do Brasil+" do menu lateral: a pergunta abre a tela da IA
+document.querySelectorAll("[data-ia-mini]").forEach(f=>f.onsubmit=e=>{e.preventDefault();const i=f.querySelector("input"),v=i.value.trim();i.value="";location.hash="#/ia"+(v?"/"+encodeURIComponent(v):"")});
+
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);$("#view").innerHTML=r.html;r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});

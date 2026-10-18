@@ -410,3 +410,28 @@ def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Quer
         veiculos[v] = veiculos.get(v, 0) + 1
     return {"total": len(itens), "itens": itens[offset:offset + limit], "veiculos": veiculos,
             "aviso": "Títulos e resumos dos feeds públicos de cada veículo; a matéria completa fica no site original."}
+
+
+@router.get("/ia/indice", tags=["IA"])
+def ia_indice():
+    """Índice da IA do site (rankings de gastos da cota, mais votados e mandatos desde 1994).
+
+    O robô o monta junto com a cópia estática (scripts/exportar_snapshot.py); aqui ele é lido de site/dados."""
+    import json
+    from pathlib import Path
+
+    def fnv1a(texto):  # o mesmo hash da cópia estática (scripts/exportar_snapshot.py)
+        h = 0x811C9DC5
+        for c in texto:
+            h = ((h ^ ord(c)) * 0x01000193) & 0xFFFFFFFF
+        return h
+
+    pasta = Path(__file__).resolve().parents[2] / "site" / "dados"
+    try:
+        n = json.loads((pasta / "manifest.json").read_text(encoding="utf-8"))["shards"]
+        valor = json.loads((pasta / f"s{fnv1a('/ia/indice') % n}.json").read_text(encoding="utf-8")).get("/ia/indice")
+    except (OSError, ValueError, KeyError):
+        valor = None
+    if not valor:
+        raise HTTPException(404, "Índice da IA ainda não gerado: rode python -m scripts.indice_ia (ou o robô de coleta).")
+    return valor

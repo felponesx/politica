@@ -337,6 +337,9 @@ def main(argv):
     criar_tabelas()
     exp = Exportador()
     exp.exportar()
+    # índice da IA do site (rankings de gastos, mais votados e mandatos), feito com as respostas já guardadas
+    from app.ia_indice import montar
+    exp.dados["/ia/indice"] = montar(exp.dados)
     m = exp.gravar(pasta)
     log.info("Cópia gravada em %s: %d respostas, %.1f MB em %d arquivos", pasta, m["consultas"], m["bytes"] / 1e6, SHARDS)
     por_tipo = defaultdict(int)
