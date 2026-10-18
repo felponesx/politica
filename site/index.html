@@ -202,6 +202,9 @@ tbody tr[data-href]:hover{background:var(--bg)}
 .sbox input{border:0;border-bottom:1px solid var(--line);padding:16px 18px;font-size:17px;background:none;outline:none;width:100%}
 .sres{overflow-y:auto;padding:6px 8px 12px}
 .sgroup{padding:10px 10px 2px;font-size:12px;color:var(--muted);font-weight:600}
+.sia{display:flex;align-items:center;gap:10px;margin:8px 8px 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--tint);color:var(--ink);text-decoration:none}
+.sia .lgmark{width:26px;height:26px}.sia span{display:flex;flex-direction:column;min-width:0}.sia b{font-size:14px}
+.sia small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sitem{display:flex;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:8px;color:var(--ink);font-size:14px}
 .sitem:hover,.sitem:focus{background:var(--bg);text-decoration:none;outline:none}
 .sitem small{color:var(--muted);text-align:right}
@@ -1404,7 +1407,8 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 
 <div class="ov" id="searchOv" role="dialog" aria-label="Busca global">
   <div class="sbox">
-    <div class="s-h"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="sInput" placeholder="Nome, órgão, município, projeto…" autocomplete="off" enterkeyhint="search"><button id="sClose" type="button">Cancelar</button></div>
+    <div class="s-h"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="sInput" placeholder="Busque ou pergunte à IA…" autocomplete="off" enterkeyhint="search"><button id="sClose" type="button">Cancelar</button></div>
+    <a class="sia" id="sIA" href="#/ia"><i class="lgmark" aria-hidden="true"></i><span><b>Perguntar à IA do Brasil+</b><small id="sIAq">Gastos, votos, mandatos e notícias de qualquer político</small></span></a>
     <div class="sres" id="sRes"></div>
   </div>
 </div>
@@ -4368,6 +4372,13 @@ P.ia=(q0)=>({html:`<div class="ph"><div><h1>IA do Brasil+</h1><p>Pergunte sobre 
   document.querySelectorAll(".ia-sug .chip").forEach(b=>b.onclick=()=>vai(b.textContent));
   $("#iaStop").onclick=()=>IA.ctl&&IA.ctl.abort();const nv=$("#iaNova");if(nv)nv.onclick=()=>{IA.hist=[];IA.turnos=[];renderRoute("ia")};
   const q=q0?decodeURIComponent(q0):"";if(q){history.replaceState(null,"","#/ia");vai(q)}else{const m=$("#iaMsgs");m.scrollTop=m.scrollHeight;t.focus({preventScroll:true})}}});
+// busca (no celular, o botão Buscar): a primeira linha manda o texto para a IA; Enter numa pergunta também
+const iaPergunta=q=>/\?\s*$/.test(q)||/^(quem|qual|quais|quanto|quantos|quantas|o que|oque|como|por ?que|onde|quando|me (diga|fale|mostre)|existe|tem )/i.test(q.trim());
+function iaBuscaAtualiza(){const i=$("#sInput"),a=$("#sIA"),sq=$("#sIAq");if(!i||!a)return;const q=i.value.trim();
+ a.href="#/ia"+(q?"/"+encodeURIComponent(q):"");sq.textContent=q?`“${q}”`:"Gastos, votos, mandatos e notícias de qualquer político"}
+{const i=$("#sInput"),a=$("#sIA");if(i&&a){i.addEventListener("input",iaBuscaAtualiza);a.addEventListener("click",()=>closeSearch());
+ i.addEventListener("keydown",e=>{if(e.key==="Enter"&&iaPergunta(i.value)){e.preventDefault();e.stopImmediatePropagation();const q=i.value.trim();closeSearch();location.hash="#/ia/"+encodeURIComponent(q)}},true);
+ const _os=openSearch;openSearch=function(...x){_os(...x);iaBuscaAtualiza()}}}
 // caixa "IA do Brasil+" do menu lateral: a pergunta abre a tela da IA
 document.querySelectorAll("[data-ia-mini]").forEach(f=>f.onsubmit=e=>{e.preventDefault();const i=f.querySelector("input"),v=i.value.trim();i.value="";location.hash="#/ia"+(v?"/"+encodeURIComponent(v):"")});
 
