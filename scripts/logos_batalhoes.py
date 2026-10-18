@@ -4,6 +4,8 @@ Coloque as imagens em site/midia/batalhoes/ com o nome UF-SIGLA (ex.: SP-ROTA.pn
   python -m scripts.logos_batalhoes
 O fundo branco é removido só a partir das bordas (o branco dentro do brasão continua), a imagem é recortada no
 desenho e reduzida para até 256 px de altura. A chave no site é u:UF:SIGLA (a mesma dos cartões das unidades).
+Nome começando com "_" vira a chave direta, trocando "_" por ":" (ex.: _pm_SP.png → pm:SP, brasão da corporação;
+_g_pc.png → g:pc, distintivo geral da Polícia Civil, usado quando o estado não tem logo próprio e na linha do país).
 """
 import base64
 import io
@@ -17,6 +19,9 @@ from PIL import Image
 PASTA = "site/midia/batalhoes"
 LOGOS = "site/midia/logos.json"
 ALTURA = 256
+TITULOS = {"g:pm": "Polícia Militar", "g:pc": "Polícia Civil", "g:pp": "Polícia Penal", "g:gcm": "Guarda Municipal",
+           "g:cbm": "Corpo de Bombeiros Militar", "g:cbm-distintivo": "Bombeiro Militar", "g:pericia": "Polícia Científica",
+           "g:leg": "Polícia Legislativa", "pm:SP": "Polícia Militar do Estado de São Paulo"}
 
 
 def sem_fundo(im: Image.Image, tol: int = 38) -> Image.Image:
@@ -62,17 +67,24 @@ def main(pasta=PASTA, logos=LOGOS):
     feitos = []
     for nome in sorted(os.listdir(pasta)):
         base, ext = os.path.splitext(nome)
-        if ext.lower() not in (".png", ".jpg", ".jpeg", ".webp", ".gif") or "-" not in base:
+        if ext.lower() not in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
             continue
-        uf, sigla = base.split("-", 1)
+        if base.startswith("_"):
+            chave = base[1:].replace("_", ":")
+        elif "-" in base:
+            uf, sigla = base.split("-", 1)
+            chave = f"u:{uf.upper()}:{sigla}"
+        else:
+            continue
+        titulo = TITULOS.get(chave, chave.split(":")[-1])
         try:
             im = sem_fundo(Image.open(os.path.join(pasta, nome)))
         except Exception as e:
             print(f"pulei {nome}: {e}")
             continue
-        L.setdefault("policias", {})[f"u:{uf.upper()}:{sigla}"] = {
-            "img": data_uri(im), "titulo": sigla, "arquivo": f"enviado pelo BRASIL+ ({nome})", "pagina": ""}
-        feitos.append(f"{uf.upper()}:{sigla}")
+        L.setdefault("policias", {})[chave] = {
+            "img": data_uri(im), "titulo": titulo, "arquivo": f"enviado pelo BRASIL+ ({nome})", "pagina": ""}
+        feitos.append(chave)
     with open(logos, "w", encoding="utf-8") as f:
         json.dump(L, f, ensure_ascii=False, separators=(",", ":"))
     print(f"{len(feitos)} logos: {', '.join(feitos)}")

@@ -3878,8 +3878,8 @@ function segEfetivo(f,uf){if(!f)return"";const P=f.previsto||{},n1=uf?n0:_n1;
  const L=[["policia_militar","Polícia Militar","pm"],["policia_civil","Polícia Civil (judiciária)","pc"],["policia_penal","Polícia Penal (penitenciária)","penal"],["guardas_municipais","Guardas municipais (GCM)","gcm"],["bombeiros","Corpo de Bombeiros","pm"],["pericia","Perícia oficial","pc"],
   ["policia_federal","Polícia Federal","pf"],["prf","Polícia Rodoviária Federal","prf"],["policia_penal_federal","Polícia Penal Federal","penal"],["policia_legislativa","Polícia Legislativa (Câmara e Senado)","pf"]].filter(x=>f[x[0]]!=null&&f[x[0]]>0);
  const mx=Math.max(...L.map(x=>f[x[0]]));
- const POLK={policia_militar:"pm",policia_civil:"pc",policia_penal:"pp",bombeiros:"cbm",guardas_municipais:"gcm",policia_federal:"pf",prf:"prf",policia_penal_federal:"spf"};
- const chP=k=>{const b=POLK[k];if(!b)return null;if(["pf","prf","spf"].includes(b))return b;return uf?`${b}:${uf}`:null};
+ const POLK={policia_militar:"pm",policia_civil:"pc",policia_penal:"pp",bombeiros:"cbm",guardas_municipais:"gcm",policia_federal:"pf",prf:"prf",policia_penal_federal:"spf",pericia:"g:pericia",policia_legislativa:"g:leg"};
+ const chP=k=>{const b=POLK[k];if(!b)return null;if(["pf","prf","spf"].includes(b)||b.startsWith("g:"))return b;return uf?`${b}:${uf}`:`g:${b}`};
  return`<div class="seg-ef">${L.map(([k,t,c])=>`<div class="seg-efl"><span class="seg-efn">${chP(k)?`<span data-pol="${chP(k)}" data-h="22"><i style="background:${(CORP[c]||CORP.pm)[1]}"></i></span>`:`<i style="background:${(CORP[c]||CORP.pm)[1]}"></i>`}${t}</span><span class="seg-efb"><i style="width:${Math.max(2,100*f[k]/mx)}%"></i></span><b>${n0(f[k])}</b>${P[k]?`<em>previsto em lei: ${n0(P[k])} (${Math.round(100*f[k]/P[k])}% preenchido)</em>`:""}</div>`).join("")}</div>
  <p class="small muted" style="margin:10px 0 0">${f.policiais_por_mil?`${n1(f.policiais_por_mil)} policiais (PM e Civil) por mil habitantes: um para cada ${n0(f.habitantes_por_policial)} pessoas. `:""}${uf==="SP"?"Em São Paulo, os bombeiros fazem parte da Polícia Militar. ":""}${uf?"":"Polícia Federal, PRF e Polícia Penal Federal só têm o total do país. "}A Receita Federal (auditores e analistas) não é força de segurança e não entra nesta conta.</p>`}
 function segUnidades(uf){const l=UNIDADES.filter(u=>uf?u[0]===uf:u[0]==="BR");if(!l.length&&!uf)return"";
@@ -4095,8 +4095,8 @@ function aplicarMidia(){
  if(!marcas.length&&!bolas.length&&!pol.length&&!unids.length&&!vls.length)return;
 midiaLogos().then(L=>{
   vls.forEach(el=>{el.dataset.mok=1;const l=(L.veiculos||{})[el.dataset.vlogo];if(!l||!el.isConnected)return;const im=document.createElement("img");im.src=l.img;im.alt=el.dataset.vlogo;im.style.height=(el.dataset.h||20)+"px";im.title="Logo: Wikimedia Commons";el.replaceChildren(im)});
-  unids.forEach(g=>{g.dataset.uok=1;if(!g.isConnected)return;const q=g.dataset.unids,tem=new Set(UNIDADES.map(u=>`u:${u[0]}:${u[2]}`));
-   const novas=(L.unidades||[]).filter(u=>{const k=`u:${u.uf}:${u.sigla}`;if(tem.has(k)||/^(PM|PC|CBM|BM)[A-Z]{0,4}$/.test(u.sigla)&&!/BOPE|ROTA/.test(u.sigla))return false;tem.add(k);return true}).filter(u=>(q==="ALL"?u.uf!=="BR":u.uf===q)&&L.policias[`u:${u.uf}:${u.sigla}`]);
+  unids.forEach(g=>{g.dataset.uok=1;if(!g.isConnected)return;const q=g.dataset.unids,tem=new Set(UNIDADES.map(u=>`u:${u[0]}:${u[2]}`)),nomes=new Set(UNIDADES.map(u=>u[0]+":"+normNw(u[3])));
+   const novas=(L.unidades||[]).filter(u=>{const k=`u:${u.uf}:${u.sigla}`;if(tem.has(k)||nomes.has(u.uf+":"+normNw(u.nome||""))||/^(OPM|OBM|UPM)$/.test(u.sigla)||/^(PM|PC|CBM|BM)[A-Z]{0,4}$/.test(u.sigla)&&!/BOPE|ROTA/.test(u.sigla))return false;tem.add(k);return true}).filter(u=>(q==="ALL"?u.uf!=="BR":u.uf===q)&&L.policias[`u:${u.uf}:${u.sigla}`]);
    if(!novas.length)return;g.insertAdjacentHTML("beforeend",novas.map(u=>cartaoUnidade([u.uf,u.corp,u.sigla,u.nome,u.desc||"Unidade com artigo na Wikipédia."])).join(""));const w=g.closest(".un-w");if(w)w.hidden=false});
   marcas.forEach(el=>{el.dataset.mok=1;const l=logoPart(L,el.dataset.plogo);if(l&&el.isConnected){const h=parseInt(el.style.height)||12;el.replaceWith(imgLogo(l,h+3,el.dataset.plogo))}});
   bolas.forEach(svg=>{svg.dataset.mok=1;const defs=svg.querySelector("defs")||svg.insertBefore(document.createElementNS("http://www.w3.org/2000/svg","defs"),svg.firstChild);const feitos={};
@@ -4105,9 +4105,12 @@ midiaLogos().then(L=>{
      pt.innerHTML=`<rect width="1" height="1" fill="${misturaBranco(corSigla(sg),.5)}"/><image href="${l.img}" x=".14" y=".14" width=".72" height=".72" preserveAspectRatio="xMidYMid meet"/>`;defs.appendChild(pt)}
     c.setAttribute("fill",`url(#${id})`);c.setAttribute("stroke",c.getAttribute("data-cor")||corSigla(sg));c.setAttribute("stroke-width",Math.max(.6,+c.getAttribute("r")*.18).toFixed(2))})});
   pol.forEach(el=>{el.dataset.mok=1;let l=L.policias[el.dataset.pol];
-   // corporação estadual sem logo próprio (PM, PC, penal, bombeiros, guarda): mostra o brasão do estado
-   const mE=/^(pm|pc|pp|cbm|gcm):([A-Z]{2})$/.exec(el.dataset.pol||"");if(!l&&mE){const e=(L.estados||{})[mE[2]];l=e?{...e,titulo:`Brasão ${deUF(mE[2])}`}:(BANDEIRAS[mE[2]]?{img:BANDEIRAS[mE[2]],titulo:`Bandeira ${deUF(mE[2])}`,arquivo:""}:null)}
-   if(!l||!el.isConnected)return;const h=parseInt(el.dataset.h||"54");const im=document.createElement("img");im.className="pol-logo";im.src=l.img;im.alt=l.titulo||"";im.style.height=h+"px";im.style.width="auto";im.title=`${l.titulo} — imagem: Wikimedia Commons (${l.arquivo||""})`;el.replaceWith(im);
+   // corporação estadual sem logo próprio: bombeiros usam o brasão geral dos bombeiros; PM, PC, penal e guarda, o brasão do
+   // estado; sem brasão do estado, o distintivo geral da corporação (g:pm, g:pc...) e, por fim, a bandeira
+   const mE=/^(pm|pc|pp|cbm|gcm):([A-Z]{2})$/.exec(el.dataset.pol||"");if(!l&&mE){const e=(L.estados||{})[mE[2]],g=L.policias["g:"+mE[1]];
+    l=mE[1]==="cbm"&&g?g:e?{...e,titulo:`Brasão ${deUF(mE[2])}`}:g||(BANDEIRAS[mE[2]]?{img:BANDEIRAS[mE[2]],titulo:`Bandeira ${deUF(mE[2])}`,arquivo:""}:null)}
+   if(!l||!el.isConnected)return;const h=parseInt(el.dataset.h||"54");const im=document.createElement("img");im.className="pol-logo";im.src=l.img;im.alt=l.titulo||"";im.style.height=h+"px";im.style.width="auto";
+   im.title=/^enviado/.test(l.arquivo||"")?l.titulo:`${l.titulo} — imagem: Wikimedia Commons (${l.arquivo||""})`;el.replaceWith(im);
    const info=document.querySelector(`[data-polinfo="${el.dataset.pol}"]`);if(info&&l.efetivo_wikipedia)info.textContent=`Efetivo informado na Wikipédia: ${nf(l.efetivo_wikipedia)}`})})}
 /* seletores enxutos: transforma cada grupo de botões (.segj-w ou [data-pill]) numa pílula com menu; os botões originais
    continuam os mesmos (só mudam de lugar), então cada tela segue com os seus próprios cliques */

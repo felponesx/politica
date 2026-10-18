@@ -1,2 +1,4 @@
 Coloque aqui os logos dos batalhões com o nome UF-SIGLA (ex.: SP-ROTA.png, RJ-BOPE.jpg, BR-COT.png).
+Nome começando com "_" vira a chave direta: _pm_SP.webp = brasão da PM de SP; _g_pc.webp = distintivo geral da Polícia Civil
+(g:pm, g:pc, g:pp penal, g:gcm, g:cbm bombeiros, g:pericia, g:leg Polícia Legislativa).
 Depois rode: python -m scripts.logos_batalhoes  (tira o fundo branco e grava em site/midia/logos.json)
