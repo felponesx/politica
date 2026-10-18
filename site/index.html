@@ -1889,7 +1889,7 @@ mount(){const draw=()=>{const e=ELEI[eid];$("#esub").textContent=e.nome+". Perce
  if(cmpOn){const A=modo,B=cmp,na=e.partes[A],nb=e.partes[B],ra=rampaPartido(A),rb=rampaPartido(B);
   const cor=u=>{const v=elec(eid,u),d=v[A]-v[B],k=Math.abs(d)<3?1:Math.abs(d)<8?2:Math.abs(d)<15?3:4;return(d>=0?ra:rb)[k]};
   $("#emtit").textContent=`Comparação: ${na} × ${nb}`;
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:cor,legend:false});
+  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:cor,legend:false,heat:true});
   const us=UFS.filter(u=>!reg||u.reg===reg),ga=us.filter(u=>{const v=elec(eid,u);return v[A]>=v[B]}).length;
   const marg=us.map(u=>{const v=elec(eid,u);return[u,v[A]-v[B]]}).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]));
   $("#eside").innerHTML=painelDuelo(na,nb,bv[A],bv[B],PCOL[A],PCOL[B],reg?"na região "+REG[reg]:"no Brasil")+
@@ -1898,11 +1898,11 @@ mount(){const draw=()=>{const e=ELEI[eid];$("#esub").textContent=e.nome+". Perce
   <div class="small muted" style="margin:12px 0 4px">Maiores diferenças</div>${marg.slice(0,4).map(([u,d])=>`<div class="ptop"><span>${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</span><b>${d>=0?na:nb} +${Math.abs(d).toFixed(1).replace(".",",")}</b></div>`).join("")}
   <div class="legend" style="justify-content:flex-start;flex-wrap:wrap;margin-top:12px">${na} à frente ${ra.slice(1).map(c=>`<i style="background:${c}"></i>`).join("")}&nbsp;&nbsp;${nb} à frente ${rb.slice(1).map(c=>`<i style="background:${c}"></i>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor mais forte, maior a vantagem.</p>`}
  else if(modo<0){$("#emtit").textContent="Partido mais votado em cada estado";
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>{const v=elec(eid,u);return PCOL[v.indexOf(Math.max(...v))]},legend:false});
+  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>{const v=elec(eid,u);return PCOL[v.indexOf(Math.max(...v))]},legend:false,heat:true});
   $("#eside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?"Região "+REG[reg]:"Brasil"}: votos válidos</div>${partyBars(eid,bv)}<p class="small muted" style="margin:10px 0 0">A cor de cada estado indica o partido mais votado.</p>`}
  else{const nome=e.partes[modo],rp=rampaPartido(modo);const vals=UFS.map(u=>elec(eid,u)[modo]);const mn=Math.min(...vals),mx=Math.max(...vals);const cor=x=>rp[Math.min(4,Math.floor((x-mn)/(mx-mn+1e-9)*5))];
   $("#emtit").textContent="Área de votação: "+nome;
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false});
+  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false,heat:true});
   const top=UFS.filter(u=>!reg||u.reg===reg).map(u=>[u,elec(eid,u)[modo]]).sort((a,b)=>b[1]-a[1]);
   $("#eside").innerHTML=`<div class="pdest"><i style="background:${PCOL[modo]}"></i><div><span>${nome} ${reg?"na região "+REG[reg]:"no Brasil"}</span><b>${pct(bv[modo])}</b><small>dos votos válidos</small></div></div>
   <div class="small muted" style="margin:12px 0 4px">Por região</div>${hbars(Object.entries(REG).map(([k,v])=>[v,elecRegion(eid,k)[modo]]),{fmt:pct,color:rp[3]})}
@@ -3399,8 +3399,10 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
  box.innerHTML=`<div class="panel mt"><h2>Quem venceu em cada município</h2><div id="elmapaC">${rload()}</div></div>`;
  try{const[m,v]=await Promise.all([apiGet("/malhas/"+f.uf),apiGet(`/eleicoes/${f.ano}/${f.uf}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]);
   const por={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});const cont={};v.forEach(x=>{const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
-  const paths=m.municipios.map(c=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido;return`<path d="${c.d}" fill="${p?(x.vencedor.percentual>=60?corPart(p):misturaBranco(corPart(p),Math.min(.5,(60-x.vencedor.percentual)/40*.5))):"var(--line2)"}" stroke="var(--surface)" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
-  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu; cor cheia quando passou de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
+  const hid="mm"+(++HEATN);
+  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?(x.vencedor.percentual>=60?corPart(p):misturaBranco(corPart(p),Math.min(.5,(60-x.vencedor.percentual)/40*.5))):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="${cr}" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
+  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}${(()=>{const us=m.municipios.map((c,i)=>`<use href="#${hid}-${i}"/>`).join("");
+   return`<defs><clipPath id="${hid}c">${us}</clipPath><filter id="${hid}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(Math.max(m.largura,m.altura)/160).toFixed(1)}"/></filter></defs><g clip-path="url(#${hid}c)" style="pointer-events:none"><g filter="url(#${hid}f)">${us}</g></g>`})()}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu; cor cheia quando passou de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
  catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2018 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
 
 
@@ -3608,7 +3610,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   $("#elT").textContent=`${ELN[f.cargo]||tit(f.cargo)} · ${f.turno}º turno de ${f.ano}`;
   const seg=br.candidatos.filter(c=>/2º TURNO/.test(c.situacao||""));
   $("#elSub").innerHTML=chave()?`${nf(br.votos_validos_nominais)} votos válidos nominais.${seg.length?` <b>Vão ao 2º turno:</b> ${seg.map(c=>esc(tit(c.nome))).join(" e ")}.`:""}`:`${MAJ.includes(f.cargo)?"Em cada estado aparece quem venceu, na cor do partido.":"Em cada estado aparece o partido mais votado."} ${br.eleitos?nf(br.eleitos)+" eleitos no país.":""}`;
-  $("#elmap").innerHTML=brMap(null,null,null,{fillFn:u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"},legend:false});
+  $("#elmap").innerHTML=brMap(null,null,null,{fillFn:u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"},legend:false,heat:true});
   bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
   // dica ao passar o mouse em cada estado
   const tip=dicaFlutuante();$("#elmap").querySelectorAll("path[data-uf]").forEach(p=>{const t=p.querySelector("title");if(t)t.remove();
