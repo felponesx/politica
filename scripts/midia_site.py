@@ -483,6 +483,12 @@ def main(pasta: str):
         pass
     with open(os.path.join(pasta, "logos.json"), "w", encoding="utf-8") as f:
         json.dump(lg, f, ensure_ascii=False, separators=(",", ":"))
+    # logos de batalhões enviados à mão (site/midia/batalhoes/UF-SIGLA.png) valem mais que os da Wikipédia
+    if os.path.isdir(os.path.join(pasta, "batalhoes")):
+        from scripts.logos_batalhoes import main as batalhoes
+        batalhoes(os.path.join(pasta, "batalhoes"), os.path.join(pasta, "logos.json"))
+        with open(os.path.join(pasta, "logos.json"), encoding="utf-8") as f:
+            lg = json.load(f)
     with SessionLocal() as db:
         fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_wikipedia(nomes_indicados())}
     blocos = [{} for _ in range(BLOCOS)]

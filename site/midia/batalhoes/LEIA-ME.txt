@@ -1,0 +1,2 @@
+Coloque aqui os logos dos batalhões com o nome UF-SIGLA (ex.: SP-ROTA.png, RJ-BOPE.jpg, BR-COT.png).
+Depois rode: python -m scripts.logos_batalhoes  (tira o fundo branco e grava em site/midia/logos.json)
