@@ -292,6 +292,14 @@ def logos() -> dict:
             t = buscar_titulo(f"{base} {nome}", extra + [nome.split()[-1]])
             if t:
                 titulos_pol[f"{chave}:{uf}"] = t
+    # brasão de cada estado: aparece nas polícias (PM, PC, penal, bombeiros, guardas) que não têm logo próprio
+    titulos_uf = {}
+    for uf, nome in NOMES_UF.items():
+        t = buscar_titulo(f"Brasão {'do' if uf in ('RJ', 'RN', 'RS', 'PA', 'PR', 'PI', 'MA', 'AM', 'AP', 'AC', 'CE', 'ES', 'TO', 'DF') else 'de'} {nome}",
+                          ["Brasão", nome.split()[-1]])
+        if t:
+            titulos_uf[uf] = t
+    info_uf = wiki_imagens(sorted(set(titulos_uf.values())))
     titulos_vei = dict(VEICULOS)
     info_v = wiki_imagens(sorted(set(titulos_vei.values())))
     for nome, t in VEICULOS.items():  # sem imagem no título direto: tenta achar o artigo pela busca
@@ -330,6 +338,12 @@ def logos() -> dict:
         img = baixar(meta, ALTURA_LOGO)
         if img:
             out["veiculos"][nome] = {"img": img, "arquivo": meta.get("arquivo"), "pagina": meta["pagina"]}
+    out["estados"] = {}
+    for uf, t in titulos_uf.items():
+        meta = info_uf.get(t)
+        img = baixar(meta, ALTURA_LOGO)
+        if img:
+            out["estados"][uf] = {"img": img, "titulo": t, "arquivo": meta.get("arquivo"), "pagina": meta["pagina"]}
     resumos = wiki_resumos([u["titulo"] for u in unidades])
     out["unidades"] = [{**{k: u[k] for k in ("uf", "corp", "sigla", "nome")}, "desc": resumos.get(u["titulo"], "")}
                        for u in unidades if f"u:{u['uf']}:{u['sigla']}" in out["policias"] or resumos.get(u["titulo"])]
@@ -460,7 +474,7 @@ def main(pasta: str):
     try:
         with open(os.path.join(pasta, "logos.json"), encoding="utf-8") as f:
             antes = json.load(f)
-        for k in ("partidos", "policias", "veiculos"):
+        for k in ("partidos", "policias", "veiculos", "estados"):
             for chave, v in (antes.get(k) or {}).items():
                 lg.setdefault(k, {}).setdefault(chave, v)
         tem = {(u["uf"], u["sigla"]) for u in lg.get("unidades", [])}
