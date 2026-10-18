@@ -2782,8 +2782,10 @@ const PART_BAND={PT:["#C8102E","#FFFFFF","estrela"],PL:["#1A3D8F","#F4C300","h"]
  NOVO:["#F26C21","#FFFFFF","h"],SOLIDARIEDADE:["#F58220","#1A3A8A","h"],PRD:["#1D3E8A","#2E9E4F","h3","#F4C300"],REDE:["#0F8C8C","#F7A600","circ"],
  AGIR:["#123B7A","#F28C00","diag"],MOBILIZA:["#0B7A4B","#1D4F91","diag"],DC:["#1D4F91","#F4C300","estrela"],PMB:["#7B2D8E","#F2B8D8","h"],
  PSTU:["#C8102E","#111111","estrela"],PCO:["#B71C1C","#111111","h"],UP:["#D7262E","#F6C200","estrela"],PCB:["#C8102E","#F6C200","circ"],
- MISSAO:["#1B1B1B","#F2C200","diag"],PRTB:["#1E9E3A","#F4C300","h3","#1D3E8A"],PMN:["#D32F2F","#1D3E8A","h"]};
-const ALIAS_PART={UNIAOBRASIL:"UNIAO",PODEMOS:"PODE",SD:"SOLIDARIEDADE",PCDOBR:"PCDOB",REPUBLICANO:"REPUBLICANOS"};
+ MISSAO:["#1B1B1B","#F2C200","diag"],PRTB:["#1E9E3A","#F4C300","h3","#1D3E8A"],PMN:["#D32F2F","#1D3E8A","h"],
+ DEM:["#1D9A4A","#1D4F91","h"],PPS:["#D52B1E","#FFFFFF","h"],PROS:["#F28C00","#1D4F91","h"],PATRIOTA:["#0B7A4B","#F4C300","h"],PSC:["#1D9A4A","#1D4F91","h"]};
+const ALIAS_PART={UNIAOBRASIL:"UNIAO",PODEMOS:"PODE",SD:"SOLIDARIEDADE",PCDOBR:"PCDOB",REPUBLICANO:"REPUBLICANOS",
+ PRB:"REPUBLICANOS",PR:"PL",PMDB:"MDB",PFL:"DEM",PSDC:"DC",PTN:"PODE",PEN:"PATRIOTA"};
 const normSig=s=>{const k=String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z]/g,"");return ALIAS_PART[k]||k};
 const bandDe=s=>PART_BAND[normSig(s)];
 function bandPart(s,h=12){if(!s)return"";return`<i class="plg" data-plogo="${esc(s)}" style="background:${corSigla(s)};width:${h}px;height:${h}px"></i>`}
@@ -3400,9 +3402,9 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
  try{const[m,v]=await Promise.all([apiGet("/malhas/"+f.uf),apiGet(`/eleicoes/${f.ano}/${f.uf}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]);
   const por={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});const cont={};v.forEach(x=>{const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
   const hid="mm"+(++HEATN);
-  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?(x.vencedor.percentual>=60?corPart(p):misturaBranco(corPart(p),Math.min(.5,(60-x.vencedor.percentual)/40*.5))):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="${cr}" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
+  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?corVoto(corPart(p),x.vencedor.percentual):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="${cr}" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
   $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}${(()=>{const us=m.municipios.map((c,i)=>`<use href="#${hid}-${i}"/>`).join("");
-   return`<defs><clipPath id="${hid}c">${us}</clipPath><filter id="${hid}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(Math.max(m.largura,m.altura)/160).toFixed(1)}"/></filter></defs><g clip-path="url(#${hid}c)" style="pointer-events:none"><g filter="url(#${hid}f)">${us}</g></g>`})()}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu; cor cheia quando passou de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
+   return`<defs><clipPath id="${hid}c">${us}</clipPath><filter id="${hid}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(Math.max(m.largura,m.altura)/160).toFixed(1)}"/></filter></defs><g clip-path="url(#${hid}c)" style="pointer-events:none"><g filter="url(#${hid}f)">${us}</g></g>`})()}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
  catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2018 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
 
 
@@ -3570,8 +3572,10 @@ recolherDemo=function(){const v=$("#view");if(!v)return;const ph=[...v.children]
 
 /* ---------- Eleições: o mapa do país primeiro; clicar num estado aproxima e mostra só os candidatos de lá ---------- */
 /* cor do partido para mapas de votação: nunca preto, branco ou cinza (troca por uma cor da paleta) */
-function corPart(p){let c=corSigla(p)||"#888888";const n=parseInt(c.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,mx=Math.max(r,g,b),mn=Math.min(r,g,b);
+function corPart(p){let c=bandDe(p)?corSigla(p):"#888888";const n=parseInt(c.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,mx=Math.max(r,g,b),mn=Math.min(r,g,b);
  if(mx<70||mn>215||mx-mn<28)c=ELCOR[hs(String(p||"?"))%ELCOR.length];return c}
+// cor viva do partido (a da logo); abaixo de 60% dos votos fica só um pouco mais clara, nunca em tom pastel
+const corVoto=(cor,p)=>p>=60||!/^#[0-9a-f]{6}$/i.test(cor)?cor:misturaBranco(cor,Math.min(.15,(60-p)/40*.15));
 const ELCOR=["#4F86C6","#E0735F","#45A27C","#E2A93B","#8E6CC2","#3FA9B8","#D3678F","#8C9A52"];
 const MAJ=["PRESIDENTE","GOVERNADOR","SENADOR","PREFEITO"];
 const ELCAND={};
@@ -3598,8 +3602,7 @@ return{html:`<div class="ph"><div><h1>Eleições</h1><p>Resultados oficiais do T
 mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>estadoEleicao(uf)};
  const chave=()=>f.modo==="cand";
  const corDe=k=>cores[k]||"#B9C0CA";
- // 60% ou mais dos votos: cor cheia do partido; abaixo disso, a mesma cor mais clara (nunca some no branco)
- const forte=(cor,p)=>p>=60?cor:misturaBranco(cor,Math.min(.5,(60-p)/40*.5));
+ const forte=corVoto;
  const venc=s=>s?(chave()?(s.candidatos[0]?[s.candidatos[0].sq_candidato,s.candidatos[0].percentual,s.candidatos[0]]:null):MAJ.includes(f.cargo)&&s.candidatos&&s.candidatos[0]?[s.candidatos[0].partido,s.candidatos[0].percentual,s.candidatos[0]]:(s.partidos[0]?[s.partidos[0].partido,s.partidos[0].percentual,s.partidos[0]]:null)):null;
  const nomeK=x=>chave()?`${lcand(x,f.ano,f.cargo)} <small>${bandPart(x.partido,10)} ${esc(x.partido||"")}</small>`:`${sigla(x.partido)}`;
  const desenhar=()=>{const d=dados;if(!d||!$("#elmap"))return;const br=d.brasil;
@@ -3619,9 +3622,9 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    p.addEventListener("mousemove",e=>{if(tip.classList.contains("on"))posDica(tip,e.clientX,e.clientY)});p.addEventListener("mouseleave",()=>tip.classList.remove("on"))});
   // lado: resultado do país
   if(!chave()&&MAJ.includes(f.cargo)){const linhas=UFS.filter(u=>d.estados[u.uf]&&(d.estados[u.uf].candidatos||[])[0]).map(u=>({uf:u.uf,c:d.estados[u.uf].candidatos[0]})).sort((a,b)=>UF[a.uf].nome.localeCompare(UF[b.uf].nome));
-   $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">${f.cargo==="PREFEITO"?"Mais votado em cada estado (soma das cidades)":"Mais votado em cada estado"}</div><div class="el-venc">${linhas.map(r=>`<div class="elrow"><i style="background:${forte(corDe(r.c.partido),r.c.percentual)}"></i><span><small class="muted">${r.uf}</small> ${lcand({...r.c,uf:r.uf},f.ano,f.cargo)} <small>${bandPart(r.c.partido,10)} ${esc(r.c.partido||"")}</small>${/^ELEITO/.test(r.c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(r.c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(r.c.percentual)}</b></div>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu; cor cheia quando passou de 60% dos votos.</p>`}
+   $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">${f.cargo==="PREFEITO"?"Mais votado em cada estado (soma das cidades)":"Mais votado em cada estado"}</div><div class="el-venc">${linhas.map(r=>`<div class="elrow"><i style="background:${forte(corDe(r.c.partido),r.c.percentual)}"></i><span><small class="muted">${r.uf}</small> ${lcand({...r.c,uf:r.uf},f.ano,f.cargo)} <small>${bandPart(r.c.partido,10)} ${esc(r.c.partido||"")}</small>${/^ELEITO/.test(r.c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(r.c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(r.c.percentual)}</b></div>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos.</p>`}
   else $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">Brasil${chave()?"":" · votos por partido"}</div>${lista.slice(0,8).map(x=>{const k=chave()?x.sq_candidato:x.partido;return`<div class="elrow"><i style="background:${corDe(k)}"></i><span>${nomeK(x)}${x.eleito||/^ELEITO/.test(x.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(x.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(x.percentual)}</b><div class="bar"><i style="width:${Math.min(100,x.percentual)}%;background:${corDe(k)}"></i></div></div>`}).join("")}
-   <p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu; cor cheia quando passou de 60% dos votos.${!chave()&&!MAJ.includes(f.cargo)?" Toque em um estado para ver os nomes dos candidatos eleitos.":""}</p>`;
+   <p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos.${!chave()&&!MAJ.includes(f.cargo)?" Toque em um estado para ver os nomes dos candidatos eleitos.":""}</p>`;
   // regiões
   const regs=Object.keys(REG).map(r=>{const us=UFS.filter(u=>u.reg===r&&d.estados[u.uf]);const soma={};let T=0;us.forEach(u=>{const s=d.estados[u.uf];T+=s.votos_validos_nominais;(chave()?s.candidatos:s.partidos).forEach(x=>{const k=chave()?x.sq_candidato:x.partido;const a=soma[k]=soma[k]||{x,votos:0};a.votos+=x.votos})});
    const top=Object.entries(soma).sort((a,b)=>b[1].votos-a[1].votos).slice(0,3);return{r,T,top,ganhou:us.filter(u=>{const v=venc(d.estados[u.uf]);return v&&top[0]&&v[0]===top[0][0]}).length,n:us.length}}).filter(x=>x.T);
