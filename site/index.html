@@ -1412,6 +1412,22 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 @media (prefers-reduced-motion:no-preference){#view.entra>*{animation:entra .22s cubic-bezier(.2,.7,.2,1) both}
  @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
 #view.zooming.entra>*,#view.stfocus.entra>*{animation:none}
+
+/* tabelas: um padrão só em todo o site (mesma letra, espaçamento, cabeçalho e números à direita) */
+#view table,.pop-b table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.4}
+#view th,.pop-b th{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.01em;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:none}
+#view td,.pop-b td{padding:12px;border-bottom:1px solid var(--line2);vertical-align:middle;color:var(--ink2)}
+#view td:first-child,.pop-b td:first-child{color:var(--ink);font-weight:500}
+#view td:first-child b,.pop-b td:first-child b{font-weight:600}
+#view td .small,.pop-b td .small{font-weight:400;margin-top:2px}
+#view td.n,#view th.n,.pop-b td.n,.pop-b th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#view tr:last-child td,.pop-b tr:last-child td{border-bottom:0}
+#view td a,.pop-b td a{color:var(--ink);text-decoration:none}
+#view td a:hover,.pop-b td a:hover{color:var(--c1)}
+#view .tw,.pop-b .tw{margin:0}
+.panel>.tw:first-child,.panel>h2+.tw,.panel>h2+p+.tw{margin-top:4px}
+.tw-mais{display:block;margin:12px auto 0}
+@media (max-width:640px){#view th,.pop-b th{padding:8px 8px}#view td,.pop-b td{padding:10px 8px}#view table,.pop-b table{font-size:13px}}
 </style>
 </head>
 <body>
@@ -4031,7 +4047,7 @@ function segAnoAno(d,uf){const H=d.historico||{},O=H.ocorrencias||{},V=H.violenc
  const pres=a=>{const k=Object.keys(Pr).filter(r=>r.startsWith(a)).sort().pop();if(!k)return null;const b=uf?Pr[k].estados[uf]:Pr[k].brasil;return b?b.populacao:null};
  const rows=anos.map(a=>({a,m:O[a]?O[a].meses:null}));
  return`<h3 class="seg-h">Ano a ano <small>${uf?esc(UF[uf].nome):"Brasil"}</small></h3><div class="panel seg-anos">${table([["Ano",r=>`<b>${r.a}</b>${r.m&&r.m<12?` <small class="muted">(${r.m} meses)</small>`:""}`],
-  ["Homicídios",r=>n0(pick(r.a,"homicidio_doloso")??mvi(r.a)),"num"],["Feminicídios",r=>n0(pick(r.a,"feminicidio")),"num"],["Presos",r=>n0(pres(r.a)),"num"]],rows)}</div>`}
+  ["Homicídios",r=>n0(pick(r.a,"homicidio_doloso")??mvi(r.a)),"n"],["Feminicídios",r=>n0(pick(r.a,"feminicidio")),"n"],["Presos",r=>n0(pres(r.a)),"n"]],rows)}</div>`}
 function segCompleto(e,d,uf){return segPorDia(e,d,uf)+`<div class="seg-ano">${segBlocos(e,null,segRefs(d),!!uf)}</div>`+segAnoAno(d,uf)}
 
 P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"#segstate",map:"#segmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>segEstado(uf)};
@@ -4047,7 +4063,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   ${segPorDia(B,d)}<div class="seg-ano">${segBlocos(B,null,ref)}</div>
   ${segAnoAno(d,null)}
   ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais</p></div></div>${segEfetivo(B.efetivo,null)}
-   <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["Policiais (PM e Civil)",r=>{const f=gv(d.estados[r.uf],"efetivo")||{};return f.policia_militar==null&&f.policia_civil==null?"—":n0((f.policia_militar||0)+(f.policia_civil||0))},"num"],["Por mil habitantes",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"num"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
+   <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["Policiais (PM e Civil)",r=>{const f=gv(d.estados[r.uf],"efetivo")||{};return f.policia_militar==null&&f.policia_civil==null?"—":n0((f.policia_militar||0)+(f.policia_civil||0))},"n"],["Por mil habitantes",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"n"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
   <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos</p></div></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt" open><summary class="small">Unidades dos estados</summary><div class="embl-grid" data-unids="ALL">${UNIDADES.filter(u=>u[0]!=="BR").map(cartaoUnidade).join("")}</div></details>`:""}</div>
   <div class="panel mt"><h2>Procurados pela Justiça</h2><p class="small" style="margin:6px 0 0">O número de mandados de prisão em aberto vem do Banco Nacional de Medidas Penais e Prisões (BNMP), do Conselho Nacional de Justiça. O BNMP não responde a servidores fora do Brasil; o número entra aqui quando o BRASIL+ rodar no servidor próprio. Enquanto isso, a consulta pública está no <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener">portal do BNMP</a>.</p></div>
   <div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:6px 0 0;padding-left:18px">${(d.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>
