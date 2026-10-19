@@ -135,3 +135,5 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Gráficos: os 3 maiores em cor viva e os 3 menores em pastel (`rankPos`, `rankCor`).
 - Tabelas: um padrão só (`table()`): 10 primeiras linhas + "Ver todos", ordenação ao tocar no título da coluna,
   cabeçalho fixo nas listas longas, números à direita.
+- Formatos (v1.0): número em destaque = `.kpis/.kpi` ou pares `.facts` (blocos iguais, mesma letra em todo o site);
+  comparação = barras (`hbars`, efetivo, eleições) com cores de `rankCor`; lista de registros = `table()`. CSS no bloco "v1.0".
