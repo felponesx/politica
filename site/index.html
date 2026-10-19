@@ -1368,6 +1368,50 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 .seg.segj button.on,.seg.seg-grupo button.on{background:#E3EEFA;color:var(--ink);font-weight:600}
 [data-theme="dark"] .seg.segj button.on,[data-theme="dark"] .seg.seg-grupo button.on{background:#27385A;color:#E7EAF0}
 .el-ctl{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;margin-bottom:12px}
+
+/* ===================== v0.8: visual limpo e profissional =====================
+   Poucas cores: tudo em tons de cinza e azul; cor viva só nos dados que importam (os 3 maiores) e pastel nos menores. */
+:root{--bg:#F6F7F9;--line:#E6E9EE;--line2:#EEF1F4;--ink:#141B2D;--ink2:#4A5468;--muted:#7C8698;
+ --c1:#2A78D6;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2A78D6;--r-mid:#9EC5F4;--r-low:#DCE8F7;--foco:rgba(42,120,214,.16);
+ --d1:#C9D6E8;--d2:#D3DCE9;--d3:#DCE3EE;--d4:#E3E8F0;--d5:#E8ECF2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#3987E5;--r-mid:#2E5684;--r-low:#22324A;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
+:root[data-theme="dark"]{--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#3987E5;--r-mid:#2E5684;--r-low:#22324A;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.ph h1{font-size:30px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
+.ph p{color:var(--ink2);max-width:72ch}
+.panel{border-radius:16px;border-color:var(--line);box-shadow:none}
+.panel h2{font-size:16px;font-weight:600;letter-spacing:-.005em}
+.kpis{border-radius:16px}
+.kpis-c .kpi::before{display:none}
+.kpi strong{color:var(--ink);font-weight:650;letter-spacing:-.015em}
+.kpi span{letter-spacing:.005em}
+.nav a{transition:background .15s,color .15s}
+.nav a.on{background:var(--foco);color:var(--c1)}
+.nav a.on svg{stroke:var(--c1)}
+.btn,.chip{transition:border-color .15s,background .15s,color .15s}
+.btn:hover,.chip:hover{border-color:#C9D2DE}
+.btn.pri{background:var(--c1);border-color:var(--c1);color:#fff}
+.btn.pri:hover{filter:brightness(1.06)}
+:focus-visible{outline:2px solid var(--c1);outline-offset:2px;border-radius:6px}
+table.resp th{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.01em}
+table.resp tbody tr{transition:background .12s}
+table.resp tbody tr[data-href]:hover{background:var(--bg)}
+/* barras horizontais */
+.hb-l{display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;gap:12px;align-items:center;font-size:13.5px;padding:6px 0}
+.hb-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
+.hb-b{height:8px;border-radius:999px}.hb-b i{border-radius:999px}
+.hb-v{font-variant-numeric:tabular-nums;color:var(--ink2);font-size:13px}
+.hb-top .hb-n,.hb-top .hb-v{color:var(--ink);font-weight:600}
+/* mapa */
+.geo text{paint-order:stroke;stroke:rgba(255,255,255,.88);stroke-width:2.6px;stroke-linejoin:round;fill:#2B3445;font-weight:600;letter-spacing:.02em}
+[data-theme="dark"] .geo text{stroke:rgba(17,21,28,.85);fill:#E7EAF0}
+.geo path.st{stroke-width:1;transition:opacity .15s,filter .15s,stroke .15s}
+.geo.heat path.st:hover{stroke:#fff;stroke-width:2;filter:drop-shadow(0 0 2px rgba(20,40,80,.35))}
+.legend .hgrad{height:8px;width:140px}
+/* troca de tela suave */
+@media (prefers-reduced-motion:no-preference){#view.entra>*{animation:entra .22s cubic-bezier(.2,.7,.2,1) both}
+ @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+#view.zooming.entra>*,#view.stfocus.entra>*{animation:none}
 </style>
 </head>
 <body>
@@ -1556,20 +1600,29 @@ const AGORA=[
 const pessoa=id=>PESSOAS.find(p=>p.id==id),orgao=id=>ORGAOS.find(o=>o.id==id),empresa=id=>EMPRESAS.find(e=>e.id==id);
 
 /* ---------- gráficos ---------- */
-function hbars(items,{fmt=brl,color}={}){const mx=Math.max(...items.map(i=>i[1]));return`<div>${items.map((it,k)=>`<div style="display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;gap:10px;align-items:center;font-size:13.5px;padding:5px 0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it[2]?`<a href="${it[2]}">${esc(it[0])}</a>`:esc(it[0])}</span><div class="bar" style="height:10px"><i style="width:${it[1]/mx*100}%;background:${color||PAL[k%6]}"></i></div><span style="font-variant-numeric:tabular-nums;color:var(--ink2)">${fmt(it[1])}</span></div>`).join("")}</div>`}
+/* destaque por posição: os 3 maiores em cor viva, os 3 menores em pastel, o resto num tom neutro */
+const RANK_VIVO=["var(--c1)","var(--c2)","var(--c3)"];
+function rankPos(items){const ord=items.map((it,i)=>[+it[1]||0,i]).sort((a,b)=>b[0]-a[0]);const pos=[];ord.forEach(([,i],r)=>pos[i]=r);return pos}
+const rankCor=(r,n)=>r<3?"var(--r-top)":n<6||r>=n-3?"var(--r-low)":"var(--r-mid)";
+function hbars(items,{fmt=brl,color}={}){const mx=Math.max(...items.map(i=>i[1]))||1,pos=rankPos(items),n=items.length;return`<div class="hb">${items.map((it,k)=>`<div class="hb-l${pos[k]<3?" hb-top":""}"><span class="hb-n">${it[2]?`<a href="${it[2]}">${esc(it[0])}</a>`:esc(it[0])}</span><div class="bar hb-b"><i style="width:${Math.max(.5,it[1]/mx*100)}%;background:${color||rankCor(pos[k],n)}"></i></div><span class="hb-v">${fmt(it[1])}</span></div>`).join("")}</div>`}
 function lineChart(series,labels,{h=200,fmt=brl}={}){const W=600,H=h,p=34;const all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);const x=i=>p+i*(W-p-10)/(labels.length-1),y=v=>H-24-(v-mn)/(mx-mn)*(H-40);
 let g="";for(let t=0;t<=4;t++){const v=mn+(mx-mn)*t/4;g+=`<line x1="${p}" x2="${W-10}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line2)"/><text x="${p-6}" y="${y(v)+4}" font-size="10" text-anchor="end" fill="var(--muted)">${fmt(v).replace("R$ ","")}</text>`}
 labels.forEach((l,i)=>g+=`<text x="${x(i)}" y="${H-6}" font-size="10.5" text-anchor="middle" fill="var(--muted)">${l}</text>`);
-series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${s.c||["#7FA9DE","#E9B967","#7CC4A4"][k]}" stroke-width="2.2" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>`;if(s.v.length<=60)s.v.forEach((v,i)=>g+=`<circle cx="${x(i)}" cy="${y(v)}" r="2.8" fill="var(--surface)" stroke="${s.c||["#7FA9DE","#E9B967","#7CC4A4"][k]}" stroke-width="1.6"/>`)});
-const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${s.c||["#7FA9DE","#E9B967","#7CC4A4"][k]}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
+const cs=k=>series[k].c||RANK_VIVO[k%3];
+// linha fina na cor viva, área bem clara embaixo da 1ª série e só o último ponto marcado
+if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g+=`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="${cs(0)}" fill-opacity=".08"/>`}
+series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${cs(k)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2"/>`});
+const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
 return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
-function donut(items){const tot=items.reduce((a,b)=>a+b[1],0);let a0=-Math.PI/2,s="";items.forEach((it,k)=>{const a1=a0+it[1]/tot*Math.PI*2;const L=a1-a0>Math.PI?1:0;const P=(a,r)=>[60+r*Math.cos(a),60+r*Math.sin(a)];const[x0,y0]=P(a0,52),[x1,y1]=P(a1,52),[x2,y2]=P(a1,32),[x3,y3]=P(a0,32);s+=`<path d="M${x0} ${y0}A52 52 0 ${L} 1 ${x1} ${y1}L${x2} ${y2}A32 32 0 ${L} 0 ${x3} ${y3}Z" fill="${PAL[k%6]}"/>`;a0=a1});
-return`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="130" height="130">${s}</svg><div style="font-size:13px;flex:1;min-width:150px">${items.map((it,k)=>`<div style="display:flex;gap:8px;align-items:center;padding:3px 0"><i style="width:10px;height:10px;border-radius:2px;background:${PAL[k%6]}"></i><span style="flex:1">${it[0]}</span><b style="font-weight:500">${(it[1]/tot*100).toFixed(1).replace(".",",")}%</b></div>`).join("")}</div></div>`}
+const DONUT_PASTEL=["var(--d1)","var(--d2)","var(--d3)","var(--d4)","var(--d5)"];
+function donut(items){const tot=items.reduce((a,b)=>a+b[1],0)||1,pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));const cor=k=>/^outr/i.test(items[k][0])?"var(--line)":pos[k]<3?RANK_VIVO[pos[k]]:DONUT_PASTEL[(pos[k]-3)%DONUT_PASTEL.length];
+ let a0=-Math.PI/2,s="";items.forEach((it,k)=>{const a1=a0+it[1]/tot*Math.PI*2;const L=a1-a0>Math.PI?1:0;const P=(a,r)=>[60+r*Math.cos(a),60+r*Math.sin(a)];const[x0,y0]=P(a0,52),[x1,y1]=P(a1,52),[x2,y2]=P(a1,32),[x3,y3]=P(a0,32);s+=`<path d="M${x0} ${y0}A52 52 0 ${L} 1 ${x1} ${y1}L${x2} ${y2}A32 32 0 ${L} 0 ${x3} ${y3}Z" fill="${cor(k)}" stroke="var(--surface)" stroke-width="1.5"/>`;a0=a1});
+return`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="130" height="130">${s}</svg><div style="font-size:13px;flex:1;min-width:150px">${items.map((it,k)=>`<div style="display:flex;gap:8px;align-items:center;padding:3px 0"><i style="width:10px;height:10px;border-radius:50%;background:${cor(k)}"></i><span style="flex:1">${it[0]}</span><b style="font-weight:${pos[k]<3?600:500}">${(it[1]/tot*100).toFixed(1).replace(".",",")}%</b></div>`).join("")}</div></div>`}
 function spark(v){const mx=Math.max(...v),mn=Math.min(...v);return`<svg viewBox="0 0 100 28" width="100%" height="28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--slate)" stroke-width="1.6" points="${v.map((x,i)=>i*100/(v.length-1)+","+(26-(x-mn)/(mx-mn||1)*22)).join(" ")}"/></svg>`}
 
 /* ---------- mapa ---------- */
 const METRICS={gasto:["Gastos",u=>u.gasto,brl],pop:["População",u=>u.pop,v=>nf(Math.round(v/1e3))+" mil"],pc:["Gasto por habitante",u=>u.pc,v=>"R$ "+nf(Math.round(v))],contratos:["Contratos",u=>u.contratos,nf],obras:["Obras",u=>u.obras,nf],projetos:["Projetos",u=>u.projetos,nf],arr:["Arrecadação federal",u=>u.arr,brl],dclr:["Dívida do estado (% da receita)",u=>u.dclr,v=>v.toFixed(0)+"%"],inad:["Adultos inadimplentes",u=>u.inad,v=>v.toFixed(1).replace(".",",")+"%"],ret:["Retorno da União",u=>u.ret,brl],vio:["Homicídios por 100 mil habitantes",u=>u.vio||0,v=>v.toLocaleString("pt-BR",{maximumFractionDigits:1})]};
-const SCALE=["#EDF4FC","#CFE1F6","#A9C8EE","#7FA9E0","#5A88CC"];
+const SCALE=["#EEF4FC","#C6DBF5","#8DB8EC","#4A8ADB","#1F5FB4"];
 /* mapa de calor: cor contínua entre os tons da escala (t de 0 a 1) */
 function heatCor(t){t=Math.max(0,Math.min(1,+t||0))*(SCALE.length-1);const i=Math.min(SCALE.length-2,Math.floor(t)),f=t-i,a=parseInt(SCALE[i].slice(1),16),b=parseInt(SCALE[i+1].slice(1),16);
  const m=s=>Math.round(((a>>s)&255)*(1-f)+((b>>s)&255)*f);return`rgb(${m(16)},${m(8)},${m(0)})`}
@@ -1616,7 +1669,8 @@ const HMET=[["reg","Regiões"],["gasto","Gastos"],["pc","Por habitante"],["pop",
 const REGV={N:124.8e9,NE:402.6e9,CO:213.4e9,SE:615.2e9,S:149.7e9};
 const CMP={desp:["Despesas",REGV,brl],pc:["Gasto por habitante",{N:712,NE:1042,CO:968,SE:1824,S:1236},v=>"R$ "+nf(v)],contratos:["Contratos",{N:18420,NE:61230,CO:29880,SE:104510,S:47390},nf],obras:["Obras",{N:1210,NE:3480,CO:1650,SE:4120,S:2020},nf]};
 function vbars(obj,fmt){const W=460,H=190,ks=Object.keys(REG);const mx=Math.max(...ks.map(k=>obj[k]));const bw=58,gap=(W-bw*5)/5;
-return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Comparativo entre regiões">${ks.map((k,i)=>{const v=obj[k],h=v/mx*120,x=gap/2+i*(bw+gap),y=150-h;return`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="3" fill="${REGCOL[k]}"/><text x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="var(--ink2)">${fmt(v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${REG[k]}</text>`}).join("")}<line x1="0" x2="${W}" y1="150.5" y2="150.5" stroke="var(--line)"/></svg>`}
+const pos=rankPos(ks.map(k=>[k,obj[k]]));
+return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Comparativo entre regiões">${ks.map((k,i)=>{const v=obj[k],h=v/mx*120,x=gap/2+i*(bw+gap),y=150-h;return`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${rankCor(pos[i],ks.length)}"><title>${REG[k]}: ${fmt(v)}</title></rect><text x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="var(--ink2)"${pos[i]<3?' font-weight="600"':""}>${fmt(v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${REG[k]}</text>`}).join("")}<line x1="0" x2="${W}" y1="150.5" y2="150.5" stroke="var(--line)"/></svg>`}
 function ring(items,center,sub){const tot=items.reduce((a,b)=>a+b[1],0);const r=50,C=2*Math.PI*r;let off=0;
 const segs=items.map(it=>{const len=it[1]/tot*C;const el=`<circle r="${r}" cx="64" cy="64" fill="none" stroke="${it[2]}" stroke-width="12" stroke-dasharray="${Math.max(0,len-2)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 64 64)"/>`;off+=len;return el}).join("");
 return`<svg viewBox="0 0 128 128" width="140" height="140" style="flex:none"><circle r="${r}" cx="64" cy="64" fill="none" stroke="var(--line2)" stroke-width="12"/>${segs}<text x="64" y="66" text-anchor="middle" font-size="19" font-weight="600" fill="var(--navy)">${center}</text><text x="64" y="82" text-anchor="middle" font-size="8.5" fill="var(--muted)">${sub}</text></svg>`}
@@ -4005,7 +4059,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   const desenha=()=>{const[nome,f,fmt,sub]=SEG_MET[met];const vals={};UFS.forEach(u=>{vals[u.uf]=f(d.estados[u.uf])});
    $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt);$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
    const ord=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);
-   const linha=(u,i)=>`<div class="rl"><i style="background:${heatCor((ord.length-1-i)/Math.max(1,ord.length-1))};border-radius:50%"></i><a href="#/seguranca" data-segz="${u.uf}">${u.nome}</a><b>${fmt(vals[u.uf])}</b><span></span></div>`;
+   const linha=(u,i)=>`<div class="rl"><i style="background:${rankCor(i,ord.length)};border-radius:50%"></i><a href="#/seguranca" data-segz="${u.uf}"${i<3?' style="font-weight:600"':""}>${u.nome}</a><b>${fmt(vals[u.uf])}</b><span></span></div>`;
    $("#segside").innerHTML=`<div class="small muted" style="margin-bottom:4px">Maiores</div>${ord.slice(0,5).map(linha).join("")}<div class="small muted" style="margin:10px 0 4px">Menores</div>${ord.slice(-5).map((u,i)=>linha(u,ord.length-5+i)).join("")}`;
    bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ();graf()};
   const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
@@ -4195,7 +4249,9 @@ function pilulas(){
  document.querySelectorAll(".segj-w:not([data-pok])").forEach(w=>{const l=w.querySelector(":scope>.segj-l"),src=w.querySelector(":scope>.seg");if(!l||!src)return;fazPilula(w,src,l.textContent.trim())});
  document.querySelectorAll(".segj-grupos,.el-ctl").forEach(par=>{if(!par.classList.contains("pbar")&&par.children.length&&[...par.children].every(c=>c.classList.contains("pill-w")))par.classList.add("pbar")})}
 document.addEventListener("click",fecharPilulas);document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharPilulas()});
-{let t=null;new MutationObserver(()=>{pilulas();clearTimeout(t);t=setTimeout(aplicarMidia,40)}).observe(document.documentElement,{childList:true,subtree:true})}
+// só reage quando entram elementos novos (os contadores que mudam texto várias vezes por segundo não disparam nada)
+{let t=null,q=false;new MutationObserver(ms=>{if(!ms.some(m=>{for(const n of m.addedNodes)if(n.nodeType===1)return true;return false}))return;
+ if(!q){q=true;requestAnimationFrame(()=>{q=false;pilulas()})}clearTimeout(t);t=setTimeout(aplicarMidia,60)}).observe(document.documentElement,{childList:true,subtree:true})}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
 const iaBotao=nome=>`<a class="btn ia-perg" href="#/ia/${encodeURIComponent(`O que as notícias recentes dizem sobre ${nome}? E quantos mandatos já ganhou?`)}">${svgI("ia")}Perguntar à IA sobre ${esc(nome)}</a>`;
@@ -4384,11 +4440,16 @@ function iaBuscaAtualiza(){const i=$("#sInput"),a=$("#sIA"),sq=$("#sIAq");if(!i|
 {const i=$("#sInput"),a=$("#sIA");if(i&&a){i.addEventListener("input",iaBuscaAtualiza);a.addEventListener("click",()=>closeSearch());
  i.addEventListener("keydown",e=>{if(e.key==="Enter"&&iaPergunta(i.value)){e.preventDefault();e.stopImmediatePropagation();const q=i.value.trim();closeSearch();location.hash="#/ia/"+encodeURIComponent(q)}},true);
  const _os=openSearch;openSearch=function(...x){_os(...x);iaBuscaAtualiza()}}}
+// depois que a página abre, baixa em segundo plano os dados das abas mais usadas (troca de aba mais rápida)
+(()=>{const c=navigator.connection;if(c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")))return;const ocioso=window.requestIdleCallback||(f=>setTimeout(f,1500));
+ const ir=()=>{if(!API.checado)return setTimeout(ir,800);if(!API.on)return;let i=0;const L=["/seguranca","/gastos/entes","/noticias?limit=1500","/eleicoes/anos","/orgaos","/dividas/estados","/contadores"];
+  const prox=()=>{if(i>=L.length)return;apiGet(L[i++]).catch(()=>{}).finally(()=>ocioso(prox,{timeout:4000}))};prox()};
+ addEventListener("load",()=>setTimeout(()=>ocioso(ir,{timeout:5000}),2500))})();
 // caixa "IA do Brasil+" do menu lateral: a pergunta abre a tela da IA
 document.querySelectorAll("[data-ia-mini]").forEach(f=>f.onsubmit=e=>{e.preventDefault();const i=f.querySelector("input"),v=i.value.trim();i.value="";location.hash="#/ia"+(v?"/"+encodeURIComponent(v):"")});
 
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
-const r=fn(...args);$("#view").innerHTML=r.html;r.mount&&r.mount();
+const r=fn(...args);const V=$("#view");V.innerHTML=r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",pessoas:"pessoas"}[k]||null;
 const sec={indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
