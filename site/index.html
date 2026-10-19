@@ -726,7 +726,7 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 [data-theme="dark"] body,[data-theme="dark"] .page .ufnav{background:var(--bg)}
 [data-theme="dark"] #hmapcard .ufnav,[data-theme="dark"] .pop .ufnav{background:var(--surface)}
 [data-theme="dark"] .geo path.st{stroke:#161B23}
-[data-theme="dark"] .geo.heat path.st{stroke:rgba(255,255,255,.38)}
+[data-theme="dark"] .geo.heat path.st{stroke:rgba(22,40,77,.5)}
 [data-theme="dark"] .geo .hm-borda path{stroke:rgba(255,255,255,.5)}
 [data-theme="dark"] .bar,[data-theme="dark"] .meter .bar{background:#252C38}
 [data-theme="dark"] input,[data-theme="dark"] select{background:var(--surface);color:var(--ink);border-color:var(--line)}
@@ -1378,8 +1378,8 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 :root{--bg:#F6F7F9;--line:#E6E9EE;--line2:#EEF1F4;--ink:#141B2D;--ink2:#4A5468;--muted:#7C8698;
  --c1:#2A78D6;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2A78D6;--r-mid:#9EC5F4;--r-low:#DCE8F7;--foco:rgba(42,120,214,.16);
  --d1:#C9D6E8;--d2:#D3DCE9;--d3:#DCE3EE;--d4:#E3E8F0;--d5:#E8ECF2}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#3987E5;--r-mid:#2E5684;--r-low:#22324A;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
-:root[data-theme="dark"]{--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#3987E5;--r-mid:#2E5684;--r-low:#22324A;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#93A6C2;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
+:root[data-theme="dark"]{--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#93A6C2;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
 body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .ph h1{font-size:30px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
 .ph p{color:var(--ink2);max-width:72ch}
@@ -1408,7 +1408,7 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .hb-top .hb-n,.hb-top .hb-v{color:var(--ink);font-weight:600}
 /* mapa */
 .geo text{paint-order:stroke;stroke:rgba(255,255,255,.88);stroke-width:2.6px;stroke-linejoin:round;fill:#2B3445;font-weight:600;letter-spacing:.02em}
-[data-theme="dark"] .geo text{stroke:rgba(17,21,28,.85);fill:#E7EAF0}
+[data-theme="dark"] .geo text{stroke:rgba(255,255,255,.88);fill:#2B3445}
 .geo path.st{stroke-width:1;transition:opacity .15s,filter .15s,stroke .15s}
 .geo.heat path.st:hover{stroke:#fff;stroke-width:2;filter:drop-shadow(0 0 2px rgba(20,40,80,.35))}
 .legend .hgrad{height:8px;width:140px}
@@ -1419,15 +1419,17 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 
 /* tabelas: um padrão só em todo o site (mesma letra, espaçamento, cabeçalho e números à direita) */
 #view table,.pop-b table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.4}
-#view th,.pop-b th{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.01em;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:none}
+#view th,.pop-b th{font-size:12px;font-weight:600;color:var(--c1);letter-spacing:.01em;text-align:left;padding:10px 12px;border-bottom:2px solid var(--foco);white-space:nowrap;background:color-mix(in srgb,var(--c1) 6%,transparent)}
+#view thead th:first-child{border-top-left-radius:10px}#view thead th:last-child{border-top-right-radius:10px}
 #view td,.pop-b td{padding:12px;border-bottom:1px solid var(--line2);vertical-align:middle;color:var(--ink2)}
 #view td:first-child,.pop-b td:first-child{color:var(--ink);font-weight:500}
 #view td:first-child b,.pop-b td:first-child b{font-weight:600}
 #view td .small,.pop-b td .small{font-weight:400;margin-top:2px}
 #view td.n,#view th.n,.pop-b td.n,.pop-b th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 #view tr:last-child td,.pop-b tr:last-child td{border-bottom:0}
-#view td a,.pop-b td a{color:var(--ink);text-decoration:none}
-#view td a:hover,.pop-b td a:hover{color:var(--c1)}
+#view td a,.pop-b td a{color:var(--c1);text-decoration:none;font-weight:500}
+#view td a:hover,.pop-b td a:hover{text-decoration:underline}
+#view tbody tr:hover td,.pop-b tbody tr:hover td{background:color-mix(in srgb,var(--c1) 5%,transparent)}
 #view .tw,.pop-b .tw{margin:0}
 .panel>.tw:first-child,.panel>h2+.tw,.panel>h2+p+.tw{margin-top:4px}
 .tw-mais{display:block;margin:12px auto 0}
@@ -1706,7 +1708,7 @@ const html=`<div class="home"><div class="hl">
 <div class="hstats"><div class="hstat">${hi("orgaos")}<div>União<br><b>+ 4.000</b> órgãos</div></div><div class="hstat">${hi("mapa")}<div>Estados e DF<br><b>27</b> unidades</div></div><div class="hstat">${hi("pin")}<div>Municípios<br><b>5.568</b> cidades</div></div></div></section>
 
 <div class="panel" id="hmapcard"><div id="hmapmain" class="zmain"><div class="hd"><div><h2>Mapa do Brasil</h2><p id="hmsub">Gastos públicos por região (2025). Toque em um estado para abrir a ficha completa.</p></div><select id="hreg" class="cardfoot-sel" hidden><option value="">Brasil</option>${Object.entries(REG).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></div>
-<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Mostrar</span><div class="seg segj" id="hmet">${HMET.map((m,i)=>`<button data-m="${m[0]}" class="${i?"":"on"}"${m[0]==="vio"?" hidden":""}>${m[1]}</button>`).join("")}</div></div><div class="segj-w"><span class="segj-l">Região</span><div class="seg segj" id="hregb"><button data-r="" class="on">Brasil</button>${Object.entries(REG).map(([k,v])=>`<button data-r="${k}">${v}</button>`).join("")}</div></div></div>
+<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Mostrar</span><div class="seg segj" id="hmet">${HMET.map((m,i)=>`<button data-m="${m[0]}" class="${i?"":"on"}"${m[0]==="vio"?" hidden":""}>${m[1]}</button>`).join("")}</div></div></div>
 <div class="mapwrap mapbig"><div id="hmap"></div><div id="hside" class="zside"></div></div>
 <div class="cardfoot"><span class="small muted" id="hmleg"></span><a class="small" href="#/gastos" id="hmlink">Ver detalhes</a></div></div><div id="hstate" style="display:none"></div></div>
 <div class="meters"><div class="panel meter2 imp"><div class="m-h"><span class="m-dot"></span><h2>Impostômetro</h2><span class="small muted">desde 1º de janeiro</span></div><div class="m-v" id="impV">R$ 0</div><div class="m-sub">pagos em tributos por pessoas e empresas em <span class="yr"></span></div>
