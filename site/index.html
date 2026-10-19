@@ -328,7 +328,10 @@ tbody tr[data-href]:hover{background:var(--bg)}
 .geo path.st:hover{opacity:.8}
 .geo path.st.sel{stroke:var(--navy);stroke-width:2.4}
 .geo text{font-size:11px;font-weight:600;fill:#3A4252;pointer-events:none}
-.geo.heat path.st{fill-opacity:0;stroke:rgba(255,255,255,.4);stroke-width:.6}
+.geo.heat path.st{fill-opacity:0;stroke:rgba(22,40,77,.42);stroke-width:.9;stroke-linejoin:round}
+#elmap .geo.heat path.st,#emap .geo.heat path.st{stroke:rgba(255,255,255,.7)}
+/* contorno do país: traço largo por baixo das cores, só a borda de fora aparece */
+.geo .hm-borda path{fill:none;stroke:rgba(22,40,77,.55);stroke-width:2.4;stroke-linejoin:round}
 .geo.heat path.st:hover{stroke:var(--navy);stroke-width:1.6;filter:none}
 .geo.heat path.st.sel{stroke:var(--navy);stroke-width:2.2}
 .legend .hgrad{display:inline-block;width:120px;height:9px;border-radius:5px;vertical-align:middle;margin:0 6px}
@@ -723,7 +726,8 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 [data-theme="dark"] body,[data-theme="dark"] .page .ufnav{background:var(--bg)}
 [data-theme="dark"] #hmapcard .ufnav,[data-theme="dark"] .pop .ufnav{background:var(--surface)}
 [data-theme="dark"] .geo path.st{stroke:#161B23}
-[data-theme="dark"] .geo.heat path.st{stroke:rgba(255,255,255,.3)}
+[data-theme="dark"] .geo.heat path.st{stroke:rgba(255,255,255,.38)}
+[data-theme="dark"] .geo .hm-borda path{stroke:rgba(255,255,255,.5)}
 [data-theme="dark"] .bar,[data-theme="dark"] .meter .bar{background:#252C38}
 [data-theme="dark"] input,[data-theme="dark"] select{background:var(--surface);color:var(--ink);border-color:var(--line)}
 [data-theme="dark"] .btn{background:var(--surface);color:var(--ink);border-color:var(--line)}
@@ -1651,7 +1655,7 @@ const ps=UFS.map(u=>{const dim=regFilter&&u.reg!==regFilter;return`<path class="
 // mapa de calor: as cores dos estados se misturam nas divisas (desfoque recortado no contorno do país); por baixo fica a cor
 // sem desfoque, para o litoral não clarear, e por cima os estados transparentes que recebem o toque
 let hl="";if(heat){const id="hm"+(++HEATN),todos=UFS.map(u=>`<path d="${GEO.p[u.uf]}"/>`).join(""),cam=UFS.map(u=>`<path d="${GEO.p[u.uf]}" fill="${cor[u.uf]}" stroke="${cor[u.uf]}" stroke-width="1.5"${regFilter&&u.reg!==regFilter?' opacity=".25"':""}/>`).join("");
- hl=`<defs><clipPath id="${id}c">${todos}</clipPath><filter id="${id}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(GEO.w/45).toFixed(1)}"/></filter></defs><g class="hm" style="pointer-events:none">${cam}<g clip-path="url(#${id}c)"><g filter="url(#${id}f)">${cam}</g></g></g>`}
+ hl=`<defs><clipPath id="${id}c">${todos}</clipPath><filter id="${id}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(GEO.w/45).toFixed(1)}"/></filter></defs><g class="hm" style="pointer-events:none"><g class="hm-borda">${todos}</g>${cam}<g clip-path="url(#${id}c)"><g filter="url(#${id}f)">${cam}</g></g></g>`}
 const sp=UFS.find(u=>u.uf===sel);const top=sp?`<path class="st sel" d="${GEO.p[sel]}" fill="none" style="pointer-events:none"/>`:"";
 const lb=o.labels===false?"":UFS.filter(u=>!["DF","SE","AL","RN","PB","ES","RJ"].includes(u.uf)||o.allLabels).map(u=>`<text x="${GEO.c[u.uf][0]}" y="${GEO.c[u.uf][1]+4}" text-anchor="middle">${u.uf}</text>`).join("");
 return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion?"":`<div class="legend">menor ${escalaLeg()} maior</div>`}`}
