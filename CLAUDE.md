@@ -125,3 +125,13 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   por pessoa desde 1994. O robô grava junto da cópia (`exportar_snapshot.py`); para uma cópia pronta: `python -m scripts.indice_ia`.
   Limitações: TSE 2002 marca todos os candidatos como eleitos (2002 só conta para presidente); faltam presidente 2006/2010;
   a pessoa é reconhecida pelo nome no mesmo estado (homônimos não são unidos).
+
+## Padrão visual (v0.9, out/2026)
+- Paleta: azul #2F6FED (links, botões, seleção), azul-marinho #1D2939 (texto), fundo #F5F7FA, pastéis por região
+  (`REGCOL`). Bloco CSS "v0.9" no fim do `<style>` do site.
+- Mapas: cor sólida por estado, divisas brancas, 5 faixas com o mesmo número de estados (`faixasDe`, `corFaixa`,
+  `legFaixas` com os limites escritos). Nada de degradê entre estados. Eleições (presidente): modos "Quem venceu",
+  "% de um candidato" e "Diferença entre os 2 primeiros" (escala divergente com empate em cinza).
+- Gráficos: os 3 maiores em cor viva e os 3 menores em pastel (`rankPos`, `rankCor`).
+- Tabelas: um padrão só (`table()`): 10 primeiras linhas + "Ver todos", ordenação ao tocar no título da coluna,
+  cabeçalho fixo nas listas longas, números à direita.

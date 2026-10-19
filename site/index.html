@@ -1375,8 +1375,8 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 
 /* ===================== v0.8: visual limpo e profissional =====================
    Poucas cores: tudo em tons de cinza e azul; cor viva só nos dados que importam (os 3 maiores) e pastel nos menores. */
-:root{--bg:#F6F7F9;--line:#E6E9EE;--line2:#EEF1F4;--ink:#141B2D;--ink2:#4A5468;--muted:#7C8698;
- --c1:#2A78D6;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2A78D6;--r-mid:#9EC5F4;--r-low:#DCE8F7;--foco:rgba(42,120,214,.16);
+:root{--bg:#F5F7FA;--line:#E4E8EE;--line2:#EEF1F5;--ink:#1D2939;--navy:#1D2939;--ink2:#475467;--muted:#7A8496;
+ --c1:#2F6FED;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2F6FED;--r-mid:#A3C0F7;--r-low:#DCE6FB;--foco:rgba(47,111,237,.14);
  --d1:#C9D6E8;--d2:#D3DCE9;--d3:#DCE3EE;--d4:#E3E8F0;--d5:#E8ECF2}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#93A6C2;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
 :root[data-theme="dark"]{--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#93A6C2;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
@@ -1434,6 +1434,27 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .panel>.tw:first-child,.panel>h2+.tw,.panel>h2+p+.tw{margin-top:4px}
 .tw-mais{display:block;margin:12px auto 0}
 @media (max-width:640px){#view th,.pop-b th{padding:8px 8px}#view td,.pop-b td{padding:10px 8px}#view table,.pop-b table{font-size:13px}}
+
+/* ===================== v0.9: padrão de painel de dados =====================
+   Indicador: rótulo em cima, número grande, período/unidade embaixo. Menos caixas dentro de caixas.
+   Mapas com cor sólida por estado e divisas brancas; tabelas ordenáveis com cabeçalho fixo. */
+.kpi strong{font-size:26px;line-height:1.15;margin-top:4px}
+.kpi em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:4px}
+.panel .kpis{background:var(--bg);border-color:transparent}
+.panel .kpis .kpi{border-color:var(--line)}
+@media (max-width:640px){.kpi strong{font-size:20px}}
+.geo path.st{stroke:var(--surface);stroke-width:1.1;stroke-linejoin:round}
+.geo path.st:hover{filter:brightness(.94)}
+.geo path.st.sel{stroke:var(--navy);stroke-width:2.6}
+.leg-faixas{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:flex-start;align-items:center;font-size:12px;color:var(--ink2);margin-top:10px}
+.leg-faixas span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.leg-faixas i{width:14px;height:10px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.06)}
+.leg-faixas b{font-weight:600;color:var(--ink);margin-right:4px}
+#view thead th,.pop-b thead th{cursor:pointer;user-select:none;position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--c1) 6%,var(--surface))}
+#view thead th:hover{color:var(--navy)}
+#view thead th[data-ord="desc"]::after{content:" ↓"}#view thead th[data-ord="asc"]::after{content:" ↑"}
+@media (min-width:641px){#view .tw.aberta,#view .tw:not(.tw-corte):has(> table tbody tr:nth-child(18)){max-height:72vh;overflow:auto}}
+.rload{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1648,11 +1669,16 @@ const SCALE=["#EEF4FC","#C6DBF5","#8DB8EC","#4A8ADB","#1F5FB4"];
 /* mapa de calor: cor contínua entre os tons da escala (t de 0 a 1) */
 function heatCor(t){t=Math.max(0,Math.min(1,+t||0))*(SCALE.length-1);const i=Math.min(SCALE.length-2,Math.floor(t)),f=t-i,a=parseInt(SCALE[i].slice(1),16),b=parseInt(SCALE[i+1].slice(1),16);
  const m=s=>Math.round(((a>>s)&255)*(1-f)+((b>>s)&255)*f);return`rgb(${m(16)},${m(8)},${m(0)})`}
+// 5 faixas de cor sólida com o mesmo número de estados em cada uma (um estado muito grande não apaga os outros),
+// e os limites de cada faixa escritos na legenda
+function faixasDe(vals){const v=vals.filter(x=>x!=null&&isFinite(x)).sort((a,b)=>a-b);if(!v.length)return null;const q=k=>v[Math.min(v.length-1,Math.floor(k*v.length/5))];return{mn:v[0],mx:v[v.length-1],b:[q(1),q(2),q(3),q(4)]}}
+const corFaixa=(F,x)=>F&&x!=null?SCALE[F.b.filter(b=>x>=b).length]:"var(--mapa-vazio)";
+function legFaixas(F,fmt){if(!F)return"";const e=[F.mn,...F.b,F.mx];return`<div class="legend leg-faixas">${SCALE.map((c,k)=>`<span><i style="background:${c}"></i>${k===0?"até "+fmt(e[1]):k===4?fmt(e[4])+" ou mais":fmt(e[k])+" a "+fmt(e[k+1])}</span>`).join("")}</div>`}
 const escalaLeg=()=>`<i class="hgrad" style="background:linear-gradient(90deg,${SCALE.join(",")})"></i>`;
 let HEATN=0;
-const REGCOL={N:"#BFE3CF",NE:"#F6DCAA",CO:"#F5C3B4",SE:"#AFCDEF",S:"#D3C3EC"};
-function brMap(metric,sel,regFilter,o={}){const f=metric?METRICS[metric][1]:null;let mn=0,mx=1;if(f){const v=UFS.map(f);mn=Math.min(...v);mx=Math.max(...v)}
-const heat=o.heat!=null?o.heat:!!f&&!o.byRegion,cor={};UFS.forEach(u=>cor[u.uf]=o.fillFn?o.fillFn(u):o.byRegion?REGCOL[u.reg]:heatCor((f(u)-mn)/(mx-mn+1e-9)));
+const REGCOL={N:"#B9DEC9",NE:"#F5D89C",CO:"#F2B8AA",SE:"#B7CCF3",S:"#D6C8EE"};
+function brMap(metric,sel,regFilter,o={}){const f=metric?METRICS[metric][1]:null,F=f?faixasDe(UFS.map(f)):null;
+const heat=!!o.heat,cor={};UFS.forEach(u=>cor[u.uf]=o.fillFn?o.fillFn(u):o.byRegion?REGCOL[u.reg]:corFaixa(F,f(u)));
 const ps=UFS.map(u=>{const dim=regFilter&&u.reg!==regFilter;return`<path class="st ${sel===u.uf?"sel":""}" data-uf="${u.uf}" d="${GEO.p[u.uf]}" fill="${cor[u.uf]}" style="${dim?"opacity:.25":""}"><title>${u.nome}</title></path>`}).join("");
 // mapa de calor: as cores dos estados se misturam nas divisas (desfoque recortado no contorno do país); por baixo fica a cor
 // sem desfoque, para o litoral não clarear, e por cima os estados transparentes que recebem o toque
@@ -1660,7 +1686,7 @@ let hl="";if(heat){const id="hm"+(++HEATN),todos=UFS.map(u=>`<path d="${GEO.p[u.
  hl=`<defs><clipPath id="${id}c">${todos}</clipPath><filter id="${id}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(GEO.w/45).toFixed(1)}"/></filter></defs><g class="hm" style="pointer-events:none"><g class="hm-borda">${todos}</g>${cam}<g clip-path="url(#${id}c)"><g filter="url(#${id}f)">${cam}</g></g></g>`}
 const sp=UFS.find(u=>u.uf===sel);const top=sp?`<path class="st sel" d="${GEO.p[sel]}" fill="none" style="pointer-events:none"/>`:"";
 const lb=o.labels===false?"":UFS.filter(u=>!["DF","SE","AL","RN","PB","ES","RJ"].includes(u.uf)||o.allLabels).map(u=>`<text x="${GEO.c[u.uf][0]}" y="${GEO.c[u.uf][1]+4}" text-anchor="middle">${u.uf}</text>`).join("");
-return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion?"":`<div class="legend">menor ${escalaLeg()} maior</div>`}`}
+return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion||!f?"":legFaixas(F,METRICS[metric][2])}`}
 function cartogram(metric,sel,regFilter){return brMap(metric,sel,regFilter)}
 function ufPanel(u){return`<div class="crumb">Brasil / ${REG[u.reg]}</div><h3 style="font-size:22px">${u.nome}</h3><p class="muted small" style="margin:2px 0 14px">Capital: ${u.cap}</p>
 <div class="facts"><div><span>Gastos no ano</span>${brl(u.gasto)}</div><div><span>População</span>${nf(Math.round(u.pop))}</div><div><span>Gasto por habitante</span>R$ ${nf(Math.round(u.pc))}</div><div><span>Contratos</span>${nf(u.contratos)}</div><div><span>Obras</span>${nf(u.obras)}</div><div><span>Projetos</span>${nf(u.projetos)}</div><div><span>Arrecadação federal</span>${brl(u.arr)}</div><div><span>Retorno da União</span>${brl(u.ret)}</div></div>
@@ -1754,7 +1780,7 @@ return{html,mount(){
   else{const[n,f,fm]=METRICS[m];const rows=UFS.filter(u=>!reg||u.reg===reg).sort((a,b)=>f(b)-f(a)).slice(0,8);
    $("#hside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?REG[reg]:"Brasil"}: maiores valores</div>`+hbars(rows.map(u=>[u.nome,f(u),"#/uf/"+u.uf]),{fmt:fm});
    $("#hmsub").textContent=n+" por estado. Toque em um estado para abrir a ficha completa.";
-   $("#hmleg").innerHTML=`<span class="legend" style="justify-content:flex-start;margin:0">menor ${escalaLeg()} maior</span>`;
+   $("#hmleg").innerHTML=legFaixas(faixasDe(UFS.map(f)),fm);
    $("#hmlink").setAttribute("href",m==="vio"?"#/seguranca":m==="dclr"?"#/dividas/estados":m==="inad"?"#/dividas/pessoas":["arr","ret"].includes(m)?"#/arrecadacao":m==="contratos"?"#/contratos":m==="obras"?"#/obras":m==="projetos"?"#/projetos":"#/gastos")}};dm();
  $("#hreg").onchange=e=>{reg=e.target.value;dm()};document.querySelectorAll("#hregb button").forEach(b=>b.onclick=()=>{reg=b.dataset.r;$("#hreg").value=reg;dm()});
  document.querySelectorAll("#hmet button").forEach(b=>b.onclick=()=>{met=b.dataset.m;document.querySelectorAll("#hmet button").forEach(x=>x.classList.toggle("on",x===b));dm()});
@@ -1823,7 +1849,7 @@ return{html:`<div class="ph"><div><h1>Arrecadação e repasses</h1><p>Quanto cad
 <p style="margin:0"><b style="color:var(--ink)">Redistribuído ao país</b> é a diferença. Fica com a União e financia despesas nacionais e as transferências a estados que recebem mais do que arrecadam.</p>
 <p style="margin:0"><b style="color:var(--ink)">Limitações.</b> Empresas com sede em um estado pagam tributos por operações feitas em outros, o que eleva a arrecadação de estados como São Paulo e o Distrito Federal. Gastos diretos da União no estado, como benefícios do INSS e salários federais, não entram neste cálculo e terão uma visão própria.</p></div>${SRC}</div>`,
 mount(){const ds=()=>{const u=UF[sel];$("#aside").innerHTML=`<div class="crumb">Brasil / ${REG[u.reg]}</div><h3 style="font-size:22px">${u.nome}</h3><p style="margin:8px 0 14px">${arrSentence(u)}</p>${arrSplit(u,true)}<div class="facts" style="margin-top:16px"><div><span>Retorno por R$ 1 arrecadado</span>R$ ${(u.ret/u.arr).toFixed(2).replace(".",",")}</div><div><span>Arrecadação própria</span>${brl(u.prop)}</div></div><div style="margin-top:14px"><a class="btn pri" href="#/uf/${u.uf}/arrecadacao">Abrir ${u.nome}</a></div>`;
-$("#amap").innerHTML=brMap(null,sel,reg,{fillFn:fillS,legend:false,heat:true});bindMap($("#amap"),null,null,x=>{sel=x;ds()})};
+$("#amap").innerHTML=brMap(null,sel,reg,{fillFn:fillS,legend:false});bindMap($("#amap"),null,null,x=>{sel=x;ds()})};
 const dt=()=>{const key={saldo:u=>u.arr-u.ret,arr:u=>u.arr,ret:u=>u.ret,ratio:u=>u.ret/u.arr}[ord];const rows=UFS.filter(u=>!reg||u.reg===reg).sort((a,b)=>key(b)-key(a));
 $("#atab").innerHTML=table([["Estado",u=>`<a href="#/uf/${u.uf}">${u.nome}</a>`],["Pagou de impostos",u=>brl(u.arr),"n"],["Voltou ao estado",u=>`${brl(u.ret)}<div class="small muted">R$ ${(u.ret/u.arr).toFixed(2).replace(".",",")} por R$ 1</div>`,"n"],["Divisão",u=>`<div style="min-width:120px;padding-top:5px">${arrSplit(u).split('<div class="small"')[0]}</div>`]],rows,u=>"#/uf/"+u.uf+"/arrecadacao");rowLinks()};
 ds();dt();$("#aord").onchange=e=>{ord=e.target.value;dt()};$("#areg").onchange=e=>{reg=e.target.value;ds();dt()}}}};
@@ -1991,7 +2017,7 @@ mount(){const draw=()=>{const e=ELEI[eid];$("#esub").textContent=e.nome+". Perce
  if(cmpOn){const A=modo,B=cmp,na=e.partes[A],nb=e.partes[B],ra=rampaPartido(A),rb=rampaPartido(B);
   const cor=u=>{const v=elec(eid,u),d=v[A]-v[B],k=Math.abs(d)<3?1:Math.abs(d)<8?2:Math.abs(d)<15?3:4;return(d>=0?ra:rb)[k]};
   $("#emtit").textContent=`Comparação: ${na} × ${nb}`;
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:cor,legend:false,heat:true});
+  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:cor,legend:false});
   const us=UFS.filter(u=>!reg||u.reg===reg),ga=us.filter(u=>{const v=elec(eid,u);return v[A]>=v[B]}).length;
   const marg=us.map(u=>{const v=elec(eid,u);return[u,v[A]-v[B]]}).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]));
   $("#eside").innerHTML=painelDuelo(na,nb,bv[A],bv[B],PCOL[A],PCOL[B],reg?"na região "+REG[reg]:"no Brasil")+
@@ -2000,11 +2026,11 @@ mount(){const draw=()=>{const e=ELEI[eid];$("#esub").textContent=e.nome+". Perce
   <div class="small muted" style="margin:12px 0 4px">Maiores diferenças</div>${marg.slice(0,4).map(([u,d])=>`<div class="ptop"><span>${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</span><b>${d>=0?na:nb} +${Math.abs(d).toFixed(1).replace(".",",")}</b></div>`).join("")}
   <div class="legend" style="justify-content:flex-start;flex-wrap:wrap;margin-top:12px">${na} à frente ${ra.slice(1).map(c=>`<i style="background:${c}"></i>`).join("")}&nbsp;&nbsp;${nb} à frente ${rb.slice(1).map(c=>`<i style="background:${c}"></i>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor mais forte, maior a vantagem.</p>`}
  else if(modo<0){$("#emtit").textContent="Partido mais votado em cada estado";
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>{const v=elec(eid,u);return PCOL[v.indexOf(Math.max(...v))]},legend:false,heat:true});
+  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>{const v=elec(eid,u);return PCOL[v.indexOf(Math.max(...v))]},legend:false});
   $("#eside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?"Região "+REG[reg]:"Brasil"}: votos válidos</div>${partyBars(eid,bv)}<p class="small muted" style="margin:10px 0 0">A cor de cada estado indica o partido mais votado.</p>`}
  else{const nome=e.partes[modo],rp=rampaPartido(modo);const vals=UFS.map(u=>elec(eid,u)[modo]);const mn=Math.min(...vals),mx=Math.max(...vals);const cor=x=>rp[Math.min(4,Math.floor((x-mn)/(mx-mn+1e-9)*5))];
   $("#emtit").textContent="Área de votação: "+nome;
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false,heat:true});
+  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false});
   const top=UFS.filter(u=>!reg||u.reg===reg).map(u=>[u,elec(eid,u)[modo]]).sort((a,b)=>b[1]-a[1]);
   $("#eside").innerHTML=`<div class="pdest"><i style="background:${PCOL[modo]}"></i><div><span>${nome} ${reg?"na região "+REG[reg]:"no Brasil"}</span><b>${pct(bv[modo])}</b><small>dos votos válidos</small></div></div>
   <div class="small muted" style="margin:12px 0 4px">Por região</div>${hbars(Object.entries(REG).map(([k,v])=>[v,elecRegion(eid,k)[modo]]),{fmt:pct,color:rp[3]})}
@@ -2235,6 +2261,15 @@ ${SRC}`}};
 const TBL={todos:false};
 function table(cols,rows,href){const lim=t=>String(t).replace(/<[^>]+>/g,"").replace(/"/g,"&quot;");const max=TBL.todos||rows.length<=15?rows.length:10;
  return`<div class="tw${max<rows.length?" tw-corte":""}"><table class="resp"><thead><tr>${cols.map(c=>`<th class="${c[2]||""}">${c[0]}</th>`).join("")}</tr></thead><tbody>${rows.map((r,i)=>`<tr ${href?`data-href="${href(r)}"`:""}${i>=max?' class="tw-x"':""}>${cols.map(c=>`<td class="${c[2]||""}" data-label="${lim(c[0])}">${c[1](r)}</td>`).join("")}</tr>`).join("")}</tbody></table>${max<rows.length?`<button type="button" class="chip tw-mais">Ver todos (${rows.length.toLocaleString("pt-BR")})</button>`:""}</div>`}
+// ordenar ao tocar no título da coluna (entende R$, mil/mi/bi/tri, % e datas)
+const numTab=t=>{t=String(t).trim();if(!t||t==="—")return null;const dt=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(t);if(dt)return+(dt[3]+dt[2]+dt[1]);
+ if(!/^(R\$\s*)?[-+]?[\d.]/.test(t))return NaN;const m=/([-+]?[\d.]+(?:,\d+)?)\s*(tri|bi|mi|mil)?/i.exec(t.replace(/^R\$\s*/,""));if(!m)return NaN;
+ return parseFloat(m[1].replace(/\./g,"").replace(",","."))*({tri:1e12,bi:1e9,mi:1e6,mil:1e3}[(m[2]||"").toLowerCase()]||1)};
+document.addEventListener("click",e=>{const th=e.target.closest&&e.target.closest("#view thead th,.pop-b thead th");if(!th)return;const tb=th.closest("table"),corpo=tb.tBodies[0];if(!corpo||corpo.rows.length<3)return;
+ const col=[...th.parentNode.children].indexOf(th),dir=th.dataset.ord==="desc"?"asc":"desc";tb.querySelectorAll("thead th").forEach(x=>delete x.dataset.ord);th.dataset.ord=dir;
+ const linhas=[...corpo.rows].map(r=>{const t=r.cells[col]?r.cells[col].innerText:"";return[r,numTab(t),t]}),ehNum=linhas.some(l=>l[1]!=null)&&linhas.every(l=>l[1]==null||!isNaN(l[1]));
+ linhas.sort((a,b)=>{const x=ehNum?(a[1]??-Infinity)-(b[1]??-Infinity):a[2].localeCompare(b[2],"pt-BR");return dir==="asc"?x:-x});
+ const corte=tb.closest(".tw-corte:not(.aberta)");linhas.forEach(([r],i)=>{corpo.appendChild(r);if(corte)r.classList.toggle("tw-x",i>=10)})});
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".tw-mais");if(!b)return;const w=b.closest(".tw");if(w)w.classList.add("aberta");b.remove()});
 function rowLinks(){document.querySelectorAll("tr[data-href]").forEach(tr=>tr.onclick=e=>{if(e.target.closest("a"))return;const p=tr.dataset.href.slice(2);if(!openPop(p))location.hash=tr.dataset.href})}
 
@@ -2903,9 +2938,8 @@ const VCOR={Sim:"var(--p2)","Não":"var(--p6)",Abstenção:"var(--p3)",Obstruç�
 const vcor=v=>VCOR[v]||"var(--line)";
 function placarBar(pl){const it=Object.entries(pl||{}).sort((a,b)=>b[1]-a[1]);const T=it.reduce((a,b)=>a+b[1],0)||1;
  return`<div class="rstack">${it.map(([k,v])=>`<i style="width:${v/T*100}%;background:${vcor(k)}" title="${esc(k)}: ${v}"></i>`).join("")}</div><div class="rleg">${it.map(([k,v])=>`<span><i style="background:${vcor(k)}"></i>${esc(k)} <b>${nf(v)}</b></span>`).join("")}</div>`}
-function mapaValores(vals,fmt,{sel}={}){const v=Object.values(vals).filter(x=>x!=null);const mn=Math.min(...v),mx=Math.max(...v);
- const fill=u=>vals[u.uf]==null?"#E9EDF2":heatCor((vals[u.uf]-mn)/(mx-mn+1e-9));
- return brMap(null,sel,null,{fillFn:fill,legend:false,heat:true})+`<div class="legend">${v.length?fmt(mn):""} ${escalaLeg()} ${v.length?fmt(mx):""}</div>`}
+function mapaValores(vals,fmt,{sel}={}){const F=faixasDe(Object.values(vals));
+ return brMap(null,sel,null,{fillFn:u=>corFaixa(F,vals[u.uf]),legend:false})+legFaixas(F,fmt)}
 function demoComAviso(fn,args,msg){const r=fn(...args);$("#view").innerHTML=`<div class="rbanner">${msg} Enquanto isso, esta tela mostra a demonstração.</div>`+r.html;r.mount&&r.mount()}
 function maisBtn(id){return`<div style="text-align:center;margin-top:12px"><button class="btn" id="${id}" type="button" hidden>Carregar mais</button></div>`}
 /* lista paginada genérica */
@@ -3508,9 +3542,8 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
  try{const[m,v]=await Promise.all([apiGet("/malhas/"+f.uf),apiGet(`/eleicoes/${f.ano}/${f.uf}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]);
   const por={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});const cont={};v.forEach(x=>{const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
   const hid="mm"+(++HEATN);
-  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?corVoto(corPart(p),x.vencedor.percentual):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="${cr}" stroke-width=".4"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
-  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}${(()=>{const us=m.municipios.map((c,i)=>`<use href="#${hid}-${i}"/>`).join("");
-   return`<defs><clipPath id="${hid}c">${us}</clipPath><filter id="${hid}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(Math.max(m.largura,m.altura)/160).toFixed(1)}"/></filter></defs><g clip-path="url(#${hid}c)" style="pointer-events:none"><g filter="url(#${hid}f)">${us}</g></g>`})()}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
+  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?corVoto(corPart(p),x.vencedor.percentual):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="var(--surface)" stroke-width=".35"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
+  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
  catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2018 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
 
 
@@ -3699,9 +3732,10 @@ async function estadosEleicao(ano,cargo,turno){try{return await apiGet(`/eleicoe
 async function cargosEleicao(ano){try{const c=await apiGet(`/eleicoes/${ano}/cargos`);if(c.length)return c}catch(e){}
  const l=await Promise.all(["BR","SP","DF"].map(u=>apiGet(`/eleicoes/${ano}/${u}/cargos`).catch(()=>[])));const s=new Set(l.flat());return Object.keys(ELN).filter(c=>s.has(c))}
 
-P.eleicoes=(...a)=>{if(!API.on)return _eleicoes(...a);let f={ano:null,cargo:null,turno:1,modo:"cand"},dados=null,cores={},anos=[];
+P.eleicoes=(...a)=>{if(!API.on)return _eleicoes(...a);let f={ano:null,cargo:null,turno:1,modo:"cand",mapa:"venc",cand:""},dados=null,cores={},anos=[];
 return{html:`<div class="ph"><div><h1>Eleições</h1><p>Resultados oficiais do TSE. Toque em um estado para aproximar e ver só os candidatos de lá.</p></div></div>
 <div class="panel" id="elcard"><div id="elmain" class="zmain"><div class="el-ctl"><div class="segj-w"><span class="segj-l">Ano</span><div class="seg segj" id="elanos"></div></div><div class="segj-w"><span class="segj-l">Cargo</span><div class="seg segj" id="elcargos"></div></div><div class="segj-w"><span class="segj-l">Turno</span><div class="seg segj" id="elturnos"><button data-t="1" class="on">1º turno</button><button data-t="2">2º turno</button></div></div></div>
+<div class="el-ctl" id="elmodos" style="margin-top:10px"></div>
 <div class="hd" style="margin-top:12px"><div><h2 id="elT">Carregando…</h2><p id="elSub"></p></div></div>
 <div class="mapwrap mapbig"><div id="elmap">${rload()}</div><div class="zside" id="elside"></div></div><div id="elreg" class="elreg"></div></div><div id="elstate" style="display:none"></div></div>
 <div class="panel mt" id="elbr"></div>${RSRC("Tribunal Superior Eleitoral (votação nominal por município e zona)")}`,
@@ -3719,7 +3753,23 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   $("#elT").textContent=`${ELN[f.cargo]||tit(f.cargo)} · ${f.turno}º turno de ${f.ano}`;
   const seg=br.candidatos.filter(c=>/2º TURNO/.test(c.situacao||""));
   $("#elSub").innerHTML=chave()?`${nf(br.votos_validos_nominais)} votos válidos nominais.${seg.length?` <b>Vão ao 2º turno:</b> ${seg.map(c=>esc(tit(c.nome))).join(" e ")}.`:""}`:`${MAJ.includes(f.cargo)?"Em cada estado aparece quem venceu, na cor do partido.":"Em cada estado aparece o partido mais votado."} ${br.eleitos?nf(br.eleitos)+" eleitos no país.":""}`;
-  $("#elmap").innerHTML=brMap(null,null,null,{fillFn:u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"},legend:false,heat:true});
+  // modos do mapa (candidatos): quem venceu, % de um candidato ou diferença entre os 2 primeiros; cada estado com cor própria
+  const cands=br.candidatos||[],temModos=chave()&&cands.length>=2,mBox=$("#elmodos");if(!temModos)f.mapa="venc";
+  const A=cands[0],B=cands[1],selC=f.cand&&cands.some(c=>c.sq_candidato===f.cand)?f.cand:(A&&A.sq_candidato);
+  if(mBox){mBox.innerHTML=temModos?`<div class="segj-w"><span class="segj-l">Mostrar</span><div class="seg segj" id="elmodo">${[["venc","Quem venceu"],["pct","% de um candidato"],["dif","Diferença entre os 2 primeiros"]].map(([k,t])=>`<button data-m="${k}" class="${f.mapa===k?"on":""}">${t}</button>`).join("")}</div></div>${f.mapa==="pct"?`<div class="segj-w"><span class="segj-l">Candidato</span><div class="seg segj" id="elcand">${cands.slice(0,6).map(c=>`<button data-sq="${esc(c.sq_candidato)}" class="${selC===c.sq_candidato?"on":""}">${esc(tit(c.nome))}</button>`).join("")}</div></div>`:""}`:"";
+   mBox.querySelectorAll("#elmodo button").forEach(b=>b.onclick=()=>{f.mapa=b.dataset.m;desenhar()});mBox.querySelectorAll("#elcand button").forEach(b=>b.onclick=()=>{f.cand=b.dataset.sq;desenhar()})}
+  const pctDe=(s,sq)=>{const x=s&&(s.candidatos||[]).find(c=>c.sq_candidato===sq);return x?x.percentual:null};let fillEl,legEl="";
+  if(f.mapa==="pct"){const cor=corDe(selC),vs=UFS.map(u=>pctDe(d.estados[u.uf],selC)).filter(v=>v!=null),mn=Math.floor(Math.min(...vs)),mx=Math.ceil(Math.max(...vs));
+   const tons=[.82,.62,.42,.22,0].map(t=>misturaBranco(cor,t)),cl=v=>tons[Math.min(4,Math.floor((v-mn)/(mx-mn+1e-9)*5))];
+   fillEl=u=>{const v=pctDe(d.estados[u.uf],selC);return v==null?"var(--mapa-vazio)":cl(v)};
+   legEl=`<div class="legend leg-faixas"><b>${esc(tit((cands.find(c=>c.sq_candidato===selC)||{}).nome||""))}</b>${tons.map((c,k)=>`<span><i style="background:${c}"></i>${pctN(mn+(mx-mn)*k/5)} a ${pctN(mn+(mx-mn)*(k+1)/5)}</span>`).join("")}</div>`}
+  else if(f.mapa==="dif"){const cA=corDe(A.sq_candidato),cB=corDe(B.sq_candidato),NEU="#E4E7EC";
+   const cl=dv=>{const a=Math.abs(dv);return a<2?NEU:misturaBranco(dv>0?cA:cB,a<10?.62:a<20?.35:0)};
+   fillEl=u=>{const s=d.estados[u.uf],a=pctDe(s,A.sq_candidato),b=pctDe(s,B.sq_candidato);return a==null||b==null?"var(--mapa-vazio)":cl(a-b)};
+   const nA=esc(tit(A.nome)),nB=esc(tit(B.nome)),sw=(c,t)=>`<span><i style="background:${c}"></i>${t}</span>`;
+   legEl=`<div class="legend leg-faixas">${sw(cB,nB+": 20 pontos ou mais")}${sw(misturaBranco(cB,.35),"10 a 20")}${sw(misturaBranco(cB,.62),"2 a 10")}${sw(NEU,"empate (menos de 2)")}${sw(misturaBranco(cA,.62),"2 a 10")}${sw(misturaBranco(cA,.35),"10 a 20")}${sw(cA,nA+": 20 pontos ou mais")}</div>`}
+  else fillEl=u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"};
+  $("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
   bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
   // dica ao passar o mouse em cada estado
   const tip=dicaFlutuante();$("#elmap").querySelectorAll("path[data-uf]").forEach(p=>{const t=p.querySelector("title");if(t)t.remove();
@@ -3730,7 +3780,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   if(!chave()&&MAJ.includes(f.cargo)){const linhas=UFS.filter(u=>d.estados[u.uf]&&(d.estados[u.uf].candidatos||[])[0]).map(u=>({uf:u.uf,c:d.estados[u.uf].candidatos[0]})).sort((a,b)=>UF[a.uf].nome.localeCompare(UF[b.uf].nome));
    $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">${f.cargo==="PREFEITO"?"Mais votado em cada estado (soma das cidades)":"Mais votado em cada estado"}</div><div class="el-venc">${linhas.map(r=>`<div class="elrow"><i style="background:${forte(corDe(r.c.partido),r.c.percentual)}"></i><span><small class="muted">${r.uf}</small> ${lcand({...r.c,uf:r.uf},f.ano,f.cargo)} <small>${bandPart(r.c.partido,10)} ${esc(r.c.partido||"")}</small>${/^ELEITO/.test(r.c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(r.c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(r.c.percentual)}</b></div>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos.</p>`}
   else $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">Brasil${chave()?"":" · votos por partido"}</div>${lista.slice(0,8).map(x=>{const k=chave()?x.sq_candidato:x.partido;return`<div class="elrow"><i style="background:${corDe(k)}"></i><span>${nomeK(x)}${x.eleito||/^ELEITO/.test(x.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(x.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(x.percentual)}</b><div class="bar"><i style="width:${Math.min(100,x.percentual)}%;background:${corDe(k)}"></i></div></div>`}).join("")}
-   <p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos.${!chave()&&!MAJ.includes(f.cargo)?" Toque em um estado para ver os nomes dos candidatos eleitos.":""}</p>`;
+   <p class="small muted" style="margin:10px 0 0">${f.mapa==="pct"?"Quanto mais forte a cor, maior o percentual do candidato no estado.":f.mapa==="dif"?"Cada estado na cor de quem ficou na frente entre os dois primeiros; quanto mais forte, maior a diferença em pontos percentuais.":"Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos."}${!chave()&&!MAJ.includes(f.cargo)?" Toque em um estado para ver os nomes dos candidatos eleitos.":""}</p>`;
   // regiões
   const regs=Object.keys(REG).map(r=>{const us=UFS.filter(u=>u.reg===r&&d.estados[u.uf]);const soma={};let T=0;us.forEach(u=>{const s=d.estados[u.uf];T+=s.votos_validos_nominais;(chave()?s.candidatos:s.partidos).forEach(x=>{const k=chave()?x.sq_candidato:x.partido;const a=soma[k]=soma[k]||{x,votos:0};a.votos+=x.votos})});
    const top=Object.entries(soma).sort((a,b)=>b[1].votos-a[1].votos).slice(0,3);return{r,T,top,ganhou:us.filter(u=>{const v=venc(d.estados[u.uf]);return v&&top[0]&&v[0]===top[0][0]}).length,n:us.length}}).filter(x=>x.T);
