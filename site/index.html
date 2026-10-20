@@ -1708,8 +1708,12 @@ if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g+=`<path d="M$
 series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${cs(k)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2"/>`});
 const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
 return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
-const DONUT_PASTEL=["var(--d1)","var(--d2)","var(--d3)","var(--d4)","var(--d5)"];
-function donut(items){const tot=items.reduce((a,b)=>a+b[1],0)||1,pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));const cor=k=>/^outr/i.test(items[k][0])?"var(--line)":pos[k]<3?RANK_VIVO[pos[k]]:DONUT_PASTEL[(pos[k]-3)%DONUT_PASTEL.length];
+// pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
+const PIZZA_SUAVE=["#86A6E8","#E8A27F","#7FC9AB","#E2C077","#B19CE2","#E39CBE","#86C3D8","#B5C985","#D9A0A0","#9FB0CF"];
+function coresPizza(items){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));
+ return items.map((it,k)=>/^outr/i.test(it[0])?"#AEB8CA":pos[k]<3?RANK_VIVO[pos[k]]:PIZZA_SUAVE[(pos[k]-3)%PIZZA_SUAVE.length])}
+const DONUT_PASTEL=PIZZA_SUAVE;
+function donut(items){const tot=items.reduce((a,b)=>a+b[1],0)||1,pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));const cp=coresPizza(items),cor=k=>cp[k];
  let a0=-Math.PI/2,s="";items.forEach((it,k)=>{const a1=a0+it[1]/tot*Math.PI*2;const L=a1-a0>Math.PI?1:0;const P=(a,r)=>[60+r*Math.cos(a),60+r*Math.sin(a)];const[x0,y0]=P(a0,52),[x1,y1]=P(a1,52),[x2,y2]=P(a1,32),[x3,y3]=P(a0,32);s+=`<path d="M${x0} ${y0}A52 52 0 ${L} 1 ${x1} ${y1}L${x2} ${y2}A32 32 0 ${L} 0 ${x3} ${y3}Z" fill="${cor(k)}" stroke="var(--surface)" stroke-width="1.5"/>`;a0=a1});
 return`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="130" height="130">${s}</svg><div style="font-size:13px;flex:1;min-width:150px">${items.map((it,k)=>`<div style="display:flex;gap:8px;align-items:center;padding:3px 0"><i style="width:10px;height:10px;border-radius:50%;background:${cor(k)}"></i><span style="flex:1">${it[0]}</span><b style="font-weight:${pos[k]<3?600:500}">${(it[1]/tot*100).toFixed(1).replace(".",",")}%</b></div>`).join("")}</div></div>`}
 function spark(v){const mx=Math.max(...v),mn=Math.min(...v);return`<svg viewBox="0 0 100 28" width="100%" height="28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--slate)" stroke-width="1.6" points="${v.map((x,i)=>i*100/(v.length-1)+","+(26-(x-mn)/(mx-mn||1)*22)).join(" ")}"/></svg>`}
@@ -1728,7 +1732,7 @@ const corFaixa=(F,x,E=SCALE)=>F&&x!=null?E[F.b.filter(b=>x>=b).length]:"var(--ma
 function legFaixas(F,fmt,E=SCALE){if(!F)return"";const e=[F.mn,...F.b,F.mx];return`<div class="legend leg-faixas">${E.map((c,k)=>`<span><i style="background:${c}"></i>${k===0?"até "+fmt(e[1]):k===4?fmt(e[4])+" ou mais":fmt(e[k])+" a "+fmt(e[k+1])}</span>`).join("")}</div>`}
 const escalaLeg=()=>`<i class="hgrad" style="background:linear-gradient(90deg,${SCALE.join(",")})"></i>`;
 let HEATN=0;
-const REGCOL={N:"#B9DEC9",NE:"#F5D89C",CO:"#F2B8AA",SE:"#B7CCF3",S:"#D6C8EE"};
+const REGCOL={N:"#8DD2AE",NE:"#F3C76E",CO:"#EF9F8C",SE:"#8FB3F2",S:"#BCA5EC"};
 function brMap(metric,sel,regFilter,o={}){const f=metric?METRICS[metric][1]:null,F=f?faixasDe(UFS.map(f)):null;
 const heat=!!o.heat,cor={};UFS.forEach(u=>cor[u.uf]=o.fillFn?o.fillFn(u):o.byRegion?REGCOL[u.reg]:corFaixa(F,f(u)));
 const ps=UFS.map(u=>{const dim=regFilter&&u.reg!==regFilter;return`<path class="st ${sel===u.uf?"sel":""}" data-uf="${u.uf}" d="${GEO.p[u.uf]}" fill="${cor[u.uf]}" style="${dim?"opacity:.25":""}"><title>${u.nome}</title></path>`}).join("");
@@ -1771,7 +1775,7 @@ const CMP={desp:["Despesas",REGV,brl],pc:["Gasto por habitante",{N:712,NE:1042,C
 function vbars(obj,fmt){const W=460,H=190,ks=Object.keys(REG);const mx=Math.max(...ks.map(k=>obj[k]));const bw=58,gap=(W-bw*5)/5;
 const pos=rankPos(ks.map(k=>[k,obj[k]]));
 return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Comparativo entre regiões">${ks.map((k,i)=>{const v=obj[k],h=v/mx*120,x=gap/2+i*(bw+gap),y=150-h;return`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${rankCor(pos[i],ks.length)}"><title>${REG[k]}: ${fmt(v)}</title></rect><text x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="var(--ink2)"${pos[i]<3?' font-weight="600"':""}>${fmt(v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${REG[k]}</text>`}).join("")}<line x1="0" x2="${W}" y1="150.5" y2="150.5" stroke="var(--line)"/></svg>`}
-function ring(items,center,sub){const tot=items.reduce((a,b)=>a+b[1],0);const r=50,C=2*Math.PI*r;let off=0;
+function ring(items,center,sub){const cp=coresPizza(items);items.forEach((it,k)=>it[2]=cp[k]);const tot=items.reduce((a,b)=>a+b[1],0);const r=50,C=2*Math.PI*r;let off=0;
 const segs=items.map(it=>{const len=it[1]/tot*C;const el=`<circle r="${r}" cx="64" cy="64" fill="none" stroke="${it[2]}" stroke-width="12" stroke-dasharray="${Math.max(0,len-2)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 64 64)"/>`;off+=len;return el}).join("");
 return`<svg viewBox="0 0 128 128" width="140" height="140" style="flex:none"><circle r="${r}" cx="64" cy="64" fill="none" stroke="var(--line2)" stroke-width="12"/>${segs}<text x="64" y="66" text-anchor="middle" font-size="19" font-weight="600" fill="var(--navy)">${center}</text><text x="64" y="82" text-anchor="middle" font-size="8.5" fill="var(--muted)">${sub}</text></svg>`}
 function kcard(icon,l,v,sub,d){return`<div class="panel kc"><div class="ico">${hi(icon)}</div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub}</div><div class="d"><b>↑ ${d}</b><small>vs. 2024</small>${hi("trend")}</div></div>`}
@@ -3002,7 +3006,7 @@ function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,cor
  return`<div class="rk-duplo">${graf(alto,o.slice(0,n),corAlto)}${graf(baixo,o.slice(-n).reverse(),corBaixo)}</div>`}
 /* gráficos em linha (evolução por ano): 5 maiores e 5 menores. As 3 primeiras linhas em cores vivas e grossas, as
    outras 2 finas e apagadas; o rótulo de cada linha fica no fim dela. "Primeiro" no gráfico dos menores é o menor valor. */
-const LIN_ALTO=["#DC2626","#EA580C","#C026D3","#F59E0B","#8B5CF6"],LIN_BAIXO=["#16A34A","#0284C7","#2F6FED","#0D9488","#65A30D"];
+const LIN_ALTO=["#DC2626","#7C3AED","#F59E0B","#EC4899","#0EA5E9"],LIN_BAIXO=["#16A34A","#2563EB","#DB2777","#0D9488","#CA8A04"];
 function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const W=460,H=210,L=40,Rp=40,T=12,B=24,pts=lista.map(u=>anos.map(a=>serie[u.uf]&&serie[u.uf][a]!=null?+serie[u.uf][a]:null));
  const tod=pts.flat().filter(v=>v!=null);if(!tod.length)return"";const mx=Math.max(...tod)*1.06||1,mn=Math.min(0,...tod);
