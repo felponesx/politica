@@ -3031,12 +3031,21 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.4}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
 function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,nota=""}={}){
+ // gráfico em linha do ranking (quando só há um período): os 5 estados em ordem, ligados por uma linha; os 3 primeiros
+ // pontos grandes e em cores vivas, os 2 últimos menores e em pastel; cada gráfico com a própria escala
  const o=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);if(!o.length)return"";
- // cada gráfico com a própria escala (o maior valor dele ocupa a linha inteira)
- const graf=(t,lista,cores,mx=Math.max(...lista.map(u=>Math.abs(vals[u.uf])))||1)=>`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4>${lista.map((u,k)=>{const c=k<3?cores[k]:misturaBranco(cores[k],.5),w=Math.max(2,Math.abs(vals[u.uf])/mx*100);
-  return`<div class="rl2${k<3?" rk-top":""}"><span class="rk-p">${k+1}º</span><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b>
-  <span class="rl2-s"><svg viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="6" x2="100" y2="6" stroke="var(--line2)" stroke-width="2" vector-effect="non-scaling-stroke"/><line x1="0" y1="6" x2="${w}" y2="6" stroke="${c}" stroke-width="${k<3?3:2}" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg><i class="rl2-d${k<3?"":" sm"}" style="left:${w}%;background:${c}"></i></span></div>`}).join("")}</div>`;
- return`<div class="rk-duplo">${graf(alto,o.slice(0,n),coresAlto)}${graf(baixo,o.slice(-n).reverse(),coresBaixo)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
+ const graf=(t,lista,cores)=>{const W=460,H=200,L=44,Rp=26,T=26,B=34,v=lista.map(u=>vals[u.uf]),mx=Math.max(...v.map(Math.abs))*1.12||1,mn=Math.min(0,...v);
+  const x=k=>L+k*(W-L-Rp)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.45);let g="";
+  for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" stroke="var(--line2)"/><text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${fmt(val)}</text>`}
+  // área clara embaixo e a linha, cada trecho na cor do ponto de onde sai
+  g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07"/>`;
+  for(let k=0;k<v.length-1;k++)g+=`<line x1="${x(k).toFixed(1)}" y1="${y(v[k]).toFixed(1)}" x2="${x(k+1).toFixed(1)}" y2="${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round"/>`;
+  lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
+   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"var(--muted)"}">${fmt(v[k])}</text>
+   <text x="${x(k).toFixed(1)}" y="${H-16}" text-anchor="middle" font-size="11" font-weight="${k<3?700:500}" fill="${k<3?"var(--ink)":"var(--muted)"}">${u.uf}</text><text x="${x(k).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="9.5" fill="var(--muted)">${k+1}º</text>`});
+  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cor(k)}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(v[k])}</b></div>`).join("");
+  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}">${g}</svg><div class="lr-leg">${leg}</div></div>`};
+ return`<div class="rk-duplo lr">${graf(alto,o.slice(0,n),coresAlto)}${graf(baixo,o.slice(-n).reverse(),coresBaixo)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
 // serie: {UF:{ano:valor}}; anos em ordem; vals: valor de hoje (escolhe os 5 maiores e os 5 menores). Sem 2 anos ou mais, volta às barras.
 function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
  const ok=UFS.filter(u=>vals[u.uf]!=null&&serie&&serie[u.uf]&&Object.keys(serie[u.uf]).length>=2).sort((a,b)=>vals[b.uf]-vals[a.uf]);
