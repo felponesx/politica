@@ -413,6 +413,23 @@ def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Quer
             "aviso": "Títulos e resumos dos feeds públicos de cada veículo; a matéria completa fica no site original."}
 
 
+@router.get("/escandalos", tags=["Escândalos"])
+def escandalos_lista():
+    """Principais escândalos de corrupção: resumo, valores, órgãos e contagem de pessoas por situação."""
+    from app import escandalos
+    return escandalos.listar()
+
+
+@router.get("/escandalos/{slug}", tags=["Escândalos"])
+def escandalo(slug: str):
+    """Um escândalo completo: andamento, pessoas (cargo, partido, situação, prisão, valores) e fontes."""
+    from app import escandalos
+    c = escandalos.casos().get(slug)
+    if not c:
+        raise HTTPException(404, "Escândalo não encontrado.")
+    return c
+
+
 class PerguntaWeb(BaseModel):
     pergunta: str = Field(..., min_length=2, max_length=600)
 

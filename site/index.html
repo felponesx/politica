@@ -1528,6 +1528,25 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .rl2-s{grid-area:s;position:relative;display:block;height:14px}.rl2-s svg{width:100%;height:14px;display:block}
 .rl2-d{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);transform:translate(-50%,-50%)}.rl2-d.sm{width:9px;height:9px}
 .pct-b{display:inline-flex;align-items:center;gap:10px;justify-content:flex-end;width:100%}.pct-b .bar{width:110px;height:8px;flex:none}.pct-v{min-width:46px;text-align:right}
+/* Escândalos */
+.esc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.esc-card{display:flex;flex-direction:column;gap:8px;color:var(--ink);text-decoration:none}.esc-card:hover{text-decoration:none;border-color:var(--blue)}
+.esc-ch{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.esc-ch h2{margin:0;font-size:17px}
+.esc-res{margin:0;font-size:13.5px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.esc-facts{grid-template-columns:repeat(2,1fr)}
+.esc-parts{display:flex;flex-wrap:wrap;gap:6px}.esc-p{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;white-space:nowrap}
+.esc-aviso{font-size:13px}
+.esc-org{display:grid;gap:8px}.esc-org div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}.esc-org span{color:var(--muted);font-size:13px;text-align:right}
+.esc-tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:12px}
+.esc-tl li{position:relative;display:grid;grid-template-columns:96px 1fr;gap:10px;font-size:14px}.esc-tl li::before{content:"";position:absolute;left:-20px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--c1)}
+.esc-dt{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+.esc-fontes{margin:0;padding-left:18px;font-size:13px;display:grid;gap:4px}
+.tag.esc-con{background:#FDE2E1;color:#B42318}.tag.esc-den{background:#FEF0C7;color:#93370D}.tag.esc-inv{background:#E0EAFF;color:#2F4EA8}
+.tag.esc-abs{background:#D1FADF;color:#05603A}.tag.esc-neu{background:#EAECF0;color:#344054}
+.tag.lib-pre{background:#B42318;color:#fff}.tag.lib-dom{background:#F79009;color:#fff}.tag.lib-for{background:#1D2939;color:#fff}.tag.lib-liv{background:#EAECF0;color:#344054}
+[data-theme="dark"] .tag.esc-con{background:#55160C;color:#FDA29B}[data-theme="dark"] .tag.esc-den{background:#4E1D09;color:#FEC84B}[data-theme="dark"] .tag.esc-inv{background:#1C2B5A;color:#A4BCFD}
+[data-theme="dark"] .tag.esc-abs{background:#053321;color:#75E0A7}[data-theme="dark"] .tag.esc-neu,[data-theme="dark"] .tag.lib-liv{background:#344054;color:#EAECF0}[data-theme="dark"] .tag.lib-for{background:#F2F4F7;color:#1D2939}
+@media (max-width:700px){.esc-grid{grid-template-columns:1fr}.esc-tl li{grid-template-columns:1fr;gap:2px}}
 </style>
 </head>
 <body>
@@ -1592,6 +1611,7 @@ arrecadacao:'<path d="M4 7h16v12H4z"/><path d="M4 11h16M8 15h3"/><path d="M12 3v
 dividas:'<path d="M3 7h18v12H3z"/><path d="M3 11h18"/><path d="M7 15h4"/><path d="M17 3l-3 4M7 3l3 4"/>',
 indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4l2 2 4-4"/><path d="M17 11h4M19 9v4"/>',
 seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6 4-4"/><path d="m9 13-5 5"/><path d="M4 21h8"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
 orgaos:'<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>',
@@ -1607,7 +1627,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["escandalos","Escândalos"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -4385,6 +4405,51 @@ const NW_RE={economia:/\b(econom|inflacao|ipca|juros|selic|dolar|pib\b|orcamento
 const NW_VEIC={economia:["InfoMoney","Exame"],juridico:["Consultor Jurídico (Conjur)","Migalhas","Conselho Nacional de Justiça"],legislativo:["Agência Câmara / TV Câmara","Agência Senado","Congresso em Foco"]};
 function temasNw(n){const t=new Set(["geral"]);if(n.tema&&n.tema!=="geral")t.add(n.tema);const x=normNw(`${n.titulo} ${n.resumo||""}`);for(const[k,r]of Object.entries(NW_RE))if(r.test(x))t.add(k);for(const[k,l]of Object.entries(NW_VEIC))if(l.includes(n.veiculo))t.add(k);return t}
 const vlogo=(v,h=22)=>`<span class="vlogo" data-vlogo="${esc(v)}" data-h="${h}" style="height:${h}px"><i style="width:${h}px;height:${h}px;font-size:${Math.round(h*.45)}px">${esc(v.replace(/[^\p{L}\s]/gu,"").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase())}</i></span>`;
+/* ===================== Escândalos de corrupção =====================
+   Casos curados (app/dados/escandalos), cada informação com link da fonte. Situação jurídica com os termos exatos e a
+   data; aviso de presunção de inocência em todas as telas. */
+const ESC_SIT={"investigado":"inv","indiciado":"den","denunciado":"den","réu":"den","condenado":"con","condenado (recorre)":"con","pena cumprida":"con",
+ "indultado":"con","cassado":"con","condenação anulada":"abs","absolvido":"abs","processo arquivado":"abs","prescrito":"abs","renunciou":"neu","exonerado":"neu","morreu":"neu"};
+const escSit=s=>s?`<span class="tag esc-${ESC_SIT[s]||"neu"}">${esc(s[0].toUpperCase()+s.slice(1))}</span>`:'<span class="muted small">—</span>';
+const escLib=l=>l?`<span class="tag lib-${{"preso":"pre","prisão domiciliar":"dom","foragido":"for","em liberdade":"liv"}[l]||"liv"}">${esc(l[0].toUpperCase()+l.slice(1))}</span>`:'<span class="muted small">—</span>';
+const escVal=v=>!v?"—":v.valor!=null?`<a href="${esc(v.fonte)}" target="_blank" rel="noopener" title="${esc(v.texto)}">${brl(v.valor)}</a>`:`<a href="${esc(v.fonte)}" target="_blank" rel="noopener" class="small">${esc(v.texto||"ver fonte")}</a>`;
+const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
+const escPer=p=>p&&p.inicio?(p.fim&&p.fim!==p.inicio?`${p.inicio}–${p.fim}`:p.fim?p.inicio:`desde ${p.inicio}`):"";
+const escAviso=a=>`<div class="rbanner esc-aviso">${esc(a)}</div>`;
+P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
+  const cards=d.itens.map(c=>{const dv=c.valores.desviado,rc=c.valores.recuperado;return`<a class="panel esc-card" href="#/escandalo/${c.slug}">
+   <div class="esc-ch"><h2>${esc(c.nome)}</h2><span class="small muted">${esc(escPer(c.periodo))}</span></div>
+   ${c.outros_nomes.length?`<div class="small muted">Também chamado de ${c.outros_nomes.map(esc).join(", ")}</div>`:""}
+   <p class="esc-res">${esc(c.resumo)}</p>
+   <div class="facts esc-facts"><div><span>Dinheiro envolvido</span><b>${dv&&dv.valor!=null?brl(dv.valor):"—"}</b></div><div><span>Recuperado</span><b>${rc&&rc.valor!=null?brl(rc.valor):"—"}</b></div>
+    <div><span>Pessoas listadas</span><b>${nf(c.pessoas)}</b></div><div><span>Condenados</span><b>${nf(c.condenados)}</b></div></div>
+   ${c.situacao_atual?`<div class="small"><b>Hoje:</b> ${esc(c.situacao_atual.texto)}</div>`:""}
+   ${c.partidos.length?`<div class="esc-parts">${c.partidos.map(p=>`<span class="esc-p">${bandPart(p)}${esc(p)}</span>`).join("")}</div>`:""}</a>`}).join("");
+  box.innerHTML=`${escAviso(d.aviso)}<div class="filters" style="margin:12px 0"><input id="escQ" placeholder="Buscar caso, pessoa ou partido" style="flex:1;min-width:180px" autocomplete="off"></div><div class="esc-grid" id="escG">${cards||rvazio("Nenhum caso cadastrado ainda.")}</div><p class="small muted" style="margin:12px 0 0">${esc(d.fonte)}</p>`;
+  const q=$("#escQ"),G=[...document.querySelectorAll("#escG .esc-card")];q.oninput=()=>{const t=snapNorm(q.value);G.forEach((el,i)=>{const c=d.itens[i];el.hidden=!!t&&!snapNorm([c.nome,...c.outros_nomes,c.resumo,...c.partidos,c._nomes||""].join(" ")).includes(t)})};
+  Promise.all(d.itens.map(c=>apiGet("/escandalos/"+c.slug).then(x=>{c._nomes=x.pessoas.map(p=>p.nome).join(" ")}).catch(()=>{})))}).catch(e=>{const b=$("#escL");if(b)b.innerHTML=rerro(e)})}});
+P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
+ mount(){apiGet("/escandalos/"+slug).then(c=>{const box=$("#escD");if(!box)return;const P_=c.pessoas,dv=c.valores.desviado,rc=c.valores.recuperado;
+  const cond=P_.filter(p=>/^condenado|pena cumprida|indultado/.test(p.situacao||"")).length,pres=P_.filter(p=>/preso|domiciliar/.test(p.liberdade||"")).length,forag=P_.filter(p=>p.liberdade==="foragido").length;
+  const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
+  box.innerHTML=`<div class="ph"><div><a class="small" href="#/escandalos">‹ Todos os escândalos</a><h1 style="margin-top:6px">${esc(c.nome)}</h1><p>${esc(escPer(c.periodo))}${c.outros_nomes.length?" · também chamado de "+c.outros_nomes.map(esc).join(", "):""}</p></div></div>
+  ${escAviso(c.aviso)}
+  <div class="kpis kpis-c mt">${kp("Dinheiro envolvido",dv&&dv.valor!=null?brl(dv.valor):"—",dv?esc(dv.texto):"")}${kp("Recuperado / devolvido",rc&&rc.valor!=null?brl(rc.valor):"—",rc?esc(rc.texto):"")}${kp("Pessoas listadas",nf(P_.length))}${kp("Condenados",nf(cond))}${kp("Presos agora",nf(pres),"na data de cada fonte")}${forag?kp("Foragidos",nf(forag)):""}</div>
+  ${c.valores.observacao?`<p class="small muted">${esc(c.valores.observacao)}</p>`:""}
+  <div class="grid g2 mt"><div class="panel"><h2>O que foi</h2><p>${esc(c.resumo)}</p>${c.situacao_atual?`<h3 class="seg-h">Situação hoje</h3><p>${esc(c.situacao_atual.texto)} <a class="small" href="${esc(c.situacao_atual.fonte)}" target="_blank" rel="noopener">fonte, ${escData(c.situacao_atual.data)}</a></p>`:""}</div>
+   <div class="panel"><h2>Órgãos responsáveis</h2><div class="esc-org">${c.orgaos.map(o=>`<div><b>${esc(o.nome)}</b><span>${esc(o.papel||"")}</span></div>`).join("")||rvazio("—")}</div></div></div>
+  <div class="panel mt"><h2>Andamento</h2><ol class="esc-tl">${c.andamento.map(a=>`<li><span class="esc-dt">${escData(a.data)}</span><span>${esc(a.fato)} <a class="small" href="${esc(a.fonte)}" target="_blank" rel="noopener">fonte</a></span></li>`).join("")}</ol></div>
+  <div class="panel mt"><h2>Pessoas envolvidas</h2><p class="small muted" style="margin-top:0">Cargo e partido da época do caso. Situação na Justiça e prisão na data da fonte de cada linha.</p><div id="escP"></div></div>
+  <div class="panel mt" id="escN" hidden><h2>Notícias recentes sobre o caso</h2><div id="escNl"></div></div>
+  <div class="panel mt"><h2>Fontes</h2><ul class="esc-fontes">${c.fontes.map(u=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,90))}</a></li>`).join("")}</ul><p class="small muted">Conferido em ${escData(c.verificado_em)}.</p></div>`;
+  $("#escP").innerHTML=table([["Nome",p=>`<b style="font-weight:600">${esc(p.nome)}</b>${p.detalhe?`<div class="small muted">${esc(p.detalhe)}</div>`:""}`],["Cargo na época",p=>esc(p.cargo_na_epoca||"—")],
+   ["Partido",p=>p.partido_na_epoca?`<span class="esc-p">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:"—"],["Situação na Justiça",p=>escSit(p.situacao)],["Prisão",p=>escLib(p.liberdade)],
+   ["Recebeu",p=>escVal(p.valor_recebido),"n"],["Devolveu",p=>escVal(p.devolveu),"n"],["Fonte",p=>`<a href="${esc(p.fonte)}" target="_blank" rel="noopener">${escData(p.data_situacao)||"ver"}</a>`]],P_);
+  const termos=[c.nome,...c.outros_nomes].map(t=>snapNorm(t).replace(/^(operacao|caso|escandalo d[oa]s?|fraude n[oa]s?)\s+/,"")).filter(t=>t.length>3);
+  apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;
+   $("#escNl").innerHTML=l.map(x=>`<div class="list-row"><div style="flex:1;min-width:0"><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.titulo)}</a><div class="small muted">${esc(x.veiculo||"")} · ${esc((x.data||"").slice(0,10))}</div></div></div>`).join("")}).catch(()=>{});
+  rowLinks&&rowLinks()}).catch(e=>{const b=$("#escD");if(b)b.innerHTML=rerro(e)})}});
 P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>
  <div id="nwBox">${API.on?rload():`<div class="rbanner">As notícias aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
@@ -4717,7 +4782,7 @@ function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=
 const r=fn(...args);const V=$("#view");V.innerHTML=r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={escandalo:"escandalos",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 window.scrollTo(0,0)}

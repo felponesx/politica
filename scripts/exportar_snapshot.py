@@ -64,8 +64,9 @@ FIXAS = [
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
-    "/seguranca", "/dividas/familias-estados",
+    "/seguranca", "/dividas/familias-estados", "/escandalos",
 ]
+FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
 # quantos detalhes (popouts) guardar por tipo
 TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "contratos": 1200, "obras": 1500,
                 "fornecedores": 400, "municipios": 6000}
