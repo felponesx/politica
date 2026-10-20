@@ -161,6 +161,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Cores (v1.1): pastéis de gráficos, barras e regiões mais vivos (claridade −8%, saturação +15%); fundos bem claros ficam. Impostômetro
   e gastômetro com a paleta viva (#2F6FED, #1BAF7A, #F5A524, #EB6834, #8B5CF6). Em volta do país, sombra suave em vez de
   traço (`svg.geo` com `drop-shadow`, variáveis `--sombra1`/`--sombra2`): escura no claro, brilho claro no escuro.
+- Zoom no estado ("efeito Spiderman", `flyState`/`inlineZoomIn`/`inlineZoomOut`): no celular (`zLeve`) só o estado voa, sem desfoque,
+  sem sombra e sem os outros estados, em 0,56 s; a ficha fica escondida (`.zleve`) e o `mount` roda depois do voo. No PC, o efeito completo.
 - Mapas: cor sólida por estado, divisas brancas, 5 faixas com o mesmo número de estados (`faixasDe`, `corFaixa`,
   `legFaixas` com os limites escritos). Nada de degradê entre estados. Eleições (presidente): modos "Quem venceu",
   "% de um candidato" e "Diferença entre os 2 primeiros" (escala divergente com empate em cinza).
