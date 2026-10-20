@@ -1,0 +1,62 @@
+{
+ "slug": "collor-pc-farias",
+ "explicacao": "Segundo o relatório da CPI mista de 1992, PC Farias chefiava um esquema de tráfico de influência que arrecadava dinheiro de empresários; o dinheiro circulava por contas fantasmas e pagava despesas pessoais do presidente Fernando Collor.",
+ "explicacao_fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos",
+ "nucleos": [
+  {
+   "nome": "Esquema PC",
+   "descricao": "Rede de tráfico de influência e corrupção que, segundo a CPI, era chefiada por PC Farias e fazia a intermediação entre empresários e o governo."
+  },
+  {
+   "nome": "Contas fantasmas",
+   "descricao": "Contas bancárias abertas em nomes falsos que, segundo a CPI e o STF, movimentavam o dinheiro do esquema e pagavam despesas do presidente."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Paulo César Farias (PC Farias)",
+   "nivel": 1,
+   "nucleo": "Esquema PC",
+   "papel": "Segundo a CPI, chefiava o esquema e intermediava negócios entre empresários e o governo.",
+   "citacao": "o relatório do senador Amir Lando concluiu que Collor se relacionou diretamente e se beneficiou do esquema de corrupção chefiado por PC Farias",
+   "fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos",
+   "acima": null
+  },
+  {
+   "nome": "Fernando Collor de Mello",
+   "nivel": 3,
+   "nucleo": "Esquema PC",
+   "papel": "Segundo a CPI, se beneficiou do esquema; no STF foi absolvido por falta de provas.",
+   "citacao": "o relatório do senador Amir Lando concluiu que Collor se relacionou diretamente e se beneficiou do esquema de corrupção chefiado por PC Farias",
+   "fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos",
+   "acima": null
+  },
+  {
+   "nome": "Cláudio Vieira",
+   "nivel": 2,
+   "nucleo": "Esquema PC",
+   "papel": "Secretário de Collor; segundo a CPI, repassou a PC o pedido de compra do carro do presidente e apresentou as notas da \"Operação Uruguai\". Foi absolvido pelo STF.",
+   "citacao": "Collor pediu ao seu secretário pessoal Cláudio Vieira que comprasse um carro para uso da familia. Vieira repassou o pedido a PC, que pagou a compra à vista com o dinheiro das sobras de campanha, segundo a apuração da CPI.",
+   "fonte": "https://www.gazetadopovo.com.br/vida-publica/especiais/impeachment-20-anos/trem-fantasma-marcou-governo-de-collor-38u92qw5ctzld3zacq30z5yz2/",
+   "acima": "Fernando Collor de Mello"
+  },
+  {
+   "nome": "Rosinete Melanias",
+   "nivel": 3,
+   "nucleo": "Contas fantasmas",
+   "papel": "Secretária de PC; movimentava contas fantasmas e confessou o crime; foi condenada por falsidade ideológica.",
+   "citacao": "com a movimentação de contas falsas em São Paulo e Brasília, PC e Rosinete cometeram duas séries distintas do mesmo crime",
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html",
+   "acima": "Paulo César Farias (PC Farias)"
+  },
+  {
+   "nome": "Jorge Bandeira de Mello",
+   "nivel": 3,
+   "nucleo": "Contas fantasmas",
+   "papel": "Sócio de PC; segundo a CPI, assinou o cheque de conta fantasma usado na compra do carro da primeira-dama; foi condenado por falsidade ideológica.",
+   "citacao": "localizou-se um cheque fantasma que teria sido utilizado para a compra de um carro Fiat Elba para a primeira-dama, Rosane Collor. O cheque era assinado pelo ex-piloto Jorge Bandeira de Melo, sócio de PC Farias.",
+   "fonte": "https://g1.globo.com/politica/noticia/2013/05/relembre-casos-do-governo-collor-que-envolveram-pc-farias.html",
+   "acima": null
+  }
+ ]
+}

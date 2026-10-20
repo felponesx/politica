@@ -85,6 +85,7 @@ def test_setores_cnae():
     assert setor_de_cnae("4644301") == "Saúde" and setor_de_cnae("8121400") == "Limpeza e conservação"
     assert setor_de_cnae("8011101") == "Segurança" and setor_de_cnae("5611201") == "Alimentação" and setor_de_cnae(None) == "Outros"
     db = SessionLocal()
+    db.query(EmpresaCadastro).filter(EmpresaCadastro.cnpj == "55444333000122").delete()  # o banco de teste fica entre execuções
     db.add(EmpresaCadastro(cnpj="55444333000122", razao_social="TECNO TESTE LTDA", cnae="6201501", uf="SP", socios=[]))
     db.commit()
     db.close()

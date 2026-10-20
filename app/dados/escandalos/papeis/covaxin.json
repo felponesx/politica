@@ -1,0 +1,35 @@
+{
+ "slug": "covaxin",
+ "explicacao": "Segundo o relatório final da CPI da Covid, citado pela PGR, o \"esquema Precisa-Covaxin\" beneficiava uma empresa intermediária (a Precisa Medicamentos) e usava documentos falsos no processo de compra, com pressão política para liberar a importação da vacina.",
+ "explicacao_fonte": "https://static.poder360.com.br/2022/07/pgr-ricardo-barros-orcrim-cpi-covid.pdf",
+ "nucleos": [
+  {
+   "nome": "Precisa Medicamentos (intermediária)",
+   "descricao": "Empresa que, segundo a CPI, intermediou a venda da vacina da Bharat Biotech ao Ministério da Saúde e apresentou documentos com indícios de falsidade."
+  },
+  {
+   "nome": "Pressão política",
+   "descricao": "Segundo a CPI, pressões sobre servidores do Ministério da Saúde para liberar a importação da Covaxin."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Francisco Emerson Maximiano",
+   "nivel": 2,
+   "nucleo": "Precisa Medicamentos (intermediária)",
+   "papel": "Dono da Precisa, empresa intermediária da compra; segundo a CPI, atuava com outros investigados num grupo que buscaria vantagem com fraude a licitação ou contrato.",
+   "citacao": "A nova atuação conjunta de Francisco Maximiano, Danilo Trento, José Ricardo Santana e Roberto Ferreira Dias, em torno do processo licitatório da vacina Covaxin [...] aponta para a existência de uma associação estruturada, duradora e organizada do grupo",
+   "fonte": "https://static.poder360.com.br/2022/07/pgr-ricardo-barros-orcrim-cpi-covid.pdf",
+   "acima": null
+  },
+  {
+   "nome": "Ricardo Barros",
+   "nivel": 2,
+   "nucleo": "Pressão política",
+   "papel": "Segundo a CPI, comandava as pressões para liberar a importação da vacina e apresentou emenda que beneficiava a Precisa; o STF arquivou a apuração a pedido da PGR.",
+   "citacao": "Barros foi apontado pelo Deputado Luís Miranda como sendo o responsável por estar comandando as pressões atípicas sobre o servidor Luís Ricardo Miranda [...] para que liberasse a licença de importação da vacina Covaxin.",
+   "fonte": "https://static.poder360.com.br/2022/07/pgr-ricardo-barros-orcrim-cpi-covid.pdf",
+   "acima": null
+  }
+ ]
+}

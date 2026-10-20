@@ -149,6 +149,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Regras: toda pessoa, valor e marco tem link de fonte (sem fonte é descartado ao carregar); situação jurídica só com os termos de
   `SITUACOES` e a data da fonte; aviso de presunção de inocência em todas as telas; "Valor citado" sempre com a frase da fonte;
   prisão por outro processo não aparece no caso; só entra quem tem investigação formal e situação conhecida e recente.
+- Árvore do esquema (`escArvore`/`escLinhas`): papéis segundo a acusação em `app/dados/escandalos/papeis/<slug>.json` (nível 1 apontados
+  como chefes, 2 operadores, 3 executores/beneficiários; `acima` só quando a fonte diz a quem respondia; citação + fonte). Nível 1 só
+  com "líder/chefe/comandante" na fonte. Absolvidos, anulados e arquivados saem dos andares e vão para a faixa "A acusação apontou,
+  mas a Justiça não confirmou". Borda pela situação na Justiça.
 - Atualizar: editar o JSON do caso e rodar `python -m scripts.escandalos_copia` (o robô já exporta pelas FIXAS).
 
 ## Padrão visual (v0.9, out/2026)

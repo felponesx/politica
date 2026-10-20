@@ -1,0 +1,102 @@
+{
+ "slug": "anoes-do-orcamento",
+ "explicacao": "Segundo o relatório final da CPMI do Orçamento (jan/1994), um \"núcleo de poder\" de parlamentares controlava a Comissão Mista de Orçamento e operava dois esquemas paralelos: o das empreiteiras (emendas para obras em troca de comissões) e o das subvenções (verbas para entidades ligadas aos próprios parlamentares).",
+ "explicacao_fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=370",
+ "nucleos": [
+  {
+   "nome": "Núcleo de poder da Comissão de Orçamento",
+   "descricao": "Grupo de parlamentares que, segundo a CPMI, ocupava a Presidência, a Relatoria-Geral e as sub-relatorias estratégicas da Comissão e decidia quais emendas entravam no Orçamento."
+  },
+  {
+   "nome": "Esquema das empreiteiras",
+   "descricao": "Segundo a CPMI, inclusão de verbas para obras de interesse de empreiteiras em troca de vantagens indevidas."
+  },
+  {
+   "nome": "Esquema das subvenções",
+   "descricao": "Segundo a CPMI, parlamentares criavam ou patrocinavam entidades, controladas por parentes ou prepostos, que recebiam subvenções sociais do Orçamento."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "João Alves de Almeida",
+   "nivel": 1,
+   "nucleo": "Núcleo de poder da Comissão de Orçamento",
+   "papel": "Segundo a CPI, era a figura principal do esquema: dava a palavra final sobre as emendas e distribuía recursos a outros deputados.",
+   "citacao": "o Deputado João Alves foi apontado por José Carlos Alves dos Santos como a figura de proa do esquema de corrupção. [...] Seria o Deputado João Alves a pessoa que dava a palavra final sobre emendas",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=394",
+   "acima": null
+  },
+  {
+   "nome": "Cid Carvalho",
+   "nivel": 2,
+   "nucleo": "Núcleo de poder da Comissão de Orçamento",
+   "papel": "Segundo a CPI, era a segunda pessoa do núcleo de poder e aproximava membros do governo e empreiteiras, recebendo propina por isso.",
+   "citacao": "foi acusado nesta CPMI de ser a segunda pessoa do núcleo de poder do chamado esquema do orçamento. Segundo as declarações do Sr. José Carlos Alves dos Santos, freqüentemente promovia aproximação entre membros do Executivo e empreiteiras, recebendo propinas por esses serviços",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=405",
+   "acima": null
+  },
+  {
+   "nome": "Genebaldo Correia",
+   "nivel": 2,
+   "nucleo": "Núcleo de poder da Comissão de Orçamento",
+   "papel": "Segundo a acusação levada à CPI, integrava o núcleo de poder que comandava a Comissão de Orçamento.",
+   "citacao": "A acusação proferida por José Carlos Alves dos Santos contra o Deputado Genebaldo Correia foi de que este seria integrante do núcleo de poder que comandava a Comissão Mista de Orçamento",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=417",
+   "acima": null
+  },
+  {
+   "nome": "Manoel Moreira",
+   "nivel": 2,
+   "nucleo": "Núcleo de poder da Comissão de Orçamento",
+   "papel": "Segundo a CPI, fazia parte do núcleo que tinha poder de decisão na Comissão de Orçamento.",
+   "citacao": "Quanto ao chamado \"esquema\" da Comissão Mista de Orçamento, é notória a participação do Deputado no núcleo que ali detinha poder de decisão.",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=419",
+   "acima": null
+  },
+  {
+   "nome": "José Geraldo Ribeiro",
+   "nivel": 3,
+   "nucleo": "Esquema das subvenções",
+   "papel": "Segundo a CPI, pertencia ao esquema e se beneficiava dele: fundou três entidades que receberam subvenções liberadas a seu pedido.",
+   "citacao": "relacionado na denúncia feita pelo Sr. José Carlos Alves dos Santos como pertencente ao \"esquema\" da Comissão de Orçamento - e dele beneficiário",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=412",
+   "acima": null
+  },
+  {
+   "nome": "Fábio Raunheitti",
+   "nivel": 3,
+   "nucleo": "Esquema das subvenções",
+   "papel": "Segundo a CPI, recebia recursos de subvenções sociais por meio de entidades de ensino ligadas à sua família.",
+   "citacao": "Apontado pelo Sr. José Carlos Alves dos Santos como parlamentar que auferia recursos de subvenções, o Deputado Fábio Raunheitti também foi acusado de integrar o esquema de recursos orçamentários.",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=421",
+   "acima": null
+  },
+  {
+   "nome": "Raquel Cândido",
+   "nivel": 3,
+   "nucleo": "Esquema das subvenções",
+   "papel": "Segundo a CPI, mandou mais de US$ 400 mil em subvenções para um instituto com o nome da família.",
+   "citacao": "entre 1989 e 1993, a Deputada Raquel Cândido, por intermédio do Adendo II à Lei Orçamentária, destinou mais de 400 mil dólares para o Instituto Eva Cândido",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=432",
+   "acima": null
+  },
+  {
+   "nome": "Carlos Benevides",
+   "nivel": 3,
+   "nucleo": "Esquema das subvenções",
+   "papel": "Segundo o denunciante citado pela CPI, entregava a João Alves listas de entidades e prefeituras que deveriam receber subvenções.",
+   "citacao": "O Parlamentar foi citado pelo economista como integrante do esquema do orçamento, por entregar ao Dep. João Alves relação de entidades e prefeituras para receber subvenção.",
+   "fonte": "https://www2.senado.leg.br/jspui/bitstream/id/84896/1/CPMIOrcamento.pdf#page=442",
+   "acima": null
+  },
+  {
+   "nome": "Ricardo Fiuza",
+   "nivel": 3,
+   "nucleo": null,
+   "papel": "Segundo a acusação, quando comandava a Comissão de Orçamento beneficiou uma fazenda sua com verbas federais; foi absolvido pela Câmara.",
+   "citacao": "Ricardo Fiúza (PFL/PE), ministro da Ação Social no governo Collor, à frente da Comissão de Orçamento, beneficiara uma fazenda sua com verbas federais, mas foi absolvido pela Câmara.",
+   "fonte": "https://memoria.ebc.com.br/agenciabrasil/noticia/2006-08-04/saiba-mais-sobre-cpis-do-orcamento-1993-e-da-corrupcao-1988",
+   "acima": null
+  }
+ ]
+}

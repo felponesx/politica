@@ -1,0 +1,120 @@
+{
+ "slug": "sanguessugas",
+ "explicacao": "Segundo a acusação descrita pelo STF, o grupo Planam procurava prefeitos e oferecia emendas parlamentares para a compra de ambulâncias em troca de contrapartidas; os parlamentares apresentavam as emendas e recebiam uma porcentagem, e as licitações nas prefeituras eram direcionadas às empresas do grupo, com preços superfaturados.",
+ "explicacao_fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-condena-deputado-nilton-capixaba-por-envolvimento-na-mafia-dos-sanguessugas/",
+ "nucleos": [
+  {
+   "nome": "Grupo Planam (empresas)",
+   "descricao": "Empresas da família Vedoin, apontada como organizadora do esquema, que vendiam as ambulâncias superfaturadas e pagavam os parlamentares."
+  },
+  {
+   "nome": "Parlamentares (emendas)",
+   "descricao": "Deputados e senadores acusados de apresentar emendas ao Orçamento para a compra de ambulâncias em troca de parte do valor."
+  },
+  {
+   "nome": "Prefeituras (licitações)",
+   "descricao": "Prefeituras onde, segundo as denúncias, as licitações eram direcionadas às empresas do grupo Planam."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Luiz Antônio Trevisan Vedoin",
+   "nivel": 1,
+   "nucleo": "Grupo Planam (empresas)",
+   "papel": "Sócio da Planam, apontado como um dos chefes da quadrilha que organizou o esquema.",
+   "citacao": "empresa Planam, de propriedade de Luiz Antônio e Darci Vedoin, chefes da quadrilha que organizou o esquema de fraudes",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas",
+   "acima": null
+  },
+  {
+   "nome": "Darci José Vedoin",
+   "nivel": 1,
+   "nucleo": "Grupo Planam (empresas)",
+   "papel": "Sócio da Planam, apontado como um dos chefes da quadrilha que organizou o esquema.",
+   "citacao": "empresa Planam, de propriedade de Luiz Antônio e Darci Vedoin, chefes da quadrilha que organizou o esquema de fraudes",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas",
+   "acima": null
+  },
+  {
+   "nome": "Nilton Capixaba",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo a acusação, apresentava as emendas e recebia 10% dos valores; foi condenado por corrupção passiva.",
+   "citacao": "Nilton Capixaba era responsável por formular as emendas parlamentares, recebendo, por isso, 10% das quantias obtidas por meio das emendas.",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-condena-deputado-nilton-capixaba-por-envolvimento-na-mafia-dos-sanguessugas/",
+   "acima": null
+  },
+  {
+   "nome": "Paulo Feijó",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo a acusação, apresentava emendas para municípios do RJ que beneficiavam o grupo Planam, em troca de comissão; foi condenado.",
+   "citacao": "Segundo a acusação, caberia ao deputado federal apresentar emendas ao orçamento geral da União, destinadas a municípios das regiões norte e nordeste do Estado do Rio de Janeiro, para beneficiar as empresas do grupo.",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-condena-deputado-paulo-feijo-pr-rj-por-corrupcao-e-lavagem-de-dinheiro/",
+   "acima": null
+  },
+  {
+   "nome": "Josué Bengtson",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo a acusação, apresentava emendas para municípios do Pará a fim de favorecer as empresas do grupo; os crimes prescreveram.",
+   "citacao": "Segundo os autos, caberia ao deputado federal apresentar emendas ao orçamento geral da União, destinadas a municípios do Estado do Pará, com o objetivo de aquisição de ambulâncias, a fim de favorecer as empresas da alegada quadrilha.",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/extinta-punibilidade-contra-deputado-acusado-de-envolvimento-no-superfaturamento-de-ambulancias/",
+   "acima": null
+  },
+  {
+   "nome": "Benjamin Maranhão",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo a acusação, direcionava emendas para municípios da Paraíba em troca de propina; foi absolvido pelo STF por falta de provas.",
+   "citacao": "Em troca de vantagem financeira, caberia ao deputado federal o direcionamento de emendas orçamentárias que viabilizariam licitações fraudadas junto a municípios integrantes da sua base eleitoral no Estado da Paraíba",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/",
+   "acima": null
+  },
+  {
+   "nome": "Jefferson Campos",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo a acusação, recebeu R$ 15 mil e um ônibus para influenciar licitações a favor da Planam; foi absolvido pelo STF.",
+   "citacao": "para influenciar nas licitações em favor do grupo Planam, ele teria recebido o pagamento de R$ 15 mil e também a cessão de um ônibus odontológico",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/deputado-jefferson-campos-e-absolvido-de-envolvimento-com-mafia-dos-sanguessugas/",
+   "acima": null
+  },
+  {
+   "nome": "Ezequiel Fonseca",
+   "nivel": 3,
+   "nucleo": "Prefeituras (licitações)",
+   "papel": "Segundo a denúncia, quando prefeito teria fraudado a licitação de uma unidade móvel de saúde; foi absolvido e parte prescreveu.",
+   "citacao": "o então prefeito juntamente com três corréus, teria fraudado licitação para a aquisição de uma unidade móvel de saúde para o município",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-ezequiel-fonseca-das-acusacoes-de-fraude-a-licitacoes-e-formacao-de-quadrilha/",
+   "acima": null
+  },
+  {
+   "nome": "Ney Suassuna",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo o relatório parcial da CPMI, havia indícios de que apresentava emendas e interferia na liberação dos recursos; o Conselho de Ética o inocentou.",
+   "citacao": "considerou haver contra ele indícios de que tivesse participado da máfia das ambulâncias, por meio da apresentação de emendas ao Orçamento e posterior interferência para liberação dos recursos",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/conselho-de-etica-inocenta-suassuna-de-participacao-na-mafia-das-ambulancias",
+   "acima": null
+  },
+  {
+   "nome": "Serys Slhessarenko",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo os Vedoin, emendas suas foram aprovadas e o genro recebeu comissão; a representação foi arquivada por falta de evidências.",
+   "citacao": "Foram aprovadas emendas da senadora no valor de R$ 700 mil nesse sentido e, por esse serviço, o genro de Serys teria recebido pagamento de R$ 35 mil destinados a quitar dívidas de campanha da senadora, de acordo com acusações dos Vedoin.",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/representacao-contra-serys-e-arquivada",
+   "acima": null
+  },
+  {
+   "nome": "Magno Malta",
+   "nivel": 3,
+   "nucleo": "Parlamentares (emendas)",
+   "papel": "Segundo a acusação, teria recebido o uso de um veículo da Planam em troca de emendas; a representação foi arquivada por falta de provas.",
+   "citacao": "um veículo que usou por cerca de um ano teria sido dado a ele em troca da apresentação de emendas ao Orçamento da União, no valor de R$ 1 milhão, para a aquisição de ambulâncias superfaturadas",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas",
+   "acima": null
+  }
+ ]
+}
