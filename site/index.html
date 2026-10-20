@@ -1499,6 +1499,13 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 
 .sd{font-weight:600;font-variant-numeric:tabular-nums}.sd-mais{color:#11693A}.sd-menos{color:#B4441A}
 [data-theme="dark"] .sd-mais{color:#7DDBA4}[data-theme="dark"] .sd-menos{color:#F5A47E}
+
+/* gráficos em linha */
+.lr-svg{display:block;margin:2px 0 6px;overflow:visible}
+.lr-leg{display:grid;gap:2px}
+.lr-l{display:grid;grid-template-columns:22px 10px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;padding:3px 0}
+.lr-l .rk-p{grid-area:auto}.lr-l i{width:10px;height:10px;border-radius:50%}.lr-l a{color:var(--ink2);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lr-l a:hover{color:var(--c1)}
+.lr-l b{font-weight:500;color:var(--ink2);font-variant-numeric:tabular-nums}.lr-top a,.lr-top b{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -2993,6 +3000,41 @@ function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,cor
  const graf=(t,lista,cor)=>{const mx=Math.max(...o.map(u=>Math.abs(vals[u.uf])))||1;
   return`<div class="rk"><h4 class="rk-t"><i style="background:${cor}"></i>${t}</h4>${lista.map((u,i)=>`<div class="rk-l${i<3?" rk-top":""}"><span class="rk-p">${i+1}º</span><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><div class="rk-b"><i style="width:${Math.max(3,Math.abs(vals[u.uf])/mx*100)}%;background:${cor};opacity:${i<3?1:.38}"></i></div><b>${fmt(vals[u.uf])}</b></div>`).join("")}</div>`};
  return`<div class="rk-duplo">${graf(alto,o.slice(0,n),corAlto)}${graf(baixo,o.slice(-n).reverse(),corBaixo)}</div>`}
+/* gráficos em linha (evolução por ano): 5 maiores e 5 menores. As 3 primeiras linhas em cores vivas e grossas, as
+   outras 2 finas e apagadas; o rótulo de cada linha fica no fim dela. "Primeiro" no gráfico dos menores é o menor valor. */
+const LIN_ALTO=["#DC2626","#EA580C","#C026D3","#F59E0B","#8B5CF6"],LIN_BAIXO=["#16A34A","#0284C7","#2F6FED","#0D9488","#65A30D"];
+function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
+ const W=460,H=210,L=40,Rp=40,T=12,B=24,pts=lista.map(u=>anos.map(a=>serie[u.uf]&&serie[u.uf][a]!=null?+serie[u.uf][a]:null));
+ const tod=pts.flat().filter(v=>v!=null);if(!tod.length)return"";const mx=Math.max(...tod)*1.06||1,mn=Math.min(0,...tod);
+ const x=i=>L+(anos.length<2?0:i*(W-L-Rp)/(anos.length-1)),y=v=>T+(1-(v-mn)/(mx-mn||1))*(H-T-B);
+ let g="";for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--line2)"/><text x="${L-6}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${fmt(v)}</text>`}
+ const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if(i%passo===0||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--muted)">${rot(a)}</text>`});
+ const ordem=[...lista.keys()].reverse(),fim=[];
+ ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
+  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.35}"/>`;
+  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.4}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
+  const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
+ fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<11)fim[i].y=fim[i-1].y+11;
+ fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="10.5" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.55}">${lista[f.k].uf}</text>`});
+ const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.4}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
+ return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
+// serie: {UF:{ano:valor}}; anos em ordem; vals: valor de hoje (escolhe os 5 maiores e os 5 menores). Sem 2 anos ou mais, volta às barras.
+function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
+ const ok=UFS.filter(u=>vals[u.uf]!=null&&serie&&serie[u.uf]&&Object.keys(serie[u.uf]).length>=2).sort((a,b)=>vals[b.uf]-vals[a.uf]);
+ if(!anos||anos.length<2||ok.length<n*2)return rankDuplo(vals,fmt,{alto,baixo,corAlto:coresAlto[0],corBaixo:coresBaixo[0],attr,href,n});
+ const p={attr,href,rot,vals};return`<div class="rk-duplo lr">${linhasGraf(alto,ok.slice(0,n),serie,anos,coresAlto,fmt,p)}${linhasGraf(baixo,ok.slice(-n).reverse(),serie,anos,coresBaixo,fmt,p)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
+// série por ano dos indicadores de segurança que têm histórico (Sinesp anual, Sisdepen semestral, Anuário)
+function segHist(d,met){const h=d&&d.historico;if(!h)return null;const pop=uf=>gv(d.estados[uf],"populacao");const serie={};let anos=[],parcial=null;
+ const k=met==="hom"?"homicidio_doloso":met==="detidos"?"mandados_cumpridos":met.startsWith("c_")?met.slice(2):null;
+ if(k&&h.ocorrencias){anos=Object.keys(h.ocorrencias).sort();anos.forEach(a=>{const b=h.ocorrencias[a],m=b.meses||12;if(m<12)parcial=a;UFS.forEach(u=>{const v=gv(b,"estados",u.uf,k),pp=pop(u.uf);if(v==null||!pp)return;
+   (serie[u.uf]=serie[u.uf]||{})[a]=met==="detidos"?v/(m*365/12):v*12/m/pp*1e5})})}
+ else if(met==="presos"&&h.prisional){const sem={};Object.keys(h.prisional).sort().forEach(s=>sem[s.split("/")[0]]=s);anos=Object.keys(sem).sort();
+  anos.forEach(a=>UFS.forEach(u=>{const v=gv(h.prisional[sem[a]],"estados",u.uf,"populacao"),pp=pop(u.uf);if(v!=null&&pp)(serie[u.uf]=serie[u.uf]||{})[a]=v/pp*1e5}))}
+ else if(met==="mvi"&&h.violencia){anos=Object.keys(h.violencia).sort();anos.forEach(a=>UFS.forEach(u=>{const v=gv(h.violencia[a],"estados",u.uf,"taxa_mvi");if(v!=null)(serie[u.uf]=serie[u.uf]||{})[a]=v}))}
+ else return null;
+ return{serie,anos,rot:a=>a===parcial?a+"*":a,nota:(parcial?`* ${parcial}: ano ainda incompleto, valor proporcional a 12 meses. `:"")+(met==="detidos"||met==="mvi"?"":"Taxa por 100 mil habitantes calculada com a população atual (IBGE).")}}
+// série por ano do retorno por R$ 1 e da dívida estadual (endpoint /historico-estados; só existe depois que o robô coleta os anos)
+let HIST_UF=null;const histUF=()=>HIST_UF||(HIST_UF=apiGet("/historico-estados").catch(()=>null));
 function demoComAviso(fn,args,msg){const r=fn(...args);$("#view").innerHTML=`<div class="rbanner">${msg} Enquanto isso, esta tela mostra a demonstração.</div>`+r.html;r.mount&&r.mount()}
 function maisBtn(id){return`<div style="text-align:center;margin-top:12px"><button class="btn" id="${id}" type="button" hidden>Carregar mais</button></div>`}
 /* lista paginada genérica */
@@ -3190,11 +3232,12 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
  $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
  <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
- <div class="mapwrap mapbig mt"><div id="flMapa">${mapaValores(val,rs)}</div><div class="zside">${rankDuplo(val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",corAlto:"#1BAF7A",corBaixo:"#EB6834"})}</div></div>
+ <div class="mapwrap mapbig mt"><div id="flMapa">${mapaValores(val,rs)}</div><div class="zside" id="flLados">${rankDuplo(val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",corAlto:"#16A34A",corBaixo:"#EA580C"})}</div></div>
  <h3 class="seg-h">Todos os estados <small>do que mais recebe de volta ao que menos recebe · toque no título da coluna para ordenar</small></h3>${table([["Estado",e=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span>`],["Pagou de impostos",e=>`${brl(e.arrecadado)}<div class="small muted">${pct(e.participacao_arrecadacao_nacional*100)} do país</div>`,"n"],["Voltou ao estado",e=>`${brl(e.retornado)}<div class="small muted">${pct(e.participacao_nas_transferencias*100)} dos repasses</div>`,"n"],["Saldo",saldo,"n"],["Para cada R$ 1",e=>`<b>${rs(e.retorno_por_real_arrecadado)}</b><div class="bar" style="height:6px;margin-top:5px;min-width:80px"><i style="width:${Math.max(2,e.retorno_por_real_arrecadado/mxR*100)}%;background:${e.retorno_por_real_arrecadado>=1?"#1BAF7A":"#EB6834"}"></i></div>`,"n"]],es,e=>"#/uf/"+e.uf)}
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
- bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks()}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
+ bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks();
+ histUF().then(H=>{const r=H&&H.retorno;if(!r||r.anos.length<2||!$("#flLados"))return;$("#flLados").innerHTML=linhasDuplo(r.estados,r.anos,val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO,nota:"Quanto voltou para cada R$ 1 pago, ano a ano. Valores nominais."})})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
 
 /* ---------- eleições reais (TSE) ---------- */
 const _eleicoes=P.eleicoes;
@@ -4200,7 +4243,8 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   const desenha=()=>{const[nome,f,fmt,sub]=SEG_MET[met];const vals={};UFS.forEach(u=>{vals[u.uf]=f(d.estados[u.uf])});
    $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt,{escala:met==="policia"?SCALE:SCALE_VERM});$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
    const pol=met==="policia";
-   $("#segside").innerHTML=rankDuplo(vals,fmt,{alto:pol?"Mais policiais":"Mais violentos",baixo:pol?"Menos policiais":"Menos violentos",corAlto:pol?"#2F6FED":COR_ALTO,corBaixo:pol?"#93B4F5":COR_BAIXO,attr:"data-segz",href:()=>"#/seguranca"});
+   const hs=segHist(d,met),opS={alto:pol?"Mais policiais":"Mais violentos",baixo:pol?"Menos policiais":"Menos violentos",attr:"data-segz",href:()=>"#/seguranca",rot:hs&&hs.rot,nota:hs&&hs.nota,...(pol?{coresAlto:["#2F6FED","#0284C7","#7C3AED","#64748B","#94A3B8"],coresBaixo:["#93B4F5","#7DD3FC","#C4B5FD","#CBD5E1","#E2E8F0"]}:{})};
+   $("#segside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,vals,fmt,opS);
    bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ();graf()};
   const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
   const graf=()=>{const w=$("#segchartw");if(!w)return;const k=SEG_SERIE[met]||(met.startsWith("c_")?met.slice(2):null);const pts=k?sm.filter(x=>x[k]!=null).map(x=>({data:x.mes,valor:x[k]})):[];
@@ -4216,7 +4260,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   const HZ={card:"#hsegcard",main:"#hsegmain",holder:"#hsegstate",map:"#hsegmap",back:"‹ Voltar ao Brasil",render:uf=>segEstado(uf)};
   alvo.insertAdjacentHTML("afterend",`<div class="panel" id="hsegcard"><div id="hsegmain" class="zmain"><div class="hd"><div><h2>Segurança pública no Brasil</h2><p>${ref.ocorr?`Sinesp, ${ref.ocorr}`:""}${ref.prisional?`${ref.ocorr?"; ":""}presos: ${ref.prisional}`:""}</p></div><a href="#/seguranca">Ver tudo</a></div>
    <div class="kpis kpis-c">${o.homicidios_por_dia!=null?kp("Homicídios por dia",n1(o.homicidios_por_dia),`${n1(o.taxa_homicidio)} por 100 mil hab.`):""}${o.detidos_por_dia!=null?kp("Presos por mandado, por dia",n1(o.detidos_por_dia)):""}${p.populacao!=null?kp("Presos no país",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`):""}${p.presos_por_dia!=null?kp("Entram nas prisões por dia",n1(p.presos_por_dia)):""}${p.saidas_temporarias?kp("Saídas temporárias",n0(p.saidas_temporarias),`${n0(p.abandonos)} não voltaram`):""}${gv(B,"efetivo","policiais_por_mil")!=null?kp("Policiais por mil hab.",n1(B.efetivo.policiais_por_mil)):""}</div>
-   ${temMapa?`${rankDuplo(vals,n1,{alto:"Mais violentos",baixo:"Menos violentos",attr:"data-hsegz"})}
+   ${temMapa?`${(h=>linhasDuplo(h&&h.serie,h&&h.anos,vals,n1,{alto:"Mais violentos",baixo:"Menos violentos",attr:"data-hsegz",rot:h&&h.rot,nota:h&&h.nota}))(segHist(d,"hom"))}
    <p class="small muted" style="margin:10px 0 0">Homicídios por 100 mil habitantes nos últimos 12 meses. Escolha um estado para ver as taxas dele: presos, homicídios, prisões por dia, saídas temporárias e policiais.</p>
    <label class="small muted" style="display:block;margin-top:8px">Ver um estado <select id="hsegsel" style="margin-left:6px"><option value="">Escolha...</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></label>`:""}
    </div><div id="hsegstate" style="display:none"></div></div>`);
@@ -4261,7 +4305,9 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
   const desenha=()=>{const q=quadroDivida(tipo,D);$("#dvQ").innerHTML=q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"";
    const m=DIV_MAPA[tipo](D,M);const card=$("#dvcard");if($("#dvstate").style.display!=="none")inlineZoomOut(DZ);
    if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE_VERM});
-    $("#dvside").innerHTML=rankDuplo(m.v,m.f,{alto:"Mais endividados",baixo:"Menos endividados",attr:"data-dvz",href:()=>"#/dividas"});
+    const opD={alto:"Mais endividados",baixo:"Menos endividados",attr:"data-dvz",href:()=>"#/dividas"};$("#dvside").innerHTML=rankDuplo(m.v,m.f,{...opD,corAlto:LIN_ALTO[0],corBaixo:LIN_BAIXO[0]});
+    if(tipo==="estados")histUF().then(H=>{const dv=H&&H.divida;if(!dv||dv.anos.length<2||!$("#dvside"))return;const pc={};Object.entries(dv.estados).forEach(([uf,o])=>{const pp=UF[uf]&&UF[uf].pop;if(!pp)return;pc[uf]={};Object.entries(o).forEach(([a,v])=>pc[uf][a]=m.v[uf]!=null&&/habitante/i.test(m.t)?v/pp:v)});
+     $("#dvside").innerHTML=linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,nota:"Valores nominais, sem correção pela inflação."});document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
     bindMap($("#dvmap"),null,null,(u,el)=>inlineZoomIn(DZ,u,el));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})}
    else{card.hidden=true}
    $("#dvDet").innerHTML=TELA_DIV[tipo](D,sub);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};

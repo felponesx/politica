@@ -117,6 +117,33 @@ def fluxo_todos(ano: int | None = None, db: Session = Depends(get_db)):
     return {"ano": ano, "estados": estados, "metodologia": METODOLOGIA}
 
 
+@router.get("/historico-estados", tags=["Estados"])
+def historico_estados(db: Session = Depends(get_db)):
+    """Série por ano de cada estado, para os gráficos em linha: retorno por R$ 1 arrecadado (fluxo federativo) e
+    dívida consolidada do governo estadual (SICONFI, RGF Anexo 2, último quadrimestre de cada ano)."""
+    anos = [a for (a,) in db.execute(select(Registro.ano).where(Registro.tipo == "arrecadacao_uf").distinct()
+                                     .order_by(Registro.ano)).all() if a]
+    retorno = {}
+    for ano in anos:
+        for uf in UFS:
+            r = fluxo_estado(db, uf, ano).get("retorno_por_real_arrecadado")
+            if r is not None:
+                retorno.setdefault(uf, {})[str(ano)] = r
+    divida, ult = {}, {}
+    for r in db.scalars(select(Registro).where(Registro.tipo == "rgf-anexo02-divida")):
+        d = r.dados or {}
+        if d.get("cod_conta") != "DividaConsolidada" or "Quadrimestre" not in (d.get("coluna") or "") or not r.uf:
+            continue
+        k = (r.uf, r.ano)
+        if k not in ult or d["coluna"] > ult[k]:  # o quadrimestre mais recente de cada ano
+            ult[k] = d["coluna"]
+            divida.setdefault(r.uf, {})[str(r.ano)] = r.valor
+    serie = lambda v: {"anos": sorted({a for x in v.values() for a in x}), "estados": v}
+    return {"retorno": serie(retorno), "divida": serie(divida),
+            "fonte": "Receita Federal, Tesouro Nacional e SICONFI (Tesouro Nacional)",
+            "nota": "Valores nominais, sem correção pela inflação. Um ano só aparece depois de coletado."}
+
+
 # ---------- coletas ----------
 
 @router.get("/coletas", response_model=list[ColetaOut], tags=["Coletas"])

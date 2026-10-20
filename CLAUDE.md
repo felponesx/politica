@@ -141,3 +141,6 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   fortes e 2 apagados). Violência e dívidas: mapa vermelho (`SCALE_VERM`), maiores em vermelho e menores em verde.
 - Projetos: situação via `camara-proposicoes-situacao` (arquivo anual da Câmara `proposicoes-AAAA.json`, campo
   `ultimoStatus`); no site `sitProj`/`sitProjTag` traduzem para palavras simples ("Aguardando votação", "Virou lei"…).
+- Gráficos em linha (maiores × menores): `linhasDuplo(serie,anos,vals,fmt,…)` — 5 linhas por gráfico, 3 primeiras vivas e
+  grossas, 2 apagadas; sem 2 anos de dados cai para `rankDuplo` (barras). Segurança usa `segHist` (histórico anual do
+  `/seguranca`); dívida e arrecadação usam `/historico-estados` (anos coletados pelo robô: receita, tesouro e siconfi-divida).

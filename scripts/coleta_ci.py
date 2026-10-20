@@ -38,6 +38,10 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
 EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
           ("noticias-politica", {}), ("bcb-scr-estados", {}),
+          # anos anteriores para os gráficos em linha dos estados (retorno por R$ 1 e dívida do governo estadual)
+          ("receita-arrecadacao", {"ano_minimo": date.today().year - 6}),
+          *[("tesouro-transferencias", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
+          *[("siconfi-divida", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
           # situação de cada proposição (arquivo anual da Câmara): anos recentes; o histórico desde 1985 vai no HISTORICO
           ("camara-proposicoes-situacao", {"desde": date.today().year - 3}),
           # gastos por função (SICONFI RREO, desde 2015): anos fechados e o ano atual até o último bimestre publicado

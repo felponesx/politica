@@ -51,3 +51,12 @@ def test_fluxo(monkeypatch, tmp_path):
     ranking = cliente.get("/fluxo-federativo", params={"ano": 2025}).json()["estados"]
     assert ranking[0]["uf"] == "BA"  # BA recebe 1500 para 600 arrecadados
     assert cliente.get("/estados/SP/resumo").json()["fluxo_federativo"]["uf"] == "SP"
+
+
+def test_historico_estados_responde():
+    """Série por ano dos estados (gráficos em linha): sempre devolve as duas séries, mesmo sem coleta."""
+    from fastapi.testclient import TestClient
+    from app.main import app
+    d = TestClient(app).get("/historico-estados").json()
+    assert set(d) >= {"retorno", "divida", "fonte", "nota"}
+    assert set(d["retorno"]) == {"anos", "estados"} and isinstance(d["divida"]["anos"], list)
