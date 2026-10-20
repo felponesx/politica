@@ -138,7 +138,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Formatos (v1.0): número em destaque = `.kpis/.kpi` ou pares `.facts` (blocos iguais, mesma letra em todo o site);
   comparação = barras (`hbars`, efetivo, eleições) com cores de `rankCor`; lista de registros = `table()`. CSS no bloco "v1.0".
 - Maiores × menores: `rankDuplo(vals,fmt,{alto,baixo,corAlto,corBaixo})` — dois gráficos (5 maiores e 5 menores, 3 primeiros
-  fortes e 2 apagados). Violência e dívidas: mapa vermelho (`SCALE_VERM`), maiores em vermelho e menores em verde.
+  fortes e 2 apagados). Violência: mapa vermelho (`SCALE_VERM`), maiores em vermelho e menores em verde. Dívidas: mapa azul (`SCALE`) e maiores em `LIN_AZUL`.
 - Projetos: situação via `camara-proposicoes-situacao` (arquivo anual da Câmara `proposicoes-AAAA.json`, campo
   `ultimoStatus`); no site `sitProj`/`sitProjTag` traduzem para palavras simples ("Aguardando votação", "Virou lei"…).
 - Gráficos em linha (maiores × menores): `linhasDuplo(serie,anos,vals,fmt,…)` — 5 linhas por gráfico, 3 primeiras vivas e

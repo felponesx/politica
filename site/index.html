@@ -3014,7 +3014,7 @@ function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,cor
  return`<div class="rk-duplo">${graf(alto,o.slice(0,n),corAlto)}${graf(baixo,o.slice(-n).reverse(),corBaixo)}</div>`}
 /* gráficos em linha (evolução por ano): 5 maiores e 5 menores. As 3 primeiras linhas em cores vivas e grossas, as
    outras 2 finas e apagadas; o rótulo de cada linha fica no fim dela. "Primeiro" no gráfico dos menores é o menor valor. */
-const LIN_ALTO=["#DC2626","#7C3AED","#F59E0B","#EC4899","#0EA5E9"],LIN_BAIXO=["#16A34A","#2563EB","#DB2777","#0D9488","#CA8A04"];
+const LIN_ALTO=["#DC2626","#7C3AED","#F59E0B","#EC4899","#0EA5E9"],LIN_BAIXO=["#16A34A","#2563EB","#DB2777","#0D9488","#CA8A04"],LIN_AZUL=["#2F6FED","#7C3AED","#0EA5E9","#F59E0B","#EC4899"];
 function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const W=460,H=210,L=40,Rp=40,T=12,B=24,pts=lista.map(u=>anos.map(a=>serie[u.uf]&&serie[u.uf][a]!=null?+serie[u.uf][a]:null));
  const tod=pts.flat().filter(v=>v!=null);if(!tod.length)return"";const mx=Math.max(...tod)*1.06||1,mn=Math.min(0,...tod);
@@ -4332,8 +4332,8 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
   <div id="dvDet" class="mt"></div>`;
   const desenha=()=>{const q=quadroDivida(tipo,D);$("#dvQ").innerHTML=q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"";
    const m=DIV_MAPA[tipo](D,M);const card=$("#dvcard");if($("#dvstate").style.display!=="none")inlineZoomOut(DZ);
-   if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE_VERM});
-    const opD={alto:"Mais endividados",baixo:"Menos endividados",attr:"data-dvz",href:()=>"#/dividas"};$("#dvside").innerHTML=rankLinhas(m.v,m.f,opD);
+   if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE});
+    const opD={alto:"Mais endividados",baixo:"Menos endividados",coresAlto:LIN_AZUL,attr:"data-dvz",href:()=>"#/dividas"};$("#dvside").innerHTML=rankLinhas(m.v,m.f,opD);
     if(tipo==="estados"||tipo==="publica")histUF().then(H=>{const dv=H&&H.divida;if(!dv||dv.anos.length<2||!$("#dvside"))return;const pc={};Object.entries(dv.estados).forEach(([uf,o])=>{const pp=UF[uf]&&UF[uf].pop;if(!pp)return;pc[uf]={};Object.entries(o).forEach(([a,v])=>pc[uf][a]=m.v[uf]!=null&&/habitante/i.test(m.t)?v/pp:v)});
      const MQ={1:"abr",2:"ago",3:"dez"},rq=a=>{const[y,q]=String(a).split(".");return q?`${MQ[q]}/${y.slice(2)}`:y};
      $("#dvside").innerHTML=linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,rot:rq,nota:"Dívida consolidada ao fim de cada quadrimestre (abril, agosto e dezembro), pelos relatórios fiscais dos estados. Valores nominais, sem correção pela inflação."});document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
