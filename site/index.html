@@ -4573,7 +4573,13 @@ const IA_FERR=[
   {ano:{type:"integer"},uf:{type:"string",description:"sigla do estado ou BR"},cargo:{type:"string"},turno:{type:"integer"}},iaEleicao,"Abrindo o resultado da eleição"],
  ["resumo_estado","Resumo de um estado: população, gastos, arrecadação e outros números do BRASIL+.",{uf:{type:"string"}},iaEstado,"Abrindo o resumo do estado"],
  ["buscar","Busca no site por pessoa, órgão, empresa, lei, contrato ou município; devolve ids e títulos.",{termo:{type:"string"}},iaBuscar,"Buscando no site"]];
-const iaTools=passo=>IA_FERR.map(([name,description,props,fn,rotulo])=>({name,description,inputSchema:{type:"object",properties:props},
+// pesquisa na internet (Perplexity): só com o servidor BRASIL+ no ar (a chave fica no servidor, rota POST /ia/web)
+const iaWebOn=()=>API.on&&!API.snap&&API.base!=null;
+async function iaWeb({pergunta}){if(!iaWebOn())return{erro:"Pesquisa na internet indisponível nesta versão do site."};
+ try{const r=await fetch(API.base+"/ia/web",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({pergunta:String(pergunta||"").slice(0,600)})});
+  const d=await r.json().catch(()=>({}));return r.ok?d:{erro:d.detail||"A pesquisa na internet falhou."}}catch(e){return{erro:"A pesquisa na internet falhou."}}}
+const IA_WEB=["pesquisar_web","Pesquisa na internet (Perplexity) fatos recentes ou gerais que NÃO estão nos dados do BRASIL+ (ex.: o que aconteceu numa votação de ontem, quem é tal pessoa, contexto de um tema). Devolve resposta, fontes (links) e aviso.",{pergunta:{type:"string"}},iaWeb,"Pesquisando na internet"];
+const iaTools=passo=>(iaWebOn()?[...IA_FERR,IA_WEB]:IA_FERR).map(([name,description,props,fn,rotulo])=>({name,description,inputSchema:{type:"object",properties:props},
  async execute(input){passo(rotulo);const r=await fn(input||{});const s=JSON.stringify(r);return s.length>30000?s.slice(0,30000):r}}));
 const IA_REGRAS=()=>`Você é a IA do BRASIL+, site independente de transparência com dados públicos oficiais do Brasil. Hoje é ${new Date().toLocaleDateString("pt-BR")}.
 Regras:
@@ -4582,7 +4588,8 @@ Regras:
 - Diga o período e a fonte de cada número (campos "fonte", "nota", "anos_com_dados") e as limitações quando importarem para a resposta.
 - Seja neutro e apartidário: não dê opinião sobre quem é melhor ou pior, não recomende voto e apresente os fatos de forma equilibrada.
 - Aparecer num ranking ou numa notícia não indica irregularidade. Notícias: são títulos e resumos dos feeds; cite veículo e data e coloque o link; não afirme como fato o que é acusação ou investigação.
-- Homônimos: se houver mais de uma pessoa com o nome, mostre as opções ou pergunte qual.
+- Homônimos: se houver mais de uma pessoa com o nome, mostre as opções ou pergunte qual.${iaWebOn()?`
+- Internet: use pesquisar_web só quando as outras ferramentas não tiverem a resposta. Diga que a informação veio da internet (não dos dados oficiais do BRASIL+) e coloque os links das fontes.`:""}
 - Formato: comece com a resposta em 1 ou 2 frases; depois uma lista curta (até 10 itens) com nomes em negrito; termine com "Fonte: ...". Links: perfil de parlamentar [nome](#/parlamentar/ID), candidato [nome](#/candidato/SQ), notícias com o link original. Valores em reais no formato R$ 1.234,56 (milhões como R$ 1,2 milhão).
 - Perguntas fora de dados públicos brasileiros: responda em uma frase que você só cobre esses dados.`;
 
@@ -4602,6 +4609,7 @@ function iaNome(q){const ig=/^(quem|qual|quais|quantos?|quantas?|onde|como|o|a|o
  const seqs=String(q).match(/[A-ZÁÉÍÓÚÂÊÔÃÕÇ][\p{L}'.]+(?:\s+(?:d[aeo]s?\s+)?[A-ZÁÉÍÓÚÂÊÔÃÕÇ][\p{L}'.]+)*/gu)||[];
  return seqs.map(x=>x.split(/\s+/).filter((w,i)=>!(i===0&&ig.test(w))).join(" ").trim()).find(x=>x.length>=3&&!UFS.some(u=>iaN(u.nome)===iaN(x))&&!/^(Brasil|Senado|Câmara|Camara|Congresso|IA)$/i.test(x))||""}
 function iaUF(q){for(const u of UFS)if(iaTem(q,u.nome))return u.uf;const m=String(q).match(/\b([A-Z]{2})\b/g)||[];return(m.find(x=>UF[x])||"")}
+async function iaLocalModo(q,modo){IA.web=false;const t=await iaLocal(q);return[t,IA.web?"Pesquisado na internet pelo Perplexity (servidor BRASIL+); confira as fontes.":modo]}
 async function iaLocal(q){const n=iaN(q),ano=(String(q).match(/\b(19|20)\d{2}\b/)||[])[0],uf=iaUF(q);
  const sobre=iaNome(q);
  if(/em alta|mais falad|mais citad|bombando|repercut/.test(n)){const r=await iaEmAlta({dias:7});
@@ -4619,6 +4627,7 @@ async function iaLocal(q){const n=iaN(q),ano=(String(q).match(/\b(19|20)\d{2}\b/
  if(/votad|votos|venceu|ganhou|eleit/.test(n)){const cargo=/prefeit/.test(n)?"PREFEITO":/senad/.test(n)?"SENADOR":/governad/.test(n)?"GOVERNADOR":/presid/.test(n)?"PRESIDENTE":/estadu/.test(n)?"DEPUTADO ESTADUAL":"DEPUTADO FEDERAL";
   const r=await iaMaisVotados({cargo,ano:ano||"",uf});const t=r.itens[0];if(!t)return`Não achei ${tit(cargo).toLowerCase()} mais votado com esse filtro.`;
   return`O mais votado para ${tit(r.cargo).toLowerCase()}${uf?" em "+UF[uf].nome:""} em ${r.ano} foi **[${t.nome}](${t.link})** (${t.partido}-${t.uf}), com ${nf(t.votos)} votos.\n${r.itens.slice(0,10).map((x,i)=>`${i+1}. **[${x.nome}](${x.link})** (${x.partido}-${x.uf}${x.cidade&&r.cargo==="PREFEITO"?", "+x.cidade:""}): ${nf(x.votos)} votos`).join("\n")}\n\n${r.nota}\nFonte: ${r.fonte}.`}
+ if(iaWebOn()){const w=await iaWeb({pergunta:q});if(w&&w.resposta){IA.web=true;return`${w.resposta}\n\n${(w.fontes||[]).length?`Fontes:\n${w.fontes.map(f=>`- [${f.titulo}](${f.url})`).join("\n")}\n\n`:""}${w.aviso}`}}
  const r=await iaBuscar({termo:q});const L=Object.entries(r||{}).flatMap(([t,l])=>(l||[]).map(x=>`- ${x.titulo}${x.subtitulo?" ("+x.subtitulo+")":""}`)).slice(0,10);
  return L.length?`No modo simples eu entendo perguntas sobre gastos, mais votados, tempo no poder e notícias. Para "${q}", achei no site:\n${L.join("\n")}`:
   "No modo simples eu entendo perguntas sobre **gastos da cota**, **mais votados**, **tempo no poder** e **notícias** (ex.: \"quem mais gastou?\", \"deputado federal mais votado em 2022\", \"quem está há mais tempo no poder em SP?\", \"notícias sobre Nikolas Ferreira\")."}
@@ -4645,8 +4654,8 @@ async function iaPerguntar(q,raiz){q=String(q||"").trim();if(!q||IA.ocupada)retu
      onText:({text})=>{if(bal.isConnected)bal.innerHTML=iaMd(text)}});
     IA.turnos.push({role:"assistant",content:text});pronto(text+(truncated?"\n\n(A resposta foi cortada; pergunte uma parte de cada vez.)":""),"Respondido pelo Claude com os dados oficiais do BRASIL+.")}
    catch(e){IA.turnos.pop();if(e&&e.code==="cancelled"){pronto((e.text||"")+"\n\n(Parado.)","");return}
-    if(!(e&&IA_SEM[e.code]))throw e;IA.sample=null;pronto(await iaLocal(q),"Modo simples: o Claude não está liberado nesta página; resposta direta dos dados.")}}
-  else pronto(await iaLocal(q),"Modo simples: respostas diretas dos dados oficiais. Com o site aberto no Claude, a IA responde qualquer pergunta.")}
+    if(!(e&&IA_SEM[e.code]))throw e;IA.sample=null;pronto(...await iaLocalModo(q,"Modo simples: o Claude não está liberado nesta página; resposta direta dos dados."))}}
+  else pronto(...await iaLocalModo(q,"Modo simples: respostas diretas dos dados oficiais. Com o site aberto no Claude, a IA responde qualquer pergunta."))}
  catch(e){const t=(e&&(IA_ERRO[e.code]||e.message))||"Não consegui responder agora.";pronto((e&&e.text?e.text+"\n\n":"")+"Não consegui responder: "+t,"")}
  finally{IA.ocupada=false;IA.ctl=null;if(stop)stop.hidden=true;if(env)env.disabled=false}}
 const IA_SUG=["Quem mais gastou a cota parlamentar este ano?","Quem foi o deputado federal mais votado em 2022?","Quem está há mais tempo no poder em São Paulo?","Quais políticos estão em alta nas notícias?","O que as notícias dizem sobre Nikolas Ferreira?","Quem foram os senadores mais votados em 2022?"];

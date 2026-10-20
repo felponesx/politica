@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     alerta_telegram_token: str = ""
     alerta_telegram_chat: str = ""
     alerta_webhook_url: str = ""         # alternativa: POST JSON {"texto": ...} para qualquer webhook
+    # IA do site: pesquisa na internet pelo Perplexity (POST /ia/web). Sem chave, a rota responde 503.
+    perplexity_api_key: str = ""
+    perplexity_preset: str = "low"
+    perplexity_limite_dia: int = 300     # perguntas por dia (0 = sem limite)
     http_timeout: float = 60.0
     http_retries: int = 4
 

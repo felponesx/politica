@@ -37,7 +37,7 @@ A partir daí o **agendador** atualiza tudo sozinho (diário, semanal, mensal e 
 - O banco não tem porta aberta para a internet.
 - HTTPS obrigatório com HSTS; cabeçalhos de segurança e CSP no site.
 - Limite de 120 requisições por minuto por IP (`LIMITE_REQ_POR_MINUTO`).
-- Senhas e a chave do Portal da Transparência ficam só no `.env.prod` (fora do Git, fora da imagem Docker).
+- Senhas, a chave do Portal da Transparência e a do Perplexity (`PERPLEXITY_API_KEY`, pesquisa na internet da IA do site; opcional) ficam só no `.env.prod` (fora do Git, fora da imagem Docker).
 - Backup diário em `./backups` (guarda 7 dias). **Copie essa pasta para fora da VPS** de vez em quando.
 
 ## Checklist depois de subir

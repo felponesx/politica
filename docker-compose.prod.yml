@@ -39,6 +39,7 @@ services:
       DATABASE_URL: postgresql+psycopg://brasil_leitura:${DB_LEITURA_SENHA}@db:5432/brasilplus
       MIGRAR_AO_INICIAR: "false"
       SOMENTE_LEITURA: "true"
+      PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY:-}
       LIMITE_REQ_POR_MINUTO: ${LIMITE_REQ_POR_MINUTO:-120}
     depends_on:
       db: {condition: service_healthy}

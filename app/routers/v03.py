@@ -6,6 +6,7 @@ from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -410,6 +411,27 @@ def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Quer
         veiculos[v] = veiculos.get(v, 0) + 1
     return {"total": len(itens), "itens": itens[offset:offset + limit], "veiculos": veiculos,
             "aviso": "Títulos e resumos dos feeds públicos de cada veículo; a matéria completa fica no site original."}
+
+
+class PerguntaWeb(BaseModel):
+    pergunta: str = Field(..., min_length=2, max_length=600)
+
+
+@router.post("/ia/web", tags=["IA"])
+def ia_web(corpo: PerguntaWeb):
+    """Pesquisa na internet (Perplexity) para a IA do site, quando os dados oficiais não têm a resposta.
+    A chave fica só no servidor (PERPLEXITY_API_KEY)."""
+    import httpx
+
+    from app import ia_web as web
+    try:
+        return web.pesquisar(corpo.pergunta)
+    except web.SemChave as e:
+        raise HTTPException(503, str(e))
+    except web.LimiteDiario as e:
+        raise HTTPException(429, str(e))
+    except (httpx.HTTPError, RuntimeError, ValueError):
+        raise HTTPException(502, "A pesquisa na internet falhou agora. Tente de novo daqui a pouco.")
 
 
 @router.get("/ia/indice", tags=["IA"])

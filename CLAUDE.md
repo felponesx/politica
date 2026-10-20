@@ -123,6 +123,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   ao publicar), com ferramentas que leem os dados do site: ranking_gastos, mais_votados, tempo_no_poder, perfil_parlamentar,
   noticias, politicos_em_alta, resultado_eleicao, resumo_estado, buscar. Sem o Claude, o "modo simples" (`iaLocal`) responde
   gastos, mais votados, tempo no poder e notícias com as mesmas ferramentas.
+- Pesquisa na internet: `POST /ia/web` (`app/ia_web.py`) chama o Perplexity (Agent API, preset `low`) com a chave
+  `PERPLEXITY_API_KEY` só no servidor (sem chave: 503). Limite diário (`perplexity_limite_dia`), pergunta até 600 caracteres
+  e mesma pergunta guardada 1 h. No site, a ferramenta `pesquisar_web` e o último recurso do modo simples só existem com o
+  servidor BRASIL+ no ar (`iaWebOn`; nunca no Artifact/cópia estática). Respostas sempre com fontes e o aviso de que não são
+  dados oficiais.
 - Índice `/ia/indice` (`app/ia_indice.py`): ranking da cota parlamentar, até 40 mais votados por eleição e cargo e mandatos
   por pessoa desde 1994. O robô grava junto da cópia (`exportar_snapshot.py`); para uma cópia pronta: `python -m scripts.indice_ia`.
   Limitações: TSE 2002 marca todos os candidatos como eleitos (2002 só conta para presidente); faltam presidente 2006/2010;
