@@ -1,0 +1,205 @@
+{
+ "slug": "mensalao",
+ "explicacao": "Segundo a denúncia da Procuradoria-Geral da República, o esquema funcionava como uma organização dividida em três núcleos: o político-partidário, o publicitário (operacional) e o financeiro. O STF julgou os réus seguindo essa divisão.",
+ "explicacao_fonte": "https://conjur.com.br/2007-ago-28/stf_aceita_acao_penal_40_denunciados_mensalao/",
+ "nucleos": [
+  {
+   "nome": "Núcleo político",
+   "descricao": "Dirigentes do PT que, segundo a denúncia, compravam apoio de outros partidos e passavam as diretrizes aos outros dois núcleos."
+  },
+  {
+   "nome": "Núcleo operacional (publicitário)",
+   "descricao": "Marcos Valério, sócios e funcionárias das agências SMP&B e DNA, que segundo a denúncia recebiam vantagens de contratos com órgãos públicos e distribuíam o dinheiro."
+  },
+  {
+   "nome": "Núcleo financeiro",
+   "descricao": "Dirigentes do Banco Rural que, segundo a denúncia, facilitavam a lavagem de dinheiro com empréstimos e saques sem registro dos beneficiários."
+  },
+  {
+   "nome": "Partidos e parlamentares que recebiam",
+   "descricao": "Parlamentares e dirigentes de partidos que, segundo a denúncia, receberam os repasses em troca de apoio ao governo. Não é um dos três núcleos da organização descrita pela PGR; reúne quem estava na ponta que recebia."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "José Dirceu",
+   "nivel": 1,
+   "nucleo": "Núcleo político",
+   "papel": "Apontado pelo relator do STF como quem comandava o núcleo político e era o mandante do esquema de compra de apoio no Congresso.",
+   "citacao": "Anoto nos autos elementos de convicção a sustentar que José Dirceu comandava o núcleo político que, por sua vez, orientava o núcleo publicitário e agia em conjunto ao núcleo financeiro",
+   "fonte": "https://conjur.com.br/2012-out-17/joaquim-barbosa-indica-condenara-dirceu-formacao-quadrilha/",
+   "acima": null
+  },
+  {
+   "nome": "José Genoino",
+   "nivel": 2,
+   "nucleo": "Núcleo político",
+   "papel": "Presidente do PT; segundo o relator do STF, cabia a ele articular as promessas de dinheiro aos partidos aliados, que depois eram cumpridas por Delúbio Soares e Marcos Valério.",
+   "citacao": "cabia ao réu articular as promessas de vantagens indevidas, executadas posteriormente por Delúbio Soares e Marcos Valério",
+   "fonte": "https://conjur.com.br/2012-out-03/joaquim-barbosa-condena-dirceu-genoino-delubio-corrupcao-ativa/",
+   "acima": "José Dirceu"
+  },
+  {
+   "nome": "Delúbio Soares",
+   "nivel": 2,
+   "nucleo": "Núcleo político",
+   "papel": "Tesoureiro do PT; segundo o relator do STF, decidia quem recebia o dinheiro e indicava os beneficiários a Marcos Valério, sob orientação de José Dirceu.",
+   "citacao": "Delúbio detinha o comando final acerca de quem deveria receber os valores, os beneficiários da engenharia criminosa efetuada por Marcos Valério",
+   "fonte": "https://conjur.com.br/2012-out-03/joaquim-barbosa-condena-dirceu-genoino-delubio-corrupcao-ativa/",
+   "acima": "José Dirceu"
+  },
+  {
+   "nome": "Marcos Valério Fernandes de Souza",
+   "nivel": 2,
+   "nucleo": "Núcleo operacional (publicitário)",
+   "papel": "Publicitário apontado como líder do núcleo operacional, uma espécie de gerente financeiro do esquema; segundo o relator, agia orientado por José Dirceu.",
+   "citacao": "O primeiro foi o operacional, liderado pelo publicitário Marcos Valério, que agiu como uma espécie de gerente financeiro.",
+   "fonte": "https://www.cnnbrasil.com.br/politica/veja-cronologia-dos-fatos-que-envolvem-o-mensalao-20-anos-apos-escandalo/",
+   "acima": "José Dirceu"
+  },
+  {
+   "nome": "Kátia Rabello",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro",
+   "papel": "Presidente do Banco Rural; segundo a denúncia, integrava o núcleo financeiro, que facilitava as operações de lavagem de dinheiro.",
+   "citacao": "E o terceiro núcleo — composto, entre outros, por Kátia Rabelo José Roberto Salgado, Ayanna Tenório e Vinícius Samarane — teria entrado na organização criminosa em busca de vantagens indevidas e facilitava as operações de lavagem de dinheiro.",
+   "fonte": "https://conjur.com.br/2007-ago-28/stf_aceita_acao_penal_40_denunciados_mensalao/",
+   "acima": null
+  },
+  {
+   "nome": "Henrique Pizzolato",
+   "nivel": 2,
+   "nucleo": null,
+   "papel": "Diretor de marketing do Banco do Brasil; segundo a denúncia, autorizou adiantamento de dinheiro do fundo Visanet à agência DNA, de Marcos Valério, e recebeu dinheiro do esquema.",
+   "citacao": "Receber R$ 336 mil do \"valerioduto\" e autorizar um adiantamento de R$ 73 milhões do fundo Visanet para a DNA, a agência de Marcos Valério que tinha contrato de publicidade com o Banco do Brasil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "João Paulo Cunha",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Presidente da Câmara; segundo a denúncia, recebeu dinheiro do esquema e contratou a agência SMP&B, de Marcos Valério, para a Câmara.",
+   "citacao": "Receber R$ 50 mil do \"valerioduto\" para contratar uma das agências de Marcos Valério, a SMP&B, quando presidia a Câmara dos Deputados e se beneficiar do desvio de recursos públicos repassados à agência.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Roberto Jefferson",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Presidente do PTB; segundo a denúncia, recebeu dinheiro do esquema depois de um acordo em que o PT prometeu R$ 20 milhões ao PTB.",
+   "citacao": "Receber R$ 4,5 milhões do \"valerioduto\" para votar a favor do governo no Congresso, depois de fechar um acordo em que o PT prometeu entregar R$ 20 milhões para o PTB.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Valdemar Costa Neto",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Presidente do PL; segundo a denúncia, negociou com o PT o apoio do partido e recebeu dinheiro do esquema por meio de uma empresa de fachada.",
+   "citacao": "Receber R$ 8,8 milhões do \"valerioduto\" e usar uma empresa fantasma, a Guaranhuns, para disfarçar a origem do dinheiro. Teria negociado com o PT um acordo para obter os recursos em troca do apoio do PL ao governo no Congresso.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Pedro Corrêa",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Presidente do PP; segundo a denúncia, participou das negociações que levaram dinheiro do esquema ao PP, distribuído por meio da corretora Bônus Banval.",
+   "citacao": "Participar das negociações que levaram ao repasse de pelo menos R$ 3 milhões do \"valerioduto\" e uso da corretora Bônus Banval para distribuir o dinheiro.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Pedro Henry",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Líder do PP na Câmara; segundo a denúncia, participou das negociações que levaram dinheiro do esquema ao PP.",
+   "citacao": "Participar das negociações que levaram ao repasse de pelo menos R$ 3 milhões do \"valerioduto\" para o PP e ao uso da corretora Bônus Banval para distribuir o dinheiro.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "José Janene",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Líder do PP; segundo a denúncia, captou dinheiro do esquema para garantir o apoio do partido ao governo. Morreu em 2010, antes do julgamento.",
+   "citacao": "Captar pelo menos R$ 3 milhões do \"valerioduto\" para garantir o apoio do partido ao governo e usar a corretora Bônus Banval para distribuir o dinheiro disfarçando sua origem.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Carlos Rodrigues (Bispo Rodrigues)",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Deputado do PL; segundo a denúncia, recebeu dinheiro do esquema para votar a favor do governo.",
+   "citacao": "Receber R$ 150 mil do \"valerioduto\" para votar a favor do governo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Romeu Queiroz",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Deputado do PTB; segundo a denúncia, recebeu dinheiro repassado pela agência SMP&B.",
+   "citacao": "Reeceber R$ 102 mil reais da Usiminas, repassados pela SMP&B na campanha de 2004.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "José Borba",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Líder do PMDB na Câmara; segundo a denúncia da PGR, recebeu dinheiro do esquema.",
+   "citacao": "O deputado José Borba (PMDB) responderá pelos crimes de lavagem de dinheiro e corrupção passiva, por ter recebido R$ 2,1 milhões, de acordo com denúncia da PGR.",
+   "fonte": "https://conjur.com.br/2007-ago-28/stf_aceita_acao_penal_40_denunciados_mensalao/",
+   "acima": null
+  },
+  {
+   "nome": "Paulo Rocha",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Deputado do PT; segundo a denúncia, recebeu dinheiro do esquema, parte por meio de uma assessora.",
+   "citacao": "Já Paulo Rocha ganhou R$ 920 mil — R$ 600 mil por intermédio de Anita Leocádia.",
+   "fonte": "https://conjur.com.br/2007-ago-28/stf_aceita_acao_penal_40_denunciados_mensalao/",
+   "acima": null
+  },
+  {
+   "nome": "Luiz Carlos da Silva (Professor Luizinho)",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Deputado do PT; segundo a denúncia, recebeu R$ 20 mil do esquema por meio de um assessor.",
+   "citacao": "Ainda para o procurador, o ex-deputado Professor Luizinho sacou R$ 20 mil na agência do Banco Rural em Brasília por meio de seu assessor parlamentar.",
+   "fonte": "https://conjur.com.br/2007-ago-28/stf_aceita_acao_penal_40_denunciados_mensalao/",
+   "acima": null
+  },
+  {
+   "nome": "Anderson Adauto",
+   "nivel": 3,
+   "nucleo": "Partidos e parlamentares que recebiam",
+   "papel": "Ministro dos Transportes; segundo a denúncia, recebeu dinheiro do esquema com seu chefe de gabinete.",
+   "citacao": "Segundo denúncia do procurador, Adauto e Luiz Alves receberam R$ 1 milhão do esquema do mensalão.",
+   "fonte": "https://conjur.com.br/2007-ago-28/stf_aceita_acao_penal_40_denunciados_mensalao/",
+   "acima": null
+  },
+  {
+   "nome": "José Eduardo Cavalcanti de Mendonça (Duda Mendonça)",
+   "nivel": 3,
+   "nucleo": null,
+   "papel": "Publicitário; segundo a denúncia, recebeu dinheiro do esquema e mandou parte para contas no exterior.",
+   "citacao": "Receber R$ 11 milhões do \"valerioduto\", dinheiro que não declarou á Receita Federal e teve parte transferida ilegalmente para contas no exterior.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  },
+  {
+   "nome": "Luiz Gushiken",
+   "nivel": 3,
+   "nucleo": null,
+   "papel": "Ministro da Secretaria de Comunicação; segundo a denúncia, teria autorizado os adiantamentos do fundo Visanet à agência DNA.",
+   "citacao": "Autorizar Pizzolato a adiantar os pagamentos do fundo Visanet para a DNA.",
+   "fonte": "https://pt.wikipedia.org/wiki/Lista_de_denunciados_e_julgados_do_esc%C3%A2ndalo_do_Mensal%C3%A3o",
+   "acima": null
+  }
+ ]
+}

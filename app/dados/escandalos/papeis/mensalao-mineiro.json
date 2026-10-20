@@ -1,0 +1,71 @@
+{
+ "slug": "mensalao-mineiro",
+ "explicacao": "Segundo a denúncia, estatais mineiras (Comig, Copasa e Bemge) pagaram supostos patrocínios de eventos esportivos às agências de Marcos Valério, e o dinheiro foi para a campanha de reeleição de Eduardo Azeredo em 1998. A acusação não dividiu os réus em núcleos formais; os grupos abaixo seguem a descrição das fontes.",
+ "explicacao_fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml",
+ "nucleos": [
+  {
+   "nome": "Campanha de Azeredo (políticos)",
+   "descricao": "Candidatos e coordenadores da campanha de 1998 que, segundo a acusação, se beneficiaram do dinheiro desviado ou cuidaram das finanças."
+  },
+  {
+   "nome": "Agências de Marcos Valério (operação)",
+   "descricao": "Sócios das agências SMP&B e DNA que, segundo a acusação, captaram as verbas de patrocínio das estatais e as repassaram à campanha."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Eduardo Azeredo",
+   "nivel": 1,
+   "nucleo": "Campanha de Azeredo (políticos)",
+   "papel": "Governador candidato à reeleição; apontado pelo procurador-geral da República como um dos mentores do esquema e seu principal beneficiário.",
+   "citacao": "E que Eduardo Azeredo foi “um dos mentores do crime perpetrado e seu principal beneficiário”.",
+   "fonte": "https://www.conjur.com.br/2007-nov-22/denunciado_pgr_mares_guia_deixa_ministerio//?print=1",
+   "acima": null
+  },
+  {
+   "nome": "Walfrido dos Mares Guia",
+   "nivel": 2,
+   "nucleo": "Campanha de Azeredo (políticos)",
+   "papel": "Segundo o Ministério Público Federal, era o coordenador informal da campanha e o responsável pela movimentação financeira.",
+   "citacao": "Segundo o MPF, Walfrido era o coordenador informal da campanha e o responsável pela movimentação financeira.",
+   "fonte": "https://www.congressoemfoco.com.br/noticia/74937/mpf-denuncia-marcos-valerio-por-mensalao-mineiro",
+   "acima": null
+  },
+  {
+   "nome": "Clésio Andrade",
+   "nivel": 3,
+   "nucleo": "Campanha de Azeredo (políticos)",
+   "papel": "Candidato a vice na chapa de Azeredo; segundo a acusação, tentou ocultar dinheiro recebido de Marcos Valério.",
+   "citacao": "Andrade foi acusado de peculato e lavagem de dinheiro por ter, supostamente, tentado ocultar recursos recebidos do empresário Marcos Valério, sócio da agência de publicidade SMP&B.",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/clesio-andrade-recorre-da-decisao-que-o-condenou-no-mensalao-tucano-diz-defesa.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Marcos Valério Fernandes de Souza",
+   "nivel": 2,
+   "nucleo": "Agências de Marcos Valério (operação)",
+   "papel": "Sócio da SMP&B; segundo a acusação, suas agências recebiam contratos das estatais mineiras, superfaturavam serviços e repassavam o dinheiro à campanha.",
+   "citacao": "Empresas estatais mineiras contratavam agências de publicidade ligadas a Marcos Valério, que superfaturavam serviços e repassavam os valores para campanhas políticas.",
+   "fonte": "https://www.itatiaia.com.br/politica/mensalao-tucano-o-escandalo-mineiro-que-antecedeu-o-mensalao-do-pt/",
+   "acima": null
+  },
+  {
+   "nome": "Cristiano de Mello Paz",
+   "nivel": 3,
+   "nucleo": "Agências de Marcos Valério (operação)",
+   "papel": "Sócio da SMP&B; segundo o processo, a agência captou verbas de patrocínio de eventos esportivos que eram destinadas à campanha de Azeredo.",
+   "citacao": "Segundo o processo, as agências de publicidade SMP&B, da qual Valério, Cristiano Paz e Ramon Hollerbach eram sócios à época, e DNA Publicidade e Propaganda captaram verbas de patrocínio para realizado do Enduro da Independência, do Supercross e do Iron Biker, mas o dinheiro era destinado para a campanha de Azeredo.",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Ramon Hollerbach Cardoso",
+   "nivel": 3,
+   "nucleo": "Agências de Marcos Valério (operação)",
+   "papel": "Sócio da SMP&B; segundo o processo, a agência captou verbas de patrocínio de eventos esportivos que eram destinadas à campanha de Azeredo.",
+   "citacao": "Segundo o processo, as agências de publicidade SMP&B, da qual Valério, Cristiano Paz e Ramon Hollerbach eram sócios à época, e DNA Publicidade e Propaganda captaram verbas de patrocínio para realizado do Enduro da Independência, do Supercross e do Iron Biker, mas o dinheiro era destinado para a campanha de Azeredo.",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml",
+   "acima": null
+  }
+ ]
+}

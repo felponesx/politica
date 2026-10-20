@@ -1,0 +1,218 @@
+{
+ "slug": "lava-jato",
+ "explicacao": "Segundo a Procuradoria-Geral da República, a organização que atuava na Petrobras se dividia em quatro núcleos: político, econômico (empreiteiras do cartel), administrativo (diretores indicados pelos partidos) e financeiro (operadores que recebiam e distribuíam a propina).",
+ "explicacao_fonte": "https://conjur.com.br/2015-mar-08/inquerito-nucleo-politico-lava-jato-nao-desemembrado/",
+ "nucleos": [
+  {
+   "nome": "Núcleo político",
+   "descricao": "Parlamentares e dirigentes partidários que, segundo a PGR, indicavam diretores da Petrobras e recebiam propinas das empresas contratadas."
+  },
+  {
+   "nome": "Núcleo econômico (empreiteiras)",
+   "descricao": "Empresas do cartel que, segundo a PGR, combinavam as licitações e pagavam propina."
+  },
+  {
+   "nome": "Núcleo administrativo (Petrobras)",
+   "descricao": "Diretores e funcionários da Petrobras indicados pelos partidos que, segundo a PGR, favoreciam as empresas."
+  },
+  {
+   "nome": "Núcleo financeiro (operadores)",
+   "descricao": "Operadores que, segundo a PGR, recebiam as propinas e as distribuíam."
+  },
+  {
+   "nome": "Desdobramento no Rio de Janeiro",
+   "descricao": "Ramo da Lava Jato no Rio: segundo a força-tarefa do MPF, ao assumir o governo em 2007, Sérgio Cabral instituiu a cobrança de propina de 5% dos contratos da Secretaria de Obras."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Luiz Inácio Lula da Silva",
+   "nivel": 1,
+   "nucleo": "Núcleo político",
+   "papel": "Ex-presidente; na denúncia de 2016 (caso do triplex), o MPF o apontou como “comandante máximo” do esquema, segundo o procurador Deltan Dallagnol.",
+   "citacao": "Na entrevista, Dallagnol afirmou que Lula era o \"comandante máximo do esquema de corrupção identificado na Lava Jato\".",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2016-09/denuncia-do-mpf-nao-pede-prisao-de-lula",
+   "acima": null
+  },
+  {
+   "nome": "José Dirceu",
+   "nivel": 1,
+   "nucleo": "Núcleo político",
+   "papel": "Ex-ministro; segundo o MPF, exercia liderança no esquema. A sentença de 2016 rejeitou essa tese e o condenou por receber cerca de R$ 15 milhões em propinas.",
+   "citacao": "O juiz, entretanto, afastou o argumento do Ministério Público Federal de que José Dirceu exercia liderança no esquema.",
+   "fonte": "https://conjur.com.br/2016-mai-18/sergio-moro-condena-jose-dirceu-23-anos-prisao-tres-crimes/",
+   "acima": null
+  },
+  {
+   "nome": "Antonio Palocci",
+   "nivel": 2,
+   "nucleo": "Núcleo político",
+   "papel": "Ex-ministro; segundo a denúncia do MPF, recebeu propina para atuar a favor da Odebrecht e ajudou a repassar os valores, especialmente ao PT.",
+   "citacao": "Moro avaliou como procedente a denúncia do Ministério Público Federal (MPF) de que Palocci teria recebido propina para atuar em benefício da construtora Odebrecht no contrato de construção das sondas marítimas, envolvendo crime de corrupção e de lavagem de dinheiro, na dissimulação e transferência do valor das propinas, especialmente ao PT.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2021-12/desembargador-anula-condenacao-de-palocci-em-processo-da-lava-jato",
+   "acima": null
+  },
+  {
+   "nome": "Eduardo Cunha",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Presidente da Câmara; segundo a acusação, recebeu propina de contratos da Petrobras para a construção de navios-sonda.",
+   "citacao": "O caso envolve acusação de que Cunha teria recebido propina proveniente de contratos da Petrobras para a construção de navios-sonda.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2023-05/supremo-anula-condenacao-de-cunha-na-lava-jato",
+   "acima": null
+  },
+  {
+   "nome": "Fernando Collor de Mello",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Senador; segundo a decisão do STF, fez indicações políticas para a BR Distribuidora e recebeu R$ 20 milhões em vantagens indevidas em contratos da empresa.",
+   "citacao": "Segundo a decisão, o ex-presidente e ex-senador, como antigo dirigente do PTB, foi responsável por indicações políticas para a BR Distribuidora, empresa subsidiária da Petrobras, e recebeu R$ 20 milhões em vantagens indevidas em contratos da empresa.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-10/secretaria-diz-que-nao-tinha-email-do-stf-para-informar-sobre-collor",
+   "acima": null
+  },
+  {
+   "nome": "Nelson Meurer",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Deputado do PP; segundo a denúncia da PGR, recebeu repasses mensais operados pelo doleiro Alberto Youssef.",
+   "citacao": "Segundo a denúncia feita pela Procuradoria Geral da República, Meurer teria recebido R$ 29,7 milhões em 99 repasses mensais de R$ 300 mil, operacionalizados pelo doleiro Alberto Youssef.",
+   "fonte": "https://g1.globo.com/politica/operacao-lava-jato/noticia/stf-condena-nelson-meurer-por-corrupcao-e-lavagem-de-dinheiro-deputado-e-o-primeiro-condenado-da-lava-jato.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Gleisi Hoffmann",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Senadora; segundo a denúncia da PGR, pediu e recebeu R$ 1 milhão desviado da Petrobras para a campanha de 2010.",
+   "citacao": "Ao apresentar a denúncia , a Procuradoria Geral da República afirmou que Gleisi e Paulo Bernardo pediram e receberam R$ 1 milhão desviado da Petrobras para a campanha dela ao Senado, em 2010.",
+   "fonte": "https://g1.globo.com/politica/noticia/stf-absolve-senadora-gleisi-hoffmann-e-ex-ministro-paulo-bernardo-dos-crimes-de-corrupcao-e-lavagem.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Gim Argello",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Senador; segundo a acusação, recebeu propina para evitar a convocação de empresários na CPI da Petrobras em 2014.",
+   "citacao": "Ele foi acusado de ter recebido propina para evitar a convocação de empresários na Comissão Parlamentar Mista  de Inquérito (CPI) da Petrobras, em 2014.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-02/stj-anula-condenacao-do-ex-senador-gim-argello-na-lava-jato",
+   "acima": null
+  },
+  {
+   "nome": "Delcídio do Amaral",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Líder do governo no Senado; segundo a acusação, participou de um esquema para comprar o silêncio do ex-diretor Nestor Cerveró.",
+   "citacao": "Delcídio foi absolvido nesta quinta (12) pela Justiça Federal em Brasília em uma ação penal em que era acusado de ter participado de um esquema para comprar o silêncio de Nestor Cerveró, ex-diretor da Petrobras que virou delator na Lava Jato.",
+   "fonte": "https://www1.folha.uol.com.br/poder/2018/07/delcidio-comemora-absolvicao-e-diz-que-estuda-voltar-a-politica.shtml",
+   "acima": null
+  },
+  {
+   "nome": "André Vargas",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Deputado do PT; segundo a Procuradoria, usou sua influência para a Caixa e o Ministério da Saúde contratarem a agência Borghi/Lowe em troca de propina (ramo da Lava Jato fora da Petrobras).",
+   "citacao": "Segundo a tese da Procuradoria, Vargas influiu politicamente para fazer a Caixa e o ministério contratarem e liberarem aditivos a Borghi/Lowe em troca de propina.",
+   "fonte": "https://www1.folha.uol.com.br/poder/2015/09/1684970-ex-deputado-andre-vargas-condenado-a-14-anos-de-prisao.shtml",
+   "acima": null
+  },
+  {
+   "nome": "Paulo Roberto Costa",
+   "nivel": 2,
+   "nucleo": "Núcleo administrativo (Petrobras)",
+   "papel": "Diretor de Abastecimento da Petrobras indicado pelo PP; segundo a acusação, recolhia propinas das empreiteiras para políticos para se manter no cargo.",
+   "citacao": "Segundo a acusação, embora Paulo Roberto Costa tivesse sido indicado pelo PP, e assumido o cargo em 2004, passou em 2010 a recolher propinas junto às empreiteiras contratadas pela Petrobras em favor de políticos do PT e do MDB, com o objetivo de permanecer na diretoria.",
+   "fonte": "https://g1.globo.com/politica/noticia/stf-absolve-senadora-gleisi-hoffmann-e-ex-ministro-paulo-bernardo-dos-crimes-de-corrupcao-e-lavagem.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Renato Duque",
+   "nivel": 2,
+   "nucleo": "Núcleo administrativo (Petrobras)",
+   "papel": "Diretor de Serviços da Petrobras indicado pelo PT; segundo a PGR, sua diretoria indicava a empreiteira a ser contratada depois da combinação de preços do cartel, e parte da propina ia para o PT.",
+   "citacao": "Outra parte era destinada a integrantes do PT responsáveis pela indicação de Renato Duque para Diretoria de Serviços. Era essa diretoria que indicava a empreiteira a ser contratada, após a combinação de preços entre as empresas do cartel para fraudar licitações.",
+   "fonte": "https://conjur.com.br/2015-mar-08/inquerito-nucleo-politico-lava-jato-nao-desemembrado/",
+   "acima": null
+  },
+  {
+   "nome": "Nestor Cerveró",
+   "nivel": 2,
+   "nucleo": "Núcleo administrativo (Petrobras)",
+   "papel": "Diretor da área Internacional da Petrobras; segundo o tribunal, sua diretoria recebeu oferta de US$ 40 milhões em propina da Samsung Heavy, com intermediação de Fernando Baiano.",
+   "citacao": "Conforme o Tribunal Federal, teria sido oferecida vantagem indevida de US$ 40 milhões pela empresa Samsung Heavy à diretoria da Área Internacional da Petrobras, ocupada por Cerveró, com intermediação de Fernando Baiano.",
+   "fonte": "https://g1.globo.com/rs/rio-grande-do-sul/noticia/2016/11/tribunal-federal-decide-elevar-penas-de-cervero-e-de-fernando-baiano.html",
+   "acima": null
+  },
+  {
+   "nome": "Alberto Youssef",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro (operadores)",
+   "papel": "Doleiro; segundo a PGR, um dos operadores financeiros por meio dos quais as empreiteiras pagavam propina aos políticos.",
+   "citacao": "O pagamento da propina era feito pelas empreiteiras diretamente aos agentes políticos ou por meio dos operadores financeiros Alberto Youssef, Fernando Baiano e João Vacari Neto.",
+   "fonte": "https://conjur.com.br/2015-mar-08/inquerito-nucleo-politico-lava-jato-nao-desemembrado/",
+   "acima": null
+  },
+  {
+   "nome": "Fernando Antônio Falcão Soares (Fernando Baiano)",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro (operadores)",
+   "papel": "Lobista; segundo a PGR, um dos operadores financeiros do esquema, por meio dos quais as empreiteiras pagavam propina.",
+   "citacao": "O pagamento da propina era feito pelas empreiteiras diretamente aos agentes políticos ou por meio dos operadores financeiros Alberto Youssef, Fernando Baiano e João Vacari Neto.",
+   "fonte": "https://conjur.com.br/2015-mar-08/inquerito-nucleo-politico-lava-jato-nao-desemembrado/",
+   "acima": null
+  },
+  {
+   "nome": "João Vaccari Neto",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro (operadores)",
+   "papel": "Tesoureiro do PT; segundo a PGR, um dos operadores financeiros do esquema.",
+   "citacao": "O pagamento da propina era feito pelas empreiteiras diretamente aos agentes políticos ou por meio dos operadores financeiros Alberto Youssef, Fernando Baiano e João Vacari Neto.",
+   "fonte": "https://conjur.com.br/2015-mar-08/inquerito-nucleo-politico-lava-jato-nao-desemembrado/",
+   "acima": null
+  },
+  {
+   "nome": "Marcelo Odebrecht",
+   "nivel": 2,
+   "nucleo": "Núcleo econômico (empreiteiras)",
+   "papel": "Presidente da Odebrecht; segundo a sentença de 2016, repassou propinas a dirigentes da Petrobras e usou contas secretas no exterior para esconder os pagamentos.",
+   "citacao": "Na sentença, o magistrado afirma que, somente em pagamento de propinas, Marcelo repassou R$ 108 milhões e US$ 35 milhões aos agentes da Petrobras.",
+   "fonte": "https://gauchazh.clicrbs.com.br/rs/noticias/noticia/2016/03/marcelo-odebrecht-e-condenado-a-19-anos-de-prisao-na-lava-jato-4992746.html",
+   "acima": null
+  },
+  {
+   "nome": "José Adelmário Pinheiro Filho (Léo Pinheiro)",
+   "nivel": 2,
+   "nucleo": "Núcleo econômico (empreiteiras)",
+   "papel": "Presidente da OAS; segundo a acusação, respondeu por corrupção ativa e lavagem ligadas à reforma e à ocultação do dono do triplex do Guarujá.",
+   "citacao": "prescrição da pretensão punitiva estatal relativamente a Luiz Inácio Lula da Silva, José Adelmário Pinheiro Filho e Agenor Franklin Magalhães Medeiros, no que diz respeito às imputações dos crimes de lavagem de dinheiro, corrupção ativa e passiva, envolvendo o pagamento de reforma, ocultação e dissimulação da titularidade do apartamento",
+   "fonte": "https://www.cnnbrasil.com.br/politica/justica-do-df-arquiva-caso-do-triplex-envolvendo-o-ex-presidente-lula/",
+   "acima": null
+  },
+  {
+   "nome": "João Santana",
+   "nivel": 3,
+   "nucleo": null,
+   "papel": "Marqueteiro de campanhas do PT; segundo a denúncia do MPF, ele e a mulher receberam pagamentos no exterior descontados da propina destinada ao PT, sob orientação de João Vaccari Neto.",
+   "citacao": "“Os pagamentos eram deduzidos da propina que cabia ao PT e realizados sob orientação de João Vaccari”, afirma o procurador da República Deltan Dallagnol, coordenador da força-tarefa.",
+   "fonte": "https://conjur.com.br/2016-abr-28/joao-santana-vaccari-odebrecht-sao-denunciados-lava-jato/",
+   "acima": null
+  },
+  {
+   "nome": "Sérgio Cabral Filho",
+   "nivel": 1,
+   "nucleo": "Desdobramento no Rio de Janeiro",
+   "papel": "Governador do Rio; a decisão da Justiça Federal do Rio citada pela Agência Brasil descreve a organização criminosa do estado como “liderada por Cabral”.",
+   "citacao": "verificou-se que Pezão, além de integrar a organização criminosa liderada por Cabral, foi seu sucessor nas práticas ilícitas ao comandar o estado.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2023-04/tribunal-reforma-sentenca-e-absolve-pezao-de-98-anos-de-prisao",
+   "acima": null
+  },
+  {
+   "nome": "Luiz Fernando Pezão",
+   "nivel": 2,
+   "nucleo": "Desdobramento no Rio de Janeiro",
+   "papel": "Vice-governador e secretário de Obras; segundo a denúncia, recebeu propina de 2007 a 2014, e a sentença de 1ª instância (reformada em 2023) o apontou como sucessor de Cabral no esquema.",
+   "citacao": "Segundo a denúncia, Pezão recebeu propina entre 2007 e 2014, quando ocupava os cargos de vice-governador e secretário de Obras do governo Sérgio Cabral.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2023-04/tribunal-reforma-sentenca-e-absolve-pezao-de-98-anos-de-prisao",
+   "acima": "Sérgio Cabral Filho"
+  }
+ ]
+}

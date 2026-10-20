@@ -1,0 +1,151 @@
+{
+ "slug": "zelotes",
+ "explicacao": "Segundo a primeira denúncia do MPF, duas empresas se uniram: a SGR Consultoria, que oferecia decisões favoráveis no Carf, e a M&M, que fazia lobby junto ao governo; financiadas pela montadora MMC, atuaram no Carf e na compra de medidas provisórias que beneficiaram MMC e Caoa. Outros ramos da Zelotes investigaram empresas e servidores em julgamentos do Carf.",
+ "explicacao_fonte": "https://istoedinheiro.com.br/operacao-zelotes-denuncia-16-por-suposto-esquema-de-compra-de-mps",
+ "nucleos": [
+  {
+   "nome": "SGR Consultoria (decisões no Carf)",
+   "descricao": "Grupo que, segundo a denúncia, oferecia a grandes contribuintes decisões favoráveis no Carf."
+  },
+  {
+   "nome": "M&M — Marcondes e Mautoni (lobby)",
+   "descricao": "Empresa de lobby que, segundo a denúncia, patrocinava interesses de particulares junto ao Estado."
+  },
+  {
+   "nome": "Empresas interessadas",
+   "descricao": "Empresas e executivos que, segundo as acusações, pagaram ou financiaram o grupo para obter decisões ou medidas a seu favor."
+  },
+  {
+   "nome": "Agentes públicos",
+   "descricao": "Autoridades e servidores que, segundo as acusações, receberiam vantagens ou atuariam a favor das empresas."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "José Ricardo da Silva",
+   "nivel": 2,
+   "nucleo": "SGR Consultoria (decisões no Carf)",
+   "papel": "Ex-conselheiro do Carf; segundo a denúncia, era o principal nome da SGR e um dos intermediários do esquema.",
+   "citacao": "O principal nome da companhia é José Ricardo Silva (filho de Eivany), mas o grupo conta ainda com Alexandre Paes dos Santos e Eduardo Valadão.",
+   "fonte": "https://istoedinheiro.com.br/operacao-zelotes-denuncia-16-por-suposto-esquema-de-compra-de-mps",
+   "acima": null
+  },
+  {
+   "nome": "Alexandre Paes dos Santos",
+   "nivel": 2,
+   "nucleo": "SGR Consultoria (decisões no Carf)",
+   "papel": "Lobista; segundo o MPF, um dos intermediários em parceria com a M&M.",
+   "citacao": "Metade do valor, de acordo com os procuradores da República, foi repassado pela montadora MMC à empresa M&M, suspeita de ter parceria com outros dois intermediários: José Ricardo Silva, ex-conselheiro do Carf, e o lobista Alexandre Paes dos Santos.",
+   "fonte": "https://www.conjur.com.br/2017-set-19/lula-vira-reu-setima-vez-acusado-vender-mp-montadoras//?print=1",
+   "acima": null
+  },
+  {
+   "nome": "Eduardo Gonçalves Valadão",
+   "nivel": 3,
+   "nucleo": "SGR Consultoria (decisões no Carf)",
+   "papel": "Advogado; segundo a denúncia, fazia parte do grupo da SGR.",
+   "citacao": "O principal nome da companhia é José Ricardo Silva (filho de Eivany), mas o grupo conta ainda com Alexandre Paes dos Santos e Eduardo Valadão.",
+   "fonte": "https://istoedinheiro.com.br/operacao-zelotes-denuncia-16-por-suposto-esquema-de-compra-de-mps",
+   "acima": null
+  },
+  {
+   "nome": "Mauro Marcondes Machado",
+   "nivel": 2,
+   "nucleo": "M&M — Marcondes e Mautoni (lobby)",
+   "papel": "Lobista; segundo a denúncia, chefiava com Cristina Mautoni a M&M, empresa que fazia lobby junto ao governo.",
+   "citacao": "Já a M&M, chefiada pelo casal Mauro Marcondes e Cristina Mautoni, atuava no sentido de patrocinar “interesses de particulares junto ao Estado”, de acordo com os investigadores.",
+   "fonte": "https://www.congressoemfoco.com.br/noticia/47080/mpf-denuncia-16-e-cobra-r-879-milhoes-na-zelotes",
+   "acima": null
+  },
+  {
+   "nome": "Cristina Mautoni Machado",
+   "nivel": 2,
+   "nucleo": "M&M — Marcondes e Mautoni (lobby)",
+   "papel": "Sócia da M&M; segundo a denúncia, chefiava a empresa com Mauro Marcondes.",
+   "citacao": "Já a M&M, chefiada pelo casal Mauro Marcondes e Cristina Mautoni, atuava no sentido de patrocinar “interesses de particulares junto ao Estado”, de acordo com os investigadores.",
+   "fonte": "https://www.congressoemfoco.com.br/noticia/47080/mpf-denuncia-16-e-cobra-r-879-milhoes-na-zelotes",
+   "acima": null
+  },
+  {
+   "nome": "Francisco Mirto",
+   "nivel": 3,
+   "nucleo": "M&M — Marcondes e Mautoni (lobby)",
+   "papel": "Lobista; segundo a denúncia, trabalhava regularmente para a M&M na intermediação de negócios com o governo.",
+   "citacao": "A empresa contava com a participação regular de Francisco Mirto Florêncio na intermediação de negócios entre particulares e o governo.",
+   "fonte": "https://www.congressoemfoco.com.br/noticia/47080/mpf-denuncia-16-e-cobra-r-879-milhoes-na-zelotes",
+   "acima": "Mauro Marcondes Machado"
+  },
+  {
+   "nome": "Robert de Macedo Rittcher",
+   "nivel": 3,
+   "nucleo": "Empresas interessadas",
+   "papel": "Presidente da MMC (Mitsubishi) a partir de 2010; segundo a denúncia, financiou o grupo.",
+   "citacao": "Robert Rittscher, presidente da MMC a partir de abril de 2010, também foi denunciado por financiar a organização criminosa.",
+   "fonte": "https://istoedinheiro.com.br/operacao-zelotes-denuncia-16-por-suposto-esquema-de-compra-de-mps",
+   "acima": null
+  },
+  {
+   "nome": "Paulo Arantes Ferraz",
+   "nivel": 3,
+   "nucleo": "Empresas interessadas",
+   "papel": "Ex-presidente da MMC (Mitsubishi); segundo a denúncia, acusado de corrupção ativa como um dos representantes da montadora.",
+   "citacao": "Além das pessoas com vínculos diretos com a SGR e a M&M e dos três representantes da montadora MMC (Eduardo de Souza Ramos, Paulo Arantes Ferraz e Robert Rittscher), o MPF denunciou outros envolvidos no esquema.",
+   "fonte": "https://istoedinheiro.com.br/operacao-zelotes-denuncia-16-por-suposto-esquema-de-compra-de-mps",
+   "acima": null
+  },
+  {
+   "nome": "Carlos Alberto de Oliveira Andrade",
+   "nivel": 3,
+   "nucleo": "Empresas interessadas",
+   "papel": "Empresário do grupo Caoa; segundo a denúncia, acusado de corrupção ativa no caso da MP das montadoras.",
+   "citacao": "A denúncia do MP foi aceita em 2017 e, desde então, os sete acusados eram réus no processo – os políticos, por corrupção passiva, e os empresários, por corrupção ativa.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Luiz Carlos Trabuco",
+   "nivel": 3,
+   "nucleo": "Empresas interessadas",
+   "papel": "Presidente do Bradesco; denunciado por suposto envolvimento em fraudes no Carf para beneficiar o banco. A ação foi arquivada por falta de provas.",
+   "citacao": "Em maio do ano passado, Trabuco foi denunciado pela Polícia Federal pelo suposto envolvimento em fraudes no Conselho Administrativo de Recursos Fiscais (Carf) para beneficiar o banco.",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2017-06/justica-arquiva-acao-penal-contra-presidente-do-bradesco",
+   "acima": null
+  },
+  {
+   "nome": "Luiz Inácio Lula da Silva",
+   "nivel": 3,
+   "nucleo": "Agentes públicos",
+   "papel": "Presidente à época; segundo a denúncia, teria editado a MP 471 para favorecer montadoras em troca da promessa de R$ 6 milhões para campanhas do PT. O próprio MP pediu a absolvição, e ele foi absolvido em 2021.",
+   "citacao": "A acusação era de que Lula teria editado uma medida provisória para favorecer empresas do setor automotivo em troca de recebimento de propina.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Gilberto Carvalho",
+   "nivel": 3,
+   "nucleo": "Agentes públicos",
+   "papel": "Chefe de gabinete da Presidência; segundo a denúncia, tinha relação com o grupo e recebeu Mauro Marcondes depois da publicação da MP.",
+   "citacao": "Para o MPF, as expressões “kit de material enviado a Gilberto Carvalho” e “café Gilberto Carvalho” — encontradas em alguns documentos apreendidos — evidenciam que ele tinha relação com o grupo criminoso.",
+   "fonte": "https://www.conjur.com.br/2017-set-19/lula-vira-reu-setima-vez-acusado-vender-mp-montadoras//?print=1",
+   "acima": null
+  },
+  {
+   "nome": "Fernando Mesquita",
+   "nivel": 3,
+   "nucleo": "Agentes públicos",
+   "papel": "Ex-diretor de comunicação do Senado; segundo a denúncia, recebeu dinheiro para acompanhar a tramitação da MP 471 no Congresso.",
+   "citacao": "Mesquita, frisam os autores da ação, teria recebido R$ 78 mil como pagamento por ter monitorado a tramitação da Medida Provisória 471 no Congresso Nacional.",
+   "fonte": "https://istoedinheiro.com.br/operacao-zelotes-denuncia-16-por-suposto-esquema-de-compra-de-mps",
+   "acima": null
+  },
+  {
+   "nome": "Guido Mantega",
+   "nivel": 3,
+   "nucleo": "Agentes públicos",
+   "papel": "Ministro da Fazenda; segundo a denúncia, teria intercedido no Carf a favor do grupo Cimento Penha, apoiando nomes indicados pelo grupo investigado.",
+   "citacao": "Ele é acusado de interceder no Carf em benefício do Grupo Cimentos Penha, do empresário Victor Sandri, também réu por crimes contra a ordem tributária e corrupção ativa.",
+   "fonte": "https://www.em.com.br/app/noticia/politica/2018/03/12/interna_politica,943637/mantega-vira-reu-na-zelotes.shtml",
+   "acima": null
+  }
+ ]
+}

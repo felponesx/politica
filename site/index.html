@@ -1550,6 +1550,7 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .tag.esc-con{background:#55160C;color:#FDA29B}[data-theme="dark"] .tag.esc-den{background:#4E1D09;color:#FEC84B}[data-theme="dark"] .tag.esc-inv{background:#1C2B5A;color:#A4BCFD}
 [data-theme="dark"] .tag.esc-abs{background:#053321;color:#75E0A7}[data-theme="dark"] .tag.esc-neu,[data-theme="dark"] .tag.lib-liv{background:#344054;color:#EAECF0}[data-theme="dark"] .tag.lib-for{background:#F2F4F7;color:#1D2939}
 @media (max-width:700px){.esc-grid{grid-template-columns:1fr}.esc-tl li{grid-template-columns:1fr;gap:2px}}
+.arv-band{border-top:1px dashed var(--line);padding-top:16px}.arv-band .arv-no{opacity:.92}
 /* árvore do esquema */
 .arv{position:relative;display:grid;gap:34px;padding:6px 0 4px;overflow-x:auto}
 .arv-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
@@ -4459,12 +4460,16 @@ function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.from
   <span class="arv-c">${esc(p.cargo_na_epoca||"")}</span>${x.nucleo?`<span class="arv-nuc">${esc(x.nucleo)}</span>`:""}
   <span class="arv-p">${esc(x.papel)}</span>${escSit(p.situacao)}
   <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a></span></button>`};
- const niveis=[1,2,3].map(n=>[n,o.papeis.filter(x=>x.nivel===n).sort((a,b)=>String(a.nucleo||"").localeCompare(String(b.nucleo||"")))]).filter(([,l])=>l.length);
+ // quem a Justiça absolveu, teve a condenação anulada ou o processo arquivado não fica nos andares: vai para a faixa de baixo
+ const naoConf=x=>["absolvido","condenação anulada","processo arquivado"].includes((pes[x.nome]||{}).situacao);
+ const ord=l=>l.sort((a,b)=>a.nivel-b.nivel||String(a.nucleo||"").localeCompare(String(b.nucleo||"")));
+ const niveis=[1,2,3].map(n=>[n,ord(o.papeis.filter(x=>x.nivel===n&&!naoConf(x)))]).filter(([,l])=>l.length),contest=ord(o.papeis.filter(naoConf));
  const fora=c.pessoas.filter(p=>!o.papeis.some(x=>x.nome===p.nome));
  return`<div class="panel mt"><h2>Como o esquema funcionava <small>segundo a acusação</small></h2>
  <p class="small muted" style="margin-top:0">${esc(o.explicacao)} ${o.explicacao_fonte?`<a href="${esc(o.explicacao_fonte)}" target="_blank" rel="noopener">fonte</a>`:""} Os papéis são os descritos pela investigação ou pela acusação, não uma conclusão do BRASIL+. A cor da borda mostra a situação na Justiça: quem foi absolvido ou teve a condenação anulada aparece em verde. Toque numa pessoa para ver o trecho da fonte.</p>
  <div class="arv-leg small"><span><i class="arv-con"></i>Condenado</span><span><i class="arv-den"></i>Réu ou denunciado</span><span><i class="arv-inv"></i>Investigado</span><span><i class="arv-abs"></i>Absolvido, anulado ou arquivado</span><span><i class="arv-neu"></i>Outros</span></div>
- <div class="arv" id="escArv"><svg class="arv-svg" aria-hidden="true"></svg>${niveis.map(([n,l])=>`<div class="arv-nivel"><div class="arv-t">${ESC_NIV[n]}</div><div class="arv-linha">${l.map(no).join("")}</div></div>`).join("")}</div>
+ <div class="arv" id="escArv"><svg class="arv-svg" aria-hidden="true"></svg>${niveis.map(([n,l])=>`<div class="arv-nivel"><div class="arv-t">${ESC_NIV[n]}</div><div class="arv-linha">${l.map(no).join("")}</div></div>`).join("")}
+ ${contest.length?`<div class="arv-nivel arv-band"><div class="arv-t">A acusação apontou, mas a Justiça não confirmou</div><p class="small muted" style="margin:0;text-align:center">Absolvidos, com condenação anulada ou processo arquivado. O texto mostra o papel que a acusação descreveu.</p><div class="arv-linha">${contest.map(no).join("")}</div></div>`:""}</div>
  ${fora.length?`<p class="small muted" style="margin:10px 0 0">Sem papel descrito nas fontes: ${fora.map(p=>esc(p.nome.replace(/\s*\(.*\)$/,""))).join(", ")}.</p>`:""}</div>`}
 // linhas da árvore: de cada pessoa até quem está acima dela (quando a fonte diz) ou, sem isso, até o nível de cima
 function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;const svg=box.querySelector(".arv-svg"),B=box.getBoundingClientRect();
@@ -4472,8 +4477,9 @@ function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;cons
  svg.setAttribute("width",B.width);svg.setAttribute("height",B.height);let h="";
  const linhas=[...box.querySelectorAll(".arv-linha")];
  c.organograma.papeis.forEach(x=>{const e=el(x.nome);if(!e)return;const[x2,y2]=pt(e,false);
-  if(x.acima&&el(x.acima)){const[x1,y1]=pt(el(x.acima),true);const my=(y1+y2)/2;h+=`<path class="arv-l forte" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`;return}
-  const li=linhas.indexOf(e.parentElement);if(li<=0)return;const R=linhas[li-1].getBoundingClientRect(),y1=R.bottom-B.top,x1=R.left-B.left+R.width/2,my=(y1+y2)/2;
+  if(e.closest(".arv-band"))return;
+  if(x.acima&&el(x.acima)&&!el(x.acima).closest(".arv-band")){const[x1,y1]=pt(el(x.acima),true);const my=(y1+y2)/2;h+=`<path class="arv-l forte" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`;return}
+  const li=linhas.indexOf(e.parentElement);if(li<=0||linhas[li-1].closest(".arv-band"))return;const R=linhas[li-1].getBoundingClientRect(),y1=R.bottom-B.top,x1=R.left-B.left+R.width/2,my=(y1+y2)/2;
   h+=`<path class="arv-l" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`});
  svg.innerHTML=h}
 P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
