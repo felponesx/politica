@@ -283,6 +283,19 @@ tbody tr[data-href]:hover{background:var(--bg)}
 .ia-form textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font:inherit;font-size:15px;line-height:1.4;min-height:46px;max-height:140px}
 .ia-perg{margin-top:10px;display:inline-flex;align-items:center;gap:6px}.ia-perg svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
 .ia-rodape{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+/* janela da IA (ao lado da caixa do menu; no celular, tela cheia) e resposta dentro da busca */
+.ia-dock{position:fixed;z-index:150;left:260px;bottom:16px;width:min(440px,calc(100vw - 32px));height:min(680px,calc(100vh - 32px));background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px rgba(16,24,40,.22);padding:12px 14px;gap:10px}
+.ia-dock[hidden],.s-ia[hidden]{display:none}
+.ia-dock-h{display:flex;align-items:center;gap:8px}.ia-dock-h .lgmark{width:24px;height:24px}.ia-dock-h b{flex:1;color:var(--navy);font-size:15px}
+.ia-x{border:0;background:none;width:32px;height:32px;border-radius:8px;cursor:pointer;color:var(--ink2);display:grid;place-items:center}.ia-x:hover{background:var(--bg)}
+.ia-x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9}
+.ia-dock .ia-msgs{flex:1;min-height:0;max-height:none}.ia-dock .ia-bal{max-width:92%;font-size:14px}.ia-dock.tem .ia-sug{display:none}
+.ia-dock .ia-form textarea{font-size:14px}
+@media (max-width:700px){.ia-dock{left:0!important;right:0;top:0;bottom:0;width:100%;height:100%;border-radius:0;border:0;padding:12px 12px calc(12px + env(safe-area-inset-bottom))}}
+.side-foot .ia.on{border-color:var(--blue)}
+button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
+.s-ia{margin:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);gap:8px;flex:1 1 auto;min-height:0}
+.sbox .sia{flex:none}.s-ia .ia-msgs{flex:1;min-height:0;max-height:none}.s-ia .ia-bal{max-width:100%;font-size:14px;background:var(--surface)}
 .trust{display:flex;gap:10px;background:var(--bg);border-radius:12px;padding:12px;font-size:12px;color:var(--ink2)}
 .trust svg{width:22px;height:22px;flex:none;fill:var(--navy)}
 .top{background:var(--surface);padding:14px 28px;gap:14px}
@@ -1525,7 +1538,7 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
     <a class="brand" href="#/inicio" style="text-decoration:none"><i class="lgmark" aria-hidden="true"></i><div><b>BRASIL<em>+</em></b><small>Transparência em um só lugar</small></div></a>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
-      <div class="ia"><b><a href="#/ia">IA do Brasil+</a></b>Pergunte sobre gastos, votos, mandatos e notícias de qualquer político. Sempre indica a fonte.<form data-ia-mini><input type="text" placeholder="Digite sua pergunta…" aria-label="Pergunta para a IA do Brasil+" enterkeyhint="send"></form></div>
+      <div class="ia"><b><a href="#" data-ia-abrir>IA do Brasil+</a></b>Pergunte sobre gastos, votos, mandatos e notícias de qualquer político. Sempre indica a fonte.<form data-ia-mini><input type="text" placeholder="Digite sua pergunta…" aria-label="Pergunta para a IA do Brasil+" enterkeyhint="send"></form></div>
       <div class="trust"><svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5z"/></svg><div>Dados oficiais, fontes públicas e atualizadas.<br><a href="#/fontes">Saiba mais</a></div></div>
     </div>
   </aside>
@@ -1556,7 +1569,8 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 <div class="ov" id="searchOv" role="dialog" aria-label="Busca global">
   <div class="sbox">
     <div class="s-h"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="sInput" placeholder="Busque ou pergunte à IA…" autocomplete="off" enterkeyhint="search"><button id="sClose" type="button">Cancelar</button></div>
-    <a class="sia" id="sIA" href="#/ia"><i class="lgmark" aria-hidden="true"></i><span><b>Perguntar à IA do Brasil+</b><small id="sIAq">Gastos, votos, mandatos e notícias de qualquer político</small></span></a>
+    <button type="button" class="sia" id="sIA"><i class="lgmark" aria-hidden="true"></i><span><b>Perguntar à IA do Brasil+</b><small id="sIAq">Gastos, votos, mandatos e notícias de qualquer político</small></span></button>
+    <div class="s-ia ia-chat" id="sIAbox" hidden><div class="ia-msgs"></div><div class="ia-rodape small muted"><span>Respostas com os dados oficiais do BRASIL+; confira sempre a fonte.</span><button type="button" class="chip" id="sIAcont">Continuar a conversa</button></div></div>
     <div class="sres" id="sRes"></div>
   </div>
 </div>
@@ -1592,7 +1606,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["ia","IA do Brasil+"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -4468,7 +4482,7 @@ document.addEventListener("click",fecharPilulas);document.addEventListener("keyd
  if(!q){q=true;requestAnimationFrame(()=>{q=false;pilulas()})}clearTimeout(t);t=setTimeout(aplicarMidia,60)}).observe(document.documentElement,{childList:true,subtree:true})}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
-const iaBotao=nome=>`<a class="btn ia-perg" href="#/ia/${encodeURIComponent(`O que as notícias recentes dizem sobre ${nome}? E quantos mandatos já ganhou?`)}">${svgI("ia")}Perguntar à IA sobre ${esc(nome)}</a>`;
+const iaBotao=nome=>`<button type="button" class="btn ia-perg" data-ia-abrir data-ia-q="${esc(`O que as notícias recentes dizem sobre ${nome}? E quantos mandatos já ganhou?`)}">${svgI("ia")}Perguntar à IA sobre ${esc(nome)}</button>`;
 /* ===================== IA do BRASIL+ =====================
    Perguntas em português sobre os dados do site. Com o Claude (capacidade "sample" da página publicada), a IA
    chama as ferramentas abaixo, que leem o índice /ia/indice (rankings de gastos, mais votados e mandatos, montado
@@ -4618,13 +4632,13 @@ const IA_ERRO={rate_limited:"Muitas perguntas seguidas ou limite de uso do Claud
  empty_completion:"O Claude não escreveu resposta. Tente perguntar de outro jeito.",prompt_too_large:"A conversa ficou longa demais. Clique em \"Nova conversa\".",upstream_error:"A conexão com o Claude falhou. Tente de novo."};
 function iaMsgHTML(m){return m.role==="user"?`<div class="ia-msg eu"><div class="ia-bal">${esc(m.text)}</div></div>`:
  `<div class="ia-msg"><span class="ia-av lgmark" aria-hidden="true"></span><div class="ia-bal">${m.html||iaMd(m.text)}${m.modo?`<div class="ia-modo">${m.modo}</div>`:""}</div></div>`}
-async function iaPerguntar(q){q=String(q||"").trim();if(!q||IA.ocupada)return;const box=$("#iaMsgs");if(!box)return;IA.ocupada=true;
+async function iaPerguntar(q,raiz){q=String(q||"").trim();if(!q||IA.ocupada)return;raiz=raiz||$("#iaDock");const box=raiz&&raiz.querySelector(".ia-msgs");if(!box)return;IA.ocupada=true;
  const vz=box.querySelector(".ia-vazio");if(vz)vz.remove();box.closest(".ia-chat").classList.add("tem");const um={role:"user",text:q},resp={role:"assistant",text:"",html:`<p class="muted">Pensando…</p>`};IA.hist.push(um,resp);
  box.insertAdjacentHTML("beforeend",iaMsgHTML(um)+`<div class="ia-msg" id="iaAt"><span class="ia-av lgmark" aria-hidden="true"></span><div class="ia-bal"><p class="muted">Pensando…</p><div class="ia-passos"></div></div></div>`);
- const at=$("#iaAt"),bal=at.querySelector(".ia-bal"),passos=at.querySelector(".ia-passos");at.removeAttribute("id");at.scrollIntoView({block:"end",behavior:"smooth"});
+ const at=box.querySelector("#iaAt"),bal=at.querySelector(".ia-bal"),passos=at.querySelector(".ia-passos");at.removeAttribute("id");at.scrollIntoView({block:"end",behavior:"smooth"});
  const passo=t=>{if(passos.isConnected)passos.insertAdjacentHTML("beforeend",`<span>${esc(t)}…</span>`)};
  const pronto=(text,modo)=>{resp.text=text;resp.html=null;resp.modo=modo;bal.innerHTML=iaMd(text)+(modo?`<div class="ia-modo">${modo}</div>`:"")};
- const stop=$("#iaStop"),env=$("#iaEnv");if(stop)stop.hidden=false;if(env)env.disabled=true;
+ const stop=raiz.querySelector(".ia-stop"),env=raiz.querySelector(".ia-env");if(stop)stop.hidden=false;if(env)env.disabled=true;
  try{const sample=await iaSample();
   if(sample){IA.ctl=new AbortController();IA.turnos.push({role:"user",content:q});
    try{const{text,truncated}=await sample([{role:"user",content:IA_REGRAS()},...IA.turnos.slice(-10)],{tools:iaTools(passo),signal:IA.ctl.signal,modelTier:"default",
@@ -4636,31 +4650,50 @@ async function iaPerguntar(q){q=String(q||"").trim();if(!q||IA.ocupada)return;co
  catch(e){const t=(e&&(IA_ERRO[e.code]||e.message))||"Não consegui responder agora.";pronto((e&&e.text?e.text+"\n\n":"")+"Não consegui responder: "+t,"")}
  finally{IA.ocupada=false;IA.ctl=null;if(stop)stop.hidden=true;if(env)env.disabled=false}}
 const IA_SUG=["Quem mais gastou a cota parlamentar este ano?","Quem foi o deputado federal mais votado em 2022?","Quem está há mais tempo no poder em São Paulo?","Quais políticos estão em alta nas notícias?","O que as notícias dizem sobre Nikolas Ferreira?","Quem foram os senadores mais votados em 2022?"];
-P.ia=(q0)=>({html:`<div class="ph"><div><h1>IA do Brasil+</h1><p>Pergunte sobre gastos, votos, mandatos, eleições e notícias de qualquer político. A IA consulta os dados oficiais do site e sempre mostra a fonte.</p></div></div>
-<div class="panel ia-chat${IA.hist.length?" tem":""}"><div id="iaMsgs" class="ia-msgs">${IA.hist.length?IA.hist.map(iaMsgHTML).join(""):`<div class="ia-vazio"><span class="lgmark" aria-hidden="true"></span><p>Faça uma pergunta ou toque numa sugestão.</p></div>`}</div>
+// a IA não tem tela própria: responde numa janela ao lado da caixa "IA do Brasil+" do menu (no celular, tela cheia)
+// e dentro da barra de pesquisa. Links antigos #/ia/<pergunta> abrem a janela.
+const iaChatHTML=()=>`<div class="ia-msgs">${IA.hist.length?IA.hist.map(iaMsgHTML).join(""):`<div class="ia-vazio"><span class="lgmark" aria-hidden="true"></span><p>Faça uma pergunta ou toque numa sugestão.</p></div>`}</div>
 <div class="ia-sug">${IA_SUG.map(s=>`<button type="button" class="chip">${esc(s)}</button>`).join("")}</div>
-<form id="iaF" class="ia-form"><textarea id="iaQ" rows="1" placeholder="Pergunte qualquer coisa sobre os dados públicos…" aria-label="Pergunta para a IA"></textarea><button class="btn pri" id="iaEnv">Perguntar</button><button type="button" class="btn" id="iaStop" hidden>Parar</button></form>
-<div class="ia-rodape small muted"><span>As respostas usam só os dados do BRASIL+ e podem ter limitações; confira sempre a fonte.</span>${IA.hist.length?`<button type="button" class="chip" id="iaNova">Nova conversa</button>`:""}</div></div>`,
- mount(){const f=$("#iaF"),t=$("#iaQ");const vai=v=>{t.value="";t.style.height="";iaPerguntar(v)};
-  f.onsubmit=e=>{e.preventDefault();vai(t.value)};t.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();vai(t.value)}};
-  t.oninput=()=>{t.style.height="auto";t.style.height=Math.min(140,t.scrollHeight)+"px"};
-  document.querySelectorAll(".ia-sug .chip").forEach(b=>b.onclick=()=>vai(b.textContent));
-  $("#iaStop").onclick=()=>IA.ctl&&IA.ctl.abort();const nv=$("#iaNova");if(nv)nv.onclick=()=>{IA.hist=[];IA.turnos=[];renderRoute("ia")};
-  const q=q0?decodeURIComponent(q0):"";if(q){history.replaceState(null,"","#/ia");vai(q)}else{const m=$("#iaMsgs");m.scrollTop=m.scrollHeight;t.focus({preventScroll:true})}}});
+<form class="ia-form"><textarea rows="1" placeholder="Pergunte sobre gastos, votos, mandatos, notícias…" aria-label="Pergunta para a IA"></textarea><button class="btn pri ia-env">Perguntar</button><button type="button" class="btn ia-stop" hidden>Parar</button></form>
+<div class="ia-rodape small muted"><span>Usa só os dados oficiais do BRASIL+; confira sempre a fonte.</span><button type="button" class="chip ia-nova"${IA.hist.length?"":" hidden"}>Nova conversa</button></div>`;
+function iaMontaDock(d){d.classList.toggle("tem",IA.hist.length>0);
+ d.innerHTML=`<div class="ia-dock-h"><span class="lgmark" aria-hidden="true"></span><b>IA do Brasil+</b><button type="button" class="ia-x" aria-label="Fechar a IA"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>${iaChatHTML()}`;
+ const f=d.querySelector(".ia-form"),t=f.querySelector("textarea"),nv=d.querySelector(".ia-nova");
+ const vai=v=>{t.value="";t.style.height="";iaPerguntar(v,d).then(()=>{nv.hidden=!IA.hist.length})};d._vai=vai;
+ f.onsubmit=e=>{e.preventDefault();vai(t.value)};t.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();vai(t.value)}};
+ t.oninput=()=>{t.style.height="auto";t.style.height=Math.min(140,t.scrollHeight)+"px"};
+ d.querySelectorAll(".ia-sug .chip").forEach(b=>b.onclick=()=>vai(b.textContent));
+ d.querySelector(".ia-stop").onclick=()=>IA.ctl&&IA.ctl.abort();nv.onclick=()=>{IA.hist=[];IA.turnos=[];iaMontaDock(d);d.querySelector("textarea").focus()};
+ d.querySelector(".ia-x").onclick=iaFechar}
+function iaAbrir(q=""){closeSearch();let d=$("#iaDock");
+ if(!d){d=document.createElement("section");d.id="iaDock";d.className="ia-dock ia-chat";d.setAttribute("role","dialog");d.setAttribute("aria-label","IA do Brasil+");document.body.appendChild(d)}
+ if(!IA.ocupada||!d.innerHTML)iaMontaDock(d);
+ const sd=$(".side"),r=sd&&!ehCel()?sd.getBoundingClientRect():null;if(r&&r.width>60)d.style.left=(r.right+12)+"px";else d.style.removeProperty("left");
+ d.hidden=false;document.querySelectorAll(".side-foot .ia").forEach(x=>x.classList.add("on"));const m=d.querySelector(".ia-msgs");m.scrollTop=m.scrollHeight;
+ if(q)d._vai(q);else if(!ehCel())d.querySelector("textarea").focus({preventScroll:true})}
+function iaFechar(){const d=$("#iaDock");if(d)d.hidden=true;document.querySelectorAll(".side-foot .ia").forEach(x=>x.classList.remove("on"))}
+P.ia=(q0)=>{setTimeout(()=>{try{history.replaceState(null,"","#/inicio")}catch(e){}iaAbrir(q0?decodeURIComponent(q0):"")},60);return P.inicio()};
+document.addEventListener("click",e=>{const a=e.target.closest("[data-ia-abrir]");if(!a)return;e.preventDefault();iaAbrir(a.dataset.iaQ||"")});
+document.addEventListener("keydown",e=>{const d=$("#iaDock");if(e.key==="Escape"&&d&&!d.hidden&&!$("#searchOv").classList.contains("open"))iaFechar()});
+addEventListener("hashchange",()=>{if(ehCel())iaFechar()});
 // busca (no celular, o botão Buscar): a primeira linha manda o texto para a IA; Enter numa pergunta também
 const iaPergunta=q=>/\?\s*$/.test(q)||/^(quem|qual|quais|quanto|quantos|quantas|o que|oque|como|por ?que|onde|quando|me (diga|fale|mostre)|existe|tem )/i.test(q.trim());
-function iaBuscaAtualiza(){const i=$("#sInput"),a=$("#sIA"),sq=$("#sIAq");if(!i||!a)return;const q=i.value.trim();
- a.href="#/ia"+(q?"/"+encodeURIComponent(q):"");sq.textContent=q?`“${q}”`:"Gastos, votos, mandatos e notícias de qualquer político"}
-{const i=$("#sInput"),a=$("#sIA");if(i&&a){i.addEventListener("input",iaBuscaAtualiza);a.addEventListener("click",()=>closeSearch());
- i.addEventListener("keydown",e=>{if(e.key==="Enter"&&iaPergunta(i.value)){e.preventDefault();e.stopImmediatePropagation();const q=i.value.trim();closeSearch();location.hash="#/ia/"+encodeURIComponent(q)}},true);
- const _os=openSearch;openSearch=function(...x){_os(...x);iaBuscaAtualiza()}}}
+function iaBuscaAtualiza(){const i=$("#sInput"),sq=$("#sIAq");if(!i||!sq)return;const q=i.value.trim();
+ sq.textContent=q?`“${q}”`:"Gastos, votos, mandatos e notícias de qualquer político"}
+// a resposta aparece dentro da própria busca; "Continuar a conversa" abre a janela da IA com a conversa toda
+function iaNaBusca(q){q=String(q||"").trim();if(!q)return iaAbrir();const b=$("#sIAbox");b.hidden=false;$("#sRes").hidden=true;b.querySelector(".ia-msgs").innerHTML="";iaPerguntar(q,b)}
+function iaBuscaLimpa(){const b=$("#sIAbox"),r=$("#sRes");if(b)b.hidden=true;if(r)r.hidden=false}
+{const i=$("#sInput"),a=$("#sIA");if(i&&a){i.addEventListener("input",()=>{iaBuscaAtualiza();iaBuscaLimpa()});a.addEventListener("click",()=>iaNaBusca(i.value));
+ $("#sIAcont").onclick=()=>iaAbrir();
+ i.addEventListener("keydown",e=>{if(e.key==="Enter"&&iaPergunta(i.value)){e.preventDefault();e.stopImmediatePropagation();iaNaBusca(i.value)}},true);
+ const _os=openSearch;openSearch=function(...x){_os(...x);iaBuscaLimpa();iaBuscaAtualiza()}}}
 // depois que a página abre, baixa em segundo plano os dados das abas mais usadas (troca de aba mais rápida)
 (()=>{const c=navigator.connection;if(c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")))return;const ocioso=window.requestIdleCallback||(f=>setTimeout(f,1500));
  const ir=()=>{if(!API.checado)return setTimeout(ir,800);if(!API.on)return;let i=0;const L=["/seguranca","/gastos/entes","/noticias?limit=1500","/eleicoes/anos","/orgaos","/dividas/estados","/contadores"];
   const prox=()=>{if(i>=L.length)return;apiGet(L[i++]).catch(()=>{}).finally(()=>ocioso(prox,{timeout:4000}))};prox()};
  addEventListener("load",()=>setTimeout(()=>ocioso(ir,{timeout:5000}),2500))})();
-// caixa "IA do Brasil+" do menu lateral: a pergunta abre a tela da IA
-document.querySelectorAll("[data-ia-mini]").forEach(f=>f.onsubmit=e=>{e.preventDefault();const i=f.querySelector("input"),v=i.value.trim();i.value="";location.hash="#/ia"+(v?"/"+encodeURIComponent(v):"")});
+// caixa "IA do Brasil+" do menu lateral: responde ali mesmo, na janela da IA aberta ao lado
+document.querySelectorAll("[data-ia-mini]").forEach(f=>f.onsubmit=e=>{e.preventDefault();const i=f.querySelector("input"),v=i.value.trim();i.value="";iaAbrir(v)});
 
 function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");V.innerHTML=r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();

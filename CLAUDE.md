@@ -116,7 +116,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Nunca commitar `.env` nem chaves.
 
 ## IA do BRASIL+ (out/2026)
-- Tela `#/ia` (bloco "IA do BRASIL+" do script do site; caixa no menu lateral e botão "Perguntar à IA" nos perfis).
+- Sem tela própria nem item no menu: a caixa "IA do Brasil+" do menu lateral abre a janela da IA ao lado (`iaAbrir`, `#iaDock`;
+  no celular, tela cheia) e a barra de pesquisa responde dentro dela (`iaNaBusca`, `#sIAbox`); botão "Perguntar à IA" nos perfis
+  (`data-ia-abrir`). Links antigos `#/ia/<pergunta>` abrem a janela. Código no bloco "IA do BRASIL+" do script do site.
   No site publicado como Artifact usa o Claude pela capacidade `sample` (declarar `capabilities: {downloads: true, sample: {}}`
   ao publicar), com ferramentas que leem os dados do site: ranking_gastos, mais_votados, tempo_no_poder, perfil_parlamentar,
   noticias, politicos_em_alta, resultado_eleicao, resumo_estado, buscar. Sem o Claude, o "modo simples" (`iaLocal`) responde
