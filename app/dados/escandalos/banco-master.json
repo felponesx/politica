@@ -1,0 +1,377 @@
+{
+ "slug": "banco-master",
+ "nome": "Caso Banco Master",
+ "outros_nomes": [
+  "Operação Compliance Zero",
+  "Caso Master",
+  "Caso Vorcaro",
+  "Master–BRB"
+ ],
+ "periodo": {
+  "inicio": "2023",
+  "fim": "2025"
+ },
+ "ano_revelado": 2025,
+ "resumo": "O Banco Master, de Daniel Vorcaro, é investigado pela Polícia Federal por suspeita de vender carteiras de crédito falsas, entre elas ao banco público BRB, que tentou comprar o Master em 2025. O Banco Central vetou a compra e liquidou o banco em novembro de 2025. A investigação, supervisionada pelo STF, também apura suspeitas de propina a dirigentes do BRB, servidores do Banco Central e políticos, além de aplicações de fundos de previdência públicos no banco.",
+ "valores": {
+  "desviado": {
+   "valor": 12000000000,
+   "texto": "O diretor-geral da PF estimou que as fraudes investigadas podem ter movimentado cerca de R$ 12 bilhões (18/11/2025); reportagem posterior da Agência Brasil cita fraudes que podem chegar a R$ 17 bilhões",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2025-11/fraudes-no-master-podem-chegar-r-12-bilhoes-estima-diretor-da-pf"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não há valor recuperado consolidado. O STF determinou sequestro e bloqueio de bens de mais de R$ 5,7 bilhões na 2ª fase (jan/2026) e de até R$ 22 bilhões na 3ª fase (mar/2026); são medidas cautelares, não devolução",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/pf-deflagra-terceira-fase-da-operacao-compliance-zero"
+  },
+  "observacao": "Estimativas preliminares da PF, sem julgamento. O Fundo Garantidor de Créditos (FGC) já pagou R$ 40,03 bilhões a clientes do Master, Master de Investimento e Letsbank (jul/2026), mas isso é a garantia de depósitos paga pelo sistema bancário, não dinheiro recuperado (fonte: https://agenciabrasil.ebc.com.br/economia/noticia/2026-07/fgc-ainda-tem-r-183-bi-para-devolver-clientes-do-grupo-master). O TCDF bloqueou até R$ 2,76 bilhões de cinco ex-dirigentes do BRB (set/2026; fonte: https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/caso-master-tcdf-bloqueia-ate-r-27-bi-de-ex-dirigentes-do-brb)."
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal (Operação Compliance Zero)",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Banco Central do Brasil",
+   "papel": "regulação"
+  },
+  {
+   "nome": "Comissão de Valores Mobiliários (CVM)",
+   "papel": "regulação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal (relator: ministro André Mendonça)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Tribunal Regional Federal da 1ª Região",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Tribunal de Contas do Distrito Federal (TCDF)",
+   "papel": "controle"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2025-09-03",
+   "fato": "Banco Central rejeita a compra de 49% das ações ordinárias e 100% das preferenciais do Master pelo BRB, anunciada em março",
+   "fonte": "https://agenciabrasil.ebc.com.br/economia/noticia/2025-09/bc-rejeita-compra-do-master-pelo-banco-de-brasilia-brb"
+  },
+  {
+   "data": "2025-11-18",
+   "fato": "PF deflagra a Operação Compliance Zero e prende Vorcaro no aeroporto de Guarulhos",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-11/daniel-vorcaro-dono-do-banco-master-e-preso-pela-pf-em-guarulhos"
+  },
+  {
+   "data": "2025-11-18",
+   "fato": "Banco Central decreta a liquidação extrajudicial do Banco Master",
+   "fonte": "https://agenciabrasil.ebc.com.br/economia/noticia/2025-11/saiba-como-resgatar-dinheiro-investido-no-banco-master"
+  },
+  {
+   "data": "2025-11-28",
+   "fato": "TRF da 1ª Região manda soltar Vorcaro e mais quatro sócios, com tornozeleira",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-11/justica-manda-soltar-vocaro-e-mais-quatro-socios-do-banco-master"
+  },
+  {
+   "data": "2026-01-14",
+   "fato": "2ª fase da operação: 42 mandados de busca e bloqueio de mais de R$ 5,7 bilhões",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-01/policia-federal-faz-nova-operacao-contra-o-banco-master"
+  },
+  {
+   "data": "2026-02-12",
+   "fato": "Dias Toffoli deixa a relatoria do inquérito no STF após menções a ele no celular de Vorcaro; André Mendonça assume",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-02/toffoli-deixa-relatoria-de-investigacao-sobre-o-banco-master"
+  },
+  {
+   "data": "2026-03-04",
+   "fato": "3ª fase: Vorcaro volta a ser preso; investigação passa a incluir ameaças e invasão de dispositivos",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/pf-deflagra-terceira-fase-da-operacao-compliance-zero"
+  },
+  {
+   "data": "2026-04-16",
+   "fato": "4ª fase prende o ex-presidente do BRB Paulo Henrique Costa; STF mantém a prisão por unanimidade",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-04/por-unanimidade-stf-mantem-prisao-de-ex-presidente-do-brb"
+  },
+  {
+   "data": "2026-05-21",
+   "fato": "PF recusa a proposta de delação premiada de Vorcaro",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/policia-federal-recusa-proposta-de-delacao-premiada-de-vorcaro"
+  },
+  {
+   "data": "2026-06-18",
+   "fato": "9ª fase faz buscas ligadas ao senador Jaques Wagner e ao ex-sócio Augusto Lima",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/pf-deflagra-nova-fase-da-operacao-compliance-nesta-quinta"
+  },
+  {
+   "data": "2026-09-25",
+   "fato": "Com os processos levados à Presidência do STF em meio à crise interna da Corte, Fachin pede manifestação da PGR sobre pedidos de soltura",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/fachin-cobra-manifestacao-da-pgr-sobre-casos-do-inss-e-master"
+  },
+  {
+   "data": "2026-10-15",
+   "fato": "Vorcaro e Paulo Henrique Costa depõem à PF sobre as operações Master–BRB; defesa nega fraude e pede soltura",
+   "fonte": "https://www.cnnbrasil.com.br/politica/vorcaro-nega-a-pf-fraude-em-operacoes-master-brb-e-pede-revogacao-da-prisao/"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Inquérito no STF (relator André Mendonça; desde set/2026 os processos estão temporariamente com o presidente da Corte, Edson Fachin). Vorcaro, o pai, o primo, o cunhado, o advogado Daniel Monteiro e o ex-presidente do BRB Paulo Henrique Costa seguem presos preventivamente; a PGR defendeu manter as prisões (17/10/2026). A defesa de Vorcaro afirma que ele não foi indiciado nem denunciado. Não foi localizada denúncia da PGR no caso até 20/10/2026.",
+  "data": "2026-10-19",
+  "fonte": "https://www.cnnbrasil.com.br/politica/master-pgr-defende-manter-prisoes-de-familiares-e-assessor-de-vorcaro/"
+ },
+ "pessoas": [
+  {
+   "nome": "Daniel Bueno Vorcaro",
+   "cargo_na_epoca": "Controlador do Banco Master",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "investigado",
+   "detalhe": "Principal investigado da Operação Compliance Zero. Preso em 18/11/2025, solto em 28/11/2025 e preso de novo em 04/03/2026; está na Papudinha (DF). A PF recusou sua proposta de delação (mai/2026). A CVM o multou em R$ 20 milhões em processo administrativo sobre outro fundo (set/2026). A defesa nega fraudes e diz que ele não foi indiciado nem denunciado.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-10-15",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/defesa-quer-que-mendonca-analise-soltura-de-daniel-vorcaro"
+  },
+  {
+   "nome": "Henrique Moura Vorcaro",
+   "cargo_na_epoca": "Empresário (pai de Daniel Vorcaro)",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "investigado",
+   "detalhe": "Preso em 14/05/2026. A PF o aponta como financiador e um dos líderes de grupo usado para intimidar desafetos ('A Turma'); Daniel Vorcaro negou à PF conhecer esse grupo. A defesa pede soltura.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-10-17",
+   "fonte": "https://www.cnnbrasil.com.br/politica/master-pgr-defende-manter-prisoes-de-familiares-e-assessor-de-vorcaro/"
+  },
+  {
+   "nome": "Felipe Cançado Vorcaro",
+   "cargo_na_epoca": "Empresário (primo de Daniel Vorcaro)",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "investigado",
+   "detalhe": "Preso em 07/05/2026; a PF o aponta como operador financeiro do grupo. A PGR defendeu manter a prisão.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-10-17",
+   "fonte": "https://www.cnnbrasil.com.br/politica/master-pgr-defende-manter-prisoes-de-familiares-e-assessor-de-vorcaro/"
+  },
+  {
+   "nome": "Fabiano Campos Zettel",
+   "cargo_na_epoca": "Empresário (cunhado de Daniel Vorcaro)",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "investigado",
+   "detalhe": "Preso em março de 2026; apontado pela PF como operador financeiro de Vorcaro. A PGR defendeu manter a prisão.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-10-17",
+   "fonte": "https://www.cnnbrasil.com.br/politica/master-pgr-defende-manter-prisoes-de-familiares-e-assessor-de-vorcaro/"
+  },
+  {
+   "nome": "Daniel Lopes Monteiro",
+   "cargo_na_epoca": "Advogado",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "investigado",
+   "detalhe": "Preso em 16/04/2026; investigado por supostamente estruturar operações com imóveis de luxo para repassar vantagens ao ex-presidente do BRB. A defesa nega e diz que a atuação foi técnica.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-10-17",
+   "fonte": "https://www.cnnbrasil.com.br/politica/master-pgr-defende-manter-prisoes-de-familiares-e-assessor-de-vorcaro/"
+  },
+  {
+   "nome": "Augusto Ferreira Lima",
+   "cargo_na_epoca": "Ex-sócio e ex-CEO do Banco Master",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "investigado",
+   "detalhe": "Preso em nov/2025 e solto em 28/11/2025 com tornozeleira. Alvo da 9ª fase (18/06/2026), com suspensão de passaporte; a PF apura se ele repassou vantagens ao senador Jaques Wagner. A defesa diz que os fatos são lícitos.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-06-18",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/pf-deflagra-nova-fase-da-operacao-compliance-nesta-quinta"
+  },
+  {
+   "nome": "Paulo Henrique Costa",
+   "cargo_na_epoca": "Presidente do BRB",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Afastado do BRB em nov/2025 e preso em 16/04/2026. A PGR rejeitou sua proposta de delação (jun/2026). Depôs à PF em 15/10/2026 na Papudinha. Ele nega as acusações.",
+   "liberdade": "preso",
+   "valor_recebido": {
+    "valor": 146500000,
+    "texto": "Segundo a PF, teria combinado com Vorcaro receber R$ 146,5 milhões em imóveis como propina; ele nega",
+    "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/pgr-rejeita-proposta-de-delacao-premiada-de-ex-presidente-do-brb"
+   },
+   "devolveu": null,
+   "data_situacao": "2026-10-15",
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/ex-presidente-do-brb-presta-depoimento-a-pf-sobre-master/"
+  },
+  {
+   "nome": "Dario Oswaldo Garcia Júnior",
+   "cargo_na_epoca": "Diretor de Finanças e Controladoria do BRB",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Afastado do cargo por decisão judicial na 1ª fase da operação (18/11/2025).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-11-18",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/justica-afasta-temporariamente-presidente-e-diretor-do-brb"
+  },
+  {
+   "nome": "Belline Santana",
+   "cargo_na_epoca": "Chefe do Departamento de Supervisão Bancária do Banco Central",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Afastado do BC. Relatório da PF (set/2026) diz que ele repassava informações sigilosas a Vorcaro.",
+   "liberdade": null,
+   "valor_recebido": {
+    "valor": null,
+    "texto": "Segundo a PF, pagamentos recorrentes de R$ 500 mil (ao menos um de R$ 760 mil), além de viagem a Paris",
+    "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro"
+   },
+   "devolveu": null,
+   "data_situacao": "2026-09-11",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro"
+  },
+  {
+   "nome": "Paulo Sérgio Neves de Souza",
+   "cargo_na_epoca": "Gerente adjunto do Departamento de Supervisão do Banco Central",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Afastado do BC. Relatório da PF (set/2026) aponta vantagens como viagem à Disney e compra atípica de imóvel rural.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-09-11",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro"
+  },
+  {
+   "nome": "Ciro Nogueira",
+   "cargo_na_epoca": "Senador; ex-ministro da Casa Civil",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Alvo de busca e apreensão na 5ª fase (07/05/2026). A defesa repudia 'qualquer ilação de ilicitude'.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-05-07",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/policia-federal-deflagra-5a-fase-da-operacao-compliance-zero"
+  },
+  {
+   "nome": "Jaques Wagner",
+   "cargo_na_epoca": "Senador; líder do governo no Senado",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Alvo de buscas na 9ª fase (18/06/2026); a PF aponta que teria recebido apartamento de R$ 2,45 milhões do ex-sócio Augusto Lima. Ele nega e pediu acesso aos autos antes de depor.",
+   "liberdade": "em liberdade",
+   "valor_recebido": {
+    "valor": 2450000,
+    "texto": "Segundo a PF, apartamento avaliado em R$ 2,45 milhões em Salvador; o senador nega irregularidades",
+    "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/apuracao-da-pf-acusa-jaques-wagner-de-receber-vantagens-senador-nega"
+   },
+   "devolveu": null,
+   "data_situacao": "2026-08-07",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/apuracao-da-pf-acusa-jaques-wagner-de-receber-vantagens-senador-nega"
+  },
+  {
+   "nome": "Flávio Bolsonaro",
+   "cargo_na_epoca": "Senador",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Incluído em 22/07/2026 em inquérito que apura o repasse de R$ 61 milhões de Vorcaro para o filme 'Dark Horse'; suspeita de lavagem, evasão de divisas e corrupção. Ele diz que pediu um patrocínio privado, sem contrapartida, e nega irregularidades.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-09-11",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/mendonca-incluiu-flavio-bolsonaro-como-investigado-no-caso-dark-horse"
+  },
+  {
+   "nome": "Cláudio Castro",
+   "cargo_na_epoca": "Governador do Rio de Janeiro",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Alvo de busca na 8ª fase (26/05/2026), que apura aplicação de R$ 3,6 bilhões da RioPrevidência em papéis e fundos do Master. Ele retirou a pré-candidatura ao Senado e diz estar convicto da legalidade de seus atos.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-05-28",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/castro-desiste-de-candidatura-ao-senado-apos-ser-alvo-de-acoes-da-pf"
+  },
+  {
+   "nome": "Deivis Marcon Antunes",
+   "cargo_na_epoca": "Presidente da RioPrevidência",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Preso em 03/02/2026 na Operação Barco de Papel (aplicações de cerca de R$ 970 milhões no Master); também alvo da 8ª fase. Situação de prisão atual não confirmada.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-05-26",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-02/ex-presidente-do-rioprevidencia-e-preso-em-operacao-da-policia-federal"
+  }
+ ],
+ "fontes": [
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2025-09/bc-rejeita-compra-do-master-pelo-banco-de-brasilia-brb",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2025-11/bolsa-e-dolar-caem-em-dia-de-liquidacao-do-banco-master",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2025-11/saiba-como-resgatar-dinheiro-investido-no-banco-master",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2026-07/fgc-ainda-tem-r-183-bi-para-devolver-clientes-do-grupo-master",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2026-09/cvm-multa-vorcaro-em-r-20-milhoes-por-fraude-em-fundo-imobiliario",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/justica-afasta-temporariamente-presidente-e-diretor-do-brb",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2026-02/ex-presidente-do-rioprevidencia-e-preso-em-operacao-da-policia-federal",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2026-05/pai-de-daniel-vorcaro-e-preso-na-6a-fase-da-operacao-compliance-zero",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-11/daniel-vorcaro-dono-do-banco-master-e-preso-pela-pf-em-guarulhos",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-11/justica-manda-soltar-vocaro-e-mais-quatro-socios-do-banco-master",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-01/policia-federal-faz-nova-operacao-contra-o-banco-master",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-02/toffoli-deixa-relatoria-de-investigacao-sobre-o-banco-master",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/pf-deflagra-terceira-fase-da-operacao-compliance-zero",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-04/por-unanimidade-stf-mantem-prisao-de-ex-presidente-do-brb",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/fux-vota-para-manter-presos-pai-e-primo-de-vorcaro",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/operacao-contra-castro-mira-aportes-de-r-36-bi-em-fundos-do-master",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/policia-federal-deflagra-5a-fase-da-operacao-compliance-zero",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/policia-federal-recusa-proposta-de-delacao-premiada-de-vorcaro",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/apuracao-da-pf-acusa-jaques-wagner-de-receber-vantagens-senador-nega",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/pf-deflagra-nova-fase-da-operacao-compliance-nesta-quinta",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/pgr-rejeita-proposta-de-delacao-premiada-de-ex-presidente-do-brb",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/depoimento-de-jaques-wagner-pf-e-adiado-pedido-da-defesa",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/caso-master-tcdf-bloqueia-ate-r-27-bi-de-ex-dirigentes-do-brb",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/defesa-de-pai-de-vorcaro-cita-impasse-no-stf-e-pede-soltura",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/fachin-cobra-manifestacao-da-pgr-sobre-casos-do-inss-e-master",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/mendonca-incluiu-flavio-bolsonaro-como-investigado-no-caso-dark-horse",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/vorcaro-depoe-pf-e-nega-existencia-de-grupo-criminoso-turma",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/defesa-quer-que-mendonca-analise-soltura-de-daniel-vorcaro",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2025-11/fraudes-no-master-podem-chegar-r-12-bilhoes-estima-diretor-da-pf",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/castro-desiste-de-candidatura-ao-senado-apos-ser-alvo-de-acoes-da-pf",
+  "https://g1.globo.com/politica/blog/camila-bomfim/post/2026/04/16/ex-presidente-do-brb-paulo-henrique-costa-preso.ghtml",
+  "https://g1.globo.com/politica/noticia/2026/03/09/caso-master-banco-central-encerra-sindicancia-que-investigou-atuacao-irregular-de-servidores.ghtml",
+  "https://pt.wikipedia.org/wiki/Cl%C3%A1udio_Castro",
+  "https://pt.wikipedia.org/wiki/Esc%C3%A2ndalo_do_Banco_Master",
+  "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/ex-presidente-do-brb-presta-depoimento-a-pf-sobre-master/",
+  "https://www.cnnbrasil.com.br/eleicoes/flavio-diz-que-dinheiro-de-vorcaro-para-dark-horse-era-licito-e-privado/",
+  "https://www.cnnbrasil.com.br/politica/master-pgr-defende-manter-prisoes-de-familiares-e-assessor-de-vorcaro/",
+  "https://www.cnnbrasil.com.br/politica/vorcaro-nega-a-pf-fraude-em-operacoes-master-brb-e-pede-revogacao-da-prisao/"
+ ],
+ "verificado_em": "2026-10-20"
+}

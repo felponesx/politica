@@ -1,0 +1,289 @@
+{
+ "slug": "zelotes",
+ "nome": "Operação Zelotes",
+ "outros_nomes": [
+  "Caso Carf",
+  "Compra de medidas provisórias (MP 471)"
+ ],
+ "periodo": {
+  "inicio": "2005",
+  "fim": null
+ },
+ "ano_revelado": 2015,
+ "resumo": "Operação da Polícia Federal deflagrada em março de 2015 para investigar suspeita de compra de decisões no Carf, o conselho do Ministério da Fazenda que julga recursos de empresas multadas pela Receita. Segundo a PF, conselheiros e escritórios de consultoria manipulariam julgamentos para reduzir ou anular multas. Desdobramentos apuraram também suposta compra de medidas provisórias para montadoras. Nas ações mais conhecidas, houve absolvições, arquivamentos e prescrição.",
+ "valores": {
+  "desviado": {
+   "valor": 19000000000,
+   "texto": "Prejuízo estimado aos cofres da União que 'pode chegar a R$ 19 bilhões', segundo a PF no lançamento da operação (estimativa, sob suspeita).",
+   "fonte": "https://www.congressoemfoco.com.br/noticia/57315/operacao-desarticula-quadrilha-suspeita-de-fraudar-r-19-bilhoes-da-receita"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não foi encontrada fonte com valor recuperado.",
+   "fonte": null
+  },
+  "observacao": "Os R$ 19 bilhões são a soma dos processos sob suspeita no Carf em 2015, não um valor desviado comprovado em sentença. A Wikipédia registra R$ 5,7 bilhões de prejuízo apurado até março de 2015. Várias ações terminaram em absolvição, arquivamento ou prescrição."
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Corregedoria do Ministério da Fazenda e Receita Federal",
+   "papel": "controle"
+  },
+  {
+   "nome": "Ministério Público Federal",
+   "papel": "acusação"
+  },
+  {
+   "nome": "CPI do Carf (Senado)",
+   "papel": "CPI"
+  },
+  {
+   "nome": "10ª Vara Federal do Distrito Federal",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Tribunal Regional Federal da 1ª Região (TRF-1)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Supremo Tribunal Federal",
+   "papel": "julgamento"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2015-03-26",
+   "fato": "PF deflagra a Operação Zelotes com MPF, Corregedoria da Fazenda e Receita; prejuízo estimado em até R$ 19 bilhões.",
+   "fonte": "https://www.congressoemfoco.com.br/noticia/57315/operacao-desarticula-quadrilha-suspeita-de-fraudar-r-19-bilhoes-da-receita"
+  },
+  {
+   "data": "2017-06-13",
+   "fato": "TRF-1 arquiva ação penal contra o presidente do Bradesco, Luiz Carlos Trabuco, por falta de provas.",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2017-06/justica-arquiva-acao-penal-contra-presidente-do-bradesco"
+  },
+  {
+   "data": "2020-04-28",
+   "fato": "TRF-1 absolve nove réus condenados em 1ª instância no caso da compra de medidas provisórias para montadoras.",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "data": "2021-06-21",
+   "fato": "Justiça Federal do DF absolve Lula, Gilberto Carvalho e mais cinco acusados em ação por corrupção ligada à MP 471/2009; o próprio MPF apontou falta de provas.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml"
+  },
+  {
+   "data": "2023-02-18",
+   "fato": "Ministro Ricardo Lewandowski (STF) tranca a ação da Zelotes contra Lula sobre a compra dos caças Gripen.",
+   "fonte": "https://ohoje.com/2023/02/18/lewandowski-encerra-tres-acoes-contra-lula-que-estavam-suspensas/"
+  },
+  {
+   "data": "2025-02-24",
+   "fato": "Justiça Federal do DF declara extinta a punibilidade de Guido Mantega por prescrição em desdobramento da Zelotes.",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/02/24/justica-federal-do-df-encerra-investigacao-contra-mantega-por-corrupcao-e-lavagem.ghtml"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "As ações mais conhecidas da Zelotes terminaram em absolvição (TRF-1 em 2020; 10ª Vara do DF em 2021), trancamento pelo STF (2023) ou prescrição (Mantega, 2025). Não foi possível confirmar o andamento de todas as demais ações penais da operação.",
+  "data": "2025-02-24",
+  "fonte": "https://g1.globo.com/politica/noticia/2025/02/24/justica-federal-do-df-encerra-investigacao-contra-mantega-por-corrupcao-e-lavagem.ghtml"
+ },
+ "pessoas": [
+  {
+   "nome": "Luiz Inácio Lula da Silva",
+   "cargo_na_epoca": "Ex-presidente da República (presidente à época da MP 471/2009)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido em 2021 da acusação de corrupção passiva ligada à MP 471; a ação sobre a compra dos caças Gripen foi trancada pelo STF em 2023.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml"
+  },
+  {
+   "nome": "Gilberto Carvalho",
+   "cargo_na_epoca": "Chefe de gabinete da Presidência (2009)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido junto com Lula em 2021; o juiz disse que a denúncia carecia de elementos para condenação.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml"
+  },
+  {
+   "nome": "Guido Mantega",
+   "cargo_na_epoca": "Ministro da Fazenda",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "prescrito",
+   "detalhe": "Era réu por corrupção e lavagem em desdobramento da Zelotes; o juiz declarou extinta a punibilidade por prescrição (mais de 70 anos, prazo reduzido).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-02-24",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/02/24/justica-federal-do-df-encerra-investigacao-contra-mantega-por-corrupcao-e-lavagem.ghtml"
+  },
+  {
+   "nome": "José Ricardo da Silva",
+   "cargo_na_epoca": "Ex-conselheiro do Carf (advogado)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo TRF-1 (2020) de corrupção, lavagem e associação criminosa no caso das MPs e, em 2021, na ação com Lula. O TRF-1 citou sua participação em advocacia administrativa, crime já prescrito.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "nome": "Fernando Mesquita",
+   "cargo_na_epoca": "Ex-diretor de comunicação do Senado",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "prescrito",
+   "detalhe": "Absolvido de corrupção, lavagem e associação; único condenado pelo TRF-1 por advocacia administrativa (1 ano), pena já prescrita.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2020-04-28",
+   "fonte": "https://www.conjur.com.br/2020-mai-06/leia-acordao-trf-absolveu-nove-reus-zelotes//?print=1"
+  },
+  {
+   "nome": "Mauro Marcondes Machado",
+   "cargo_na_epoca": "Lobista / empresário (Marcondes e Mautoni)",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Condenado em 1ª instância, foi absolvido pelo TRF-1 em 2020 de corrupção, lavagem e associação criminosa (participação em advocacia administrativa reconhecida, mas prescrita); absolvido também na ação com Lula em 2021.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "nome": "Cristina Mautoni Machado",
+   "cargo_na_epoca": "Sócia da Marcondes e Mautoni",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Absolvida pelo TRF-1 no caso da compra de medidas provisórias.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2020-04-28",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "nome": "Alexandre Paes dos Santos",
+   "cargo_na_epoca": "Lobista",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo TRF-1 (2020) e na ação com Lula (2021). O TRF-1 citou participação em advocacia administrativa, crime já prescrito.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "nome": "Francisco Mirto",
+   "cargo_na_epoca": "Lobista",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo TRF-1 de organização criminosa e lavagem; participação em advocacia administrativa reconhecida, mas prescrita.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2020-04-28",
+   "fonte": "https://www.conjur.com.br/2020-mai-06/leia-acordao-trf-absolveu-nove-reus-zelotes//?print=1"
+  },
+  {
+   "nome": "Eduardo Gonçalves Valadão",
+   "cargo_na_epoca": "Empresário / advogado",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo TRF-1 no caso da compra de medidas provisórias.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2020-04-28",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "nome": "Paulo Arantes Ferraz",
+   "cargo_na_epoca": "Ex-presidente da MMC (Mitsubishi)",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo TRF-1 (2020) e na ação com Lula (2021).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml"
+  },
+  {
+   "nome": "Robert de Macedo Rittcher",
+   "cargo_na_epoca": "Ex-representante da MMC (Mitsubishi)",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo TRF-1 no caso da compra de medidas provisórias.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2020-04-28",
+   "fonte": "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma"
+  },
+  {
+   "nome": "Carlos Alberto de Oliveira Andrade",
+   "cargo_na_epoca": "Empresário do Grupo Caoa",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido em 2021 na ação sobre a MP 471 (acusação de corrupção ativa).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-21",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml"
+  },
+  {
+   "nome": "Luiz Carlos Trabuco",
+   "cargo_na_epoca": "Diretor-presidente do Bradesco",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "processo arquivado",
+   "detalhe": "TRF-1 arquivou a ação penal por entender que não havia provas de sua participação.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-06-13",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2017-06/justica-arquiva-acao-penal-contra-presidente-do-bradesco"
+  }
+ ],
+ "fontes": [
+  "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Zelotes",
+  "https://www.congressoemfoco.com.br/noticia/57315/operacao-desarticula-quadrilha-suspeita-de-fraudar-r-19-bilhoes-da-receita",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2017-06/justica-arquiva-acao-penal-contra-presidente-do-bradesco",
+  "https://www.migalhas.com.br/quentes/325747/trf-1-absolve-nove-condenados-por-venda-de-medidas-provisorias-nos-governos-lula-e-dilma",
+  "https://www.conjur.com.br/2020-mai-06/leia-acordao-trf-absolveu-nove-reus-zelotes//?print=1",
+  "https://g1.globo.com/politica/noticia/2021/06/21/justica-federal-absolve-lula-e-gilberto-carvalho-em-acao-da-operacao-zelotes.ghtml",
+  "https://ohoje.com/2023/02/18/lewandowski-encerra-tres-acoes-contra-lula-que-estavam-suspensas/",
+  "https://g1.globo.com/politica/noticia/2025/02/24/justica-federal-do-df-encerra-investigacao-contra-mantega-por-corrupcao-e-lavagem.ghtml"
+ ],
+ "verificado_em": "2026-10-20"
+}

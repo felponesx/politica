@@ -1,0 +1,512 @@
+{
+ "slug": "lava-jato",
+ "nome": "Operação Lava Jato",
+ "outros_nomes": [
+  "Petrolão"
+ ],
+ "periodo": {
+  "inicio": "2014",
+  "fim": "2021"
+ },
+ "ano_revelado": 2014,
+ "resumo": "Conjunto de investigações da Polícia Federal e do Ministério Público Federal, iniciado em março de 2014 a partir de doleiros, que apurou pagamento de propina em contratos da Petrobras e de outros órgãos públicos. Segundo as acusações, empreiteiras pagavam diretores da estatal, operadores e políticos de vários partidos. Segundo o MPF, até 2021 foram 130 denúncias contra 533 acusados e 174 pessoas condenadas. A partir de 2021 o STF anulou várias condenações por incompetência da Vara de Curitiba e pela parcialidade do ex-juiz Sergio Moro. A força-tarefa de Curitiba foi encerrada em fevereiro de 2021.",
+ "valores": {
+  "desviado": {
+   "valor": 6000000000,
+   "texto": "rombo de R$ 6 bilhões em propina divulgado oficialmente pela Petrobras em abril de 2015 (balanço de 2014)",
+   "fonte": "https://g1.globo.com/pr/parana/noticia/2015/11/pf-estima-que-prejuizo-da-petrobras-com-corrupcao-pode-ser-de-r-42-bi.html"
+  },
+  "recuperado": {
+   "valor": 6170000000,
+   "texto": "cerca de R$ 6,17 bilhões que a Petrobras previa ter recebido até o fim de 2021 em acordos de leniência, repatriações e delações",
+   "fonte": "https://agenciabrasil.ebc.com.br/economia/noticia/2021-12/petrobras-supera-r-6-bilhoes-em-recursos-recuperados-da-lava-jato"
+  },
+  "observacao": "As estimativas de prejuízo variam muito. A Petrobras reconheceu R$ 6 bilhões (Dallagnol citou 'mais de R$ 6,2 bilhões' só em propina). O MPF estimou em 2015 que o prejuízo passaria de R$ 20 bilhões, e uma perícia da PF falou em até R$ 42,8 bilhões. O valor recuperado considera só o que voltou à Petrobras. Não inclui, por exemplo, os R$ 2 bilhões em multas e devoluções de delações homologadas no STF (balanço de 2024) nem todos os acordos de leniência com a União, que foram renegociados em 2025. Os valores são nominais, sem correção pela inflação."
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Ministério Público Federal (força-tarefa de Curitiba)",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Ministério Público Federal (força-tarefa do Rio de Janeiro)",
+   "papel": "acusação nos desdobramentos no Rio"
+  },
+  {
+   "nome": "Procuradoria-Geral da República",
+   "papel": "acusação de autoridades com foro no STF e acordos de delação"
+  },
+  {
+   "nome": "13ª Vara Federal de Curitiba",
+   "papel": "julgamento em 1ª instância (juiz Sergio Moro até 2018)"
+  },
+  {
+   "nome": "7ª Vara Federal Criminal do Rio de Janeiro",
+   "papel": "julgamento em 1ª instância dos casos do Rio (juiz Marcelo Bretas)"
+  },
+  {
+   "nome": "Tribunal Regional Federal da 4ª Região (TRF4)",
+   "papel": "julgamento de recursos (2ª instância) dos casos de Curitiba"
+  },
+  {
+   "nome": "Tribunal Regional Federal da 2ª Região (TRF2)",
+   "papel": "julgamento de recursos (2ª instância) dos casos do Rio"
+  },
+  {
+   "nome": "Superior Tribunal de Justiça",
+   "papel": "julgamento de recursos; anulou e encerrou processos"
+  },
+  {
+   "nome": "Supremo Tribunal Federal",
+   "papel": "julgou parlamentares com foro; homologou delações; anulou condenações e provas a partir de 2021"
+  },
+  {
+   "nome": "Justiça Federal do Distrito Federal",
+   "papel": "recebeu os processos de Lula após a anulação; arquivou o caso do tríplex e rejeitou a denúncia do sítio"
+  },
+  {
+   "nome": "Advocacia-Geral da União e Controladoria-Geral da União",
+   "papel": "acordos de leniência com as empresas (renegociados em 2025)"
+  },
+  {
+   "nome": "Conselho Nacional de Justiça",
+   "papel": "processos disciplinares contra juízes da operação"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2014-03",
+   "fato": "PF deflagra a operação; o doleiro Alberto Youssef está entre os primeiros presos.",
+   "fonte": "https://www.cnnbrasil.com.br/politica/toffoli-anula-todos-os-atos-da-lava-jato-contra-alberto-youssef/"
+  },
+  {
+   "data": "2015-03-06",
+   "fato": "Ministro Teori Zavascki (STF) autoriza investigar 47 políticos.",
+   "fonte": "https://g1.globo.com/politica/noticia/2015/03/ministro-do-stf-autoriza-investigacao-de-politicos-na-lava-jato.html"
+  },
+  {
+   "data": "2015-04",
+   "fato": "Petrobras divulga oficialmente um rombo de R$ 6 bilhões com a corrupção.",
+   "fonte": "https://g1.globo.com/pr/parana/noticia/2015/11/pf-estima-que-prejuizo-da-petrobras-com-corrupcao-pode-ser-de-r-42-bi.html"
+  },
+  {
+   "data": "2016-12",
+   "fato": "Odebrecht assina acordo de leniência com o Ministério Público.",
+   "fonte": "https://g1.globo.com/politica/noticia/2023/09/06/toffoli-invalida-provas-de-sistemas-de-propina-apresentados-pela-odebrecht-em-acordo-de-leniencia.ghtml"
+  },
+  {
+   "data": "2017-07",
+   "fato": "Sergio Moro condena Lula no caso do tríplex do Guarujá.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/23/plenario-do-stf-reconhece-decisao-da-segunda-turma-que-declarou-moro-parcial-ao-condenar-lula.ghtml"
+  },
+  {
+   "data": "2018-04-07",
+   "fato": "Lula é preso em Curitiba; fica 580 dias preso.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2019-11/lula-deixa-carceragem-da-pf-em-curitiba"
+  },
+  {
+   "data": "2019-11-08",
+   "fato": "Lula deixa a prisão por decisão da Justiça Federal.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2019-11/lula-deixa-carceragem-da-pf-em-curitiba"
+  },
+  {
+   "data": "2021-02-01",
+   "fato": "Força-tarefa da Lava Jato no Paraná deixa de existir; parte dos procuradores vai para o Gaeco do MPF.",
+   "fonte": "https://g1.globo.com/pr/parana/noticia/2021/02/03/forca-tarefa-da-lava-jato-no-parana-deixa-de-existir-diz-mpf.ghtml"
+  },
+  {
+   "data": "2021-03-08",
+   "fato": "Fachin (STF) anula as condenações de Lula por incompetência da Vara de Curitiba.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2021-03/fachin-anula-condenacoes-de-lula-na-lava-jato"
+  },
+  {
+   "data": "2021-06-23",
+   "fato": "Plenário do STF mantém a decisão que declarou Moro parcial ao condenar Lula.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/23/plenario-do-stf-reconhece-decisao-da-segunda-turma-que-declarou-moro-parcial-ao-condenar-lula.ghtml"
+  },
+  {
+   "data": "2023-09-06",
+   "fato": "Toffoli (STF) declara inválidas as provas do acordo de leniência da Odebrecht.",
+   "fonte": "https://g1.globo.com/politica/noticia/2023/09/06/toffoli-invalida-provas-de-sistemas-de-propina-apresentados-pela-odebrecht-em-acordo-de-leniencia.ghtml"
+  },
+  {
+   "data": "2026-08-04",
+   "fato": "CNJ afasta por dois anos a juíza Gabriela Hardt, que substituiu Moro, pelo acordo entre a força-tarefa e a Petrobras.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/cnj-afasta-ex-juiza-da-lava-jato-por-dois-anos"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "A operação acabou em fevereiro de 2021. Desde então, o STF anulou condenações de vários réus (Lula, Dirceu, Palocci, Léo Pinheiro, Youssef, Vaccari, entre outros), com base na incompetência da Vara de Curitiba ou na parcialidade de Sergio Moro, e declarou inválidas as provas dos sistemas da Odebrecht. Algumas condenações continuam valendo: Fernando Collor cumpre pena em prisão domiciliar e Sérgio Cabral tem condenações sem decisão definitiva. Os acordos de leniência das empreiteiras foram renegociados (homologação do ministro André Mendonça em agosto de 2025, ainda sem referendo do plenário). Em dezembro de 2025 a PF fez buscas na 13ª Vara de Curitiba, com autorização do STF, em um inquérito sobre supostas irregularidades na condução de casos pela Justiça Federal do Paraná; Moro está entre os alvos. Em agosto de 2026 o CNJ afastou a juíza Gabriela Hardt por dois anos.",
+  "data": "2026-08-04",
+  "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/cnj-afasta-ex-juiza-da-lava-jato-por-dois-anos"
+ },
+ "pessoas": [
+  {
+   "nome": "Luiz Inácio Lula da Silva",
+   "cargo_na_epoca": "ex-presidente da República (2003–2010)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado por Sergio Moro em julho de 2017 (caso do tríplex) e preso de abril de 2018 a novembro de 2019. Em março de 2021 o STF (Fachin) anulou as condenações por incompetência da Vara de Curitiba, e em junho de 2021 o plenário manteve a decisão que declarou Moro parcial. O caso do tríplex foi arquivado em janeiro de 2022 por prescrição. A denúncia do sítio de Atibaia foi rejeitada em agosto de 2021.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2022-01-28",
+   "fonte": "https://www.cnnbrasil.com.br/politica/justica-do-df-arquiva-caso-do-triplex-envolvendo-o-ex-presidente-lula/"
+  },
+  {
+   "nome": "Eduardo Cunha",
+   "cargo_na_epoca": "deputado federal (RJ) e presidente da Câmara dos Deputados",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "condenação anulada",
+   "detalhe": "A 2ª Turma do STF anulou em maio de 2023, por 3 a 2, a condenação de 15 anos e 11 meses por corrupção e lavagem de dinheiro e mandou o processo para a Justiça Eleitoral. A anulação vale para um dos processos da Lava Jato contra ele.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2023-05-29",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2023-05/supremo-anula-condenacao-de-cunha-na-lava-jato"
+  },
+  {
+   "nome": "Sérgio Cabral Filho",
+   "cargo_na_epoca": "ex-governador do Rio de Janeiro (2007–2014)",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "condenado (recorre)",
+   "detalhe": "Preso de novembro de 2016 a dezembro de 2022. Foi condenado em 23 processos da Lava Jato, com penas que somavam 425 anos, sem condenação definitiva (cabe recurso). Algumas sentenças foram anuladas ou mudadas por tribunais superiores. Em outubro de 2025 foi condenado também em uma ação civil de improbidade na Justiça do Rio, da qual cabe recurso.",
+   "liberdade": "em liberdade",
+   "valor_recebido": {
+    "valor": 224000000,
+    "texto": "acusado de liderar o desvio de R$ 224 milhões (Operação Calicute)",
+    "fonte": "https://oglobo.globo.com/politica/noticia/2023/05/de-delubio-a-pezao-os-politicos-que-assim-como-cunha-tiveram-condenacoes-na-lava-jato-anuladas.ghtml"
+   },
+   "devolveu": null,
+   "data_situacao": "2025-10-06",
+   "fonte": "https://g1.globo.com/rj/rio-de-janeiro/noticia/2025/10/06/cabral-pezao-e-hudson-braga-sao-condenados-esquema-de-currupcao.ghtml"
+  },
+  {
+   "nome": "Luiz Fernando Pezão",
+   "cargo_na_epoca": "governador do Rio de Janeiro; antes vice-governador e secretário de Obras",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Preso em novembro de 2018, quando era governador, e condenado em 2021 a 98 anos de prisão pelo juiz Marcelo Bretas. Em abril de 2023 o TRF-2 aceitou o recurso e o absolveu das acusações de corrupção na Operação Boca de Lobo. Em outubro de 2025 foi condenado em uma ação civil de improbidade na Justiça do Rio, da qual cabe recurso.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2023-04",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2023-04/tribunal-reforma-sentenca-e-absolve-pezao-de-98-anos-de-prisao"
+  },
+  {
+   "nome": "José Dirceu",
+   "cargo_na_epoca": "ex-ministro-chefe da Casa Civil",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado por Moro em 2016 e 2017, com penas que somavam 34 anos. Em outubro de 2024 Gilmar Mendes (STF) anulou as condenações, estendendo a ele a decisão sobre a parcialidade de Moro. Em dezembro de 2024 o STJ encerrou os dois processos restantes por prescrição.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-12-17",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2024-12/stj-encerra-processos-da-lava-jato-contra-ex-ministro-jose-dirceu"
+  },
+  {
+   "nome": "Antonio Palocci",
+   "cargo_na_epoca": "ex-ministro da Fazenda e da Casa Civil",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado em 2017 a 12 anos de prisão. Essa condenação foi anulada pelo STJ em dezembro de 2021, que mandou o caso para a Justiça Eleitoral. Em fevereiro de 2025 Dias Toffoli (STF) anulou todos os processos contra ele na Lava Jato, e o acordo de delação foi mantido. A PGR recorreu. Em abril de 2025 o julgamento do recurso na 2ª Turma estava empatado em 2 a 2 e foi suspenso por pedido de vista.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-04-04",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-04/nunes-marques-pede-vista-e-suspende-julgamento-de-palocci-no-stf"
+  },
+  {
+   "nome": "Fernando Collor de Mello",
+   "cargo_na_epoca": "senador (AL)",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Condenado pelo STF em maio de 2023 a 8 anos e 10 meses de prisão por corrupção passiva e lavagem de dinheiro (esquema na BR Distribuidora). Os recursos foram rejeitados. Foi preso em abril de 2025 e cumpre pena em prisão domiciliar humanitária desde maio de 2025.",
+   "liberdade": "prisão domiciliar",
+   "valor_recebido": {
+    "valor": 20000000,
+    "texto": "o STF entendeu comprovado que recebeu R$ 20 milhões de propina entre 2010 e 2014 para facilitar contratos da UTC Engenharia com a BR Distribuidora",
+    "fonte": "https://www.cnnbrasil.com.br/politica/fernando-collor-e-condenado-a-8-anos-e-10-meses-de-prisao-pelo-stf/"
+   },
+   "devolveu": null,
+   "data_situacao": "2025-10-24",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-10/secretaria-diz-que-nao-tinha-email-do-stf-para-informar-sobre-collor"
+  },
+  {
+   "nome": "Delcídio do Amaral",
+   "cargo_na_epoca": "senador (MS) e líder do governo no Senado",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Preso em novembro de 2015, suspeito de tentar atrapalhar a Lava Jato, e cassado pelo Senado em maio de 2016. Fez acordo de delação. Em julho de 2018 a Justiça Federal em Brasília o absolveu da acusação de tentar comprar o silêncio de Nestor Cerveró.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2018-07-13",
+   "fonte": "https://www1.folha.uol.com.br/poder/2018/07/delcidio-comemora-absolvicao-e-diz-que-estuda-voltar-a-politica.shtml"
+  },
+  {
+   "nome": "Nelson Meurer",
+   "cargo_na_epoca": "deputado federal (PR)",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "morreu",
+   "detalhe": "Primeiro parlamentar condenado pelo STF na Lava Jato, em maio de 2018: 13 anos e 9 meses de prisão por corrupção passiva e lavagem de dinheiro. Morreu em julho de 2020, de Covid-19, enquanto cumpria a pena.",
+   "liberdade": null,
+   "valor_recebido": {
+    "valor": 29000000,
+    "texto": "acusado de receber R$ 29 milhões em propina de esquema na Petrobras",
+    "fonte": "https://g1.globo.com/politica/operacao-lava-jato/noticia/stf-condena-nelson-meurer-por-corrupcao-e-lavagem-de-dinheiro-deputado-e-o-primeiro-condenado-da-lava-jato.ghtml"
+   },
+   "devolveu": null,
+   "data_situacao": "2020-07-12",
+   "fonte": "https://g1.globo.com/pr/oeste-sudoeste/noticia/2020/07/12/morre-ex-deputado-nelson-meurer-condenado-na-lava-jato-e-internado-por-covid-19.ghtml"
+  },
+  {
+   "nome": "Gim Argello",
+   "cargo_na_epoca": "senador (DF)",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado por Moro em 2016 a 19 anos (pena reduzida pelo TRF4 para 11 anos e 8 meses). Foi acusado de receber propina para evitar a convocação de empresários na CPI da Petrobras em 2014. Solto em 2019 por indulto. Em fevereiro de 2022 o STJ anulou a condenação e mandou o caso para a Justiça Eleitoral.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2022-02-09",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-02/stj-anula-condenacao-do-ex-senador-gim-argello-na-lava-jato"
+  },
+  {
+   "nome": "Gleisi Hoffmann",
+   "cargo_na_epoca": "senadora (PR)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "A 2ª Turma do STF a absolveu em junho de 2018 das acusações de corrupção e lavagem de dinheiro em um processo da Lava Jato, por falta de provas. O marido, o ex-ministro Paulo Bernardo, também foi absolvido.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2018-06-19",
+   "fonte": "https://g1.globo.com/politica/noticia/stf-absolve-senadora-gleisi-hoffmann-e-ex-ministro-paulo-bernardo-dos-crimes-de-corrupcao-e-lavagem.ghtml"
+  },
+  {
+   "nome": "André Vargas",
+   "cargo_na_epoca": "deputado federal (PR) e vice-presidente da Câmara",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Condenado por Moro em setembro de 2015 a 14 anos e 4 meses por corrupção passiva e lavagem de dinheiro. Foi o primeiro político condenado na Lava Jato. Teve três condenações e recebeu liberdade condicional em outubro de 2018.",
+   "liberdade": "em liberdade",
+   "valor_recebido": {
+    "valor": 1100000,
+    "texto": "condenado por receber ao menos R$ 1,1 milhão por meio da agência Borghi/Lowe",
+    "fonte": "https://www1.folha.uol.com.br/poder/2015/09/1684970-ex-deputado-andre-vargas-condenado-a-14-anos-de-prisao.shtml"
+   },
+   "devolveu": {
+    "valor": 1103950.12,
+    "texto": "começou a pagar em parcelas a reparação de danos de R$ 1.103.950,12, uma das condições da liberdade condicional",
+    "fonte": "https://g1.globo.com/pr/parana/noticia/2018/10/19/preso-na-operacao-lava-jato-andre-vargas-e-solto.ghtml"
+   },
+   "data_situacao": "2018-10-19",
+   "fonte": "https://g1.globo.com/pr/parana/noticia/2018/10/19/preso-na-operacao-lava-jato-andre-vargas-e-solto.ghtml"
+  },
+  {
+   "nome": "Paulo Roberto Costa",
+   "cargo_na_epoca": "diretor de Abastecimento da Petrobras (2004–2012)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "morreu",
+   "detalhe": "Primeiro delator da Lava Jato. Condenado em 2015 a 12 anos, cumpridos conforme o acordo de delação (prisão domiciliar com tornozeleira). Morreu em agosto de 2022, aos 68 anos.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2022-08-13",
+   "fonte": "https://www1.folha.uol.com.br/poder/2022/08/morre-paulo-roberto-costa-ex-diretor-da-petrobras-e-1o-delator-da-lava-jato.shtml"
+  },
+  {
+   "nome": "Nestor Cerveró",
+   "cargo_na_epoca": "diretor da área Internacional da Petrobras",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Condenado por corrupção passiva e lavagem de dinheiro no caso dos navios-sonda. Em 2016 o TRF4 aumentou a pena de 12 anos e 3 meses para 27 anos e 4 meses, a ser cumprida conforme o acordo de delação.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-11-30",
+   "fonte": "https://g1.globo.com/rs/rio-grande-do-sul/noticia/2016/11/tribunal-federal-decide-elevar-penas-de-cervero-e-de-fernando-baiano.html"
+  },
+  {
+   "nome": "Renato Duque",
+   "cargo_na_epoca": "diretor de Serviços da Petrobras (2003–2012)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Tem várias condenações na Lava Jato. Ficou preso de forma preventiva de 2015 a 2020. Foi preso de novo em agosto de 2024, quando era considerado foragido. Em abril de 2025 foi condenado a mais 29 anos e 2 meses por corrupção passiva e lavagem de dinheiro em contratos da Petrobras.",
+   "liberdade": null,
+   "valor_recebido": {
+    "valor": 5600000,
+    "texto": "acusado pelo MPF de receber cerca de R$ 5,6 milhões em propinas entre 2011 e 2012 (processo julgado em 2025)",
+    "fonte": "https://revistaoeste.com/politica/ex-diretor-da-petrobras-renato-duque-e-condenado-a-29-anos-de-prisao-por-corrupcao/"
+   },
+   "devolveu": null,
+   "data_situacao": "2025-04-22",
+   "fonte": "https://revistaoeste.com/politica/ex-diretor-da-petrobras-renato-duque-e-condenado-a-29-anos-de-prisao-por-corrupcao/"
+  },
+  {
+   "nome": "João Vaccari Neto",
+   "cargo_na_epoca": "tesoureiro do PT",
+   "partido_na_epoca": "PT",
+   "tipo": "outro",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado em vários processos da Lava Jato. Recebeu indulto em 2019. Em dezembro de 2023 Fachin anulou a condenação a 24 anos, e em agosto de 2025 Dias Toffoli anulou todos os procedimentos contra ele na Lava Jato.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-08-15",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-08/toffoli-anula-atos-de-moro-contra-vaccari-neto-na-lava-jato"
+  },
+  {
+   "nome": "Alberto Youssef",
+   "cargo_na_epoca": "doleiro",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "condenação anulada",
+   "detalhe": "Preso em março de 2014, foi um dos principais delatores. Cumpria pena em regime aberto desde 2017. Em julho de 2025 Dias Toffoli (STF) anulou todos os atos da Lava Jato contra ele; o acordo de delação continua válido.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-07-15",
+   "fonte": "https://www.cnnbrasil.com.br/politica/toffoli-anula-todos-os-atos-da-lava-jato-contra-alberto-youssef/"
+  },
+  {
+   "nome": "Fernando Antônio Falcão Soares (Fernando Baiano)",
+   "cargo_na_epoca": "lobista apontado como intermediário em contratos da Petrobras",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "condenado",
+   "detalhe": "Condenado por corrupção passiva e lavagem de dinheiro no caso dos navios-sonda. Em 2016 o TRF4 aumentou a pena de 16 anos e 1 mês para 26 anos, a ser cumprida conforme o acordo de delação.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-11-30",
+   "fonte": "https://g1.globo.com/rs/rio-grande-do-sul/noticia/2016/11/tribunal-federal-decide-elevar-penas-de-cervero-e-de-fernando-baiano.html"
+  },
+  {
+   "nome": "Marcelo Odebrecht",
+   "cargo_na_epoca": "presidente da Odebrecht",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado em 2016 a 19 anos. Fez acordo de delação, que segue válido. Em maio de 2024 Dias Toffoli anulou as decisões da Vara de Curitiba contra ele. Em setembro de 2024 a 2ª Turma do STF manteve a anulação dos atos, mas não encerrou os processos: cada juiz decide se eles podem ser retomados.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-09-06",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/09/06/2a-turma-do-stf-revisa-decisao-de-toffoli-e-mantem-processos-da-lava-jato-contra-marcelo-odebrecht.ghtml"
+  },
+  {
+   "nome": "José Adelmário Pinheiro Filho (Léo Pinheiro)",
+   "cargo_na_epoca": "presidente da construtora OAS",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenação anulada",
+   "detalhe": "Um dos principais delatores; ficou preso 3 anos e 4 meses. Em 2024 Dias Toffoli anulou as condenações dele na Lava Jato, e em fevereiro de 2025 a 2ª Turma do STF manteve a anulação por 3 a 2.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-02",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-02/lava-jato-stf-mantem-anulacao-de-condenacoes-de-ex-presidente-da-oas"
+  },
+  {
+   "nome": "João Santana",
+   "cargo_na_epoca": "publicitário, responsável por campanhas presidenciais do PT",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "condenação anulada",
+   "detalhe": "Preso em 2016 e solto após pagar fiança; fez acordo de delação e admitiu ter recebido caixa dois. Segundo a Wikipédia, foi condenado por lavagem de dinheiro em 2017, e Fachin anulou as condenações em janeiro de 2024 e mandou o caso para a Justiça Eleitoral. Em junho de 2024 Dias Toffoli anulou as provas vindas dos sistemas da Odebrecht em três processos contra ele.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-06-18",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2024-06/toffoli-anula-provas-obtidas-em-processos-contra-joao-santana"
+  }
+ ],
+ "fontes": [
+  "https://g1.globo.com/pr/parana/noticia/2015/11/pf-estima-que-prejuizo-da-petrobras-com-corrupcao-pode-ser-de-r-42-bi.html",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2021-12/petrobras-supera-r-6-bilhoes-em-recursos-recuperados-da-lava-jato",
+  "https://www.cnnbrasil.com.br/politica/toffoli-anula-todos-os-atos-da-lava-jato-contra-alberto-youssef/",
+  "https://g1.globo.com/politica/noticia/2015/03/ministro-do-stf-autoriza-investigacao-de-politicos-na-lava-jato.html",
+  "https://g1.globo.com/politica/noticia/2023/09/06/toffoli-invalida-provas-de-sistemas-de-propina-apresentados-pela-odebrecht-em-acordo-de-leniencia.ghtml",
+  "https://g1.globo.com/politica/noticia/2021/06/23/plenario-do-stf-reconhece-decisao-da-segunda-turma-que-declarou-moro-parcial-ao-condenar-lula.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2019-11/lula-deixa-carceragem-da-pf-em-curitiba",
+  "https://g1.globo.com/pr/parana/noticia/2021/02/03/forca-tarefa-da-lava-jato-no-parana-deixa-de-existir-diz-mpf.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2021-03/fachin-anula-condenacoes-de-lula-na-lava-jato",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/cnj-afasta-ex-juiza-da-lava-jato-por-dois-anos",
+  "https://www.cnnbrasil.com.br/politica/justica-do-df-arquiva-caso-do-triplex-envolvendo-o-ex-presidente-lula/",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2023-05/supremo-anula-condenacao-de-cunha-na-lava-jato",
+  "https://oglobo.globo.com/politica/noticia/2023/05/de-delubio-a-pezao-os-politicos-que-assim-como-cunha-tiveram-condenacoes-na-lava-jato-anuladas.ghtml",
+  "https://g1.globo.com/rj/rio-de-janeiro/noticia/2025/10/06/cabral-pezao-e-hudson-braga-sao-condenados-esquema-de-currupcao.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2023-04/tribunal-reforma-sentenca-e-absolve-pezao-de-98-anos-de-prisao",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-12/stj-encerra-processos-da-lava-jato-contra-ex-ministro-jose-dirceu",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-04/nunes-marques-pede-vista-e-suspende-julgamento-de-palocci-no-stf",
+  "https://www.cnnbrasil.com.br/politica/fernando-collor-e-condenado-a-8-anos-e-10-meses-de-prisao-pelo-stf/",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-10/secretaria-diz-que-nao-tinha-email-do-stf-para-informar-sobre-collor",
+  "https://www1.folha.uol.com.br/poder/2018/07/delcidio-comemora-absolvicao-e-diz-que-estuda-voltar-a-politica.shtml",
+  "https://g1.globo.com/politica/operacao-lava-jato/noticia/stf-condena-nelson-meurer-por-corrupcao-e-lavagem-de-dinheiro-deputado-e-o-primeiro-condenado-da-lava-jato.ghtml",
+  "https://g1.globo.com/pr/oeste-sudoeste/noticia/2020/07/12/morre-ex-deputado-nelson-meurer-condenado-na-lava-jato-e-internado-por-covid-19.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2022-02/stj-anula-condenacao-do-ex-senador-gim-argello-na-lava-jato",
+  "https://g1.globo.com/politica/noticia/stf-absolve-senadora-gleisi-hoffmann-e-ex-ministro-paulo-bernardo-dos-crimes-de-corrupcao-e-lavagem.ghtml",
+  "https://www1.folha.uol.com.br/poder/2015/09/1684970-ex-deputado-andre-vargas-condenado-a-14-anos-de-prisao.shtml",
+  "https://g1.globo.com/pr/parana/noticia/2018/10/19/preso-na-operacao-lava-jato-andre-vargas-e-solto.ghtml",
+  "https://www1.folha.uol.com.br/poder/2022/08/morre-paulo-roberto-costa-ex-diretor-da-petrobras-e-1o-delator-da-lava-jato.shtml",
+  "https://g1.globo.com/rs/rio-grande-do-sul/noticia/2016/11/tribunal-federal-decide-elevar-penas-de-cervero-e-de-fernando-baiano.html",
+  "https://revistaoeste.com/politica/ex-diretor-da-petrobras-renato-duque-e-condenado-a-29-anos-de-prisao-por-corrupcao/",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-08/toffoli-anula-atos-de-moro-contra-vaccari-neto-na-lava-jato",
+  "https://g1.globo.com/politica/noticia/2024/09/06/2a-turma-do-stf-revisa-decisao-de-toffoli-e-mantem-processos-da-lava-jato-contra-marcelo-odebrecht.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-02/lava-jato-stf-mantem-anulacao-de-condenacoes-de-ex-presidente-da-oas",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-06/toffoli-anula-provas-obtidas-em-processos-contra-joao-santana",
+  "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Lava_Jato",
+  "https://g1.globo.com/politica/noticia/2021/03/08/fachin-anula-condenacoes-de-lula-relacionadas-a-operacao-lava-jato.ghtml",
+  "https://www.cnnbrasil.com.br/politica/juiza-de-brasilia-rejeita-denuncia-contra-lula-sobre-sitio-de-atibaia/",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2023-02/lewandowski-encerra-tres-acoes-contra-lula-que-estavam-suspensas",
+  "https://www.cnnbrasil.com.br/politica/2021/04/28/trf-4-revoga-a-prisao-de-eduardo-cunha",
+  "https://g1.globo.com/rj/rio-de-janeiro/noticia/2023/02/10/entenda-por-que-sergio-cabral-foi-solto-mesmo-condenado-a-mais-de-400-anos-de-prisao.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-04/trf-2-nega-habeas-corpus-sergio-cabral-na-operacao-boca-de-lobo",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2021-10/ex-governador-pezao-retira-tornozeleira-eletronica",
+  "https://www1.folha.uol.com.br/poder/2024/10/gilmar-mendes-anula-todas-as-condenacoes-de-dirceu-na-lava-jato.shtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2021-12/desembargador-anula-condenacao-de-palocci-em-processo-da-lava-jato",
+  "https://g1.globo.com/politica/noticia/2025/02/19/toffoli-anula-processos-contra-ex-ministro-antonio-palocci-na-operacao-lava-jato.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-03/pgr-recorre-de-decisao-que-anulou-processos-contra-palocci",
+  "https://g1.globo.com/politica/noticia/2024/11/14/stf-rejeita-recurso-e-mantem-pena-de-collor-na-lava-jato-em-8-anos-e-10-meses-de-prisao.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-04/ex-presidente-fernando-collor-e-preso-na-manha-desta-sexta-feira",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-05/moraes-autoriza-collor-cumprir-pena-de-8-anos-e-10-meses-em-casa",
+  "https://g1.globo.com/politica/operacao-lava-jato/noticia/2015/11/delcidio-amaral-senador-do-pt-e-preso-pela-policia-federal.html",
+  "https://g1.globo.com/pr/parana/noticia/2015/07/justica-federal-condena-seis-reus-ligados-empreiteira-camargo-correa.html",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-08/renato-duque-ex-diretor-da-petrobras-e-preso-em-volta-redonda",
+  "https://g1.globo.com/pr/parana/noticia/2019/08/29/condenado-na-lava-jato-joao-vaccari-neto-tem-indulto-natalino-concedido-pela-justica-do-parana.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-01/fachin-anula-condenacao-de-ex-tesoureiro-do-pt-condenado-na-lava-jato",
+  "https://gauchazh.clicrbs.com.br/rs/noticias/noticia/2016/03/marcelo-odebrecht-e-condenado-a-19-anos-de-prisao-na-lava-jato-4992746.html",
+  "https://g1.globo.com/politica/noticia/2024/05/21/stf-anula-decisoes-da-lava-jato-contra-marcelo-odebrecht.ghtml",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2024-09/stf-mantem-tramitacao-de-processos-contra-marcelo-odebrecht",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-09/toffoli-anula-condenacoes-de-leo-pinheiro-ex-presidente-da-oas",
+  "https://pt.wikipedia.org/wiki/Jo%C3%A3o_Santana",
+  "https://www.cnnbrasil.com.br/politica/toffoli-lava-jato-forjou-provas-prendeu-inocentes-destruiu-empresas/",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2021-06/petrobras-soma-r-6-bilhoes-recuperados-em-acordos-e-delacoes",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2024-03/delacoes-da-lava-jato-no-stf-recuperaram-r-2-bilhoes-uniao",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-08/andre-mendonca-valida-repactuacao-de-acordo-de-leniencia-da-lava-jato",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-12/toffoli-autoriza-busca-em-vara-federal-da-lava-jato-em-curitiba"
+ ],
+ "verificado_em": "2026-10-20"
+}

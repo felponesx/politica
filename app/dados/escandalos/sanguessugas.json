@@ -1,0 +1,322 @@
+{
+ "slug": "sanguessugas",
+ "nome": "Máfia dos Sanguessugas (ambulâncias)",
+ "outros_nomes": [
+  "Operação Sanguessuga",
+  "Máfia das ambulâncias",
+  "Escândalo dos sanguessugas",
+  "CPMI dos Sanguessugas"
+ ],
+ "periodo": {
+  "inicio": "2001",
+  "fim": "2006"
+ },
+ "ano_revelado": 2006,
+ "resumo": "Esquema de fraude em licitações para compra de ambulâncias e equipamentos de saúde por prefeituras, pagos com emendas parlamentares ao Orçamento da União e direcionados a empresas do grupo Planam. A Polícia Federal deflagrou a Operação Sanguessuga em maio de 2006 e uma CPMI investigou 90 parlamentares. Nos anos seguintes, o STF e a Justiça Federal julgaram vários acusados: houve condenações, absolvições e casos encerrados por prescrição.",
+ "valores": {
+  "desviado": {
+   "valor": 110000000,
+   "texto": "Suspeita-se que a máfia das ambulâncias tenha movimentado cerca de R$ 110 milhões entre 2001 e 2005 (Agência Senado, jul/2006)",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/07/18/pp-ptb-e-pl-sao-os-partidos-com-maior-numero-de-parlamentares-sob-investigacao"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não localizado nas fontes consultadas",
+   "fonte": null
+  },
+  "observacao": "Valor de 2006, sem correção pela inflação. 'Movimentado' é uma estimativa da época e não equivale a valor desviado comprovado em sentença."
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Ministério Público Federal / Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Controladoria-Geral da União (CGU)",
+   "papel": "controle"
+  },
+  {
+   "nome": "CPMI dos Sanguessugas (Congresso Nacional)",
+   "papel": "CPI/CPMI"
+  },
+  {
+   "nome": "Conselho de Ética do Senado",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Supremo Tribunal Federal",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Justiça Federal em Mato Grosso",
+   "papel": "julgamento"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2006-05",
+   "fato": "PF deflagra a Operação Sanguessuga, após investigação do Ministério Público em Mato Grosso",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/supremo-arquiva-inquerito-contra-deputado-federal-mario-negromonte/"
+  },
+  {
+   "data": "2006-05-18",
+   "fato": "Parlamentares entregam o requerimento de criação da CPMI, com 229 deputados e 30 senadores",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/05/18/viana-recebe-requerimento-para-criacao-da-cpmi-dos-sanguessugas"
+  },
+  {
+   "data": "2006-08-10",
+   "fato": "Relatório parcial da CPMI envia 72 nomes (69 deputados e 3 senadores) aos Conselhos de Ética; 18 dos 90 investigados são inocentados",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/08/10/lando-diz-que-chegou-ao-final-dos-trabalhos-com-esgotamento-fisico-e-mental"
+  },
+  {
+   "data": "2006-11-28",
+   "fato": "Conselho de Ética do Senado arquiva os casos de Serys Slhessarenko e Magno Malta e aplica só censura verbal a Ney Suassuna",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/conselho-de-etica-inocenta-suassuna-de-participacao-na-mafia-das-ambulancias"
+  },
+  {
+   "data": "2006-12-14",
+   "fato": "CPMI aprova o relatório final",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/12/14/biscaia-trabalho-da-cpi-foi-vitorioso-apesar-de-nao-estar-completo"
+  },
+  {
+   "data": "2007-06-28",
+   "fato": "STF arquiva, a pedido do procurador-geral, o inquérito contra o deputado Mário Negromonte",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/supremo-arquiva-inquerito-contra-deputado-federal-mario-negromonte/"
+  },
+  {
+   "data": "2014-12-02",
+   "fato": "STF absolve o deputado Jefferson Campos por falta de provas",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/deputado-jefferson-campos-e-absolvido-de-envolvimento-com-mafia-dos-sanguessugas/"
+  },
+  {
+   "data": "2016-09-06",
+   "fato": "STF declara extinta, por prescrição, a punibilidade do deputado Josué Bengtson",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/extinta-punibilidade-contra-deputado-acusado-de-envolvimento-no-superfaturamento-de-ambulancias/"
+  },
+  {
+   "data": "2017-05-02",
+   "fato": "STF fixa pena de 12 anos e 6 meses ao deputado Paulo Feijó e determina a perda do mandato",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-determina-perda-de-mandato-do-deputado-paulo-feijo-pr-rj/"
+  },
+  {
+   "data": "2018-02-27",
+   "fato": "STF condena o deputado Nilton Capixaba a 6 anos e 10 meses e recebe denúncia contra o senador Wellington Fagundes",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-condena-deputado-nilton-capixaba-por-envolvimento-na-mafia-dos-sanguessugas/"
+  },
+  {
+   "data": "2018-11-06",
+   "fato": "STF manda iniciar o cumprimento da pena de Nilton Capixaba",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-determina-inicio-da-execucao-da-pena-imposta-ao-deputado-nilton-capixaba/"
+  },
+  {
+   "data": "2019-05-28",
+   "fato": "STF absolve a ex-deputada Laura Carneiro por falta de provas da existência do fato",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-a-ex-deputada-laura-carneiro-acusada-de-participacao-na-mafia-dos-sanguessugas/"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Caso de 2006 com desdobramentos julgados por mais de uma década, no STF (parlamentares) e na Justiça Federal de Mato Grosso. Houve condenações (como Nilton Capixaba e Paulo Feijó), absolvições e extinções por prescrição. Os donos da Planam foram condenados em primeira instância, segundo o STF (2017). Nenhum dos 72 parlamentares apontados pela CPMI foi cassado, segundo a Wikipédia. O último marco localizado é a absolvição de Laura Carneiro (2019); o desfecho da ação contra Wellington Fagundes não foi localizado.",
+  "data": "2019-05-28",
+  "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-a-ex-deputada-laura-carneiro-acusada-de-participacao-na-mafia-dos-sanguessugas/"
+ },
+ "pessoas": [
+  {
+   "nome": "Luiz Antônio Trevisan Vedoin",
+   "cargo_na_epoca": "Sócio do grupo Planam",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenado",
+   "detalhe": "Apontado como um dos chefes do esquema; fez acordo de colaboração premiada. Segundo o STF (out/2017), já condenado em primeira instância; situação dos recursos não confirmada.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-10-17",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/"
+  },
+  {
+   "nome": "Darci José Vedoin",
+   "cargo_na_epoca": "Sócio do grupo Planam",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenado",
+   "detalhe": "Apontado como um dos chefes do esquema; fez acordo de colaboração premiada. Segundo o STF (out/2017), já condenado em primeira instância; situação dos recursos não confirmada.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-10-17",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/"
+  },
+  {
+   "nome": "Nilton Capixaba",
+   "cargo_na_epoca": "Deputado federal (RO)",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Condenado pelo STF a 6 anos, 10 meses e 6 dias em regime semiaberto por corrupção passiva (21 emendas para municípios de Rondônia); o crime de quadrilha prescreveu. Em nov/2018 o STF mandou iniciar o cumprimento da pena.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2018-11-06",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-determina-inicio-da-execucao-da-pena-imposta-ao-deputado-nilton-capixaba/"
+  },
+  {
+   "nome": "Paulo Feijó",
+   "cargo_na_epoca": "Deputado federal (RJ)",
+   "partido_na_epoca": "PSDB",
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 12 anos, 6 meses e 6 dias em regime fechado, com perda do mandato; fraude em licitação e quadrilha prescreveram. Na condenação já estava no PR.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-05-02",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-determina-perda-de-mandato-do-deputado-paulo-feijo-pr-rj/"
+  },
+  {
+   "nome": "Josué Bengtson",
+   "cargo_na_epoca": "Deputado federal (PA)",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "prescrito",
+   "detalhe": "STF declarou extinta a punibilidade: quadrilha e lavagem prescreveram pela pena em abstrato e corrupção passiva pela pena em concreto.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-09-06",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/extinta-punibilidade-contra-deputado-acusado-de-envolvimento-no-superfaturamento-de-ambulancias/"
+  },
+  {
+   "nome": "Benjamin Maranhão",
+   "cargo_na_epoca": "Deputado federal (PB)",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido por unanimidade pelo STF por falta de provas suficientes (quadrilha, corrupção passiva e fraude à licitação).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-10-17",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/"
+  },
+  {
+   "nome": "Laura Carneiro",
+   "cargo_na_epoca": "Deputada federal (RJ)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvida por unanimidade pelo STF; a própria PGR pediu a absolvição. Prevaleceu o entendimento de que não houve prova da existência do fato.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2019-05-28",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-a-ex-deputada-laura-carneiro-acusada-de-participacao-na-mafia-dos-sanguessugas/"
+  },
+  {
+   "nome": "Jefferson Campos",
+   "cargo_na_epoca": "Deputado federal (SP)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido por unanimidade pelo STF: a relatora entendeu que os crimes ocorreram, mas não havia prova do envolvimento do deputado.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2014-12-02",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/deputado-jefferson-campos-e-absolvido-de-envolvimento-com-mafia-dos-sanguessugas/"
+  },
+  {
+   "nome": "Ezequiel Fonseca",
+   "cargo_na_epoca": "Prefeito de Reserva do Cabaçal (MT)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo STF de uma acusação por falta de provas; em outra, pelos mesmos crimes, foi reconhecida a prescrição.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-09-12",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-ezequiel-fonseca-das-acusacoes-de-fraude-a-licitacoes-e-formacao-de-quadrilha/"
+  },
+  {
+   "nome": "Ney Suassuna",
+   "cargo_na_epoca": "Senador (PB)",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Inocentado pelo Conselho de Ética do Senado da acusação de participar do esquema (processo disciplinar, não judicial); recebeu censura verbal por falhas no controle de assessores.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2006-11-28",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/conselho-de-etica-inocenta-suassuna-de-participacao-na-mafia-das-ambulancias"
+  },
+  {
+   "nome": "Serys Slhessarenko",
+   "cargo_na_epoca": "Senadora (MT)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "processo arquivado",
+   "detalhe": "Conselho de Ética do Senado arquivou a representação por falta de evidências (processo disciplinar). Ela negou as acusações.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2006-11-28",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/representacao-contra-serys-e-arquivada"
+  },
+  {
+   "nome": "Magno Malta",
+   "cargo_na_epoca": "Senador (ES)",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "processo arquivado",
+   "detalhe": "Conselho de Ética do Senado arquivou a representação por unanimidade, por 'insuficiência de provas' (processo disciplinar).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2006-11-28",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas"
+  },
+  {
+   "nome": "Mário Negromonte",
+   "cargo_na_epoca": "Deputado federal (BA)",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "processo arquivado",
+   "detalhe": "STF arquivou o inquérito a pedido do procurador-geral, que não viu indício de participação do deputado.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2007-06-28",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/supremo-arquiva-inquerito-contra-deputado-federal-mario-negromonte/"
+  }
+ ],
+ "fontes": [
+  "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-a-ex-deputada-laura-carneiro-acusada-de-participacao-na-mafia-dos-sanguessugas/",
+  "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/",
+  "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-ezequiel-fonseca-das-acusacoes-de-fraude-a-licitacoes-e-formacao-de-quadrilha/",
+  "https://noticias.stf.jus.br/postsnoticias/1a-turma-condena-deputado-paulo-feijo-pr-rj-por-corrupcao-e-lavagem-de-dinheiro/",
+  "https://noticias.stf.jus.br/postsnoticias/1a-turma-determina-perda-de-mandato-do-deputado-paulo-feijo-pr-rj/",
+  "https://noticias.stf.jus.br/postsnoticias/2a-turma-condena-deputado-nilton-capixaba-por-envolvimento-na-mafia-dos-sanguessugas/",
+  "https://noticias.stf.jus.br/postsnoticias/2a-turma-determina-inicio-da-execucao-da-pena-imposta-ao-deputado-nilton-capixaba/",
+  "https://noticias.stf.jus.br/postsnoticias/deputado-jefferson-campos-e-absolvido-de-envolvimento-com-mafia-dos-sanguessugas/",
+  "https://noticias.stf.jus.br/postsnoticias/extinta-punibilidade-contra-deputado-acusado-de-envolvimento-no-superfaturamento-de-ambulancias/",
+  "https://noticias.stf.jus.br/postsnoticias/recebida-denuncia-contra-senador-wellington-fagundes-por-corrupcao-e-lavagem/",
+  "https://noticias.stf.jus.br/postsnoticias/supremo-arquiva-inquerito-contra-deputado-federal-mario-negromonte/",
+  "https://pt.wikipedia.org/wiki/Autoridades_derrubadas_pelo_esc%C3%A2ndalo_dos_sanguessugas",
+  "https://pt.wikipedia.org/wiki/CPI_dos_Sanguessugas",
+  "https://pt.wikipedia.org/wiki/Esc%C3%A2ndalo_dos_Sanguessugas",
+  "https://www12.senado.leg.br/noticias/materias/2006/05/18/viana-recebe-requerimento-para-criacao-da-cpmi-dos-sanguessugas",
+  "https://www12.senado.leg.br/noticias/materias/2006/07/18/pp-ptb-e-pl-sao-os-partidos-com-maior-numero-de-parlamentares-sob-investigacao",
+  "https://www12.senado.leg.br/noticias/materias/2006/08/10/lando-diz-que-chegou-ao-final-dos-trabalhos-com-esgotamento-fisico-e-mental",
+  "https://www12.senado.leg.br/noticias/materias/2006/11/28/conselho-de-etica-inocenta-suassuna-de-participacao-na-mafia-das-ambulancias",
+  "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas",
+  "https://www12.senado.leg.br/noticias/materias/2006/11/28/representacao-contra-serys-e-arquivada",
+  "https://www12.senado.leg.br/noticias/materias/2006/12/14/biscaia-trabalho-da-cpi-foi-vitorioso-apesar-de-nao-estar-completo",
+  "https://www12.senado.leg.br/noticias/materias/2006/12/14/esquema-dos-sanguessugas-envolvia-25-outras-empresas"
+ ],
+ "verificado_em": "2026-10-20"
+}

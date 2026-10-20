@@ -1533,7 +1533,10 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .esc-card{display:flex;flex-direction:column;gap:8px;color:var(--ink);text-decoration:none}.esc-card:hover{text-decoration:none;border-color:var(--blue)}
 .esc-ch{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.esc-ch h2{margin:0;font-size:17px}
 .esc-res{margin:0;font-size:13.5px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.esc-facts{grid-template-columns:repeat(2,1fr)}
+#view .esc-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:14px}#view .esc-facts>div{padding:9px 12px}
+.esc-hoje{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.esc-det{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;max-width:340px}.esc-det.aberto{display:block}
+.esc-vt{min-width:140px;max-width:220px}
 .esc-parts{display:flex;flex-wrap:wrap;gap:6px}.esc-p{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;white-space:nowrap}
 .esc-aviso{font-size:13px}
 .esc-org{display:grid;gap:8px}.esc-org div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}.esc-org span{color:var(--muted);font-size:13px;text-align:right}
@@ -4412,7 +4415,8 @@ const ESC_SIT={"investigado":"inv","indiciado":"den","denunciado":"den","réu":"
  "indultado":"con","cassado":"con","condenação anulada":"abs","absolvido":"abs","processo arquivado":"abs","prescrito":"abs","renunciou":"neu","exonerado":"neu","morreu":"neu"};
 const escSit=s=>s?`<span class="tag esc-${ESC_SIT[s]||"neu"}">${esc(s[0].toUpperCase()+s.slice(1))}</span>`:'<span class="muted small">—</span>';
 const escLib=l=>l?`<span class="tag lib-${{"preso":"pre","prisão domiciliar":"dom","foragido":"for","em liberdade":"liv"}[l]||"liv"}">${esc(l[0].toUpperCase()+l.slice(1))}</span>`:'<span class="muted small">—</span>';
-const escVal=v=>!v?"—":v.valor!=null?`<a href="${esc(v.fonte)}" target="_blank" rel="noopener" title="${esc(v.texto)}">${brl(v.valor)}</a>`:`<a href="${esc(v.fonte)}" target="_blank" rel="noopener" class="small">${esc(v.texto||"ver fonte")}</a>`;
+// valor sempre com a frase da fonte embaixo (ex.: "acusado de receber…"), para o número não parecer mais do que a fonte diz
+const escVal=v=>!v?"—":`<a href="${esc(v.fonte)}" target="_blank" rel="noopener">${v.valor!=null?`<b>${brl(v.valor)}</b>`:"ver fonte"}</a>${v.texto?`<div class="small muted esc-vt">${esc(v.texto)}</div>`:""}`;
 const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
 const escPer=p=>p&&p.inicio?(p.fim&&p.fim!==p.inicio?`${p.inicio}–${p.fim}`:p.fim?p.inicio:`desde ${p.inicio}`):"";
 const escAviso=a=>`<div class="rbanner esc-aviso">${esc(a)}</div>`;
@@ -4422,9 +4426,9 @@ P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos</h1><p>Os principa
    <div class="esc-ch"><h2>${esc(c.nome)}</h2><span class="small muted">${esc(escPer(c.periodo))}</span></div>
    ${c.outros_nomes.length?`<div class="small muted">Também chamado de ${c.outros_nomes.map(esc).join(", ")}</div>`:""}
    <p class="esc-res">${esc(c.resumo)}</p>
-   <div class="facts esc-facts"><div><span>Dinheiro envolvido</span><b>${dv&&dv.valor!=null?brl(dv.valor):"—"}</b></div><div><span>Recuperado</span><b>${rc&&rc.valor!=null?brl(rc.valor):"—"}</b></div>
+   <div class="facts esc-facts"><div><span>Valor apontado</span><b>${dv&&dv.valor!=null?brl(dv.valor):"—"}</b></div><div><span>Recuperado</span><b>${rc&&rc.valor!=null?brl(rc.valor):"—"}</b></div>
     <div><span>Pessoas listadas</span><b>${nf(c.pessoas)}</b></div><div><span>Condenados</span><b>${nf(c.condenados)}</b></div></div>
-   ${c.situacao_atual?`<div class="small"><b>Hoje:</b> ${esc(c.situacao_atual.texto)}</div>`:""}
+   ${c.situacao_atual?`<div class="small esc-hoje"><b>Hoje:</b> ${esc(c.situacao_atual.texto)}</div>`:""}
    ${c.partidos.length?`<div class="esc-parts">${c.partidos.map(p=>`<span class="esc-p">${bandPart(p)}${esc(p)}</span>`).join("")}</div>`:""}</a>`}).join("");
   box.innerHTML=`${escAviso(d.aviso)}<div class="filters" style="margin:12px 0"><input id="escQ" placeholder="Buscar caso, pessoa ou partido" style="flex:1;min-width:180px" autocomplete="off"></div><div class="esc-grid" id="escG">${cards||rvazio("Nenhum caso cadastrado ainda.")}</div><p class="small muted" style="margin:12px 0 0">${esc(d.fonte)}</p>`;
   const q=$("#escQ"),G=[...document.querySelectorAll("#escG .esc-card")];q.oninput=()=>{const t=snapNorm(q.value);G.forEach((el,i)=>{const c=d.itens[i];el.hidden=!!t&&!snapNorm([c.nome,...c.outros_nomes,c.resumo,...c.partidos,c._nomes||""].join(" ")).includes(t)})};
@@ -4435,7 +4439,7 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
   const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
   box.innerHTML=`<div class="ph"><div><a class="small" href="#/escandalos">‹ Todos os escândalos</a><h1 style="margin-top:6px">${esc(c.nome)}</h1><p>${esc(escPer(c.periodo))}${c.outros_nomes.length?" · também chamado de "+c.outros_nomes.map(esc).join(", "):""}</p></div></div>
   ${escAviso(c.aviso)}
-  <div class="kpis kpis-c mt">${kp("Dinheiro envolvido",dv&&dv.valor!=null?brl(dv.valor):"—",dv?esc(dv.texto):"")}${kp("Recuperado / devolvido",rc&&rc.valor!=null?brl(rc.valor):"—",rc?esc(rc.texto):"")}${kp("Pessoas listadas",nf(P_.length))}${kp("Condenados",nf(cond))}${kp("Presos agora",nf(pres),"na data de cada fonte")}${forag?kp("Foragidos",nf(forag)):""}</div>
+  <div class="kpis kpis-c mt">${kp("Valor apontado",dv&&dv.valor!=null?brl(dv.valor):"—",dv?esc(dv.texto):"")}${kp("Recuperado / devolvido",rc&&rc.valor!=null?brl(rc.valor):"—",rc?esc(rc.texto):"")}${kp("Pessoas listadas",nf(P_.length))}${kp("Condenados",nf(cond))}${kp("Presos agora",nf(pres),"na data de cada fonte")}${forag?kp("Foragidos",nf(forag)):""}</div>
   ${c.valores.observacao?`<p class="small muted">${esc(c.valores.observacao)}</p>`:""}
   <div class="grid g2 mt"><div class="panel"><h2>O que foi</h2><p>${esc(c.resumo)}</p>${c.situacao_atual?`<h3 class="seg-h">Situação hoje</h3><p>${esc(c.situacao_atual.texto)} <a class="small" href="${esc(c.situacao_atual.fonte)}" target="_blank" rel="noopener">fonte, ${escData(c.situacao_atual.data)}</a></p>`:""}</div>
    <div class="panel"><h2>Órgãos responsáveis</h2><div class="esc-org">${c.orgaos.map(o=>`<div><b>${esc(o.nome)}</b><span>${esc(o.papel||"")}</span></div>`).join("")||rvazio("—")}</div></div></div>
@@ -4443,12 +4447,13 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
   <div class="panel mt"><h2>Pessoas envolvidas</h2><p class="small muted" style="margin-top:0">Cargo e partido da época do caso. Situação na Justiça e prisão na data da fonte de cada linha.</p><div id="escP"></div></div>
   <div class="panel mt" id="escN" hidden><h2>Notícias recentes sobre o caso</h2><div id="escNl"></div></div>
   <div class="panel mt"><h2>Fontes</h2><ul class="esc-fontes">${c.fontes.map(u=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,90))}</a></li>`).join("")}</ul><p class="small muted">Conferido em ${escData(c.verificado_em)}.</p></div>`;
-  $("#escP").innerHTML=table([["Nome",p=>`<b style="font-weight:600">${esc(p.nome)}</b>${p.detalhe?`<div class="small muted">${esc(p.detalhe)}</div>`:""}`],["Cargo na época",p=>esc(p.cargo_na_epoca||"—")],
+  $("#escP").innerHTML=table([["Nome",p=>`<b style="font-weight:600">${esc(p.nome)}</b>${p.detalhe?`<div class="small muted esc-det" title="Toque para ler tudo">${esc(p.detalhe)}</div>`:""}`],["Cargo na época",p=>esc(p.cargo_na_epoca||"—")],
    ["Partido",p=>p.partido_na_epoca?`<span class="esc-p">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:"—"],["Situação na Justiça",p=>escSit(p.situacao)],["Prisão",p=>escLib(p.liberdade)],
-   ["Recebeu",p=>escVal(p.valor_recebido),"n"],["Devolveu",p=>escVal(p.devolveu),"n"],["Fonte",p=>`<a href="${esc(p.fonte)}" target="_blank" rel="noopener">${escData(p.data_situacao)||"ver"}</a>`]],P_);
+   ["Valor citado",p=>escVal(p.valor_recebido)],["Devolveu",p=>escVal(p.devolveu)],["Fonte",p=>`<a href="${esc(p.fonte)}" target="_blank" rel="noopener">${escData(p.data_situacao)||"ver"}</a>`]],P_);
   const termos=[c.nome,...c.outros_nomes].map(t=>snapNorm(t).replace(/^(operacao|caso|escandalo d[oa]s?|fraude n[oa]s?)\s+/,"")).filter(t=>t.length>3);
   apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;
    $("#escNl").innerHTML=l.map(x=>`<div class="list-row"><div style="flex:1;min-width:0"><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.titulo)}</a><div class="small muted">${esc(x.veiculo||"")} · ${esc((x.data||"").slice(0,10))}</div></div></div>`).join("")}).catch(()=>{});
+  document.querySelectorAll('.esc-det').forEach(d=>d.onclick=()=>d.classList.toggle('aberto'));
   rowLinks&&rowLinks()}).catch(e=>{const b=$("#escD");if(b)b.innerHTML=rerro(e)})}});
 P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>

@@ -1,0 +1,392 @@
+{
+ "slug": "mensalao",
+ "nome": "Mensalão (Ação Penal 470)",
+ "outros_nomes": [
+  "Mensalão do PT",
+  "Ação Penal 470",
+  "AP 470",
+  "Valerioduto"
+ ],
+ "periodo": {
+  "inicio": "2003",
+  "fim": "2005"
+ },
+ "ano_revelado": 2005,
+ "resumo": "Investigação de um esquema de pagamentos a parlamentares e partidos da base do governo Lula para votar a favor de projetos do governo, revelado em 2005 pelo deputado Roberto Jefferson. Segundo o STF, o dinheiro saiu de desvios de contratos da Câmara dos Deputados e do Banco do Brasil e de empréstimos fraudulentos, repassados por empresas de Marcos Valério. O STF julgou o caso na Ação Penal 470 entre 2012 e 2014 e condenou 24 réus; 12 foram absolvidos.",
+ "valores": {
+  "desviado": {
+   "valor": 100000000,
+   "texto": "Verbas públicas desviadas \"estimadas em cerca de R$ 100 milhões\" (Agência Brasil, 2012)",
+   "fonte": "https://memoria.ebc.com.br/agenciabrasil//noticia/2012-11-16/mensalao-agu-cobrara-dinheiro-desviado-se-stf-determinar"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "O STF não fixou valor de ressarcimento: o relator considerou inviável calcular com segurança quanto cada réu deveria devolver; isso ficaria para ações civis.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html"
+  },
+  "observacao": "O valor de R$ 100 milhões é uma estimativa citada na imprensa em 2012, em valores nominais da época (2003–2005); houve dúvidas no próprio STF sobre o valor exato. Não foi encontrado total oficial recuperado."
+ },
+ "orgaos": [
+  {
+   "nome": "CPMI dos Correios e CPMI da Compra de Votos (Congresso Nacional)",
+   "papel": "CPI"
+  },
+  {
+   "nome": "Conselho de Ética e Plenário da Câmara dos Deputados",
+   "papel": "controle"
+  },
+  {
+   "nome": "Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal (Ação Penal 470)",
+   "papel": "julgamento"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2005",
+   "fato": "Roberto Jefferson denuncia o esquema; o caso gera CPI no Congresso e a saída de José Dirceu da Casa Civil.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2014/03/apos-um-ano-e-meio-e-69-sessoes-stf-conclui-julgamento-do-mensalao.html"
+  },
+  {
+   "data": "2005-12-01",
+   "fato": "Câmara cassa o mandato de José Dirceu por 293 votos a 192 (Roberto Jefferson já tinha sido cassado).",
+   "fonte": "https://www.camara.leg.br/noticias/77262-plenario-aprova-perda-de-mandato-de-jose-dirceu/"
+  },
+  {
+   "data": "2006-04",
+   "fato": "Procurador-geral Antonio Fernando de Souza denuncia 40 pessoas ao STF.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2014/03/apos-um-ano-e-meio-e-69-sessoes-stf-conclui-julgamento-do-mensalao.html"
+  },
+  {
+   "data": "2007",
+   "fato": "STF recebe a denúncia e o caso vira a Ação Penal 470.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2014/03/apos-um-ano-e-meio-e-69-sessoes-stf-conclui-julgamento-do-mensalao.html"
+  },
+  {
+   "data": "2012-08-02",
+   "fato": "Começa no STF o julgamento dos 38 réus.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/08/stf-comeca-julgar-nesta-quinta-os-38-reus-do-mensalao.html"
+  },
+  {
+   "data": "2012-12-17",
+   "fato": "STF termina o julgamento principal: 25 condenados, 12 absolvidos e 1 caso enviado à 1ª instância.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html"
+  },
+  {
+   "data": "2013-11",
+   "fato": "Após os primeiros recursos, o STF manda prender os condenados por crimes sem recurso pendente.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2014/03/apos-um-ano-e-meio-e-69-sessoes-stf-conclui-julgamento-do-mensalao.html"
+  },
+  {
+   "data": "2014-02-27",
+   "fato": "Por 6 a 5, STF absolve oito réus do crime de formação de quadrilha, entre eles Dirceu, Genoino e Delúbio.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2014/02/por-6-5-supremo-absolve-do-crime-de-quadrilha-dirceu-genoino-e-mais-6.html"
+  },
+  {
+   "data": "2014-03-13",
+   "fato": "STF conclui o julgamento dos recursos: 24 condenados cumprem pena.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2014/03/apos-um-ano-e-meio-e-69-sessoes-stf-conclui-julgamento-do-mensalao.html"
+  },
+  {
+   "data": "2016-03-22",
+   "fato": "STF concede indulto a seis condenados, entre eles Roberto Jefferson, Pedro Henry, Bispo Rodrigues e Romeu Queiroz.",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Julgamento encerrado em 2014, com 24 condenados. A maioria dos condenados políticos teve a pena perdoada por indultos entre 2015 e 2016. Em 2023 o STF declarou extinta a punibilidade de Pedro Corrêa. Marcos Valério, condenado à maior pena, cumpria prisão domiciliar em dezembro de 2025.",
+  "data": "2025-12-02",
+  "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/2025/12/02/quem-e-marcos-valerio-o-operador-condenado-no-esquema-do-mensalao-e-alvo-em-operacao-contra-sonegacao-em-atacadistas-em-mg.ghtml"
+ },
+ "pessoas": [
+  {
+   "nome": "José Dirceu",
+   "cargo_na_epoca": "Ministro-chefe da Casa Civil; depois deputado federal",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Teve o mandato de deputado cassado pela Câmara em 2005. Condenado pelo STF por corrupção ativa (pena final de 7 anos e 11 meses, após ser absolvido de formação de quadrilha em 2014). Pena do mensalão perdoada por indulto em 17/10/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-10-17",
+   "fonte": "https://g1.globo.com/politica/noticia/2016/10/barroso-concede-perdao-da-pena-de-jose-dirceu-no-mensalao-do-pt.html"
+  },
+  {
+   "nome": "José Genoino",
+   "cargo_na_epoca": "Presidente nacional do PT",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Condenado pelo STF por corrupção ativa (pena final de 4 anos e 8 meses, após absolvição de formação de quadrilha). Pena extinta pelo plenário do STF com base no indulto de Natal em 04/03/2015.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2015-03-04",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2015/03/stf-decide-extinguir-pena-de-genoino-com-base-em-decreto-de-dilma.html"
+  },
+  {
+   "nome": "Delúbio Soares",
+   "cargo_na_epoca": "Tesoureiro do PT",
+   "partido_na_epoca": "PT",
+   "tipo": "outro",
+   "situacao": "indultado",
+   "detalhe": "Condenado pelo STF por corrupção ativa a 6 anos e 8 meses (regime semiaberto). Preso em novembro de 2013, passou à prisão domiciliar em 2014. Pena perdoada por indulto em 10/03/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-03-10",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-concede-perdoa-delubio-soares-de-pena-no-mensalao.html"
+  },
+  {
+   "nome": "João Paulo Cunha",
+   "cargo_na_epoca": "Deputado federal e presidente da Câmara dos Deputados",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Absolvido pelo plenário da Câmara no processo de cassação (2006). Condenado pelo STF por corrupção passiva e peculato (6 anos e 4 meses; absolvido de lavagem de dinheiro em 2014). Indulto concedido pelo plenário do STF em 10/03/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-03-10",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/supremo-perdoa-joao-paulo-cunha-pela-pena-do-mensalao.html"
+  },
+  {
+   "nome": "Marcos Valério Fernandes de Souza",
+   "cargo_na_epoca": "Empresário, sócio das agências SMP&B e DNA",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "condenado",
+   "detalhe": "Apontado pelo STF como operador do esquema. Condenado por corrupção ativa, peculato, lavagem de dinheiro e evasão de divisas (pena acima de 40 anos em 2012). Progrediu para o semiaberto e, em 2022, para o regime aberto; segundo o g1 (dez/2025), cumpre prisão domiciliar.",
+   "liberdade": "prisão domiciliar",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-12-02",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/2025/12/02/quem-e-marcos-valerio-o-operador-condenado-no-esquema-do-mensalao-e-alvo-em-operacao-contra-sonegacao-em-atacadistas-em-mg.ghtml"
+  },
+  {
+   "nome": "Roberto Jefferson",
+   "cargo_na_epoca": "Deputado federal",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Autor da denúncia do esquema em 2005; teve o mandato cassado pela Câmara no mesmo ano. Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 7 anos e 14 dias. Pena do mensalão perdoada por indulto em 22/03/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-03-22",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html"
+  },
+  {
+   "nome": "Valdemar Costa Neto",
+   "cargo_na_epoca": "Deputado federal",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 7 anos e 10 meses. Preso em dezembro de 2013, em prisão domiciliar desde novembro de 2014. Pena perdoada por indulto em maio de 2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-05-04",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/05/ministro-do-stf-concede-perdao-da-pena-valdemar-costa-neto.html"
+  },
+  {
+   "nome": "Pedro Corrêa",
+   "cargo_na_epoca": "Deputado federal",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "pena cumprida",
+   "detalhe": "Mandato cassado pela Câmara em 2006. Condenado pelo STF por corrupção passiva e lavagem de dinheiro. Em 2023 o STF declarou extinta a punibilidade: a pena de prisão já tinha sido cumprida e a multa (R$ 3,6 milhões) não foi paga por falta de recursos; a cobrança fiscal continua.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2023-06-15",
+   "fonte": "https://conjur.com.br/2023-jun-15/barroso-extingue-punibilidade-ex-deputado-federal-pedro-correa/"
+  },
+  {
+   "nome": "Pedro Henry",
+   "cargo_na_epoca": "Deputado federal",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Absolvido pelo plenário da Câmara no processo de cassação (2006). Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 7 anos e 2 meses. Pena perdoada por indulto em 22/03/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-03-22",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html"
+  },
+  {
+   "nome": "Carlos Rodrigues (Bispo Rodrigues)",
+   "cargo_na_epoca": "Deputado federal",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 6 anos e 3 meses. Pena perdoada por indulto em 22/03/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-03-22",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html"
+  },
+  {
+   "nome": "Romeu Queiroz",
+   "cargo_na_epoca": "Deputado federal",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 6 anos e 6 meses. Pena perdoada por indulto em 22/03/2016.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2016-03-22",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html"
+  },
+  {
+   "nome": "José Borba",
+   "cargo_na_epoca": "Deputado federal e líder do PMDB na Câmara",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "condenado",
+   "detalhe": "Condenado pelo STF por corrupção passiva e absolvido de lavagem de dinheiro; a prisão foi trocada por pena restritiva de direitos (proibição de exercer cargo público e mandato por 2 anos e 6 meses) e multa.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2012-12-17",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html"
+  },
+  {
+   "nome": "Henrique Pizzolato",
+   "cargo_na_epoca": "Diretor de marketing do Banco do Brasil",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indultado",
+   "detalhe": "Condenado pelo STF por corrupção passiva, peculato e lavagem de dinheiro a 12 anos e 7 meses. Em 2014 estava na Itália, com pedido de extradição do governo brasileiro; preso no Brasil, obteve livramento condicional em dezembro de 2017. Em 2020 o STF extinguiu a pena de prisão por indulto, mas manteve a multa.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2020-12-09",
+   "fonte": "https://conjur.com.br/2020-dez-09/stf-extingue-punibilidade-henrique-pizzolato/"
+  },
+  {
+   "nome": "Kátia Rabello",
+   "cargo_na_epoca": "Presidente do Banco Rural",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenado",
+   "detalhe": "Condenada pelo STF por lavagem de dinheiro, gestão fraudulenta e evasão de divisas (pena final de 14 anos e 5 meses, após exclusão do crime de quadrilha). Presa em 2013, obteve liberdade condicional em junho de 2017.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2017-06-30",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/stf-concede-liberdade-condicional-a-ex-presidente-do-banco-rural-katia-rabello.ghtml"
+  },
+  {
+   "nome": "Luiz Gushiken",
+   "cargo_na_epoca": "Ministro da Secretaria de Comunicação",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo STF da acusação de peculato, por falta de provas, a pedido do próprio procurador-geral. Morreu em setembro de 2013.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2012-12-17",
+   "fonte": "https://g1.globo.com/politica/noticia/2013/09/morre-o-ex-ministro-e-ex-deputado-luiz-gushiken.html"
+  },
+  {
+   "nome": "Paulo Rocha",
+   "cargo_na_epoca": "Deputado federal (PA)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo STF da acusação de lavagem de dinheiro.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2012-12-17",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html"
+  },
+  {
+   "nome": "Luiz Carlos da Silva (Professor Luizinho)",
+   "cargo_na_epoca": "Deputado federal (SP)",
+   "partido_na_epoca": "PT",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo plenário da Câmara no processo de cassação (2006) e pelo STF da acusação de lavagem de dinheiro (2012).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2012-12-17",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html"
+  },
+  {
+   "nome": "Anderson Adauto",
+   "cargo_na_epoca": "Ministro dos Transportes",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo STF das acusações de corrupção ativa e lavagem de dinheiro.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2012-12-17",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html"
+  },
+  {
+   "nome": "José Eduardo Cavalcanti de Mendonça (Duda Mendonça)",
+   "cargo_na_epoca": "Publicitário, marqueteiro da campanha de Lula em 2002",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido pelo STF, em outubro de 2012, das acusações de evasão de divisas e lavagem de dinheiro.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2012-10-15",
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2012/10/duda-mendonca-convida-advogados-para-comemorar-absolvicao-na-bahia.html"
+  },
+  {
+   "nome": "José Janene",
+   "cargo_na_epoca": "Deputado federal e líder do PP",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "morreu",
+   "detalhe": "Absolvido pelo plenário da Câmara no processo de cassação (2006). Era réu no STF, mas morreu em 14/09/2010, antes do julgamento.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2010-09-14",
+   "fonte": "https://g1.globo.com/politica/noticia/2010/09/morre-o-ex-deputado-jose-janene.html"
+  }
+ ],
+ "fontes": [
+  "https://conjur.com.br/2020-dez-09/stf-extingue-punibilidade-henrique-pizzolato/",
+  "https://conjur.com.br/2023-jun-15/barroso-extingue-punibilidade-ex-deputado-federal-pedro-correa/",
+  "https://g1.globo.com/mg/minas-gerais/noticia/2025/12/02/quem-e-marcos-valerio-o-operador-condenado-no-esquema-do-mensalao-e-alvo-em-operacao-contra-sonegacao-em-atacadistas-em-mg.ghtml",
+  "https://g1.globo.com/politica/mensalao/noticia/2012/08/stf-comeca-julgar-nesta-quinta-os-38-reus-do-mensalao.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2012/10/duda-mendonca-convida-advogados-para-comemorar-absolvicao-na-bahia.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2012/12/supremo-conclui-julgamento-do-mensalao-apos-quatro-meses-e-meio.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2014/02/por-6-5-supremo-absolve-do-crime-de-quadrilha-dirceu-genoino-e-mais-6.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2014/03/apos-um-ano-e-meio-e-69-sessoes-stf-conclui-julgamento-do-mensalao.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2015/03/stf-decide-extinguir-pena-de-genoino-com-base-em-decreto-de-dilma.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-concede-perdoa-delubio-soares-de-pena-no-mensalao.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2016/03/supremo-perdoa-joao-paulo-cunha-pela-pena-do-mensalao.html",
+  "https://g1.globo.com/politica/mensalao/noticia/2016/05/ministro-do-stf-concede-perdao-da-pena-valdemar-costa-neto.html",
+  "https://g1.globo.com/politica/mensalao/noticia/stf-concede-liberdade-condicional-a-ex-presidente-do-banco-rural-katia-rabello.ghtml",
+  "https://g1.globo.com/politica/noticia/2010/09/morre-o-ex-deputado-jose-janene.html",
+  "https://g1.globo.com/politica/noticia/2013/09/morre-o-ex-ministro-e-ex-deputado-luiz-gushiken.html",
+  "https://g1.globo.com/politica/noticia/2016/10/barroso-concede-perdao-da-pena-de-jose-dirceu-no-mensalao-do-pt.html",
+  "https://g1.globo.com/politica/noticia/condenado-no-mensalao-henrique-pizzolato-deixa-a-cadeia.ghtml",
+  "https://memoria.ebc.com.br/agenciabrasil//noticia/2012-11-16/mensalao-agu-cobrara-dinheiro-desviado-se-stf-determinar",
+  "https://pt.wikipedia.org/wiki/Anderson_Adauto",
+  "https://pt.wikipedia.org/wiki/Esc%C3%A2ndalo_do_mensal%C3%A3o",
+  "https://www.camara.leg.br/noticias/77262-plenario-aprova-perda-de-mandato-de-jose-dirceu/",
+  "https://www.camara.leg.br/noticias/94020-plenario-absolveu-10-deputados-e-cassou-1-em-2006/"
+ ],
+ "verificado_em": "2026-10-20"
+}

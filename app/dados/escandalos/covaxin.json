@@ -1,0 +1,158 @@
+{
+ "slug": "covaxin",
+ "nome": "Caso Covaxin",
+ "outros_nomes": [
+  "Covaxgate"
+ ],
+ "periodo": {
+  "inicio": "2021",
+  "fim": null
+ },
+ "ano_revelado": 2021,
+ "resumo": "Em 2021, o Ministério da Saúde contratou 20 milhões de doses da vacina indiana Covaxin, por meio da empresa Precisa Medicamentos, num contrato de R$ 1,6 bilhão. A CPI da Covid no Senado apurou suspeitas de pressão interna, preço alto e documentos falsos, e o contrato foi cancelado sem nenhum pagamento. O inquérito sobre suposta prevaricação de Jair Bolsonaro foi arquivado em 2022, e o de Ricardo Barros, em 2023. As apurações sobre a Precisa e a garantia do FIB Bank estavam sob análise sigilosa da PGR na última informação encontrada (dez/2024).",
+ "valores": {
+  "desviado": {
+   "valor": null,
+   "texto": "Contrato de R$ 1,6 bilhão (20 milhões de doses); segundo a CGU, o valor foi empenhado, mas nenhum centavo chegou a ser gasto. Não há valor desviado apontado.",
+   "fonte": "https://agenciabrasil.ebc.com.br/saude/noticia/2021-07/ministerio-decide-cancelar-contrato-para-aquisicao-da-vacina-covaxin"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não se aplica: nada foi pago à Precisa pelo contrato, segundo a CGU.",
+   "fonte": "https://agenciabrasil.ebc.com.br/saude/noticia/2021-07/ministerio-decide-cancelar-contrato-para-aquisicao-da-vacina-covaxin"
+  },
+  "observacao": "A CGU disse em 2021 não ter encontrado relação com corrupção ou desvio de dinheiro na compra, mas apontou suspeita de fraude em documentos apresentados pela Precisa. A CGU também estimou que cartas de fiança inidôneas apresentadas a vários órgãos públicos podem passar de R$ 500 milhões (não só na Covaxin)."
+ },
+ "orgaos": [
+  {
+   "nome": "CPI da Pandemia (Senado Federal)",
+   "papel": "CPI"
+  },
+  {
+   "nome": "Controladoria-Geral da União (CGU)",
+   "papel": "controle"
+  },
+  {
+   "nome": "Tribunal de Contas da União (TCU)",
+   "papel": "controle"
+  },
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Ministério Público Federal / Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal",
+   "papel": "julgamento"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2021-06-25",
+   "fato": "Deputado Luis Miranda e o irmão, servidor do Ministério da Saúde, relatam à CPI suspeitas na compra da Covaxin.",
+   "fonte": "https://pt.wikipedia.org/wiki/Caso_Covaxin"
+  },
+  {
+   "data": "2021-07-02",
+   "fato": "PGR pede ao STF abertura de inquérito para investigar Bolsonaro por suposta prevaricação.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/07/02/pgr-pede-abertura-de-inquerito-para-investigar-bolsonaro-por-prevaricacao-no-caso-covaxin.ghtml"
+  },
+  {
+   "data": "2021-07-29",
+   "fato": "Após auditoria da CGU, governo decide cancelar o contrato; nenhum valor havia sido pago.",
+   "fonte": "https://agenciabrasil.ebc.com.br/saude/noticia/2021-07/ministerio-decide-cancelar-contrato-para-aquisicao-da-vacina-covaxin"
+  },
+  {
+   "data": "2021-10-26",
+   "fato": "Relatório final da CPI pede indiciamento de Ricardo Barros e de sócios e diretores da Precisa, entre outros.",
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2021/10/26/veja-a-lista-dos-indiciados-da-cpi-no-relatorio-de-renan-calheiros"
+  },
+  {
+   "data": "2021-10-28",
+   "fato": "PF e CGU fazem buscas sobre a importação da Covaxin e a garantia apresentada pela Precisa.",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2021-10/cgu-e-pf-apuram-irregularidades-no-processo-de-importacao-da-covaxin"
+  },
+  {
+   "data": "2022-01-31",
+   "fato": "PF conclui que Bolsonaro não cometeu prevaricação.",
+   "fonte": "https://g1.globo.com/politica/noticia/2022/01/31/policia-federal-diz-que-bolsonaro-nao-cometeu-prevaricacao-no-caso-covaxin.ghtml"
+  },
+  {
+   "data": "2022-04",
+   "fato": "Ministra Rosa Weber (STF) arquiva o inquérito sobre Bolsonaro a pedido da PGR.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-04/ministra-do-stf-arquiva-inquerito-contra-presidente-no-caso-covaxin"
+  },
+  {
+   "data": "2024-11-29",
+   "fato": "Nunes Marques vota para manter o arquivamento (de jun/2023) sobre Ricardo Barros e manda apurações sobre empresários e servidores à 1ª instância.",
+   "fonte": "https://www.dgabc.com.br/Noticia/4179149/kassio-rejeita-reabrir-investigacao-sobre-ricardo-barros-no-caso-das-vacinas-da-covid-19"
+  },
+  {
+   "data": "2024-12-13",
+   "fato": "Inquéritos sobre a Precisa e o FIB Bank voltam ao STF e aguardam análise sigilosa da PGR.",
+   "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Investigações sobre a Precisa Medicamentos (suposta procuração falsa da Bharat Biotech e garantia do FIB Bank) estavam no STF, sob análise sigilosa da PGR, segundo a última informação encontrada. Não foi encontrada denúncia, arquivamento ou decisão posterior. Os casos de Bolsonaro (2022) e Ricardo Barros (2023, mantido em 2024) foram arquivados.",
+  "data": "2024-12-13",
+  "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/"
+ },
+ "pessoas": [
+  {
+   "nome": "Jair Messias Bolsonaro",
+   "cargo_na_epoca": "Presidente da República",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "processo arquivado",
+   "detalhe": "Investigado por suposta prevaricação; a PF concluiu que não houve crime e o STF arquivou o inquérito a pedido da PGR (pode ser reaberto se surgirem novas provas).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2022-04",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-04/ministra-do-stf-arquiva-inquerito-contra-presidente-no-caso-covaxin"
+  },
+  {
+   "nome": "Ricardo Barros",
+   "cargo_na_epoca": "Deputado federal, líder do governo na Câmara",
+   "partido_na_epoca": "PP",
+   "tipo": "agente público",
+   "situacao": "processo arquivado",
+   "detalhe": "A CPI pediu indiciamento por organização criminosa, entre outros; o STF arquivou a apuração a pedido da PGR em jun/2023 e a 2ª Turma manteve o arquivamento em nov/2024.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-11",
+   "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/"
+  },
+  {
+   "nome": "Francisco Emerson Maximiano",
+   "cargo_na_epoca": "Sócio da Precisa Medicamentos",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "investigado",
+   "detalhe": "CPI pediu indiciamento (falsidade ideológica, uso de documento falso, fraude em contrato, entre outros); alvo de buscas da PF; inquéritos sob análise da PGR (dez/2024).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-12-13",
+   "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/"
+  }
+ ],
+ "fontes": [
+  "https://pt.wikipedia.org/wiki/Caso_Covaxin",
+  "https://g1.globo.com/politica/noticia/2021/07/02/pgr-pede-abertura-de-inquerito-para-investigar-bolsonaro-por-prevaricacao-no-caso-covaxin.ghtml",
+  "https://agenciabrasil.ebc.com.br/saude/noticia/2021-07/ministerio-decide-cancelar-contrato-para-aquisicao-da-vacina-covaxin",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2021-10/cgu-e-pf-apuram-irregularidades-no-processo-de-importacao-da-covaxin",
+  "https://www12.senado.leg.br/noticias/materias/2021/10/26/veja-a-lista-dos-indiciados-da-cpi-no-relatorio-de-renan-calheiros",
+  "https://www.cnnbrasil.com.br/nacional/pf-encontra-indicios-de-falsidade-ideologica-em-negociacoes-da-covaxin/",
+  "https://g1.globo.com/politica/noticia/2022/01/31/policia-federal-diz-que-bolsonaro-nao-cometeu-prevaricacao-no-caso-covaxin.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2022-04/ministra-do-stf-arquiva-inquerito-contra-presidente-no-caso-covaxin",
+  "https://www.dgabc.com.br/Noticia/4179149/kassio-rejeita-reabrir-investigacao-sobre-ricardo-barros-no-caso-das-vacinas-da-covid-19",
+  "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/"
+ ],
+ "verificado_em": "2026-10-20"
+}

@@ -1,0 +1,331 @@
+{
+ "slug": "fraude-inss",
+ "nome": "Fraude nos descontos de aposentados do INSS",
+ "outros_nomes": [
+  "Operação Sem Desconto",
+  "Farra do INSS",
+  "Esquema de fraudes no INSS",
+  "CPMI do INSS"
+ ],
+ "periodo": {
+  "inicio": "2019",
+  "fim": "2025"
+ },
+ "ano_revelado": 2025,
+ "resumo": "Associações e sindicatos descontaram mensalidades de aposentados e pensionistas do INSS sem autorização. A Polícia Federal e a CGU revelaram o caso em abril de 2025 na Operação Sem Desconto. A investigação apura suspeitas de propina a dirigentes do INSS, lavagem de dinheiro e participação de políticos. O governo suspendeu os descontos e passou a devolver os valores às vítimas.",
+ "valores": {
+  "desviado": {
+   "valor": 6300000000,
+   "texto": "PF e CGU calculam que as entidades investigadas descontaram cerca de R$ 6,3 bilhões de aposentados e pensionistas entre 2019 e 2024",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-04/operacao-da-pf-investiga-descontos-irregulares-em-beneficios-do-inss"
+  },
+  "recuperado": {
+   "valor": 3200000000,
+   "texto": "A União já devolveu mais de R$ 3,2 bilhões a 4,7 milhões de pessoas lesadas (balanço do Ministério da Previdência, jun/2026). Em jun/2025 a Justiça Federal bloqueou R$ 2,8 bilhões em bens de entidades, empresas e investigados",
+   "fonte": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-06/inss-termina-neste-sabado-prazo-para-contestar-descontos-indevidos"
+  },
+  "observacao": "Os R$ 6,3 bilhões são o total descontado pelas entidades investigadas, não um valor de desvio comprovado na Justiça. O ressarcimento é pago com dinheiro público (a União adiantou os valores; em jul/2026 houve crédito extraordinário de R$ 547 milhões) e não é dinheiro recuperado dos investigados. O bloqueio de R$ 2,8 bilhões é cautelar, não definitivo (fonte do bloqueio: https://agenciabrasil.ebc.com.br/geral/noticia/2025-06/inss-justica-bloqueia-r-28-bi-de-envolvidos-em-descontos-ilegais)."
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Controladoria-Geral da União (CGU)",
+   "papel": "controle"
+  },
+  {
+   "nome": "Supremo Tribunal Federal (relator: ministro André Mendonça)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Advocacia-Geral da União (ações de bloqueio e ressarcimento)",
+   "papel": "acusação"
+  },
+  {
+   "nome": "CPMI do INSS (Congresso Nacional)",
+   "papel": "CPI/CPMI"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2025-04-23",
+   "fato": "PF e CGU deflagram a Operação Sem Desconto; o presidente do INSS, Alessandro Stefanutto, é afastado pela Justiça e exonerado no mesmo dia",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2025-04/lula-determina-demissao-do-presidente-do-inss"
+  },
+  {
+   "data": "2025-05-02",
+   "fato": "O ministro da Previdência, Carlos Lupi, pede demissão",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2025-05/pdt-deixa-base-do-governo-na-camara-apos-saida-de-lupi"
+  },
+  {
+   "data": "2025-06-12",
+   "fato": "Justiça Federal bloqueia R$ 2,8 bilhões em bens de entidades, empresas e investigados, a pedido da AGU",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-06/inss-justica-bloqueia-r-28-bi-de-envolvidos-em-descontos-ilegais"
+  },
+  {
+   "data": "2025-07-03",
+   "fato": "STF homologa o plano do INSS para devolver os descontos às vítimas",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-07/stf-homologa-plano-do-inss-para-devolucao-de-descontos-ilegais"
+  },
+  {
+   "data": "2025-08-20",
+   "fato": "Instalada a CPMI do INSS, presidida pelo senador Carlos Viana, com relatoria do deputado Alfredo Gaspar",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2025-08/oposicao-elege-presidente-e-relator-da-cpmi-do-inss"
+  },
+  {
+   "data": "2025-09-12",
+   "fato": "PF prende preventivamente Antônio Carlos Camilo Antunes, o 'Careca do INSS', e Maurício Camisotti",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-09/careca-do-inss-empresario-e-advogado-ostentacao-sao-alvos-da-pf"
+  },
+  {
+   "data": "2025-11-13",
+   "fato": "Nova fase da operação prende o ex-presidente do INSS Alessandro Stefanutto",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/pf-prende-alessandro-stefanutto-ex-presidente-do-inss"
+  },
+  {
+   "data": "2025-12-18",
+   "fato": "Nova fase decreta a prisão do secretário-executivo da Previdência, Adroaldo Portal, e faz buscas ligadas ao senador Weverton Rocha",
+   "fonte": "https://www.cnnbrasil.com.br/politica/vice-lider-do-governo-sustentava-atividades-do-careca-do-inss-diz-pf/"
+  },
+  {
+   "data": "2026-01-07",
+   "fato": "Sancionada lei que proíbe descontos de mensalidades de associações nos benefícios do INSS",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-01/sancionada-lei-que-proibe-descontos-em-beneficios-do-inss"
+  },
+  {
+   "data": "2026-03-28",
+   "fato": "CPMI do INSS termina sem relatório final: parecer que pedia 216 indiciamentos foi rejeitado por 19 a 12",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-03/cpmi-do-inss-termina-sem-relatorio-final"
+  },
+  {
+   "data": "2026-07-14",
+   "fato": "PF conclui o primeiro inquérito e indicia 48 pessoas, entre elas o 'Careca do INSS' e Stefanutto; em 6/8 um segundo inquérito indicia mais 6",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-07/pf-indicia-careca-do-inss-e-mais-47-por-esquema-de-descontos-ilegais"
+  },
+  {
+   "data": "2026-09-25",
+   "fato": "Com os processos levados à Presidência do STF em meio à crise interna da Corte, Fachin dá 5 dias para a PGR se manifestar sobre pedidos urgentes do caso",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/fachin-cobra-manifestacao-da-pgr-sobre-casos-do-inss-e-master"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Inquéritos no STF (relator André Mendonça; desde set/2026 os processos estão temporariamente na Presidência do STF). A PF concluiu dois inquéritos em jul e ago/2026, com 54 indiciados; cabe à PGR decidir se apresenta denúncia. Até 20/10/2026 não foi localizada denúncia nas fontes consultadas. Maurício Camisotti assinou delação com PF e PGR, que depende de homologação do STF. A CPMI terminou sem relatório aprovado.",
+  "data": "2026-09-25",
+  "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/fachin-cobra-manifestacao-da-pgr-sobre-casos-do-inss-e-master"
+ },
+ "pessoas": [
+  {
+   "nome": "Antônio Carlos Camilo Antunes ('Careca do INSS')",
+   "cargo_na_epoca": "Empresário e lobista",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "indiciado",
+   "detalhe": "Apontado pela PF como figura central do esquema; indiciado pela PF em 14/07/2026. Preso preventivamente desde 12/09/2025 (Papuda). Na CPMI, negou participação nos desvios; sobre o indiciamento, a defesa disse não ter tido acesso ao relatório.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-07-21",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-07/pf-apreende-carros-de-luxo-em-operacao-contra-careca-do-inss"
+  },
+  {
+   "nome": "Maurício Camisotti",
+   "cargo_na_epoca": "Empresário",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "investigado",
+   "detalhe": "A PF o aponta como peça do 'núcleo financeiro' do esquema. Assinou delação premiada com PF e PGR, pendente de homologação pelo STF; não está entre os indiciados da PF. Segue preso na carceragem da PF em São Paulo (ago/2026).",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-27",
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/"
+  },
+  {
+   "nome": "Alessandro Antônio Stefanutto",
+   "cargo_na_epoca": "Presidente do INSS (jul/2023 a abr/2025)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Exonerado em 23/04/2025. Preso preventivamente em 13/11/2025. Indiciado pela PF nos dois inquéritos concluídos (jul e ago/2026). A defesa nega e pediu a revogação da prisão.",
+   "liberdade": "preso",
+   "valor_recebido": {
+    "valor": null,
+    "texto": "Segundo a PF, recebia até R$ 250 mil por mês por meio de empresas de fachada; a defesa nega",
+    "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/pf-diz-que-ex-presidente-do-inss-recebia-r-250-mil-mensais-de-propina"
+   },
+   "devolveu": null,
+   "data_situacao": "2026-07-14",
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/pf-indicia-ex-presidente-do-inss-careca-e-outros-em-inquerito/"
+  },
+  {
+   "nome": "Virgílio Antônio Ribeiro de Oliveira Filho",
+   "cargo_na_epoca": "Procurador-geral do INSS",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado pela PF nos inquéritos da Operação Sem Desconto (jul e ago/2026). Estava preso desde nov/2025 e negociava delação (mai/2026); situação de prisão atual não confirmada.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-06",
+   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/"
+  },
+  {
+   "nome": "André Fidelis",
+   "cargo_na_epoca": "Diretor de Benefícios do INSS (até jul/2024)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado pela PF nos inquéritos da Operação Sem Desconto (jul e ago/2026). Negociava delação premiada em mai/2026.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-06",
+   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/"
+  },
+  {
+   "nome": "José Carlos Oliveira (Ahmed Mohamad Oliveira)",
+   "cargo_na_epoca": "Ex-presidente do INSS e ex-ministro da Previdência (governo Bolsonaro)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "A PF o descreve como 'pilar institucional' do esquema; passou a usar tornozeleira eletrônica em 13/11/2025. Citado pela CNN entre os indiciados pela PF (ago/2026).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-27",
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/"
+  },
+  {
+   "nome": "Adroaldo Portal",
+   "cargo_na_epoca": "Secretário-executivo do Ministério da Previdência",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Teve prisão preventiva decretada em 18/12/2025 e foi exonerado no mesmo dia. Situação de prisão atual não confirmada.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-12-18",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-12/secretario-executivo-do-ministerio-da-previdencia-tem-prisao-decretada"
+  },
+  {
+   "nome": "Weverton Rocha",
+   "cargo_na_epoca": "Senador (vice-líder do governo no Senado)",
+   "partido_na_epoca": "PDT",
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "Alvo de buscas em dez/2025 e ago/2026. A PF diz que ele atuaria como 'sócio oculto' e beneficiário de estrutura ligada ao 'Careca do INSS'. Ele nega e diz que a operação tem motivação política.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-04",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/pf-investiga-senador-weverton-rocha-por-suspeita-de-desvios-no-inss"
+  },
+  {
+   "nome": "Maria Gorete Pereira",
+   "cargo_na_epoca": "Deputada federal",
+   "partido_na_epoca": "MDB",
+   "tipo": "agente público",
+   "situacao": "investigado",
+   "detalhe": "PF aponta que recebeu valores ligados ao esquema. O ministro André Mendonça negou o pedido de prisão e impôs tornozeleira eletrônica (17/03/2026).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-03-17",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara"
+  },
+  {
+   "nome": "Cecília Rodrigues Mota",
+   "cargo_na_epoca": "Advogada; presidente das associações AAPEN e AAPB",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "investigado",
+   "detalhe": "Presa preventivamente em 17/03/2026; Mendonça escreveu que ela tinha 'atuação central' nas filiações fraudulentas. Situação de prisão atual não confirmada.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-03-17",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara"
+  },
+  {
+   "nome": "Carlos Lopes",
+   "cargo_na_epoca": "Presidente da Conafer",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "investigado",
+   "detalhe": "Estava foragido desde nov/2025; preso pela PF em 12/08/2026 após se apresentar. A Conafer é suspeita de filiações falsas.",
+   "liberdade": "preso",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-12",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-08/policia-federal-prende-presidente-da-conafer"
+  },
+  {
+   "nome": "Aristides Veras dos Santos",
+   "cargo_na_epoca": "Ex-presidente da Contag",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "indiciado",
+   "detalhe": "Citado entre os seis indiciados no segundo inquérito da PF (ago/2026).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-08-06",
+   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/"
+  },
+  {
+   "nome": "Romeu Carvalho Antunes",
+   "cargo_na_epoca": "Empresário (filho do 'Careca do INSS')",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "investigado",
+   "detalhe": "Preso preventivamente de 18/12/2025 até 09/09/2026, quando Mendonça trocou a prisão por tornozeleira e outras restrições.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2026-09-09",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/andre-mendonca-manda-soltar-filho-do-careca-do-inss"
+  }
+ ],
+ "fontes": [
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2026-06/inss-termina-neste-sabado-prazo-para-contestar-descontos-indevidos",
+  "https://agenciabrasil.ebc.com.br/economia/noticia/2026-07/governo-destina-r-547-milhoes-para-ressarcir-beneficiarios-do-inss",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-04/operacao-da-pf-investiga-descontos-irregulares-em-beneficios-do-inss",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-06/inss-justica-bloqueia-r-28-bi-de-envolvidos-em-descontos-ilegais",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-09/careca-do-inss-empresario-e-advogado-ostentacao-sao-alvos-da-pf",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/pf-diz-que-ex-presidente-do-inss-recebia-r-250-mil-mensais-de-propina",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/pf-prende-alessandro-stefanutto-ex-presidente-do-inss",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2025-12/secretario-executivo-do-ministerio-da-previdencia-tem-prisao-decretada",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2026-01/sancionada-lei-que-proibe-descontos-em-beneficios-do-inss",
+  "https://agenciabrasil.ebc.com.br/geral/noticia/2026-08/policia-federal-prende-presidente-da-conafer",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-07/stf-homologa-plano-do-inss-para-devolucao-de-descontos-ilegais",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2025-11/pf-aponta-ex-ministro-de-bolsonaro-como-pilar-institucional-de-desvios",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-01/stf-andre-mendonca-mantem-prisao-do-careca-do-inss",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-07/pf-apreende-carros-de-luxo-em-operacao-contra-careca-do-inss",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-07/pf-indicia-careca-do-inss-e-mais-47-por-esquema-de-descontos-ilegais",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/flavio-dino-autoriza-novo-inquerito-da-pf-para-investigar-lulinha",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/pf-investiga-senador-weverton-rocha-por-suspeita-de-desvios-no-inss",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/andre-mendonca-manda-soltar-filho-do-careca-do-inss",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/fachin-cobra-manifestacao-da-pgr-sobre-casos-do-inss-e-master",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2025-04/lula-determina-demissao-do-presidente-do-inss",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2025-05/pdt-deixa-base-do-governo-na-camara-apos-saida-de-lupi",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2025-08/oposicao-elege-presidente-e-relator-da-cpmi-do-inss",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2026-03/cpmi-do-inss-termina-sem-relatorio-final",
+  "https://pt.wikipedia.org/wiki/Esquema_de_fraudes_no_INSS",
+  "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/",
+  "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/pf-indicia-ex-presidente-do-inss-careca-e-outros-em-inquerito/",
+  "https://www.cnnbrasil.com.br/politica/lulinha-entregou-sigilos-a-mendonca-e-pode-prestar-depoimento-diz-advogado/",
+  "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/",
+  "https://www.cnnbrasil.com.br/politica/pf-e-pgr-decidem-refazer-delacao-de-empresario-ligado-a-fraudes-no-inss/",
+  "https://www.cnnbrasil.com.br/politica/vice-lider-do-governo-sustentava-atividades-do-careca-do-inss-diz-pf/"
+ ],
+ "verificado_em": "2026-10-20"
+}

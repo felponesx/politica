@@ -1,0 +1,294 @@
+{
+ "slug": "joias-sauditas",
+ "nome": "Caso das joias sauditas",
+ "outros_nomes": [
+  "Caso das joias",
+  "Inquérito das joias"
+ ],
+ "periodo": {
+  "inicio": "2021",
+  "fim": null
+ },
+ "ano_revelado": 2023,
+ "resumo": "Em outubro de 2021, uma comitiva do Ministério de Minas e Energia voltou da Arábia Saudita com joias dadas pelo governo saudita, e a Receita Federal reteve um conjunto em Guarulhos. Revelado em março de 2023, o caso levou a um inquérito da Polícia Federal, que em julho de 2024 indiciou Jair Bolsonaro e mais 11 pessoas, suspeitos de desviar e vender nos Estados Unidos presentes oficiais de alto valor. Em março de 2026, a PGR pediu o arquivamento por entender que a lei não deixa claro a quem pertencem esses presentes; o ministro Alexandre de Moraes pediu novo parecer e ainda não havia decisão final na última informação encontrada. Bolsonaro sempre negou irregularidades.",
+ "valores": {
+  "desviado": {
+   "valor": 6826151.66,
+   "texto": "Valor total da operação segundo relatório da PF: US$ 1.227.725,12 ou R$ 6.826.151,66 (suspeita; a PF corrigiu um valor inicial de R$ 25 milhões).",
+   "fonte": "https://www.cnnbrasil.com.br/politica/caso-das-joias-pf-admite-erro-em-relatorio-e-retifica-valor-supostamente-desviado-por-bolsonaro/"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Sem valor total recuperado informado. Em 2023, o advogado Frederick Wassef confirmou ter recomprado um relógio Rolex vendido nos EUA.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+  },
+  "observacao": "Os R$ 6,8 milhões são a estimativa da PF para o conjunto de itens supostamente desviados e vendidos; não há denúncia nem condenação. Em jul/2026, Moraes mandou transferir as joias guardadas na Caixa para a Alfândega do Aeroporto de São Paulo (Itatiaia/CNN, out/2026). O kit retido pela Receita em Guarulhos em 2021 foi avaliado em R$ 16,5 milhões pela imprensa em 2023 (g1). A PGR pediu arquivamento alegando lacuna na lei sobre a propriedade dos presentes; o TCU ainda deveria decidir se os itens são pessoais ou públicos (CNN, mar/2026)."
+ },
+ "orgaos": [
+  {
+   "nome": "Receita Federal",
+   "papel": "controle"
+  },
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal (relator Alexandre de Moraes)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Tribunal de Contas da União (TCU)",
+   "papel": "controle"
+  },
+  {
+   "nome": "Controladoria-Geral da União (CGU)",
+   "papel": "controle"
+  },
+  {
+   "nome": "Comissão de Ética Pública da Presidência",
+   "papel": "controle"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2021-10",
+   "fato": "Comitiva liderada pelo ministro Bento Albuquerque volta da Arábia Saudita com joias na bagagem; a Receita retém um conjunto em Guarulhos.",
+   "fonte": "https://g1.globo.com/politica/noticia/2023/03/06/policia-federal-abre-inquerito-para-investigar-joias-milionarias-que-chegaram-ao-pais-na-comitiva-do-governo-bolsonaro.ghtml"
+  },
+  {
+   "data": "2023-03-06",
+   "fato": "Após reportagem do Estadão (3/3), a PF abre inquérito.",
+   "fonte": "https://g1.globo.com/politica/noticia/2023/03/06/policia-federal-abre-inquerito-para-investigar-joias-milionarias-que-chegaram-ao-pais-na-comitiva-do-governo-bolsonaro.ghtml"
+  },
+  {
+   "data": "2024-07-04",
+   "fato": "PF indicia Bolsonaro e mais 11 pessoas por peculato, associação criminosa e lavagem de dinheiro.",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "data": "2024-07-08",
+   "fato": "PF retifica relatório: valor da operação é de R$ 6,8 milhões, não R$ 25 milhões.",
+   "fonte": "https://www.cnnbrasil.com.br/politica/caso-das-joias-pf-admite-erro-em-relatorio-e-retifica-valor-supostamente-desviado-por-bolsonaro/"
+  },
+  {
+   "data": "2025-02-19",
+   "fato": "Delação de Mauro Cid, tornada pública por Moraes, diz que Cid e o pai repassaram US$ 86 mil a Bolsonaro com a venda de joias e relógios.",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/02/19/mauro-cid-pai-repasse-dinheiro-bolsonaro-delacao.ghtml"
+  },
+  {
+   "data": "2025-07-28",
+   "fato": "Comissão de Ética Pública aplica censura ética ao ex-ministro Bento Albuquerque.",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/07/28/comissao-de-etica-da-presidencia-aplica-censura-a-ex-ministro-de-bolsonaro-por-caso-das-joias-sauditas.ghtml"
+  },
+  {
+   "data": "2025-11-25",
+   "fato": "CGU demite o ex-secretário da Receita Julio César Vieira Gomes, que atuou para tentar liberar as joias.",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/12/01/ex-secretario-da-receita-que-atuou-para-liberar-joias-de-bolsonaro-e-demitido.ghtml"
+  },
+  {
+   "data": "2026-03-05",
+   "fato": "PGR pede ao STF o arquivamento do inquérito, alegando lacuna na lei sobre a propriedade de presentes recebidos pelo presidente.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/pgr-pede-arquivamento-de-inquerito-sobre-desvio-de-joias-por-bolsonaro"
+  },
+  {
+   "data": "2026-03-18",
+   "fato": "Moraes pede novo parecer à PGR, que não teria analisado a parte do relatório sobre Frederick Wassef.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+  },
+  {
+   "data": "2026-10-07",
+   "fato": "Moraes manda intimar Bolsonaro sobre cobrança fiscal da Receita no caso das joias (esfera administrativa).",
+   "fonte": "https://www.itatiaia.com.br/politica/moraes-manda-intimar-bolsonaro-sobre-caso-das-joias-sauditas/"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Inquérito no STF sem denúncia. A PGR pediu arquivamento (5/3/2026) e Moraes pediu novo parecer (18/3/2026) antes de decidir; não foi encontrada decisão final sobre o arquivamento até 20/10/2026. Em paralelo, a Receita cobra infração fiscal ligada às joias.",
+  "data": "2026-10-07",
+  "fonte": "https://www.itatiaia.com.br/politica/moraes-manda-intimar-bolsonaro-sobre-caso-das-joias-sauditas/"
+ },
+ "pessoas": [
+  {
+   "nome": "Jair Messias Bolsonaro",
+   "cargo_na_epoca": "Presidente da República",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado pela PF por peculato, associação criminosa e lavagem de dinheiro; sempre negou irregularidades. A PGR pediu arquivamento em mar/2026; decisão pendente. Está em prisão domiciliar por condenação em outro processo (trama golpista), não por este caso.",
+   "liberdade": null,
+   "valor_recebido": {
+    "valor": null,
+    "texto": "US$ 86 mil, segundo a delação de Mauro Cid (acusação, não comprovada em juízo).",
+    "fonte": "https://g1.globo.com/politica/noticia/2025/02/19/mauro-cid-pai-repasse-dinheiro-bolsonaro-delacao.ghtml"
+   },
+   "devolveu": null,
+   "data_situacao": "2026-03-18",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+  },
+  {
+   "nome": "Bento Albuquerque",
+   "cargo_na_epoca": "Ministro de Minas e Energia",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por peculato e associação criminosa. Recebeu censura ética da Comissão de Ética Pública em jul/2025.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-07-28",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/07/28/comissao-de-etica-da-presidencia-aplica-censura-a-ex-ministro-de-bolsonaro-por-caso-das-joias-sauditas.ghtml"
+  },
+  {
+   "nome": "José Roberto Bueno Júnior",
+   "cargo_na_epoca": "Chefe de gabinete do Ministério de Minas e Energia",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por peculato, associação criminosa e lavagem de dinheiro.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Julio César Vieira Gomes",
+   "cargo_na_epoca": "Auditor-fiscal e secretário da Receita Federal",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por peculato, associação criminosa, lavagem de dinheiro e advocacia administrativa. Demitido do serviço público pela CGU em nov/2025.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2025-11-25",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/12/01/ex-secretario-da-receita-que-atuou-para-liberar-joias-de-bolsonaro-e-demitido.ghtml"
+  },
+  {
+   "nome": "Marcelo da Silva Vieira",
+   "cargo_na_epoca": "Chefe do Gabinete de Documentação Histórica da Presidência",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por peculato e associação criminosa.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Marcelo Costa Câmara",
+   "cargo_na_epoca": "Assessor de Bolsonaro",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por lavagem de dinheiro.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Marcos André dos Santos Soeiro",
+   "cargo_na_epoca": "Assessor do ministro Bento Albuquerque",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por peculato e associação criminosa.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Mauro Cesar Barbosa Cid",
+   "cargo_na_epoca": "Tenente-coronel do Exército, ajudante de ordens da Presidência",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por peculato, associação criminosa e lavagem de dinheiro; fez delação premiada com a PF.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Mauro Cesar Lourena Cid",
+   "cargo_na_epoca": "General da reserva do Exército",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por lavagem de dinheiro e associação criminosa.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Osmar Crivelatti",
+   "cargo_na_epoca": "Assessor de Bolsonaro",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por lavagem de dinheiro e associação criminosa.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Fabio Wajngarten",
+   "cargo_na_epoca": "Advogado de Bolsonaro e ex-secretário de Comunicação",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por lavagem de dinheiro e associação criminosa; diz que só soube do fato pela imprensa e que agiu como advogado.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2024-07-04",
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+  },
+  {
+   "nome": "Frederick Wassef",
+   "cargo_na_epoca": "Advogado de Bolsonaro",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "indiciado",
+   "detalhe": "Indiciado por lavagem de dinheiro e associação criminosa. Em mar/2026, Moraes pediu à PGR que analisasse a parte do relatório da PF sobre ele.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": {
+    "valor": null,
+    "texto": "Confirmou em 2023 ter recomprado um relógio Rolex que havia sido vendido nos EUA.",
+    "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+   },
+   "data_situacao": "2026-03-18",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+  }
+ ],
+ "fontes": [
+  "https://pt.wikipedia.org/wiki/Caso_das_joias_envolvendo_Jair_Bolsonaro",
+  "https://g1.globo.com/politica/noticia/2023/03/06/policia-federal-abre-inquerito-para-investigar-joias-milionarias-que-chegaram-ao-pais-na-comitiva-do-governo-bolsonaro.ghtml",
+  "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml",
+  "https://www.cnnbrasil.com.br/politica/caso-das-joias-pf-admite-erro-em-relatorio-e-retifica-valor-supostamente-desviado-por-bolsonaro/",
+  "https://g1.globo.com/politica/noticia/2025/02/19/mauro-cid-pai-repasse-dinheiro-bolsonaro-delacao.ghtml",
+  "https://g1.globo.com/politica/noticia/2025/07/28/comissao-de-etica-da-presidencia-aplica-censura-a-ex-ministro-de-bolsonaro-por-caso-das-joias-sauditas.ghtml",
+  "https://g1.globo.com/politica/noticia/2025/12/01/ex-secretario-da-receita-que-atuou-para-liberar-joias-de-bolsonaro-e-demitido.ghtml",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/pgr-pede-arquivamento-de-inquerito-sobre-desvio-de-joias-por-bolsonaro",
+  "https://www.cnnbrasil.com.br/politica/pgr-pede-ao-stf-arquivamento-de-inquerito-sobre-joias-dadas-a-bolsonaro/",
+  "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita",
+  "https://www.itatiaia.com.br/politica/moraes-manda-intimar-bolsonaro-sobre-caso-das-joias-sauditas/"
+ ],
+ "verificado_em": "2026-10-20"
+}
