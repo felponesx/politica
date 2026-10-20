@@ -1,0 +1,191 @@
+{
+ "slug": "collor-pc-farias",
+ "nome": "Caso Collor–PC Farias (Esquema PC)",
+ "outros_nomes": [
+  "Esquema PC",
+  "Collorgate",
+  "Impeachment de Collor",
+  "CPI do PC"
+ ],
+ "periodo": {
+  "inicio": "1990",
+  "fim": "1992"
+ },
+ "ano_revelado": 1992,
+ "resumo": "Em maio de 1992, Pedro Collor acusou PC Farias, tesoureiro da campanha do irmão, o presidente Fernando Collor, de comandar uma rede de tráfico de influência e corrupção no governo. Uma CPI mista do Congresso concluiu que o esquema usava contas fantasmas e que empresas de PC pagavam despesas do presidente. A Câmara autorizou o processo de impeachment; Collor renunciou em dezembro de 1992 e o Senado o tornou inelegível por 8 anos. No STF, Collor foi absolvido por falta de provas e PC Farias foi condenado por falsidade ideológica.",
+ "valores": {
+  "desviado": {
+   "valor": null,
+   "texto": "Não há valor oficial confirmado. A Wikipédia cita que a acusação da PGR apontava US$ 4.724.593,99 recebidos por Collor em contas fantasmas e que o esquema teria movimentado mais de US$ 1 bilhão, sem fonte primária aberta.",
+   "fonte": "https://pt.wikipedia.org/wiki/Impeachment_de_Fernando_Collor"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não foi encontrado valor recuperado.",
+   "fonte": null
+  },
+  "observacao": "Fatos de 1990–1992, antes do Plano Real (moeda: cruzeiro); valores citados em dólares. Valores não convertidos."
+ },
+ "orgaos": [
+  {
+   "nome": "CPMI do PC Farias (Congresso Nacional)",
+   "papel": "CPI"
+  },
+  {
+   "nome": "Câmara dos Deputados (autorização do impeachment)",
+   "papel": "controle"
+  },
+  {
+   "nome": "Senado Federal (julgamento do impeachment)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Procuradoria-Geral da República",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal (Ação Penal 307)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "10ª Vara Federal de Brasília",
+   "papel": "julgamento"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "1992-05-24",
+   "fato": "Revista Veja publica entrevista de Pedro Collor com as acusações contra PC Farias.",
+   "fonte": "https://www.camara.leg.br/noticias/22024-cronologia-do-impeachment/"
+  },
+  {
+   "data": "1992-06-01",
+   "fato": "Congresso instala CPI mista para investigar os negócios de PC Farias no governo.",
+   "fonte": "https://www.cnnbrasil.com.br/politica/collor-renunciou-para-escapar-da-inelegibilidade-em-1992-mas-nao-conseguiu-entenda/"
+  },
+  {
+   "data": "1992-08",
+   "fato": "CPI aprova, por 16 votos a 5, o relatório do senador Amir Lando sobre o \"esquema PC\".",
+   "fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos"
+  },
+  {
+   "data": "1992-09-29",
+   "fato": "Câmara autoriza o processo de impeachment por 441 votos a 38.",
+   "fonte": "https://www.camara.leg.br/noticias/22024-cronologia-do-impeachment/"
+  },
+  {
+   "data": "1992-10-02",
+   "fato": "Collor é afastado; o vice Itamar Franco assume.",
+   "fonte": "https://www.camara.leg.br/noticias/22024-cronologia-do-impeachment/"
+  },
+  {
+   "data": "1992-11-12",
+   "fato": "Procurador-geral Aristides Junqueira denuncia Collor e mais 8 pessoas ao STF.",
+   "fonte": "https://www.camara.leg.br/noticias/22024-cronologia-do-impeachment/"
+  },
+  {
+   "data": "1992-12-29",
+   "fato": "Collor renuncia; o Senado mantém o julgamento e aprova a perda do cargo e a inelegibilidade por 8 anos (76 votos a 3 segundo a Câmara; 76 a 2 segundo a CNN).",
+   "fonte": "https://www.camara.leg.br/noticias/22024-cronologia-do-impeachment/"
+  },
+  {
+   "data": "1993",
+   "fato": "Com prisão preventiva decretada em junho por sonegação fiscal, PC Farias foge do país; é capturado na Tailândia e extraditado ao Brasil.",
+   "fonte": "https://g1.globo.com/politica/noticia/2013/05/relembre-casos-do-governo-collor-que-envolveram-pc-farias.html"
+  },
+  {
+   "data": "1994-12-12",
+   "fato": "STF absolve Collor da acusação de corrupção passiva, por 5 votos a 3; no dia seguinte condena PC Farias por falsidade ideológica.",
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+  },
+  {
+   "data": "1996-06",
+   "fato": "PC Farias é encontrado morto em Maceió, ao lado da namorada Suzana Marcolino.",
+   "fonte": "https://g1.globo.com/politica/noticia/2013/05/relembre-casos-do-governo-collor-que-envolveram-pc-farias.html"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Caso encerrado. Collor cumpriu a inelegibilidade de 8 anos e voltou à política (senador por Alagoas de 2007 a 2023); foi absolvido no STF em 1994 e em 2014. PC Farias morreu em 1996; os quatro acusados pela morte foram absolvidos pelo júri em 2013.",
+  "data": "2023-06-30",
+  "fonte": "https://www.cnnbrasil.com.br/politica/collor-renunciou-para-escapar-da-inelegibilidade-em-1992-mas-nao-conseguiu-entenda/"
+ },
+ "pessoas": [
+  {
+   "nome": "Fernando Collor de Mello",
+   "cargo_na_epoca": "Presidente da República",
+   "partido_na_epoca": "PRN",
+   "tipo": "agente público",
+   "situacao": "renunciou",
+   "detalhe": "Renunciou em 29/12/1992, no início do julgamento no Senado; mesmo assim o Senado aprovou a perda do cargo e a inelegibilidade por 8 anos. No STF, foi absolvido em dezembro de 1994, por 5 votos a 3, da acusação de corrupção passiva, por falta de provas. Em 2014 o STF o absolveu em outra ação sobre o período em que era presidente (peculato, corrupção passiva e falsidade ideológica).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-12-12",
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+  },
+  {
+   "nome": "Paulo César Farias (PC Farias)",
+   "cargo_na_epoca": "Empresário, tesoureiro da campanha presidencial de Collor em 1989",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "morreu",
+   "detalhe": "Absolvido de corrupção passiva pelo STF em 1994, mas condenado por unanimidade por falsidade ideológica (contas fantasmas) a 7 anos; também condenado pela Justiça Federal a 4 anos por sonegação fiscal. Fugiu do país em 1993 e foi capturado na Tailândia; obteve liberdade condicional em 28/12/1995. Foi encontrado morto em junho de 1996.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1996-06-23",
+   "fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos"
+  },
+  {
+   "nome": "Jorge Bandeira de Mello",
+   "cargo_na_epoca": "Piloto, sócio de PC Farias na empresa de táxi aéreo Brasil-Jet",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenado",
+   "detalhe": "Condenado pelo STF em dezembro de 1994 por falsidade ideológica no caso das contas fantasmas (pena não informada na fonte). Pilotou o avião da fuga de PC Farias em 1993.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-12-13",
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+  },
+  {
+   "nome": "Rosinete Melanias",
+   "cargo_na_epoca": "Secretária de PC Farias",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "condenado",
+   "detalhe": "Condenada pelo STF em dezembro de 1994 por falsidade ideológica no caso das contas fantasmas; confessou o crime em depoimento (pena não informada na fonte).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-12-13",
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+  },
+  {
+   "nome": "Cláudio Vieira",
+   "cargo_na_epoca": "Advogado; citou a \"Operação Uruguai\" em depoimento à CPI",
+   "partido_na_epoca": null,
+   "tipo": "outro",
+   "situacao": "absolvido",
+   "detalhe": "Absolvido por unanimidade pelo STF, em dezembro de 1994, das acusações de corrupção, coação de testemunhas e supressão de documentos.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-12-13",
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+  }
+ ],
+ "fontes": [
+  "https://www.camara.leg.br/noticias/22024-cronologia-do-impeachment/",
+  "https://www.cnnbrasil.com.br/politica/collor-renunciou-para-escapar-da-inelegibilidade-em-1992-mas-nao-conseguiu-entenda/",
+  "https://g1.globo.com/politica/noticia/2013/05/relembre-casos-do-governo-collor-que-envolveram-pc-farias.html",
+  "https://g1.globo.com/politica/noticia/2014/04/supremo-livra-collor-de-acusacoes-de-peculato-e-corrupcao.html",
+  "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html",
+  "https://www.estadao.com.br/politica/fernando-collor-foi-absolvido-pelo-stf-por-falta-de-provas/",
+  "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos",
+  "https://pt.wikipedia.org/wiki/Impeachment_de_Fernando_Collor",
+  "https://pt.wikipedia.org/wiki/PC_Farias"
+ ],
+ "verificado_em": "2026-10-20"
+}

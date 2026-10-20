@@ -1,0 +1,206 @@
+{
+ "slug": "mensalao-mineiro",
+ "nome": "Mensalão mineiro (mensalão tucano)",
+ "outros_nomes": [
+  "Mensalão tucano",
+  "Valerioduto tucano",
+  "Tucanoduto",
+  "Ação Penal 536"
+ ],
+ "periodo": {
+  "inicio": "1998",
+  "fim": "1998"
+ },
+ "ano_revelado": 2005,
+ "resumo": "Investigação sobre desvio de dinheiro de estatais mineiras (Copasa, Comig e Bemge) para a campanha de reeleição do governador Eduardo Azeredo (PSDB) em 1998. Segundo a denúncia, as agências de Marcos Valério recebiam verbas de patrocínio de eventos esportivos que iam para o caixa da campanha. A Procuradoria-Geral da República chamou o caso de \"origem e laboratório\" do mensalão de 2005. Os acusados negam; o PSDB diz que o caso tratou só de caixa 2 eleitoral.",
+ "valores": {
+  "desviado": {
+   "valor": 3500000,
+   "texto": "\"ao menos R$ 3,5 milhões de empresas públicas\", segundo a denúncia do Ministério Público",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não foi encontrado valor recuperado.",
+   "fonte": null
+  },
+  "observacao": "Valor da denúncia, em reais nominais de 1998 (sem correção). É acusação, não valor fixado em decisão definitiva."
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Procuradoria-Geral da República / Ministério Público de Minas Gerais",
+   "papel": "acusação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal (Ação Penal 536)",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "9ª Vara Criminal de Belo Horizonte e Tribunal de Justiça de Minas Gerais",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Superior Tribunal de Justiça",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Justiça Eleitoral de Minas Gerais",
+   "papel": "julgamento"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2007-11",
+   "fato": "Procurador-geral Antonio Fernando de Souza denuncia 15 pessoas por peculato e lavagem de dinheiro.",
+   "fonte": "https://www.itatiaia.com.br/politica/mensalao-tucano-o-escandalo-mineiro-que-antecedeu-o-mensalao-do-pt/"
+  },
+  {
+   "data": "2009-12-03",
+   "fato": "STF recebe a denúncia contra Eduardo Azeredo, por 5 votos a 3.",
+   "fonte": "https://www.itatiaia.com.br/politica/mensalao-tucano-o-escandalo-mineiro-que-antecedeu-o-mensalao-do-pt/"
+  },
+  {
+   "data": "2014-01-21",
+   "fato": "Justiça de Minas declara prescritas as acusações contra Walfrido dos Mares Guia.",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2014-01/justica-livra-mares-guia-de-acusacoes-do-mensalao-mineiro"
+  },
+  {
+   "data": "2014-02",
+   "fato": "Azeredo renuncia ao mandato de deputado federal e o processo vai para a Justiça de Minas.",
+   "fonte": "https://www.itatiaia.com.br/politica/mensalao-tucano-o-escandalo-mineiro-que-antecedeu-o-mensalao-do-pt/"
+  },
+  {
+   "data": "2015-12",
+   "fato": "Azeredo é condenado em 1ª instância a 20 anos e 10 meses.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml"
+  },
+  {
+   "data": "2017-08",
+   "fato": "TJMG mantém a condenação e fixa a pena em 20 anos e 1 mês.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml"
+  },
+  {
+   "data": "2018-05",
+   "fato": "Azeredo é preso para cumprir a pena.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml"
+  },
+  {
+   "data": "2018-06-15",
+   "fato": "Marcos Valério, Cristiano Paz e Ramon Hollerbach são condenados em 1ª instância.",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml"
+  },
+  {
+   "data": "2020-02-11",
+   "fato": "STJ mantém a condenação de Azeredo e reduz a pena para 15 anos, 7 meses e 20 dias.",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/2020/02/11/stj-mantem-condenacao-do-ex-governador-de-mg-eduardo-azeredo-mas-diminui-a-pena.ghtml"
+  },
+  {
+   "data": "2021-06-29",
+   "fato": "2ª Turma do STF manda o caso de Azeredo para a Justiça Eleitoral, que decidirá se anula ou valida a condenação.",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Sem condenação definitiva de Eduardo Azeredo: em 2021 o STF suspendeu a execução da pena e enviou o caso à Justiça Eleitoral. A condenação de Clésio Andrade foi anulada em 2019, e as acusações contra Walfrido dos Mares Guia prescreveram em 2014. Não foi encontrado o desfecho na Justiça Eleitoral.",
+  "data": "2025-06-07",
+  "fonte": "https://www.itatiaia.com.br/politica/mensalao-tucano-o-escandalo-mineiro-que-antecedeu-o-mensalao-do-pt/"
+ },
+ "pessoas": [
+  {
+   "nome": "Eduardo Azeredo",
+   "cargo_na_epoca": "Governador de Minas Gerais, candidato à reeleição em 1998",
+   "partido_na_epoca": "PSDB",
+   "tipo": "agente público",
+   "situacao": "réu",
+   "detalhe": "Condenado na Justiça de Minas por peculato e lavagem de dinheiro: 20 anos e 10 meses em 1ª instância (2015), 20 anos e 1 mês no TJMG (2017), pena reduzida pelo STJ para 15 anos, 7 meses e 20 dias (2020). Preso em maio de 2018 e solto em novembro de 2019. Em 2021 a 2ª Turma do STF declarou a Justiça estadual incompetente e mandou o caso à Justiça Eleitoral, que vai decidir se anula ou valida a condenação; não há condenação definitiva. Ele nega as acusações.",
+   "liberdade": "em liberdade",
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2021-06-29",
+   "fonte": "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml"
+  },
+  {
+   "nome": "Clésio Andrade",
+   "cargo_na_epoca": "Candidato a vice-governador na chapa de Azeredo (1998)",
+   "partido_na_epoca": null,
+   "tipo": "agente público",
+   "situacao": "condenação anulada",
+   "detalhe": "Condenado em 1ª instância (maio de 2018) por lavagem de dinheiro a 5 anos, 7 meses e 15 dias e absolvido de peculato; em 2019 o TJMG anulou a condenação.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2019-10",
+   "fonte": "https://globoplay.globo.com/v/8026021/"
+  },
+  {
+   "nome": "Walfrido dos Mares Guia",
+   "cargo_na_epoca": "Vice-governador de Minas Gerais",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "prescrito",
+   "detalhe": "Denunciado por peculato e formação de quadrilha; em janeiro de 2014 a Justiça de Minas declarou extinta a punibilidade por prescrição (ele completou 70 anos em 2012), sem julgamento do mérito.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2014-01-21",
+   "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2014-01/justica-livra-mares-guia-de-acusacoes-do-mensalao-mineiro"
+  },
+  {
+   "nome": "Marcos Valério Fernandes de Souza",
+   "cargo_na_epoca": "Empresário, sócio da agência SMP&B",
+   "partido_na_epoca": null,
+   "tipo": "operador financeiro",
+   "situacao": "condenado (recorre)",
+   "detalhe": "Condenado em 1ª instância em junho de 2018 a 16 anos e 9 meses por peculato e lavagem de dinheiro; a defesa anunciou recurso.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2018-06-15",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml"
+  },
+  {
+   "nome": "Cristiano de Mello Paz",
+   "cargo_na_epoca": "Empresário, sócio da agência SMP&B",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenado (recorre)",
+   "detalhe": "Condenado em 1ª instância em junho de 2018 a 16 anos e 9 meses por peculato e lavagem de dinheiro; a defesa anunciou recurso.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2018-06-15",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml"
+  },
+  {
+   "nome": "Ramon Hollerbach Cardoso",
+   "cargo_na_epoca": "Empresário, sócio da agência SMP&B",
+   "partido_na_epoca": null,
+   "tipo": "empresário",
+   "situacao": "condenado (recorre)",
+   "detalhe": "Condenado em 1ª instância em junho de 2018 a 16 anos e 9 meses por peculato e lavagem de dinheiro; a defesa disse que pediria o reconhecimento da prescrição (ele fez 70 anos antes da sentença).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "2018-06-15",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml"
+  }
+ ],
+ "fontes": [
+  "https://www.itatiaia.com.br/politica/mensalao-tucano-o-escandalo-mineiro-que-antecedeu-o-mensalao-do-pt/",
+  "https://g1.globo.com/politica/noticia/2021/06/29/mensalao-tucano-2a-turma-do-stf-decide-enviar-a-justica-eleitoral-recurso-do-ex-governador-azeredo.ghtml",
+  "https://g1.globo.com/mg/minas-gerais/noticia/2020/02/11/stj-mantem-condenacao-do-ex-governador-de-mg-eduardo-azeredo-mas-diminui-a-pena.ghtml",
+  "https://g1.globo.com/mg/minas-gerais/noticia/marcos-valerio-hollerbach-e-cristiano-paz-sao-condenados-no-mensalao-tucano.ghtml",
+  "https://g1.globo.com/mg/minas-gerais/noticia/clesio-andrade-recorre-da-decisao-que-o-condenou-no-mensalao-tucano-diz-defesa.ghtml",
+  "https://globoplay.globo.com/v/8026021/",
+  "https://agenciabrasil.ebc.com.br/politica/noticia/2014-01/justica-livra-mares-guia-de-acusacoes-do-mensalao-mineiro",
+  "https://pt.wikipedia.org/wiki/Walfrido_dos_Mares_Guia",
+  "https://g1.globo.com/mg/minas-gerais/noticia/2025/12/02/quem-e-marcos-valerio-o-operador-condenado-no-esquema-do-mensalao-e-alvo-em-operacao-contra-sonegacao-em-atacadistas-em-mg.ghtml",
+  "https://pt.wikipedia.org/wiki/Mensal%C3%A3o_tucano",
+  "https://pt.wikipedia.org/wiki/Eduardo_Azeredo"
+ ],
+ "verificado_em": "2026-10-20"
+}

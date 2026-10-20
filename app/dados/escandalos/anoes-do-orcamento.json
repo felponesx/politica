@@ -1,0 +1,254 @@
+{
+ "slug": "anoes-do-orcamento",
+ "nome": "Anões do Orçamento (CPI do Orçamento)",
+ "outros_nomes": [
+  "CPI do Orçamento",
+  "CPMI do Orçamento",
+  "Escândalo do Orçamento",
+  "Máfia do Orçamento"
+ ],
+ "periodo": {
+  "inicio": "1989",
+  "fim": "1993"
+ },
+ "ano_revelado": 1993,
+ "resumo": "Esquema na Comissão Mista de Orçamento do Congresso em que, segundo a CPI, parlamentares apresentavam emendas que mandavam dinheiro para entidades ligadas a parentes ou laranjas e cobravam comissões de empreiteiras e prefeituras para incluir verbas de obras. O caso veio à tona em outubro de 1993, com as denúncias do ex-assessor de Orçamento José Carlos Alves dos Santos. A CPI investigou o caso entre 1993 e 1994: seis deputados foram cassados, quatro renunciaram e oito foram absolvidos pela Câmara.",
+ "valores": {
+  "desviado": {
+   "valor": null,
+   "texto": "Não há valor oficial total. A Wikipédia fala em \"mais de R$ 100 milhões\", sem fonte primária; à época a moeda era o cruzeiro real.",
+   "fonte": "https://pt.wikipedia.org/wiki/An%C3%B5es_do_Or%C3%A7amento"
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não foi encontrado valor recuperado.",
+   "fonte": null
+  },
+  "observacao": "Os fatos ocorreram antes do Plano Real (moeda: cruzado novo/cruzeiro/cruzeiro real); as reportagens citam movimentações em dólares (ex.: US$ 800 mil atribuídos a Raquel Cândido, US$ 3,2 milhões a Manoel Moreira). Valores não convertidos."
+ },
+ "orgaos": [
+  {
+   "nome": "CPMI do Orçamento (Congresso Nacional)",
+   "papel": "CPI"
+  },
+  {
+   "nome": "Plenário da Câmara dos Deputados",
+   "papel": "julgamento"
+  },
+  {
+   "nome": "Ministério Público",
+   "papel": "acusação"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "1993-10-08",
+   "fato": "O ex-assessor de Orçamento do Senado José Carlos Alves dos Santos é preso com US$ 1,4 milhão, acusado de matar a mulher.",
+   "fonte": "https://acervo.oglobo.globo.com/em-destaque/ex-assessor-denunciou-parlamentares-no-escandalo-dos-anoes-do-orcamento-10322623"
+  },
+  {
+   "data": "1993-10-15",
+   "fato": "Santos denuncia um esquema na Comissão de Orçamento que envolveria pelo menos 50 políticos.",
+   "fonte": "https://acervo.oglobo.globo.com/em-destaque/ex-assessor-denunciou-parlamentares-no-escandalo-dos-anoes-do-orcamento-10322623"
+  },
+  {
+   "data": "1993-10-20",
+   "fato": "Primeiro depoimento na CPI mista do Orçamento.",
+   "fonte": "https://acervo.oglobo.globo.com/em-destaque/ex-assessor-denunciou-parlamentares-no-escandalo-dos-anoes-do-orcamento-10322623"
+  },
+  {
+   "data": "1994-03-21",
+   "fato": "Genebaldo Correia renuncia ao mandato; dois dias depois renunciam João Alves, Cid Carvalho e Manoel Moreira.",
+   "fonte": "https://www.camara.leg.br/deputados/133979/biografia"
+  },
+  {
+   "data": "1994-04-13",
+   "fato": "Féres Nader é o primeiro a perder o mandato; seguem Carlos Benevides, Fábio Raunheitti e Raquel Cândido.",
+   "fonte": "https://www.camara.leg.br/deputados/133970/biografia"
+  },
+  {
+   "data": "1994-05-18",
+   "fato": "Ibsen Pinheiro, ex-presidente da Câmara, perde o mandato.",
+   "fonte": "https://www.camara.leg.br/deputados/133853/biografia"
+  },
+  {
+   "data": "1994-06-15",
+   "fato": "José Geraldo Ribeiro perde o mandato, sexta cassação do caso.",
+   "fonte": "https://www.camara.leg.br/deputados/133981/biografia"
+  },
+  {
+   "data": "2000",
+   "fato": "Ibsen Pinheiro é inocentado das acusações pela Justiça.",
+   "fonte": "https://www.camara.leg.br/deputados/133853/biografia"
+  }
+ ],
+ "situacao_atual": {
+  "texto": "Caso encerrado no Congresso em 1994: seis deputados cassados, quatro renúncias e oito absolvições no plenário. Ibsen Pinheiro foi inocentado pela Justiça em 2000. O delator José Carlos Alves dos Santos foi condenado a 20 anos de prisão pelo assassinato da mulher (outro crime). A CPI levou a mudanças na Comissão de Orçamento, como o rodízio dos integrantes.",
+  "data": "2013-10-10",
+  "fonte": "https://acervo.oglobo.globo.com/em-destaque/ex-assessor-denunciou-parlamentares-no-escandalo-dos-anoes-do-orcamento-10322623"
+ },
+ "pessoas": [
+  {
+   "nome": "João Alves de Almeida",
+   "cargo_na_epoca": "Deputado federal (BA), ex-relator da Comissão de Orçamento",
+   "partido_na_epoca": "PFL",
+   "tipo": "agente público",
+   "situacao": "renunciou",
+   "detalhe": "Apontado pela CPI como chefe do esquema; alegou ter enriquecido ganhando na loteria. Renunciou ao mandato em 23/03/1994, antes do julgamento. Morreu em 14/11/2004.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-03-23",
+   "fonte": "https://www.camara.leg.br/deputados/133980/biografia"
+  },
+  {
+   "nome": "Genebaldo Correia",
+   "cargo_na_epoca": "Deputado federal (BA), líder do PMDB na Câmara",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "renunciou",
+   "detalhe": "Renunciou ao mandato em 21/03/1994, antes do julgamento no plenário.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-03-21",
+   "fonte": "https://www.camara.leg.br/deputados/133979/biografia"
+  },
+  {
+   "nome": "Cid Carvalho",
+   "cargo_na_epoca": "Deputado federal (MA), ex-presidente da Comissão de Orçamento",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "renunciou",
+   "detalhe": "Renunciou ao mandato em 23/03/1994, antes do julgamento. Morreu em 28/10/2004.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-03-23",
+   "fonte": "https://www.camara.leg.br/deputados/133995/biografia"
+  },
+  {
+   "nome": "Manoel Moreira",
+   "cargo_na_epoca": "Deputado federal (SP)",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "renunciou",
+   "detalhe": "Renunciou ao mandato em 23/03/1994, antes da cassação. Segundo o Terra (2013), foi inocentado de parte das acusações na Justiça em 2009.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-03-23",
+   "fonte": "https://www.camara.leg.br/deputados/73495/biografia"
+  },
+  {
+   "nome": "Ibsen Pinheiro",
+   "cargo_na_epoca": "Deputado federal (RS), ex-presidente da Câmara",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "cassado",
+   "detalhe": "Perdeu o mandato em 18/05/1994 (Resolução nº 65/1994) após a CPI. Segundo a Câmara, foi inocentado das acusações pela Justiça em 2000; voltou a ser deputado federal em 2007. Morreu em 24/01/2020.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-05-18",
+   "fonte": "https://www.camara.leg.br/deputados/133853/biografia"
+  },
+  {
+   "nome": "Féres Nader",
+   "cargo_na_epoca": "Deputado federal (RJ)",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "cassado",
+   "detalhe": "Perdeu o mandato em 13/04/1994 (Resolução nº 61/1994).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-04-13",
+   "fonte": "https://www.camara.leg.br/deputados/133970/biografia"
+  },
+  {
+   "nome": "Carlos Benevides",
+   "cargo_na_epoca": "Deputado federal (CE)",
+   "partido_na_epoca": "PMDB",
+   "tipo": "agente público",
+   "situacao": "cassado",
+   "detalhe": "Perdeu o mandato em 14/04/1994 (Resolução nº 62/1994).",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-04-14",
+   "fonte": "https://www.camara.leg.br/deputados/73702/biografia"
+  },
+  {
+   "nome": "Fábio Raunheitti",
+   "cargo_na_epoca": "Deputado federal (RJ)",
+   "partido_na_epoca": "PTB",
+   "tipo": "agente público",
+   "situacao": "cassado",
+   "detalhe": "Perdeu o mandato em 19/04/1994 (Resolução nº 63/1994). Morreu em 22/12/2005.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-04-19",
+   "fonte": "https://www.camara.leg.br/deputados/65472/biografia"
+  },
+  {
+   "nome": "Raquel Cândido",
+   "cargo_na_epoca": "Deputada federal (RO)",
+   "partido_na_epoca": "PDT",
+   "tipo": "agente público",
+   "situacao": "cassado",
+   "detalhe": "Perdeu o mandato em 19/04/1994 (Resolução nº 64/1994); segundo a Agência Brasil, cassada sob acusação de se apropriar de US$ 800 mil destinados a subvenções sociais.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-04-19",
+   "fonte": "https://www.camara.leg.br/deputados/133864/biografia"
+  },
+  {
+   "nome": "José Geraldo Ribeiro",
+   "cargo_na_epoca": "Deputado federal (MG)",
+   "partido_na_epoca": "PL",
+   "tipo": "agente público",
+   "situacao": "cassado",
+   "detalhe": "Perdeu o mandato em 15/06/1994 (Resolução nº 68/1994); segundo a Agência Brasil, cassado por enviar dinheiro a entidades assistenciais que ele controlava.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994-06-15",
+   "fonte": "https://www.camara.leg.br/deputados/133981/biografia"
+  },
+  {
+   "nome": "Ricardo Fiuza",
+   "cargo_na_epoca": "Deputado federal (PE); ex-ministro da Ação Social (1992)",
+   "partido_na_epoca": "PFL",
+   "tipo": "agente público",
+   "situacao": "absolvido",
+   "detalhe": "Investigado pela CPI; foi absolvido pelo plenário da Câmara e manteve o mandato. Morreu em 12/12/2005.",
+   "liberdade": null,
+   "valor_recebido": null,
+   "devolveu": null,
+   "data_situacao": "1994",
+   "fonte": "https://memoria.ebc.com.br/agenciabrasil/noticia/2006-08-04/saiba-mais-sobre-cpis-do-orcamento-1993-e-da-corrupcao-1988"
+  }
+ ],
+ "fontes": [
+  "https://memoria.ebc.com.br/agenciabrasil/noticia/2006-08-04/saiba-mais-sobre-cpis-do-orcamento-1993-e-da-corrupcao-1988",
+  "https://acervo.oglobo.globo.com/em-destaque/ex-assessor-denunciou-parlamentares-no-escandalo-dos-anoes-do-orcamento-10322623",
+  "https://www.terra.com.br/noticias/brasil/politica/lembre-do-escandalo-dos-anoes-do-orcamento-que-completa-20-anos,3f1376212bd42410VgnVCM3000009af154d0RCRD.html",
+  "https://memorialdademocracia.com.br/card/cpi-investiga-anoes-do-orcamento",
+  "https://pt.wikipedia.org/wiki/An%C3%B5es_do_Or%C3%A7amento",
+  "https://dadosabertos.camara.leg.br/api/v2/deputados?idLegislatura=49&itens=1000&ordenarPor=nome",
+  "https://www.camara.leg.br/deputados/133853/biografia",
+  "https://www.camara.leg.br/deputados/133864/biografia",
+  "https://www.camara.leg.br/deputados/133970/biografia",
+  "https://www.camara.leg.br/deputados/133979/biografia",
+  "https://www.camara.leg.br/deputados/133980/biografia",
+  "https://www.camara.leg.br/deputados/133981/biografia",
+  "https://www.camara.leg.br/deputados/133995/biografia",
+  "https://www.camara.leg.br/deputados/65472/biografia",
+  "https://www.camara.leg.br/deputados/73495/biografia",
+  "https://www.camara.leg.br/deputados/73702/biografia"
+ ],
+ "verificado_em": "2026-10-20"
+}

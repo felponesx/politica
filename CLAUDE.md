@@ -142,6 +142,15 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   Limitações: TSE 2002 marca todos os candidatos como eleitos (2002 só conta para presidente); faltam presidente 2006/2010;
   a pessoa é reconhecida pelo nome no mesmo estado (homônimos não são unidos).
 
+## Escândalos (out/2026)
+- Aba "Escândalos" (acima de Notícias; `P.escandalos`, `P.escandalo`): 12 casos curados em `app/dados/escandalos/<slug>.json`
+  (Collor/PC Farias, Anões do Orçamento, Mensalão, Mensalão mineiro, Sanguessugas, Lava Jato, Zelotes, Covaxin, emendas/orçamento
+  secreto, joias sauditas, fraude no INSS, Banco Master). API `/escandalos` e `/escandalos/{slug}` (`app/escandalos.py`).
+- Regras: toda pessoa, valor e marco tem link de fonte (sem fonte é descartado ao carregar); situação jurídica só com os termos de
+  `SITUACOES` e a data da fonte; aviso de presunção de inocência em todas as telas; "Valor citado" sempre com a frase da fonte;
+  prisão por outro processo não aparece no caso; só entra quem tem investigação formal e situação conhecida e recente.
+- Atualizar: editar o JSON do caso e rodar `python -m scripts.escandalos_copia` (o robô já exporta pelas FIXAS).
+
 ## Padrão visual (v0.9, out/2026)
 - Paleta: azul #2F6FED (links, botões, seleção), azul-marinho #1D2939 (texto), fundo #F5F7FA, pastéis por região
   (`REGCOL`). Bloco CSS "v0.9" no fim do `<style>` do site.
