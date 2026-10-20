@@ -1567,7 +1567,22 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .arv-con{border-left-color:#D92D20}.arv-den{border-left-color:#F79009}.arv-inv{border-left-color:#2F6FED}.arv-abs{border-left-color:#12B76A}.arv-neu{border-left-color:#98A2B3}
 .arv-leg{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 14px;color:var(--muted)}.arv-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px;border-left:5px solid}
 .arv-leg i.arv-con{border-color:#D92D20}.arv-leg i.arv-den{border-color:#F79009}.arv-leg i.arv-inv{border-color:#2F6FED}.arv-leg i.arv-abs{border-color:#12B76A}.arv-leg i.arv-neu{border-color:#98A2B3}
-@media (max-width:700px){.arv-no{width:calc(50% - 6px)}.arv{gap:26px}}
+.arv-ac{display:none;font-size:12px;color:var(--ink2)}
+/* celular: árvore em lista, uma coluna, com um trilho à esquerda ligando os andares (sem linhas cruzando os quadros) */
+@media (max-width:700px){
+ .arv{gap:0;overflow:visible;padding-left:4px}.arv-svg{display:none}
+ .arv-nivel{border-left:2px solid var(--line);margin-left:7px;padding:0 0 18px 16px;gap:10px}
+ .arv-nivel:last-child{padding-bottom:4px}
+ .arv-t{text-align:left;position:relative;font-size:11.5px}
+ .arv-t::before{content:"";position:absolute;left:-23px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--c1);box-shadow:0 0 0 3px var(--surface)}
+ .arv-band{border-top:0;padding-top:0;border-left-style:dashed}.arv-band .arv-t::before{background:#12B76A}.arv-band>p{text-align:left!important}
+ .arv-linha{flex-direction:column;flex-wrap:nowrap;gap:10px}
+ .arv-no{width:100%;padding:10px 12px}
+ .arv-no::before{content:"";position:absolute;left:-17px;top:20px;width:12px;border-top:2px solid var(--line)}
+ .arv-p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+ .arv-no[aria-expanded="true"] .arv-p{display:block}
+ .arv-ac{display:block}
+}
 </style>
 </head>
 <body>
@@ -4458,7 +4473,7 @@ function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.from
  const no=x=>{const p=pes[x.nome]||{},sit=ESC_SIT[p.situacao]||"neu";return`<button type="button" class="arv-no arv-${sit}" data-arv="${esc(x.nome)}" aria-expanded="false">
   <span class="arv-n">${esc(x.nome.replace(/\s*\(.*\)$/,""))}</span>${p.partido_na_epoca?`<span class="esc-p small">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:""}
   <span class="arv-c">${esc(p.cargo_na_epoca||"")}</span>${x.nucleo?`<span class="arv-nuc">${esc(x.nucleo)}</span>`:""}
-  <span class="arv-p">${esc(x.papel)}</span>${escSit(p.situacao)}
+  ${x.acima?`<span class="arv-ac">Responde a: <b>${esc(x.acima.replace(/\s*\(.*\)$/,""))}</b></span>`:""}<span class="arv-p">${esc(x.papel)}</span>${escSit(p.situacao)}
   <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a></span></button>`};
  // quem a Justiça absolveu, teve a condenação anulada ou o processo arquivado não fica nos andares: vai para a faixa de baixo
  const naoConf=x=>["absolvido","condenação anulada","processo arquivado"].includes((pes[x.nome]||{}).situacao);
@@ -4472,7 +4487,7 @@ function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.from
  ${contest.length?`<div class="arv-nivel arv-band"><div class="arv-t">A acusação apontou, mas a Justiça não confirmou</div><p class="small muted" style="margin:0;text-align:center">Absolvidos, com condenação anulada ou processo arquivado. O texto mostra o papel que a acusação descreveu.</p><div class="arv-linha">${contest.map(no).join("")}</div></div>`:""}</div>
  ${fora.length?`<p class="small muted" style="margin:10px 0 0">Fora da árvore (sem papel descrito nas fontes ou acusação descartada pela Justiça): ${fora.map(p=>esc(p.nome.replace(/\s*\(.*\)$/,""))).join(", ")}.</p>`:""}</div>`}
 // linhas da árvore: de cada pessoa até quem está acima dela (quando a fonte diz) ou, sem isso, até o nível de cima
-function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;const svg=box.querySelector(".arv-svg"),B=box.getBoundingClientRect();
+function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;if(matchMedia("(max-width:700px)").matches){box.querySelector(".arv-svg").innerHTML="";return}const svg=box.querySelector(".arv-svg"),B=box.getBoundingClientRect();
  const el=n=>box.querySelector(`[data-arv="${CSS.escape(n)}"]`),pt=(e,emb)=>{const r=e.getBoundingClientRect();return[r.left-B.left+r.width/2,emb?r.bottom-B.top:r.top-B.top]};
  svg.setAttribute("width",B.width);svg.setAttribute("height",B.height);let h="";
  const linhas=[...box.querySelectorAll(".arv-linha")];
