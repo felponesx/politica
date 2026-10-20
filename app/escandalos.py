@@ -49,12 +49,34 @@ def _caso(d: dict) -> dict:
     andamento = sorted([a for a in d.get("andamento") or [] if isinstance(a, dict) and a.get("fato") and _url(a.get("fonte"))],
                        key=lambda a: str(a.get("data") or ""))
     atual = d.get("situacao_atual") if isinstance(d.get("situacao_atual"), dict) and _url((d.get("situacao_atual") or {}).get("fonte")) else None
+    org = _organograma(d["slug"], pessoas)
     return {"slug": d["slug"], "nome": d["nome"], "outros_nomes": d.get("outros_nomes") or [], "periodo": d.get("periodo") or {},
             "ano_revelado": d.get("ano_revelado"), "resumo": d.get("resumo") or "",
             "valores": {"desviado": _valor(v.get("desviado")), "recuperado": _valor(v.get("recuperado")), "observacao": v.get("observacao") or ""},
             "orgaos": [o for o in d.get("orgaos") or [] if isinstance(o, dict) and o.get("nome")], "andamento": andamento,
             "situacao_atual": atual, "pessoas": pessoas, "fontes": [u for u in d.get("fontes") or [] if _url(u)],
-            "verificado_em": d.get("verificado_em"), "aviso": AVISO}
+            "verificado_em": d.get("verificado_em"), "organograma": org, "aviso": AVISO}
+
+
+def _organograma(slug: str, pessoas: list[dict]) -> dict | None:
+    """Papéis segundo a acusação/investigação (app/dados/escandalos/papeis/<slug>.json): nível 1 = apontado como líder,
+    2 = operador/intermediário, 3 = executor/beneficiário. Só entra quem está na lista de pessoas e tem fonte."""
+    arq = PASTA / "papeis" / f"{slug}.json"
+    if not arq.exists():
+        return None
+    d = json.loads(arq.read_text(encoding="utf-8"))
+    nomes = {p["nome"] for p in pessoas}
+    papeis = []
+    for x in d.get("papeis") or []:
+        if not isinstance(x, dict) or x.get("nome") not in nomes or not _url(x.get("fonte")) or x.get("nivel") not in (1, 2, 3):
+            continue
+        papeis.append({"nome": x["nome"], "nivel": x["nivel"], "nucleo": x.get("nucleo"), "papel": x.get("papel") or "",
+                       "citacao": x.get("citacao") or "", "fonte": x["fonte"],
+                       "acima": x.get("acima") if x.get("acima") in nomes and x.get("acima") != x["nome"] else None})
+    if not papeis:
+        return None
+    return {"explicacao": d.get("explicacao") or "", "explicacao_fonte": d.get("explicacao_fonte") if _url(d.get("explicacao_fonte")) else None,
+            "nucleos": [n for n in d.get("nucleos") or [] if isinstance(n, dict) and n.get("nome")], "papeis": papeis}
 
 
 @lru_cache(maxsize=1)

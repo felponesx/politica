@@ -1550,6 +1550,23 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .tag.esc-con{background:#55160C;color:#FDA29B}[data-theme="dark"] .tag.esc-den{background:#4E1D09;color:#FEC84B}[data-theme="dark"] .tag.esc-inv{background:#1C2B5A;color:#A4BCFD}
 [data-theme="dark"] .tag.esc-abs{background:#053321;color:#75E0A7}[data-theme="dark"] .tag.esc-neu,[data-theme="dark"] .tag.lib-liv{background:#344054;color:#EAECF0}[data-theme="dark"] .tag.lib-for{background:#F2F4F7;color:#1D2939}
 @media (max-width:700px){.esc-grid{grid-template-columns:1fr}.esc-tl li{grid-template-columns:1fr;gap:2px}}
+/* árvore do esquema */
+.arv{position:relative;display:grid;gap:34px;padding:6px 0 4px;overflow-x:auto}
+.arv-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.arv-l{fill:none;stroke:var(--slate);stroke-opacity:.45;stroke-width:1.6;stroke-dasharray:4 4}.arv-l.forte{stroke-opacity:.9;stroke-dasharray:none;stroke-width:1.8}
+.arv-nivel{position:relative;display:grid;gap:8px}
+.arv-t{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:center}
+.arv-linha{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.arv-no{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:200px;text-align:left;font:inherit;color:var(--ink);
+ background:var(--surface);border:1px solid var(--line);border-left:5px solid #98A2B3;border-radius:12px;padding:9px 11px;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.arv-no:hover{box-shadow:0 4px 12px rgba(16,24,40,.12)}
+.arv-n{font-weight:700;font-size:14px;line-height:1.25}.arv-c{font-size:12px;color:var(--muted);line-height:1.3}
+.arv-nuc{font-size:11px;font-weight:600;color:var(--c1)}.arv-p{font-size:12.5px;line-height:1.35;color:var(--ink2)}
+.arv-cit{font-size:12px;color:var(--ink2);background:var(--bg);border-radius:8px;padding:6px 8px;margin-top:2px}
+.arv-con{border-left-color:#D92D20}.arv-den{border-left-color:#F79009}.arv-inv{border-left-color:#2F6FED}.arv-abs{border-left-color:#12B76A}.arv-neu{border-left-color:#98A2B3}
+.arv-leg{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 14px;color:var(--muted)}.arv-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px;border-left:5px solid}
+.arv-leg i.arv-con{border-color:#D92D20}.arv-leg i.arv-den{border-color:#F79009}.arv-leg i.arv-inv{border-color:#2F6FED}.arv-leg i.arv-abs{border-color:#12B76A}.arv-leg i.arv-neu{border-color:#98A2B3}
+@media (max-width:700px){.arv-no{width:calc(50% - 6px)}.arv{gap:26px}}
 </style>
 </head>
 <body>
@@ -4433,6 +4450,32 @@ P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos</h1><p>Os principa
   box.innerHTML=`${escAviso(d.aviso)}<div class="filters" style="margin:12px 0"><input id="escQ" placeholder="Buscar caso, pessoa ou partido" style="flex:1;min-width:180px" autocomplete="off"></div><div class="esc-grid" id="escG">${cards||rvazio("Nenhum caso cadastrado ainda.")}</div><p class="small muted" style="margin:12px 0 0">${esc(d.fonte)}</p>`;
   const q=$("#escQ"),G=[...document.querySelectorAll("#escG .esc-card")];q.oninput=()=>{const t=snapNorm(q.value);G.forEach((el,i)=>{const c=d.itens[i];el.hidden=!!t&&!snapNorm([c.nome,...c.outros_nomes,c.resumo,...c.partidos,c._nomes||""].join(" ")).includes(t)})};
   Promise.all(d.itens.map(c=>apiGet("/escandalos/"+c.slug).then(x=>{c._nomes=x.pessoas.map(p=>p.nome).join(" ")}).catch(()=>{})))}).catch(e=>{const b=$("#escL");if(b)b.innerHTML=rerro(e)})}});
+// árvore do esquema: papéis SEGUNDO A ACUSAÇÃO (nível 1 = apontados como chefes, 2 = operadores, 3 = executores/beneficiários),
+// cada um com a fonte; a borda mostra a situação na Justiça (verde = absolvido/anulado/arquivado), para o papel não parecer culpa
+const ESC_NIV=[,"Apontados como chefes do esquema","Operadores e intermediários","Executores e beneficiários"];
+function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.fromEntries(c.pessoas.map(p=>[p.nome,p]));
+ const no=x=>{const p=pes[x.nome]||{},sit=ESC_SIT[p.situacao]||"neu";return`<button type="button" class="arv-no arv-${sit}" data-arv="${esc(x.nome)}" aria-expanded="false">
+  <span class="arv-n">${esc(x.nome.replace(/\s*\(.*\)$/,""))}</span>${p.partido_na_epoca?`<span class="esc-p small">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:""}
+  <span class="arv-c">${esc(p.cargo_na_epoca||"")}</span>${x.nucleo?`<span class="arv-nuc">${esc(x.nucleo)}</span>`:""}
+  <span class="arv-p">${esc(x.papel)}</span>${escSit(p.situacao)}
+  <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a></span></button>`};
+ const niveis=[1,2,3].map(n=>[n,o.papeis.filter(x=>x.nivel===n).sort((a,b)=>String(a.nucleo||"").localeCompare(String(b.nucleo||"")))]).filter(([,l])=>l.length);
+ const fora=c.pessoas.filter(p=>!o.papeis.some(x=>x.nome===p.nome));
+ return`<div class="panel mt"><h2>Como o esquema funcionava <small>segundo a acusação</small></h2>
+ <p class="small muted" style="margin-top:0">${esc(o.explicacao)} ${o.explicacao_fonte?`<a href="${esc(o.explicacao_fonte)}" target="_blank" rel="noopener">fonte</a>`:""} Os papéis são os descritos pela investigação ou pela acusação, não uma conclusão do BRASIL+. A cor da borda mostra a situação na Justiça: quem foi absolvido ou teve a condenação anulada aparece em verde. Toque numa pessoa para ver o trecho da fonte.</p>
+ <div class="arv-leg small"><span><i class="arv-con"></i>Condenado</span><span><i class="arv-den"></i>Réu ou denunciado</span><span><i class="arv-inv"></i>Investigado</span><span><i class="arv-abs"></i>Absolvido, anulado ou arquivado</span><span><i class="arv-neu"></i>Outros</span></div>
+ <div class="arv" id="escArv"><svg class="arv-svg" aria-hidden="true"></svg>${niveis.map(([n,l])=>`<div class="arv-nivel"><div class="arv-t">${ESC_NIV[n]}</div><div class="arv-linha">${l.map(no).join("")}</div></div>`).join("")}</div>
+ ${fora.length?`<p class="small muted" style="margin:10px 0 0">Sem papel descrito nas fontes: ${fora.map(p=>esc(p.nome.replace(/\s*\(.*\)$/,""))).join(", ")}.</p>`:""}</div>`}
+// linhas da árvore: de cada pessoa até quem está acima dela (quando a fonte diz) ou, sem isso, até o nível de cima
+function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;const svg=box.querySelector(".arv-svg"),B=box.getBoundingClientRect();
+ const el=n=>box.querySelector(`[data-arv="${CSS.escape(n)}"]`),pt=(e,emb)=>{const r=e.getBoundingClientRect();return[r.left-B.left+r.width/2,emb?r.bottom-B.top:r.top-B.top]};
+ svg.setAttribute("width",B.width);svg.setAttribute("height",B.height);let h="";
+ const linhas=[...box.querySelectorAll(".arv-linha")];
+ c.organograma.papeis.forEach(x=>{const e=el(x.nome);if(!e)return;const[x2,y2]=pt(e,false);
+  if(x.acima&&el(x.acima)){const[x1,y1]=pt(el(x.acima),true);const my=(y1+y2)/2;h+=`<path class="arv-l forte" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`;return}
+  const li=linhas.indexOf(e.parentElement);if(li<=0)return;const R=linhas[li-1].getBoundingClientRect(),y1=R.bottom-B.top,x1=R.left-B.left+R.width/2,my=(y1+y2)/2;
+  h+=`<path class="arv-l" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`});
+ svg.innerHTML=h}
 P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
  mount(){apiGet("/escandalos/"+slug).then(c=>{const box=$("#escD");if(!box)return;const P_=c.pessoas,dv=c.valores.desviado,rc=c.valores.recuperado;
   const cond=P_.filter(p=>/^condenado|pena cumprida|indultado/.test(p.situacao||"")).length,pres=P_.filter(p=>/preso|domiciliar/.test(p.liberdade||"")).length,forag=P_.filter(p=>p.liberdade==="foragido").length;
@@ -4444,6 +4487,7 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
   <div class="grid g2 mt"><div class="panel"><h2>O que foi</h2><p>${esc(c.resumo)}</p>${c.situacao_atual?`<h3 class="seg-h">Situação hoje</h3><p>${esc(c.situacao_atual.texto)} <a class="small" href="${esc(c.situacao_atual.fonte)}" target="_blank" rel="noopener">fonte, ${escData(c.situacao_atual.data)}</a></p>`:""}</div>
    <div class="panel"><h2>Órgãos responsáveis</h2><div class="esc-org">${c.orgaos.map(o=>`<div><b>${esc(o.nome)}</b><span>${esc(o.papel||"")}</span></div>`).join("")||rvazio("—")}</div></div></div>
   <div class="panel mt"><h2>Andamento</h2><ol class="esc-tl">${c.andamento.map(a=>`<li><span class="esc-dt">${escData(a.data)}</span><span>${esc(a.fato)} <a class="small" href="${esc(a.fonte)}" target="_blank" rel="noopener">fonte</a></span></li>`).join("")}</ol></div>
+  ${escArvore(c)}
   <div class="panel mt"><h2>Pessoas envolvidas</h2><p class="small muted" style="margin-top:0">Cargo e partido da época do caso. Situação na Justiça e prisão na data da fonte de cada linha.</p><div id="escP"></div></div>
   <div class="panel mt" id="escN" hidden><h2>Notícias recentes sobre o caso</h2><div id="escNl"></div></div>
   <div class="panel mt"><h2>Fontes</h2><ul class="esc-fontes">${c.fontes.map(u=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,90))}</a></li>`).join("")}</ul><p class="small muted">Conferido em ${escData(c.verificado_em)}.</p></div>`;
@@ -4454,6 +4498,8 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
   apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;
    $("#escNl").innerHTML=l.map(x=>`<div class="list-row"><div style="flex:1;min-width:0"><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.titulo)}</a><div class="small muted">${esc(x.veiculo||"")} · ${esc((x.data||"").slice(0,10))}</div></div></div>`).join("")}).catch(()=>{});
   document.querySelectorAll('.esc-det').forEach(d=>d.onclick=()=>d.classList.toggle('aberto'));
+  document.querySelectorAll('.arv-no').forEach(b=>b.onclick=ev=>{if(ev.target.closest('a'))return;const ci=b.querySelector('.arv-cit'),ab=ci.hidden;ci.hidden=!ab;b.setAttribute('aria-expanded',ab);escLinhas(c)});
+  escLinhas(c);setTimeout(()=>escLinhas(c),400);const rz=()=>{if(!$('#escArv'))return removeEventListener('resize',rz);escLinhas(c)};addEventListener('resize',rz);
   rowLinks&&rowLinks()}).catch(e=>{const b=$("#escD");if(b)b.innerHTML=rerro(e)})}});
 P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>

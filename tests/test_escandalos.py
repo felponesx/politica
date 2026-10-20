@@ -46,3 +46,24 @@ def test_escandalos(tmp_path, monkeypatch):
         assert cliente.get("/escandalos/nao-existe").status_code == 404
     finally:
         escandalos.casos.cache_clear()
+
+
+def test_organograma_so_com_pessoas_do_caso_e_fonte(tmp_path, monkeypatch):
+    (tmp_path / "caso-teste.json").write_text(json.dumps(CASO), encoding="utf-8")
+    (tmp_path / "papeis").mkdir()
+    (tmp_path / "papeis" / "caso-teste.json").write_text(json.dumps({
+        "slug": "caso-teste", "explicacao": "Dois núcleos.", "explicacao_fonte": F, "nucleos": [{"nome": "Político"}],
+        "papeis": [{"nome": "Fulano", "nivel": 1, "nucleo": "Político", "papel": "apontado como líder", "fonte": F},
+                   {"nome": "Beltrano", "nivel": 2, "papel": "operador", "fonte": F, "acima": "Fulano"},
+                   {"nome": "Outro", "nivel": 3, "papel": "x", "fonte": F, "acima": "Ninguém"},
+                   {"nome": "Sicrano", "nivel": 3, "papel": "fora da lista de pessoas", "fonte": F},
+                   {"nome": "Fulano", "nivel": 4, "papel": "nível inválido", "fonte": F},
+                   {"nome": "Beltrano", "nivel": 3, "papel": "sem fonte"}]}), encoding="utf-8")
+    monkeypatch.setattr(escandalos, "PASTA", tmp_path)
+    escandalos.casos.cache_clear()
+    try:
+        o = cliente.get("/escandalos/caso-teste").json()["organograma"]
+        assert [(x["nome"], x["nivel"], x["acima"]) for x in o["papeis"]] == [("Fulano", 1, None), ("Beltrano", 2, "Fulano"), ("Outro", 3, None)]
+        assert o["explicacao_fonte"] == F
+    finally:
+        escandalos.casos.cache_clear()
