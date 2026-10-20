@@ -319,7 +319,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .hero2 h1{font-size:clamp(28px,3vw,36px);font-weight:400;line-height:1.15;color:var(--navy);letter-spacing:-.01em}
 .hero2 h1 strong{font-weight:700;display:block}
 .hero2 p{color:var(--ink2);font-size:15.5px;margin:12px 0 0;max-width:44ch}
-.hero2 .outline path{fill:none;stroke:var(--contorno);stroke-width:2.5;stroke-linejoin:round}
+.hero2 .outline path{fill:none;stroke:var(--slate);stroke-width:2.5;stroke-linejoin:round}
 .hstats{border-left:1px solid var(--line);padding-left:22px;display:grid;gap:16px}
 .hstat{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--ink2)}
 .hstat svg{width:26px;height:26px;stroke:var(--slate);fill:none;stroke-width:1.5;flex:none}
@@ -343,8 +343,9 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .geo text{font-size:11px;font-weight:600;fill:#3A4252;pointer-events:none}
 .geo.heat path.st{fill-opacity:0;stroke:rgba(22,40,77,.42);stroke-width:.9;stroke-linejoin:round}
 #elmap .geo.heat path.st,#emap .geo.heat path.st{stroke:rgba(255,255,255,.7)}
-/* contorno do país: traço largo por baixo das cores, só a borda de fora aparece */
-.geo .hm-borda path,.geo .br-borda path{fill:none;stroke:var(--contorno);stroke-width:4;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
+/* sombra suave em volta do país (no lugar de um traço): escura no claro, brilho claro no escuro */
+.geo .hm-borda{display:none}
+svg.geo{overflow:visible;filter:drop-shadow(0 1px 1.5px var(--sombra1)) drop-shadow(0 6px 14px var(--sombra2))}
 .geo.heat path.st:hover{stroke:var(--navy);stroke-width:1.6;filter:none}
 .geo.heat path.st.sel{stroke:var(--navy);stroke-width:2.2}
 .legend .hgrad{display:inline-block;width:120px;height:9px;border-radius:5px;vertical-align:middle;margin:0 6px}
@@ -452,7 +453,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .learn{background:var(--soft);border:1px solid var(--line)}
 .ico,.up .q,.soc a,.trust{background:var(--soft)}
 .prof .ph2{background:var(--tint);color:var(--ink)}
-.hero2 .outline path{stroke:var(--contorno)}
+.hero2 .outline path{stroke:#B7BFCB}
 .hstat svg{stroke:var(--muted)}
 .kc .d svg{stroke:var(--slate)}
 .brand b{color:var(--ink)}
@@ -1389,10 +1390,10 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 /* ===================== v0.8: visual limpo e profissional =====================
    Poucas cores: tudo em tons de cinza e azul; cor viva só nos dados que importam (os 3 maiores) e pastel nos menores. */
 :root{--bg:#F5F7FA;--line:#E4E8EE;--line2:#EEF1F5;--ink:#1D2939;--navy:#1D2939;--ink2:#475467;--muted:#7A8496;
- --contorno:#111827;--c1:#2F6FED;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2F6FED;--r-mid:#78A5F9;--r-low:#BCD0F7;--foco:rgba(47,111,237,.14);
+ --sombra1:rgba(15,23,42,.30);--sombra2:rgba(15,23,42,.20);--c1:#2F6FED;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2F6FED;--r-mid:#78A5F9;--r-low:#BCD0F7;--foco:rgba(47,111,237,.14);
  --d1:#A4BFE5;--d2:#D3DCE9;--d3:#DCE3EE;--d4:#E3E8F0;--d5:#E8ECF2}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--contorno:#FFFFFF;--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#698EC3;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
-:root[data-theme="dark"]{--contorno:#FFFFFF;--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#698EC3;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sombra1:rgba(255,255,255,.28);--sombra2:rgba(255,255,255,.14);--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#698EC3;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
+:root[data-theme="dark"]{--sombra1:rgba(255,255,255,.28);--sombra2:rgba(255,255,255,.14);--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#698EC3;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
 body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .ph h1{font-size:30px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
 .ph p{color:var(--ink2);max-width:72ch}
@@ -1764,8 +1765,7 @@ let hl="";if(heat){const id="hm"+(++HEATN),todos=UFS.map(u=>`<path d="${GEO.p[u.
  hl=`<defs><clipPath id="${id}c">${todos}</clipPath><filter id="${id}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(GEO.w/45).toFixed(1)}"/></filter></defs><g class="hm" style="pointer-events:none"><g class="hm-borda">${todos}</g>${cam}<g clip-path="url(#${id}c)"><g filter="url(#${id}f)">${cam}</g></g></g>`}
 const sp=UFS.find(u=>u.uf===sel);const top=sp?`<path class="st sel" d="${GEO.p[sel]}" fill="none" style="pointer-events:none"/>`:"";
 const lb=o.labels===false?"":UFS.filter(u=>!["DF","SE","AL","RN","PB","ES","RJ"].includes(u.uf)||o.allLabels).map(u=>`<text x="${GEO.c[u.uf][0]}" y="${GEO.c[u.uf][1]+4}" text-anchor="middle">${u.uf}</text>`).join("");
-const borda=heat?"":`<g class="br-borda" aria-hidden="true">${UFS.map(u=>`<path d="${GEO.p[u.uf]}"/>`).join("")}</g>`;
-return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${borda}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion||!f?"":legFaixas(F,METRICS[metric][2])}`}
+return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion||!f?"":legFaixas(F,METRICS[metric][2])}`}
 function cartogram(metric,sel,regFilter){return brMap(metric,sel,regFilter)}
 function ufPanel(u){return`<div class="crumb">Brasil / ${REG[u.reg]}</div><h3 style="font-size:22px">${u.nome}</h3><p class="muted small" style="margin:2px 0 14px">Capital: ${u.cap}</p>
 <div class="facts"><div><span>Gastos no ano</span>${brl(u.gasto)}</div><div><span>População</span>${nf(Math.round(u.pop))}</div><div><span>Gasto por habitante</span>R$ ${nf(Math.round(u.pc))}</div><div><span>Contratos</span>${nf(u.contratos)}</div><div><span>Obras</span>${nf(u.obras)}</div><div><span>Projetos</span>${nf(u.projetos)}</div><div><span>Arrecadação federal</span>${brl(u.arr)}</div><div><span>Retorno da União</span>${brl(u.ret)}</div></div>
