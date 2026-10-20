@@ -38,6 +38,8 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
 EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
           ("noticias-politica", {}), ("bcb-scr-estados", {}),
+          # situação de cada proposição (arquivo anual da Câmara): anos recentes; o histórico desde 1985 vai no HISTORICO
+          ("camara-proposicoes-situacao", {"desde": date.today().year - 3}),
           # gastos por função (SICONFI RREO, desde 2015): anos fechados e o ano atual até o último bimestre publicado
           *[("siconfi-despesas-funcao", {"ano": a}) for a in range(2015, date.today().year)],
           ("siconfi-despesas-funcao", {"ano": date.today().year, "bimestre": max(1, (date.today().month - 2) // 2)}),
@@ -47,7 +49,9 @@ EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.to
 # histórico desde 1985 (volta das eleições diretas) dos tipos de proposição de maior peso; os PLs ordinários são volume demais
 HISTORICO = [("camara-proposicoes", {"inicio": date(a, 1, 1), "fim": min(date(a + 4, 12, 31), date.today()),
                                        "tipos": ["PEC", "PLP", "MPV", "PDL", "PDC", "PLN"]})
-             for a in range(1985, date.today().year + 1, 5)]
+             for a in range(1985, date.today().year + 1, 5)] + (
+    # anos antigos mudam pouco: a situação desde 1985 é atualizada só aos domingos (um arquivo grande por ano)
+    [("camara-proposicoes-situacao", {"desde": 1985})] if date.today().weekday() == 6 else [])
 SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}),
              *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 

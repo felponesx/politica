@@ -40,6 +40,7 @@ class ProposicaoOut(Base):
     ano: int | None
     ementa: str | None
     data_apresentacao: date | None
+    situacao: str | None = None
 
 
 class DespesaOut(Base):

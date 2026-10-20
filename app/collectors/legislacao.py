@@ -5,6 +5,7 @@ Ligação norma ↔ projeto de origem: a Câmara informa no detalhe da proposiç
 (URN LexML da norma gerada). Montamos a URN de cada norma e casamos as duas.
 """
 import logging
+from datetime import date
 
 from app import http
 from app.collectors.base import registrar_coleta
@@ -82,6 +83,42 @@ def enriquecer_proposicoes_camara(ano: int, tipos=("PL", "PLP", "PEC", "MPV"), l
             if n.itens % 100 == 0:
                 db.commit()
         db.commit()
+        vincular_por_urn(db)
+    return n.itens
+
+
+ARQ_PROPOSICOES = "https://dadosabertos.camara.leg.br/arquivos/proposicoes/json/proposicoes-{ano}.json"
+
+
+def situacao_proposicoes_camara(ano: int | None = None, desde: int | None = None):
+    """Situação atual (último status) e data de apresentação de todas as proposições da Câmara, pelo arquivo anual
+    de dados abertos (um download por ano, em vez de uma consulta por proposição). Só atualiza as que já estão no banco."""
+    hoje = date.today().year
+    anos = range(int(desde), hoje + 1) if desde else [int(ano or hoje)]
+    with registrar_coleta("camara", "proposicoes_situacao", ano=ano, desde=desde) as (db, n):
+        for a in anos:
+            try:
+                dados = http.get_json(ARQ_PROPOSICOES.format(ano=a)) or {}
+            except Exception as e:  # um ano sem arquivo não derruba os outros
+                log.warning("arquivo de proposições %s falhou: %s", a, e)
+                n.avisos.append(f"{a}: {e}")
+                continue
+            por_id = {str(p.id_externo): p for p in db.query(Proposicao).filter(Proposicao.casa == "camara", Proposicao.ano == a)}
+            for d in achar_lista(dados, ("id", "siglaTipo", "ementa")):
+                p = por_id.get(str(d.get("id")))
+                if not p:
+                    continue
+                st = d.get("ultimoStatus") or {}
+                sit = st.get("descricaoSituacao") or d.get("ultimoStatus_descricaoSituacao")
+                tram = st.get("descricaoTramitacao") or d.get("ultimoStatus_descricaoTramitacao")
+                if sit or tram:
+                    p.situacao = (sit or tram)[:300]
+                if not p.data_apresentacao:
+                    p.data_apresentacao = para_data(d.get("dataApresentacao"))
+                if d.get("urnFinal") and not p.urn_final:
+                    p.urn_final = d["urnFinal"]
+                n += 1
+            db.commit()
         vincular_por_urn(db)
     return n.itens
 

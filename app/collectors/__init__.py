@@ -25,6 +25,7 @@ _TAREFAS_BRUTAS = {
     "receita-arrecadacao": receita.coletar_arrecadacao_estados,  # ano_minimo, arquivo_local
     "legislacao-normas": legislacao.coletar_normas,          # ano, tipos
     "camara-proposicoes-detalhe": legislacao.enriquecer_proposicoes_camara,  # ano
+    "camara-proposicoes-situacao": legislacao.situacao_proposicoes_camara,  # ano ou desde (arquivo anual)
     "tesouro-transferencias": tesouro.coletar_transferencias,    # ano
     # v0.2
     "ibge-municipios": municipios.coletar_municipios,

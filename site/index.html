@@ -1413,7 +1413,7 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .geo.heat path.st:hover{stroke:#fff;stroke-width:2;filter:drop-shadow(0 0 2px rgba(20,40,80,.35))}
 .legend .hgrad{height:8px;width:140px}
 /* troca de tela suave */
-@media (prefers-reduced-motion:no-preference){#view.entra>*{animation:entra .22s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:no-preference){#view.entra>*{animation:entra .22s cubic-bezier(.2,.7,.2,1) backwards}
  @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
 #view.zooming.entra>*,#view.stfocus.entra>*{animation:none}
 
@@ -1464,7 +1464,9 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 #view .kpi,.pop-b .kpi{padding:14px 16px;border:1px solid var(--line)!important;border-radius:12px;background:var(--surface);min-width:0}
 #view .panel .kpi,.pop-b .panel .kpi{background:var(--bg);border-color:transparent!important}
 #view .kpi span,.pop-b .kpi span{font-size:12.5px;color:var(--muted);line-height:1.3}
-#view .kpi strong,.pop-b .kpi strong{font-size:24px!important;font-weight:650;color:var(--ink);margin-top:6px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view .kpi strong,.pop-b .kpi strong{font-size:24px!important;font-weight:650;color:var(--ink);margin-top:6px;line-height:1.15;overflow-wrap:anywhere}
+/* menu aberto (pílulas) sempre por cima do que vem depois */
+.panel:has(.pill-w.open),.pill-w.open{position:relative;z-index:80}
 #view .kpi em,.pop-b .kpi em{display:block;font-style:normal;font-size:12px!important;color:var(--muted);margin-top:5px;line-height:1.35}
 #view .seg-ano .kpi,#view .kpis-dia .kpi{padding:14px 16px}
 #view .facts,.pop-b .facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
@@ -1476,6 +1478,27 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .bar{border-radius:999px}.bar i{border-radius:999px}
 @media (max-width:640px){#view .kpis,.pop-b .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#view .kpi,.pop-b .kpi{padding:11px 12px}
  #view .kpi strong,.pop-b .kpi strong{font-size:18px!important}#view .facts,.pop-b .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:14px}}
+
+/* dois gráficos: maiores e menores */
+.rk-duplo{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:4px}
+.rk{background:var(--bg);border-radius:12px;padding:14px 16px}
+.rk-t{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink);margin:0 0 8px}.rk-t i{width:10px;height:10px;border-radius:3px}
+.rk-l{display:grid;grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"p n v" ". b b";gap:3px 8px;align-items:center;padding:6px 0;font-size:13.5px}
+.rk-p{grid-area:p;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.rk-l a{grid-area:n;color:var(--ink2);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-l a:hover{color:var(--c1)}
+.rk-l b{grid-area:v;font-variant-numeric:tabular-nums;font-weight:500;color:var(--ink2)}
+.rk-b{grid-area:b;height:10px;background:var(--line2);border-radius:999px;overflow:hidden}.rk-b i{display:block;height:100%;border-radius:999px}
+.rk-top a,.rk-top b{color:var(--ink);font-weight:600}.rk-top .rk-p{color:var(--ink);font-weight:600}
+.zside .rk-duplo{grid-template-columns:1fr}
+
+.sit-p{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;line-height:1.35}
+.sit-ok{background:#DCF3E6;color:#11693A}.sit-stop{background:#FDE2E1;color:#A61B1B}.sit-off{background:#ECEEF2;color:#5A6474}
+.sit-wait{background:#FDF0D5;color:#8A5A00}.sit-vote{background:#E1EAFD;color:#1F4FB8}.sit-go{background:#EEF2F8;color:#33415C}
+[data-theme="dark"] .sit-ok{background:#163A27;color:#7DDBA4}[data-theme="dark"] .sit-stop{background:#43201F;color:#F2A3A0}[data-theme="dark"] .sit-off{background:#2A303B;color:#AAB2C0}
+[data-theme="dark"] .sit-wait{background:#3E3117;color:#F2CB7A}[data-theme="dark"] .sit-vote{background:#1F2E52;color:#9DB9F7}[data-theme="dark"] .sit-go{background:#232B38;color:#C5CDDA}
+
+.sd{font-weight:600;font-variant-numeric:tabular-nums}.sd-mais{color:#11693A}.sd-menos{color:#B4441A}
+[data-theme="dark"] .sd-mais{color:#7DDBA4}[data-theme="dark"] .sd-menos{color:#F5A47E}
 </style>
 </head>
 <body>
@@ -1693,8 +1716,9 @@ function heatCor(t){t=Math.max(0,Math.min(1,+t||0))*(SCALE.length-1);const i=Mat
 // 5 faixas de cor sólida com o mesmo número de estados em cada uma (um estado muito grande não apaga os outros),
 // e os limites de cada faixa escritos na legenda
 function faixasDe(vals){const v=vals.filter(x=>x!=null&&isFinite(x)).sort((a,b)=>a-b);if(!v.length)return null;const q=k=>v[Math.min(v.length-1,Math.floor(k*v.length/5))];return{mn:v[0],mx:v[v.length-1],b:[q(1),q(2),q(3),q(4)]}}
-const corFaixa=(F,x)=>F&&x!=null?SCALE[F.b.filter(b=>x>=b).length]:"var(--mapa-vazio)";
-function legFaixas(F,fmt){if(!F)return"";const e=[F.mn,...F.b,F.mx];return`<div class="legend leg-faixas">${SCALE.map((c,k)=>`<span><i style="background:${c}"></i>${k===0?"até "+fmt(e[1]):k===4?fmt(e[4])+" ou mais":fmt(e[k])+" a "+fmt(e[k+1])}</span>`).join("")}</div>`}
+const SCALE_VERM=["#FDECEC","#F9C2C2","#F08585","#DC3F3F","#A61B1B"];
+const corFaixa=(F,x,E=SCALE)=>F&&x!=null?E[F.b.filter(b=>x>=b).length]:"var(--mapa-vazio)";
+function legFaixas(F,fmt,E=SCALE){if(!F)return"";const e=[F.mn,...F.b,F.mx];return`<div class="legend leg-faixas">${E.map((c,k)=>`<span><i style="background:${c}"></i>${k===0?"até "+fmt(e[1]):k===4?fmt(e[4])+" ou mais":fmt(e[k])+" a "+fmt(e[k+1])}</span>`).join("")}</div>`}
 const escalaLeg=()=>`<i class="hgrad" style="background:linear-gradient(90deg,${SCALE.join(",")})"></i>`;
 let HEATN=0;
 const REGCOL={N:"#B9DEC9",NE:"#F5D89C",CO:"#F2B8AA",SE:"#B7CCF3",S:"#D6C8EE"};
@@ -2959,8 +2983,16 @@ const VCOR={Sim:"var(--p2)","Não":"var(--p6)",Abstenção:"var(--p3)",Obstruç�
 const vcor=v=>VCOR[v]||"var(--line)";
 function placarBar(pl){const it=Object.entries(pl||{}).sort((a,b)=>b[1]-a[1]);const T=it.reduce((a,b)=>a+b[1],0)||1;
  return`<div class="rstack">${it.map(([k,v])=>`<i style="width:${v/T*100}%;background:${vcor(k)}" title="${esc(k)}: ${v}"></i>`).join("")}</div><div class="rleg">${it.map(([k,v])=>`<span><i style="background:${vcor(k)}"></i>${esc(k)} <b>${nf(v)}</b></span>`).join("")}</div>`}
-function mapaValores(vals,fmt,{sel}={}){const F=faixasDe(Object.values(vals));
- return brMap(null,sel,null,{fillFn:u=>corFaixa(F,vals[u.uf]),legend:false})+legFaixas(F,fmt)}
+function mapaValores(vals,fmt,{sel,escala=SCALE}={}){const F=faixasDe(Object.values(vals));
+ return brMap(null,sel,null,{fillFn:u=>corFaixa(F,vals[u.uf],escala),legend:false})+legFaixas(F,fmt,escala)}
+/* dois gráficos lado a lado: os 5 maiores e os 5 menores. Os 3 primeiros de cada um em cor forte, os outros 2 na mesma
+   cor mais apagada. "Primeiro" no gráfico dos menores é o menor valor. */
+const COR_ALTO="#DC2626",COR_BAIXO="#16A34A";
+function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,corBaixo=COR_BAIXO,attr="",href=u=>"#/uf/"+u,n=5}={}){
+ const o=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);if(!o.length)return"";
+ const graf=(t,lista,cor)=>{const mx=Math.max(...o.map(u=>Math.abs(vals[u.uf])))||1;
+  return`<div class="rk"><h4 class="rk-t"><i style="background:${cor}"></i>${t}</h4>${lista.map((u,i)=>`<div class="rk-l${i<3?" rk-top":""}"><span class="rk-p">${i+1}º</span><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><div class="rk-b"><i style="width:${Math.max(3,Math.abs(vals[u.uf])/mx*100)}%;background:${cor};opacity:${i<3?1:.38}"></i></div><b>${fmt(vals[u.uf])}</b></div>`).join("")}</div>`};
+ return`<div class="rk-duplo">${graf(alto,o.slice(0,n),corAlto)}${graf(baixo,o.slice(-n).reverse(),corBaixo)}</div>`}
 function demoComAviso(fn,args,msg){const r=fn(...args);$("#view").innerHTML=`<div class="rbanner">${msg} Enquanto isso, esta tela mostra a demonstração.</div>`+r.html;r.mount&&r.mount()}
 function maisBtn(id){return`<div style="text-align:center;margin-top:12px"><button class="btn" id="${id}" type="button" hidden>Carregar mais</button></div>`}
 /* lista paginada genérica */
@@ -3032,15 +3064,25 @@ P.projetos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Projetos e proposiçõ
 <div class="panel"><div class="filters"><input id="prq" placeholder="Palavra da ementa" style="flex:1;min-width:180px" autocomplete="off"><select id="prc" data-titulo="Casa"><option value="">Câmara e Senado</option><option value="camara">Câmara dos Deputados</option><option value="senado">Senado Federal</option></select><select id="prt" data-titulo="Tipo"><option value="">Todos os tipos</option>${["PL","PLP","PEC","MPV","PDL","PDC","PLN","PRC"].map(x=>`<option>${x}</option>`).join("")}</select><select id="pra" data-titulo="Ano"><option value="">Todos os anos (desde 1985)</option>${Array.from({length:new Date().getFullYear()-1984},(_,i)=>new Date().getFullYear()-i).map(x=>`<option>${x}</option>`).join("")}</select></div><div id="prl">${rload()}</div>${maisBtn("prm")}${RSRC("Câmara dos Deputados e Senado Federal")}</div>`,
 mount(){let f={q:"",casa:"",tipo:"",ano:""};
  const pg=listaPaginada({url:()=>"/proposicoes"+qs(f),alvo:"#prl",mais:"#prm",vazio:"Nenhum projeto com esses filtros.",
-  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} proposições</p>`+table([["Proposta",p=>`<a href="#/projeto/r${p.id}"><b style="font-weight:600">${esc((p.sigla_tipo||"")+" "+(p.numero||"")+"/"+(p.ano||""))}</b></a><div class="small muted">${casaCurta(p.casa)} · ${fdr(p.data_apresentacao)}</div>`],["Do que trata",p=>`<span class="rclamp">${esc(p.ementa||"")}</span>`]],it,p=>"#/projeto/r"+p.id),
+  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} proposições</p>`+table([["Proposta",p=>`<a href="#/projeto/r${p.id}"><b style="font-weight:600">${esc((p.sigla_tipo||"")+" "+(p.numero||"")+"/"+(p.ano||""))}</b></a><div class="small muted">${casaCurta(p.casa)}${p.data_apresentacao?" · "+fdr(p.data_apresentacao):""}</div>`],["Do que trata",p=>`<span class="rclamp">${esc(p.ementa||"")}</span>`],...(it.some(p=>p.situacao)?[["Situação",p=>sitProjTag(p.situacao)]]:[])],it,p=>"#/projeto/r"+p.id),
   aoCarregar:(it,tot)=>{if(!tot&&!f.q&&!f.casa&&!f.tipo&&!f.ano)demoComAviso(_projetos,a,"Nenhum projeto coletado ainda (coleta camara-proposicoes).")}});
  pg(true);const re=debounce(()=>pg(true));$("#prq").oninput=e=>{f.q=e.target.value.trim();re()};
  [["#prc","casa"],["#prt","tipo"],["#pra","ano"]].forEach(([s,k])=>$(s).onchange=e=>{f[k]=e.target.value;pg(true)})}}:_projetos(...a);
+/* situação de um projeto em palavras simples, com uma cor por fase (texto oficial da Câmara/Senado no "title") */
+const SIT_PROJ=[[/norma jur|transformad[oa] em (lei|norma)|promulgad|sancionad/i,"Virou lei","ok"],[/vetad/i,"Vetado","stop"],
+ [/arquivad|retirad|prejudicad|devolvid|rejeitad|perdeu a efic|caducou/i,"Arquivado","off"],[/sanç|sancao/i,"Aguardando sanção do Presidente","wait"],
+ [/assinatur/i,"Recolhendo assinaturas","wait"],[/aprecia.{0,8}senado|remetid[ao] ao senado|enviad[ao] ao senado/i,"No Senado","go"],
+ [/aprecia.{0,8}c[aâ]mara|remetid[ao] à c[aâ]mara/i,"Na Câmara","go"],[/pronta para pauta|pronto para pauta|em pauta|ordem do dia|delibera/i,"Aguardando votação","vote"],
+ [/parecer|relator|comiss/i,"Em análise na comissão","go"],[/despacho|providências internas|recebimento|apresenta|leitura/i,"Em análise inicial","go"],
+ [/tramitando em conjunto|apensad/i,"Tramita junto com outro projeto","go"]];
+function sitProj(t){t=String(t||"").trim();if(!t)return null;for(const[r,n,c]of SIT_PROJ)if(r.test(t))return[n,c,t];return[t.charAt(0).toUpperCase()+t.slice(1).toLowerCase(),"go",t]}
+const sitProjTag=t=>{const x=sitProj(t);return x?`<span class="sit-p sit-${x[1]}" title="${esc(x[2])}">${esc(x[0])}</span>`:'<span class="small muted">—</span>'};
 P.projeto=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _projeto(id,...r);
 return{html:`<div class="crumb"><a href="#/projetos">Projetos</a> / Proposição</div><div id="rpj">${rload()}</div>`,
-mount(){apiGet("/proposicoes/"+String(id).slice(1)).then(d=>{const p=d.proposicao,n=d.norma_gerada;
+mount(){apiGet("/proposicoes/"+String(id).slice(1)).then(d=>{const p=d.proposicao,n=d.norma_gerada;const tr=(d.tramitacao||[]).slice().sort((a,b)=>String(b.data||"").localeCompare(String(a.data||"")));
+ const sitTxt=p.situacao||(tr.find(t=>t.situacao)||{}).situacao||(n?"Transformado em Norma Jurídica":"");
  $("#rpj").innerHTML=`<div class="ph"><div><span class="tag">${esc(casaN(p.casa))}</span><h1 style="margin-top:6px">${esc((p.sigla_tipo||"")+" "+(p.numero||"")+"/"+(p.ano||""))}</h1><p>${esc(p.ementa||"")}</p></div></div>
- <div class="kpis"><div class="kpi"><span>Apresentado em</span><strong>${fdr(p.data_apresentacao)}</strong></div><div class="kpi"><span>Situação</span><strong style="font-size:16px">${esc(p.situacao||"Não informada")}</strong></div><div class="kpi"><span>Votações ligadas</span><strong>${d.votacoes.length}</strong></div></div>
+ <div class="kpis"><div class="kpi"><span>Apresentado em</span><strong>${fdr(p.data_apresentacao)}</strong></div><div class="kpi"><span>Situação</span><strong style="font-size:16px!important">${sitTxt?sitProjTag(sitTxt):"Não informada"}</strong>${sitTxt&&sitProj(sitTxt)[0]!==sitTxt?`<em>${esc(sitTxt)}</em>`:""}</div><div class="kpi"><span>Votações ligadas</span><strong>${d.votacoes.length}</strong></div></div>
  ${n?`<div class="panel mt"><h2>Virou lei</h2><a class="list-row rrow" href="#/norma/r${n.id}"><span class="tag">${esc(n.tipo)}</span><div style="flex:1;min-width:0"><b>${esc(n.tipo+" "+(n.numero||"")+"/"+(n.ano||""))}</b><div class="small muted">${esc(n.ementa||"")}</div></div></a></div>`:""}
  ${d.autores&&d.autores.length?`<div class="panel mt"><h2>Autoria</h2>${d.autores.map(a=>a.parlamentar_id?`<a class="list-row rrow" href="#/parlamentar/${a.parlamentar_id}"><b>${esc(a.nome)}</b>${a.partido?" "+sigla(a.partido):""}<span class="small muted">${esc(a.uf||"")}</span></a>`:`<div class="list-row"><b style="font-weight:500">${esc(a.nome)}</b><span class="small muted">${esc(a.tipo||"")}</span></div>`).join("")}</div>`:""}
  ${d.tramitacao&&d.tramitacao.length?`<div class="panel mt"><h2>Tramitação <small>${d.tramitacao.length} passos</small></h2><ol class="rtram">${d.tramitacao.slice().reverse().slice(0,25).map(t=>`<li><span class="small muted">${fdr(t.data)} · ${esc(t.orgao||"")}</span><b>${esc(t.descricao||"")}</b>${t.situacao?`<span class="tag">${esc(t.situacao)}</span>`:""}${t.despacho?`<div class="small muted rclamp">${esc(t.despacho)}</div>`:""}</li>`).join("")}</ol>${d.tramitacao.length>25?'<p class="small muted">Mostrando os 25 passos mais recentes.</p>':""}</div>`:""}
@@ -3144,8 +3186,14 @@ P.arrecadacao=(...a)=>{const r=_arrec(...a);if(!API.on)return r;
 return{html:`<div class="panel" id="flReal" style="margin-bottom:18px"><h2>Arrecadado × retornado por estado (dados oficiais)</h2><div id="flBody">${rload()}</div></div>`+r.html,
 mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estados.filter(e=>e.status==="ok");if(!es.length)throw new Error("dados incompletos. Rode as coletas receita-arrecadacao e tesouro-transferencias");
  const val={};es.forEach(e=>val[e.uf]=e.retorno_por_real_arrecadado);
- $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 6px">Quanto volta em transferências obrigatórias para cada R$ 1 de tributo federal arrecadado no estado, em ${d.ano}. Toque em um estado para abrir a ficha.</p><div id="flMapa" style="max-width:640px;margin:0 auto">${mapaValores(val,x=>"R$ "+x.toFixed(2))}</div><h3 class="seg-h">Todos os estados <small>do que mais recebe de volta ao que menos recebe</small></h3>${table([["Estado",e=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span>`],["Pagou de impostos",e=>brl(e.arrecadado),"n"],["Voltou ao estado",e=>`${brl(e.retornado)}<div class="small muted">R$ ${e.retorno_por_real_arrecadado.toFixed(2).replace(".",",")} por R$ 1</div>`,"n"]],es,e=>"#/uf/"+e.uf)}
- <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}<p class="small muted" style="margin:6px 0 0">Abaixo, o painel de demonstração com as demais visões.</p>`;
+ const rs=x=>"R$ "+x.toFixed(2).replace(".",","),TA=es.reduce((a,e)=>a+e.arrecadado,0),TR=es.reduce((a,e)=>a+e.retornado,0),ganham=es.filter(e=>e.retornado>e.arrecadado),mxR=Math.max(...es.map(e=>e.retorno_por_real_arrecadado));
+ const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
+ $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
+ <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
+ <div class="mapwrap mapbig mt"><div id="flMapa">${mapaValores(val,rs)}</div><div class="zside">${rankDuplo(val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",corAlto:"#1BAF7A",corBaixo:"#EB6834"})}</div></div>
+ <h3 class="seg-h">Todos os estados <small>do que mais recebe de volta ao que menos recebe · toque no título da coluna para ordenar</small></h3>${table([["Estado",e=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span>`],["Pagou de impostos",e=>`${brl(e.arrecadado)}<div class="small muted">${pct(e.participacao_arrecadacao_nacional*100)} do país</div>`,"n"],["Voltou ao estado",e=>`${brl(e.retornado)}<div class="small muted">${pct(e.participacao_nas_transferencias*100)} dos repasses</div>`,"n"],["Saldo",saldo,"n"],["Para cada R$ 1",e=>`<b>${rs(e.retorno_por_real_arrecadado)}</b><div class="bar" style="height:6px;margin-top:5px;min-width:80px"><i style="width:${Math.max(2,e.retorno_por_real_arrecadado/mxR*100)}%;background:${e.retorno_por_real_arrecadado>=1?"#1BAF7A":"#EB6834"}"></i></div>`,"n"]],es,e=>"#/uf/"+e.uf)}
+ <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
+ <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
  bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks()}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
 
 /* ---------- eleições reais (TSE) ---------- */
@@ -4150,10 +4198,9 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    if(k&&o[k]!=null){const taxa=B.populacao?o[k]/B.populacao*1e5:null;return kp("Por dia no Brasil",dias?(o[k]/dias<10?n1(o[k]/dias):n0(o[k]/dias)):"—",`média dos últimos 12 meses`)+kp("Em 12 meses",n0(o[k]),ref.ocorr)+(taxa!=null?kp("Por 100 mil habitantes",n1(taxa),"no país"):"")}
    return f(B)!=null?kp("Brasil",fmt(f(B)),sub):""};
   const desenha=()=>{const[nome,f,fmt,sub]=SEG_MET[met];const vals={};UFS.forEach(u=>{vals[u.uf]=f(d.estados[u.uf])});
-   $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt);$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
-   const ord=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);
-   const linha=(u,i)=>`<div class="rl"><i style="background:${rankCor(i,ord.length)};border-radius:50%"></i><a href="#/seguranca" data-segz="${u.uf}"${i<3?' style="font-weight:600"':""}>${u.nome}</a><b>${fmt(vals[u.uf])}</b><span></span></div>`;
-   $("#segside").innerHTML=`<div class="small muted" style="margin-bottom:4px">Maiores</div>${ord.slice(0,5).map(linha).join("")}<div class="small muted" style="margin:10px 0 4px">Menores</div>${ord.slice(-5).map((u,i)=>linha(u,ord.length-5+i)).join("")}`;
+   $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt,{escala:met==="policia"?SCALE:SCALE_VERM});$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
+   const pol=met==="policia";
+   $("#segside").innerHTML=rankDuplo(vals,fmt,{alto:pol?"Mais policiais":"Mais violentos",baixo:pol?"Menos policiais":"Menos violentos",corAlto:pol?"#2F6FED":COR_ALTO,corBaixo:pol?"#93B4F5":COR_BAIXO,attr:"data-segz",href:()=>"#/seguranca"});
    bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ();graf()};
   const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
   const graf=()=>{const w=$("#segchartw");if(!w)return;const k=SEG_SERIE[met]||(met.startsWith("c_")?met.slice(2):null);const pts=k?sm.filter(x=>x[k]!=null).map(x=>({data:x.mes,valor:x[k]})):[];
@@ -4169,7 +4216,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   const HZ={card:"#hsegcard",main:"#hsegmain",holder:"#hsegstate",map:"#hsegmap",back:"‹ Voltar ao Brasil",render:uf=>segEstado(uf)};
   alvo.insertAdjacentHTML("afterend",`<div class="panel" id="hsegcard"><div id="hsegmain" class="zmain"><div class="hd"><div><h2>Segurança pública no Brasil</h2><p>${ref.ocorr?`Sinesp, ${ref.ocorr}`:""}${ref.prisional?`${ref.ocorr?"; ":""}presos: ${ref.prisional}`:""}</p></div><a href="#/seguranca">Ver tudo</a></div>
    <div class="kpis kpis-c">${o.homicidios_por_dia!=null?kp("Homicídios por dia",n1(o.homicidios_por_dia),`${n1(o.taxa_homicidio)} por 100 mil hab.`):""}${o.detidos_por_dia!=null?kp("Presos por mandado, por dia",n1(o.detidos_por_dia)):""}${p.populacao!=null?kp("Presos no país",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`):""}${p.presos_por_dia!=null?kp("Entram nas prisões por dia",n1(p.presos_por_dia)):""}${p.saidas_temporarias?kp("Saídas temporárias",n0(p.saidas_temporarias),`${n0(p.abandonos)} não voltaram`):""}${gv(B,"efetivo","policiais_por_mil")!=null?kp("Policiais por mil hab.",n1(B.efetivo.policiais_por_mil)):""}</div>
-   ${temMapa?`<div class="hseg-l"><div class="zside">${(()=>{const o=UFS.filter(u=>vals[u.uf]!=null).sort((x,y)=>vals[y.uf]-vals[x.uf]);const ln=u=>`<div class="rl"><i style="background:var(--p6);border-radius:50%;opacity:.7"></i><a href="#/uf/${u.uf}" data-hsegz="${u.uf}">${u.nome}</a><b>${n1(vals[u.uf])}</b><span></span></div>`;return`<div class="small muted" style="margin-bottom:4px">Mais violentos</div>${o.slice(0,5).map(ln).join("")}`})()}</div><div class="zside">${(()=>{const o=UFS.filter(u=>vals[u.uf]!=null).sort((x,y)=>vals[y.uf]-vals[x.uf]);const ln=u=>`<div class="rl"><i style="background:var(--p6);border-radius:50%;opacity:.7"></i><a href="#/uf/${u.uf}" data-hsegz="${u.uf}">${u.nome}</a><b>${n1(vals[u.uf])}</b><span></span></div>`;return`<div class="small muted" style="margin-bottom:4px">Menos violentos</div>${o.slice(-5).map(ln).join("")}`})()}</div></div>
+   ${temMapa?`${rankDuplo(vals,n1,{alto:"Mais violentos",baixo:"Menos violentos",attr:"data-hsegz"})}
    <p class="small muted" style="margin:10px 0 0">Homicídios por 100 mil habitantes nos últimos 12 meses. Escolha um estado para ver as taxas dele: presos, homicídios, prisões por dia, saídas temporárias e policiais.</p>
    <label class="small muted" style="display:block;margin-top:8px">Ver um estado <select id="hsegsel" style="margin-left:6px"><option value="">Escolha...</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></label>`:""}
    </div><div id="hsegstate" style="display:none"></div></div>`);
@@ -4213,9 +4260,8 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
   <div id="dvDet" class="mt"></div>`;
   const desenha=()=>{const q=quadroDivida(tipo,D);$("#dvQ").innerHTML=q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"";
    const m=DIV_MAPA[tipo](D,M);const card=$("#dvcard");if($("#dvstate").style.display!=="none")inlineZoomOut(DZ);
-   if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f);
-    const o=UFS.filter(u=>m.v[u.uf]!=null).sort((a,b)=>m.v[b.uf]-m.v[a.uf]);const ln=u=>`<div class="rl"><i style="background:var(--p1);border-radius:50%"></i><a href="#/dividas" data-dvz="${u.uf}">${u.nome}</a><b>${m.f(m.v[u.uf])}</b><span></span></div>`;
-    $("#dvside").innerHTML=`<div class="small muted" style="margin-bottom:4px">Maiores</div>${o.slice(0,5).map(ln).join("")}<div class="small muted" style="margin:10px 0 4px">Menores</div>${o.slice(-5).map(ln).join("")}`;
+   if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE_VERM});
+    $("#dvside").innerHTML=rankDuplo(m.v,m.f,{alto:"Mais endividados",baixo:"Menos endividados",attr:"data-dvz",href:()=>"#/dividas"});
     bindMap($("#dvmap"),null,null,(u,el)=>inlineZoomIn(DZ,u,el));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})}
    else{card.hidden=true}
    $("#dvDet").innerHTML=TELA_DIV[tipo](D,sub);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};

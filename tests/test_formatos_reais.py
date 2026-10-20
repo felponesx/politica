@@ -605,3 +605,31 @@ def test_noticias_charset_e_html_escapado():
     it = noticias.ler_feed(texto, "Folha de S.Paulo", True, "economia")[0]
     assert it["titulo"] == "Decisão jurídica do TSE" and it["tema"] == "economia"
     assert it["resumo"] == "O presidente do TSE disse"
+
+
+def test_situacao_proposicoes_arquivo_anual(monkeypatch):
+    """Arquivo anual da Câmara (proposicoes-AAAA.json): situação atual e data de apresentação das proposições já salvas."""
+    from app.collectors import legislacao
+    from app.models import Proposicao
+    with SessionLocal() as db:
+        for ide in ("880001", "880002"):
+            if not db.query(Proposicao).filter_by(casa="camara", id_externo=ide).first():
+                db.add(Proposicao(casa="camara", id_externo=ide, sigla_tipo="PEC", numero="1", ano=2025))
+        db.commit()
+    arquivo = {"dados": [
+        {"id": 880001, "uri": "x", "siglaTipo": "PEC", "numero": 1, "ano": 2025, "ementa": "Altera a Constituição",
+         "dataApresentacao": "2025-03-04T10:00", "ultimoStatus": {"dataHora": "2026-09-01T12:00", "siglaOrgao": "PLEN",
+                                                                   "descricaoTramitacao": "Recebimento",
+                                                                   "descricaoSituacao": "Aguardando Deliberação"}},
+        {"id": 880002, "siglaTipo": "PEC", "ementa": "Outra", "ultimoStatus": {"descricaoSituacao": None,
+                                                                               "descricaoTramitacao": "Arquivamento"}},
+        {"id": 999999, "siglaTipo": "PL", "ementa": "Não está no banco", "ultimoStatus": {"descricaoSituacao": "Arquivada"}},
+    ]}
+    monkeypatch.setattr(http, "get_json", lambda url, *a, **k: arquivo if "2025" in url else {"dados": []})
+    assert legislacao.situacao_proposicoes_camara(ano=2025) == 2
+    with SessionLocal() as db:
+        p = {x.id_externo: x for x in db.query(Proposicao).filter(Proposicao.id_externo.in_(["880001", "880002"]))}
+    assert p["880001"].situacao == "Aguardando Deliberação" and p["880001"].data_apresentacao == date(2025, 3, 4)
+    assert p["880002"].situacao == "Arquivamento"
+    lista = cliente.get("/proposicoes", params={"ano": 2025, "tipo": "PEC", "limit": 500}).json()
+    assert any(i.get("situacao") == "Aguardando Deliberação" for i in lista["itens"])
