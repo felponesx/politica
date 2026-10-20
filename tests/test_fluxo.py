@@ -60,3 +60,21 @@ def test_historico_estados_responde():
     d = TestClient(app).get("/historico-estados").json()
     assert set(d) >= {"retorno", "divida", "fonte", "nota"}
     assert set(d["retorno"]) == {"anos", "estados"} and isinstance(d["divida"]["anos"], list)
+
+
+def test_historico_divida_por_quadrimestre():
+    """Um relatório (RGF) já vira série: saldo do ano anterior e cada quadrimestre."""
+    from fastapi.testclient import TestClient
+    from app.db import SessionLocal
+    from app.main import app
+    from app.models import Registro
+    with SessionLocal() as db:
+        db.query(Registro).filter(Registro.chave.like("teste-hist-%")).delete(synchronize_session=False)
+        for col, v in (("SALDO DO EXERCÍCIO ANTERIOR", 100.0), ("Até o 1º Quadrimestre", 110.0),
+                       ("Até o 2º Quadrimestre", 120.0), ("Até o 3º Quadrimestre", 130.0)):
+            db.add(Registro(fonte="siconfi", tipo="rgf-anexo02-divida", chave=f"teste-hist-{col}", uf="XX", ano=2025,
+                            valor=v, dados={"cod_conta": "DividaConsolidada", "coluna": col}))
+        db.commit()
+    d = TestClient(app).get("/historico-estados").json()["divida"]
+    assert d["estados"]["XX"] == {"2024.3": 100.0, "2025.1": 110.0, "2025.2": 120.0, "2025.3": 130.0}
+    assert d["anos"].index("2024.3") < d["anos"].index("2025.1") < d["anos"].index("2025.3")

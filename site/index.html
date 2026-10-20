@@ -4311,7 +4311,8 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
    if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE_VERM});
     const opD={alto:"Mais endividados",baixo:"Menos endividados",attr:"data-dvz",href:()=>"#/dividas"};$("#dvside").innerHTML=rankDuplo(m.v,m.f,{...opD,corAlto:LIN_ALTO[0],corBaixo:LIN_BAIXO[0]});
     if(tipo==="estados")histUF().then(H=>{const dv=H&&H.divida;if(!dv||dv.anos.length<2||!$("#dvside"))return;const pc={};Object.entries(dv.estados).forEach(([uf,o])=>{const pp=UF[uf]&&UF[uf].pop;if(!pp)return;pc[uf]={};Object.entries(o).forEach(([a,v])=>pc[uf][a]=m.v[uf]!=null&&/habitante/i.test(m.t)?v/pp:v)});
-     $("#dvside").innerHTML=linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,nota:"Valores nominais, sem correção pela inflação."});document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
+     const MQ={1:"abr",2:"ago",3:"dez"},rq=a=>{const[y,q]=String(a).split(".");return q?`${MQ[q]}/${y.slice(2)}`:y};
+     $("#dvside").innerHTML=linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,rot:rq,nota:"Dívida consolidada ao fim de cada quadrimestre (abril, agosto e dezembro), pelos relatórios fiscais dos estados. Valores nominais, sem correção pela inflação."});document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
     bindMap($("#dvmap"),null,null,(u,el)=>inlineZoomIn(DZ,u,el));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})}
    else{card.hidden=true}
    $("#dvDet").innerHTML=TELA_DIV[tipo](D,sub);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};

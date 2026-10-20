@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -129,15 +130,22 @@ def historico_estados(db: Session = Depends(get_db)):
             r = fluxo_estado(db, uf, ano).get("retorno_por_real_arrecadado")
             if r is not None:
                 retorno.setdefault(uf, {})[str(ano)] = r
-    divida, ult = {}, {}
+    # dívida: cada RGF traz o saldo do fim do ano anterior e o de cada quadrimestre; um só relatório já dá 4 pontos.
+    # Chaves "ano.quadrimestre": "2024.3" = dezembro de 2024, "2025.1" = abril de 2025 (ordenam certo como texto).
+    divida = {}
     for r in db.scalars(select(Registro).where(Registro.tipo == "rgf-anexo02-divida")):
         d = r.dados or {}
-        if d.get("cod_conta") != "DividaConsolidada" or "Quadrimestre" not in (d.get("coluna") or "") or not r.uf:
+        col = d.get("coluna") or ""
+        if d.get("cod_conta") != "DividaConsolidada" or not r.uf or r.valor is None:
             continue
-        k = (r.uf, r.ano)
-        if k not in ult or d["coluna"] > ult[k]:  # o quadrimestre mais recente de cada ano
-            ult[k] = d["coluna"]
-            divida.setdefault(r.uf, {})[str(r.ano)] = r.valor
+        q = re.search(r"(\d)º\s*Quadrimestre", col)
+        if q:
+            chave = f"{r.ano}.{q.group(1)}"
+        elif "ANTERIOR" in col.upper():
+            chave = f"{r.ano - 1}.3"
+        else:
+            continue
+        divida.setdefault(r.uf, {}).setdefault(chave, r.valor)
     serie = lambda v: {"anos": sorted({a for x in v.values() for a in x}), "estados": v}
     return {"retorno": serie(retorno), "divida": serie(divida),
             "fonte": "Receita Federal, Tesouro Nacional e SICONFI (Tesouro Nacional)",
