@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     perplexity_api_key: str = ""
     perplexity_preset: str = "low"
     perplexity_limite_dia: int = 300     # perguntas por dia (0 = sem limite)
+    perplexity_busca_limite_dia: int = 1000  # buscas por dia na Search API, POST /busca/web (0 = sem limite)
     http_timeout: float = 60.0
     http_retries: int = 4
 

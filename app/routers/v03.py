@@ -434,6 +434,42 @@ def ia_web(corpo: PerguntaWeb):
         raise HTTPException(502, "A pesquisa na internet falhou agora. Tente de novo daqui a pouco.")
 
 
+class BuscaWeb(BaseModel):
+    query: str | list[str] = Field(..., description="Texto da busca ou até 5 textos (cobrados como uma busca)")
+    max_resultados: int = Field(10, ge=1, le=20)
+    pais: str | None = Field("BR", min_length=2, max_length=2)
+    idiomas: list[str] | None = None
+    dominios: list[str] | None = Field(None, description='Só estes sites ("gov.br") ou, com "-", todos menos estes')
+    recencia: str | None = Field(None, description="hour, day, week, month ou year")
+    depois_de: str | None = Field(None, description="Publicado depois de (MM/DD/AAAA)")
+    antes_de: str | None = Field(None, description="Publicado antes de (MM/DD/AAAA)")
+
+
+@router.post("/busca/web", tags=["IA"])
+def busca_web(corpo: BuscaWeb):
+    """Busca na internet (Perplexity Search API): resultados ordenados com título, link, trecho e datas, sem
+    resposta escrita por IA. A chave fica só no servidor (PERPLEXITY_API_KEY)."""
+    import httpx
+
+    from app import busca_web as bw
+    try:
+        return bw.buscar(corpo.query, corpo.max_resultados, corpo.pais, corpo.idiomas, corpo.dominios, corpo.recencia,
+                         corpo.depois_de, corpo.antes_de)
+    except bw.SemChave as e:
+        raise HTTPException(503, str(e))
+    except bw.LimiteDiario as e:
+        raise HTTPException(429, str(e))
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    except httpx.HTTPStatusError as e:
+        codigo = e.response.status_code
+        raise HTTPException(429 if codigo == 429 else 502,
+                            "Muitas buscas seguidas; tente de novo daqui a pouco." if codigo == 429 else
+                            "A busca na internet falhou agora. Tente de novo daqui a pouco.")
+    except (httpx.HTTPError, RuntimeError):
+        raise HTTPException(502, "A busca na internet falhou agora. Tente de novo daqui a pouco.")
+
+
 @router.get("/ia/indice", tags=["IA"])
 def ia_indice():
     """Índice da IA do site (rankings de gastos da cota, mais votados e mandatos desde 1994).

@@ -4573,12 +4573,20 @@ const IA_FERR=[
   {ano:{type:"integer"},uf:{type:"string",description:"sigla do estado ou BR"},cargo:{type:"string"},turno:{type:"integer"}},iaEleicao,"Abrindo o resultado da eleição"],
  ["resumo_estado","Resumo de um estado: população, gastos, arrecadação e outros números do BRASIL+.",{uf:{type:"string"}},iaEstado,"Abrindo o resumo do estado"],
  ["buscar","Busca no site por pessoa, órgão, empresa, lei, contrato ou município; devolve ids e títulos.",{termo:{type:"string"}},iaBuscar,"Buscando no site"]];
-// pesquisa na internet (Perplexity): só com o servidor BRASIL+ no ar (a chave fica no servidor, rota POST /ia/web)
+// internet (Perplexity): só com o servidor BRASIL+ no ar (a chave fica no servidor). Claude: buscar_na_web (Search API,
+// POST /busca/web, resultados crus); modo simples: iaWeb (Agent API, POST /ia/web, resposta pronta com fontes)
 const iaWebOn=()=>API.on&&!API.snap&&API.base!=null;
 async function iaWeb({pergunta}){if(!iaWebOn())return{erro:"Pesquisa na internet indisponível nesta versão do site."};
  try{const r=await fetch(API.base+"/ia/web",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({pergunta:String(pergunta||"").slice(0,600)})});
   const d=await r.json().catch(()=>({}));return r.ok?d:{erro:d.detail||"A pesquisa na internet falhou."}}catch(e){return{erro:"A pesquisa na internet falhou."}}}
-const IA_WEB=["pesquisar_web","Pesquisa na internet (Perplexity) fatos recentes ou gerais que NÃO estão nos dados do BRASIL+ (ex.: o que aconteceu numa votação de ontem, quem é tal pessoa, contexto de um tema). Devolve resposta, fontes (links) e aviso.",{pergunta:{type:"string"}},iaWeb,"Pesquisando na internet"];
+// para o Claude: resultados crus da Perplexity Search API (POST /busca/web); ele mesmo escreve a resposta com as fontes
+async function iaBuscaWeb({consultas,recencia,dominios}){if(!iaWebOn())return{erro:"Busca na internet indisponível nesta versão do site."};
+ const q=(Array.isArray(consultas)?consultas:[consultas]).map(x=>String(x||"").trim()).filter(Boolean).slice(0,5);if(!q.length)return{erro:"Informe o que buscar."};
+ try{const r=await fetch(API.base+"/busca/web",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
+   body:JSON.stringify({query:q.length===1?q[0]:q,max_resultados:8,...(recencia?{recencia}:{}),...(Array.isArray(dominios)&&dominios.length?{dominios}:{})})});
+  const d=await r.json().catch(()=>({}));return r.ok?d:{erro:typeof d.detail==="string"?d.detail:"A busca na internet falhou."}}catch(e){return{erro:"A busca na internet falhou."}}}
+const IA_WEB=["buscar_na_web","Busca na internet (Perplexity Search) fatos recentes ou gerais que NÃO estão nos dados do BRASIL+ (ex.: o que aconteceu numa votação de ontem, quem é tal pessoa, contexto de um tema). Devolve resultados com título, link, trecho e data; escreva a resposta a partir deles e cite os links.",
+ {consultas:{type:"array",items:{type:"string"},description:"1 a 5 buscas curtas em português (cada uma de um ângulo)"},recencia:{type:"string",enum:["hour","day","week","month","year"],description:"opcional: só publicados no último período"},dominios:{type:"array",items:{type:"string"},description:'opcional: só estes sites (ex.: "senado.leg.br") ou, com "-", menos estes'}},iaBuscaWeb,"Buscando na internet"];
 const iaTools=passo=>(iaWebOn()?[...IA_FERR,IA_WEB]:IA_FERR).map(([name,description,props,fn,rotulo])=>({name,description,inputSchema:{type:"object",properties:props},
  async execute(input){passo(rotulo);const r=await fn(input||{});const s=JSON.stringify(r);return s.length>30000?s.slice(0,30000):r}}));
 const IA_REGRAS=()=>`Você é a IA do BRASIL+, site independente de transparência com dados públicos oficiais do Brasil. Hoje é ${new Date().toLocaleDateString("pt-BR")}.
@@ -4589,7 +4597,7 @@ Regras:
 - Seja neutro e apartidário: não dê opinião sobre quem é melhor ou pior, não recomende voto e apresente os fatos de forma equilibrada.
 - Aparecer num ranking ou numa notícia não indica irregularidade. Notícias: são títulos e resumos dos feeds; cite veículo e data e coloque o link; não afirme como fato o que é acusação ou investigação.
 - Homônimos: se houver mais de uma pessoa com o nome, mostre as opções ou pergunte qual.${iaWebOn()?`
-- Internet: use pesquisar_web só quando as outras ferramentas não tiverem a resposta. Diga que a informação veio da internet (não dos dados oficiais do BRASIL+) e coloque os links das fontes.`:""}
+- Internet: use buscar_na_web só quando as outras ferramentas não tiverem a resposta. Diga que a informação veio da internet (não dos dados oficiais do BRASIL+), prefira fontes oficiais e veículos conhecidos, informe a data e coloque os links.`:""}
 - Formato: comece com a resposta em 1 ou 2 frases; depois uma lista curta (até 10 itens) com nomes em negrito; termine com "Fonte: ...". Links: perfil de parlamentar [nome](#/parlamentar/ID), candidato [nome](#/candidato/SQ), notícias com o link original. Valores em reais no formato R$ 1.234,56 (milhões como R$ 1,2 milhão).
 - Perguntas fora de dados públicos brasileiros: responda em uma frase que você só cobre esses dados.`;
 

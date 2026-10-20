@@ -128,6 +128,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   e mesma pergunta guardada 1 h. No site, a ferramenta `pesquisar_web` e o último recurso do modo simples só existem com o
   servidor BRASIL+ no ar (`iaWebOn`; nunca no Artifact/cópia estática). Respostas sempre com fontes e o aviso de que não são
   dados oficiais.
+- Busca na internet crua: `POST /busca/web` (`app/busca_web.py`, Perplexity Search API `POST https://api.perplexity.ai/search`):
+  até 5 consultas por chamada (cobrada como 1), `max_results` 1–20, país BR, filtros de domínio (só permitidos ou só bloqueados
+  com "-"), recência e datas; achata e tira links repetidos; respeita `Retry-After` no 429; limite `perplexity_busca_limite_dia`
+  e cache de 1 h. A IA com o Claude usa a ferramenta `buscar_na_web`; no terminal: `python -m scripts.busca_web "consulta"`.
+  `search_context_size` não existe nessa rota (o tamanho dos trechos é `max_tokens`/`max_tokens_per_page`).
 - Índice `/ia/indice` (`app/ia_indice.py`): ranking da cota parlamentar, até 40 mais votados por eleição e cargo e mandatos
   por pessoa desde 1994. O robô grava junto da cópia (`exportar_snapshot.py`); para uma cópia pronta: `python -m scripts.indice_ia`.
   Limitações: TSE 2002 marca todos os candidatos como eleitos (2002 só conta para presidente); faltam presidente 2006/2010;
