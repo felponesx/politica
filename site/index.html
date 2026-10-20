@@ -14,7 +14,7 @@
   --bg:#F5F7FA; --surface:#FFFFFF; --line:#E3E7ED; --line2:#EEF1F5;
   --ink:#16223B; --ink2:#47546B; --muted:#7A8599;
   --navy:#16284D; --blue:#2C4E8A; --slate:#6F84A8; --tint:#EAF0F8;
-  --p1:#A8C3E6; --p2:#B5D6CE; --p3:#F3D9A4; --p4:#D6C2DA; --p5:#C8D7A6; --p6:#E8B9B0;
+  --p1:#7DACE8; --p2:#8FD3C3; --p3:#F9CE75; --p4:#D6C2DA; --p5:#BCD77D; --p6:#EA9686;
   --ok:#5E9C86; --warn:#B8954A; --stop:#B7746A;
   --serif:"Newsreader", Georgia, "Times New Roman", serif;
   --sans:"Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -26,14 +26,14 @@
   :root:not([data-theme="light"]){
     --bg:#0F1625; --surface:#162034; --line:#25314A; --line2:#1D2840;
     --ink:#E6EBF3; --ink2:#B4BFD2; --muted:#8693AA;
-    --navy:#DCE5F4; --blue:#8FB0E6; --slate:#7F95BB; --tint:#1E2C47;
+    --navy:#DCE5F4; --blue:#6095EC; --slate:#7F95BB; --tint:#1E2C47;
     --p1:#5C7BA6; --p2:#5E8C82; --p3:#9C8A5C; --p4:#86708C; --p5:#7B8C5C; --p6:#9C6F68;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0F1625; --surface:#162034; --line:#25314A; --line2:#1D2840;
   --ink:#E6EBF3; --ink2:#B4BFD2; --muted:#8693AA;
-  --navy:#DCE5F4; --blue:#8FB0E6; --slate:#7F95BB; --tint:#1E2C47;
+  --navy:#DCE5F4; --blue:#6095EC; --slate:#7F95BB; --tint:#1E2C47;
   --p1:#5C7BA6; --p2:#5E8C82; --p3:#9C8A5C; --p4:#86708C; --p5:#7B8C5C; --p6:#9C6F68;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
@@ -319,7 +319,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .hero2 h1{font-size:clamp(28px,3vw,36px);font-weight:400;line-height:1.15;color:var(--navy);letter-spacing:-.01em}
 .hero2 h1 strong{font-weight:700;display:block}
 .hero2 p{color:var(--ink2);font-size:15.5px;margin:12px 0 0;max-width:44ch}
-.hero2 .outline path{fill:none;stroke:var(--slate);stroke-width:2.5;stroke-linejoin:round}
+.hero2 .outline path{fill:none;stroke:var(--contorno);stroke-width:2.5;stroke-linejoin:round}
 .hstats{border-left:1px solid var(--line);padding-left:22px;display:grid;gap:16px}
 .hstat{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--ink2)}
 .hstat svg{width:26px;height:26px;stroke:var(--slate);fill:none;stroke-width:1.5;flex:none}
@@ -344,7 +344,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .geo.heat path.st{fill-opacity:0;stroke:rgba(22,40,77,.42);stroke-width:.9;stroke-linejoin:round}
 #elmap .geo.heat path.st,#emap .geo.heat path.st{stroke:rgba(255,255,255,.7)}
 /* contorno do país: traço largo por baixo das cores, só a borda de fora aparece */
-.geo .hm-borda path{fill:none;stroke:rgba(22,40,77,.55);stroke-width:2.4;stroke-linejoin:round}
+.geo .hm-borda path,.geo .br-borda path{fill:none;stroke:var(--contorno);stroke-width:4;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
 .geo.heat path.st:hover{stroke:var(--navy);stroke-width:1.6;filter:none}
 .geo.heat path.st.sel{stroke:var(--navy);stroke-width:2.2}
 .legend .hgrad{display:inline-block;width:120px;height:9px;border-radius:5px;vertical-align:middle;margin:0 6px}
@@ -375,7 +375,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .learn b{color:var(--navy);display:block;margin-bottom:6px}
 .learn p{font-size:12.5px;color:var(--ink2);margin:0 0 8px}
 .prof{display:flex;gap:16px;align-items:center}
-.prof .ph2{width:96px;height:96px;border-radius:50%;background:linear-gradient(160deg,#DCE5F2,#B9C9E2);display:grid;place-items:center;font-size:30px;font-weight:600;color:var(--navy);flex:none}
+.prof .ph2{width:96px;height:96px;border-radius:50%;background:linear-gradient(160deg,#DCE5F2,#92B0E1);display:grid;place-items:center;font-size:30px;font-weight:600;color:var(--navy);flex:none}
 .prof h3{font-size:19px;display:flex;align-items:center;gap:6px}
 .prof h3 svg{width:18px;height:18px}
 .prof .c{font-size:14px;color:var(--ink2);margin-top:4px}
@@ -436,8 +436,8 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 /* ===== v3: mais branco, azul só onde importa ===== */
 :root{--bg:#FFFFFF;--surface:#FFFFFF;--line:#E7E9ED;--line2:#F0F1F3;--ink:#1D2330;--ink2:#4D5565;--muted:#8A919E;
  --navy:#1D2330;--blue:#2F5597;--accent:#6B7C99;--slate:#A3ABB8;--tint:#F3F4F6;--soft:#F7F8F9}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151C;--surface:#161B23;--line:#272D38;--line2:#1E242D;--ink:#E7EAF0;--ink2:#B5BCC8;--muted:#8A919E;--navy:#E7EAF0;--blue:#8FB0E6;--accent:#8C9AB3;--slate:#6B7380;--tint:#1E242D;--soft:#1A1F27}}
-:root[data-theme="dark"]{--bg:#11151C;--surface:#161B23;--line:#272D38;--line2:#1E242D;--ink:#E7EAF0;--ink2:#B5BCC8;--muted:#8A919E;--navy:#E7EAF0;--blue:#8FB0E6;--accent:#8C9AB3;--slate:#6B7380;--tint:#1E242D;--soft:#1A1F27}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151C;--surface:#161B23;--line:#272D38;--line2:#1E242D;--ink:#E7EAF0;--ink2:#B5BCC8;--muted:#8A919E;--navy:#E7EAF0;--blue:#6095EC;--accent:#8C9AB3;--slate:#6B7380;--tint:#1E242D;--soft:#1A1F27}}
+:root[data-theme="dark"]{--bg:#11151C;--surface:#161B23;--line:#272D38;--line2:#1E242D;--ink:#E7EAF0;--ink2:#B5BCC8;--muted:#8A919E;--navy:#E7EAF0;--blue:#6095EC;--accent:#8C9AB3;--slate:#6B7380;--tint:#1E242D;--soft:#1A1F27}
 .panel,.kpis{box-shadow:none}
 .top{border-bottom:1px solid var(--line)}
 .nav a.on{background:var(--tint);color:var(--ink);font-weight:600}
@@ -452,7 +452,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .learn{background:var(--soft);border:1px solid var(--line)}
 .ico,.up .q,.soc a,.trust{background:var(--soft)}
 .prof .ph2{background:var(--tint);color:var(--ink)}
-.hero2 .outline path{stroke:#B7BFCB}
+.hero2 .outline path{stroke:var(--contorno)}
 .hstat svg{stroke:var(--muted)}
 .kc .d svg{stroke:var(--slate)}
 .brand b{color:var(--ink)}
@@ -460,7 +460,7 @@ button.sia{width:calc(100% - 16px);text-align:left;font:inherit;cursor:pointer}
 .pop{background:var(--surface)}
 .pop-b .panel{border-color:var(--line2)}
 tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
-.demo i{background:#D9C68F}
+.demo i{background:#DDBD62}
 
 /* ===== zoom no estado ===== */
 .zoomfx{position:fixed;z-index:70;pointer-events:none;transform-origin:0 0;will-change:transform}
@@ -503,12 +503,12 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .page .ufnav{background:var(--surface)}
 .az{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
 .az button{min-width:30px;height:30px;border:1px solid var(--line);background:var(--surface);border-radius:7px;font-size:12.5px;cursor:pointer;color:var(--ink2);padding:0 8px}
-.az button.on{background:#DCE8F6;border-color:#B9D1EE;color:var(--ink);font-weight:600}
+.az button.on{background:#DCE8F6;border-color:#8FBBF0;color:var(--ink);font-weight:600}
 .az button:disabled{opacity:.35;cursor:default}
 .citylist{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;margin-bottom:6px}
 .citylist button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:9px 11px;cursor:pointer;font-size:13.5px;color:var(--ink)}
-.citylist button:hover{border-color:#B9D1EE}
-.citylist button.on{background:#EEF4FB;border-color:#B9D1EE}
+.citylist button:hover{border-color:#8FBBF0}
+.citylist button.on{background:#EEF4FB;border-color:#8FBBF0}
 .citylist small{color:var(--muted);font-size:11px}
 .citylist span{font-size:11.5px;color:var(--muted)}
 .citycard{margin-top:14px;border-top:1px solid var(--line2);padding-top:16px}
@@ -516,8 +516,8 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .lv0{background:#D7EFE2;color:#2E6A4E}.lv1{background:#FBEACB;color:#7A5814}.lv2{background:#F8D3CB;color:#8A3B2C}
 
 /* ===== estatísticas em pastel ===== */
-:root{--p1:#A9C8EC;--p2:#B3DCC9;--p3:#F3D9A4;--p4:#D3C2EA;--p5:#CFE0A8;--p6:#F2BCAE;--accent:#7FA6D8}
-.bar i{background:#9EC0E8}
+:root{--p1:#7DB2F0;--p2:#8CDBB6;--p3:#F9CE75;--p4:#BC9AE9;--p5:#C3E17E;--p6:#F69981;--accent:#508EDE}
+.bar i{background:#71AAEC}
 .kgrid .kc:nth-child(1) .ico{background:#E3EEFA}.kgrid .kc:nth-child(1) .ico svg{stroke:#4F7DB8}
 .kgrid .kc:nth-child(2) .ico{background:#E1F3EA}.kgrid .kc:nth-child(2) .ico svg{stroke:#3F8A66}
 .kgrid .kc:nth-child(3) .ico{background:#FDF1DA}.kgrid .kc:nth-child(3) .ico svg{stroke:#A97B25}
@@ -525,7 +525,7 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .kpis-c .kpi{position:relative}
 .kpis-c .kpi::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:2px;background:var(--p1)}
 .kpis-c .kpi:nth-child(6n+2)::before{background:var(--p2)}.kpis-c .kpi:nth-child(6n+3)::before{background:var(--p3)}.kpis-c .kpi:nth-child(6n+4)::before{background:var(--p4)}.kpis-c .kpi:nth-child(6n+5)::before{background:var(--p5)}.kpis-c .kpi:nth-child(6n)::before{background:var(--p6)}
-.seg button.on{background:#E3EEFA;border-color:#B9D1EE}
+.seg button.on{background:#E3EEFA;border-color:#8FBBF0}
 
 /* ===== padrão mobile compacto ===== */
 .home,.hl,.hr{min-width:0}
@@ -651,12 +651,12 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .meters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .meter2{position:relative;overflow:hidden}
 .meter2::before{content:"";position:absolute;left:0;top:0;right:0;height:3px}
-.meter2.imp::before{background:#8FCBAF}.meter2.gas::before{background:#F2BCAE}
+.meter2.imp::before{background:#1BAF7A}.meter2.gas::before{background:#EB6834}
 .m-h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .m-h h2{margin:0;font-size:16px}
 .m-h .small{margin-left:auto}
 .m-dot{width:8px;height:8px;border-radius:50%;animation:pulse 1.6s infinite}
-.imp .m-dot{background:#5FAE8A}.gas .m-dot{background:#DE8E7D}
+.imp .m-dot{background:#1BAF7A}.gas .m-dot{background:#EB6834}
 .m-v{font-size:clamp(18px,1.5vw,28px);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
 .m-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 .m-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 12px;font-size:13px}
@@ -727,10 +727,10 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 [data-theme="dark"] .citylist button.on{background:#1F2C44;border-color:#3B5180}
 [data-theme="dark"] .citylist button:hover{border-color:#3B5180}
 [data-theme="dark"] .kgrid .kc .ico{background:#1F2735}
-[data-theme="dark"] .lv0,[data-theme="dark"] .sit-ex{background:#1E3A2E;color:#9FD9BC}
-[data-theme="dark"] .lv1,[data-theme="dark"] .sit-ne{background:#3E3320;color:#F0D49A}
-[data-theme="dark"] .lv2{background:#47292A;color:#F3B3A6}
-[data-theme="dark"] .sit-ap{background:#30284A;color:#CDBDF0}
+[data-theme="dark"] .lv0,[data-theme="dark"] .sit-ex{background:#1E3A2E;color:#75DBA8}
+[data-theme="dark"] .lv1,[data-theme="dark"] .sit-ne{background:#3E3320;color:#F6C96B}
+[data-theme="dark"] .lv2{background:#47292A;color:#F98D77}
+[data-theme="dark"] .sit-ap{background:#30284A;color:#B093F2}
 [data-theme="dark"] [class*="set-"]{background:#232B3A;color:var(--ink2)}
 [data-theme="dark"] .tag{background:#232B3A;color:var(--ink2)}
 [data-theme="dark"] .learn,[data-theme="dark"] .trust,[data-theme="dark"] .ico,[data-theme="dark"] .up .q,[data-theme="dark"] .soc a{background:var(--soft)}
@@ -942,7 +942,7 @@ html,body{overflow-anchor:none}
 .gs-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gsearch kbd{flex:none;margin-left:auto}
 .top{align-items:center}
-.gsearch.ativo{border-color:#9EC0E8;box-shadow:0 0 0 3px rgba(127,166,216,.18);transform:none!important}
+.gsearch.ativo{border-color:#71AAEC;box-shadow:0 0 0 3px rgba(127,166,216,.18);transform:none!important}
 @media (max-width:1100px){.gsearch kbd{display:none}}
 @media (min-width:761px){
  #searchOv{top:var(--sov,74px);padding:0!important;display:none;background:rgba(15,22,37,.18)}
@@ -966,7 +966,7 @@ html,body{overflow-anchor:none}
 .auth form,.cfg-form{display:grid;gap:14px}
 .auth label,.cfg-form label{display:grid;gap:6px;font-size:13px;font-weight:500;color:var(--ink)}
 .auth input[type=text],.auth input[type=email],.auth input[type=password],.cfg-form input,.cfg-form select,.pw input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:15px;background:var(--surface);color:var(--ink);font-weight:400}
-.auth input:focus,.cfg-form input:focus,.cfg-form select:focus{outline:none;border-color:#9EC0E8;box-shadow:0 0 0 3px rgba(127,166,216,.2)}
+.auth input:focus,.cfg-form input:focus,.cfg-form select:focus{outline:none;border-color:#71AAEC;box-shadow:0 0 0 3px rgba(127,166,216,.2)}
 .cfg-form small{font-weight:400;color:var(--muted);font-size:12px}
 .pw{position:relative}.pw input{padding-right:44px}
 .pw-v{position:absolute;right:6px;top:50%;transform:translateY(-50%)!important;width:34px;height:34px;border:0;background:none;color:var(--muted);display:grid;place-items:center;border-radius:8px;box-shadow:none!important}
@@ -977,7 +977,7 @@ html,body{overflow-anchor:none}
 .auth-btn{width:100%;padding:12px;font-size:15px;font-weight:600;text-align:center;display:block;text-decoration:none!important}
 .auth-btn:disabled{opacity:.55;cursor:not-allowed}
 .auth-erro{background:#FCE8E4;color:#8A3B2C;border-radius:9px;padding:9px 12px;font-size:13px}
-[data-theme="dark"] .auth-erro{background:#47292A;color:#F3B3A6}
+[data-theme="dark"] .auth-erro{background:#47292A;color:#F98D77}
 .lnk{background:none;border:0;color:var(--blue);font-size:13px;cursor:pointer;padding:0;display:block;margin:14px auto 0;text-align:center}
 .lnk:disabled{color:var(--muted);cursor:default}
 .auth-row .lnk{display:inline;margin:0}
@@ -987,14 +987,14 @@ html,body{overflow-anchor:none}
 .auth-demo{max-width:420px;font-size:12px;color:var(--muted);text-align:center;margin:14px 0 0}
 .otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .otp input{text-align:center;font-size:22px;font-weight:600;padding:12px 0!important;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:100%}
-.otp input:focus{outline:none;border-color:#9EC0E8;box-shadow:0 0 0 3px rgba(127,166,216,.2)}
+.otp input:focus{outline:none;border-color:#71AAEC;box-shadow:0 0 0 3px rgba(127,166,216,.2)}
 .forca{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:4px;align-items:center;margin-top:-6px}
 .forca i{height:4px;border-radius:2px;background:var(--line2)}
 .forca span{font-size:11.5px;color:var(--muted);margin-left:8px}
-.forca[data-n="0"] i:nth-child(-n+1),.forca[data-n="1"] i:nth-child(-n+1){background:#F2BCAE}
-.forca[data-n="2"] i:nth-child(-n+2){background:#F3D9A4}
-.forca[data-n="3"] i:nth-child(-n+3){background:#B3DCC9}
-.forca[data-n="4"] i{background:#7CC4A4}
+.forca[data-n="0"] i:nth-child(-n+1),.forca[data-n="1"] i:nth-child(-n+1){background:#F69981}
+.forca[data-n="2"] i:nth-child(-n+2){background:#F9CE75}
+.forca[data-n="3"] i:nth-child(-n+3){background:#8CDBB6}
+.forca[data-n="4"] i{background:#4FC992}
 .cfg{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:start}
 .cfg-menu{display:grid;gap:2px;position:sticky;top:calc(var(--toph,74px) + 16px)}
 .cfg-menu a{padding:10px 12px;border-radius:9px;color:var(--ink2);font-size:14px;text-decoration:none!important}
@@ -1007,9 +1007,9 @@ html,body{overflow-anchor:none}
 .cfg-perfil{display:flex;gap:14px;align-items:center;margin-bottom:4px}
 .cfg-perfil .ph2{width:56px;height:56px;border-radius:50%;background:var(--tint);display:grid;place-items:center;font-weight:600;font-size:18px;color:var(--ink)}
 .cfg-perfil b{display:block;font-size:16px}.cfg-perfil span{font-size:12.5px;color:var(--muted)}
-.cfg-perigo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:28px;padding:14px;border:1px solid #F2C6BD;border-radius:12px}
+.cfg-perigo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:28px;padding:14px;border:1px solid #F4A392;border-radius:12px}
 .cfg-perigo b{display:block}.cfg-perigo span{font-size:12.5px;color:var(--ink2)}
-.btn.perigo{color:#B04A3C;border-color:#F2C6BD}
+.btn.perigo{color:#B04A3C;border-color:#F4A392}
 .cfg-lista{display:grid;gap:0;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
 .cfg-lista>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 12px;padding:11px 14px;border-top:1px solid var(--line2)}
 .cfg-lista>div:first-child{border-top:0}
@@ -1031,7 +1031,7 @@ html,body{overflow-anchor:none}
 .tgl input{position:absolute;opacity:0;width:1px;height:1px}
 .tgl i{flex:none;width:42px;height:24px;border-radius:12px;background:#D5DAE1;position:relative;transition:background .2s}
 .tgl i::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .2s}
-.tgl input:checked+i{background:#7CC4A4}.tgl input:checked+i::after{transform:translateX(18px)}
+.tgl input:checked+i{background:#4FC992}.tgl input:checked+i::after{transform:translateX(18px)}
 .tgl input:focus-visible+i{outline:2px solid var(--blue);outline-offset:2px}
 .sheet-acc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
 .sheet-acc a{display:flex;align-items:center;gap:8px;padding:11px 12px;border:1px solid var(--line2);border-radius:10px;font-size:13.5px;color:var(--ink);text-decoration:none!important;min-width:0}
@@ -1056,7 +1056,7 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 /* ===== partido e área de votação ===== */
 .btn-area{display:inline-flex;align-items:center;gap:8px;flex:none;align-self:center}
 .ptag{background:#E3EEFA;color:#2F5597}
-[data-theme="dark"] .ptag{background:#27385A;color:#C7D7F2}
+[data-theme="dark"] .ptag{background:#27385A;color:#9EBDF3}
 .avres{display:flex;align-items:center;gap:12px}.avres b{display:block;font-size:16px}.avres span{font-size:13px;color:var(--ink2)}
 .avc{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 58px 92px;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line2);font-size:13.5px}
 .avc .bar{height:9px}.avc b{text-align:right;font-variant-numeric:tabular-nums}.avc small{color:var(--muted);text-align:right;font-size:12px}
@@ -1138,7 +1138,7 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 .hleg span>i{width:10px;height:10px;border-radius:50%;display:inline-block}
 .hleg b{color:var(--ink);font-weight:600}.hleg em{font-style:normal;color:var(--muted);font-size:11.5px}
 .bubs text{paint-order:stroke;stroke:#fff;stroke-width:3px}
-.casas .panel h2{font-size:14.5px}.casa-on{box-shadow:0 0 0 2px #B9D1EE}
+.casas .panel h2{font-size:14.5px}.casa-on{box-shadow:0 0 0 2px #8FBBF0}
 .sec-t{font-size:17px;margin:24px 0 12px}
 .colgs{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 .colg h2{font-size:14.5px;margin-bottom:6px}.colg .hleg{justify-content:flex-start;flex-direction:column;gap:4px}.colg p{margin:8px 0 0}
@@ -1167,7 +1167,7 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 .indc2{cursor:default}
 .mav.big{width:52px;height:52px;font-size:16px;border-radius:14px}
 .tind{background:#EFE7F9;color:#5E4A86}
-[data-theme="dark"] .tind{background:#30284A;color:#CDBDF0}
+[data-theme="dark"] .tind{background:#30284A;color:#B093F2}
 .sec-big{font-size:22px;margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}
 @media (max-width:760px){.saltos{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:-6px -12px 14px;padding:0 12px}.saltos a{flex:none}}
 @media (max-width:760px){#pessoas-lista>.seg,#pessoas-ind>.seg{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}}
@@ -1183,7 +1183,7 @@ html.sem-animacao .live::before,html.sem-animacao .m-dot{animation:none}
 .minc span{display:block;font-size:11.5px;color:var(--muted);line-height:1.3}
 .minc b{display:block;font-size:13.5px;font-weight:600;margin-top:2px}
 .minc em{font-style:normal;font-size:10.5px;color:#7A5814;background:#FBEACB;border-radius:6px;padding:1px 6px;display:inline-block;margin-top:3px}
-[data-theme="dark"] .minc em{background:#3E3320;color:#F0D49A}
+[data-theme="dark"] .minc em{background:#3E3320;color:#F6C96B}
 @media (max-width:760px){.mingrid{grid-template-columns:minmax(0,1fr);max-height:none}}
 .tdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:0}.tnomes .ac{color:#7A5814}
 #prepNomes:empty{display:none}#prepNomes{margin-top:16px;padding-top:12px;border-top:1px solid var(--line2)}.pn-t{margin-bottom:6px}.tnomes.pn{justify-content:flex-start}
@@ -1291,7 +1291,7 @@ a.rrow b{font-weight:500}
 .g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}@media (max-width:900px){.g5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .dvqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .dvq{display:flex;flex-direction:column;gap:4px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:inherit;text-decoration:none!important;transition:transform .18s,box-shadow .18s,border-color .18s;min-height:160px}
-.dvq:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(15,25,45,.1);border-color:#B8CDEA}
+.dvq:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(15,25,45,.1);border-color:#8FB5EB}
 .dvq-t{font-size:13px;color:var(--muted);font-weight:500}.dvq strong{font-size:26px;letter-spacing:-.02em;color:var(--ink);font-weight:650}.dvq em{font-style:normal;color:var(--ink2);font-size:13px}.dvq small{color:var(--muted);font-size:12px}
 .dvq-a{margin-top:auto;padding-top:10px;color:var(--blue);font-size:13px;font-weight:500}
 .dv-abre{animation:dvAbre .35s cubic-bezier(.2,.7,.2,1)}@keyframes dvAbre{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:none}}
@@ -1313,20 +1313,20 @@ a.rrow b{font-weight:500}
 .seg-efl b{font-variant-numeric:tabular-nums}
 .seg-efl em{grid-column:1/-1;font-style:normal;font-size:12px;color:var(--muted)}
 .seg-efn i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
-.seg-efb{height:8px;background:var(--line2);border-radius:5px;overflow:hidden}.seg-efb i{display:block;height:100%;background:#7FA9DE;border-radius:5px}
+.seg-efb{height:8px;background:var(--line2);border-radius:5px;overflow:hidden}.seg-efb i{display:block;height:100%;background:#4F91E5;border-radius:5px}
 .embl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .embl-card{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
 .embl{flex:none}
-.obcards{display:grid;gap:10px}.obc{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:12px;color:inherit;text-decoration:none!important;background:var(--surface)}.obc:hover{border-color:#B9D1EE}
+.obcards{display:grid;gap:10px}.obc{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:12px;color:inherit;text-decoration:none!important;background:var(--surface)}.obc:hover{border-color:#8FBBF0}
 .obc-t{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.obc-t b{font-weight:600}
 .obet{display:flex;margin:12px 0 4px}.obet.canc{opacity:.8}.obs{flex:1;position:relative;padding-top:16px;font-size:12px;color:var(--muted)}
 .obs::before{content:"";position:absolute;top:5px;left:0;right:0;height:3px;background:var(--line);border-radius:2px}.obs i{position:absolute;top:0;left:0;width:13px;height:13px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
-.obs.feito::before{background:#7FA9DE}.obs.feito i{background:#4A7FC1;border-color:#4A7FC1}.obs.feito span{color:var(--ink)}
+.obs.feito::before{background:#4F91E5}.obs.feito i{background:#4A7FC1;border-color:#4A7FC1}.obs.feito span{color:var(--ink)}
 .obs.parou::before{background:#E9A23B}.obs.parou i{background:#E06C4F;border-color:#E06C4F}.obs.parou span{color:#B24A2E;font-weight:600}
 .obp{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:4px}.obp .bar{flex:0 0 140px;height:6px}.obp.venc .bar i{background:#E06C4F}.obp.venc span{color:#B24A2E}
 .tag.ob-ok{background:#E3F2EA;color:#25683F}.tag.ob-and{background:#E3EEFA}.tag.ob-par{background:#FBE6DF;color:#9A3B22}.tag.ob-canc{background:#EEF0F3;color:var(--muted)}
 
-.nw-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}.nw{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit;text-decoration:none!important}.nw:hover{border-color:#B9D1EE}.nw b{font-weight:600;font-size:15px;line-height:1.35}.nw-v{font-size:12px;color:var(--muted)}.nw-r{font-size:13px;color:var(--ink2);line-height:1.45}
+.nw-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}.nw{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit;text-decoration:none!important}.nw:hover{border-color:#8FBBF0}.nw b{font-weight:600;font-size:15px;line-height:1.35}.nw-v{font-size:12px;color:var(--muted)}.nw-r{font-size:13px;color:var(--ink2);line-height:1.45}
 .kpis-dia .kpi strong{font-size:28px}.seg-ano .seg-h{font-size:13.5px;margin-top:14px}.seg-ano .kpi strong{font-size:17px}.seg-ano .kpi span,.seg-ano .kpi em{font-size:11.5px}.seg-ano .kpi{padding:10px 12px}.seg-anos{padding:6px 12px}.pol-logo{flex:none;object-fit:contain}.seg-efn .pol-logo{margin-right:7px;vertical-align:middle}
 #hsegcard{margin-top:16px}
 .dvq-linha .dvq{margin-top:14px;max-width:420px}
@@ -1389,10 +1389,10 @@ a.clk{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}a
 /* ===================== v0.8: visual limpo e profissional =====================
    Poucas cores: tudo em tons de cinza e azul; cor viva só nos dados que importam (os 3 maiores) e pastel nos menores. */
 :root{--bg:#F5F7FA;--line:#E4E8EE;--line2:#EEF1F5;--ink:#1D2939;--navy:#1D2939;--ink2:#475467;--muted:#7A8496;
- --c1:#2F6FED;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2F6FED;--r-mid:#A3C0F7;--r-low:#DCE6FB;--foco:rgba(47,111,237,.14);
- --d1:#C9D6E8;--d2:#D3DCE9;--d3:#DCE3EE;--d4:#E3E8F0;--d5:#E8ECF2}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#93A6C2;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
-:root[data-theme="dark"]{--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#93A6C2;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
+ --contorno:#111827;--c1:#2F6FED;--c2:#EB6834;--c3:#1BAF7A;--r-top:#2F6FED;--r-mid:#78A5F9;--r-low:#BCD0F7;--foco:rgba(47,111,237,.14);
+ --d1:#A4BFE5;--d2:#D3DCE9;--d3:#DCE3EE;--d4:#E3E8F0;--d5:#E8ECF2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--contorno:#FFFFFF;--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#698EC3;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}}
+:root[data-theme="dark"]{--contorno:#FFFFFF;--c1:#3987E5;--c2:#D95926;--c3:#199E70;--r-top:#4B95EE;--r-mid:#5F86BC;--r-low:#698EC3;--foco:rgba(57,135,229,.22);--d1:#4A5A73;--d2:#415066;--d3:#39465A;--d4:#323D4F;--d5:#2C3645}
 body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .ph h1{font-size:30px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
 .ph p{color:var(--ink2);max-width:72ch}
@@ -1507,11 +1507,11 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .sit-p{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;line-height:1.35}
 .sit-ok{background:#DCF3E6;color:#11693A}.sit-stop{background:#FDE2E1;color:#A61B1B}.sit-off{background:#ECEEF2;color:#5A6474}
 .sit-wait{background:#FDF0D5;color:#8A5A00}.sit-vote{background:#E1EAFD;color:#1F4FB8}.sit-go{background:#EEF2F8;color:#33415C}
-[data-theme="dark"] .sit-ok{background:#163A27;color:#7DDBA4}[data-theme="dark"] .sit-stop{background:#43201F;color:#F2A3A0}[data-theme="dark"] .sit-off{background:#2A303B;color:#AAB2C0}
-[data-theme="dark"] .sit-wait{background:#3E3117;color:#F2CB7A}[data-theme="dark"] .sit-vote{background:#1F2E52;color:#9DB9F7}[data-theme="dark"] .sit-go{background:#232B38;color:#C5CDDA}
+[data-theme="dark"] .sit-ok{background:#163A27;color:#4EE28B}[data-theme="dark"] .sit-stop{background:#43201F;color:#F87671}[data-theme="dark"] .sit-off{background:#2A303B;color:#AAB2C0}
+[data-theme="dark"] .sit-wait{background:#3E3117;color:#F8C04C}[data-theme="dark"] .sit-vote{background:#1F2E52;color:#729CF9}[data-theme="dark"] .sit-go{background:#232B38;color:#C5CDDA}
 
 .sd{font-weight:600;font-variant-numeric:tabular-nums}.sd-mais{color:#11693A}.sd-menos{color:#B4441A}
-[data-theme="dark"] .sd-mais{color:#7DDBA4}[data-theme="dark"] .sd-menos{color:#F5A47E}
+[data-theme="dark"] .sd-mais{color:#4EE28B}[data-theme="dark"] .sd-menos{color:#F88752}
 
 /* gráficos em linha */
 .lr-svg{display:block;margin:2px 0 6px;overflow:visible}
@@ -1731,7 +1731,7 @@ series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${cs(k)}" stroke-width=
 const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
 return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
 // pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
-const PIZZA_SUAVE=["#86A6E8","#E8A27F","#7FC9AB","#E2C077","#B19CE2","#E39CBE","#86C3D8","#B5C985","#D9A0A0","#9FB0CF"];
+const PIZZA_SUAVE=["#5688EF","#F0844E","#52CE9B","#EAB646","#9370E5","#E770A9","#58BBDD","#ABCD58","#DA7676","#7696CF"];
 function coresPizza(items){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));
  return items.map((it,k)=>/^outr/i.test(it[0])?"#AEB8CA":pos[k]<3?RANK_VIVO[pos[k]]:PIZZA_SUAVE[(pos[k]-3)%PIZZA_SUAVE.length])}
 const DONUT_PASTEL=PIZZA_SUAVE;
@@ -1742,19 +1742,19 @@ function spark(v){const mx=Math.max(...v),mn=Math.min(...v);return`<svg viewBox=
 
 /* ---------- mapa ---------- */
 const METRICS={gasto:["Gastos",u=>u.gasto,brl],pop:["População",u=>u.pop,v=>nf(Math.round(v/1e3))+" mil"],pc:["Gasto por habitante",u=>u.pc,v=>"R$ "+nf(Math.round(v))],contratos:["Contratos",u=>u.contratos,nf],obras:["Obras",u=>u.obras,nf],projetos:["Projetos",u=>u.projetos,nf],arr:["Arrecadação federal",u=>u.arr,brl],dclr:["Dívida do estado (% da receita)",u=>u.dclr,v=>v.toFixed(0)+"%"],inad:["Adultos inadimplentes",u=>u.inad,v=>v.toFixed(1).replace(".",",")+"%"],ret:["Retorno da União",u=>u.ret,brl],vio:["Homicídios por 100 mil habitantes",u=>u.vio||0,v=>v.toLocaleString("pt-BR",{maximumFractionDigits:1})]};
-const SCALE=["#EEF4FC","#C6DBF5","#8DB8EC","#4A8ADB","#1F5FB4"];
+const SCALE=["#EEF4FC","#9BC4F7","#5DA1F3","#4A8ADB","#1F5FB4"];
 /* mapa de calor: cor contínua entre os tons da escala (t de 0 a 1) */
 function heatCor(t){t=Math.max(0,Math.min(1,+t||0))*(SCALE.length-1);const i=Math.min(SCALE.length-2,Math.floor(t)),f=t-i,a=parseInt(SCALE[i].slice(1),16),b=parseInt(SCALE[i+1].slice(1),16);
  const m=s=>Math.round(((a>>s)&255)*(1-f)+((b>>s)&255)*f);return`rgb(${m(16)},${m(8)},${m(0)})`}
 // 5 faixas de cor sólida com o mesmo número de estados em cada uma (um estado muito grande não apaga os outros),
 // e os limites de cada faixa escritos na legenda
 function faixasDe(vals){const v=vals.filter(x=>x!=null&&isFinite(x)).sort((a,b)=>a-b);if(!v.length)return null;const q=k=>v[Math.min(v.length-1,Math.floor(k*v.length/5))];return{mn:v[0],mx:v[v.length-1],b:[q(1),q(2),q(3),q(4)]}}
-const SCALE_VERM=["#FDECEC","#F9C2C2","#F08585","#DC3F3F","#A61B1B"];
+const SCALE_VERM=["#FDECEC","#FB9898","#F85454","#DC3F3F","#A61B1B"];
 const corFaixa=(F,x,E=SCALE)=>F&&x!=null?E[F.b.filter(b=>x>=b).length]:"var(--mapa-vazio)";
 function legFaixas(F,fmt,E=SCALE){if(!F)return"";const e=[F.mn,...F.b,F.mx];return`<div class="legend leg-faixas">${E.map((c,k)=>`<span><i style="background:${c}"></i>${k===0?"até "+fmt(e[1]):k===4?fmt(e[4])+" ou mais":fmt(e[k])+" a "+fmt(e[k+1])}</span>`).join("")}</div>`}
 const escalaLeg=()=>`<i class="hgrad" style="background:linear-gradient(90deg,${SCALE.join(",")})"></i>`;
 let HEATN=0;
-const REGCOL={N:"#8DD2AE",NE:"#F3C76E",CO:"#EF9F8C",SE:"#8FB3F2",S:"#BCA5EC"};
+const REGCOL={N:"#61D599",NE:"#F7BB41",CO:"#F7795B",SE:"#6097F8",S:"#9F78F0"};
 function brMap(metric,sel,regFilter,o={}){const f=metric?METRICS[metric][1]:null,F=f?faixasDe(UFS.map(f)):null;
 const heat=!!o.heat,cor={};UFS.forEach(u=>cor[u.uf]=o.fillFn?o.fillFn(u):o.byRegion?REGCOL[u.reg]:corFaixa(F,f(u)));
 const ps=UFS.map(u=>{const dim=regFilter&&u.reg!==regFilter;return`<path class="st ${sel===u.uf?"sel":""}" data-uf="${u.uf}" d="${GEO.p[u.uf]}" fill="${cor[u.uf]}" style="${dim?"opacity:.25":""}"><title>${u.nome}</title></path>`}).join("");
@@ -1764,7 +1764,8 @@ let hl="";if(heat){const id="hm"+(++HEATN),todos=UFS.map(u=>`<path d="${GEO.p[u.
  hl=`<defs><clipPath id="${id}c">${todos}</clipPath><filter id="${id}f" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${(GEO.w/45).toFixed(1)}"/></filter></defs><g class="hm" style="pointer-events:none"><g class="hm-borda">${todos}</g>${cam}<g clip-path="url(#${id}c)"><g filter="url(#${id}f)">${cam}</g></g></g>`}
 const sp=UFS.find(u=>u.uf===sel);const top=sp?`<path class="st sel" d="${GEO.p[sel]}" fill="none" style="pointer-events:none"/>`:"";
 const lb=o.labels===false?"":UFS.filter(u=>!["DF","SE","AL","RN","PB","ES","RJ"].includes(u.uf)||o.allLabels).map(u=>`<text x="${GEO.c[u.uf][0]}" y="${GEO.c[u.uf][1]+4}" text-anchor="middle">${u.uf}</text>`).join("");
-return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion||!f?"":legFaixas(F,METRICS[metric][2])}`}
+const borda=heat?"":`<g class="br-borda" aria-hidden="true">${UFS.map(u=>`<path d="${GEO.p[u.uf]}"/>`).join("")}</g>`;
+return`<svg class="geo${heat?" heat":""}" viewBox="-4 -4 ${GEO.w+8} ${GEO.h+8}" width="100%" role="img" aria-label="Mapa do Brasil por estado">${hl}${borda}${ps}${top}${lb}</svg>${o.legend===false||o.byRegion||!f?"":legFaixas(F,METRICS[metric][2])}`}
 function cartogram(metric,sel,regFilter){return brMap(metric,sel,regFilter)}
 function ufPanel(u){return`<div class="crumb">Brasil / ${REG[u.reg]}</div><h3 style="font-size:22px">${u.nome}</h3><p class="muted small" style="margin:2px 0 14px">Capital: ${u.cap}</p>
 <div class="facts"><div><span>Gastos no ano</span>${brl(u.gasto)}</div><div><span>População</span>${nf(Math.round(u.pop))}</div><div><span>Gasto por habitante</span>R$ ${nf(Math.round(u.pc))}</div><div><span>Contratos</span>${nf(u.contratos)}</div><div><span>Obras</span>${nf(u.obras)}</div><div><span>Projetos</span>${nf(u.projetos)}</div><div><span>Arrecadação federal</span>${brl(u.arr)}</div><div><span>Retorno da União</span>${brl(u.ret)}</div></div>
@@ -1804,7 +1805,7 @@ function kcard(icon,l,v,sub,d){return`<div class="panel kc"><div class="ico">${h
 
 P.inicio=()=>{let cm="desp",reg="",met="reg";
 const totR=Object.values(REGV).reduce((a,b)=>a+b,0);
-const PROJ=[["Em tramitação",3124,"#8FB6E6"],["Em comissão",1842,"#F3CF8E"],["Em plenário",412,"#C9B6EA"]];const PFIM=[["Aprovados no ano",104,"var(--p2)"],["Rejeitados no ano",32,"var(--p6)"]];const pAll=[...PROJ,...PFIM].reduce((a,b)=>a+b[1],0);const pAt=PROJ.reduce((a,b)=>a+b[1],0);
+const PROJ=[["Em tramitação",3124,"#609FEC"],["Em comissão",1842,"#F8C260"],["Em plenário",412,"#AF8CEB"]];const PFIM=[["Aprovados no ano",104,"var(--p2)"],["Rejeitados no ano",32,"var(--p6)"]];const pAll=[...PROJ,...PFIM].reduce((a,b)=>a+b[1],0);const pAt=PROJ.reduce((a,b)=>a+b[1],0);
 const p=PESSOAS[0];
 const html=`<div class="home"><div class="hl">
 <section class="hero2"><div><h1>Informação pública,<strong>de todos os lugares.</strong></h1><p>Explore, pesquise e acompanhe os dados públicos de todo o Brasil em um só lugar.</p></div>
@@ -1817,10 +1818,10 @@ const html=`<div class="home"><div class="hl">
 <div class="cardfoot"><span class="small muted" id="hmleg"></span><a class="small" href="#/gastos" id="hmlink">Ver detalhes</a></div></div><div id="hstate" style="display:none"></div></div>
 <div class="meters"><div class="panel meter2 imp"><div class="m-h"><span class="m-dot"></span><h2>Impostômetro</h2><span class="small muted">desde 1º de janeiro</span></div><div class="m-v" id="impV">R$ 0</div><div class="m-sub">pagos em tributos por pessoas e empresas em <span class="yr"></span></div>
 <div class="m-grid"><div><span>Por segundo</span><b id="impS"></b></div><div><span>Hoje</span><b id="impD"></b></div><div><span>Por habitante no ano</span><b id="impP"></b></div></div>
-<div class="m-bar">${stack([66,26,8],["União","Estados","Municípios"],["#8FCBAF","#B3DCC9","#D9EFE4"],8)}</div><div class="m-leg"><span><i style="background:#8FCBAF"></i>União 66%</span><span><i style="background:#B3DCC9"></i>Estados 26%</span><span><i style="background:#D9EFE4"></i>Municípios 8%</span></div></div>
+<div class="m-bar">${stack([66,26,8],["União","Estados","Municípios"],["#64CD9C","#8CDBB6","#D9EFE4"],8)}</div><div class="m-leg"><span><i style="background:#64CD9C"></i>União 66%</span><span><i style="background:#8CDBB6"></i>Estados 26%</span><span><i style="background:#D9EFE4"></i>Municípios 8%</span></div></div>
 <div class="panel meter2 gas"><div class="m-h"><span class="m-dot"></span><h2>Gastômetro</h2><span class="small muted">desde 1º de janeiro</span></div><div class="m-v" id="gasV">R$ 0</div><div class="m-sub">gastos pelos governos federal, estaduais e municipais em <span class="yr"></span></div>
 <div class="m-grid"><div><span>Por segundo</span><b id="gasS"></b></div><div><span>Hoje</span><b id="gasD"></b></div><div><span>Por habitante no ano</span><b id="gasP"></b></div></div>
-<div class="m-bar">${stack([28,22,19,16,15],["Previdência","Juros da dívida","Saúde e educação","Pessoal","Outros"],["#F2BCAE","#F3D9A4","#A9C8EC","#D3C2EA","#E3E6EB"],8)}</div><div class="m-leg"><span><i style="background:#F2BCAE"></i>Previdência 28%</span><span><i style="background:#F3D9A4"></i>Juros da dívida 22%</span><span><i style="background:#A9C8EC"></i>Saúde e educação 19%</span><span><i style="background:#D3C2EA"></i>Pessoal 16%</span><span><i style="background:#E3E6EB"></i>Outros 15%</span></div></div></div>
+<div class="m-bar">${stack([28,22,19,16,15],["Previdência","Juros da dívida","Saúde e educação","Pessoal","Outros"],["#F69981","#F9CE75","#7DB2F0","#BC9AE9","#E3E6EB"],8)}</div><div class="m-leg"><span><i style="background:#F69981"></i>Previdência 28%</span><span><i style="background:#F9CE75"></i>Juros da dívida 22%</span><span><i style="background:#7DB2F0"></i>Saúde e educação 19%</span><span><i style="background:#BC9AE9"></i>Pessoal 16%</span><span><i style="background:#E3E6EB"></i>Outros 15%</span></div></div></div>
 <p class="small muted m-note">Contadores estimados a partir da projeção anual (demonstrativa). Fontes previstas: Receita Federal, Tesouro Nacional, Confaz e Siconfi.</p>
 <div class="kgrid kgrid4">${kcard("gastos","Total de despesas públicas","R$ 1,4 trilhão","em 2025","6,8%")}${kcard("contratos","Contratos firmados","R$ 412 bilhões","em 2025","11,3%")}${kcard("obras","Obras em andamento","12.480","em todo o país","4,2%")}${kcard("empresas","Empresas contratadas","186.532","fornecedores únicos","7,9%")}</div>
 
@@ -1884,8 +1885,8 @@ return{html:`<div class="ph"><div><h1>Agora</h1><p>O que está acontecendo nas i
 <div class="chips" id="fch" style="margin-bottom:14px">${F.map(x=>`<button class="chip ${x===f?"on":""}">${x}</button>`).join("")}</div>
 <div class="panel aproj"><div class="hd"><div><h2>Andamento dos projetos</h2><p>Percentual de etapas concluídas na tramitação</p></div><a href="#/projetos">Ver todos</a></div>
 <div class="aproj-top"><div class="aproj-big"><b>${Math.round(PROJETOS.reduce((a,p)=>a+projPct(p),0)/PROJETOS.length)}%</b><span>andamento médio dos projetos acompanhados</span></div>
-<div style="flex:1;min-width:240px"><div class="small muted" style="margin-bottom:6px">Onde estão os 5.378 projetos ativos</div>${stack([22,34,18,11,9,4,2],["Apresentado","Comissão","Relatoria","Parecer","Plenário","Outra Casa","Sanção ou veto"],["#DCE8F6","#A9C8EC","#B3DCC9","#CFE0A8","#F3D9A4","#F2BCAE","#D3C2EA"],12)}<div class="m-leg">${[["Apresentado",22,"#DCE8F6"],["Comissão",34,"#A9C8EC"],["Relatoria",18,"#B3DCC9"],["Parecer",11,"#CFE0A8"],["Plenário",9,"#F3D9A4"],["Outra Casa",4,"#F2BCAE"],["Sanção ou veto",2,"#D3C2EA"]].map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} ${x[1]}%</span>`).join("")}</div></div></div>
-<div class="aproj-list">${PROJETOS.map(p=>{const v=projPct(p);return`<a class="aproj-row" href="#/projeto/${p.id}"><div><b>${p.num}</b><span>${esc(p.tit)}</span></div><div class="aproj-bar"><div class="bar"><i style="width:${v}%;background:${v===100?"#8FCBAF":v>=60?"#9EC0E8":"#F3CF8E"}"></i></div><small>${ETAPAS[Math.min(p.etapa,ETAPAS.length-1)]}</small></div><strong>${v}%</strong></a>`}).join("")}</div></div>
+<div style="flex:1;min-width:240px"><div class="small muted" style="margin-bottom:6px">Onde estão os 5.378 projetos ativos</div>${stack([22,34,18,11,9,4,2],["Apresentado","Comissão","Relatoria","Parecer","Plenário","Outra Casa","Sanção ou veto"],["#DCE8F6","#7DB2F0","#8CDBB6","#C3E17E","#F9CE75","#F69981","#BC9AE9"],12)}<div class="m-leg">${[["Apresentado",22,"#DCE8F6"],["Comissão",34,"#7DB2F0"],["Relatoria",18,"#8CDBB6"],["Parecer",11,"#C3E17E"],["Plenário",9,"#F9CE75"],["Outra Casa",4,"#F69981"],["Sanção ou veto",2,"#BC9AE9"]].map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} ${x[1]}%</span>`).join("")}</div></div></div>
+<div class="aproj-list">${PROJETOS.map(p=>{const v=projPct(p);return`<a class="aproj-row" href="#/projeto/${p.id}"><div><b>${p.num}</b><span>${esc(p.tit)}</span></div><div class="aproj-bar"><div class="bar"><i style="width:${v}%;background:${v===100?"#64CD9C":v>=60?"#71AAEC":"#F8C260"}"></i></div><small>${ETAPAS[Math.min(p.etapa,ETAPAS.length-1)]}</small></div><strong>${v}%</strong></a>`}).join("")}</div></div>
 <div class="grid g21 mt"><div class="panel" id="feed"></div><div class="panel"><h2>Hoje em números</h2><div class="facts" style="grid-template-columns:1fr 1fr"><div><span>Votações em andamento</span>1</div><div><span>Votações realizadas</span>6</div><div><span>Novos projetos</span>142</div><div><span>Projetos aprovados</span>9</div><div><span>Projetos rejeitados</span>2</div><div><span>Novas leis</span>11</div><div><span>Contratos publicados</span>1.388</div><div><span>Novas obras</span>27</div></div>${SRC}</div></div>`,
 mount(){const draw=()=>{const items=f==="Brasil"?AGORA:AGORA.filter(a=>a.esc.includes(f.split(" ")[0])||f.includes(a.esc));$("#feed").innerHTML=items.length?items.map(feedItem).join(""):'<p class="muted">Nenhuma atualização nesse filtro hoje. Escolha outra esfera para ver mais.</p>'};draw();document.querySelectorAll("#fch .chip").forEach(b=>b.onclick=()=>{f=b.textContent;document.querySelectorAll("#fch .chip").forEach(x=>x.classList.toggle("on",x===b));draw()})}}};
 
@@ -1897,10 +1898,10 @@ const RETX={DF:10.2,AP:11.4,RR:12.1,AC:11.0,TO:8.6,RO:5.6,SE:6.4,AL:5.9,PI:6.0};
 UFS.forEach((u,i)=>{const j=.93+rnd(i+41)*.14;u.arr=u.pop*(FEDX[u.uf]||FEDPC[u.reg])*1e3*j;u.ret=u.pop*(RETX[u.uf]||RETPC[u.reg])*1e3*(.95+rnd(i+77)*.1);u.prop=u.pop*(2.3+rnd(i+13)*1.6)*1e3;u.saldo=u.ret-u.arr});
 const sAbs=v=>brl(Math.abs(v));
 function arrSplit(u,big){const env=u.arr-u.ret;const h=big?16:12;
-if(env>=0){const r=u.ret/u.arr*100;return`<div style="display:flex;height:${h}px;border-radius:4px;overflow:hidden"><i style="width:${r}%;background:#8FB6E6"></i><i style="width:${100-r}%;background:#D6E5F7"></i></div>
-<div class="small" style="display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap"><span><b style="color:#6E9BD6">■</b> Retornou ${brl(u.ret)} (${r.toFixed(0)}%)</span><span><b style="color:#B5CDEB">■</b> Redistribuído ${brl(env)} (${(100-r).toFixed(0)}%)</span></div>`}
-const a=u.arr/u.ret*100;return`<div style="display:flex;height:${h}px;border-radius:4px;overflow:hidden"><i style="width:${a}%;background:#8FB6E6"></i><i style="width:${100-a}%;background:#F3D9A4"></i></div>
-<div class="small" style="display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap"><span><b style="color:#6E9BD6">■</b> Arrecadado no estado ${brl(u.arr)}</span><span><b style="color:#D9AE5E">■</b> Vindo de outros estados ${brl(-env)}</span></div>`}
+if(env>=0){const r=u.ret/u.arr*100;return`<div style="display:flex;height:${h}px;border-radius:4px;overflow:hidden"><i style="width:${r}%;background:#609FEC"></i><i style="width:${100-r}%;background:#D6E5F7"></i></div>
+<div class="small" style="display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap"><span><b style="color:#3D83DE">■</b> Retornou ${brl(u.ret)} (${r.toFixed(0)}%)</span><span><b style="color:#8BB6EC">■</b> Redistribuído ${brl(env)} (${(100-r).toFixed(0)}%)</span></div>`}
+const a=u.arr/u.ret*100;return`<div style="display:flex;height:${h}px;border-radius:4px;overflow:hidden"><i style="width:${a}%;background:#609FEC"></i><i style="width:${100-a}%;background:#F9CE75"></i></div>
+<div class="small" style="display:flex;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap"><span><b style="color:#3D83DE">■</b> Arrecadado no estado ${brl(u.arr)}</span><span><b style="color:#D9AE5E">■</b> Vindo de outros estados ${brl(-env)}</span></div>`}
 function arrSentence(u){const env=u.arr-u.ret;return env>=0?`${u.nome} arrecadou <b>${brl(u.arr)}</b> em tributos federais, recebeu de volta <b>${brl(u.ret)}</b> em transferências da União e <b>${brl(env)}</b> ficaram com a União para uso no restante do país.`:`${u.nome} arrecadou <b>${brl(u.arr)}</b> em tributos federais e recebeu <b>${brl(u.ret)}</b> em transferências da União, ou seja, <b>${brl(-env)}</b> a mais do que arrecadou, vindos da arrecadação de outros estados.`}
 function arrPanel(u){return`<div class="panel mt"><div class="hd"><div><h2>Arrecadação e retorno da União</h2><p>Exercício 2025</p></div><a href="#/arrecadacao">Ver todos os estados</a></div>
 <p style="margin:0 0 14px;max-width:75ch">${arrSentence(u)}</p>
@@ -1914,11 +1915,11 @@ function arrPanel(u){return`<div class="panel mt"><div class="hd"><div><h2>Arrec
 
 P.arrecadacao=()=>{let sel="SP",ord="saldo",reg="";
 const TA=tot("arr"),TR=tot("ret");
-const fillS=u=>{const r=u.ret/u.arr;return r>=1?["#F3EAD2","#F3D9A4","#D4BC82"][Math.min(2,Math.floor((r-1)/1.2))]:["#8FB6E6","#C3CCD9","#E6EAF0"][Math.min(2,Math.floor(r/0.34))]};
+const fillS=u=>{const r=u.ret/u.arr;return r>=1?["#F3EAD2","#F9CE75","#D9B254"][Math.min(2,Math.floor((r-1)/1.2))]:["#609FEC","#C3CCD9","#E6EAF0"][Math.min(2,Math.floor(r/0.34))]};
 return{html:`<div class="ph"><div><h1>Arrecadação e repasses</h1><p>Quanto cada estado arrecada em tributos federais, quanto volta em transferências da União e quanto é redistribuído ao país.</p></div><span class="demo"><i></i>Dados demonstrativos</span></div>
 <div class="kpis"><div class="kpi"><span>Tributos federais arrecadados</span><strong>${brl(TA)}</strong><em>em 2025</em></div><div class="kpi"><span>Transferências aos estados e municípios</span><strong>${brl(TR)}</strong><em>${(TR/TA*100).toFixed(0)}% do arrecadado</em></div><div class="kpi"><span>Estados que arrecadam mais do que recebem</span><strong>${UFS.filter(u=>u.arr>u.ret).length}</strong></div><div class="kpi"><span>Estados que recebem mais do que arrecadam</span><strong>${UFS.filter(u=>u.arr<=u.ret).length}</strong></div></div>
 <div class="grid g2 mt" style="align-items:start"><div class="panel"><div class="hd"><div><h2>Retorno por estado</h2><p>Toque em um estado</p></div></div><div id="amap"></div>
-<div class="legend" style="flex-wrap:wrap"><i style="background:#8FB6E6"></i>retorna menos de 34%<i style="background:#E6EAF0;margin-left:8px"></i>retorna até 100%<i style="background:#F3D9A4;margin-left:8px"></i>recebe mais do que arrecada</div></div>
+<div class="legend" style="flex-wrap:wrap"><i style="background:#609FEC"></i>retorna menos de 34%<i style="background:#E6EAF0;margin-left:8px"></i>retorna até 100%<i style="background:#F9CE75;margin-left:8px"></i>recebe mais do que arrecada</div></div>
 <div class="panel" id="aside"></div></div>
 <div class="panel mt"><div class="hd"><div><h2>Todos os estados</h2><p>Valores anuais</p></div><div class="filters" style="margin:0"><select id="areg"><option value="">Todas as regiões</option>${Object.entries(REG).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><select id="aord"><option value="saldo">Ordenar por saldo</option><option value="arr">Por arrecadação</option><option value="ret">Por retorno</option><option value="ratio">Por retorno a cada R$ 1</option></select></div></div><div id="atab"></div></div>
 <div class="panel mt"><h2>Como ler estes números</h2><div class="grid g2 small" style="color:var(--ink2)">
@@ -2039,7 +2040,7 @@ ${identCidade(c)}<div class="kpis" style="margin-bottom:14px"><div class="kpi"><
 const DCLX={RJ:188,RS:176,MG:164,SP:118,AL:62,AC:58,GO:72,SC:56,PI:61,MS:48,PE:44,BA:52,RN:24,AP:38,TO:40,PB:30,SE:42,MA:46,DF:40,RO:26,RR:14,AM:32,PA:12,CE:48,ES:16,MT:9,PR:22};
 const INADR={N:44,NE:41,CO:43,SE:42,S:36};
 UFS.forEach((u,i)=>{u.dclr=DCLX[u.uf]??40;u.dcl=u.prop*u.dclr/100;u.inad=INADR[u.reg]+(rnd(i+91)-.5)*6;u.eleit=Math.round(u.pop*(.73+rnd(i+57)*.06));u.comp=77+rnd(i+61)*7;u.bn=3+rnd(i+67)*3});
-const PCOL=["#A9C8EC","#F2BCAE","#B3DCC9","#F3D9A4","#D3C2EA","#DDE1E7"];
+const PCOL=["#7DB2F0","#F69981","#8CDBB6","#F9CE75","#BC9AE9","#DDE1E7"];
 const ELEI={
  pres22:{nome:"Presidente 2022 (2º turno)",partes:["Partido A","Partido B"],reg:{N:[49,51],NE:[69,31],CO:[40,60],SE:[46,54],S:[38,62]}},
  dep22:{nome:"Deputado federal 2022",partes:["Partido A","Partido B","Partido C","Partido D","Partido E","Outros"],reg:{N:[18,20,14,12,9,27],NE:[27,12,15,10,8,28],CO:[13,24,16,12,8,27],SE:[17,19,13,14,11,26],S:[12,23,17,15,9,24]}},
@@ -2217,7 +2218,7 @@ if(tab==="pessoas"){const ad=Math.round(u.pop*.78),ni=Math.round(ad*u.inad/100);
  <div class="grid g2 mt"><div class="panel"><h2>Tipo de dívida</h2>${hbars([["Cartão de crédito",Math.round(80+rnd(hs(uf)+1)*10)],["Carnês",Math.round(12+rnd(hs(uf)+2)*10)],["Financiamento de veículo",Math.round(8+rnd(hs(uf)+3)*6)],["Crédito pessoal",Math.round(7+rnd(hs(uf)+4)*6)],["Financiamento imobiliário",Math.round(6+rnd(hs(uf)+6)*6)]],{fmt:v=>v+"%"})}</div>
  <div class="panel"><h2>Cidades com mais inadimplência</h2>${hbars(cs.slice(0,8).map(c=>[c.nome,c.ip]),{fmt:pct})}</div></div><p class="small muted" style="margin-top:12px"><a href="#/uf/${uf}/dividas">Ver ficha completa de ${u.nome}</a></p></div>`}}
 return{html:hero("Dívida do governo estadual",`${u.dclr.toFixed(0)}% da receita corrente líquida.`)+`<div class="ufrest"><div class="kpis kpis-c"><div class="kpi"><span>Dívida consolidada</span><strong>${brl(u.dcl)}</strong></div><div class="kpi"><span>Em relação à receita</span><strong>${u.dclr.toFixed(0)}%</strong></div><div class="kpi"><span>Média dos estados</span><strong>${bm.toFixed(0)}%</strong></div><div class="kpi"><span>Dívida por habitante</span><strong>R$ ${nf(Math.round(u.dcl/u.pop))}</strong></div></div>
-<div class="panel mt"><div class="small muted" style="margin-bottom:6px">Distância do limite legal de 200% da receita</div><div class="bar" style="height:14px"><i style="width:${Math.min(100,u.dclr/2)}%;background:${u.dclr>150?"#F2BCAE":u.dclr>100?"#F3D9A4":"#B3DCC9"}"></i></div><div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>0%</span><span>100%</span><span>200% (limite)</span></div></div>
+<div class="panel mt"><div class="small muted" style="margin-bottom:6px">Distância do limite legal de 200% da receita</div><div class="bar" style="height:14px"><i style="width:${Math.min(100,u.dclr/2)}%;background:${u.dclr>150?"#F69981":u.dclr>100?"#F9CE75":"#8CDBB6"}"></i></div><div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>0%</span><span>100%</span><span>200% (limite)</span></div></div>
 <div class="grid g2 mt"><div class="panel"><h2>Evolução</h2>${lineChart([{n:"Dívida / receita",v:[1.12,1.08,1.05,1.02,.99,1].map(x=>x*u.dclr)}],["2021","2022","2023","2024","2025","2026"],{h:180,fmt:v=>v.toFixed(0)+"%"})}</div>
 <div class="panel"><h2>Composição</h2>${donut([["Contratos com a União",48],["Bancos e organismos externos",22],["Precatórios",17],["Parcelamentos",13]])}</div></div><p class="small muted" style="margin-top:12px"><a href="#/uf/${uf}/dividas">Ver ficha completa de ${u.nome}</a></p></div>`}}
 
@@ -2241,7 +2242,7 @@ ${sec("cidades","Cidades do estado",`<div class="panel"><div class="filters" sty
 ${sec("riscos","Riscos por cidade",`<div class="kpis kpis-c" style="margin-bottom:12px">${RNAT.map(([k,n])=>`<div class="kpi"><span>${n}: risco alto</span><strong>${rCount(k)}</strong><em>cidades</em></div>`).join("")}<div class="kpi"><span>Capag C ou D</span><strong>${cs.filter(c=>"CD".includes(c.capag)).length}</strong><em>cidades</em></div></div>
 <div class="panel"><div class="tw"><table><thead><tr><th>Cidade</th><th>Maior risco</th><th>Contas da prefeitura</th></tr></thead><tbody>${cs.map(c=>{const m=RNAT.reduce((x,y)=>c.r[y[0]]>c.r[x[0]]?y:x,RNAT[0]);return`<tr data-city="${esc(c.nome)}" style="cursor:pointer"><td><b style="font-weight:500">${c.nome}</b></td><td>${lvTag(c.r[m[0]])} <span class="small muted">${m[1]}</span></td><td>${lvTag(fiscLv(c))}</td></tr>`}).join("")}</tbody></table></div><div class="rmob"><div class="rmob-leg">${[["E","Enchentes"],["D","Deslizamentos"],["S","Seca"],["Q","Queimadas"],["F","Fiscal"]].map(x=>`<span><b>${x[0]}</b> ${x[1]}</span>`).join("")}</div>${cs.map(c=>`<button class="rmob-row" data-city="${esc(c.nome)}"><span>${c.nome}</span><span class="rmob-d">${[...RNAT.map(([k])=>c.r[k]),fiscLv(c)].map((l,i)=>`<i class="lv lv${l}" title="${LV[l]}">${"EDSQF"[i]}</i>`).join("")}</span></button>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Níveis de risco demonstrativos. Toque em uma cidade para ver os detalhes.</p></div>`)}
 ${sec("arrecadacao","Arrecadação e retorno",arrPanel(u).replace('class="panel mt"','class="panel"'))}
-${sec("dividas","Dívidas",`<div class="kpis kpis-c"><div class="kpi"><span>Dívida do governo estadual</span><strong>${brl(u.dcl)}</strong><em>${u.dclr.toFixed(0)}% da receita</em></div><div class="kpi"><span>Adultos inadimplentes</span><strong>${pct(u.inad)}</strong><em>${nf(Math.round(u.pop*.78*u.inad/100))} pessoas</em></div><div class="kpi"><span>Empresas inadimplentes</span><strong>${nf(Math.round(u.pop*.034))}</strong></div></div><div class="panel mt"><div class="small muted" style="margin-bottom:6px">Dívida do estado em relação ao limite legal de 200% da receita</div><div class="bar" style="height:12px"><i style="width:${Math.min(100,u.dclr/2)}%;background:${u.dclr>150?"#F2BCAE":u.dclr>100?"#F3D9A4":"#B3DCC9"}"></i></div><div class="small" style="margin-top:6px"><a href="#/dividas/estados">Comparar com outros estados</a></div></div>`)}
+${sec("dividas","Dívidas",`<div class="kpis kpis-c"><div class="kpi"><span>Dívida do governo estadual</span><strong>${brl(u.dcl)}</strong><em>${u.dclr.toFixed(0)}% da receita</em></div><div class="kpi"><span>Adultos inadimplentes</span><strong>${pct(u.inad)}</strong><em>${nf(Math.round(u.pop*.78*u.inad/100))} pessoas</em></div><div class="kpi"><span>Empresas inadimplentes</span><strong>${nf(Math.round(u.pop*.034))}</strong></div></div><div class="panel mt"><div class="small muted" style="margin-bottom:6px">Dívida do estado em relação ao limite legal de 200% da receita</div><div class="bar" style="height:12px"><i style="width:${Math.min(100,u.dclr/2)}%;background:${u.dclr>150?"#F69981":u.dclr>100?"#F9CE75":"#8CDBB6"}"></i></div><div class="small" style="margin-top:6px"><a href="#/dividas/estados">Comparar com outros estados</a></div></div>`)}
 ${sec("eleicoes","Eleições",`<div class="grid g2"><div class="panel"><h2>${ELEI.pres22.nome}</h2>${partyBars("pres22",elec("pres22",u))}</div><div class="panel"><h2>${ELEI.dep22.nome}</h2>${partyBars("dep22",elec("dep22",u))}</div><div class="panel"><h2>${ELEI.sen22.nome}</h2>${partyBars("sen22",elec("sen22",u))}</div><div class="panel"><h2>${ELEI.depest22.nome}</h2>${partyBars("depest22",elec("depest22",u))}</div></div><div class="kpis kpis-c mt"><div class="kpi"><span>Eleitores aptos</span><strong>${nf(u.eleit)}</strong></div><div class="kpi"><span>Comparecimento</span><strong>${pct(u.comp)}</strong></div><div class="kpi"><span>Brancos e nulos</span><strong>${pct(u.bn)}</strong></div></div><p class="small muted" style="margin:8px 0 0">Partidos fictícios nesta demonstração. <a href="#/eleicoes">Ver todas as regiões</a></p>`)}
 ${sec("gastos","Gastos públicos",`<div class="grid g2"><div class="panel"><h2>Despesas por função</h2>${donut([["Saúde",28],["Educação",24],["Previdência",17],["Segurança pública",11],["Transporte",8],["Outras",12]])}</div><div class="panel"><h2>Evolução</h2>${lineChart([{n:"Gastos",v:[.78,.83,.88,.92,.96,1].map(x=>x*u.gasto)}],["2021","2022","2023","2024","2025","2026"],{h:180})}</div></div>`)}
 ${sec("orgaos","Órgãos",`<div class="panel">${[["Governo do Estado de "+u.nome,"Executivo",u.gasto*.42],["Assembleia Legislativa de "+u.nome,"Legislativo",u.gasto*.012],["Tribunal de Justiça de "+u.nome,"Judiciário",u.gasto*.05],["Tribunal de Contas do Estado de "+u.nome,"Controle",u.gasto*.004],["Prefeitura de "+u.cap,"Executivo municipal",u.gasto*.16]].map(o=>`<div class="list-row"><div style="flex:1"><b style="font-weight:600">${o[0]}</b><div class="small muted">${o[1]}</div></div><span class="small">${brl(o[2])}</span></div>`).join("")}${org.map(o=>`<div class="list-row"><div style="flex:1"><a href="#/orgao/${o.id}"><b style="font-weight:600">${o.nome}</b></a><div class="small muted">${o.esfera}, ${o.poder}</div></div><span class="small">${brl(o.orc)}</span></div>`).join("")}</div>`)}
@@ -2464,7 +2465,7 @@ function distribCidades(p,a){const u=UF[p.uf];const cs=cities(p.uf).filter(c=>a.
  if(a.escopo!=="estadual")return cs.map(c=>({nome:c.nome,votos:a.votos,pct:Math.min(99,a.votos/valC(c)*100)}));
  const base=a.votos/validosUF(u)*100;
  return cs.map(c=>{const f=(0.55+rnd(hs(c.nome+p.id))*0.8)*(c.nome===p.mun?1.6:1);const pc=Math.min(95,base*f);return{nome:c.nome,votos:Math.round(pc/100*valC(c)),pct:pc}}).sort((x,y)=>y.votos-x.votos)}
-const AV_ESCALA=["#E7F0FB","#C9DDF4","#A6C6EC","#82ACE0","#5F91D3"];
+const AV_ESCALA=["#E7F0FB","#C9DDF4","#79B0F0","#5395E7","#5F91D3"];
 function areaEstado(p,uf){const a=areaVotacao(p),u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;const meu=uf===p.uf;
  const hero=`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${meu?AV_ESCALA[3]:"#E4E7EC"}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Área de votação de ${esc(p.nome)}, ${a.ano}</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1>`;
  if(!meu)return{html:hero+`<p>Nenhum voto neste estado.</p></div></div><div class="ufrest"><div class="panel"><p style="margin:0">${a.escopo==="municipal"?`A eleição para ${p.cargo.toLowerCase()} é municipal: os votos vêm só de ${esc(p.mun)}, em ${UF[p.uf].nome}.`:`Candidatos a ${p.cargo.toLowerCase().replace(/^ex-|^candidat[oa] a /,"")} recebem votos apenas no estado em que concorrem. ${esc(p.nome)} concorreu em ${UF[p.uf].nome}.`}</p><div style="margin-top:12px"><button class="btn" type="button" data-irpara="${p.uf}">Ver ${UF[p.uf].nome}</button></div></div></div>`};
@@ -2821,13 +2822,13 @@ function partidosEstado(uf,casa,foco){const u=UF[uf],b=geoBBox(uf),pad=Math.max(
 
 /* ---------- indicações ---------- */
 const COLEGIADOS=[
- {n:"Supremo Tribunal Federal (STF)",g:[["Indicados pelo Presidente da República e aprovados pelo Senado",11,"#A9C8EC"]],r:"11 ministros. Ficam no cargo até os 75 anos."},
- {n:"Superior Tribunal de Justiça (STJ)",g:[["Juízes dos Tribunais Regionais Federais",11,"#A9C8EC"],["Desembargadores dos Tribunais de Justiça",11,"#B3DCC9"],["Advogados e membros do Ministério Público",11,"#F3D9A4"]],r:"33 ministros, nomeados pelo Presidente a partir de lista do STJ, com aprovação do Senado."},
- {n:"Tribunal Superior Eleitoral (TSE)",g:[["Ministros do STF",3,"#A9C8EC"],["Ministros do STJ",2,"#B3DCC9"],["Juristas nomeados pelo Presidente (lista do STF)",2,"#F3D9A4"]],r:"7 membros, com mandato de 2 anos."},
- {n:"Tribunal de Contas da União (TCU)",g:[["Escolhidos pelo Congresso Nacional",6,"#B3DCC9"],["Indicado pelo Presidente (livre escolha)",1,"#A9C8EC"],["Indicados pelo Presidente entre auditores e procuradores do TCU",2,"#D3C2EA"]],r:"9 ministros. Os indicados pelo Presidente passam pelo Senado."},
- {n:"Superior Tribunal Militar (STM)",g:[["Exército",4,"#B3DCC9"],["Marinha",3,"#A9C8EC"],["Aeronáutica",3,"#D3C2EA"],["Civis",5,"#F3D9A4"]],r:"15 ministros, nomeados pelo Presidente com aprovação do Senado."},
- {n:"Diretoria do Banco Central",g:[["Presidente do BC",1,"#F2BCAE"],["Diretores",8,"#A9C8EC"]],r:"Indicados pelo Presidente e aprovados pelo Senado, com mandatos fixos de 4 anos."},
- {n:"Tribunais de Contas dos Estados (cada um)",g:[["Escolhidos pela Assembleia Legislativa",4,"#B3DCC9"],["Indicados pelo Governador",3,"#A9C8EC"]],r:"7 conselheiros em cada tribunal."}];
+ {n:"Supremo Tribunal Federal (STF)",g:[["Indicados pelo Presidente da República e aprovados pelo Senado",11,"#7DB2F0"]],r:"11 ministros. Ficam no cargo até os 75 anos."},
+ {n:"Superior Tribunal de Justiça (STJ)",g:[["Juízes dos Tribunais Regionais Federais",11,"#7DB2F0"],["Desembargadores dos Tribunais de Justiça",11,"#8CDBB6"],["Advogados e membros do Ministério Público",11,"#F9CE75"]],r:"33 ministros, nomeados pelo Presidente a partir de lista do STJ, com aprovação do Senado."},
+ {n:"Tribunal Superior Eleitoral (TSE)",g:[["Ministros do STF",3,"#7DB2F0"],["Ministros do STJ",2,"#8CDBB6"],["Juristas nomeados pelo Presidente (lista do STF)",2,"#F9CE75"]],r:"7 membros, com mandato de 2 anos."},
+ {n:"Tribunal de Contas da União (TCU)",g:[["Escolhidos pelo Congresso Nacional",6,"#8CDBB6"],["Indicado pelo Presidente (livre escolha)",1,"#7DB2F0"],["Indicados pelo Presidente entre auditores e procuradores do TCU",2,"#BC9AE9"]],r:"9 ministros. Os indicados pelo Presidente passam pelo Senado."},
+ {n:"Superior Tribunal Militar (STM)",g:[["Exército",4,"#8CDBB6"],["Marinha",3,"#7DB2F0"],["Aeronáutica",3,"#BC9AE9"],["Civis",5,"#F9CE75"]],r:"15 ministros, nomeados pelo Presidente com aprovação do Senado."},
+ {n:"Diretoria do Banco Central",g:[["Presidente do BC",1,"#F69981"],["Diretores",8,"#7DB2F0"]],r:"Indicados pelo Presidente e aprovados pelo Senado, com mandatos fixos de 4 anos."},
+ {n:"Tribunais de Contas dos Estados (cada um)",g:[["Escolhidos pela Assembleia Legislativa",4,"#8CDBB6"],["Indicados pelo Governador",3,"#7DB2F0"]],r:"7 conselheiros em cada tribunal."}];
 const CARGOS_IND=[
  ["Federal","Judiciário","Ministro do STF","Presidente da República","Senado (maioria absoluta)","Até os 75 anos"],
  ["Federal","Judiciário","Ministro do STJ","Presidente, a partir de lista do STJ","Senado","Até os 75 anos"],
@@ -2876,7 +2877,7 @@ function painelNoCargo(){return`<h2 class="sec-t">Quem está no cargo</h2><div c
 <div class="panel mt"><h2>Ministros de Estado</h2><p style="margin:0;max-width:75ch">São 38 pastas no governo federal, e a lista de titulares muda com frequência: em abril de 2026, 21 ministros deixaram os cargos para disputar as eleições e foram substituídos. Para não mostrar nomes desatualizados, esta lista será alimentada automaticamente pelo Diário Oficial da União na fase das APIs.</p></div>`}
 
 /* ---------- foto ilustrativa do candidato com logo do partido ---------- */
-function fotoCand(p,sz=84){const i=p.partido?pIdx(p.partido):-1;const bg=i>=0?misturaBranco(i===5?"#9AA3B0":PCOL[i],.55):"#E7EAEE";const h=hs(p.nome);const pele=["#F1C9A5","#E0AC84","#C68A62","#9A6845","#7A4E30"][h%5],cab=["#2B2B2B","#4A3426","#6B4A2E","#1F1F1F","#8A8A8A"][(h>>3)%5];
+function fotoCand(p,sz=84){const i=p.partido?pIdx(p.partido):-1;const bg=i>=0?misturaBranco(i===5?"#9AA3B0":PCOL[i],.42):"#E7EAEE";const h=hs(p.nome);const pele=["#F6B377","#E69455","#C68A62","#9A6845","#7A4E30"][h%5],cab=["#2B2B2B","#4A3426","#6B4A2E","#1F1F1F","#8A8A8A"][(h>>3)%5];
  return`<div class="foto" style="width:${sz}px;height:${sz}px"><svg viewBox="0 0 80 80" width="${sz}" height="${sz}" role="img" aria-label="Foto ilustrativa de ${esc(p.nome)}"><rect width="80" height="80" rx="16" fill="${bg}"/><path d="M14 80c2-15 13-23 26-23s24 8 26 23z" fill="${i>=0?misturaBranco(PCOL[Math.min(i,4)],.1):"#9AA3B0"}"/><path d="M34 52h12v8c-2 3-10 3-12 0z" fill="${pele}"/><ellipse cx="40" cy="36" rx="12.5" ry="14.5" fill="${pele}"/><path d="M27 33c0-10 6-15 13-15 8 0 14 5 13 15-3-5-8-7-13-7s-10 2-13 7z" fill="${cab}"/></svg>${p.partido?`<span class="foto-logo">${logoPartido(p.partido,Math.round(sz*.34))}</span>`:""}</div>`}
 
 P.pessoas=(v)=>{const c=candList(v==="indicacoes"?"ministros":undefined);
@@ -2902,11 +2903,11 @@ const MINISTROS=[
  ["Ministra da Ciência, Tecnologia e Inovação","Luciana Santos",0],["Ministro do Trabalho e Emprego","Luiz Marinho",0],
  ["Ministra da Gestão e da Inovação em Serviços Públicos","Esther Dweck",0],["Ministra das Mulheres","Márcia Lopes",0],["Ministro do Turismo","Gustavo Feliciano",0],
  ["Ministro da Controladoria-Geral da União","Vinícius Marques de Carvalho",0],["Ministro do Gabinete de Segurança Institucional","Marcos Antonio Amaro",0]];
-const AREA_MIN=[["Governo e articulação","#A9C8EC",/Casa Civil|Relações Institucionais|Secretaria-Geral|Comunicação Social|Advogado|Controladoria|Segurança Institucional|Relações Exteriores|Justiça|Defesa/],
- ["Economia e finanças","#F3D9A4",/Fazenda|Planejamento|Indústria|Empreendedorismo|Previdência|Trabalho|Gestão|Turismo/],
- ["Social","#F2BCAE",/Educação|Saúde|Direitos Humanos|Igualdade Racial|Povos Indígenas|Mulheres|Assistência Social|Esporte|Cultura/],
- ["Infraestrutura e território","#B3DCC9",/Transportes|Portos|Cidades|Integração|Minas e Energia|Comunicações|Ciência/],
- ["Meio ambiente e campo","#D3C2EA",/Meio Ambiente|Agricultura|Agrário|Pesca/]];
+const AREA_MIN=[["Governo e articulação","#7DB2F0",/Casa Civil|Relações Institucionais|Secretaria-Geral|Comunicação Social|Advogado|Controladoria|Segurança Institucional|Relações Exteriores|Justiça|Defesa/],
+ ["Economia e finanças","#F9CE75",/Fazenda|Planejamento|Indústria|Empreendedorismo|Previdência|Trabalho|Gestão|Turismo/],
+ ["Social","#F69981",/Educação|Saúde|Direitos Humanos|Igualdade Racial|Povos Indígenas|Mulheres|Assistência Social|Esporte|Cultura/],
+ ["Infraestrutura e território","#8CDBB6",/Transportes|Portos|Cidades|Integração|Minas e Energia|Comunicações|Ciência/],
+ ["Meio ambiente e campo","#BC9AE9",/Meio Ambiente|Agricultura|Agrário|Pesca/]];
 function areaMin(c){return AREA_MIN.findIndex(a=>a[2].test(c))}
 function pastaCurta(c){if(/^Advogado-Geral/.test(c))return"AGU";return c.replace(/^(Ministra-chefe|Ministr[oa])\s(da|do|das|dos|de)\s/,"").replace(/^Secretaria(-Geral)?\s(da|de)\s/,(t,g)=>g?"Secretaria-Geral da ":"").replace(/^Controladoria-Geral da União$/,"CGU").replace(/^Gabinete de Segurança Institucional$/,"GSI").replace(/, da Microempresa e da Empresa de Pequeno Porte$/,"").replace(/ e da Inovação em Serviços Públicos$/," e Inovação")}
 function painelMinistros(){const g=AREA_MIN.map((a,i)=>[a[0],MINISTROS.filter(m=>areaMin(m[0])===i).length,a[1]]);
@@ -2992,14 +2993,14 @@ const casaCurta=c=>c==="senado"?"Senado":c==="camara"?"Câmara":c&&c.startsWith(
 const cargoParl=c=>c==="senado"?"Senador(a)":c==="camara"?"Deputado(a) federal":c==="al-df"?"Deputado(a) distrital":"Deputado(a) estadual";
 const ESFN={F:"Federal",E:"Estadual",M:"Municipal"};
 const qs=o=>{const p=Object.entries(o).filter(([,v])=>v!==""&&v!=null);return p.length?"?"+p.map(([k,v])=>k+"="+encodeURIComponent(v)).join("&"):""};
-const RCOR=["#A9C8EC","#F2BCAE","#B3DCC9","#F3D9A4","#D3C2EA","#C8D7A6","#E8B9B0","#B5D6CE","#DDE1E7","#F0C9DE"];
+const RCOR=["#7DB2F0","#F69981","#8CDBB6","#F9CE75","#BC9AE9","#BCD77D","#EA9686","#8FD3C3","#DDE1E7","#EFA1CB"];
 /* cores de referência de cada partido (o logo oficial vem de site/midia/logos.json) */
-const PART_BAND={PT:["#C8102E","#FFFFFF","estrela"],PL:["#1A3D8F","#F4C300","h"],UNIAO:["#0B2D6B","#19A7CE","diag"],PP:["#1C5AA6","#8CC2EC","h"],
+const PART_BAND={PT:["#C8102E","#FFFFFF","estrela"],PL:["#1A3D8F","#F4C300","h"],UNIAO:["#0B2D6B","#19A7CE","diag"],PP:["#1C5AA6","#5CB1F3","h"],
  MDB:["#007A3D","#F2C500","h"],PSD:["#0E6F4E","#F4C300","diag"],REPUBLICANOS:["#1C4E9C","#2E9E4F","diag"],PSDB:["#1660A8","#F6C200","circ"],
  PDT:["#D52B1E","#1D3E8A","h"],PSB:["#F7C600","#D32F2F","circ"],PSOL:["#D7262E","#F6C200","circ"],PODE:["#1E9E57","#0B5F8A","h"],
  AVANTE:["#F07D00","#1D4F91","diag"],PCDOB:["#C8102E","#F6C200","estrela"],PV:["#1E9E3A","#FFFFFF","circ"],CIDADANIA:["#D6247A","#1D4F91","circ"],
  NOVO:["#F26C21","#FFFFFF","h"],SOLIDARIEDADE:["#F58220","#1A3A8A","h"],PRD:["#1D3E8A","#2E9E4F","h3","#F4C300"],REDE:["#0F8C8C","#F7A600","circ"],
- AGIR:["#123B7A","#F28C00","diag"],MOBILIZA:["#0B7A4B","#1D4F91","diag"],DC:["#1D4F91","#F4C300","estrela"],PMB:["#7B2D8E","#F2B8D8","h"],
+ AGIR:["#123B7A","#F28C00","diag"],MOBILIZA:["#0B7A4B","#1D4F91","diag"],DC:["#1D4F91","#F4C300","estrela"],PMB:["#7B2D8E","#F58CC6","h"],
  PSTU:["#C8102E","#111111","estrela"],PCO:["#B71C1C","#111111","h"],UP:["#D7262E","#F6C200","estrela"],PCB:["#C8102E","#F6C200","circ"],
  MISSAO:["#1B1B1B","#F2C200","diag"],PRTB:["#1E9E3A","#F4C300","h3","#1D3E8A"],PMN:["#D32F2F","#1D3E8A","h"],
  DEM:["#1D9A4A","#1D4F91","h"],PPS:["#D52B1E","#FFFFFF","h"],PROS:["#F28C00","#1D4F91","h"],PATRIOTA:["#0B7A4B","#F4C300","h"],PSC:["#1D9A4A","#1D4F91","h"]};
@@ -3037,19 +3038,19 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if(i%passo===0||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--muted)">${rot(a)}</text>`});
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
-  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.35}"/>`;
-  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.4}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
+  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}"/>`;
+  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
   const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
  fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<11)fim[i].y=fim[i-1].y+11;
- fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="10.5" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.55}">${lista[f.k].uf}</text>`});
- const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.4}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
+ fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="10.5" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}">${lista[f.k].uf}</text>`});
+ const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.6}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
 function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,nota=""}={}){
  // gráfico em linha do ranking (quando só há um período): os 5 estados em ordem, ligados por uma linha; os 3 primeiros
  // pontos grandes e em cores vivas, os 2 últimos menores e em pastel; cada gráfico com a própria escala
  const o=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);if(!o.length)return"";
  const graf=(t,lista,cores)=>{const W=460,H=200,L=44,Rp=26,T=26,B=34,v=lista.map(u=>vals[u.uf]),mx=Math.max(...v.map(Math.abs))*1.12||1,mn=Math.min(0,...v);
-  const x=k=>L+k*(W-L-Rp)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.45);let g="";
+  const x=k=>L+k*(W-L-Rp)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.3);let g="";
   for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" stroke="var(--line2)"/><text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${fmt(val)}</text>`}
   // área clara embaixo e a linha, cada trecho na cor do ponto de onde sai
   g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07"/>`;
@@ -3352,7 +3353,7 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[];$("#gsu
    const emp=d.funcoes.reduce((s,x)=>s+(x.empenhado||0),0),dot=d.funcoes.reduce((s,x)=>s+(x.dotacao||0),0);
    $("#gsres").innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Quem gastou</span><strong style="font-size:17px">${esc(d.ente||ESFN2[f.esfera])}</strong></div>${dot?`<div class="kpi"><span>Orçamento atualizado</span><strong>${brl(dot)}</strong></div>`:""}${emp?`<div class="kpi"><span>Empenhado</span><strong>${brl(emp)}</strong></div>`:""}<div class="kpi"><span>Liquidado em ${d.ano}</span><strong>${brl(T)}</strong>${d.bimestre&&d.bimestre<6?`<em>até o ${d.bimestre}º bimestre</em>`:""}</div></div>
    <div class="grid g2 mt"><div class="panel"><h2>Para onde foi o dinheiro</h2>${donut(top)}</div><div class="panel"><h2>Evolução do total liquidado</h2>${anosChart(ev.map(x=>[x.ano,x.liquidado]))}</div></div>
-   <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.max(1,p/Math.max(...d.funcoes.map(y=>(y.liquidado||0)/T*100))*100).toFixed(1)}%;background:${p>=10?"var(--c1)":"#9EBDF5"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
+   <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.max(1,p/Math.max(...d.funcoes.map(y=>(y.liquidado||0)/T*100))*100).toFixed(1)}%;background:${p>=10?"var(--c1)":"#71A2F9"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
   catch(e){$("#gsres").innerHTML=rerro(e)}};
  apiGet("/gastos/entes").then(es=>{entes=es;if(!es.length){demoComAviso(_gastos,a,"Nenhum gasto por função coletado ainda (coleta siconfi-despesas-funcao).");return}carregar()}).catch(e=>{$("#gsres").innerHTML=rerro(e)});
  $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmun").hidden=f.esfera!=="M";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").onchange=async e=>{f.municipio=e.target.value;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);
@@ -3585,12 +3586,12 @@ return{html:r.html,mount(){r.mount&&r.mount();apiGet("/contadores").then(c=>{con
  CONT_REAL={imp:i&&i.por_segundo,gas:g&&g.por_segundo};
  const imp=document.querySelector(".meter2.imp"),gas=document.querySelector(".meter2.gas");
  if(i&&imp){imp.querySelector(".m-sub").textContent=`ritmo calculado com os ${i.base}`;const P=i.partes_pct;
-  if(P){const nomes=[["federal","Federal (Receita)"],["estadual","Estados (ICMS, IPVA…)"],["municipal","Municípios (ISS, IPTU…)"]],cores=["#A9C8EC","#B5DCC8","#F3D9A4"];
+  if(P){const nomes=[["federal","Federal (Receita)"],["estadual","Estados (ICMS, IPVA…)"],["municipal","Municípios (ISS, IPTU…)"]],cores=["#2F6FED","#1BAF7A","#F5A524"];
    let b=imp.querySelector(".m-bar"),l=imp.querySelector(".m-leg");if(!b){imp.insertAdjacentHTML("beforeend",`<div class="m-bar"></div><div class="m-leg"></div>`);b=imp.querySelector(".m-bar");l=imp.querySelector(".m-leg")}
    b.innerHTML=stack(nomes.map(([k])=>P[k]||0),nomes.map(x=>x[1]),cores,8);l.innerHTML=nomes.map(([k,n],j)=>`<span><i style="background:${cores[j]}"></i>${n} ${(P[k]||0).toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
   else imp.querySelectorAll(".m-bar,.m-leg").forEach(e=>e.remove())}
  if(g&&gas){gas.querySelector(".m-sub").textContent=`ritmo calculado com a ${g.base}`;const b=gas.querySelector(".m-bar"),l=gas.querySelector(".m-leg");
-  const cores=["#F2BCAE","#F3D9A4","#A9C8EC","#D3C2EA","#E3E6EB"],fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
+  const cores=["#EB6834","#F5A524","#2F6FED","#8B5CF6","#C3CBD6"],fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
   if(b)b.innerHTML=stack([...fs.map(x=>x.percentual),outros],[...fs.map(x=>x.funcao),"Outras"],cores,8);if(l)l.innerHTML=[...fs,{funcao:"Outras",percentual:outros}].map((x,k)=>`<span><i style="background:${cores[k]}"></i>${esc(x.funcao)} ${x.percentual.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
  const nota=document.querySelector(".m-note");if(nota)nota.textContent=[i&&`Impostômetro: ${i.fonte}. ${i.nota}`,g&&`Gastômetro: ${g.fonte}.`].filter(Boolean).join(" ")}).catch(()=>{})}}};
 
@@ -3869,7 +3870,7 @@ function corPart(p){let c=bandDe(p)?corSigla(p):"#888888";const n=parseInt(c.sli
  if(mx<70||mn>215||mx-mn<28)c=ELCOR[hs(String(p||"?"))%ELCOR.length];return c}
 // cor viva do partido (a da logo); abaixo de 60% dos votos fica só um pouco mais clara, nunca em tom pastel
 const corVoto=(cor,p)=>p>=60||!/^#[0-9a-f]{6}$/i.test(cor)?cor:misturaBranco(cor,Math.min(.15,(60-p)/40*.15));
-const ELCOR=["#4F86C6","#E0735F","#45A27C","#E2A93B","#8E6CC2","#3FA9B8","#D3678F","#8C9A52"];
+const ELCOR=["#4F86C6","#EB492B","#45A27C","#E2A93B","#8E6CC2","#3FA9B8","#D3678F","#8C9A52"];
 const MAJ=["PRESIDENTE","GOVERNADOR","SENADOR","PREFEITO"];
 const ELCAND={};
 const lcand=(c,ano,cargo)=>{if(!c||!c.sq_candidato)return esc(tit((c&&c.nome)||""));ELCAND[c.sq_candidato]={...c,ano:c.ano||ano,cargo:c.cargo||cargo};return`<a class="clk" href="#/candidato/${encodeURIComponent(c.sq_candidato)}">${esc(tit(c.nome))}</a>`};
@@ -3921,7 +3922,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    const cl=dv=>{const a=Math.abs(dv);return a<2?NEU:misturaBranco(dv>0?cA:cB,a<10?.62:a<20?.35:0)};
    fillEl=u=>{const s=d.estados[u.uf],a=pctDe(s,A.sq_candidato),b=pctDe(s,B.sq_candidato);return a==null||b==null?"var(--mapa-vazio)":cl(a-b)};
    const nA=esc(tit(A.nome)),nB=esc(tit(B.nome)),sw=(c,t)=>`<span><i style="background:${c}"></i>${t}</span>`;
-   legEl=`<div class="legend leg-faixas">${sw(cB,nB+": 20 pontos ou mais")}${sw(misturaBranco(cB,.35),"10 a 20")}${sw(misturaBranco(cB,.62),"2 a 10")}${sw(NEU,"empate (menos de 2)")}${sw(misturaBranco(cA,.62),"2 a 10")}${sw(misturaBranco(cA,.35),"10 a 20")}${sw(cA,nA+": 20 pontos ou mais")}</div>`}
+   legEl=`<div class="legend leg-faixas">${sw(cB,nB+": 20 pontos ou mais")}${sw(misturaBranco(cB,.25),"10 a 20")}${sw(misturaBranco(cB,.48),"2 a 10")}${sw(NEU,"empate (menos de 2)")}${sw(misturaBranco(cA,.48),"2 a 10")}${sw(misturaBranco(cA,.25),"10 a 20")}${sw(cA,nA+": 20 pontos ou mais")}</div>`}
   else fillEl=u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"};
   $("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
   bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
@@ -4062,7 +4063,7 @@ async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados"
  // proposições apresentadas (últimos meses coletados)
  todosItens("/proposicoes",4000).then(l=>{const box=[...document.querySelectorAll(".r1 .panel")].find(p=>/Projetos em tramitação/.test(p.textContent));if(!box||!l.length)return;
   const cont={};l.forEach(p=>cont[p.sigla_tipo||"?"]=(cont[p.sigla_tipo||"?"]||0)+1);const NT={PL:"Projetos de lei",REQ:"Requerimentos",RIC:"Pedidos de informação",PEC:"Propostas de emenda",PLP:"Projetos de lei complementar",PDL:"Projetos de decreto legislativo",MPV:"Medidas provisórias",INC:"Indicações"};
-  const it=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,n],i)=>[NT[k]||k,n,["#8FB6E6","#F3CF8E","#C9B6EA","#B3DCC9","#F2BCAE"][i]]);const tot=l.length;
+  const it=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,n],i)=>[NT[k]||k,n,["#609FEC","#F8C260","#AF8CEB","#8CDBB6","#F69981"][i]]);const tot=l.length;
   const d=l.map(p=>p.data_apresentacao).filter(Boolean).sort();
   box.innerHTML=`<div class="hd"><div><h2>Proposições apresentadas</h2><p>Câmara e Senado${d.length?`, ${fd(d[0].slice(0,10))} a ${fd(d[d.length-1].slice(0,10))}`:""}</p></div><a href="#/projetos">Ver todas</a></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(it,nf(tot),"proposições")}<div style="flex:1;min-width:190px">${it.map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${esc(x[0])}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/tot*100)}%</span></div>`).join("")}</div></div>`}).catch(()=>{});
  // últimas atualizações: o que entrou por último nas bases
@@ -4075,7 +4076,7 @@ async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados"
  const sel=$("#harr");if(sel){const da=()=>{const uf=sel.value;$("#harrv").innerHTML=rload();apiGet(`/estados/${uf}/fluxo`).then(f=>{if(sel.value!==uf||!$("#harrv"))return;if(!f||f.status!=="ok"){$("#harrv").innerHTML=rvazio("Sem dados de arrecadação deste estado.");return}
    const ret=f.retornado||0,arr=f.arrecadado||0,p=arr?Math.min(100,ret/arr*100):0;
    $("#harrv").innerHTML=`<div class="facts" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px"><div><span>Arrecadou</span>${brl(arr)}</div><div><span>Recebeu da União</span>${brl(ret)}</div><div><span>Para cada R$ 1</span>R$ ${(f.retorno_por_real_arrecadado||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} voltou</div></div>
-   <div class="bar" style="height:10px"><i style="width:${p.toFixed(1)}%;background:#7FA6D8"></i></div><p class="small muted" style="margin:8px 0 0">Tributos federais recolhidos no estado em ${f.ano} e transferências obrigatórias recebidas. A Receita registra o tributo na sede da empresa, por isso estados com grandes sedes arrecadam mais. <a href="#/arrecadacao">Ver detalhes</a></p>`}).catch(e=>{if($("#harrv"))$("#harrv").innerHTML=rerro(e)})};
+   <div class="bar" style="height:10px"><i style="width:${p.toFixed(1)}%;background:#508EDE"></i></div><p class="small muted" style="margin:8px 0 0">Tributos federais recolhidos no estado em ${f.ano} e transferências obrigatórias recebidas. A Receita registra o tributo na sede da empresa, por isso estados com grandes sedes arrecadam mais. <a href="#/arrecadacao">Ver detalhes</a></p>`}).catch(e=>{if($("#harrv"))$("#harrv").innerHTML=rerro(e)})};
   sel.onchange=da;da();const h=[...document.querySelectorAll(".r1.rup .panel p")].find(x=>/Tributos federais e transferências/.test(x.textContent));if(h&&m)h.textContent=`Tributos federais e transferências da União (${m.anos.fluxo||""})`}
  document.querySelectorAll("#view .src").forEach(e=>{if(/demonstrativ/i.test(e.textContent))e.hidden=true})}
 
@@ -4162,7 +4163,7 @@ const UNIDADES=[
  ["BR","penal","SPF","Sistema Penitenciário Federal","Cinco penitenciárias federais de segurança máxima: Catanduvas (PR), Campo Grande (MS), Porto Velho (RO), Mossoró (RN) e Brasília (DF)."]];
 const CORP={pm:["Polícia Militar","#1F3A68"],pc:["Polícia Civil","#3B3F46"],penal:["Polícia Penal","#2F5D46"],gcm:["Guarda Municipal","#2C6FB0"],pf:["Polícia Federal","#16284D"],fn:["Força Nacional","#5B4A2E"],prf:["Polícia Rodoviária Federal","#8A6D12"]};
 function emblema(sigla,corp,w=54){const c=(CORP[corp]||CORP.pm)[1],n=sigla.length,fs=n<=3?16:n<=4?13:n<=5?10.5:9;
- return`<svg class="embl" viewBox="0 0 64 72" width="${w}" height="${Math.round(w*72/64)}" role="img" aria-label="Emblema ilustrativo: ${esc(sigla)}"><path d="M32 3 58 12v20c0 17-11 30-26 37C17 62 6 49 6 32V12z" fill="${c}"/><path d="M32 8.5 53 16v16c0 14-9 25-21 31C20 57 11 46 11 32V16z" fill="none" stroke="#D9C27A" stroke-width="1.6"/><path d="m32 14 2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="#D9C27A"/><text x="32" y="${44+fs*.32}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#fff" font-family="inherit" letter-spacing=".3">${esc(sigla)}</text></svg>`}
+ return`<svg class="embl" viewBox="0 0 64 72" width="${w}" height="${Math.round(w*72/64)}" role="img" aria-label="Emblema ilustrativo: ${esc(sigla)}"><path d="M32 3 58 12v20c0 17-11 30-26 37C17 62 6 49 6 32V12z" fill="${c}"/><path d="M32 8.5 53 16v16c0 14-9 25-21 31C20 57 11 46 11 32V16z" fill="none" stroke="#E0BC4A" stroke-width="1.6"/><path d="m32 14 2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="#E0BC4A"/><text x="32" y="${44+fs*.32}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#fff" font-family="inherit" letter-spacing=".3">${esc(sigla)}</text></svg>`}
 
 let SEG=null;
 function segDados(){return SEG?Promise.resolve(SEG):apiGet("/seguranca").then(d=>{if(!d||!d.estados)throw new Error("sem dados de segurança na cópia");SEG=d;return d})}
@@ -4285,7 +4286,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   const desenha=()=>{const[nome,f,fmt,sub]=SEG_MET[met];const vals={};UFS.forEach(u=>{vals[u.uf]=f(d.estados[u.uf])});
    $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt,{escala:met==="policia"?SCALE:SCALE_VERM});$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
    const pol=met==="policia";
-   const hs=segHist(d,met),opS={alto:pol?"Mais policiais":"Mais violentos",baixo:pol?"Menos policiais":"Menos violentos",attr:"data-segz",href:()=>"#/seguranca",rot:hs&&hs.rot,nota:hs&&hs.nota,...(pol?{coresAlto:["#2F6FED","#0284C7","#7C3AED","#64748B","#94A3B8"],coresBaixo:["#93B4F5","#7DD3FC","#C4B5FD","#CBD5E1","#E2E8F0"]}:{})};
+   const hs=segHist(d,met),opS={alto:pol?"Mais policiais":"Mais violentos",baixo:pol?"Menos policiais":"Menos violentos",attr:"data-segz",href:()=>"#/seguranca",rot:hs&&hs.rot,nota:hs&&hs.nota,...(pol?{coresAlto:["#2F6FED","#0284C7","#7C3AED","#64748B","#94A3B8"],coresBaixo:["#6798F9","#58C4F8","#A58FFA","#A8BFDB","#E2E8F0"]}:{})};
    $("#segside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,vals,fmt,opS);
    bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ();graf()};
   const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
@@ -4358,7 +4359,7 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
   desenha()}).catch(e=>{const b=$("#dvT");if(b)b.innerHTML=rerro(e)})}}};
 
 /* ---------- ministros, tribunais e colegiados: uma bola por pessoa, com cartão, numa só paleta (não têm partido) ---------- */
-const SEM_PARTIDO=["#3F72B5","#6E9BD3","#A3C2E8","#2E4F7F","#8AA6C8","#C7D8EE"];
+const SEM_PARTIDO=["#3F72B5","#3D84DB","#77ABEC","#2E4F7F","#5E8FCB","#9FC1ED"];
 function hemiIndicados(casa){let grupos=[],lista=[];
  if(casa==="ministros"){AREA_MIN.forEach((a,i)=>{const ms=MINISTROS.filter(m=>areaMin(m[0])===i);if(!ms.length)return;grupos.push([a[0],ms.length,SEM_PARTIDO[i%SEM_PARTIDO.length]]);
    ms.forEach(m=>lista.push({nome:m[1].replace(/ \(.*\)$/,""),cargo:m[0],foto:"wiki:"+m[1].replace(/ \(.*\)$/,""),sit:m[2]?"No cargo (out/2026)":"A confirmar",extra:[["Área",a[0]],["Indicação","Nomeado pelo Presidente da República"]]}))})}

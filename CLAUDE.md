@@ -145,6 +145,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 ## Padrão visual (v0.9, out/2026)
 - Paleta: azul #2F6FED (links, botões, seleção), azul-marinho #1D2939 (texto), fundo #F5F7FA, pastéis por região
   (`REGCOL`). Bloco CSS "v0.9" no fim do `<style>` do site.
+- Cores (v1.1): pastéis de gráficos, barras e regiões mais vivos (claridade −8%, saturação +15%); fundos bem claros ficam. Impostômetro
+  e gastômetro com a paleta viva (#2F6FED, #1BAF7A, #F5A524, #EB6834, #8B5CF6). Contorno do país em todo mapa (`.br-borda`,
+  traço largo por baixo das cores): `--contorno` preto no claro e branco no escuro.
 - Mapas: cor sólida por estado, divisas brancas, 5 faixas com o mesmo número de estados (`faixasDe`, `corFaixa`,
   `legFaixas` com os limites escritos). Nada de degradê entre estados. Eleições (presidente): modos "Quem venceu",
   "% de um candidato" e "Diferença entre os 2 primeiros" (escala divergente com empate em cinza).
