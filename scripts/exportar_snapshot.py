@@ -30,6 +30,7 @@ from sqlalchemy import func, select  # noqa: E402
 
 from app.busca import ENTIDADES  # noqa: E402
 from app.db import SessionLocal, criar_tabelas  # noqa: E402
+from app.limpeza import limpar  # noqa: E402
 from app.main import app  # noqa: E402
 from app.models import Norma, Parlamentar, Proposicao, Votacao  # noqa: E402
 from app.utils import UFS  # noqa: E402
@@ -295,8 +296,8 @@ class Exportador:
             shutil.rmtree(pasta)
         pasta.mkdir(parents=True)
         shards = [dict() for _ in range(SHARDS)]
-        for k, v in self.dados.items():
-            shards[fnv1a(k) % SHARDS][k] = v
+        for k, v in self.dados.items():  # textos e siglas padronizados também nos dados já gravados
+            shards[fnv1a(k) % SHARDS][k] = limpar(v)
         tamanho = 0
         for i, s in enumerate(shards):
             # algumas fontes (ex.: descrições do ObrasGov) já chegam com letras perdidas (U+FFFD); na cópia viram "?"

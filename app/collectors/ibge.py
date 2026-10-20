@@ -12,7 +12,8 @@ BASE = "https://servicodados.ibge.gov.br/api/v3/agregados"
 INDICADORES = {
     "populacao": (6579, 9324, "População residente estimada"),
     "pib": (5938, 37, "PIB a preços correntes (mil R$)"),
-    "pib_per_capita": (5938, 497, "PIB per capita (R$)"),
+    # 5938/593 = PIB per capita (Reais). A 497 era a participação no PIB do país (%), que deixava o campo vazio.
+    "pib_per_capita": (5938, 593, "PIB per capita (R$)"),
 }
 
 

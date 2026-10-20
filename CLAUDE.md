@@ -104,6 +104,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 5. Deploy: seguir `DEPLOY.md`.
 
 ## Regras do projeto
+- Padronização dos dados (`app/limpeza.py`): espaços sobrando, `&amp;` e acentos quebrados ("AquisiÃ§Ã£o") são corrigidos e as
+  grafias da mesma sigla unificadas (PC do B/PCDOB → PCdoB, SD → SOLIDARIEDADE, PATRI → PATRIOTA; nomes antigos como PMDB e PFL
+  ficam). Aplicada no `upsert` e na exportação da cópia; para uma cópia antiga: `python -m scripts.limpar_copia`.
+  Valores negativos da fonte são reais (devolução do auxílio-moradia no CEAPS, dívida líquida negativa, IPCA com deflação).
 - Mudou `app/models.py`? Gere migração: `alembic revision --autogenerate -m "..."` e revise o arquivo
   (o autogenerate não conhece os índices de busca da 0002 — nunca deixe ele apagá-los; dê nome às FKs).
 - Coletores devem ser idempotentes (upsert) e registrar execução via `registrar_coleta`.

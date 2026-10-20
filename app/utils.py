@@ -51,7 +51,10 @@ def para_mes(valor) -> int | None:
 
 
 def upsert(db, model, chaves: dict, valores: dict):
-    """Insere ou atualiza pelo conjunto de chaves únicas (portável entre SQLite e Postgres)."""
+    """Insere ou atualiza pelo conjunto de chaves únicas (portável entre SQLite e Postgres).
+    Textos e siglas de partido dos valores são padronizados (app/limpeza.py); as chaves ficam como vieram."""
+    from app.limpeza import limpar
+    valores = limpar(valores, vazio_none=False)
     obj = db.execute(select(model).filter_by(**chaves)).scalar_one_or_none()
     if obj is None:
         obj = model(**chaves, **valores)
