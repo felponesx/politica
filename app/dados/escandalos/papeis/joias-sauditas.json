@@ -1,0 +1,128 @@
+{
+ "slug": "joias-sauditas",
+ "explicacao": "Segundo o relatório da PF (2024), a 'associação criminosa' tinha a finalidade de 'enriquecimento ilícito' de Bolsonaro: presentes de alto valor recebidos no cargo seriam desviados do acervo público, vendidos nos EUA, e o dinheiro voltaria em espécie por pessoas interpostas. A PGR pediu o arquivamento em 2026 e não há decisão final; Bolsonaro nega.",
+ "explicacao_fonte": "https://www.poder360.com.br/justica/desvio-de-bens-no-caso-das-joias-de-bolsonaro-soma-r-252-mi-diz-pf/",
+ "nucleos": [
+  {
+   "nome": "Entrada das joias no país",
+   "descricao": "Segundo a PF, a comitiva do Ministério de Minas e Energia trouxe joias sauditas sem cumprir os trâmites na Receita e depois as manteve ocultas."
+  },
+  {
+   "nome": "Tentativa de liberação na Receita",
+   "descricao": "Tentativas de liberar o conjunto retido em Guarulhos usando a estrutura do governo."
+  },
+  {
+   "nome": "Venda nos EUA",
+   "descricao": "Segundo a PF, presentes levados aos EUA e vendidos ou postos em leilão; o dinheiro ficava em conta do general Lourena Cid."
+  },
+  {
+   "nome": "Dinheiro em espécie",
+   "descricao": "Segundo a PF, o valor das vendas entrava no patrimônio de Bolsonaro em dinheiro vivo, por pessoas interpostas, fora do sistema bancário."
+  },
+  {
+   "nome": "Recompra e devolução",
+   "descricao": "Segundo a PF, após a revelação do caso, aliados recompraram e trouxeram de volta itens vendidos ou postos à venda."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Jair Messias Bolsonaro",
+   "nivel": 3,
+   "nucleo": null,
+   "papel": "Segundo a PF, o grupo agia para o enriquecimento ilícito dele; teria levado joias aos EUA no avião presidencial com ajuda de Mauro Cid e designado Wassef para recuperar o Rolex. Sempre negou; a PGR pediu arquivamento.",
+   "citacao": "Segundo a corporação, a atuação da “associação criminosa” tinha a finalidade de “enriquecimento ilícito” de Bolsonaro por meio do desvio de presentes de alto valor recebidos em razão de seu cargo.",
+   "fonte": "https://www.poder360.com.br/justica/desvio-de-bens-no-caso-das-joias-de-bolsonaro-soma-r-252-mi-diz-pf/",
+   "acima": null
+  },
+  {
+   "nome": "Mauro Cesar Barbosa Cid",
+   "nivel": 2,
+   "nucleo": "Venda nos EUA",
+   "papel": "Segundo a PF, como ajudante de ordens ajudou a enviar as joias aos EUA, vendeu os relógios e cuidou do leilão; fez delação premiada.",
+   "citacao": "o então presidente Jair Bolsonaro, com o auxílio de seu ajudante de ordens, Mauro Cid, utilizou o avião presidencial, sob a cortina de viagens oficiais do então chefe de Estado brasileiro para, de forma escamoteada, enviar as joias aos Estados Unidos",
+   "fonte": "https://istoe.com.br/caso-das-joias-pf-reune-oito-provas-contra-bolsonaro-no-esquema-de-desvio-de-presentes/",
+   "acima": null
+  },
+  {
+   "nome": "Mauro Cesar Lourena Cid",
+   "nivel": 2,
+   "nucleo": "Venda nos EUA",
+   "papel": "Segundo a PF, negociou a venda dos itens nos EUA, recebeu o dinheiro em sua conta em Miami e o repassou em espécie, a pedido do filho.",
+   "citacao": "Segundo a PF, ele teria negociado a venda dos itens nos Estados Unidos.",
+   "fonte": "https://www.metropoles.com/brasil/pf-indicia-bolsonaro-joias",
+   "acima": "Mauro Cesar Barbosa Cid"
+  },
+  {
+   "nome": "Julio César Vieira Gomes",
+   "nivel": 2,
+   "nucleo": "Tentativa de liberação na Receita",
+   "papel": "Como secretário da Receita, atuou na tentativa de liberar as joias retidas no fim do governo; foi demitido pela CGU em 2025.",
+   "citacao": "O ex-secretário da Receita Federal Julio César Vieira Gomes, que atuou na tentativa de liberar um conjunto de joias dadas pelo regime saudita ao ex-presidente Jair Bolsonaro (PL), foi demitido",
+   "fonte": "https://g1.globo.com/politica/noticia/2025/12/01/ex-secretario-da-receita-que-atuou-para-liberar-joias-de-bolsonaro-e-demitido.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Bento Albuquerque",
+   "nivel": 3,
+   "nucleo": "Entrada das joias no país",
+   "papel": "Segundo a PF, trouxe as joias da Arábia Saudita de forma oculta, sem cumprir os trâmites na Receita.",
+   "citacao": "o então ministro Bento Albuquerque internalizou as joias no Brasil, de forma oculta, sem cumprir os trâmites legais junto à Receita Federal",
+   "fonte": "https://www.folhape.com.br/politica/caso-das-joias/347568/",
+   "acima": null
+  },
+  {
+   "nome": "José Roberto Bueno Júnior",
+   "nivel": 3,
+   "nucleo": "Entrada das joias no país",
+   "papel": "Segundo a PF, como chefe de gabinete ajudou o ministro Bento Albuquerque a manter as joias ocultas.",
+   "citacao": "Posteriormente, para manter oculta as joias, Bento Albuquerque contou com o auxílio de seu chefe de gabinete, José Roberto Bueno Junior",
+   "fonte": "https://www.folhape.com.br/politica/caso-das-joias/347568/",
+   "acima": "Bento Albuquerque"
+  },
+  {
+   "nome": "Marcos André dos Santos Soeiro",
+   "nivel": 3,
+   "nucleo": "Entrada das joias no país",
+   "papel": "Assessor do ministro, carregava na mochila as joias retidas pela Receita em Guarulhos.",
+   "citacao": "Marcos Soeiro: ex-assessor de Albuquerque, que carregou a mochila com as joias.",
+   "fonte": "https://www.metropoles.com/brasil/pf-indicia-bolsonaro-joias",
+   "acima": "Bento Albuquerque"
+  },
+  {
+   "nome": "Osmar Crivelatti",
+   "nivel": 3,
+   "nucleo": "Dinheiro em espécie",
+   "papel": "Segundo a PF, foi o principal receptor do dinheiro vivo da venda dos relógios entregue pelo general Lourena Cid.",
+   "citacao": "O repasse foi realizado em 3 parcelas, segundo a PF. O principal receptor da quantia era o ex-assessor Osmar Crivelatti.",
+   "fonte": "https://www.poder360.com.br/justica/bolsonaro-sabia-do-esquema-de-venda-e-recompra-de-joias-diz-pf/",
+   "acima": null
+  },
+  {
+   "nome": "Marcelo Costa Câmara",
+   "nivel": 3,
+   "nucleo": "Dinheiro em espécie",
+   "papel": "Assessor de Bolsonaro; segundo a PF, foi com ele que Mauro Cid tratou de levar US$ 25 mil em espécie ao ex-presidente nos EUA.",
+   "citacao": "“Eu acho que quanto menos movimentação em conta, melhor, né? Tem 25 mil dólares com meu pai. [...]”, afirmou Mauro Cid, em 18 de janeiro de 2023, em conversa com o coronel Marcelo Câmara, assessor do ex-presidente.",
+   "fonte": "https://istoe.com.br/caso-das-joias-pf-reune-oito-provas-contra-bolsonaro-no-esquema-de-desvio-de-presentes/",
+   "acima": null
+  },
+  {
+   "nome": "Frederick Wassef",
+   "nivel": 3,
+   "nucleo": "Recompra e devolução",
+   "papel": "Segundo a PF, foi designado por Bolsonaro para recuperar o Rolex vendido nos EUA; confirmou ter recomprado o relógio. Nega ilícito.",
+   "citacao": "A PF afirmou ainda que Bolsonaro designou o advogado Frederick Wassef para recuperar um relógio Rolex, que fazia parte do “kit ouro branco”",
+   "fonte": "https://istoe.com.br/caso-das-joias-pf-reune-oito-provas-contra-bolsonaro-no-esquema-de-desvio-de-presentes/",
+   "acima": null
+  },
+  {
+   "nome": "Fabio Wajngarten",
+   "nivel": 3,
+   "nucleo": "Recompra e devolução",
+   "papel": "Segundo relatório complementar da PF, tinha procuração de Bolsonaro e atuou para trazer de volta o 'kit ouro rosé'. Diz que agiu como advogado.",
+   "citacao": "Fábio Wajngarten aderiu ao esquema criminoso, praticando atos executórios, dentro da divisão de tarefas estabelecidas pelos investigados, para recuperar as joias do denominado kit ouro rose",
+   "fonte": "https://www.opovo.com.br/noticias/politica/2025/01/27/wajngarten-tinha-procuracao-de-bolsonaro-para-recuperar-joias-colocadas-a-venda-nos-eua-diz-pf.html",
+   "acima": null
+  }
+ ]
+}

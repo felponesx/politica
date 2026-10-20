@@ -1,0 +1,154 @@
+{
+ "slug": "banco-master",
+ "explicacao": "Segundo a PF, citada em decisão do ministro André Mendonça, Daniel Vorcaro mantinha uma estrutura com quatro núcleos: fraudes financeiras, cooptação de servidores do Banco Central, ocultação de bens e lavagem, e intimidação de adversários ('A Turma'). Outras frentes apuram vantagens a dirigentes do BRB, a políticos e aplicações da RioPrevidência. Ninguém foi condenado; os investigados negam.",
+ "explicacao_fonte": "https://www.cnnbrasil.com.br/blogs/sem-blogueiro/politica/pf-diz-que-esquema-de-vorcaro-tinha-quatro-nucleos-para-operar-fraudes/",
+ "nucleos": [
+  {
+   "nome": "Núcleo financeiro",
+   "descricao": "Segundo a PF, responsável pela estruturação das fraudes contra o sistema financeiro."
+  },
+  {
+   "nome": "Corrupção institucional",
+   "descricao": "Segundo a PF, voltado a cooptar servidores do Banco Central para obter informações e orientações em troca de pagamentos."
+  },
+  {
+   "nome": "Ocultação patrimonial e lavagem",
+   "descricao": "Segundo a PF, usava empresas interpostas e contratos fictícios para esconder a origem do dinheiro."
+  },
+  {
+   "nome": "Intimidação e obstrução ('A Turma')",
+   "descricao": "Segundo a PF, monitorava e intimidava adversários, jornalistas e autoridades."
+  },
+  {
+   "nome": "Dirigentes do BRB",
+   "descricao": "Frente que apura, segundo a PF, vantagens a dirigentes do banco público para facilitar negócios com o Master."
+  },
+  {
+   "nome": "Agentes políticos",
+   "descricao": "Frentes que apuram, segundo a PF, vantagens a políticos e atuação deles em temas de interesse do Master."
+  },
+  {
+   "nome": "Aplicações da RioPrevidência",
+   "descricao": "Frente que apura, segundo a PF, a aplicação de R$ 3,6 bilhões da previdência dos servidores do RJ em papéis e fundos do Master."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Daniel Bueno Vorcaro",
+   "nivel": 1,
+   "nucleo": null,
+   "papel": "Apontado pela PF como quem comandava a estrutura de quatro núcleos para operar as fraudes do Banco Master. Nega fraudes.",
+   "citacao": "A PF (Polícia Federal) apontou que o dono do Banco Master, Daniel Vorcaro, mantinha uma divisão estruturada em quatro núcleos ativos para operar a fraude financeira bilionária e fazer coerção.",
+   "fonte": "https://www.cnnbrasil.com.br/blogs/sem-blogueiro/politica/pf-diz-que-esquema-de-vorcaro-tinha-quatro-nucleos-para-operar-fraudes/",
+   "acima": null
+  },
+  {
+   "nome": "Henrique Moura Vorcaro",
+   "nivel": 1,
+   "nucleo": "Intimidação e obstrução ('A Turma')",
+   "papel": "Segundo a PF, comandava e financiava o grupo 'A Turma', usado para monitorar e intimidar desafetos. Nega ser o articulador do grupo.",
+   "citacao": "Segundo a PF, o grupo era comandado por Henrique Vorcaro, pai de Daniel.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/vorcaro-depoe-pf-e-nega-existencia-de-grupo-criminoso-turma",
+   "acima": null
+  },
+  {
+   "nome": "Felipe Cançado Vorcaro",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro",
+   "papel": "Apontado pela PF como operador financeiro: executaria movimentações, montaria operações societárias e faria repasses do grupo. A defesa nega.",
+   "citacao": "Ele é apontado pela Polícia Federal como peça central do núcleo financeiro-operacional investigado.",
+   "fonte": "https://g1.globo.com/mg/minas-gerais/noticia/2026/05/07/quem-e-felipe-cancado-vorcaro-preso-em-operacao-da-pf-e-apontado-como-operador-financeiro-do-primo-daniel-vorcaro.ghtml",
+   "acima": "Daniel Bueno Vorcaro"
+  },
+  {
+   "nome": "Fabiano Campos Zettel",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro",
+   "papel": "Apontado pela PF como operador financeiro de Daniel Vorcaro; mensagens dele com Vorcaro tratam de pagamentos a servidor do BC.",
+   "citacao": "Fabiano Zettel, cunhado do ex-banqueiro e apontado como seu operador financeiro",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro",
+   "acima": "Daniel Bueno Vorcaro"
+  },
+  {
+   "nome": "Daniel Lopes Monteiro",
+   "nivel": 2,
+   "nucleo": "Ocultação patrimonial e lavagem",
+   "papel": "Apontado como operador jurídico-financeiro do esquema; investigado por estruturar operações com imóveis para repassar vantagens ao ex-presidente do BRB. Diz que a atuação foi técnica.",
+   "citacao": "o advogado Daniel Monteiro, apontado como operador jurídico-financeiro do esquema fraudulento montado pelo banqueiro Daniel Vorcaro",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/policia-federal-deflagra-5a-fase-da-operacao-compliance-zero",
+   "acima": "Daniel Bueno Vorcaro"
+  },
+  {
+   "nome": "Belline Santana",
+   "nivel": 2,
+   "nucleo": "Corrupção institucional",
+   "papel": "Segundo relatório da PF, recebia pagamentos de Vorcaro para repassar informações sigilosas do Banco Central e atuava como consultor dele. Nega.",
+   "citacao": "Segundo o documento, Santana e Souza atuaram como consultores de Vorcaro, promovendo “alinhamento de estratégias e revisão de documentos, bem como reuniões privadas",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro",
+   "acima": "Daniel Bueno Vorcaro"
+  },
+  {
+   "nome": "Paulo Sérgio Neves de Souza",
+   "nivel": 2,
+   "nucleo": "Corrupção institucional",
+   "papel": "Segundo relatório da PF, vazou informações internas do BC e atuou como consultor de Vorcaro em troca de vantagens. Nega.",
+   "citacao": "No relatório, a PF identificou que os dois vazaram informações internas do BC ligadas às investigações da Operação Compliance Zero",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/pf-ex-chefe-de-supervisao-do-bc-recebeu-r-500-mil-mensais-de-vorcaro",
+   "acima": "Daniel Bueno Vorcaro"
+  },
+  {
+   "nome": "Paulo Henrique Costa",
+   "nivel": 2,
+   "nucleo": "Dirigentes do BRB",
+   "papel": "Segundo investigadores, teria recebido imóveis de Vorcaro em troca de facilitar os negócios do Master com o BRB. Nega.",
+   "citacao": "Paulo Henrique Costa teria recebido pelo menos seis imóveis avaliados em R$ 146 milhões de Daniel Vorcaro, dono do Master, em troca de facilitar o esquema envolvendo o banco.",
+   "fonte": "https://g1.globo.com/politica/blog/camila-bomfim/post/2026/04/16/ex-presidente-do-brb-paulo-henrique-costa-preso.ghtml",
+   "acima": null
+  },
+  {
+   "nome": "Augusto Ferreira Lima",
+   "nivel": 2,
+   "nucleo": "Agentes políticos",
+   "papel": "Segundo a PF, teria repassado vantagens ao senador Jaques Wagner, como um apartamento em Salvador. A defesa diz que os fatos são lícitos.",
+   "citacao": "o senador Jaques Wagner (PT-BA) teria recebido um apartamento avaliado em R$ 2,45 milhões do banqueiro Augusto Ferreira Lima, ex-sócio do Banco Master",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/apuracao-da-pf-acusa-jaques-wagner-de-receber-vantagens-senador-nega",
+   "acima": null
+  },
+  {
+   "nome": "Ciro Nogueira",
+   "nivel": 2,
+   "nucleo": "Agentes políticos",
+   "papel": "Segundo a PF, teria recebido mesada de Vorcaro e usado o mandato a favor do banqueiro, como na 'Emenda Master' sobre o FGC. Nega.",
+   "citacao": "A Polícia Federal (PF) apontou que o senador Ciro Nogueira (PP-PI) recebeu propinas de Daniel Vorcaro, dono do Banco Master, e \"instrumentalizou o exercício do mandato parlamentar\" em favor dos interesses do banqueiro",
+   "fonte": "https://mais.opovo.com.br/jornal/politica/2026/05/08/pf-mira-ciro-nogueira-e-diz-que-senador-ganhava-mesada-de-ate-rs500-mil-de-vorcaro.html",
+   "acima": null
+  },
+  {
+   "nome": "Jaques Wagner",
+   "nivel": 2,
+   "nucleo": "Agentes políticos",
+   "papel": "Segundo a PF, teria recebido vantagens do ex-sócio Augusto Lima e atuado em temas regulatórios de interesse do Master. Nega.",
+   "citacao": "A investigação da PF aponta a atuação do senador em temas regulatórios de interesse do grupo Master.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-06/apuracao-da-pf-acusa-jaques-wagner-de-receber-vantagens-senador-nega",
+   "acima": null
+  },
+  {
+   "nome": "Cláudio Castro",
+   "nivel": 2,
+   "nucleo": "Aplicações da RioPrevidência",
+   "papel": "Segundo indícios da PF citados por Mendonça, teve papel político relevante para viabilizar os aportes da RioPrevidência no Master. Diz estar convicto da legalidade de seus atos.",
+   "citacao": "os indícios colhidos pela PF até o momento apontam que o ex-governador “exerceu papel politicamente relevante para a viabilização dos aportes da RioPrevidência no Banco Master”",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/operacao-contra-castro-mira-aportes-de-r-36-bi-em-fundos-do-master",
+   "acima": null
+  },
+  {
+   "nome": "Flávio Bolsonaro",
+   "nivel": 3,
+   "nucleo": "Agentes políticos",
+   "papel": "Investigado pela suspeita de que o repasse de R$ 61 milhões de Vorcaro ao filme 'Dark Horse' foi feito a pedido dele. Diz que pediu patrocínio privado e nega irregularidades.",
+   "citacao": "Flávio foi incluído em 22 de julho na investigação que apura o repasse para custear a produção do filme de R$ 61 milhões pelo ex-banqueiro Daniel Vorcaro, dono do antigo Banco Master. A suspeita é que a quantia foi disponibilizada a pedido do senador.",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/mendonca-incluiu-flavio-bolsonaro-como-investigado-no-caso-dark-horse",
+   "acima": null
+  }
+ ]
+}

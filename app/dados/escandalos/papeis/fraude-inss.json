@@ -1,0 +1,133 @@
+{
+ "slug": "fraude-inss",
+ "explicacao": "Segundo a PF e decisões do ministro André Mendonça, o esquema seria uma organização 'estruturada e hierarquizada, com divisão de tarefas': entidades associativas faziam descontos não autorizados nos benefícios, operadores e empresas de fachada movimentavam o dinheiro e, segundo a PF, parte dele pagava dirigentes do INSS e políticos. Ninguém foi condenado; os investigados negam.",
+ "explicacao_fonte": "https://www.cnnbrasil.com.br/politica/pf-deflagra-nova-fase-da-operacao-sem-desconto-contra-fraudes-no-inss-2/",
+ "nucleos": [
+  {
+   "nome": "Núcleo financeiro",
+   "descricao": "Empresários e empresas que, segundo a PF, recebiam o dinheiro desviado das entidades e o repassavam, inclusive por empresas de fachada."
+  },
+  {
+   "nome": "Entidades associativas",
+   "descricao": "Associações e confederações suspeitas, segundo a PF, de filiações falsas para descontar mensalidades de aposentados."
+  },
+  {
+   "nome": "Dirigentes do INSS e da Previdência",
+   "descricao": "Gestores que, segundo a PF, recebiam propina; para a PF, 'sem o apoio deles, seria impossível continuar com uma fraude de tamanha magnitude'."
+  },
+  {
+   "nome": "Núcleo político",
+   "descricao": "Parlamentares e assessores que, segundo a PF, davam sustentação política ao esquema e recebiam valores por meio de terceiros."
+  }
+ ],
+ "papeis": [
+  {
+   "nome": "Antônio Carlos Camilo Antunes ('Careca do INSS')",
+   "nivel": 1,
+   "nucleo": "Núcleo financeiro",
+   "papel": "Apontado na investigação como principal articulador da organização; segundo a PF, operava empresas de fachada para desviar as mensalidades. Nega participação.",
+   "citacao": "o lobista Antônio Carlos Camilo, o Careca do INSS, apontado como principal articulador da organização criminosa",
+   "fonte": "https://www.opovo.com.br/noticias/politica/2025/12/18/stf-nega-pedido-da-pf-de-prisao-de-weverton-rocha-possivel-socio-oculto-de-fraudes-no-inss.html",
+   "acima": null
+  },
+  {
+   "nome": "Carlos Lopes",
+   "nivel": 1,
+   "nucleo": "Entidades associativas",
+   "papel": "Segundo a PF, líder e idealizador do esquema da Conafer: controlaria as transferências e decidiria a divisão do dinheiro desviado.",
+   "citacao": "uma espécie de centro de gravidade da organização, dotado de poder decisório sobre os demais núcleos e responsável pela manutenção da cadeia de pagamentos ilícitos",
+   "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/pf-considera-como-foragido-presidente-de-associacao-apontado-como-lider-do-esquema-do-inss/",
+   "acima": null
+  },
+  {
+   "nome": "Maurício Camisotti",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro",
+   "papel": "Descrito pela PF como operador financeiro e peça crucial do 'núcleo financeiro' do esquema; fez delação ainda não homologada.",
+   "citacao": "Camisotti é descrito pela PF como beneficiário e personagem crucial do “núcleo financeiro” do esquema",
+   "fonte": "https://www.cnnbrasil.com.br/blogs/caio-junqueira/politica/empresario-fecha-primeira-delacao-sobre-esquema-de-fraudes-no-inss/",
+   "acima": null
+  },
+  {
+   "nome": "Romeu Carvalho Antunes",
+   "nivel": 2,
+   "nucleo": "Núcleo financeiro",
+   "papel": "Segundo a investigação, entrou como sócio nas empresas do pai e atuava como operador financeiro em empresas suspeitas de lavar dinheiro das fraudes.",
+   "citacao": "Romeu possuía autorização para movimentar contas bancárias usadas no esquema e atuava como operador financeiro em empresas suspeitas de lavar dinheiro oriundo das fraudes",
+   "fonte": "https://www.metropoles.com/colunas/mirelle-pinheiro/quem-e-o-filho-do-careca-do-inss-preso-em-megaoperacao-da-pf",
+   "acima": null
+  },
+  {
+   "nome": "Cecília Rodrigues Mota",
+   "nivel": 2,
+   "nucleo": "Entidades associativas",
+   "papel": "Segundo decisão do ministro André Mendonça, tinha papel central nas filiações fraudulentas, nos descontos e na ocultação de bens.",
+   "citacao": "tinha atuação central na operacionalização das filiações fraudulentas, dos descontos indevidos e na ocultação patrimonial",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara",
+   "acima": null
+  },
+  {
+   "nome": "Alessandro Antônio Stefanutto",
+   "nivel": 2,
+   "nucleo": "Dirigentes do INSS e da Previdência",
+   "papel": "Segundo a PF, teve 'papel de facilitador': ajudou a viabilizar o acordo da Conafer e, como presidente do INSS, teria blindado o esquema em troca de propina. Nega.",
+   "citacao": "Para os investigadores, Stefanutto exerceu “papel de facilitador” do esquema",
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2025-11/pf-diz-que-ex-presidente-do-inss-recebia-r-250-mil-mensais-de-propina",
+   "acima": null
+  },
+  {
+   "nome": "José Carlos Oliveira (Ahmed Mohamad Oliveira)",
+   "nivel": 2,
+   "nucleo": "Dirigentes do INSS e da Previdência",
+   "papel": "Segundo a PF, foi o 'pilar institucional' do esquema: como diretor de Benefícios, liberou repasses à Conafer sem comprovação e teria recebido vantagens.",
+   "citacao": "atuou como “pilar institucional” para o funcionamento do esquema de descontos não autorizados",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2025-11/pf-aponta-ex-ministro-de-bolsonaro-como-pilar-institucional-de-desvios",
+   "acima": null
+  },
+  {
+   "nome": "Virgílio Antônio Ribeiro de Oliveira Filho",
+   "nivel": 2,
+   "nucleo": "Dirigentes do INSS e da Previdência",
+   "papel": "Segundo a PF, como procurador-geral do INSS confirmou o entendimento que liberou em lote descontos pedidos pela Contag; a família teria recebido valores de empresas do 'Careca do INSS'.",
+   "citacao": "teria ratificado um entendimento técnico que levou ao desbloqueio em lote de benefícios para descontos associativos a pedido da Contag",
+   "fonte": "https://www.cnnbrasil.com.br/politica/ex-procurador-do-inss-se-entrega-a-pf-em-curitiba-e-e-preso/",
+   "acima": null
+  },
+  {
+   "nome": "André Fidelis",
+   "nivel": 2,
+   "nucleo": "Dirigentes do INSS e da Previdência",
+   "papel": "Segundo a PF, era o elo entre o INSS e as entidades suspeitas; como diretor de Benefícios, assinou acordos que permitiram os descontos em folha.",
+   "citacao": "A investigação da PF, no âmbito da Operação Sem Desconto, indica que André Fidelis atuava como elo entre o INSS e entidades suspeitas de aplicar descontos indevidos",
+   "fonte": "https://portaldeprefeitura.com.br/noticia/detalhe/fraude-no-inss-filho-de-ex-diretor-movimentou-mais-de-r-10-milhoes/596115/",
+   "acima": null
+  },
+  {
+   "nome": "Weverton Rocha",
+   "nivel": 2,
+   "nucleo": "Núcleo político",
+   "papel": "Segundo a PF, integraria o núcleo político do esquema como 'sócio oculto' e beneficiário final, recebendo valores por meio de assessores. A PGR viu provas ainda frágeis; ele nega.",
+   "citacao": "A Polícia Federal apontou Weverton como integrante do núcleo político do esquema, que viabilizava a continuidade dos ilícitos.",
+   "fonte": "https://www.opovo.com.br/noticias/politica/2025/12/18/stf-nega-pedido-da-pf-de-prisao-de-weverton-rocha-possivel-socio-oculto-de-fraudes-no-inss.html",
+   "acima": null
+  },
+  {
+   "nome": "Maria Gorete Pereira",
+   "nivel": 2,
+   "nucleo": "Núcleo político",
+   "papel": "Segundo a PF, controlava diretamente entidades associativas e recebeu valores do esquema; seu nome aparece em tabela de propina. Nega.",
+   "citacao": "Documentos da PF mostram ainda que Gorete Pereira controlava diretamente as entidades associativas e mantinha contato constante com servidores do INSS",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara",
+   "acima": null
+  },
+  {
+   "nome": "Adroaldo Portal",
+   "nivel": 3,
+   "nucleo": "Núcleo político",
+   "papel": "Segundo a PF, ex-assessor do senador suspeito de receber valores em nome dele; planilha do 'Careca do INSS' registra R$ 50 mil para 'Adro'.",
+   "citacao": "O agora ex-secretário-executivo do Ministério da Previdência Aldroado Portal, que foi auxiliar de Weverton no Congresso, também é suspeito de atuar em nome do senador.",
+   "fonte": "https://www.opovo.com.br/noticias/politica/2025/12/18/stf-nega-pedido-da-pf-de-prisao-de-weverton-rocha-possivel-socio-oculto-de-fraudes-no-inss.html",
+   "acima": "Weverton Rocha"
+  }
+ ]
+}
