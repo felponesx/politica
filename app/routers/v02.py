@@ -455,3 +455,25 @@ def composicao(db: Session = Depends(get_db)):
             "governador": _eleitos_por_partido(db, ["GOVERNADOR"]),
             "prefeito": _eleitos_por_partido(db, ["PREFEITO"]),
             "presidente": _eleitos_por_partido(db, ["PRESIDENTE"])}
+
+
+@router.get("/dividas/empresas", tags=["Dívidas", "Empresas"])
+def dividas_empresas(db: Session = Depends(get_db)):
+    """Empresas ativas do país por porte (MEI, ME, EPP, demais) e quantas têm dívida com a União, estão em recuperação
+    judicial ou falidas; as 300 que mais devem à União e as 300 de maior capital social (com o que devem)."""
+    r = db.scalars(select(Registro).where(Registro.fonte == "receita", Registro.tipo == "empresas_porte")
+                   .order_by(Registro.chave.desc())).first()
+    if not r:
+        raise HTTPException(404, "Sem dados. Rode a coleta receita-empresas-porte.")
+    d = dict(r.dados or {})
+    p = d.get("por_porte") or {}
+    tot = {k: sum((v or {}).get(k, 0) for v in p.values()) for k in ("total", "com_divida", "recuperacao_judicial", "falidas", "divida_total")}
+    return {**d, "todas": tot,
+            "fonte": "Receita Federal (cadastro do CNPJ, mês " + str(d.get("mes_cnpj")) + ") e PGFN (dívida ativa da União, "
+                     + str(d.get("pgfn_referencia")) + ")",
+            "nota": "Só empresas ativas (matriz). Dívida = inscrição na dívida ativa da União (tributos federais, previdência e "
+                    "FGTS) como devedora principal, de qualquer valor; dívidas com bancos, fornecedores, estados e prefeituras "
+                    "não entram. A Receita não separa média de grande empresa: as duas estão em \"Demais\". MEI conta à parte "
+                    "(optantes do SIMEI). Recuperação judicial e falência pela situação especial do CNPJ.",
+            "aviso": "Estar na dívida ativa não é crime nem irregularidade: é dívida cobrada pela União, que pode estar "
+                     "parcelada, garantida ou sendo contestada na Justiça."}

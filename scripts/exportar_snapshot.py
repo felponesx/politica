@@ -65,7 +65,7 @@ FIXAS = [
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
-    "/seguranca", "/dividas/familias-estados", "/escandalos",
+    "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/escandalos",
 ]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
 FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))

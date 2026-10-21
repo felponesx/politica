@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import re
+import unicodedata
 import sys
 import zipfile
 from datetime import date
@@ -411,6 +412,76 @@ def fotos_tse(db, anos=(2022, 2026)) -> dict:
     return out
 
 
+# ---- empresas dos rankings de dívida: logo e resumo da Wikipédia, só quando o verbete é da mesma empresa ----
+_SUFIXOS = re.compile(r"\b(S\.?\s?/?A\.?|LTDA\.?|EIRELI|ME|EPP|CIA\.?|COMPANHIA|EM RECUPERACAO JUDICIAL|EM LIQUIDACAO"
+                      r"(\s+EXTRAJUDICIAL)?|MASSA FALIDA( DE| DA| DO)?|HOLDING|PARTICIPACOES)\b", re.I)
+
+
+def _palavras(t: str) -> set:
+    t = unicodedata.normalize("NFKD", t or "").encode("ascii", "ignore").decode().lower()
+    return {w for w in re.findall(r"[a-z0-9]+", t) if len(w) > 1 and w not in {"de", "da", "do", "das", "dos", "e", "sa"}}
+
+
+def empresa_wikipedia(nome: str) -> dict | None:
+    """Verbete de empresa ({{Info/Empresa}}) cujo título (sem o parêntese) tem só palavras do nome da empresa."""
+    limpo = re.sub(r"\s+", " ", _SUFIXOS.sub(" ", unicodedata.normalize("NFKD", nome).encode("ascii", "ignore").decode())).strip()
+    if len(limpo) < 3:
+        return None
+    try:
+        d = cli.get(WIKI, params={"action": "query", "format": "json", "list": "search", "srlimit": 5,
+                                  "srsearch": f"{limpo} empresa"}).json()
+    except Exception:
+        return None
+    alvo = _palavras(nome)
+    for r in d.get("query", {}).get("search", []):
+        t = r["title"]
+        tp = _palavras(re.sub(r"\s*\(.*\)$", "", t))
+        if not tp or not tp <= alvo:
+            continue
+        try:
+            txt = cli.get(WIKI, params={"action": "parse", "page": t, "prop": "wikitext", "section": 0,
+                                        "format": "json", "formatversion": 2}).json().get("parse", {}).get("wikitext", "")
+        except Exception:
+            continue
+        if re.search(r"\{\{\s*Info/(Empresa|Companhia)", txt, re.I):
+            return {"titulo": t}
+    return None
+
+
+def logos_empresas(db) -> dict:
+    """{cnpj_basico: {img, resumo, pagina}} das empresas dos rankings de dívida (receita-empresas-porte)."""
+    from app.models import Registro
+    r = db.query(Registro).filter_by(fonte="receita", tipo="empresas_porte").order_by(Registro.chave.desc()).first()
+    if not r:
+        return {}
+    vistos, alvo = set(), []
+    for e in (r.dados or {}).get("maiores_devedoras", [])[:150] + (r.dados or {}).get("maiores_empresas", [])[:150]:
+        if e["cnpj_basico"] not in vistos and e.get("nome"):
+            vistos.add(e["cnpj_basico"])
+            alvo.append(e)
+    achados = {}
+    for e in alvo:
+        w = empresa_wikipedia(e["nome"])
+        if w:
+            achados[e["cnpj_basico"]] = w["titulo"]
+    info = wiki_imagens(sorted(set(achados.values())))
+    resumos = wiki_resumos(sorted(set(achados.values())))
+    out = {}
+    for cnpj, t in achados.items():
+        meta = info.get(t) or {}
+        img = None
+        if meta.get("thumb"):
+            try:
+                rr = cli.get(meta["thumb"])
+                img = miniatura(rr.content, ALTURA_LOGO, "PNG") if rr.status_code == 200 else None
+            except Exception:
+                img = None
+        out[cnpj] = {"img": img, "resumo": resumos.get(t) or "", "pagina": meta.get("pagina") or
+                     "https://pt.wikipedia.org/wiki/" + t.replace(" ", "_"), "titulo": t}
+    log.info("empresas com verbete na Wikipédia: %d de %d", len(out), len(alvo))
+    return out
+
+
 def nomes_indicados(site="site/index.html") -> list[str]:
     """Nomes de ministros, tribunais e colegiados que o site lista (NO_CARGO e MINISTROS)."""
     try:
@@ -491,6 +562,10 @@ def main(pasta: str):
         batalhoes(os.path.join(pasta, "batalhoes"), os.path.join(pasta, "logos.json"))
         with open(os.path.join(pasta, "logos.json"), encoding="utf-8") as f:
             lg = json.load(f)
+    with SessionLocal() as db:
+        lg["empresas"] = logos_empresas(db) or lg.get("empresas") or {}
+    with open(os.path.join(pasta, "logos.json"), "w", encoding="utf-8") as f:
+        json.dump(lg, f, ensure_ascii=False, separators=(",", ":"))
     with SessionLocal() as db:
         fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_wikipedia(nomes_indicados())}
     from scripts.fotos_escandalos import fotos_escandalos

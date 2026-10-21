@@ -215,3 +215,13 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   estado inteiro (não separam por corporação). Só o Rio publica por batalhão: coletor `isp-rj-batalhoes` (`app/collectors/isp_rj.py`,
   ISP por área AISP desde 2003) + tabela AISP → batalhão `aisp-RJ.json`; sempre com o aviso de que é "na área", não "pelo" batalhão.
 - Atualizar a cópia: `python -m scripts.policias_copia [site/dados] [csv_do_isp]` (o robô exporta pelas FIXAS).
+
+## Empresas × dívida (out/2026)
+- Coleta `receita-empresas-porte` (`app/collectors/empresas_porte.py`): lê a base mensal do CNPJ (Estabelecimentos, Simples, Empresas,
+  Cnaes) e os 3 arquivos da PGFN do último trimestre; conta as empresas ATIVAS (matriz) por porte (MEI pelo Simples, ME, EPP e
+  "Demais" = médias e grandes juntas, porque a Receita não separa) e quantas têm dívida ativa da União (devedor principal, qualquer
+  valor), recuperação judicial e falência; guarda as 300 que mais devem e as 300 de maior capital. API `/dividas/empresas`.
+- Site: Dívidas › Empresas › aba "Endividamento" (`telaEmpresasDiv`, `empCard`): números do país, pizza por porte, % endividadas por
+  porte, tabela somando tudo e separada, as que mais devem e as grandes que menos devem, ranking completo ordenável. Logo e resumo da
+  Wikipédia em `logos.json` → `empresas` (`logos_empresas` em `scripts/midia_site.py`: só verbete {{Info/Empresa}} cujo título tem só
+  palavras da razão social); sem verbete, a atividade principal do CNPJ. Robô: tarefas `receita-empresas-porte; midia`.

@@ -1638,6 +1638,15 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 :is(.an-pre,.an-go) .an-f{animation:anFade .55s ease var(--d,0s) both}}
 @keyframes anGira{from{transform:rotate(-40deg) scale(.82);opacity:.2}to{transform:none;opacity:1}}
 @keyframes anFade{from{opacity:0;transform:translateX(-8px)}}
+/* Dívidas › Empresas › Endividamento (v1.8) */
+.emp-card{display:grid;grid-template-columns:26px 44px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.emp-card:first-of-type{border-top:0}.emp-pos{font-size:12px;color:var(--muted);font-weight:600;text-align:right}
+.emp-logo{display:inline-grid;place-items:center;flex:none;border-radius:10px;background:var(--soft);color:var(--muted);font-weight:700;font-size:13px;border:1px solid var(--line)}
+img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px solid var(--line);padding:3px;box-sizing:border-box;flex:none}
+.emp-tx b{display:block;font-size:14px;line-height:1.3}.emp-res{margin-top:3px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.emp-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.emp-v{text-align:right}.emp-v strong{display:block;font-size:15px}
+.emp-mini{display:inline-flex;gap:8px;align-items:center}
+@media (max-width:700px){.emp-card{grid-template-columns:22px 40px 1fr}.emp-v{grid-column:3;text-align:left}}
 </style>
 </head>
 <body>
@@ -4182,10 +4191,32 @@ const TELA_DIV={
  familias:D=>{const s=D.s,e=s.endividamento_familias,i=s.inadimplencia_pf;if(!e&&!i)return rvazio("Séries do Banco Central ainda não coletadas.");
   return resumoBox(`<p>${e?`As dívidas das famílias com bancos e financeiras equivalem a <b>${pctF(e.ultimo.valor)} da renda</b> de um ano (${mesAno(e.ultimo.data)}), ${txtVar(varPP(e))}.`:""}${i?` A <b>inadimplência</b> das pessoas — empréstimos com atraso de mais de 90 dias — está em <b>${pctF(i.ultimo.valor)}</b> da carteira de crédito, ${txtVar(varPP(i))}.`:""}</p><p class="small muted" style="margin:0">Endividamento: saldo das dívidas no sistema financeiro dividido pela renda das famílias nos 12 meses anteriores. Inadimplência: parcela do crédito às pessoas com parcelas atrasadas há mais de 90 dias.</p>`)+
   `<div class="kpis kpis-c mt">${kpiS("Endividamento das famílias (% da renda)",e)}${kpiS("Inadimplência das pessoas",i)}</div><div class="grid g2 mt">${e?`<div class="panel"><h2>Endividamento das famílias, % da renda</h2>${serieChart(e.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${i?`<div class="panel"><h2>Inadimplência das pessoas, % da carteira</h2>${serieChart(i.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 29037 e 21084 do SGS")}`},
- empresas:(D,sub)=>{const ab=["resumo","recuperacao","falencia"].includes(sub)?sub:"resumo";
-  return`<div class="tabs" style="margin-top:0">${[["resumo","Resumo"],["recuperacao","Recuperação judicial"],["falencia","Falências"]].map(([k,v])=>`<a class="tabl ${k===ab?"on":""}" href="#/dividas/empresas/${k}">${v}</a>`).join("")}</div><div id="dvE">${ab==="resumo"?telaEmpresasResumo(D):telaRJ(D,ab)}</div>`},
+ empresas:(D,sub)=>{const ab=["endividamento","resumo","recuperacao","falencia"].includes(sub)?sub:"endividamento";
+  return`<div class="tabs" style="margin-top:0">${[["endividamento","Endividamento"],["resumo","Resumo"],["recuperacao","Recuperação judicial"],["falencia","Falências"]].map(([k,v])=>`<a class="tabl ${k===ab?"on":""}" href="#/dividas/empresas/${k}">${v}</a>`).join("")}</div><div id="dvE">${ab==="endividamento"?rload():ab==="resumo"?telaEmpresasResumo(D):telaRJ(D,ab)}</div>`},
 };
-TELA_DIV.empresas.mount=(D,sub)=>{if(sub==="recuperacao"||sub==="falencia")ligarRJ(sub)};
+TELA_DIV.empresas.mount=(D,sub)=>{if(sub==="recuperacao"||sub==="falencia")ligarRJ(sub);else if(sub!=="resumo")telaEmpresasDiv()};
+/* Dívidas › Empresas › Endividamento (v1.8): empresas ativas por porte × dívida ativa da União (PGFN), recuperação judicial e
+   falência; ranking das que mais devem e das grandes que menos devem, com logo e resumo (Wikipédia) ou a atividade do CNPJ */
+const empLogo=(e,sz=44)=>`<span class="emp-logo" data-elogo="${e.cnpj_basico}" style="width:${sz}px;height:${sz}px">${esc(iniciais((e.nome||"?").replace(/\b(S\.?\s?A|LTDA|EIRELI)\b\.?/gi,"").trim()||"?"))}</span>`;
+const empTags=e=>`${e.recuperacao_judicial?'<span class="tag esc-den">Recuperação judicial</span>':""}${e.falida?'<span class="tag esc-con">Falida</span>':""}${e.ativa===false?'<span class="tag">Não está ativa</span>':""}`;
+function empCard(e,k,tipo){return`<div class="emp-card"><span class="emp-pos">${k+1}º</span>${empLogo(e)}<div class="emp-tx"><b>${esc(e.nome||"Empresa "+e.cnpj_basico)}</b>
+ <div class="small muted">${[e.porte,e.uf,e.atividade].filter(Boolean).map(esc).join(" · ")}</div><div class="small emp-res" data-eres="${e.cnpj_basico}"></div><div class="emp-tags">${empTags(e)}</div></div>
+ <div class="emp-v"><strong>${e.divida_uniao?brl(e.divida_uniao):"Nada"}</strong><span class="small muted">${tipo==="cap"&&e.capital_social?`capital ${brl(e.capital_social)}`:"devido à União"}</span></div></div>`}
+function telaEmpresasDiv(){const box=$("#dvE");if(!box)return;apiGet("/dividas/empresas").then(E=>{const P=E.por_porte||{},T=E.todas||{},ps=Object.keys(P);
+ const pc=(a,b)=>b?a/b*100:0,kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
+ const mais=(E.maiores_devedoras||[]).slice(0,10),grandes=(E.maiores_empresas||[]).slice().sort((a,b)=>(a.divida_uniao||0)-(b.divida_uniao||0)||(b.capital_social||0)-(a.capital_social||0)).slice(0,10);
+ const linhaP=[...ps.map(p=>[p,P[p]]),["Todas as empresas",T]];
+ box.innerHTML=`<div class="kpis kpis-c">${kp("Empresas ativas no país",nf(T.total),`cadastro do CNPJ, ${esc(E.mes_cnpj||"")}`)}${kp("Com dívida com a União",pct(pc(T.com_divida,T.total)),`${nf(T.com_divida)} empresas`)}${kp("Em recuperação judicial",nf(T.recuperacao_judicial),pct(pc(T.recuperacao_judicial,T.total))+" das ativas")}${kp("Falidas (ainda ativas no CNPJ)",nf(T.falidas))}${kp("Quanto devem à União",brl(T.divida_total),"empresas ativas, "+esc(E.pgfn_referencia||""))}</div>
+ <div class="grid g2 mt"><div class="panel"><h2>Quantas empresas existem, por porte</h2>${donut(ps.map(p=>[p,P[p].total]))}</div>
+ <div class="panel"><h2>Quantas de cada porte devem à União</h2>${hbars(ps.map(p=>[p,pc(P[p].com_divida,P[p].total)]).concat([["Todas",pc(T.com_divida,T.total)]]),{fmt:v=>pct(v)})}<p class="small muted" style="margin:6px 0 0">Porcentagem das empresas ativas de cada porte que têm dívida inscrita na dívida ativa da União.</p></div></div>
+ <div class="panel mt"><h2>Por porte, somando tudo e separado</h2>${table([["Porte",r=>`<b>${esc(r[0])}</b>`],["Empresas ativas",r=>nf(r[1].total),"n"],["% do país",r=>pct(pc(r[1].total,T.total)),"n"],
+   ["Com dívida com a União",r=>`${nf(r[1].com_divida)}<div class="small muted">${pct(pc(r[1].com_divida,r[1].total))} do porte</div>`,"n"],["% endividadas",r=>`<div class="bar"><i style="width:${Math.min(100,pc(r[1].com_divida,r[1].total)).toFixed(1)}%"></i></div>`],
+   ["Recuperação judicial",r=>nf(r[1].recuperacao_judicial),"n"],["Falidas",r=>nf(r[1].falidas),"n"],["Quanto devem",r=>brl(r[1].divida_total),"n"]],linhaP)}</div>
+ <div class="grid g2 mt"><div class="panel"><h2>As que mais devem à União</h2>${mais.map((e,k)=>empCard(e,k)).join("")||rvazio("Sem dados.")}</div>
+ <div class="panel"><h2>Grandes empresas que menos devem</h2><p class="small muted" style="margin:0 0 8px">Entre as 300 maiores empresas ativas do país (pelo capital social), as que têm menos dívida com a União.</p>${grandes.map((e,k)=>empCard(e,k,"cap")).join("")||rvazio("Sem dados.")}</div></div>
+ <div class="panel mt"><h2>Ranking completo <small>as 300 que mais devem · toque no título da coluna para ordenar do maior para o menor ou ao contrário</small></h2>${table([["Empresa",e=>`<span class="emp-mini">${empLogo(e,28)}<span><b>${esc(e.nome||e.cnpj_basico)}</b><div class="small muted">${esc(e.atividade||"")}</div></span></span>`],["Porte",e=>esc(e.porte||"—")],["UF",e=>esc(e.uf||"—")],["Deve à União",e=>brl(e.divida_uniao),"n"],["Situação",e=>empTags(e)||'<span class="small muted">Ativa</span>']],E.maiores_devedoras||[])}</div>
+ <p class="small muted">${esc(E.nota||"")} ${esc(E.aviso||"")} Logos e resumos: Wikipédia, quando o verbete é da mesma empresa; sem verbete, aparece a atividade principal registrada no CNPJ.</p>${RSRC(E.fonte||"Receita Federal e PGFN")}`;
+ rowLinks()}).catch(()=>{box.innerHTML=rvazio("O cruzamento das empresas com a dívida ativa ainda está sendo coletado pelo robô (coleta receita-empresas-porte).")})}
 function telaEmpresasResumo(D){const s=D.s,i=s.inadimplencia_pj,rj=D.rj,fa=D.fa;
  return resumoBox(`<p>${i?`A <b>inadimplência das empresas</b> — empréstimos com atraso de mais de 90 dias — está em <b>${pctF(i.ultimo.valor)}</b> da carteira de crédito (${mesAno(i.ultimo.data)}), ${txtVar(varPP(i))}.`:""}${rj?` O cadastro de CNPJ da Receita registra <b>${nf(rj.total)} empresas em recuperação judicial</b>, ${nf(rj.ativas)} delas ainda ativas${rj.capital_social_ativas?`, com ${brl(rj.capital_social_ativas)} de capital social`:""}.`:" A lista de empresas em recuperação judicial ainda está sendo coletada da base de CNPJ da Receita Federal."}${fa?` Outras ${nf(fa.total)} constam como falidas.`:""}</p><p class="small muted" style="margin:0">Recuperação judicial: processo em que a Justiça dá prazo para a empresa renegociar dívidas e continuar funcionando (Lei 11.101/2005). Não é irregularidade. Falência: quando a empresa não consegue pagar e seus bens são vendidos para quitar os credores.</p>`)+
  `${i?`<div class="grid g2 mt"><div class="panel"><h2>Inadimplência das empresas, % da carteira</h2>${serieChart(i.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>${rj?`<div class="panel"><h2>Recuperação judicial por estado</h2>${mapaValores(Object.fromEntries(Object.entries(rj.por_uf).filter(([u])=>UF[u])),nf)}</div>`:""}</div>`:""}
@@ -4685,7 +4716,7 @@ function etapasObra(o){const k=obSitK(o.situacao);const n=k==="ok"?3:k==="and"||
 const MIDIA={idx:undefined,logos:null,blocos:{}};
 async function midiaJSON(n){try{const r=await fetch("midia/"+n,{headers:{Accept:"application/json"}});return r.ok?await r.json():null}catch(e){return null}}
 async function midiaIdx(){if(MIDIA.idx===undefined)MIDIA.idx=midiaJSON("indice.json");return MIDIA.idx}
-function midiaLogos(){if(!MIDIA.logos)MIDIA.logos=midiaIdx().then(i=>i?midiaJSON("logos.json"):null).then(L=>{const o={partidos:{},policias:(L&&L.policias)||{},unidades:(L&&L.unidades)||[],veiculos:(L&&L.veiculos)||{},estados:(L&&L.estados)||{}};Object.entries((L&&L.partidos)||{}).forEach(([k,v])=>o.partidos[normSig(k)]=v);return o});return MIDIA.logos}
+function midiaLogos(){if(!MIDIA.logos)MIDIA.logos=midiaIdx().then(i=>i?midiaJSON("logos.json"):null).then(L=>{const o={partidos:{},policias:(L&&L.policias)||{},unidades:(L&&L.unidades)||[],veiculos:(L&&L.veiculos)||{},estados:(L&&L.estados)||{},empresas:(L&&L.empresas)||{}};Object.entries((L&&L.partidos)||{}).forEach(([k,v])=>o.partidos[normSig(k)]=v);return o});return MIDIA.logos}
 async function fotoDe(chave){const i=await midiaIdx();if(!i||!i.blocos)return null;const b=snapHash(chave)%i.blocos;if(!MIDIA.blocos[b])MIDIA.blocos[b]=midiaJSON("fotos_"+b+".json").then(x=>x||{});return(await MIDIA.blocos[b])[chave]||null}
 const logoPart=(L,s)=>L&&L.partidos[normSig(s)];
 function imgLogo(l,h,alt){const im=document.createElement("img");im.className="plogo-img";im.src=l.img;im.alt=alt||"";im.height=h;im.style.height=h+"px";im.style.width="auto";im.title=alt?`${alt} (logo: Wikimedia Commons)`:"";return im}
@@ -4695,8 +4726,11 @@ function aplicarMidia(){
    if(!src&&/^https?:/.test(k)){src=k}if(!src)return;const im=document.createElement("img");im.className="rfoto";im.alt="Foto de "+(el.dataset.nome||"");im.style.width=sz;im.style.height=el.style.height;im.width=parseInt(sz)||48;im.height=parseInt(el.style.height)||48;
    im.onerror=()=>{if(im.isConnected)im.replaceWith(el)};im.src=src;el.replaceWith(im)})});
  const marcas=document.querySelectorAll("[data-plogo]:not([data-mok])"),bolas=document.querySelectorAll("svg.hemi:not([data-mok])"),pol=document.querySelectorAll("[data-pol]:not([data-mok])"),unids=document.querySelectorAll("[data-unids]:not([data-uok])"),vls=document.querySelectorAll("[data-vlogo]:not([data-mok])");
- if(!marcas.length&&!bolas.length&&!pol.length&&!unids.length&&!vls.length)return;
+ if(!marcas.length&&!bolas.length&&!pol.length&&!unids.length&&!vls.length&&!document.querySelector("[data-elogo]:not([data-mok]),[data-eres]:not([data-mok])"))return;
 midiaLogos().then(L=>{
+  document.querySelectorAll("[data-elogo]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const l=(L.empresas||{})[el.dataset.elogo];if(!l||!el.isConnected)return;
+   if(l.img){const im=document.createElement("img");im.src=l.img;im.alt="";im.className="emp-img";im.style.width=el.style.width;im.style.height=el.style.height;im.title="Logo: Wikipédia/Wikimedia Commons";el.replaceWith(im)}});
+  document.querySelectorAll("[data-eres]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const l=(L.empresas||{})[el.dataset.eres];if(l&&l.resumo)el.innerHTML=`${esc(l.resumo)} <a href="${esc(l.pagina)}" target="_blank" rel="noopener">Wikipédia</a>`});
   vls.forEach(el=>{el.dataset.mok=1;const l=(L.veiculos||{})[el.dataset.vlogo];if(!l||!el.isConnected)return;const im=document.createElement("img");im.src=l.img;im.alt=el.dataset.vlogo;im.style.height=(el.dataset.h||20)+"px";im.title="Logo: Wikimedia Commons";el.replaceChildren(im)});
   unids.forEach(g=>{g.dataset.uok=1;if(!g.isConnected)return;const q=g.dataset.unids,tem=new Set(UNIDADES.map(u=>`u:${u[0]}:${u[2]}`)),nomes=new Set(UNIDADES.map(u=>u[0]+":"+normNw(u[3])));
    const novas=(L.unidades||[]).filter(u=>{const k=`u:${u.uf}:${u.sigla}`;if(tem.has(k)||nomes.has(u.uf+":"+normNw(u.nome||""))||/^(OPM|OBM|UPM)$/.test(u.sigla)||/^(PM|PC|CBM|BM)[A-Z]{0,4}$/.test(u.sigla)&&!/BOPE|ROTA/.test(u.sigla))return false;tem.add(k);return true}).filter(u=>(q==="ALL"?u.uf!=="BR":u.uf===q)&&L.policias[`u:${u.uf}:${u.sigla}`]);
