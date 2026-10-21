@@ -4,7 +4,8 @@
 
 Só entra a foto quando o verbete da Wikipédia em português tem o mesmo nome da pessoa (ou redireciona para ele) E cita
 o escândalo no texto (palavras de PISTAS): assim um homônimo nunca ganha a foto de outra pessoa. Grava nos blocos
-fotos_<N>.json com a chave "esc:<nome como está no caso>". O robô chama fotos_escandalos() junto das outras fotos.
+fotos_<N>.json com a chave "esc:<nome como está no caso>". Redirecionamento só vale para outro título da mesma pessoa
+(todas as palavras do título estão no nome); verbete de desambiguação ou de operação/evento não dá foto. O robô chama fotos_escandalos() junto das outras fotos.
 """
 import hashlib
 import json
@@ -81,37 +82,6 @@ def _get(url: str, params: dict | None = None) -> tuple[int, bytes]:
     return 429, b""
 
 
-WD = "https://www.wikidata.org/w/api.php"
-
-
-def _wikidata(nome: str) -> str | None:
-    """Arquivo da foto (P18) da pessoa no Wikidata, só se houver UM ser humano brasileiro com exatamente esse nome
-    (rótulo ou apelido); dois ou mais com o mesmo nome = homônimo, sem foto."""
-    alvo = _n(nome)
-    cod, corpo = _get(WD, {"action": "wbsearchentities", "search": nome, "language": "pt", "uselang": "pt",
-                           "type": "item", "limit": 10, "format": "json"})
-    if cod != 200:
-        return None
-    ids = [r["id"] for r in json.loads(corpo).get("search", [])]
-    if not ids:
-        return None
-    cod, corpo = _get(WD, {"action": "wbgetentities", "ids": "|".join(ids), "props": "claims|labels|aliases",
-                           "languages": "pt|en", "format": "json"})
-    if cod != 200:
-        return None
-    achados = []
-    for e in json.loads(corpo).get("entities", {}).values():
-        cl = e.get("claims", {})
-        vals = lambda p: [c.get("mainsnak", {}).get("datavalue", {}).get("value") for c in cl.get(p, [])]
-        humano = any(isinstance(v, dict) and v.get("id") == "Q5" for v in vals("P31"))
-        brasil = any(isinstance(v, dict) and v.get("id") == "Q155" for v in vals("P27"))
-        nomes = [x.get("value") for x in (e.get("labels") or {}).values()]
-        nomes += [a.get("value") for lst in (e.get("aliases") or {}).values() for a in lst]
-        if humano and brasil and any(_n(x) == alvo for x in nomes):
-            achados.append(next((v for v in vals("P18") if isinstance(v, str)), None))
-    return achados[0] if len(achados) == 1 else None
-
-
 def _baixar_thumb(arquivo: str) -> str | None:
     for url in _thumb(arquivo):
         cod, corpo = _get(url)
@@ -121,28 +91,29 @@ def _baixar_thumb(arquivo: str) -> str | None:
 
 
 def foto_de(nome: str, slug: str, nome_caso: str) -> str | None:
-    """Pela Wikipédia (verbete com o nome, ou com o apelido entre parênteses, e que cita o caso); se ela não responder,
-    pelo Wikidata (um só brasileiro com esse nome exato)."""
+    """Pela Wikipédia: verbete com o nome (ou o apelido entre parênteses) que é de uma pessoa e cita o caso."""
     apelido = re.search(r"\(([^)]+)\)\s*$", nome)
     for n in [nome] + ([apelido.group(1).strip("'\" ")] if apelido else []):
         try:
-            img = _foto_wikipedia(n, slug, nome_caso)
+            img = _foto_wikipedia(n, slug, nome_caso, nome)
         except Exception:
             img = None
         if img:
             return img
-    arq = _wikidata(re.sub(r"\s*\(.*\)$", "", nome))
-    return _baixar_thumb(arq) if arq else None
+    return None
 
 
-def _foto_wikipedia(nome: str, slug: str, nome_caso: str) -> str | None:
+def _foto_wikipedia(nome: str, slug: str, nome_caso: str, nome_completo: str | None = None) -> str | None:
     pistas = PISTAS.get(slug) or [_n(nome_caso)]
     achado = _raw(re.sub(r"\s*\(.*\)$", "", nome))
     if not achado:
         return None
-    _, txt = achado
+    titulo, txt = achado
+    palavras = set(re.findall(r"[a-z]+", _n(nome_completo or nome)))
+    if not set(re.findall(r"[a-z]+", _n(re.sub(r"\s*\(.*\)$", "", titulo)))) <= palavras:
+        return None  # redirecionou para outra coisa (ex.: a página da operação policial)
     tn = _n(txt)
-    if "{{desambiguacao" in tn or not any(p in tn for p in pistas):
+    if "{{desambiguacao" in tn or not any(p in tn for p in pistas) or re.search(r"\{\{\s*info/(operacao|evento|caso|escandalo|crime)", tn):
         return None  # outro verbete com o mesmo nome, ou que não fala do caso: sem foto
     m = _IMG.search(txt)
     if not m:
