@@ -4968,7 +4968,9 @@ function navRestaura(h){const y=NAVH.pos[h];if(!y){scrollTo(0,0);return}let n=0;
 document.addEventListener("click",e=>{const a=e.target.closest("[data-voltar]");if(!a)return;e.preventDefault();navVoltar(a.dataset.voltar)});
 /* ===================== fichas das polícias (v1.5): história, patrono e homenageados, batalhões, contingente ===================== */
 // tocar numa polícia (brasão, linha do efetivo, cartão de unidade) abre #/policia/<slug>; a lista completa fica em #/policias
-const polSlug=k=>String(k||"").replace(/:/g,"-").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Za-z0-9-]/g,"");
+// mesmas unidades com siglas diferentes (a Wikipédia chama a CORE do Rio de "CRE")
+const POL_ALIAS={"u-RJ-CRE":"u-RJ-CORE"};
+const polSlug=k=>{const s=String(k||"").replace(/:/g,"-").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9-]/g,"");return POL_ALIAS[s]||s};
 let POL_LISTA=null,POL_P=null;
 function polLista(){return POL_LISTA?Promise.resolve(POL_LISTA):POL_P||(POL_P=apiGet("/policias").then(r=>(POL_LISTA=r.itens||[],POL_LISTA)).catch(()=>(POL_LISTA=[],POL_LISTA)))}
 const POL_CORP={pm:"Polícia Militar",pc:"Polícia Civil",pf:"Polícia Federal",prf:"Polícia Rodoviária Federal",spf:"Polícia Penal Federal",fn:"Força Nacional",u:"Unidade especial"};
