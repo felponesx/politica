@@ -1592,6 +1592,13 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .lc{width:100%;min-width:0}.lc-grade{stroke:var(--line);stroke-dasharray:3 4}.lc-grade.base{stroke:#C9D1DC;stroke-dasharray:none}.lc-eixo{fill:#667085}
 [data-theme="dark"] .lc-grade.base{stroke:#3A4660}[data-theme="dark"] .lc-eixo{fill:#98A2B3}
 .navvolta{margin:-6px 0 12px}.navvolta .btn{font-size:13.5px;padding:7px 12px}
+/* barras de porcentagem em blocos (v1.3, só nas barras de porcentagem; as de comparação .hb-b continuam lisas): 10 quadradinhos arredondados, cada um = 10%; o do meio fica parcialmente cheio */
+.bar:not(.hb-b){height:12px!important;width:min(100%,150px);flex:none;border-radius:0!important;background:#E4E8EE!important;overflow:hidden;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2212%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%223.2%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 0/10% 100% repeat-x;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2212%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%223.2%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 0/10% 100% repeat-x}
+.bar:not(.hb-b) i{display:block;height:100%;border-radius:0!important}
+[data-theme="dark"] .bar,[data-theme="dark"] .meter .bar{background:#2B3445!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar{background:#2B3445!important}}
+.pct-b .bar{width:150px}
 </style>
 </head>
 <body>
@@ -3438,7 +3445,7 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[];$("#gsu
    const emp=d.funcoes.reduce((s,x)=>s+(x.empenhado||0),0),dot=d.funcoes.reduce((s,x)=>s+(x.dotacao||0),0);
    $("#gsres").innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Quem gastou</span><strong style="font-size:17px">${esc(d.ente||ESFN2[f.esfera])}</strong></div>${dot?`<div class="kpi"><span>Orçamento atualizado</span><strong>${brl(dot)}</strong></div>`:""}${emp?`<div class="kpi"><span>Empenhado</span><strong>${brl(emp)}</strong></div>`:""}<div class="kpi"><span>Liquidado em ${d.ano}</span><strong>${brl(T)}</strong>${d.bimestre&&d.bimestre<6?`<em>até o ${d.bimestre}º bimestre</em>`:""}</div></div>
    <div class="grid g2 mt"><div class="panel"><h2>Para onde foi o dinheiro</h2>${donut(top)}</div><div class="panel"><h2>Evolução do total liquidado</h2>${anosChart(ev.map(x=>[x.ano,x.liquidado]))}</div></div>
-   <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.max(1,p/Math.max(...d.funcoes.map(y=>(y.liquidado||0)/T*100))*100).toFixed(1)}%;background:${p>=10?"var(--c1)":"#71A2F9"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
+   <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${p>=10?"var(--c1)":"#71A2F9"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
   catch(e){$("#gsres").innerHTML=rerro(e)}};
  apiGet("/gastos/entes").then(es=>{entes=es;if(!es.length){demoComAviso(_gastos,a,"Nenhum gasto por função coletado ainda (coleta siconfi-despesas-funcao).");return}carregar()}).catch(e=>{$("#gsres").innerHTML=rerro(e)});
  $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmun").hidden=f.esfera!=="M";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").onchange=async e=>{f.municipio=e.target.value;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);

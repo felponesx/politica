@@ -183,3 +183,5 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Gráficos em linha (maiores × menores): `linhasDuplo(serie,anos,vals,fmt,…)` — 5 linhas por gráfico, 3 primeiras vivas e
   grossas, 2 apagadas; sem 2 anos de dados cai para `rankDuplo` (barras). Segurança usa `segHist` (histórico anual do
   `/seguranca`); dívida e arrecadação usam `/historico-estados` (anos coletados pelo robô: receita, tesouro e siconfi-divida).
+- Barras de porcentagem (v1.3): `.bar` vira 10 quadradinhos arredondados (cada um = 10%, o do meio parcialmente cheio) por máscara
+  CSS, 150 px de largura; as barras de comparação de `hbars` (`.hb-b`) continuam lisas. CSS no fim do `<style>` do site.
