@@ -185,7 +185,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   `/seguranca`); dívida e arrecadação usam `/historico-estados` (anos coletados pelo robô: receita, tesouro e siconfi-divida).
 - Barras de porcentagem (v1.3): `.bar` vira 10 quadradinhos arredondados (cada um = 10%, o do meio parcialmente cheio) por máscara
   CSS, 150 px de largura; as barras de comparação de `hbars` (`.hb-b`) continuam lisas. CSS no fim do `<style>` do site.
-- Animação e período (v1.4; linhas em 2,6 s e barras em 1,8 s, para dar tempo de ver crescer): gráficos (`.lc`, `svg.lr-svg`, `.hb`, `.bar`) ficam parados (`.an-pre`) até entrarem na tela
+- Animação e período (v1.4; linhas em 2,6 s e barras em 1,8 s, para dar tempo de ver crescer; v1.7: pizzas `donut` e anéis `ring` (`.pz`) giram como ponteiro por máscara `.an-pz`, legenda `.an-f` linha a linha): gráficos (`.lc`, `svg.lr-svg`, `.hb`, `.bar`) ficam parados (`.an-pre`) até entrarem na tela
   (IntersectionObserver `AN_IO`) e então se montam (`.an-go`: linhas `.an-l` desenhadas, área `.an-a` revelada, pontos `.an-p`,
   barras crescendo); "reduzir movimento" desliga. `lineChart` reconhece anos/meses nos rótulos (ou `o.datas`) e mostra botões
   10 anos / 5 anos / 1 ano / 6 meses / Tudo (`LC_PER`, `lcCorte`; `o.per` = corte inicial em meses, `o.periodo:false` esconde);

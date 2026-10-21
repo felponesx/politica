@@ -1631,6 +1631,13 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .arv-top img.rfoto{flex:none;border-radius:50%;object-fit:cover;object-position:50% 20%;border:1px solid var(--line)}
 .arv-tags{display:flex;flex-wrap:wrap;gap:4px}
 .tag.lib-mor{background:#475467;color:#fff}.tag.lib-nd{background:none;border:1px dashed var(--line);color:var(--muted);font-weight:500}
+/* gráficos redondos (v1.7): a pizza/anel aparece girando como um ponteiro, com um leve giro e zoom; a legenda entra linha a linha */
+@media (prefers-reduced-motion:no-preference){
+:is(.an-pre,.an-go) .an-pz{animation-duration:2.2s;animation-timing-function:cubic-bezier(.5,0,.25,1)}
+:is(.an-pre,.an-go) .pz-svg,.pz-svg:is(.an-pre,.an-go){animation:anGira 2.2s cubic-bezier(.3,.7,.3,1) both;transform-origin:50% 50%}
+:is(.an-pre,.an-go) .an-f{animation:anFade .55s ease var(--d,0s) both}}
+@keyframes anGira{from{transform:rotate(-40deg) scale(.82);opacity:.2}to{transform:none;opacity:1}}
+@keyframes anFade{from{opacity:0;transform:translateX(-8px)}}
 </style>
 </head>
 <body>
@@ -1863,7 +1870,7 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;display:block" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
 // animação (v1.4): cada gráfico espera parado até entrar na tela e então se monta (linhas desenhadas da esquerda para a direita,
 // área revelada junto, pontos surgindo; barras crescendo). Sem IntersectionObserver ou com "reduzir movimento", nada anima.
-const AN_SEL=".lc,svg.lr-svg,.hb,.bar:not(.hb-b)";
+const AN_SEL=".lc,svg.lr-svg,.hb,.bar:not(.hb-b),.pz";
 const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.35,rootMargin:"0px 0px -40px 0px"}):null;
 function anJoga(el){el.classList.remove("an-pre");el.classList.add("an-go");clearTimeout(el._anT);el._anT=setTimeout(()=>el.classList.remove("an-go"),4200)}
 // botões de período dos gráficos em linha
@@ -1883,7 +1890,8 @@ function coresPizza(items){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?
 const DONUT_PASTEL=PIZZA_SUAVE;
 function donut(items){const tot=items.reduce((a,b)=>a+b[1],0)||1,pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));const cp=coresPizza(items),cor=k=>cp[k];
  let a0=-Math.PI/2,s="";items.forEach((it,k)=>{const a1=a0+it[1]/tot*Math.PI*2;const L=a1-a0>Math.PI?1:0;const P=(a,r)=>[60+r*Math.cos(a),60+r*Math.sin(a)];const[x0,y0]=P(a0,52),[x1,y1]=P(a1,52),[x2,y2]=P(a1,32),[x3,y3]=P(a0,32);s+=`<path d="M${x0} ${y0}A52 52 0 ${L} 1 ${x1} ${y1}L${x2} ${y2}A32 32 0 ${L} 0 ${x3} ${y3}Z" fill="${cor(k)}" stroke="var(--surface)" stroke-width="1.5"/>`;a0=a1});
-return`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="130" height="130">${s}</svg><div style="font-size:13px;flex:1;min-width:150px">${items.map((it,k)=>`<div style="display:flex;gap:8px;align-items:center;padding:3px 0"><i style="width:10px;height:10px;border-radius:50%;background:${cor(k)}"></i><span style="flex:1">${it[0]}</span><b style="font-weight:${pos[k]<3?600:500}">${(it[1]/tot*100).toFixed(1).replace(".",",")}%</b></div>`).join("")}</div></div>`}
+ const mid="pzm"+(++LC_N);
+return`<div class="pz" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="130" height="130" class="pz-svg"><mask id="${mid}"><circle cx="60" cy="60" r="42" fill="none" stroke="#fff" stroke-width="24" pathLength="1" class="an-l an-pz" transform="rotate(-90 60 60)"/></mask><g mask="url(#${mid})">${s}</g></svg><div style="font-size:13px;flex:1;min-width:150px">${items.map((it,k)=>`<div class="an-f" style="--d:${(.25+k*.18).toFixed(2)}s;display:flex;gap:8px;align-items:center;padding:3px 0"><i style="width:10px;height:10px;border-radius:50%;background:${cor(k)}"></i><span style="flex:1">${it[0]}</span><b style="font-weight:${pos[k]<3?600:500}">${(it[1]/tot*100).toFixed(1).replace(".",",")}%</b></div>`).join("")}</div></div>`}
 function spark(v){const mx=Math.max(...v),mn=Math.min(...v);return`<svg viewBox="0 0 100 28" width="100%" height="28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--slate)" stroke-width="1.6" points="${v.map((x,i)=>i*100/(v.length-1)+","+(26-(x-mn)/(mx-mn||1)*22)).join(" ")}"/></svg>`}
 
 /* ---------- mapa ---------- */
@@ -1945,7 +1953,8 @@ const pos=rankPos(ks.map(k=>[k,obj[k]]));
 return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Comparativo entre regiões">${ks.map((k,i)=>{const v=obj[k],h=v/mx*120,x=gap/2+i*(bw+gap),y=150-h;return`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${rankCor(pos[i],ks.length)}"><title>${REG[k]}: ${fmt(v)}</title></rect><text x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="var(--ink2)"${pos[i]<3?' font-weight="600"':""}>${fmt(v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${REG[k]}</text>`}).join("")}<line x1="0" x2="${W}" y1="150.5" y2="150.5" stroke="var(--line)"/></svg>`}
 function ring(items,center,sub){const cp=coresPizza(items);items.forEach((it,k)=>it[2]=cp[k]);const tot=items.reduce((a,b)=>a+b[1],0);const r=50,C=2*Math.PI*r;let off=0;
 const segs=items.map(it=>{const len=it[1]/tot*C;const el=`<circle r="${r}" cx="64" cy="64" fill="none" stroke="${it[2]}" stroke-width="12" stroke-dasharray="${Math.max(0,len-2)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 64 64)"/>`;off+=len;return el}).join("");
-return`<svg viewBox="0 0 128 128" width="140" height="140" style="flex:none"><circle r="${r}" cx="64" cy="64" fill="none" stroke="var(--line2)" stroke-width="12"/>${segs}<text x="64" y="66" text-anchor="middle" font-size="19" font-weight="600" fill="var(--navy)">${center}</text><text x="64" y="82" text-anchor="middle" font-size="8.5" fill="var(--muted)">${sub}</text></svg>`}
+const mid="pzm"+(++LC_N);
+return`<svg viewBox="0 0 128 128" width="140" height="140" style="flex:none" class="pz pz-svg"><mask id="${mid}"><circle cx="64" cy="64" r="${r}" fill="none" stroke="#fff" stroke-width="18" pathLength="1" class="an-l an-pz" transform="rotate(-90 64 64)"/></mask><circle r="${r}" cx="64" cy="64" fill="none" stroke="var(--line2)" stroke-width="12"/><g mask="url(#${mid})">${segs}</g><text x="64" y="66" text-anchor="middle" font-size="19" font-weight="600" fill="var(--navy)" class="an-f" style="--d:1.6s">${center}</text><text x="64" y="82" text-anchor="middle" font-size="8.5" fill="var(--muted)" class="an-f" style="--d:1.75s">${sub}</text></svg>`}
 function kcard(icon,l,v,sub,d){return`<div class="panel kc"><div class="ico">${hi(icon)}</div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub}</div><div class="d"><b>↑ ${d}</b><small>vs. 2024</small>${hi("trend")}</div></div>`}
 
 P.inicio=()=>{let cm="desp",reg="",met="reg";
