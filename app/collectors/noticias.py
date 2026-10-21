@@ -6,6 +6,7 @@ veículo). Feeds que já são de política entram inteiros; feeds gerais passam 
 import hashlib
 import html
 import re
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 
@@ -105,6 +106,35 @@ def ler_feed(xml: str, veiculo: str, so_politica: bool, tema: str = "geral") -> 
         out.append({"veiculo": veiculo, "tema": tema, "titulo": titulo, "link": link.strip(), "resumo": resumo,
                     "data": data.astimezone(timezone.utc).isoformat() if data else None})
     return out
+
+
+def buscar_feeds(trabalhadores: int = 8) -> tuple[list[dict], list[str]]:
+    """Lê os feeds ao mesmo tempo, sem banco (robô rápido de notícias). Por veículo e tema vale o primeiro endereço
+    que responde, como em `coletar_noticias`. Devolve as matérias e os avisos dos feeds que não responderam."""
+    grupos: dict[tuple[str, str], list[tuple[str, bool]]] = {}
+    for veiculo, url, so_pol, tema in FEEDS:
+        grupos.setdefault((veiculo, tema), []).append((url, so_pol))
+
+    def ler(chave):
+        veiculo, tema = chave
+        erro = None
+        for url, so_pol in grupos[chave]:
+            try:
+                r = http._cliente.get(url, headers=UA, timeout=30, follow_redirects=True)
+                texto = decodificar(r.content, r.headers.get("content-type", ""))
+                if r.status_code != 200 or "<item" not in texto:
+                    continue
+            except Exception as e:  # um veículo fora do ar não derruba os outros
+                erro = f"{veiculo}: {type(e).__name__}"
+                continue
+            itens = ler_feed(texto, veiculo, so_pol, tema)
+            if itens:
+                return itens, None
+        return [], erro or f"{veiculo} ({tema}): sem resposta"
+
+    with ThreadPoolExecutor(trabalhadores) as ex:
+        resultados = list(ex.map(ler, grupos))
+    return [it for itens, _ in resultados for it in itens], [a for _, a in resultados if a]
 
 
 def coletar_noticias(dias: int = 14):

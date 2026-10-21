@@ -15,9 +15,7 @@ on:
         description: "Chave do cache do banco para começar (ex.: banco-38270264957). Vazio = o mais recente."
         required: false
         default: ""
-  # notícias de política: a cada 6 horas, só os feeds (rápido)
-  schedule:
-    - cron: "17 */6 * * *"
+  # as notícias têm robô próprio e rápido (noticias.yml); este fica livre para a carga completa
   push:
     paths:
       - .github/workflows/coletar-dados.yml
@@ -48,7 +46,7 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg://brasil:brasil@localhost:5432/brasilplus
       TRANSPARENCIA_API_KEY: ${{ secrets.TRANSPARENCIA_API_KEY }}
-      TAREFAS: ${{ github.event_name == 'schedule' && 'noticias-politica' || inputs.tarefas }}
+      TAREFAS: ${{ inputs.tarefas }}
       PYTHONUNBUFFERED: "1"
       CNPJ_INTERVALO: "1.5"
     steps:

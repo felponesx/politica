@@ -37,6 +37,7 @@ from app.utils import UFS  # noqa: E402
 
 log = logging.getLogger("snapshot")
 SHARDS = 128
+ARQUIVOS_DE_OUTROS_ROBOS = ("noticias.json",)
 VERSAO = 1
 
 # listas guardadas completas (até o teto): caminho -> (bases com parâmetros fixos, teto de itens)
@@ -295,9 +296,13 @@ class Exportador:
 
     # ---------- gravação ----------
     def gravar(self, pasta: Path):
+        # arquivos de outros robôs (scripts/noticias_rapido.py) não podem sumir junto com a pasta
+        proprios = {a: (pasta / a).read_bytes() for a in ARQUIVOS_DE_OUTROS_ROBOS if (pasta / a).exists()}
         if pasta.exists():
             shutil.rmtree(pasta)
         pasta.mkdir(parents=True)
+        for nome, conteudo in proprios.items():
+            (pasta / nome).write_bytes(conteudo)
         shards = [dict() for _ in range(SHARDS)]
         for k, v in self.dados.items():  # textos e siglas padronizados também nos dados já gravados
             shards[fnv1a(k) % SHARDS][k] = limpar(v)

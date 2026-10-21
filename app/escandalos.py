@@ -7,8 +7,11 @@ anulada, absolvido...) e vale na data indicada (`data_situacao`), não necessari
 from __future__ import annotations
 
 import json
+import re
 from functools import lru_cache
 from pathlib import Path
+
+from app.utils import sem_acento
 
 PASTA = Path(__file__).resolve().parent / "dados" / "escandalos"
 AVISO = ("Todos são presumidos inocentes até a condenação definitiva (sem recurso possível). Ser investigado, "
@@ -115,3 +118,28 @@ def listar() -> dict:
     itens = sorted((resumo(c) for c in casos().values()), key=lambda c: -(c["ano_revelado"] or 0))
     return {"total": len(itens), "itens": itens, "aviso": AVISO,
             "fonte": "Curadoria do BRASIL+ com base em decisões e notícias públicas (link em cada informação)."}
+
+
+@lru_cache(maxsize=1)
+def _padroes() -> dict[str, re.Pattern]:
+    """Um padrão por caso, com o nome e os outros nomes (sem acento e sem o "Caso"/"Operação" do começo), por palavra inteira."""
+    out = {}
+    for slug, c in casos().items():
+        termos = []
+        for t in [c["nome"], re.sub(r"\s*\(.*?\)", "", c["nome"]), *c["outros_nomes"]]:  # "Mensalão (Ação Penal 470)" também vale só "Mensalão"
+            t = re.sub(r"^(operacao|caso|escandalo d[oa]s?|fraude n[oa]s?)\s+", "", sem_acento(t).lower())
+            if len(t) > 3:
+                termos.append(re.escape(t))
+        if termos:
+            out[slug] = re.compile(r"\b(?:" + "|".join(termos) + r")\b")
+    return out
+
+
+def casos_da_materia(titulo: str, resumo: str = "") -> list[str]:
+    """Casos (slug) citados numa notícia. Só indica que o assunto aparece no texto; não diz nada sobre ninguém."""
+    texto = sem_acento(f"{titulo} {resumo}").lower()
+    achados = {slug: [m.span() for m in p.finditer(texto)] for slug, p in _padroes().items()}
+    achados = {s: v for s, v in achados.items() if v}
+    # "Mensalão mineiro" não conta como "Mensalão": o caso cujo trecho está dentro do trecho de outro caso sai
+    return [s for s, v in achados.items()
+            if not all(any(o != s and a2 <= a and b <= b2 and (a2, b2) != (a, b) for o, w in achados.items() for a2, b2 in w) for a, b in v)]

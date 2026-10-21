@@ -128,6 +128,8 @@ estática), o repositório tem um robô no GitHub Actions:
   eleições (`scripts/coleta_ci.py`, cada tarefa com limite de tempo), mostra o resumo das coletas e grava em
   `site/dados/` uma cópia estática da API (`scripts/exportar_snapshot.py`). Rode pela aba **Actions > Coletar dados
   oficiais > Run workflow**; o campo "tarefas" aceita uma lista própria, ex.: `tse-resultados ano=2018`.
+- **Notícias (rápido)** (`.github/workflows/noticias.yml`): a cada 15 minutos lê os feeds dos veículos e grava
+  `site/dados/noticias.json` (`scripts/noticias_rapido.py`), com os escândalos citados em cada matéria. Sem banco: ~1 minuto.
 - **Diagnóstico das fontes** (`.github/workflows/diagnostico.yml`): mostra as respostas brutas das fontes
   (`scripts/diagnostico_ci.py`) para conferir formato e bloqueios antes de corrigir um coletor.
 - O site procura `dados/manifest.json` ao lado da página quando não acha um servidor. As listas da cópia vêm completas

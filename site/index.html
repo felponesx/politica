@@ -1344,7 +1344,7 @@ a.rrow b{font-weight:500}
 .vlogo{display:inline-flex;align-items:center;justify-content:center;flex:none;vertical-align:middle}.vlogo img{height:100%;width:auto;max-width:72px;object-fit:contain}
 .vlogo i{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--tint);color:var(--muted);font-style:normal;font-weight:700}
 .nw-veic{display:flex;flex-wrap:wrap;gap:8px}.vch{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;font-size:13px}.vch.on{background:#E3EEFA;font-weight:600}[data-theme="dark"] .vch.on{background:#27385A}
-.vch small{color:var(--muted)}.nw-v{display:flex;align-items:center;gap:6px}
+.vch small{color:var(--muted)}.nw-v{display:flex;align-items:center;gap:6px}.nw-caso{align-self:flex-start;font-size:12px;font-weight:600;color:var(--blue);border:1px solid var(--blue);border-radius:999px;padding:1px 9px;cursor:pointer}.nw-caso:hover{background:var(--blue);color:var(--surface)}
 /* ===== seletores enxutos: cada grupo de botões vira uma pílula "Rótulo: valor ▾" com menu ===== */
 .pill-w{position:relative;display:inline-flex;flex-direction:column;min-width:0}
 .pill-w>.segj-l{display:none}
@@ -3094,7 +3094,9 @@ async function apiGet(p,{timeout=9000}={}){if(API.snap)return snapGet(p);const c
 const SNAP={m:null,cache:{}};
 const snapChave=(cam,ps)=>{const k=Object.keys(ps).filter(x=>ps[x]!=="").sort();return cam+(k.length?"?"+k.map(x=>x+"="+ps[x]).join("&"):"")};
 function snapHash(s){let h=0x811c9dc5;for(const ch of s){h^=ch.codePointAt(0);h=Math.imul(h,0x01000193)>>>0}return h}
-async function snapLer(k){const n=snapHash(k)%SNAP.m.shards;
+/* notícias: o robô rápido (noticias.yml) grava dados/noticias.json a cada 15 min; quando o arquivo existe, ele vale no lugar da cópia completa */
+async function snapNoticias(){if(!SNAP.nw)SNAP.nw=fetch("dados/noticias.json?t="+Math.floor(Date.now()/60000)).then(r=>r.ok?r.json():null).then(d=>d&&Array.isArray(d.itens)?d:null).catch(()=>null);return SNAP.nw}
+async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)return x}const n=snapHash(k)%SNAP.m.shards;
  if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
  return(await SNAP.cache[n])[k]}
 const snapNorm=t=>String(t??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
@@ -4644,32 +4646,35 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
    ["Partido",p=>p.partido_na_epoca?`<span class="esc-p">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:"—"],["Situação na Justiça",p=>escSit(p.situacao)],["Prisão",p=>`${escPrisaoTag(p)}${p.liberdade_detalhe?`<div class="small muted esc-vt">${esc(p.liberdade_detalhe)}${p.liberdade_data?` (${escData(p.liberdade_data)})`:""} ${p.liberdade_fonte?`<a href="${esc(p.liberdade_fonte)}" target="_blank" rel="noopener">fonte</a>`:""}</div>`:""}`],
    ["Valor citado",p=>escVal(p.valor_recebido)],["Devolveu",p=>escVal(p.devolveu)],["Fonte",p=>`<a href="${esc(p.fonte)}" target="_blank" rel="noopener">${escData(p.data_situacao)||"ver"}</a>`]],P_);
   const termos=[c.nome,...c.outros_nomes].map(t=>snapNorm(t).replace(/^(operacao|caso|escandalo d[oa]s?|fraude n[oa]s?)\s+/,"")).filter(t=>t.length>3);
-  apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;
+  apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>(x.casos||[]).includes(slug)||termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;
    $("#escNl").innerHTML=l.map(x=>`<div class="list-row"><div style="flex:1;min-width:0"><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.titulo)}</a><div class="small muted">${esc(x.veiculo||"")} · ${esc((x.data||"").slice(0,10))}</div></div></div>`).join("")}).catch(()=>{});
   document.querySelectorAll('.esc-det').forEach(d=>d.onclick=()=>d.classList.toggle('aberto'));
   document.querySelectorAll('.arv-no').forEach(b=>b.onclick=ev=>{if(ev.target.closest('a'))return;const ci=b.querySelector('.arv-cit'),ab=ci.hidden;ci.hidden=!ab;b.setAttribute('aria-expanded',ab);escLinhas(c)});
   escLinhas(c);const ab=$('#escArv');if(ab&&window.ResizeObserver){let q=0;new ResizeObserver(()=>{cancelAnimationFrame(q);q=requestAnimationFrame(()=>escLinhas(c))}).observe(ab)}
   document.querySelectorAll('.arv-no').forEach(b=>{const x=(c.organograma.papeis.find(p=>p.nome===b.dataset.arv)||{}).acima;if(!x)return;const pai=()=>document.querySelector(`.arv-no[data-arv="${CSS.escape(x)}"]`);b.onmouseenter=()=>{const e=pai();e&&e.classList.add('arv-pai')};b.onmouseleave=()=>{const e=pai();e&&e.classList.remove('arv-pai')}});
   rowLinks&&rowLinks()}).catch(e=>{const b=$("#escD");if(b)b.innerHTML=rerro(e)})}});
+const ESC_NOMES={};
 P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>
  <div id="nwBox">${API.on?rload():`<div class="rbanner">As notícias aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/noticias?limit=1500").then(t=>{const box=$("#nwBox");if(!box)return;todas=(t.itens||[]).map(n=>{const m={...n,titulo:limpaNw(n.titulo),resumo:limpaNw(n.resumo)};m._t=temasNw(m);return m}).filter(n=>!quebradaNw(n.titulo+" "+n.resumo));
   box.innerHTML=`<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Assunto</span><div class="seg segj" id="nwT"></div></div><div class="segj-w"><span class="segj-l">Veículo</span><div class="seg segj nw-veic" id="nwV"></div></div></div>
    <div class="filters" style="margin-bottom:12px"><input id="nwQ" placeholder="Buscar nas manchetes" style="flex:1;min-width:180px" autocomplete="off"></div>
-   <div id="nwL"></div><div id="nwMw"></div><p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} Atualizado a cada 6 horas pelo robô do BRASIL+. Logos: Wikimedia Commons.</p>`;
+   <div id="nwL"></div><div id="nwMw"></div><p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} ${t.atualizado_em?`Atualizado em ${new Date(t.atualizado_em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}; o robô confere os veículos a cada 15 minutos.`:"Atualizado pelo robô do BRASIL+."} Logos: Wikimedia Commons.</p>`;
   const noTema=()=>todas.filter(n=>n._t.has(f.tema));
   const lista=()=>{const base=noTema();const cont={};base.forEach(n=>cont[n.veiculo]=(cont[n.veiculo]||0)+1);
    if(f.veiculo&&!cont[f.veiculo])f.veiculo="";
    $("#nwT").innerHTML=NW_TEMAS.map(([k,nm])=>`<button data-t="${k}" class="${k===f.tema?"on":""}">${nm} <small>${nf(todas.filter(n=>n._t.has(k)).length)}</small></button>`).join("");
    $("#nwV").innerHTML=`<button class="vch ${f.veiculo?"":"on"}" data-v="">Todos os veículos <small>${nf(base.length)}</small></button>`+Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([v,n])=>`<button class="vch ${v===f.veiculo?"on":""}" data-v="${esc(v)}">${vlogo(v,20)}<span>${esc(v)}</span> <small>${n}</small></button>`).join("");
    const q=normNw(f.q);const it=base.filter(n=>(!f.veiculo||n.veiculo===f.veiculo)&&(!q||normNw(`${n.titulo} ${n.resumo||""}`).includes(q)));
-   $("#nwL").innerHTML=it.length?`<div class="nw-lista">${it.slice(0,mostra).map(n=>`<a class="nw" href="${esc(n.link)}" target="_blank" rel="noopener"><span class="nw-v">${vlogo(n.veiculo,16)} ${esc(n.veiculo)} · ${quandoNw(n.data)}</span><b>${esc(n.titulo)}</b>${n.resumo?`<span class="nw-r">${esc(n.resumo.slice(0,220))}${n.resumo.length>220?"…":""}</span>`:""}</a>`).join("")}</div>`:rvazio("Nenhuma notícia com esse filtro.");
+   $("#nwL").innerHTML=it.length?`<div class="nw-lista">${it.slice(0,mostra).map(n=>`<a class="nw" href="${esc(n.link)}" target="_blank" rel="noopener"><span class="nw-v">${vlogo(n.veiculo,16)} ${esc(n.veiculo)} · ${quandoNw(n.data)}</span><b>${esc(n.titulo)}</b>${n.resumo?`<span class="nw-r">${esc(n.resumo.slice(0,220))}${n.resumo.length>220?"…":""}</span>`:""}${(n.casos||[]).map(c=>`<span class="nw-caso" data-caso="${esc(c)}" title="Abrir o caso">${esc(ESC_NOMES[c]||c)}</span>`).join("")}</a>`).join("")}</div>`:rvazio("Nenhuma notícia com esse filtro.");
    $("#nwMw").innerHTML=it.length>mostra?`<button class="btn" id="nwM" type="button">Ver mais (${nf(it.length-mostra)})</button>`:"";
    document.querySelectorAll("#nwT button").forEach(b=>b.onclick=()=>{f.tema=b.dataset.t;mostra=40;lista()});
    document.querySelectorAll("#nwV button").forEach(b=>b.onclick=()=>{f.veiculo=b.dataset.v;mostra=40;lista()});
    const m=$("#nwM");if(m)m.onclick=()=>{mostra+=40;lista()}};
-  lista();$("#nwQ").oninput=debounce(e=>{f.q=e.target.value.trim();mostra=40;lista()})}).catch(e=>{const b=$("#nwBox");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("As notícias entram na próxima coleta do robô."):rerro(e)})}}};
+  lista();$("#nwQ").oninput=debounce(e=>{f.q=e.target.value.trim();mostra=40;lista()});
+  $("#nwL").onclick=e=>{const b=e.target.closest(".nw-caso");if(!b)return;e.preventDefault();e.stopPropagation();location.hash="#/escandalo/"+b.dataset.caso};
+  if(todas.some(n=>(n.casos||[]).length))apiGet("/escandalos").then(d=>{(d.itens||[]).forEach(c=>ESC_NOMES[c.slug]=c.nome);lista()}).catch(()=>{})}).catch(e=>{const b=$("#nwBox");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("As notícias entram na próxima coleta do robô."):rerro(e)})}}};
 
 /* ---------- obras: etapas (como o andamento das leis) e prazo ---------- */
 const obSitK=s=>({"Concluída":"ok","Em execução":"and","Paralisada":"par","Inacabada":"par","Cancelada":"canc","Inativada":"canc"})[s]||"cad";

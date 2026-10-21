@@ -87,6 +87,15 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Impostômetro: federal (Receita) + estaduais e municipais (`siconfi-tributos`, RREO Anexo 03 de cada estado e prefeitura, 12 meses); prefeituras sem relatório estimadas pela média por habitante da UF.
 - Imagens: retratos até 360 px de altura (JPEG 78; Câmara usa a versão `jpgmaior`) e logos até 256 px (PNG); nunca amplia. 720p/1080p reais não cabem no limite de 256 MB do Artifact.
 
+## Notícias rápidas (out/2026)
+- `.github/workflows/noticias.yml` + `scripts/noticias_rapido.py`: a cada 15 min lê os feeds (`buscar_feeds` em `app/collectors/noticias.py`),
+  sem banco, e grava `site/dados/noticias.json` (formato de `GET /noticias`; só faz commit quando chega matéria nova; 10 dias, até 1.200).
+  O site usa esse arquivo no lugar da cópia completa (`snapNoticias` em `snapLer`). Cada matéria ganha `casos`: escândalos citados no
+  título/resumo (`app/escandalos.py` → `casos_da_materia`, palavra inteira; o caso de nome mais longo vence); a aba Notícias mostra a
+  etiqueta do caso (leva a `#/escandalo/<slug>`) e a página do caso lista essas matérias na hora.
+- O robô pesado (`coletar-dados.yml`) não tem mais agendamento: só roda pelo botão ou ao mudar o próprio arquivo. `exportar_snapshot.py`
+  preserva `noticias.json` ao refazer a pasta (`ARQUIVOS_DE_OUTROS_ROBOS`). Atenção: o GitHub só dispara `schedule` pelo branch padrão.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.
