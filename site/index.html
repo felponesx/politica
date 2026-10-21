@@ -1599,6 +1599,19 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .bar,[data-theme="dark"] .meter .bar{background:#2B3445!important}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar{background:#2B3445!important}}
 .pct-b .bar{width:150px}
+/* animação dos gráficos e botões de período (v1.4) */
+.lc-per{margin:0 0 8px;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
+@media (prefers-reduced-motion:no-preference){
+:is(.an-pre,.an-go) .an-l{stroke-dasharray:1 2;animation:anLinha 1.4s cubic-bezier(.45,0,.25,1) var(--d,0s) both}
+:is(.an-pre,.an-go) .an-s{animation-duration:.35s}
+:is(.an-pre,.an-go) .an-a{animation:anRevela 1.4s cubic-bezier(.45,0,.25,1) both}
+:is(.an-pre,.an-go) .an-p{transform-box:fill-box;transform-origin:center;animation:anPonto .4s cubic-bezier(.3,1.5,.6,1) var(--d,0s) both}
+:is(.an-pre,.an-go) .hb-b i,.bar:is(.an-pre,.an-go) i{transform-origin:left center;animation:anBarra .9s cubic-bezier(.3,.8,.3,1) both}
+.an-pre,.an-pre *{animation-play-state:paused!important}}
+@keyframes anLinha{from{stroke-dashoffset:1.001}to{stroke-dashoffset:0}}
+@keyframes anRevela{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes anPonto{from{opacity:0;transform:scale(.2)}}
+@keyframes anBarra{from{transform:scaleX(0)}}
 </style>
 </head>
 <body>
@@ -1797,7 +1810,24 @@ function hbars(items,{fmt=brl,color}={}){const mx=Math.max(...items.map(i=>i[1])
 // gráfico de linha desenhado na largura real do quadro (letras sempre do mesmo tamanho, nada cortado nas bordas);
 // sai primeiro com 600 de largura e é redesenhado quando o quadro aparece ou muda de tamanho
 const LC_REG=new Map();let LC_N=0;
-function lineChart(series,labels,o={}){const id="lc"+(++LC_N);LC_REG.set(id,[series,labels,o]);return`<div class="lc" data-lc="${id}">${lineSVG(series,labels,o,600)}</div>`}
+// período (v1.4): quando os rótulos são anos ou meses (ou vêm datas em o.datas), botões 10 anos / 5 anos / 1 ano / 6 meses / Tudo
+// cortam a série pelo fim; só aparecem os que cortam algo e deixam 3 pontos ou mais. o.per = corte inicial em meses.
+const LC_PER=[[120,"10 anos"],[60,"5 anos"],[12,"1 ano"],[6,"6 meses"]],MES3=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+function lcMeses(labels){if(!labels||labels.length<3)return null;const L=labels.map(l=>String(l==null?"":l).trim().toLowerCase());
+ if(/^\d{4}$/.test(L[0])&&L.every(l=>/^\d{4}$|^\d{2}$/.test(l))){let a=0;return{anual:true,m:L.map(l=>{a=l.length===4?+l:Math.floor(a/100)*100+(+l);return a*12+11})}}
+ if(L.every(l=>/^[a-zç]{3}\/\d{2}$/.test(l)&&MES3.includes(l.slice(0,3))))return{m:L.map(l=>(2000+(+l.slice(4)))*12+MES3.indexOf(l.slice(0,3)))};
+ if(L.every(l=>MES3.includes(l))){const a=new Date().getFullYear();return{m:L.map(l=>a*12+MES3.indexOf(l))}}
+ return null}
+function lcCorte(dt,meses){if(!dt||!meses)return 0;const u=dt.m[dt.m.length-1];let k=0;while(k<dt.m.length&&dt.m[k]<u-meses)k++;return dt.m.length-k<2?0:k}
+function lcRot(dt,k){const m=dt.m.slice(k);if(dt.anual)return m.map(x=>String(Math.floor(x/12)));const longo=m[m.length-1]-m[0]>36;
+ return m.map(x=>{const a=Math.floor(x/12),mm=x%12;return longo?(mm===0&&x-m[0]>=6?String(a):""):MES3[mm]+"/"+String(a).slice(2)})}
+function lcCut(id){const[s,l,o,dt,k]=LC_REG.get(id);if(!dt||(!k&&!dt.gera))return[s,l,o];return[s.map(x=>({...x,v:x.v.slice(k)})),lcRot(dt,k),o]}
+function lineChart(series,labels,o={}){const id="lc"+(++LC_N);
+ const dt=o.datas?{gera:true,anual:o.datas.every(d=>String(d).length===4),m:o.datas.map(d=>{d=String(d);return +d.slice(0,4)*12+(d.length>=7?+d.slice(5,7)-1:11)})}:lcMeses(labels);
+ const k=lcCorte(dt,o.per);let chips="";
+ if(dt&&o.periodo!==false){const n=dt.m.length,ops=LC_PER.filter(([mm])=>{const c=lcCorte(dt,mm);return c>0&&n-c>=3});
+  if(ops.length){const cur=k&&ops.some(x=>x[0]==o.per)?o.per:0;chips=`<div class="seg lc-per" data-lcp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Tudo"]].map(([mm,t])=>`<button type="button" data-m="${mm}" class="${mm==cur?"on":""}">${t}</button>`).join("")}</div>`}}
+ LC_REG.set(id,[series,labels||[],o,dt,k]);return`${chips}<div class="lc" data-lc="${id}">${lineSVG(...lcCut(id),600)}</div>`}
 function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.round(W));const H=h,all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);
  const ticks=[0,1,2,3,4].map(t=>mn+(mx-mn)*t/4),rot=ticks.map(v=>fmt(v).replace("R$ ","")),p=Math.max(30,Math.max(...rot.map(t=>t.length))*6.6+10),dir=14;
  const n=labels.length,x=i=>p+(n<2?0:i*(W-p-dir)/(n-1)),y=v=>H-26-(v-mn)/(mx-mn||1)*(H-40);
@@ -1808,13 +1838,23 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  vis.forEach(([l,i],k)=>{const an=k===0&&x(i)-p<20?"start":i===n-1||x(i)>W-dir-24?"end":"middle";g+=`<text x="${x(i)}" y="${H-6}" font-size="11.5" text-anchor="${an}" class="lc-eixo">${l}</text>`});
  const cs=k=>series[k].c||RANK_VIVO[k%3],gid="lg"+(++LC_N);
  // linha na cor viva, área em degradê embaixo da 1ª série e só o último ponto marcado
- if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cs(0)}" stop-opacity=".22"/><stop offset="1" stop-color="${cs(0)}" stop-opacity=".02"/></linearGradient></defs>`+g+`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="url(#${gid})"/>`}
- series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2"/>`});
+ if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cs(0)}" stop-opacity=".22"/><stop offset="1" stop-color="${cs(0)}" stop-opacity=".02"/></linearGradient></defs>`+g+`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="url(#${gid})" class="an-a"/>`}
+ series.forEach((s,k)=>{g+=`<path fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="an-l" d="M${s.v.map((v,i)=>x(i)+","+y(v)).join(" L")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2" class="an-p" style="--d:1.25s"/>`});
  const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
  return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;display:block" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
+// animação (v1.4): cada gráfico espera parado até entrar na tela e então se monta (linhas desenhadas da esquerda para a direita,
+// área revelada junto, pontos surgindo; barras crescendo). Sem IntersectionObserver ou com "reduzir movimento", nada anima.
+const AN_SEL=".lc,svg.lr-svg,.hb,.bar:not(.hb-b)";
+const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.2,rootMargin:"0px 0px -30px 0px"}):null;
+function anJoga(el){el.classList.remove("an-pre");el.classList.add("an-go");clearTimeout(el._anT);el._anT=setTimeout(()=>el.classList.remove("an-go"),2400)}
+// botões de período dos gráficos em linha
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-lcp] button");if(!b)return;const w=b.parentElement,id=w.dataset.lcp,d=LC_REG.get(id);if(!d)return;
+ d[4]=lcCorte(d[3],+b.dataset.m);w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+ const el=document.querySelector(`.lc[data-lc="${id}"]`);if(!el)return;el.innerHTML=lineSVG(...lcCut(id),+el.dataset.w||el.clientWidth||600);if(AN_IO)anJoga(el)});
 {const RO=window.ResizeObserver?new ResizeObserver(es=>es.forEach(e=>{const el=e.target,w=Math.round(e.contentRect.width),d=LC_REG.get(el.dataset.lc);
-  if(!d||!w||Math.abs(w-(+el.dataset.w||0))<6)return;el.dataset.w=w;el.innerHTML=lineSVG(d[0],d[1],d[2],w)})):null;
+  if(!d||!w||Math.abs(w-(+el.dataset.w||0))<6)return;el.dataset.w=w;el.innerHTML=lineSVG(...lcCut(el.dataset.lc),w)})):null;
  let q=0;const liga=()=>{q=0;document.querySelectorAll(".lc[data-lc]:not([data-obs])").forEach(el=>{el.dataset.obs=1;RO&&RO.observe(el)});
+  if(AN_IO)document.querySelectorAll(AN_SEL).forEach(el=>{if(el.dataset.an)return;el.dataset.an=1;el.classList.add("an-pre");AN_IO.observe(el)});
   if(LC_REG.size>200)for(const id of LC_REG.keys())if(!document.querySelector(`[data-lc="${id}"]`))LC_REG.delete(id)};
  new MutationObserver(()=>{if(!q)q=requestAnimationFrame(liga)}).observe(document.body,{childList:true,subtree:true})}
 // pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
@@ -3130,11 +3170,11 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if((i%passo===0&&anos.length-1-i>=Math.max(1,passo/2+.5))||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="11.5" class="lc-eixo">${rot(a)}</text>`});
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
-  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}"/>`;
-  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
+  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}" pathLength="1" class="an-l"/>`;
+  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}" class="an-p" style="--d:${(anos.length<2?0:i/(anos.length-1)*1.3).toFixed(2)}s"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
   const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
  fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<13)fim[i].y=fim[i-1].y+13;
- fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}">${lista[f.k].uf}</text>`});
+ fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}" class="an-p" style="--d:1.35s">${lista[f.k].uf}</text>`});
  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.6}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
 function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,nota=""}={}){
@@ -3145,10 +3185,10 @@ function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,
   const x=k=>L+22+k*(W-L-Rp-22)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.3);let g="";
   for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" class="lc-grade"/>${k<3?`<text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(val)}</text>`:""}`}
   // área clara embaixo e a linha, cada trecho na cor do ponto de onde sai
-  g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07"/>`;
-  for(let k=0;k<v.length-1;k++)g+=`<line x1="${x(k).toFixed(1)}" y1="${y(v[k]).toFixed(1)}" x2="${x(k+1).toFixed(1)}" y2="${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round"/>`;
-  lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
-   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"#667085"}">${fmt(v[k])}</text>
+  g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07" class="an-a"/>`;
+  for(let k=0;k<v.length-1;k++)g+=`<path d="M${x(k).toFixed(1)},${y(v[k]).toFixed(1)} L${x(k+1).toFixed(1)},${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round" pathLength="1" class="an-l an-s" style="--d:${(k*.3+.15).toFixed(2)}s"/>`;
+  lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2" class="an-p" style="--d:${(k*.3).toFixed(2)}s"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
+   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"#667085"}" class="an-p" style="--d:${(k*.3+.1).toFixed(2)}s">${fmt(v[k])}</text>
    <text x="${x(k).toFixed(1)}" y="${H-16}" text-anchor="middle" font-size="12" font-weight="${k<3?700:500}" fill="${k<3?"var(--ink)":"#667085"}">${u.uf}</text><text x="${x(k).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="10.5" class="lc-eixo">${k+1}º</text>`});
   const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cor(k)}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(v[k])}</b></div>`).join("");
   return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}">${g}</svg><div class="lr-leg">${leg}</div></div>`};
@@ -3157,7 +3197,17 @@ function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,
 function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
  const ok=UFS.filter(u=>vals[u.uf]!=null&&serie&&serie[u.uf]&&Object.keys(serie[u.uf]).length>=2).sort((a,b)=>vals[b.uf]-vals[a.uf]);
  if(!anos||anos.length<2||ok.length<n*2)return rankLinhas(vals,fmt,{alto,baixo,coresAlto,coresBaixo,attr,href,n});
- const p={attr,href,rot,vals};return`<div class="rk-duplo lr">${linhasGraf(alto,ok.slice(0,n),serie,anos,coresAlto,fmt,p)}${linhasGraf(baixo,ok.slice(-n).reverse(),serie,anos,coresBaixo,fmt,p)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
+ const p={attr,href,rot,vals},corpo=an=>`<div class="rk-duplo lr">${linhasGraf(alto,ok.slice(0,n),serie,an,coresAlto,fmt,p)}${linhasGraf(baixo,ok.slice(-n).reverse(),serie,an,coresBaixo,fmt,p)}</div>`;
+ // botões de período (10 anos / 5 anos / Tudo) quando a série tem mais anos do que o corte
+ const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)?[]:[[10,"10 anos"],[5,"5 anos"]].filter(([m])=>{const c=yr.filter(y=>y>=u-m).length;return c<anos.length&&c>=3});
+ let chips="";if(ops.length){const id="ld"+(++LC_N);LD_REG.set(id,an=>corpo(an));LD_REG.set(id+"a",anos);
+  chips=`<div class="seg lc-per" data-ldp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Tudo"]].map(([m,t])=>`<button type="button" data-m="${m}" class="${m?"":"on"}">${t}</button>`).join("")}</div>`;
+  return`${chips}<div data-ld="${id}">${corpo(anos)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
+ return corpo(anos)+(nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:"")}
+const LD_REG=new Map();
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ldp] button");if(!b)return;const w=b.parentElement,id=w.dataset.ldp,f=LD_REG.get(id),anos=LD_REG.get(id+"a"),el=document.querySelector(`[data-ld="${id}"]`);if(!f||!el)return;
+ const m=+b.dataset.m,u=parseInt(anos[anos.length-1],10);w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+ el.innerHTML=f(m?anos.filter(a=>parseInt(a,10)>=u-m):anos);if(typeof AN_IO!=="undefined"&&AN_IO)el.querySelectorAll("svg.lr-svg").forEach(sv=>{sv.dataset.an=1;anJoga(sv)})});
 // série por ano dos indicadores de segurança que têm histórico (Sinesp anual, Sisdepen semestral, Anuário)
 function segHist(d,met){const h=d&&d.historico;if(!h)return null;const pop=uf=>gv(d.estados[uf],"populacao");const serie={};let anos=[],parcial=null;
  const k=met==="hom"?"homicidio_doloso":met==="detidos"?"mandados_cumpridos":met.startsWith("c_")?met.slice(2):null;
@@ -3667,8 +3717,9 @@ function prefsUF(){try{const p=prefs();if(p&&p.uf&&UF[p.uf])return p.uf}catch(e)
 /* ---------- v0.3: contadores, economia, agenda do Congresso, comparação e exportação ---------- */
 var CONT_REAL=null;
 const pctF=v=>v==null?"—":v.toLocaleString("pt-BR",{maximumFractionDigits:2})+"%";
-function serieChart(h,{fmt=x=>x.toLocaleString("pt-BR",{maximumFractionDigits:1}),n=48}={}){const pts=h.slice(-n);if(pts.length<2)return rvazio("Histórico insuficiente.");
- const passo=Math.max(1,Math.ceil(pts.length/8)),longa=pts.length>150,ano5=pts.length>300?5:pts.length>200?4:2;return lineChart([{n:"",v:pts.map(p=>p.valor)}],pts.map((p,i)=>longa?(p.data.slice(5,7)==="01"&&+p.data.slice(0,4)%ano5===(pts.length>300?0:1)?p.data.slice(0,4):""):(i%passo===0&&pts.length-1-i>=passo/2)||i===pts.length-1?p.data.slice(5,7)+"/"+p.data.slice(2,4):""),{h:180,fmt})}
+function serieChart(h,{fmt=x=>x.toLocaleString("pt-BR",{maximumFractionDigits:1}),n=48,periodo=true}={}){const pts=(h||[]).filter(p=>p&&p.data&&p.valor!=null);if(pts.length<2)return rvazio("Histórico insuficiente.");
+ // n = meses mostrados no começo; os botões de período (10 anos … 6 meses, Tudo) trocam o corte
+ return lineChart([{n:"",v:pts.map(p=>p.valor)}],null,{h:180,fmt,datas:pts.map(p=>p.data.slice(0,7)),per:n,periodo})}
 const valSerie=(s,k)=>{const v=s&&s[k];return v?v.valor:null};
 
 /* Início: impostômetro e gastômetro com base oficial */
@@ -3711,8 +3762,9 @@ const ECO=[["ipca_12m","Inflação (IPCA 12 meses)",pctF],["selic","Selic",pctF]
 P.indicadores=(...a)=>{const r=_ind3(...a);if(!API.on)return r;
 return{html:`<div id="ecoReal"></div>`+r.html,mount(){r.mount&&r.mount();apiGet("/economia?nomes="+ECO.map(x=>x[0]).join(",")).then(e=>{const s=e.series,b=$("#ecoReal");if(!b)return;const tem=ECO.filter(x=>s[x[0]]);if(!tem.length)return;
  b.innerHTML=`<div class="panel" style="margin-bottom:18px"><h2>Economia: dados oficiais</h2><div class="kpis kpis-c" id="ecoK">${tem.map((x,i)=>`<button class="kpi ecok ${i?"":"on"}" data-n="${x[0]}" type="button"><span>${x[1]}</span><strong>${x[2](s[x[0]].ultimo.valor)}</strong><em>${s[x[0]].ultimo.data.slice(5,7)}/${s[x[0]].ultimo.data.slice(0,4)}</em></button>`).join("")}</div><div id="ecoG" class="mt"></div>${RSRC(e.fonte)}</div>`;
- let cur=tem[0][0],per=9999;const PERS=[[9999,"Tudo desde 1985"],[360,"30 anos"],[120,"10 anos"],[60,"5 anos"]];
- const des=n=>{cur=n;const x=ECO.find(z=>z[0]===n),h=s[n].historico,pts=h.slice(-per),ini=pts[0]?pts[0].data.slice(0,4):"";$("#ecoG").innerHTML=`<div class="segj-w" style="margin-bottom:8px"><span class="segj-l">Período</span><div class="seg segj" id="ecoP">${PERS.map(([k,t])=>`<button data-p="${k}" class="${k===per?"on":""}">${t}</button>`).join("")}</div></div><h3 class="rh3">${x[1]}: ${ini?`de ${ini} até hoje`:"últimos anos"}</h3>`+serieChart(h,{fmt:x[2],n:per});
+ let cur=tem[0][0],per=9999;const PERS=[[9999,"Tudo desde 1985"],[360,"30 anos"],[120,"10 anos"],[60,"5 anos"],[12,"1 ano"],[6,"6 meses"]];
+ const mesN=d=>+d.slice(0,4)*12+(+d.slice(5,7)-1);
+ const des=n=>{cur=n;const x=ECO.find(z=>z[0]===n),h=s[n].historico,u=h.length?mesN(h[h.length-1].data):0,pts=h.filter(p=>mesN(p.data)>=u-per),ini=pts[0]?pts[0].data.slice(0,4):"";$("#ecoG").innerHTML=`<div class="segj-w" style="margin-bottom:8px"><span class="segj-l">Período</span><div class="seg segj" id="ecoP">${PERS.map(([k,t])=>`<button data-p="${k}" class="${k===per?"on":""}">${t}</button>`).join("")}</div></div><h3 class="rh3">${x[1]}: ${ini?`de ${ini} até hoje`:"últimos anos"}</h3>`+serieChart(h,{fmt:x[2],n:per,periodo:false});
   document.querySelectorAll("#ecoP button").forEach(b=>b.onclick=()=>{per=+b.dataset.p;des(cur)});document.querySelectorAll(".ecok").forEach(k=>k.classList.toggle("on",k.dataset.n===n))};
  des(tem[0][0]);document.querySelectorAll(".ecok").forEach(k=>k.onclick=()=>des(k.dataset.n))}).catch(()=>{})}}};
 
