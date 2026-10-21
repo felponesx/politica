@@ -4568,7 +4568,7 @@ const escLib=l=>l?`<span class="tag lib-${{"preso":"pre","prisão domiciliar":"d
 const escPrisao=p=>{const l=p.liberdade,s=p.situacao||"";if(!l)return{t:"Prisão: sem informação",c:"nd"};
  const F={"preso":["Preso","pre"],"prisão domiciliar":["Prisão domiciliar","dom"],"foragido":["Foragido","for"],"morreu":["Morreu","mor"]}[l];if(F)return{t:F[0]+(p.liberdade_outro_processo&&l!=="morreu"?" (outro processo)":""),c:F[1]};
  return{t:/^(investigado|indiciado|denunciado|réu|condenado \(recorre\))$/.test(s)?"Solto · responde ao processo":s==="pena cumprida"?"Solto · cumpriu a pena":s==="condenado"?"Solto · condenado":"Solto",c:"liv"}};
-const escPrisaoTag=(p,cls="tag")=>{const x=escPrisao(p);return`<span class="${cls} lib-${x.c}" title="${esc((p.liberdade_detalhe||"")+(p.liberdade_data?` (${escData(p.liberdade_data)})`:""))}">${esc(x.t)}</span>`};
+const escPrisaoTag=(p,cls="tag")=>{if(p.situacao==="morreu"&&(p.liberdade==="morreu"||!p.liberdade))return"";const x=escPrisao(p);return`<span class="${cls} lib-${x.c}" title="${esc((p.liberdade_detalhe||"")+(p.liberdade_data?` (${escData(p.liberdade_data)})`:""))}">${esc(x.t)}</span>`};
 // valor sempre com a frase da fonte embaixo (ex.: "acusado de receber…"), para o número não parecer mais do que a fonte diz
 const escVal=v=>!v?"—":`<a href="${esc(v.fonte)}" target="_blank" rel="noopener">${v.valor!=null?`<b>${brl(v.valor)}</b>`:"ver fonte"}</a>${v.texto?`<div class="small muted esc-vt">${esc(v.texto)}</div>`:""}`;
 const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
