@@ -249,7 +249,8 @@ tbody tr[data-href]:hover{background:var(--bg)}
 
 /* ===== v2: layout das referências ===== */
 :root{--bg:#F4F6FA;--line:#E5E9F0;--line2:#EEF1F6;--blue:#2D5596;--navy:#152A52;--tint:#E7EEF9;--ok:#3E9B74}
-.page{max-width:1500px}
+.page{max-width:1500px;margin-inline:auto;width:100%}
+@media (min-width:2200px){.page{max-width:1720px}}
 .app{grid-template-columns:240px 1fr}
 .side{display:flex;flex-direction:column;padding:20px 14px 18px}
 .brand{display:flex;align-items:center;gap:10px;padding:2px 8px 22px}
@@ -1517,7 +1518,7 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .sd-mais{color:#4EE28B}[data-theme="dark"] .sd-menos{color:#F88752}
 
 /* gráficos em linha */
-.lr-svg{display:block;margin:2px 0 6px;overflow:visible}
+.lr-svg{display:block;margin:2px auto 6px;overflow:visible}
 .lr-leg{display:grid;gap:2px}
 .lr-l{display:grid;grid-template-columns:22px 10px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;padding:3px 0}
 .lr-l .rk-p{grid-area:auto}.lr-l i{width:10px;height:10px;border-radius:50%}.lr-l a{color:var(--ink2);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lr-l a:hover{color:var(--c1)}
@@ -1552,14 +1553,16 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .tag.esc-con{background:#55160C;color:#FDA29B}[data-theme="dark"] .tag.esc-den{background:#4E1D09;color:#FEC84B}[data-theme="dark"] .tag.esc-inv{background:#1C2B5A;color:#A4BCFD}
 [data-theme="dark"] .tag.esc-abs{background:#053321;color:#75E0A7}[data-theme="dark"] .tag.esc-neu,[data-theme="dark"] .tag.lib-liv{background:#344054;color:#EAECF0}[data-theme="dark"] .tag.lib-for{background:#F2F4F7;color:#1D2939}
 @media (max-width:700px){.esc-grid{grid-template-columns:1fr}.esc-tl li{grid-template-columns:1fr;gap:2px}}
-.arv-band{border-top:1px dashed var(--line);padding-top:16px}.arv-band .arv-no{opacity:.92}
+.arv-band{padding-top:0}.arv-band .arv-no{opacity:.92}
 /* árvore do esquema */
-.arv{position:relative;display:grid;gap:34px;padding:6px 0 4px;overflow-x:auto}
+.arv{position:relative;display:grid;gap:30px;padding:6px 0 4px 30px}
 .arv-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
-.arv-l{fill:none;stroke:var(--slate);stroke-opacity:.45;stroke-width:1.6;stroke-dasharray:4 4}.arv-l.forte{stroke-opacity:.9;stroke-dasharray:none;stroke-width:1.8}
+.arv-l{fill:none;stroke:var(--slate);stroke-opacity:.55;stroke-width:1.6;stroke-linejoin:round}.arv-l.banda{stroke-dasharray:5 4;stroke-opacity:.45}
+.arv-dot{fill:var(--c1);stroke:var(--surface);stroke-width:3}.arv-dot.banda{fill:#12B76A}
+.arv-no.arv-pai{box-shadow:0 0 0 3px var(--c1),0 4px 12px rgba(16,24,40,.12)}
 .arv-nivel{position:relative;display:grid;gap:8px}
-.arv-t{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:center}
-.arv-linha{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.arv-t{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left}
+.arv-linha{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:24px 12px;padding-top:11px}
 .arv-no{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:200px;text-align:left;font:inherit;color:var(--ink);
  background:var(--surface);border:1px solid var(--line);border-left:5px solid #98A2B3;border-radius:12px;padding:9px 11px;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.06)}
 .arv-no:hover{box-shadow:0 4px 12px rgba(16,24,40,.12)}
@@ -1569,10 +1572,10 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .arv-con{border-left-color:#D92D20}.arv-den{border-left-color:#F79009}.arv-inv{border-left-color:#2F6FED}.arv-abs{border-left-color:#12B76A}.arv-neu{border-left-color:#98A2B3}
 .arv-leg{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 14px;color:var(--muted)}.arv-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px;border-left:5px solid}
 .arv-leg i.arv-con{border-color:#D92D20}.arv-leg i.arv-den{border-color:#F79009}.arv-leg i.arv-inv{border-color:#2F6FED}.arv-leg i.arv-abs{border-color:#12B76A}.arv-leg i.arv-neu{border-color:#98A2B3}
-.arv-ac{display:none;font-size:12px;color:var(--ink2)}
+.arv-ac{display:block;font-size:12px;color:var(--ink2)}
 /* celular: árvore em lista, uma coluna, com um trilho à esquerda ligando os andares (sem linhas cruzando os quadros) */
 @media (max-width:700px){
- .arv{gap:0;overflow:visible;padding-left:4px}.arv-svg{display:none}
+ .arv{gap:0;overflow:visible;padding-left:4px}.arv-svg{display:none}.arv-linha{padding-top:0}
  .arv-nivel{border-left:2px solid var(--line);margin-left:7px;padding:0 0 18px 16px;gap:10px}
  .arv-nivel:last-child{padding-bottom:4px}
  .arv-t{text-align:left;position:relative;font-size:11.5px}
@@ -1585,6 +1588,10 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
  .arv-no[aria-expanded="true"] .arv-p{display:block}
  .arv-ac{display:block}
 }
+/* gráficos (v1.2): grade e eixos legíveis no modo claro */
+.lc{width:100%;min-width:0}.lc-grade{stroke:var(--line);stroke-dasharray:3 4}.lc-grade.base{stroke:#C9D1DC;stroke-dasharray:none}.lc-eixo{fill:#667085}
+[data-theme="dark"] .lc-grade.base{stroke:#3A4660}[data-theme="dark"] .lc-eixo{fill:#98A2B3}
+.navvolta{margin:-6px 0 12px}.navvolta .btn{font-size:13.5px;padding:7px 12px}
 </style>
 </head>
 <body>
@@ -1780,15 +1787,29 @@ const RANK_VIVO=["var(--c1)","var(--c2)","var(--c3)"];
 function rankPos(items){const ord=items.map((it,i)=>[+it[1]||0,i]).sort((a,b)=>b[0]-a[0]);const pos=[];ord.forEach(([,i],r)=>pos[i]=r);return pos}
 const rankCor=(r,n)=>r<3?"var(--r-top)":n<6||r>=n-3?"var(--r-low)":"var(--r-mid)";
 function hbars(items,{fmt=brl,color}={}){const mx=Math.max(...items.map(i=>i[1]))||1,pos=rankPos(items),n=items.length;return`<div class="hb">${items.map((it,k)=>`<div class="hb-l${pos[k]<3?" hb-top":""}"><span class="hb-n">${it[2]?`<a href="${it[2]}">${esc(it[0])}</a>`:esc(it[0])}</span><div class="bar hb-b"><i style="width:${Math.max(.5,it[1]/mx*100)}%;background:${color||rankCor(pos[k],n)}"></i></div><span class="hb-v">${fmt(it[1])}</span></div>`).join("")}</div>`}
-function lineChart(series,labels,{h=200,fmt=brl}={}){const W=600,H=h,p=34;const all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);const x=i=>p+i*(W-p-10)/(labels.length-1),y=v=>H-24-(v-mn)/(mx-mn)*(H-40);
-let g="";for(let t=0;t<=4;t++){const v=mn+(mx-mn)*t/4;g+=`<line x1="${p}" x2="${W-10}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line2)"/><text x="${p-6}" y="${y(v)+4}" font-size="10" text-anchor="end" fill="var(--muted)">${fmt(v).replace("R$ ","")}</text>`}
-labels.forEach((l,i)=>g+=`<text x="${x(i)}" y="${H-6}" font-size="10.5" text-anchor="middle" fill="var(--muted)">${l}</text>`);
-const cs=k=>series[k].c||RANK_VIVO[k%3];
-// linha fina na cor viva, área bem clara embaixo da 1ª série e só o último ponto marcado
-if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g+=`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="${cs(0)}" fill-opacity=".08"/>`}
-series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${cs(k)}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2"/>`});
-const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
-return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
+// gráfico de linha desenhado na largura real do quadro (letras sempre do mesmo tamanho, nada cortado nas bordas);
+// sai primeiro com 600 de largura e é redesenhado quando o quadro aparece ou muda de tamanho
+const LC_REG=new Map();let LC_N=0;
+function lineChart(series,labels,o={}){const id="lc"+(++LC_N);LC_REG.set(id,[series,labels,o]);return`<div class="lc" data-lc="${id}">${lineSVG(series,labels,o,600)}</div>`}
+function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.round(W));const H=h,all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);
+ const ticks=[0,1,2,3,4].map(t=>mn+(mx-mn)*t/4),rot=ticks.map(v=>fmt(v).replace("R$ ","")),p=Math.max(30,Math.max(...rot.map(t=>t.length))*6.6+10),dir=14;
+ const n=labels.length,x=i=>p+(n<2?0:i*(W-p-dir)/(n-1)),y=v=>H-26-(v-mn)/(mx-mn||1)*(H-40);
+ let g="";ticks.forEach((v,t)=>{g+=`<line x1="${p}" x2="${W-dir}" y1="${y(v)}" y2="${y(v)}" class="lc-grade${t?"":" base"}"/><text x="${p-8}" y="${y(v)+4}" font-size="11.5" text-anchor="end" class="lc-eixo">${rot[t]}</text>`});
+ let vis=labels.map((l,i)=>[l,i]).filter(([l])=>l!==""&&l!=null);
+ {const larg=Math.max(...vis.map(([l])=>String(l).length))*7+14,cabe=Math.max(2,Math.floor((W-p-dir)/larg));
+  if(vis.length>cabe){const pas=Math.ceil(vis.length/cabe),ult=vis[vis.length-1];vis=vis.filter((v,k)=>k%pas===0&&(vis.length-1-k)>=pas);vis.push(ult)}}
+ vis.forEach(([l,i],k)=>{const an=k===0&&x(i)-p<20?"start":i===n-1||x(i)>W-dir-24?"end":"middle";g+=`<text x="${x(i)}" y="${H-6}" font-size="11.5" text-anchor="${an}" class="lc-eixo">${l}</text>`});
+ const cs=k=>series[k].c||RANK_VIVO[k%3],gid="lg"+(++LC_N);
+ // linha na cor viva, área em degradê embaixo da 1ª série e só o último ponto marcado
+ if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cs(0)}" stop-opacity=".22"/><stop offset="1" stop-color="${cs(0)}" stop-opacity=".02"/></linearGradient></defs>`+g+`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="url(#${gid})"/>`}
+ series.forEach((s,k)=>{g+=`<polyline fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2"/>`});
+ const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
+ return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;display:block" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
+{const RO=window.ResizeObserver?new ResizeObserver(es=>es.forEach(e=>{const el=e.target,w=Math.round(e.contentRect.width),d=LC_REG.get(el.dataset.lc);
+  if(!d||!w||Math.abs(w-(+el.dataset.w||0))<6)return;el.dataset.w=w;el.innerHTML=lineSVG(d[0],d[1],d[2],w)})):null;
+ let q=0;const liga=()=>{q=0;document.querySelectorAll(".lc[data-lc]:not([data-obs])").forEach(el=>{el.dataset.obs=1;RO&&RO.observe(el)});
+  if(LC_REG.size>200)for(const id of LC_REG.keys())if(!document.querySelector(`[data-lc="${id}"]`))LC_REG.delete(id)};
+ new MutationObserver(()=>{if(!q)q=requestAnimationFrame(liga)}).observe(document.body,{childList:true,subtree:true})}
 // pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
 const PIZZA_SUAVE=["#5688EF","#F0844E","#52CE9B","#EAB646","#9370E5","#E770A9","#58BBDD","#ABCD58","#DA7676","#7696CF"];
 function coresPizza(items){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));
@@ -2213,7 +2234,7 @@ const anos=["2021","2022","2023","2024","2025","2026"];
 const list=()=>`<div class="ph"><div><h1>Indicadores</h1><p>Medidas resumidas, com a mesma definição para todo o país. Toque em um indicador para ver os detalhes.</p></div><span class="demo"><i></i>Dados demonstrativos</span></div>
 <div class="grid g3" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${IND.map((i,n)=>`<a href="#/indicadores/${i.k}" class="panel indc" style="--c:${PAL[n%6]}"><div class="small muted">${i.n}</div><div class="indv">${i.v}</div>${spark(i.s)}<div class="small muted">2021 a 2026</div></a>`).join("")}</div>
 <div class="panel mt"><h2>Distribuição regional da população e dos gastos</h2>${table([["Região",r=>r[1]],["População",r=>(UFS.filter(u=>u.reg===r[0]).reduce((a,u)=>a+u.pop,0)/tot("pop")*100).toFixed(1).replace(".",",")+"%","n"],["Gastos",r=>(UFS.filter(u=>u.reg===r[0]).reduce((a,u)=>a+u.gasto,0)/tot("gasto")*100).toFixed(1).replace(".",",")+"%","n"]],Object.entries(REG))}${SRC}</div>`;
-const det=i=>`<div class="backbar"><a class="btn" href="#/indicadores">‹ Voltar aos indicadores</a></div><div class="ph"><div><h1>${i.n}</h1><p>${i.d}</p></div><span class="demo"><i></i>Dados demonstrativos</span></div>
+const det=i=>`<div class="backbar"><a class="btn" href="#/indicadores" data-voltar="indicadores">‹ Voltar aos indicadores</a></div><div class="ph"><div><h1>${i.n}</h1><p>${i.d}</p></div><span class="demo"><i></i>Dados demonstrativos</span></div>
 <div class="kpis kpis-c"><div class="kpi"><span>Valor atual</span><strong>${i.v}</strong></div><div class="kpi"><span>Variação em 5 anos</span><strong>${(i.s[5]>=i.s[0]?"+":"")+((i.s[5]/i.s[0]-1)*100).toFixed(1).replace(".",",")}%</strong></div><div class="kpi"><span>Atualização</span><strong>Mensal</strong></div></div>
 <div class="grid g2 mt"><div class="panel"><h2>Evolução</h2>${lineChart([{n:i.n,v:i.s}],anos,{h:210,fmt:i.f})}</div><div class="panel"><h2>Por região</h2>${hbars(Object.entries(REG).map(([k,v])=>[v,i.reg(k)]),{fmt:i.rf})}</div></div>
 <div class="panel mt"><h2>Como é calculado</h2><p class="small" style="margin:0;color:var(--ink2);max-width:75ch">${i.d} Os valores são consolidados a partir das bases oficiais de cada esfera, com a mesma regra para todos os estados. <a href="#/fontes">Ver metodologia completa</a></p></div>
@@ -3095,35 +3116,35 @@ function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,cor
    outras 2 finas e apagadas; o rótulo de cada linha fica no fim dela. "Primeiro" no gráfico dos menores é o menor valor. */
 const LIN_ALTO=["#DC2626","#7C3AED","#F59E0B","#EC4899","#0EA5E9"],LIN_BAIXO=["#16A34A","#2563EB","#DB2777","#0D9488","#CA8A04"],LIN_AZUL=["#2F6FED","#7C3AED","#0EA5E9","#F59E0B","#EC4899"];
 function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
- const W=460,H=210,L=40,Rp=40,T=12,B=24,pts=lista.map(u=>anos.map(a=>serie[u.uf]&&serie[u.uf][a]!=null?+serie[u.uf][a]:null));
+ const W=400,H=220,L=46,Rp=34,T=12,B=26,pts=lista.map(u=>anos.map(a=>serie[u.uf]&&serie[u.uf][a]!=null?+serie[u.uf][a]:null));
  const tod=pts.flat().filter(v=>v!=null);if(!tod.length)return"";const mx=Math.max(...tod)*1.06||1,mn=Math.min(0,...tod);
  const x=i=>L+(anos.length<2?0:i*(W-L-Rp)/(anos.length-1)),y=v=>T+(1-(v-mn)/(mx-mn||1))*(H-T-B);
- let g="";for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--line2)"/><text x="${L-6}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${fmt(v)}</text>`}
- const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if(i%passo===0||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--muted)">${rot(a)}</text>`});
+ let g="";for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" class="lc-grade"/><text x="${L-6}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(v)}</text>`}
+ const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if((i%passo===0&&anos.length-1-i>=Math.max(1,passo/2+.5))||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="11.5" class="lc-eixo">${rot(a)}</text>`});
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
   g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}"/>`;
   d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
   const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
- fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<11)fim[i].y=fim[i-1].y+11;
- fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="10.5" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}">${lista[f.k].uf}</text>`});
+ fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<13)fim[i].y=fim[i-1].y+13;
+ fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}">${lista[f.k].uf}</text>`});
  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.6}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
- return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
+ return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
 function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,nota=""}={}){
  // gráfico em linha do ranking (quando só há um período): os 5 estados em ordem, ligados por uma linha; os 3 primeiros
  // pontos grandes e em cores vivas, os 2 últimos menores e em pastel; cada gráfico com a própria escala
  const o=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);if(!o.length)return"";
- const graf=(t,lista,cores)=>{const W=460,H=200,L=44,Rp=26,T=26,B=34,v=lista.map(u=>vals[u.uf]),mx=Math.max(...v.map(Math.abs))*1.12||1,mn=Math.min(0,...v);
-  const x=k=>L+k*(W-L-Rp)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.3);let g="";
-  for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" stroke="var(--line2)"/><text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${fmt(val)}</text>`}
+ const graf=(t,lista,cores)=>{const W=400,H=210,L=50,Rp=24,T=26,B=36,v=lista.map(u=>vals[u.uf]),mx=Math.max(...v.map(Math.abs))*1.12||1,mn=Math.min(0,...v);
+  const x=k=>L+22+k*(W-L-Rp-22)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.3);let g="";
+  for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" class="lc-grade"/>${k<3?`<text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(val)}</text>`:""}`}
   // área clara embaixo e a linha, cada trecho na cor do ponto de onde sai
   g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07"/>`;
   for(let k=0;k<v.length-1;k++)g+=`<line x1="${x(k).toFixed(1)}" y1="${y(v[k]).toFixed(1)}" x2="${x(k+1).toFixed(1)}" y2="${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round"/>`;
   lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
-   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"var(--muted)"}">${fmt(v[k])}</text>
-   <text x="${x(k).toFixed(1)}" y="${H-16}" text-anchor="middle" font-size="11" font-weight="${k<3?700:500}" fill="${k<3?"var(--ink)":"var(--muted)"}">${u.uf}</text><text x="${x(k).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="9.5" fill="var(--muted)">${k+1}º</text>`});
+   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"#667085"}">${fmt(v[k])}</text>
+   <text x="${x(k).toFixed(1)}" y="${H-16}" text-anchor="middle" font-size="12" font-weight="${k<3?700:500}" fill="${k<3?"var(--ink)":"#667085"}">${u.uf}</text><text x="${x(k).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="10.5" class="lc-eixo">${k+1}º</text>`});
   const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cor(k)}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(v[k])}</b></div>`).join("");
-  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}">${g}</svg><div class="lr-leg">${leg}</div></div>`};
+  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}">${g}</svg><div class="lr-leg">${leg}</div></div>`};
  return`<div class="rk-duplo lr">${graf(alto,o.slice(0,n),coresAlto)}${graf(baixo,o.slice(-n).reverse(),coresBaixo)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
 // serie: {UF:{ano:valor}}; anos em ordem; vals: valor de hoje (escolhe os 5 maiores e os 5 menores). Sem 2 anos ou mais, volta às barras.
 function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
@@ -4492,24 +4513,30 @@ function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.from
  <p class="small muted" style="margin-top:0">${esc(o.explicacao)} ${o.explicacao_fonte?`<a href="${esc(o.explicacao_fonte)}" target="_blank" rel="noopener">fonte</a>`:""} Os papéis são os descritos pela investigação ou pela acusação, não uma conclusão do BRASIL+. A cor da borda mostra a situação na Justiça: quem foi absolvido ou teve a condenação anulada aparece em verde. Toque numa pessoa para ver o trecho da fonte.</p>
  <div class="arv-leg small"><span><i class="arv-con"></i>Condenado</span><span><i class="arv-den"></i>Réu ou denunciado</span><span><i class="arv-inv"></i>Investigado</span><span><i class="arv-abs"></i>Absolvido, anulado ou arquivado</span><span><i class="arv-neu"></i>Outros</span></div>
  <div class="arv" id="escArv"><svg class="arv-svg" aria-hidden="true"></svg>${niveis.map(([n,l])=>`<div class="arv-nivel"><div class="arv-t">${ESC_NIV[n]}</div><div class="arv-linha">${l.map(no).join("")}</div></div>`).join("")}
- ${contest.length?`<div class="arv-nivel arv-band"><div class="arv-t">A acusação apontou, mas a Justiça não confirmou</div><p class="small muted" style="margin:0;text-align:center">Absolvidos, com condenação anulada ou processo arquivado. O texto mostra o papel que a acusação descreveu.</p><div class="arv-linha">${contest.map(no).join("")}</div></div>`:""}</div>
+ ${contest.length?`<div class="arv-nivel arv-band"><div class="arv-t">A acusação apontou, mas a Justiça não confirmou</div><p class="small muted" style="margin:0">Absolvidos, com condenação anulada ou processo arquivado. O texto mostra o papel que a acusação descreveu.</p><div class="arv-linha">${contest.map(no).join("")}</div></div>`:""}</div>
  ${fora.length?`<p class="small muted" style="margin:10px 0 0">Fora da árvore (sem papel descrito nas fontes ou acusação descartada pela Justiça): ${fora.map(p=>esc(p.nome.replace(/\s*\(.*\)$/,""))).join(", ")}.</p>`:""}</div>`}
 // linhas da árvore: de cada pessoa até quem está acima dela (quando a fonte diz) ou, sem isso, até o nível de cima
-function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;if(matchMedia("(max-width:700px)").matches){box.querySelector(".arv-svg").innerHTML="";return}const svg=box.querySelector(".arv-svg"),B=box.getBoundingClientRect();
- const el=n=>box.querySelector(`[data-arv="${CSS.escape(n)}"]`),pt=(e,emb)=>{const r=e.getBoundingClientRect();return[r.left-B.left+r.width/2,emb?r.bottom-B.top:r.top-B.top]};
- svg.setAttribute("width",B.width);svg.setAttribute("height",B.height);let h="";
- const linhas=[...box.querySelectorAll(".arv-linha")];
- c.organograma.papeis.forEach(x=>{const e=el(x.nome);if(!e)return;const[x2,y2]=pt(e,false);
-  if(e.closest(".arv-band"))return;
-  if(x.acima&&el(x.acima)&&!el(x.acima).closest(".arv-band")){const[x1,y1]=pt(el(x.acima),true);const my=(y1+y2)/2;h+=`<path class="arv-l forte" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`;return}
-  const li=linhas.indexOf(e.parentElement);if(li<=0||linhas[li-1].closest(".arv-band"))return;const R=linhas[li-1].getBoundingClientRect(),y1=R.bottom-B.top,x1=R.left-B.left+R.width/2,my=(y1+y2)/2;
-  h+=`<path class="arv-l" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}"/>`});
+// linhas da árvore no PC, como organograma: um tronco à esquerda liga os andares; acima de cada fileira de quadros uma barra
+// com um tracinho até cada pessoa. Nenhuma linha passa por cima de quadro ("responde a" vem escrito no quadro).
+function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;const svg=box.querySelector(".arv-svg");
+ if(matchMedia("(max-width:700px)").matches){svg.innerHTML="";return}
+ const B=box.getBoundingClientRect(),X=r=>r.left-B.left,Y=r=>r.top-B.top,tx=10;let h="",ultimoY=null,primeiroY=null;
+ svg.setAttribute("width",B.width);svg.setAttribute("height",box.scrollHeight);
+ box.querySelectorAll(".arv-nivel").forEach(nv=>{const band=nv.classList.contains("arv-band"),cls=band?"arv-l banda":"arv-l";
+  const t=nv.querySelector(".arv-t").getBoundingClientRect(),ty=Y(t)+t.height/2;
+  if(ultimoY!=null)h+=`<path class="${cls}" d="M${tx},${ultimoY} V${ty}"/>`;
+  h+=`<circle class="arv-dot${band?" banda":""}" cx="${tx}" cy="${ty}" r="5"/>`;if(primeiroY==null)primeiroY=ty;
+  // agrupa os quadros pela linha visual (quando o andar quebra em mais de uma fileira)
+  const fil=[];nv.querySelectorAll(".arv-no").forEach(e=>{const r=e.getBoundingClientRect(),f=fil.find(f=>Math.abs(f.top-r.top)<4);f?f.nos.push(r):fil.push({top:r.top,nos:[r]})});
+  let y0=ty;fil.forEach(f=>{const by=Y({top:f.top})-11,xs=f.nos.map(r=>X(r)+r.width/2);
+   h+=`<path class="${cls}" d="M${tx},${y0} V${by} H${Math.max(...xs)}"/>`;xs.forEach(x=>{h+=`<path class="${cls}" d="M${x},${by} V${by+11}"/>`});y0=by});
+  if(!band)ultimoY=y0});
  svg.innerHTML=h}
 P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
  mount(){apiGet("/escandalos/"+slug).then(c=>{const box=$("#escD");if(!box)return;const P_=c.pessoas,dv=c.valores.desviado,rc=c.valores.recuperado;
   const cond=P_.filter(p=>/^condenado|pena cumprida|indultado/.test(p.situacao||"")).length,pres=P_.filter(p=>/preso|domiciliar/.test(p.liberdade||"")).length,forag=P_.filter(p=>p.liberdade==="foragido").length;
   const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
-  box.innerHTML=`<div class="ph"><div><a class="small" href="#/escandalos">‹ Todos os escândalos</a><h1 style="margin-top:6px">${esc(c.nome)}</h1><p>${esc(escPer(c.periodo))}${c.outros_nomes.length?" · também chamado de "+c.outros_nomes.map(esc).join(", "):""}</p></div></div>
+  box.innerHTML=`<div class="ph"><div><h1>${esc(c.nome)}</h1><p>${esc(escPer(c.periodo))}${c.outros_nomes.length?" · também chamado de "+c.outros_nomes.map(esc).join(", "):""}</p></div></div>
   ${escAviso(c.aviso)}
   <div class="kpis kpis-c mt">${kp("Valor apontado",dv&&dv.valor!=null?brl(dv.valor):"—",dv?esc(dv.texto):"")}${kp("Recuperado / devolvido",rc&&rc.valor!=null?brl(rc.valor):"—",rc?esc(rc.texto):"")}${kp("Pessoas listadas",nf(P_.length))}${kp("Condenados",nf(cond))}${kp("Presos agora",nf(pres),"na data de cada fonte")}${forag?kp("Foragidos",nf(forag)):""}</div>
   ${c.valores.observacao?`<p class="small muted">${esc(c.valores.observacao)}</p>`:""}
@@ -4528,7 +4555,8 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
    $("#escNl").innerHTML=l.map(x=>`<div class="list-row"><div style="flex:1;min-width:0"><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.titulo)}</a><div class="small muted">${esc(x.veiculo||"")} · ${esc((x.data||"").slice(0,10))}</div></div></div>`).join("")}).catch(()=>{});
   document.querySelectorAll('.esc-det').forEach(d=>d.onclick=()=>d.classList.toggle('aberto'));
   document.querySelectorAll('.arv-no').forEach(b=>b.onclick=ev=>{if(ev.target.closest('a'))return;const ci=b.querySelector('.arv-cit'),ab=ci.hidden;ci.hidden=!ab;b.setAttribute('aria-expanded',ab);escLinhas(c)});
-  escLinhas(c);setTimeout(()=>escLinhas(c),400);const rz=()=>{if(!$('#escArv'))return removeEventListener('resize',rz);escLinhas(c)};addEventListener('resize',rz);
+  escLinhas(c);const ab=$('#escArv');if(ab&&window.ResizeObserver){let q=0;new ResizeObserver(()=>{cancelAnimationFrame(q);q=requestAnimationFrame(()=>escLinhas(c))}).observe(ab)}
+  document.querySelectorAll('.arv-no').forEach(b=>{const x=(c.organograma.papeis.find(p=>p.nome===b.dataset.arv)||{}).acima;if(!x)return;const pai=()=>document.querySelector(`.arv-no[data-arv="${CSS.escape(x)}"]`);b.onmouseenter=()=>{const e=pai();e&&e.classList.add('arv-pai')};b.onmouseleave=()=>{const e=pai();e&&e.classList.remove('arv-pai')}});
   rowLinks&&rowLinks()}).catch(e=>{const b=$("#escD");if(b)b.innerHTML=rerro(e)})}});
 P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  return{html:`<div class="ph"><div><h1>Notícias</h1><p>Política, economia, justiça, Executivo e Legislativo nos principais veículos. Escolha o assunto e, se quiser, um veículo só. Toque na manchete para ler no site do veículo.</p></div></div>
@@ -4858,14 +4886,27 @@ function iaBuscaLimpa(){const b=$("#sIAbox"),r=$("#sRes");if(b)b.hidden=true;if(
 // caixa "IA do Brasil+" do menu lateral: responde ali mesmo, na janela da IA aberta ao lado
 document.querySelectorAll("[data-ia-mini]").forEach(f=>f.onsubmit=e=>{e.preventDefault();const i=f.querySelector("input"),v=i.value.trim();i.value="";iaAbrir(v)});
 
-function renderRoute(h){$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
-const r=fn(...args);const V=$("#view");V.innerHTML=r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
+/* ---------- voltar para onde estava: histórico próprio do site + posição da rolagem de cada tela ---------- */
+const NAVH={pilha:[],pos:{},atual:null};
+function navMarca(h){if(NAVH.atual)NAVH.pos[NAVH.atual]=scrollY;const p=NAVH.pilha;let volta=false;
+ if(p.length>=2&&p[p.length-2]===h){p.pop();volta=true}else if(p[p.length-1]!==h){p.push(h);if(p.length>60)p.shift()}NAVH.atual=h;return volta}
+function navVoltar(pai){const p=NAVH.pilha;location.hash="#/"+(p.length>=2?p[p.length-2]:(pai||"inicio"))}
+function navRestaura(h){const y=NAVH.pos[h];if(!y){scrollTo(0,0);return}let n=0;const vai=()=>{if(NAVH.atual!==h)return;
+ if(document.documentElement.scrollHeight-innerHeight>=y-4||n>12){scrollTo({top:y,behavior:"instant"});return}n++;setTimeout(vai,150)};scrollTo(0,0);vai()}
+document.addEventListener("click",e=>{const a=e.target.closest("[data-voltar]");if(!a)return;e.preventDefault();navVoltar(a.dataset.voltar)});
+function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
+const r=fn(...args);const V=$("#view");
+// páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
+const ehSecao=NAV.some(n=>n[0]===k),secPai={escandalo:"escandalos",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
+const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
+V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",pessoas:"pessoas"}[k]||null;
 const sec={escandalo:"escandalos",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
-window.scrollTo(0,0)}
+volta?navRestaura(h):window.scrollTo(0,0)}
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
 addEventListener("hashchange",route);detectarAPI().finally(route);
 </script>

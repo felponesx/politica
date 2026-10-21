@@ -163,6 +163,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   traço (`svg.geo` com `drop-shadow`, variáveis `--sombra1`/`--sombra2`): escura no claro, brilho claro no escuro.
 - Zoom no estado ("efeito Spiderman", `flyState`/`inlineZoomIn`/`inlineZoomOut`): no celular (`zLeve`) só o estado voa, sem desfoque,
   sem sombra e sem os outros estados, em 0,56 s; a ficha fica escondida (`.zleve`) e o `mount` roda depois do voo. No PC, o efeito completo.
+- Gráficos (v1.2): `lineChart` desenha na largura real do quadro (`lineSVG`, `LC_REG` + ResizeObserver), letras fixas, margem do eixo
+  pelo tamanho dos números e rótulos do eixo X só os que cabem; grade `.lc-grade` e eixos `.lc-eixo`. Laterais (`linhasGraf`/`rankLinhas`)
+  com W=400 e no máximo 1,15× de largura. Conteúdo centralizado em telas largas (`.page` até 1500px; 1720px acima de 2200px).
+- Voltar (`NAVH`, `navVoltar`, `[data-voltar]`): páginas de detalhe (fora do menu) ganham "‹ Voltar para …" que volta à tela anterior na
+  mesma rolagem; sem histórico, vai para a seção pai. Árvore dos escândalos no PC: tronco à esquerda e barras por fileira (sem curvas).
 - Mapas: cor sólida por estado, divisas brancas, 5 faixas com o mesmo número de estados (`faixasDe`, `corFaixa`,
   `legFaixas` com os limites escritos). Nada de degradê entre estados. Eleições (presidente): modos "Quem venceu",
   "% de um candidato" e "Diferença entre os 2 primeiros" (escala divergente com empate em cinza).
