@@ -1,0 +1,62 @@
+{
+ "chave": "pc:ES",
+ "nome": "Polícia Civil do Estado do Espírito Santo",
+ "sigla": "PCES",
+ "uf": "ES",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Espírito Santo: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Esp%C3%ADrito_Santo"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação adota como origem a criação da Intendência Geral de Polícia da Corte, em 1808, no Rio de Janeiro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Esp%C3%ADrito_Santo"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Esp%C3%ADrito_Santo"
+  },
+  {
+   "ano": "1971",
+   "texto": "José Gilberto Barros Faria torna-se, em 17 de março de 1971, o primeiro delegado de polícia a chefiar a instituição.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Esp%C3%ADrito_Santo"
+  },
+  {
+   "ano": "1981",
+   "texto": "A Lei estadual nº 3.400, de 17 de janeiro de 1981 (art. 253), fixa 12 de junho como Dia do Policial Civil, data da morte do patrono Domingos José Martins.",
+   "fonte": "https://www.tjes.jus.br/?p=155203"
+  }
+ ],
+ "patrono": {
+  "nome": "Domingos José Martins",
+  "texto": "Patrono da Polícia Civil do Espírito Santo. O Dia do Policial Civil, 12 de junho (art. 253 da Lei estadual nº 3.400/1981), lembra a data da sua morte.",
+  "fonte": "https://www.tjes.jus.br/?p=155203"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral (chefe de polícia). Divide-se em superintendências de Polícia Metropolitana, do Interior, Especializada, Técnico-Científica e Prisional, além da Academia de Polícia. Há delegacias especializadas (homicídios, mulher, antissequestro, entorpecentes, crimes eletrônicos) e o Grupo de Operações Táticas (GOT).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Esp%C3%ADrito_Santo",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Vitória (Santa Luiza), ES",
+  "fonte": "https://pc.es.gov.br/divisao-das-regionais"
+ },
+ "efetivo": {
+  "valor": 1764,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Esp%C3%ADrito_Santo",
+  "https://www.tjes.jus.br/?p=155203",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

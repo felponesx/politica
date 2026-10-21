@@ -1,0 +1,62 @@
+{
+ "chave": "pc:SE",
+ "nome": "Polícia Civil do Estado de Sergipe",
+ "sigla": null,
+ "uf": "SE",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Sergipe: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação adota como origem a criação da Intendência Geral de Polícia da Corte, em 1808, no Rio de Janeiro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1841",
+   "texto": "A reforma do Código de Processo Criminal do Império separa a polícia da Justiça: as funções policiais passam aos chefes de polícia das províncias e aos delegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1871",
+   "texto": "As investigações passam a ser formalizadas no inquérito policial, modelo usado até hoje pelas polícias civis.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1999",
+   "texto": "A Lei nº 4.133/1999 define a organização e as normas da Polícia Civil, dirigida pelo superintendente da Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo superintendente da Polícia Civil. Tem a Coordenadoria de Polícia da Capital e a do Interior, com delegacias metropolitanas, regionais, municipais, distritais e especializadas, além do Centro de Operações Policiais Especiais (COPE). A fonte não traz a lista das regionais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Aracaju, SE",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe"
+ },
+ "efetivo": {
+  "valor": 1417,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Sergipe",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

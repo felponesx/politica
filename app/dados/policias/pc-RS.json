@@ -1,0 +1,79 @@
+{
+ "chave": "pc:RS",
+ "nome": "Polícia Civil do Estado do Rio Grande do Sul",
+ "sigla": null,
+ "uf": "RS",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Rio Grande do Sul: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+ },
+ "fundacao": {
+  "data": "1841",
+  "texto": "A ficha da corporação na Wikipédia indica 1841 como ano de fundação.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+  },
+  {
+   "ano": "1954",
+   "texto": "Entra em funcionamento em Porto Alegre a Rádio Patrulha do Departamento de Polícia Civil, com 19 viaturas cobrindo 15 setores da cidade.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+  },
+  {
+   "ano": "1980",
+   "texto": "A Lei nº 7.366, de 29 de março, cria o Estatuto dos Servidores da Polícia Civil do RS.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+  },
+  {
+   "ano": "1983",
+   "texto": "A Lei nº 7.829, de 29 de novembro, declara o delegado Plínio Brasil Milano patrono da Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pl%C3%ADnio_Brasil_Milano"
+  },
+  {
+   "ano": "2006",
+   "texto": "O Decreto nº 44.453, de 25 de maio, define o Departamento Estadual de Investigações Criminais (DEIC) e suas delegacias especializadas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+  }
+ ],
+ "patrono": {
+  "nome": "Plínio Brasil Milano",
+  "texto": "Delegado e advogado (1908-1944), ajudou a reorganizar a polícia gaúcha, criou o primeiro serviço de contraespionagem do país e a biblioteca da Polícia Civil. Patrono pela Lei nº 7.829, de 29/11/1983.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pl%C3%ADnio_Brasil_Milano"
+ },
+ "homenageados": [
+  {
+   "nome": "José Faibes Lubianca",
+   "texto": "Dá nome ao museu da Polícia Civil (Museu Dr. José Faibes Lubianca), em homenagem a um dos primeiros catedráticos do Gabinete de Identificação da Repartição de Polícia.",
+   "fonte": "https://seer.assis.unesp.br/index.php/facesdahistoria/article/download/2669/2473/13546"
+  }
+ ],
+ "organizacao": {
+  "texto": "Dirigida pelo chefe de Polícia. Os órgãos de execução são departamentos: Polícia Metropolitana (DPM), Polícia do Interior (DPI), Investigações Criminais (DEIC), Narcotráfico (DENARC), Criança e Adolescente (DECA) e Trânsito (DPTRAN), além do GOE e do GRI. A fonte não traz a lista das delegacias regionais com sedes.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul",
+  "unidades_total": null,
+  "unidades_tipo": "departamentos",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Porto Alegre (Av. João Pessoa, 2050), RS",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul"
+ },
+ "efetivo": {
+  "valor": 5771,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Sul",
+  "https://pt.wikipedia.org/wiki/Pl%C3%ADnio_Brasil_Milano",
+  "https://seer.assis.unesp.br/index.php/facesdahistoria/article/download/2669/2473/13546",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

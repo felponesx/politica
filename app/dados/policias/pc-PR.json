@@ -1,0 +1,178 @@
+{
+ "chave": "pc:PR",
+ "nome": "Polícia Civil do Estado do Paraná",
+ "sigla": "PCPR",
+ "uf": "PR",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Paraná: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação adota como origem a criação da Intendência Geral de Polícia da Corte, em 1808, no Rio de Janeiro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+ },
+ "historia": [
+  {
+   "ano": "1853",
+   "texto": "Criada a província do Paraná, o bacharel Antônio Manoel Fernandes Junior é nomeado o primeiro chefe de polícia.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1922",
+   "texto": "Surge a polícia de carreira, pela Lei nº 3.052; em 1929 o estado é dividido em sete regiões policiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1962",
+   "texto": "A Lei nº 4.615 recria a Secretaria de Segurança Pública no lugar da Chefatura de Polícia, e um novo regulamento da Polícia Civil é aprovado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1985",
+   "texto": "O Decreto nº 6.665, de 4 de novembro, cria a delegacia da mulher na estrutura do Departamento da Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1999",
+   "texto": "O Decreto nº 1.045, de 9 de julho, cria uma nova divisão das unidades de polícia judiciária, com subdivisões no interior.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+  },
+  {
+   "ano": "2011",
+   "texto": "Mais de 270 municípios paranaenses não tinham delegado de polícia, segundo a imprensa citada pela Wikipédia; o governo lança o plano \"Paraná Seguro\".",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. Divide-se na Divisão Policial da Capital (1º ao 13º distritos), na Divisão de Polícia Metropolitana e na Divisão Policial do Interior, com 21 subdivisões policiais (SDP). Eram 13 distritos na capital e 375 delegacias no interior. Há divisões especializadas (DHPP, DENARC) e os grupos TIGRE e COPE.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1",
+  "unidades_total": 388,
+  "unidades_tipo": "delegacias",
+  "data_ref": "1999",
+  "unidades": [
+   {
+    "nome": "1ª Subdivisão Policial (SDP)",
+    "local": "Paranaguá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "2ª Subdivisão Policial (SDP)",
+    "local": "Laranjeiras do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "3ª Subdivisão Policial (SDP)",
+    "local": "São Mateus do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "4ª Subdivisão Policial (SDP)",
+    "local": "União da Vitória",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "5ª Subdivisão Policial (SDP)",
+    "local": "Pato Branco",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "6ª Subdivisão Policial (SDP)",
+    "local": "Foz do Iguaçu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "7ª Subdivisão Policial (SDP)",
+    "local": "Umuarama",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "8ª Subdivisão Policial (SDP)",
+    "local": "Paranavaí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "9ª Subdivisão Policial (SDP)",
+    "local": "Maringá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "10ª Subdivisão Policial (SDP)",
+    "local": "Londrina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "11ª Subdivisão Policial (SDP)",
+    "local": "Cornélio Procópio",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "12ª Subdivisão Policial (SDP)",
+    "local": "Jacarezinho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "13ª Subdivisão Policial (SDP)",
+    "local": "Ponta Grossa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "14ª Subdivisão Policial (SDP)",
+    "local": "Guarapuava",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "15ª Subdivisão Policial (SDP)",
+    "local": "Cascavel",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "16ª Subdivisão Policial (SDP)",
+    "local": "Campo Mourão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "17ª Subdivisão Policial (SDP)",
+    "local": "Apucarana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "18ª Subdivisão Policial (SDP)",
+    "local": "Telêmaco Borba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "19ª Subdivisão Policial (SDP)",
+    "local": "Francisco Beltrão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "20ª Subdivisão Policial (SDP)",
+    "local": "Toledo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   },
+   {
+    "nome": "21ª Subdivisão Policial (SDP)",
+    "local": "Cianorte",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Curitiba, PR",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1"
+ },
+ "efetivo": {
+  "valor": 3791,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Paran%C3%A1",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

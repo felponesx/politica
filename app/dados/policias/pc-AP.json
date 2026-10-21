@@ -1,0 +1,27 @@
+{
+ "chave": "pc:AP",
+ "nome": "Polícia Civil do Estado do Amapá",
+ "sigla": null,
+ "uf": "AP",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Como as demais polícias civis do país, é a polícia judiciária do estado: investiga os crimes (menos os militares) e é dirigida por delegados de carreira.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcias_civis_do_Brasil"
+ },
+ "fundacao": null,
+ "historia": [],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": null,
+ "efetivo": {
+  "valor": 1220,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcias_civis_do_Brasil",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

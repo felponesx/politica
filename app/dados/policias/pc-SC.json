@@ -1,0 +1,62 @@
+{
+ "chave": "pc:SC",
+ "nome": "Polícia Civil do Estado de Santa Catarina",
+ "sigla": "PCSC",
+ "uf": "SC",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Santa Catarina: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+ },
+ "fundacao": {
+  "data": "1812",
+  "texto": "A ficha da corporação na Wikipédia indica 1812 como ano de fundação.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+  },
+  {
+   "ano": "1841",
+   "texto": "A reforma do Código de Processo Criminal do Império separa a polícia da Justiça: as funções policiais passam aos chefes de polícia das províncias e aos delegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+  },
+  {
+   "ano": "1995",
+   "texto": "A Lei nº 9.831 dá o nome de Delegacia Geral da Polícia Civil ao órgão central de direção e reorganiza a estrutura.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+  },
+  {
+   "ano": "2007",
+   "texto": "É criada a Central de Operações Policiais (COP), hoje Coordenadoria de Operações e Recursos Especiais (CORE), para apoiar as delegacias.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. Tem diretorias de Polícia da Grande Florianópolis, do Litoral, do Interior e da Fronteira, que reúnem delegacias regionais e de comarca, e a Diretoria Estadual de Investigações Criminais (DEIC). A fonte citava 30 delegacias regionais no interior e 392 postos de atendimento.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": "2009",
+  "unidades": []
+ },
+ "sede": {
+  "local": "Florianópolis, SC",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina"
+ },
+ "efetivo": {
+  "valor": 3023,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Santa_Catarina",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

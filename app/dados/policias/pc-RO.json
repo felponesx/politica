@@ -1,0 +1,110 @@
+{
+ "chave": "pc:RO",
+ "nome": "Polícia Civil do Estado de Rondônia",
+ "sigla": "PC/RO",
+ "uf": "RO",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Rondônia: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+ },
+ "fundacao": {
+  "data": "1943-09-13",
+  "texto": "Com a criação do Território Federal do Guaporé, em 13/09/1943, a segurança pública passou ao novo território; os primeiros cargos de delegado vieram em 1944.",
+  "fonte": "https://www.pc.ro.gov.br/historia/"
+ },
+ "historia": [
+  {
+   "ano": "1944",
+   "texto": "O governador Aluísio Ferreira cria, pelo Decreto nº 3, os cargos de delegado, delegado auxiliar, subdelegado e escrivão, organizando a nova Polícia Civil do Território do Guaporé.",
+   "fonte": "https://www.pc.ro.gov.br/historia/"
+  },
+  {
+   "ano": "1969",
+   "texto": "É instituída a Secretaria de Segurança Pública do Território Federal, que desde 1956 se chamava Rondônia.",
+   "fonte": "https://www.pc.ro.gov.br/historia/"
+  },
+  {
+   "ano": "1981",
+   "texto": "A Lei Complementar Federal nº 41, de 22 de dezembro, cria o Estado de Rondônia e leva à reorganização da Polícia Civil.",
+   "fonte": "https://www.pc.ro.gov.br/historia/"
+  },
+  {
+   "ano": "1991",
+   "texto": "A Lei Complementar nº 42, de 19 de março, torna a Polícia Civil um órgão autônomo; em 1993 a LC nº 76 cria o Estatuto ainda em vigor.",
+   "fonte": "https://www.pc.ro.gov.br/historia/"
+  },
+  {
+   "ano": "2015",
+   "texto": "A perícia criminal sai da Polícia Civil e passa à Politec (Polícia Técnico-Científica), transformada em superintendência.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com departamentos de Polícia Metropolitana, Especializada, de Narcóticos, de Inteligência e do Interior; este coordena 8 delegacias regionais. A Wikipédia cita 29 delegacias na capital e 38 no interior. O GOTE é o grupo de operações especiais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia",
+  "unidades_total": 67,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "Delegacia Regional de São Miguel do Guaporé",
+    "local": "São Miguel do Guaporé",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Vilhena",
+    "local": "Vilhena",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Cacoal",
+    "local": "Cacoal",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Rolim de Moura",
+    "local": "Rolim de Moura",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Ji-Paraná",
+    "local": "Ji-Paraná",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Jaru",
+    "local": "Jaru",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Ariquemes",
+    "local": "Ariquemes",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Delegacia Regional de Guajará-Mirim",
+    "local": "Guajará-Mirim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Porto Velho, RO",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia"
+ },
+ "efetivo": {
+  "valor": 1501,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Rond%C3%B4nia",
+  "https://www.pc.ro.gov.br/historia/",
+  "https://www.pc.ro.gov.br/unidades-policiais/",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

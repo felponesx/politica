@@ -1,0 +1,190 @@
+{
+ "chave": "pc:MA",
+ "nome": "Polícia Civil do Estado do Maranhão",
+ "sigla": null,
+ "uf": "MA",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Maranhão: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Maranh%C3%A3o"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação reconhece a Intendência Geral da Polícia da Corte, criada por D. João VI em 1808, como a origem da Polícia Civil.",
+  "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+ },
+ "historia": [
+  {
+   "ano": "1799",
+   "texto": "O ouvidor Henrique de Mello Coutinho de Vilhena elabora um plano de polícia para o Maranhão, com base no alvará do Reino de Portugal de 1760.",
+   "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+  },
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "ano": "1841",
+   "texto": "A reforma do Código de Processo Criminal prevê um chefe de polícia em cada província, com delegados e subdelegados.",
+   "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+  },
+  {
+   "ano": "1892",
+   "texto": "É organizado o Serviço de Segurança Pública do Estado do Maranhão.",
+   "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+  },
+  {
+   "ano": "1910",
+   "texto": "O governador cria o cargo de Delegado Geral de Polícia.",
+   "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+  },
+  {
+   "ano": "2006",
+   "texto": "A Lei nº 8.508/2006 passa a ser o Estatuto da Polícia Civil do Maranhão.",
+   "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com a Superintendência de Polícia da Capital e a Superintendência de Polícia Civil do Interior. No interior, 23 delegacias regionais coordenam os distritos policiais dos municípios. Há delegacias especializadas e o Grupo de Resposta Tática (GRT).",
+  "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/",
+  "unidades_total": 23,
+  "unidades_tipo": "delegacias",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "Delegacia Regional de Rosário",
+    "local": "Rosário",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Itapecuru Mirim",
+    "local": "Itapecuru Mirim",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Chapadinha",
+    "local": "Chapadinha",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Codó",
+    "local": "Codó",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Pinheiro",
+    "local": "Pinheiro",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Viana",
+    "local": "Viana",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Santa Inês",
+    "local": "Santa Inês",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Zé Doca",
+    "local": "Zé Doca",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Açailândia",
+    "local": "Açailândia",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Imperatriz",
+    "local": "Imperatriz",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Balsas",
+    "local": "Balsas",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de São João dos Patos",
+    "local": "São João dos Patos",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Presidente Dutra",
+    "local": "Presidente Dutra",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Pedreiras",
+    "local": "Pedreiras",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Barra do Corda",
+    "local": "Barra do Corda",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Bacabal",
+    "local": "Bacabal",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Caxias",
+    "local": "Caxias",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Timon",
+    "local": "Timon",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Porto Franco",
+    "local": "Porto Franco",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Barreirinhas",
+    "local": "Barreirinhas",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Cururupu",
+    "local": "Cururupu",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Governador Nunes Freire",
+    "local": "Governador Nunes Freire",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   },
+   {
+    "nome": "Delegacia Regional de Buriticupu",
+    "local": "Buriticupu",
+    "fonte": "https://www.policiacivil.ma.gov.br/delegacias-do-interior/"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Luís (Outeiro da Cruz), MA",
+  "fonte": "https://www.policiacivil.ma.gov.br/institucional/historico-2019/"
+ },
+ "efetivo": {
+  "valor": 1720,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Maranh%C3%A3o",
+  "https://www.policiacivil.ma.gov.br/institucional/historico-2019/",
+  "https://www.policiacivil.ma.gov.br/delegacias-do-interior/",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

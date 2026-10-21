@@ -1,0 +1,62 @@
+{
+ "chave": "pc:BA",
+ "nome": "Polícia Civil do Estado da Bahia",
+ "sigla": "PC-BA",
+ "uf": "BA",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária e investigativa da Bahia: apura os crimes na forma da lei, faz os inquéritos e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação conta sua história desde 1808, quando foi criada a Intendência Geral de Polícia da Corte e do Estado do Brasil.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+  },
+  {
+   "ano": "1871",
+   "texto": "As investigações passam a ser formalizadas no inquérito policial.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+  },
+  {
+   "ano": "1891",
+   "texto": "A Constituição do Estado da Bahia (art. 128) entrega a polícia administrativa e judiciária a um chefe em todo o estado; a Polícia Civil funcionou com essa base até 1978.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+  },
+  {
+   "ano": "2009",
+   "texto": "A Lei nº 11.370, de 4 de fevereiro de 2009, passa a ser a Lei Orgânica da Polícia Civil da Bahia.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. Na capital e na Região Metropolitana de Salvador funcionam 28 delegacias; no interior, 24 Coordenadorias de Polícia do Interior dirigem as unidades dos municípios. Há departamentos de Homicídios, Narcóticos, Crimes contra o Patrimônio, Polícia Metropolitana e do Interior, além da Coordenação de Operações e Recursos Especiais (CORE).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": "2024",
+  "unidades": []
+ },
+ "sede": {
+  "local": "Salvador (Piedade, Palácio da Piedade), BA",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia"
+ },
+ "efetivo": {
+  "valor": 5700,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Bahia",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

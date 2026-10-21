@@ -1,0 +1,146 @@
+{
+ "chave": "pc:SP",
+ "nome": "Polícia Civil do Estado de São Paulo",
+ "sigla": "PCESP",
+ "uf": "SP",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de São Paulo: investiga os crimes (menos os militares), faz os inquéritos e registra as ocorrências nas delegacias. É dirigida pelo delegado-geral de Polícia.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "fundacao": {
+  "data": "1841",
+  "texto": "Da aplicação do Regulamento nº 120, de 1841, nasceu a Polícia Civil paulista; o primeiro chefe de polícia foi o conselheiro Rodrigo Antonio Monteiro de Barros.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "historia": [
+  {
+   "ano": "1841",
+   "texto": "O Regulamento nº 120 separa a polícia administrativa da judiciária; em São Paulo nasce a Polícia Civil, ligada à Secretaria dos Negócios da Justiça.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1871",
+   "texto": "A Lei nº 2.033, de 20 de setembro, cria o inquérito policial e separa a função de julgar da função policial.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1892",
+   "texto": "O chefe de polícia Bernardino de Campos reorganiza a Repartição Central de Polícia, cria a Seção Judiciária e a Seção Médica (perícia).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1970",
+   "texto": "A Academia de Polícia, sucessora da Escola de Polícia, é instalada no prédio da Cidade Universitária (USP) cedido à Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Academia_de_Pol%C3%ADcia_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1994",
+   "texto": "A Lei Complementar nº 756 tira a perícia da Polícia Civil e cria a Superintendência da Polícia Técnico-Científica.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1996",
+   "texto": "Caso Bodega: a polícia apresentou suspeitos inocentes, que disseram ter sido torturados para confessar; o DHPP prendeu depois os verdadeiros autores. A denúncia contra os policiais foi rejeitada e o caso, arquivado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Caso_Bodega"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Coriolano Nogueira Cobra",
+   "texto": "Dá nome à Academia de Polícia (Acadepol \"Dr. Coriolano Nogueira Cobra\"), que forma os policiais civis paulistas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Academia_de_Pol%C3%ADcia_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "nome": "Ricardo Gumbleton Daunt",
+   "texto": "Dá nome ao Instituto de Identificação (IIRGD) da Polícia Civil, que emite a carteira de identidade.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+  }
+ ],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. As delegacias territoriais respondem às delegacias seccionais, ligadas a 12 departamentos: DECAP (capital), DEMACRO (Grande São Paulo) e 10 DEINTERs no interior. Os departamentos especializados são DEIC, DENARC, DHPP, DPPC e DOPE (operações especiais, com GARRA e Serviço Aerotático).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo",
+  "unidades_total": 12,
+  "unidades_tipo": "departamentos",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "DEINTER 1 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "São José dos Campos",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 2 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Campinas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 3 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Ribeirão Preto",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 4 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Bauru",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 5 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "São José do Rio Preto",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 6 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Santos",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 7 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Sorocaba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 8 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Presidente Prudente",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 9 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Piracicaba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEINTER 10 - Departamento de Polícia Judiciária de São Paulo Interior",
+    "local": "Araçatuba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DEMACRO - Departamento de Polícia Judiciária da Macro São Paulo",
+    "local": "Grande São Paulo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   },
+   {
+    "nome": "DECAP - Departamento de Polícia Judiciária da Capital",
+    "local": "São Paulo (capital)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo (Rua Brigadeiro Tobias, 527, Palácio da Polícia), SP",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "efetivo": {
+  "valor": 19420,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo",
+  "https://pt.wikipedia.org/wiki/Academia_de_Pol%C3%ADcia_do_Estado_de_S%C3%A3o_Paulo",
+  "https://pt.wikipedia.org/wiki/Caso_Bodega",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

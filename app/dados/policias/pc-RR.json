@@ -1,0 +1,159 @@
+{
+ "chave": "pc:RR",
+ "nome": "Polícia Civil de Roraima",
+ "sigla": "PCRR",
+ "uf": "RR",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Roraima: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+ },
+ "fundacao": {
+  "data": "1944",
+  "texto": "A estrutura policial do Território Federal de Roraima data de 1944, quando foi criada a Divisão de Segurança e Guarda Territorial.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+ },
+ "historia": [
+  {
+   "ano": "1944",
+   "texto": "O governador Ene Garcez dos Reis cria a Divisão de Segurança e Guarda Territorial e a Guarda Territorial, corporação uniformizada de natureza civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  },
+  {
+   "ano": "1945",
+   "texto": "O Decreto nº 3 regulamenta a polícia judiciária, chefiada pelo diretor da Divisão de Segurança e exercida por delegados nomeados pelo governador.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  },
+  {
+   "ano": "1988",
+   "texto": "Com a criação do Estado de Roraima, a Polícia Civil passa a ser formada por policiais civis federais do antigo território e por servidores não concursados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  },
+  {
+   "ano": "2001",
+   "texto": "A Lei Complementar nº 55, de 31 de dezembro, cria a Lei Orgânica da Polícia Civil e o plano de cargos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  },
+  {
+   "ano": "2004",
+   "texto": "Tomam posse, em 19 de julho, os aprovados no primeiro concurso público da Polícia Civil estadual, feito em 2003 com cerca de 720 vagas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  },
+  {
+   "ano": "2014",
+   "texto": "Em 30 de junho, a sede é transferida para a Cidade da Polícia, no bairro Canarinho, em Boa Vista.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Benigno José de Oliveira",
+   "texto": "Dá nome ao Instituto de Medicina e Odontologia Legal da Polícia Civil de Roraima.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  },
+  {
+   "nome": "Odílio Cruz",
+   "texto": "Dá nome ao Instituto de Identificação da Polícia Civil de Roraima.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+  }
+ ],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com departamentos de Polícia Judiciária da Capital e do Interior, de Polícia Especializada, de Operações Especiais (Grupo de Resposta Tática), de Narcóticos e de Homicídios. Em Boa Vista há 5 distritos policiais e delegacias especializadas; no interior, uma delegacia por município.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Distrito Policial",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "2º Distrito Policial",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "3º Distrito Policial",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "4º Distrito Policial",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "5º Distrito Policial",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Alto Alegre",
+    "local": "Alto Alegre",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Bonfim",
+    "local": "Bonfim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Caracaraí",
+    "local": "Caracaraí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Iracema",
+    "local": "Iracema",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Mucajaí",
+    "local": "Mucajaí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Normandia",
+    "local": "Normandia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Pacaraima",
+    "local": "Pacaraima",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Rorainópolis",
+    "local": "Rorainópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de São João da Baliza",
+    "local": "São João da Baliza",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   },
+   {
+    "nome": "Delegacia de Polícia de Cantá",
+    "local": "Cantá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Boa Vista (Canarinho, Cidade da Polícia), RR",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima"
+ },
+ "efetivo": {
+  "valor": 606,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Roraima",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

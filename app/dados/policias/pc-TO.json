@@ -1,0 +1,57 @@
+{
+ "chave": "pc:TO",
+ "nome": "Polícia Civil do Estado do Tocantins",
+ "sigla": null,
+ "uf": "TO",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Tocantins: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins"
+ },
+ "fundacao": {
+  "data": "1989-01-01",
+  "texto": "Com a instalação do estado em 1º de janeiro de 1989, pessoal e bens da Polícia Civil de Goiás foram transferidos para criar a do Tocantins.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins"
+  },
+  {
+   "ano": "1988",
+   "texto": "A Constituição Federal cria o Estado do Tocantins; a Polícia Civil tocantinense descende da Polícia Civil de Goiás.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins"
+  },
+  {
+   "ano": "1989",
+   "texto": "O estado é instalado em 1º de janeiro e recebe pessoal e bens da Polícia Civil goiana; a Constituição estadual de 5 de outubro prevê a Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. A Coordenadoria de Polícia Metropolitana tem 6 delegacias circunscricionais em Palmas; a do Interior tem 13 delegacias regionais e delegacias nos municípios; a de Polícia Especializada reúne DEAM, DENARC, DEIC e outras. O GOTE é o grupo de operações especiais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": "2008",
+  "unidades": []
+ },
+ "sede": {
+  "local": "Palmas, TO",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins"
+ },
+ "efetivo": {
+  "valor": 1034,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Tocantins",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

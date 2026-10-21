@@ -1,0 +1,67 @@
+{
+ "chave": "pc:CE",
+ "nome": "Polícia Civil do Estado do Ceará",
+ "sigla": null,
+ "uf": "CE",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Ceará: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação adota como origem a criação da Intendência Geral de Polícia da Corte, em 1808, no Rio de Janeiro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "1841",
+   "texto": "A reforma do Código de Processo Criminal do Império separa a polícia da Justiça: as funções policiais passam aos chefes de polícia das províncias e aos delegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "1969",
+   "texto": "Uma lei estadual cria o primeiro Estatuto da Polícia Civil de Carreira do Ceará.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "2003",
+   "texto": "A instituição passa a ser chefiada pelo delegado-superintendente da Superintendência de Polícia Civil do Ceará.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "2018",
+   "texto": "A estrutura atual passa a seguir a Lei do Modelo de Gestão do Poder Executivo (Lei nº 16.710/2018) e o Decreto nº 32.987/2019.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com delegacias distritais, regionais e especializadas (como o DENARC). A estrutura atual segue a Lei nº 16.710/2018 e o Decreto nº 32.987/2019. A fonte não traz a lista das delegacias regionais com suas sedes.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Fortaleza, CE",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1"
+ },
+ "efetivo": {
+  "valor": 4392,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Cear%C3%A1",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

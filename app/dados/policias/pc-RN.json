@@ -1,0 +1,113 @@
+{
+ "chave": "pc:RN",
+ "nome": "Polícia Civil do Estado do Rio Grande do Norte",
+ "sigla": null,
+ "uf": "RN",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Rio Grande do Norte: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "fundacao": {
+  "data": "1982",
+  "texto": "A ficha da corporação na Wikipédia indica 1982 como ano de fundação.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "1841",
+   "texto": "A reforma do Código de Processo Criminal do Império separa a polícia da Justiça: as funções policiais passam aos chefes de polícia das províncias e aos delegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "2004",
+   "texto": "A Lei Complementar nº 270, de 13 de abril de 2004, cria a Lei Orgânica e o Estatuto da Polícia Civil do Rio Grande do Norte.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "2018",
+   "texto": "O Decreto nº 28.177, de 4 de julho, extingue a Delegacia Especializada de Costumes.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. A Diretoria da Grande Natal reúne 15 delegacias distritais em Natal, as de Parnamirim e as especializadas; a Diretoria do Interior tem 10 delegacias regionais e delegacias municipais em quase todos os municípios. Há ainda a DEICOR (crime organizado) e a DHPP (homicídios).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1ª Delegacia Regional de Polícia (DRP)",
+    "local": "São Paulo do Potengi",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "2ª Delegacia Regional de Polícia (DRP)",
+    "local": "Mossoró",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "3ª Delegacia Regional de Polícia (DRP)",
+    "local": "Caicó",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "4ª Delegacia Regional de Polícia (DRP)",
+    "local": "Pau dos Ferros",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "5ª Delegacia Regional de Polícia (DRP)",
+    "local": "Macau",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "6ª Delegacia Regional de Polícia (DRP)",
+    "local": "Nova Cruz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "7ª Delegacia Regional de Polícia (DRP)",
+    "local": "Patu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "8ª Delegacia Regional de Polícia (DRP)",
+    "local": "Alexandria",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "9ª Delegacia Regional de Polícia (DRP)",
+    "local": "Santa Cruz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   },
+   {
+    "nome": "10ª Delegacia Regional de Polícia (DRP)",
+    "local": "João Câmara",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Natal, RN",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "efetivo": {
+  "valor": 1788,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_Grande_do_Norte",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

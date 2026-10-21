@@ -1,0 +1,113 @@
+{
+ "chave": "pc:PB",
+ "nome": "Polícia Civil do Estado da Paraíba",
+ "sigla": null,
+ "uf": "PB",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária da Paraíba: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+ },
+ "fundacao": {
+  "data": "1981",
+  "texto": "A ficha da corporação na Wikipédia indica 1981 como ano de fundação.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1841",
+   "texto": "A reforma do Código de Processo Criminal do Império separa a polícia da Justiça: as funções policiais passam aos chefes de polícia das províncias e aos delegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1871",
+   "texto": "As investigações passam a ser formalizadas no inquérito policial, modelo usado até hoje pelas polícias civis.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+  },
+  {
+   "ano": "2008",
+   "texto": "A Lei Complementar nº 85/2008 trata do Instituto de Polícia Científica, órgão da Polícia Civil que faz as perícias.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. O estado é dividido em 10 regiões de polícia civil (delegacias regionais), uma metropolitana e as demais com sede em cidades do interior. Há delegacias especializadas, o Instituto de Polícia Científica e o Grupo de Operações Especiais (GOE).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba",
+  "unidades_total": 10,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "Região de Polícia Civil Metropolitana",
+    "local": "Região metropolitana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Campina Grande",
+    "local": "Campina Grande",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Guarabira",
+    "local": "Guarabira",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Monteiro",
+    "local": "Monteiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Patos",
+    "local": "Patos",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Itaporanga",
+    "local": "Itaporanga",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Cuité",
+    "local": "Cuité",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Catolé do Rocha",
+    "local": "Catolé do Rocha",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Cajazeiras",
+    "local": "Cajazeiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   },
+   {
+    "nome": "Região de Polícia Civil de Itabaiana",
+    "local": "Itabaiana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+   }
+  ]
+ },
+ "sede": {
+  "local": "João Pessoa, PB",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba"
+ },
+ "efetivo": {
+  "valor": 2169,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_da_Para%C3%ADba",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

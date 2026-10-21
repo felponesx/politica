@@ -1,0 +1,67 @@
+{
+ "chave": "pc:PI",
+ "nome": "Polícia Civil do Estado do Piauí",
+ "sigla": null,
+ "uf": "PI",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária do Piauí: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação adota como origem a criação da Intendência Geral de Polícia da Corte, em 1808, no Rio de Janeiro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "1937",
+   "texto": "É criada a Guarda Civil de Teresina para o policiamento da cidade; ela foi extinta em 1970.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "1944",
+   "texto": "O Decreto-lei nº 772, de 9 de março, cria o Departamento de Polícia Civil do Piauí, reorganizado em 1946.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "1971",
+   "texto": "A Secretaria de Segurança se separa e dá origem à atual Secretaria de Segurança Pública do Piauí.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "1994",
+   "texto": "A Lei nº 4.709, de 17 de junho, institui o Hino da Polícia Civil, escolhido em concurso.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com gerências de Polícia Metropolitana (delegacias distritais e metropolitanas), Especializada e do Interior, onde as unidades respondem às delegacias regionais. Há também a Corregedoria, a Academia e o Departamento de Polícia Científica. A fonte não traz a lista das regionais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Teresina, PI",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD"
+ },
+ "efetivo": {
+  "valor": 1636,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Piau%C3%AD",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

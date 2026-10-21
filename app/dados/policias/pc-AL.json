@@ -1,0 +1,67 @@
+{
+ "chave": "pc:AL",
+ "nome": "Polícia Civil do Estado de Alagoas",
+ "sigla": null,
+ "uf": "AL",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Alagoas: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+ },
+ "fundacao": {
+  "data": "1808",
+  "texto": "A corporação adota como origem a criação da Intendência Geral de Polícia da Corte, em 1808, no Rio de Janeiro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+  },
+  {
+   "ano": "1912",
+   "texto": "O governador Clodoaldo da Fonseca cria a Guarda Civil, primeira norma ligada à Polícia Civil alagoana, para o policiamento uniformizado. Ainda não havia polícia de carreira.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+  },
+  {
+   "ano": "1975",
+   "texto": "A Lei nº 3.437, de 25 de junho de 1975 (Estatuto da Polícia Civil), cria os cargos efetivos da corporação, então ligada à Secretaria de Segurança Pública.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+  },
+  {
+   "ano": "2003",
+   "texto": "A Lei nº 6.441 cria a Direção Geral de Polícia Civil, com autonomia administrativa e financeira e status de secretaria de Estado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+  },
+  {
+   "ano": "2007",
+   "texto": "Pela Lei Delegada nº 43, o órgão passa a se chamar Delegacia Geral de Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. Atende pelas delegacias distritais (20 na capital e 93 no interior) e por delegacias especializadas (homicídios, narcotráfico, roubos de veículos e cargas, mulher, criança e adolescente, crimes ambientais e contra a administração pública). O grupo tático TIGRE fica na Divisão Especial de Investigação e Capturas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas",
+  "unidades_total": 113,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Maceió, AL",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas"
+ },
+ "efetivo": {
+  "valor": 2069,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Alagoas",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

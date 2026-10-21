@@ -1,0 +1,180 @@
+{
+ "chave": "pc:GO",
+ "nome": "Polícia Civil do Estado de Goiás",
+ "sigla": "PCGO",
+ "uf": "GO",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Goiás: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Goi%C3%A1s"
+ },
+ "fundacao": {
+  "data": "1898-08-05",
+  "texto": "A própria corporação data sua fundação da Lei estadual nº 185, de 5 de agosto de 1898, que organizou o serviço policial.",
+  "fonte": "https://goias.gov.br/policiacivil/institucional/"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "Criada no Rio de Janeiro a Intendência Geral de Polícia da Corte e do Estado do Brasil, chefiada por Paulo Fernandes Viana, considerada a origem das polícias civis do país.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Goi%C3%A1s"
+  },
+  {
+   "ano": "1898",
+   "texto": "A Lei estadual nº 185, de 5 de agosto, organiza o serviço policial em Goiás, marco de fundação da Polícia Civil.",
+   "fonte": "https://goias.gov.br/policiacivil/institucional/"
+  },
+  {
+   "ano": "1999",
+   "texto": "É formado o Grupo Tático 3 (GT3), unidade de operações especiais da Polícia Civil, para apoio no combate ao crime organizado e resgate de reféns.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Goi%C3%A1s"
+  },
+  {
+   "ano": "2010",
+   "texto": "A Lei estadual nº 16.901, de 26 de janeiro de 2010, institui a Lei Orgânica da Polícia Civil de Goiás.",
+   "fonte": "https://goias.gov.br/policiacivil/institucional/"
+  },
+  {
+   "ano": "2023",
+   "texto": "O Decreto estadual nº 10.218, de 16 de fevereiro de 2023, disciplina a estrutura administrativa da PCGO.",
+   "fonte": "https://goias.gov.br/policiacivil/institucional/"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral. Tem delegacias distritais, delegacias especializadas estaduais e municipais e 22 delegacias regionais que coordenam as cidades do interior. O GT3 é o grupo de operações especiais.",
+  "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/",
+  "unidades_total": 22,
+  "unidades_tipo": "delegacias",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "1ª Delegacia Regional de Polícia",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "2ª Delegacia Regional de Polícia",
+    "local": "Aparecida de Goiânia",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "3ª Delegacia Regional de Polícia",
+    "local": "Anápolis",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "4ª Delegacia Regional de Polícia",
+    "local": "Cidade de Goiás",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "5ª Delegacia Regional de Polícia",
+    "local": "Luziânia",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "6ª Delegacia Regional de Polícia",
+    "local": "Itumbiara",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "7ª Delegacia Regional de Polícia",
+    "local": "São Luís de Montes Belos",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "8ª Delegacia Regional de Polícia",
+    "local": "Rio Verde",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "9ª Delegacia Regional de Polícia",
+    "local": "Catalão",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "10ª Delegacia Regional de Polícia",
+    "local": "Ceres",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "11ª Delegacia Regional de Polícia",
+    "local": "Formosa",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "12ª Delegacia Regional de Polícia",
+    "local": "Porangatu",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "13ª Delegacia Regional de Polícia",
+    "local": "Posse",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "14ª Delegacia Regional de Polícia",
+    "local": "Jataí",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "15ª Delegacia Regional de Polícia",
+    "local": "Goianésia",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "16ª Delegacia Regional de Polícia",
+    "local": "Trindade",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "17ª Delegacia Regional de Polícia",
+    "local": "Águas Lindas",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "18ª Delegacia Regional de Polícia",
+    "local": "Uruaçu",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "19ª Delegacia Regional de Polícia",
+    "local": "Caldas Novas",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "20ª Delegacia Regional de Polícia",
+    "local": "Iporá",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "21ª Delegacia Regional de Polícia",
+    "local": "Nova Crixás",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   },
+   {
+    "nome": "22ª Delegacia Regional de Polícia",
+    "local": "Inhumas",
+    "fonte": "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Goiânia, GO",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Goi%C3%A1s"
+ },
+ "efetivo": {
+  "valor": 3448,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Goi%C3%A1s",
+  "https://goias.gov.br/policiacivil/institucional/",
+  "https://goias.gov.br/policiacivil/delegacias-regionais-de-policia/",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

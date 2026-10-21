@@ -1,0 +1,67 @@
+{
+ "chave": "pc:MS",
+ "nome": "Polícia Civil do Estado de Mato Grosso do Sul",
+ "sigla": null,
+ "uf": "MS",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Mato Grosso do Sul: investiga os crimes (menos os militares), faz os inquéritos policiais e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+ },
+ "fundacao": {
+  "data": "1977-10-11",
+  "texto": "A divisão de Mato Grosso pela Lei Complementar nº 31, de 11/10/1977, criou o novo estado e levou à organização da sua Polícia Civil.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+ },
+ "historia": [
+  {
+   "ano": "1977",
+   "texto": "A Lei Complementar nº 31 divide Mato Grosso e cria Mato Grosso do Sul; parte dos servidores do antigo estado passa a formar a nova estrutura, inclusive a Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+  },
+  {
+   "ano": "1983",
+   "texto": "Concurso público preenche todas as categorias da Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+  },
+  {
+   "ano": "1984",
+   "texto": "A Academia de Polícia Civil é inaugurada em 12 de março, para formar os primeiros servidores, inclusive delegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+  },
+  {
+   "ano": "2005",
+   "texto": "A Lei Complementar nº 114, de 19 de dezembro, passa a ser o estatuto da Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+  },
+  {
+   "ano": "2006",
+   "texto": "O Decreto nº 12.218 faz da Polícia Civil um órgão de execução da Secretaria de Estado de Justiça e Segurança Pública.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com departamentos de Polícia da Capital, do Interior, Especializada e de Inteligência; no interior há delegacias regionais e municipais. São 11 delegacias na capital e 79 no interior. O GARRAS é o grupo de operações especiais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul",
+  "unidades_total": 90,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Campo Grande, MS",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul"
+ },
+ "efetivo": {
+  "valor": 1945,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso_do_Sul",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

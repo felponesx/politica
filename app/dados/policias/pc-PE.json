@@ -1,0 +1,73 @@
+{
+ "chave": "pc:PE",
+ "nome": "Polícia Civil do Estado de Pernambuco",
+ "sigla": null,
+ "uf": "PE",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Pernambuco: investiga os crimes (menos os militares), faz os inquéritos e atende a população nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco"
+ },
+ "fundacao": {
+  "data": "1817-04-13",
+  "texto": "A Lei estadual nº 12.853/2005 fixa 13 de abril de 1817 como data de criação da Polícia Civil de Pernambuco.",
+  "fonte": "https://legis.alepe.pe.gov.br/texto.aspx?id=682"
+ },
+ "historia": [
+  {
+   "ano": "1817",
+   "texto": "É criado na Capitania de Pernambuco um Tribunal de Polícia, dirigido por um juiz ordinário do crime.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco"
+  },
+  {
+   "ano": "1836",
+   "texto": "Lei provincial cria as Prefeituras de Polícia; em 1841 surge o chefe de polícia, auxiliado por delegados e subdelegados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco"
+  },
+  {
+   "ano": "1931",
+   "texto": "É criada a Secretaria de Segurança Pública, com sede histórica na Rua da Aurora, 405, no Recife.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco"
+  },
+  {
+   "ano": "1974",
+   "texto": "A Lei nº 6.657, de 7 de janeiro, cria a polícia de carreira, autorizada pela Constituição Estadual de 1967.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco"
+  },
+  {
+   "ano": "2005",
+   "texto": "A Lei nº 12.853 adota Felipe Néri Ferreira como patrono e cria o Monumento aos Heróis da Polícia Civil, para os policiais mortos em serviço.",
+   "fonte": "https://legis.alepe.pe.gov.br/texto.aspx?id=682"
+  }
+ ],
+ "patrono": {
+  "nome": "Filipe Néri Ferreira",
+  "texto": "O \"Patriota Felipe Néri Ferreira\" foi adotado como patrono da Polícia Civil pela Lei estadual nº 12.853/2005, que também fixou 13 de abril de 1817 como data de criação da corporação.",
+  "fonte": "https://legis.alepe.pe.gov.br/texto.aspx?id=682"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo chefe de Polícia Civil. A atividade-fim fica com a Diretoria Integrada Metropolitana, as Diretorias Integradas do Interior 1 e 2 (com as delegacias) e a Diretoria Integrada Especializada; há ainda o GOE, a CORE e a Diretoria de Inteligência. A fonte não traz a lista de delegacias com suas sedes.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco",
+  "unidades_total": null,
+  "unidades_tipo": "delegacias",
+  "data_ref": "2013",
+  "unidades": []
+ },
+ "sede": {
+  "local": "Recife, PE",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco"
+ },
+ "efetivo": {
+  "valor": 4326,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_de_Pernambuco",
+  "https://legis.alepe.pe.gov.br/texto.aspx?id=682",
+  "https://pt.wikipedia.org/wiki/Filipe_Neri_Ferreira",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}

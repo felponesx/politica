@@ -1,0 +1,72 @@
+{
+ "chave": "pc:MT",
+ "nome": "Polícia Judiciária Civil do Estado de Mato Grosso",
+ "sigla": "PJC-MT",
+ "uf": "MT",
+ "corp": "pc",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia judiciária de Mato Grosso, chamada Polícia Judiciária Civil: investiga os crimes (menos os militares), faz os inquéritos e atende nas delegacias.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+ },
+ "fundacao": {
+  "data": "1842-05-24",
+  "texto": "A polícia civil em Mato Grosso foi criada em 24 de maio de 1842, por portaria do presidente da província.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+ },
+ "historia": [
+  {
+   "ano": "1842",
+   "texto": "Portaria do presidente da província cria a polícia civil; o chefe de polícia era escolhido entre desembargadores, juízes, delegados ou cidadãos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1891",
+   "texto": "O Decreto nº 08, de 26 de outubro, reestrutura a polícia e cria a Chefatura de Polícia, mantendo o cargo de delegado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1967",
+   "texto": "A Secretaria de Segurança Pública substitui a antiga Chefatura de Polícia.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1972",
+   "texto": "Sérgio Adib Hage é nomeado, em 7 de junho, o primeiro Diretor Geral do Departamento Geral de Polícia Civil.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1984",
+   "texto": "A Lei nº 4.721 institui a Polícia Civil de carreira.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "2004",
+   "texto": "A Lei Complementar nº 155, de 14 de janeiro, cria o Estatuto da Polícia Judiciária Civil, que passa a ter esse nome.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Dirigida pelo delegado-geral, com diretorias Metropolitana e do Interior e a Diretoria de Atividades Especiais (inteligência, Polinter, crime organizado). Segundo a Wikipédia (trecho sem fonte), são 17 delegacias na capital e 61 no interior, além de delegacias especializadas e do Grupo de Operações Especiais (GOE).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso",
+  "unidades_total": 78,
+  "unidades_tipo": "delegacias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Cuiabá, MT",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso"
+ },
+ "efetivo": {
+  "valor": 3209,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_Mato_Grosso",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-tabelas.xlsx"
+ ]
+}
