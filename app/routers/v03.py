@@ -59,18 +59,27 @@ def _tributos_subnacionais(db):
         cidades = db.execute(select(Municipio.codigo_ibge, Municipio.uf, Municipio.populacao)).all()
         municipal, faltam = sum(mun.values()), 0
         if cidades and mun:
-            pc = {}
+            # média por habitante das prefeituras que entregaram, no mesmo estado E na mesma faixa de tamanho: quem não
+            # entrega costuma ser cidade pequena, que arrecada bem menos por habitante que as grandes (usar a média do
+            # estado inteiro inflava o total)
+            faixa = lambda pop: 0 if pop < 10_000 else 1 if pop < 50_000 else 2 if pop < 200_000 else 3
+            pc, pc_uf = {}, {}
             for cod, uf, pop in cidades:
                 if int(cod) in mun and pop:
-                    a = pc.setdefault(uf, [0.0, 0])
-                    a[0] += mun[int(cod)]
-                    a[1] += pop
+                    for chave, alvo in (((uf, faixa(pop)), pc), (uf, pc_uf)):
+                        acc = alvo.setdefault(chave, [0.0, 0])
+                        acc[0] += mun[int(cod)]
+                        acc[1] += pop
             for cod, uf, pop in cidades:
-                if int(cod) not in mun and pop and uf in pc and pc[uf][1]:
-                    municipal += pc[uf][0] / pc[uf][1] * pop
+                if int(cod) in mun or not pop:
+                    continue
+                base = pc.get((uf, faixa(pop))) or pc_uf.get(uf)
+                if base and base[1]:
+                    municipal += base[0] / base[1] * pop
                     faltam += 1
         nota = (f"Estados: {len(est)} de 27 relatórios. Municípios: {len(mun)} relatórios"
-                + (f"; {faltam} prefeituras sem relatório estimadas pela média por habitante do estado." if faltam else ".")
+                + (f"; {faltam} prefeituras sem relatório estimadas pela média por habitante das cidades do mesmo estado e "
+                   "do mesmo tamanho." if faltam else ".")
                 if mun else f"Estados: {len(est)} de 27 relatórios. Municípios ainda não coletados (ISS e IPTU fora da conta).")
         return {"estadual": round(estadual, 2), "municipal": round(municipal, 2), "ate": f"12/{ano}", "nota": nota}
     return None
@@ -119,14 +128,17 @@ def contadores(db: Session = Depends(get_db)):
         if "U" not in por_esfera:
             continue
         total = sum(por_esfera.values())
+        # o ano corrente vem até o último bimestre publicado: o ritmo é o total dividido pelo tempo que ele cobre
+        bim = max(int((r.dados or {}).get("bimestre") or 6) for r in regs if (r.dados or {}).get("esfera") == "U")
+        cobre = SEG_ANO * min(bim, 6) / 6
         por_funcao = {}
         for r in regs:
             por_funcao[r.titulo] = por_funcao.get(r.titulo, 0) + (r.valor or 0)
         top = sorted(por_funcao.items(), key=lambda x: -x[1])[:4]
-        gas = {"por_segundo": round(total / SEG_ANO, 2), "ano": ano, "total_base": round(total, 2),
+        gas = {"por_segundo": round(total / cobre, 2), "ano": ano, "total_base": round(total, 2), "bimestre": bim,
                "por_esfera": {k: round(v, 2) for k, v in por_esfera.items()},
                "maiores_funcoes": [{"funcao": f, "percentual": round(100 * v / total, 1)} for f, v in top],
-               "base": f"despesa liquidada em {ano} (União" + (", estados" if "E" in por_esfera else "")
+               "base": f"despesa liquidada em {ano}" + (f" até o {bim}º bimestre" if bim < 6 else "") + " (União" + (", estados" if "E" in por_esfera else "")
                        + (", capitais" if "C" in por_esfera else "") + (" e municípios" if "M" in por_esfera else "") + ")",
                "fonte": "SICONFI (RREO Anexo 02)"}
         break
