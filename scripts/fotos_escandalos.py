@@ -63,6 +63,10 @@ def _thumb(arquivo: str, largura: int = 250) -> list[str]:
     return [f"https://upload.wikimedia.org/wikipedia/{w}/thumb/{h[0]}/{h[:2]}/{q}/{largura}px-{q}" for w in ("commons", "pt")]
 
 
+class Limite(RuntimeError):
+    """A Wikimedia continuou recusando (limite de pedidos): a pessoa fica para a próxima rodada, sem virar "sem foto"."""
+
+
 def _get(url: str, params: dict | None = None) -> tuple[int, bytes]:
     """GET pelo curl (com o User-Agent do projeto); devolve (status, corpo)."""
     from scripts.midia_site import UA
@@ -79,7 +83,7 @@ def _get(url: str, params: dict | None = None) -> tuple[int, bytes]:
         corpo, _, cod = r.stdout.rpartition(b"\n")
         if cod not in (b"429", b"403"):
             return int(cod or 0), corpo
-    return 429, b""
+    raise Limite(url)
 
 
 def _baixar_thumb(arquivo: str) -> str | None:
@@ -96,6 +100,8 @@ def foto_de(nome: str, slug: str, nome_caso: str) -> str | None:
     for n in [nome] + ([apelido.group(1).strip("'\" ")] if apelido else []):
         try:
             img = _foto_wikipedia(n, slug, nome_caso, nome)
+        except Limite:
+            raise
         except Exception:
             img = None
         if img:
@@ -136,12 +142,16 @@ def fotos_escandalos(cache: str | None = None) -> dict:
         for p in c["pessoas"]:
             k = "esc:" + p["nome"]
             if k not in feito:
-                feito[k] = foto_de(p["nome"], slug, c["nome"])
+                try:
+                    feito[k] = foto_de(p["nome"], slug, c["nome"])
+                except Limite:
+                    log.warning("%s: limite da Wikimedia, fica para a próxima rodada", p["nome"])
+                    continue
                 log.info("%s: %s", p["nome"], "foto" if feito[k] else "sem foto")
                 if cache:
                     with open(cache, "w", encoding="utf-8") as f:
                         json.dump(feito, f)
-            if feito[k]:
+            if feito.get(k):
                 out[k] = feito[k]
     log.info("fotos dos escândalos: %d", len(out))
     return out
