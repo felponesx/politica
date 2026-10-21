@@ -1,0 +1,153 @@
+{
+ "chave": "u:SP:BAEP",
+ "nome": "Batalhões de Ações Especiais de Polícia",
+ "sigla": "BAEP",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pm:SP",
+ "resumo": {
+  "texto": "Batalhões da PM paulista espalhados pelo estado que fazem policiamento na sua região e ações especiais, principalmente patrulhamento tático e controle de multidões.",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+ },
+ "fundacao": {
+  "data": "2014-01-06",
+  "texto": "O primeiro, o 1º BAEP, foi criado em Campinas pelo Decreto estadual 60.034.",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60034-06.01.2014.html"
+ },
+ "historia": [
+  {
+   "ano": "2014",
+   "texto": "Criado o 1º BAEP, em Campinas (Decreto 60.034, de 6 de janeiro).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60034-06.01.2014.html"
+  },
+  {
+   "ano": "2014",
+   "texto": "Criados o 2º BAEP, em Santos (julho), e o 3º BAEP, em São José dos Campos (agosto).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60715-07.08.2014.html"
+  },
+  {
+   "ano": "2017",
+   "texto": "Criado o 5º BAEP, em Barueri, na Grande São Paulo (Decreto 62.616).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2017/decreto-62616-08.06.2017.html"
+  },
+  {
+   "ano": "2019",
+   "texto": "Criados de uma vez o 6º (São Bernardo do Campo), o 7º (capital), o 8º (Presidente Prudente) e o 9º BAEP (São José do Rio Preto).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64109-08.02.2019.html"
+  },
+  {
+   "ano": "2019",
+   "texto": "Criados o 10º BAEP, em Piracicaba, e o 11º, em Ribeirão Preto (Decreto 64.413).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64413-26.08.2019.html"
+  },
+  {
+   "ano": "2021",
+   "texto": "Criado o 14º BAEP, em Sorocaba (Decreto 65.562).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2021/decreto-65562-10.03.2021.html"
+  },
+  {
+   "ano": "2022",
+   "texto": "Criado o 15º BAEP, em Guarulhos (Decreto 66.931).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2022/decreto-66931-01.07.2022.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "São 15 batalhões, cada um ligado ao comando regional da sua área (Comandos de Policiamento de Área Metropolitana na Grande São Paulo e Comandos de Policiamento do Interior). Cada BAEP atua no território desse comando.",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html",
+  "unidades_total": 15,
+  "unidades_tipo": "batalhões",
+  "data_ref": "2022",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Ações Especiais de Polícia (1º BAEP)",
+    "local": "Campinas",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60034-06.01.2014.html"
+   },
+   {
+    "nome": "2º Batalhão de Ações Especiais de Polícia (2º BAEP)",
+    "local": "Santos",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60657-17.07.2014.html"
+   },
+   {
+    "nome": "3º Batalhão de Ações Especiais de Polícia (3º BAEP)",
+    "local": "São José dos Campos",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60715-07.08.2014.html"
+   },
+   {
+    "nome": "4º Batalhão de Ações Especiais de Polícia (4º BAEP)",
+    "local": "São Paulo (atua em parte da Zona Leste, área do CPA/M-4)",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+   },
+   {
+    "nome": "5º Batalhão de Ações Especiais de Polícia (5º BAEP)",
+    "local": "Barueri",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2017/decreto-62616-08.06.2017.html"
+   },
+   {
+    "nome": "6º Batalhão de Ações Especiais de Polícia (6º BAEP)",
+    "local": "São Bernardo do Campo",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64109-08.02.2019.html"
+   },
+   {
+    "nome": "7º Batalhão de Ações Especiais de Polícia (7º BAEP)",
+    "local": "São Paulo (Zona Centro, área do CPA/M-1)",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64109-08.02.2019.html"
+   },
+   {
+    "nome": "8º Batalhão de Ações Especiais de Polícia (8º BAEP)",
+    "local": "Presidente Prudente",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64109-08.02.2019.html"
+   },
+   {
+    "nome": "9º Batalhão de Ações Especiais de Polícia (9º BAEP)",
+    "local": "São José do Rio Preto",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64109-08.02.2019.html"
+   },
+   {
+    "nome": "10º Batalhão de Ações Especiais de Polícia (10º BAEP)",
+    "local": "Piracicaba",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64413-26.08.2019.html"
+   },
+   {
+    "nome": "11º Batalhão de Ações Especiais de Polícia (11º BAEP)",
+    "local": "Ribeirão Preto",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64413-26.08.2019.html"
+   },
+   {
+    "nome": "12º Batalhão de Ações Especiais de Polícia (12º BAEP)",
+    "local": "Araçatuba",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+   },
+   {
+    "nome": "13º Batalhão de Ações Especiais de Polícia (13º BAEP)",
+    "local": "Bauru",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+   },
+   {
+    "nome": "14º Batalhão de Ações Especiais de Polícia (14º BAEP)",
+    "local": "Sorocaba",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2021/decreto-65562-10.03.2021.html"
+   },
+   {
+    "nome": "15º Batalhão de Ações Especiais de Polícia (15º BAEP)",
+    "local": "Guarulhos",
+    "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2022/decreto-66931-01.07.2022.html"
+   }
+  ]
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60034-06.01.2014.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60657-17.07.2014.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2014/decreto-60715-07.08.2014.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2017/decreto-62616-08.06.2017.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64109-08.02.2019.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2019/decreto-64413-26.08.2019.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2021/decreto-65562-10.03.2021.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2022/decreto-66931-01.07.2022.html"
+ ]
+}

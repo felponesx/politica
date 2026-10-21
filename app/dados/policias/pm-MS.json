@@ -1,0 +1,76 @@
+{
+ "chave": "pm:MS",
+ "nome": "Polícia Militar de Mato Grosso do Sul",
+ "sigla": "PMMS",
+ "uf": "MS",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo e cuida da ordem pública em Mato Grosso do Sul, estado com 1.517 km de fronteira com o Paraguai e a Bolívia.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul"
+ },
+ "fundacao": {
+  "data": "1835-09-05",
+  "texto": "Criada com o nome de Homens do Mato, ainda na província de Mato Grosso.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul"
+ },
+ "historia": [
+  {
+   "ano": "1835",
+   "texto": "Em 5 de setembro surgiram os \"Homens do Mato\" e trilheiros, que protegiam viajantes e mantinham a ordem na fronteira; a PMMS conta sua história a partir daí.",
+   "fonte": "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+  },
+  {
+   "ano": "1947",
+   "texto": "A corporação recebeu o nome de Polícia Militar.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul"
+  },
+  {
+   "ano": "1977",
+   "texto": "Com a divisão de Mato Grosso e a criação de Mato Grosso do Sul, passou a se chamar Polícia Militar do Estado de Mato Grosso do Sul.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul"
+  },
+  {
+   "ano": "1982",
+   "texto": "Ingressou a primeira turma de mulheres na corporação; as primeiras oficiais se formaram em 1985.",
+   "fonte": "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+  },
+  {
+   "ano": "1992",
+   "texto": "Criação da Tropa Ostensiva de Repressão Armada (TORA), origem das atuais tropas especializadas BOPE e Choque.",
+   "fonte": "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+  },
+  {
+   "ano": "2020",
+   "texto": "Pela primeira vez uma mulher chegou ao posto máximo, coronel: a coronel Neidy.",
+   "fonte": "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+  "texto": "Joaquim José da Silva Xavier, o Tiradentes, é o patrono da PMMS.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A PMMS se divide em órgãos de direção (comando e administração), de apoio (pessoal e material) e de execução (as unidades operacionais). Não foi possível montar a lista de batalhões: o site oficial não abriu para esta pesquisa e a Wikipédia não traz a lista.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Campo Grande (Jardim Veraneio), MS – Av. Desembargador Leão Neto do Carmo, 1203",
+  "fonte": "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+ },
+ "efetivo": {
+  "valor": 5929,
+  "data_ref": "2025",
+  "fonte": "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Mato_Grosso_do_Sul",
+  "https://correiodoestado.com.br/cidades/policia/policia-militar-comemora-190-anos-com-ingresso-de-914-novos-policiais/453888/"
+ ]
+}

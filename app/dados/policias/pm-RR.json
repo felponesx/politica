@@ -1,0 +1,153 @@
+{
+ "chave": "pm:RR",
+ "nome": "Polícia Militar de Roraima",
+ "sigla": "PMRR",
+ "uf": "RR",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública em Roraima. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+ },
+ "fundacao": {
+  "data": "1975-11-26",
+  "texto": "A Lei nº 6.270 extinguiu a Guarda Territorial e criou a Polícia Militar do Território Federal de Roraima.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+ },
+ "historia": [
+  {
+   "ano": "1944",
+   "texto": "No Território Federal do Rio Branco, criado em 1943, é instituída uma Guarda Territorial civil, que cuidava da ordem e também de obras, estradas e transportes.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+  },
+  {
+   "ano": "1975",
+   "texto": "A Guarda Territorial é extinta e é criada a Polícia Militar do Território Federal de Roraima, organizada de fato em 1977.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+  },
+  {
+   "ano": "1988",
+   "texto": "Com a transformação de Roraima em estado, a corporação muda de nome.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+  },
+  {
+   "ano": "1999",
+   "texto": "No desfile de aniversário da PMRR, em 26 de novembro, aparece pela primeira vez um grupamento de polícia montada, com cavalos doados pela população.",
+   "fonte": "https://pt.wikipedia.org/wiki/1.%C2%BA_Esquadr%C3%A3o_Independente_de_Pol%C3%ADcia_Montada_da_PMRR"
+  },
+  {
+   "ano": "2000",
+   "texto": "O Decreto nº 3.871-E cria oficialmente o 1º Esquadrão de Polícia Montada, que atua em eventos em Boa Vista e no interior, inclusive na fronteira com Guiana e Venezuela.",
+   "fonte": "https://pt.wikipedia.org/wiki/1.%C2%BA_Esquadr%C3%A3o_Independente_de_Pol%C3%ADcia_Montada_da_PMRR"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da corporação, segundo a ficha da PM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+ },
+ "homenageados": [
+  {
+   "nome": "Capitão Inácio Lopes de Magalhães",
+   "texto": "Dá nome ao 1º Esquadrão de Polícia Montada (2000). Veio do Ceará para comandar o Forte São Joaquim em 1830 e fundou a primeira fazenda particular de gado às margens do rio Branco.",
+   "fonte": "https://pt.wikipedia.org/wiki/1.%C2%BA_Esquadr%C3%A3o_Independente_de_Pol%C3%ADcia_Montada_da_PMRR"
+  }
+ ],
+ "organizacao": {
+  "texto": "O Comando de Policiamento da Capital reúne dois batalhões em Boa Vista e as unidades especializadas (BOPE, cavalaria, guarda, trânsito, ambiental, comunitária e GIRO). O Comando de Policiamento do Interior tem seis companhias independentes de fronteira.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima",
+  "unidades_total": 15,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Boa Vista (zona leste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Boa Vista (zona oeste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "Batalhão de Operações Especiais (BOPE)",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento de Guarda (CIPG)",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento de Trânsito Urbano e Rodoviário (CIPTUR)",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "Grupamento Independente de Intervenção Rápida Ostensiva (GIRO)",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "Companhia Independente de Polícia Ambiental (CIPA)",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento Comunitário (CIPCOM)",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "1ª Companhia Independente de Polícia Militar de Fronteira",
+    "local": "Pacaraima",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "2ª Companhia Independente de Polícia Militar de Fronteira",
+    "local": "Caracaraí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "3ª Companhia Independente de Polícia Militar de Fronteira",
+    "local": "Rorainópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "4ª Companhia Independente de Polícia Militar de Fronteira",
+    "local": "Santa Cecília",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "5ª Companhia Independente de Polícia Militar de Fronteira",
+    "local": "Bonfim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "6ª Companhia Independente de Polícia Militar de Fronteira",
+    "local": "São Luiz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+   },
+   {
+    "nome": "1º Esquadrão Independente de Polícia Montada Inácio Lopes de Magalhães",
+    "local": "Boa Vista",
+    "fonte": "https://pt.wikipedia.org/wiki/1.%C2%BA_Esquadr%C3%A3o_Independente_de_Pol%C3%ADcia_Montada_da_PMRR"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Boa Vista, RR",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+ },
+ "efetivo": {
+  "valor": 2070,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Roraima",
+  "https://pt.wikipedia.org/wiki/1.%C2%BA_Esquadr%C3%A3o_Independente_de_Pol%C3%ADcia_Montada_da_PMRR"
+ ]
+}

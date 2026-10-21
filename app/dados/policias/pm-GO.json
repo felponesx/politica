@@ -1,0 +1,454 @@
+{
+ "chave": "pm:GO",
+ "nome": "Polícia Militar do Estado de Goiás",
+ "sigla": "PMGO",
+ "uf": "GO",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Força de segurança pública de Goiás, responsável pelo policiamento ostensivo. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Goi%C3%A1s"
+ },
+ "fundacao": {
+  "data": "1858-07-28",
+  "texto": "O presidente da Província, Januário da Gama Cerqueira, sancionou a resolução nº 13, que criou a Força Policial de Goyaz.",
+  "fonte": "https://goias.gov.br/policiamilitar/historia/"
+ },
+ "historia": [
+  {
+   "ano": "1858",
+   "texto": "Criada a Força Policial de Goyaz, com 47 homens e atuação limitada à capital (Vila Boa) e arredores. Os primeiros integrantes eram civis contratados que usavam só cassetetes.",
+   "fonte": "https://goias.gov.br/policiamilitar/historia/"
+  },
+  {
+   "ano": "1863",
+   "texto": "A corporação comprou seu primeiro quartel, na Cidade de Goiás, que sediou o comando até 1936.",
+   "fonte": "https://goias.gov.br/policiamilitar/historia/"
+  },
+  {
+   "ano": "1865",
+   "texto": "Na Guerra do Paraguai, as tropas goianas forneceram mantimentos aos militares em combate.",
+   "fonte": "https://goias.gov.br/policiamilitar/historia/"
+  },
+  {
+   "ano": "1935",
+   "texto": "Em 1º de julho surgiu o nome Polícia Militar de Goiás. Em novembro, uma companhia foi para a nova capital, Goiânia, e deu origem ao 1º Batalhão, hoje Batalhão Anhanguera.",
+   "fonte": "https://goias.gov.br/policiamilitar/historia/"
+  },
+  {
+   "ano": "1938",
+   "texto": "Criado o Comando Geral da corporação; o major Arnaldo de Morais Sarmento foi nomeado comandante-geral.",
+   "fonte": "https://goias.gov.br/policiamilitar/historia/"
+  },
+  {
+   "ano": "2024",
+   "texto": "A Portaria nº 19.219, de 29 de outubro de 2024, é a base legal da divisão atual da PMGO em Comandos Regionais.",
+   "fonte": "https://goias.gov.br/policiamilitar/organograma-e-mapa-regional/"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da PMGO.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Goi%C3%A1s"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Pelo organograma de agosto de 2026, a PMGO tem 22 Comandos Regionais (CRPM), 5 comandos especializados, 83 batalhões e 37 companhias independentes (CIPM). A lista traz 75 batalhões com a cidade (ou o bairro de Goiânia) indicada no organograma; as CIPMs e alguns batalhões especializados da capital não foram listados.",
+  "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf",
+  "unidades_total": 83,
+  "unidades_tipo": "batalhões",
+  "data_ref": "2026-08",
+  "unidades": [
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Goiânia (Marista)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Goiânia (Jardim Europa)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Goiânia (Goiânia II)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Goiânia (Jardim Liberdade)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Goiânia (Setor Senador Paranhos)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar",
+    "local": "Goiânia (Parque Atheneu)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "38º Batalhão de Polícia Militar",
+    "local": "Goiânia (Setor Central)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "42º Batalhão de Polícia Militar",
+    "local": "Goiânia (Parque Oeste Industrial)",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Aparecida de Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "39º Batalhão de Polícia Militar",
+    "local": "Aparecida de Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "41º Batalhão de Polícia Militar",
+    "local": "Aparecida de Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "45º Batalhão de Polícia Militar",
+    "local": "Aparecida de Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar",
+    "local": "Senador Canedo",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Anápolis",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Anápolis",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "37º Batalhão de Polícia Militar",
+    "local": "Pirenópolis",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Goiás",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "32º Batalhão de Polícia Militar",
+    "local": "Jussara",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "34º Batalhão de Polícia Militar",
+    "local": "Itaberaí",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "48º Batalhão de Polícia Militar",
+    "local": "Anicuns",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "58º Batalhão de Polícia Militar",
+    "local": "Itapuranga",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Luziânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "59º Batalhão de Polícia Militar",
+    "local": "Luziânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Novo Gama",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Valparaíso de Goiás",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar",
+    "local": "Cidade Ocidental",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "60º Batalhão de Polícia Militar",
+    "local": "Cristalina",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Itumbiara",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar",
+    "local": "Goiatuba",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "43º Batalhão de Polícia Militar",
+    "local": "São Luís de Montes Belos",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Rio Verde",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "50º Batalhão de Polícia Militar",
+    "local": "Quirinópolis",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "53º Batalhão de Polícia Militar",
+    "local": "Indiara",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Pires do Rio",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Catalão",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "44º Batalhão de Polícia Militar",
+    "local": "Ceres",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Formosa",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Planaltina",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Porangatu",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Posse",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "57º Batalhão de Polícia Militar",
+    "local": "Campos Belos",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Jataí",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "46º Batalhão de Polícia Militar",
+    "local": "Mineiros",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Goianésia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "54º Batalhão de Polícia Militar",
+    "local": "Jaraguá",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Trindade",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Palmeiras de Goiás",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Águas Lindas de Goiás",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "52º Batalhão de Polícia Militar",
+    "local": "Santo Antônio do Descoberto",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Uruaçu",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Caldas Novas",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "36º Batalhão de Polícia Militar",
+    "local": "Morrinhos",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Iporá",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "47º Batalhão de Polícia Militar",
+    "local": "Aragarças",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "51º Batalhão de Polícia Militar",
+    "local": "São Miguel do Araguaia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "55º Batalhão de Polícia Militar",
+    "local": "Mozarlândia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "56º Batalhão de Polícia Militar",
+    "local": "Aruanã",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "40º Batalhão de Polícia Militar",
+    "local": "Inhumas",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "49º Batalhão de Polícia Militar",
+    "local": "Goianira",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar Turístico",
+    "local": "Caldas Novas",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Goiás",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Uruaçu",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Caldas Novas",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Quirinópolis",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar Rv (Rodoviário)",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar Rural",
+    "local": "Goianápolis",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar Rural",
+    "local": "Uruaçu",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar Rural",
+    "local": "Jataí",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar Rural",
+    "local": "Formosa",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "35º Batalhão de Polícia Militar - BOPE (Batalhão de Operações Especiais)",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "BPMOA (Batalhão de Operações Aéreas)",
+    "local": "Abadia de Goiás",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "BPM Divisas",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   },
+   {
+    "nome": "BPMFaz (Batalhão Fazendário)",
+    "local": "Goiânia",
+    "fonte": "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Goiânia, GO",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Goi%C3%A1s"
+ },
+ "efetivo": {
+  "valor": 11305,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Goi%C3%A1s"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Goi%C3%A1s",
+  "https://goias.gov.br/policiamilitar/historia/",
+  "https://goias.gov.br/policiamilitar/organograma-e-mapa-regional/",
+  "https://goias.gov.br/policiamilitar/wp-content/uploads/sites/67/2026/05/ORGANOGRAMA-PMGO-2026-agosto.pdf"
+ ]
+}

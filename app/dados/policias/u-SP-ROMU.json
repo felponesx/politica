@@ -1,0 +1,56 @@
+{
+ "chave": "u:SP:ROMU",
+ "nome": "Ronda Ostensiva Municipal (Guarda Civil Metropolitana de São Paulo)",
+ "sigla": "ROMU",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Unidade da Guarda Civil Metropolitana de São Paulo para ações ostensivas e táticas mais complexas: prevenção de crimes, controle da desordem urbana, apoio a operações integradas e resposta rápida a crises.",
+  "fonte": "https://www.metropoles.com/sao-paulo/gcm-ex-secretario-equivoco-romu"
+ },
+ "fundacao": {
+  "data": "1993-12-22",
+  "texto": "A primeira ROMU do Brasil foi lançada pela Guarda Civil Metropolitana de São Paulo em 22 de dezembro de 1993, na gestão do prefeito Paulo Maluf.",
+  "fonte": "https://www.al.sp.gov.br/spl/2018/03/Propositura/1000208348_1000165037_Propositura.doc"
+ },
+ "historia": [
+  {
+   "ano": "1993",
+   "texto": "O prefeito Paulo Maluf cria a ronda municipal, equipada com viaturas, fardas e armas de grosso calibre parecidas com as da Rota.",
+   "fonte": "https://www.metropoles.com/sao-paulo/gcm-ex-secretario-equivoco-romu"
+  },
+  {
+   "ano": "2009",
+   "texto": "O prefeito Gilberto Kassab cria a Inspetoria de Operações Especiais (Iope) da GCM, para atuar na região da Cracolândia.",
+   "fonte": "https://www.metropoles.com/sao-paulo/gcm-ex-secretario-equivoco-romu"
+  },
+  {
+   "ano": "2018",
+   "texto": "Projeto de lei na Assembleia propõe o \"Dia da ROMU\" em 22 de dezembro, lembrando que a ROMU paulistana serviu de modelo para outras cidades.",
+   "fonte": "https://www.al.sp.gov.br/spl/2018/03/Propositura/1000208348_1000165037_Propositura.doc"
+  },
+  {
+   "ano": "2026",
+   "texto": "Decreto do prefeito Ricardo Nunes muda o nome da Iope para Romu, que fica com o efetivo e os recursos da inspetoria anterior.",
+   "fonte": "https://www.metropoles.com/sao-paulo/gcm-ex-secretario-equivoco-romu"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A ROMU é uma inspetoria da Guarda Civil Metropolitana, subordinada à Secretaria Municipal de Segurança Urbana, ao lado de comandos operacionais por região (Centro, Leste, Norte, Oeste e Sul) e outras inspetorias especializadas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Guarda_Civil_Metropolitana_de_S%C3%A3o_Paulo",
+  "unidades_total": null,
+  "unidades_tipo": "inspetoria",
+  "data_ref": "2026",
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.metropoles.com/sao-paulo/gcm-ex-secretario-equivoco-romu",
+  "https://www.al.sp.gov.br/spl/2018/03/Propositura/1000208348_1000165037_Propositura.doc",
+  "https://pt.wikipedia.org/wiki/Guarda_Civil_Metropolitana_de_S%C3%A3o_Paulo"
+ ]
+}

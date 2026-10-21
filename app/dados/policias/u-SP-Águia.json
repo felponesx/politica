@@ -1,0 +1,128 @@
+{
+ "chave": "u:SP:Águia",
+ "nome": "Comando de Aviação da Polícia Militar \"João Negrão\" (Águia)",
+ "sigla": "CAvPM",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pm:SP",
+ "resumo": {
+  "texto": "Braço aéreo da PM paulista, com os helicópteros \"Águia\". Faz policiamento aéreo, resgate e transporte de feridos e apoio a bombeiros e à Defesa Civil em todo o estado.",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+ },
+ "fundacao": {
+  "data": "1984-08-15",
+  "texto": "Criado como Grupamento de Radiopatrulha Aérea (GRPAe) \"João Negrão\"; passou a se chamar Comando de Aviação da Polícia Militar (CAvPM) depois de 2018.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "historia": [
+  {
+   "ano": "1984",
+   "texto": "Criado oficialmente, em 15 de agosto, o Grupamento de Radiopatrulha Aérea \"João Negrão\" (GRPAe).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "2017",
+   "texto": "O grupamento informa 460 policiais, 31 aeronaves, 13 hangares e 10 bases no interior; o helicóptero integra o sistema de resgate de feridos.",
+   "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+  },
+  {
+   "ano": "2018",
+   "texto": "O GRPAe passa a se chamar Comando de Aviação da Polícia Militar (CAvPM), e as bases do interior viram Bases de Aviação.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "2020",
+   "texto": "O Decreto estadual 65.096 dá ao CAvPM a exclusividade das operações com aeronaves tripuladas da PM e a gestão do uso de drones.",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+  },
+  {
+   "ano": "2025",
+   "texto": "Decreto autoriza o estado a receber, por cessão de uso de 60 meses, o hangar \"João Negrão\", no Campo de Marte, para uso do CAvPM.",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2025/decreto-69336-30.01.2025.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "João Negrão",
+   "texto": "Militar e aviador da Força Pública de São Paulo (1901–1978), copiloto do hidroavião Jahu na travessia do Atlântico Sul em 1927. Dá nome ao Comando de Aviação da PM.",
+   "fonte": "https://pt.wikipedia.org/wiki/Jo%C3%A3o_Negr%C3%A3o"
+  }
+ ],
+ "organizacao": {
+  "texto": "Comando de aviação da PM com hangares na capital e bases de aviação no interior e no litoral (antigas Bases de Radiopatrulha Aérea). Opera uma frota de cerca de 30 aeronaves em 11 bases; algumas bases têm equipe de resgate aeromédico (GRAU).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo",
+  "unidades_total": 11,
+  "unidades_tipo": "bases de aviação",
+  "data_ref": "2017",
+  "unidades": [
+   {
+    "nome": "Base de Aviação – São Paulo",
+    "local": "São Paulo (Campo de Marte)",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Araçatuba",
+    "local": "Araçatuba",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Bauru",
+    "local": "Bauru",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Campinas",
+    "local": "Campinas",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Piracicaba",
+    "local": "Piracicaba",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Praia Grande",
+    "local": "Praia Grande",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Presidente Prudente",
+    "local": "Presidente Prudente",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Ribeirão Preto",
+    "local": "Ribeirão Preto",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – São José do Rio Preto",
+    "local": "São José do Rio Preto",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – São José dos Campos",
+    "local": "São José dos Campos",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   },
+   {
+    "nome": "Base de Aviação – Sorocaba",
+    "local": "Sorocaba",
+    "fonte": "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo (Aeroporto Campo de Marte, hangar \"João Negrão\"), SP",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2025/decreto-69336-30.01.2025.html"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html",
+  "https://www.resgateaeromedico.com.br/wp-content/uploads/2017/07/Falconi-HEMS.pdf",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2025/decreto-69336-30.01.2025.html",
+  "https://pt.wikipedia.org/wiki/Jo%C3%A3o_Negr%C3%A3o"
+ ]
+}

@@ -1,0 +1,434 @@
+{
+ "chave": "pm:MT",
+ "nome": "Polícia Militar do Estado de Mato Grosso",
+ "sigla": "PMMT",
+ "uf": "MT",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo e cuida da ordem pública em Mato Grosso. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+ },
+ "fundacao": {
+  "data": "1720-11-06",
+  "texto": "A PMMT conta sua origem no Termo dos Primeiros Exploradores das Minas do Arraial do Cuyaba, de 6 de novembro de 1720.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+ },
+ "historia": [
+  {
+   "ano": "1720",
+   "texto": "O Termo dos Primeiros Exploradores das Minas do Arraial do Cuyaba, de 6 de novembro, é tido como a origem da polícia em Mato Grosso.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1835",
+   "texto": "Criação do Corpo Policial com o nome de Homens do Mato (extinto em 1844).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1864",
+   "texto": "Na Guerra do Paraguai, com a invasão de Mato Grosso, a polícia e outras tropas viraram Voluntários da Pátria para resistir aos invasores.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1947",
+   "texto": "A corporação recebeu o nome de Polícia Militar.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1979",
+   "texto": "Com a divisão de Mato Grosso, o efetivo da PMMT foi repartido com o novo estado de Mato Grosso do Sul.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "1983",
+   "texto": "Ingresso das primeiras mulheres na PMMT e criação da Companhia Independente de Polícia Florestal.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  },
+  {
+   "ano": "2002",
+   "texto": "Criação do Grupo Especial de Fronteira (GEFron), do Centro Integrado de Operações de Segurança Pública (CIOSP) e do PROERD.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+  "texto": "Alistou-se em 1775 como alferes no Regimento de Dragões de Minas Gerais e liderou a Inconfidência Mineira; foi enforcado em 21 de abril de 1792. A PMMT o tem como Patrono das Polícias Militares do Brasil.",
+  "fonte": "https://www.pm.mt.gov.br/patrono-da-policia"
+ },
+ "homenageados": [
+  {
+   "nome": "Tenente-coronel Ubaldo Monteiro da Silva",
+   "texto": "Historiador da corporação. Dá nome ao Museu da PMMT, criado em 1998, e a uma turma do Curso de Formação de Oficiais (1993).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+  }
+ ],
+ "organizacao": {
+  "texto": "A PMMT tem 15 Comandos Regionais e um Comando Especializado, que reúnem batalhões (BPM), o Regimento de Policiamento Montado, companhias independentes (CIPM), pelotões e núcleos. A organização básica segue o Decreto nº 1.252, de 14 de janeiro de 2025. A lista traz batalhões, companhias independentes e unidades especializadas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso",
+  "unidades_total": 28,
+  "unidades_tipo": "batalhões de área numerados",
+  "data_ref": "2025",
+  "unidades": [
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "Batalhão de Rondas Ostensivas Táticas Móvel (ROTAM)",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "Batalhão de Polícia Militar de Proteção Ambiental",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "Batalhão de Polícia Militar de Trânsito Urbano e Rodoviário (BPMTran)",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "Regimento de Policiamento Montado (RPMon)",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar Fazendário",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "1ª CIPM de Proteção Ambiental",
+    "local": "Cáceres",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "2ª CIPM de Proteção Ambiental",
+    "local": "Rondonópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "3ª CIPM de Proteção Ambiental",
+    "local": "Barra do Garças",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "4ª CIPM de Proteção Ambiental",
+    "local": "Sinop",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "5ª CIPM de Proteção Ambiental",
+    "local": "Tangará da Serra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "1ª CIPM",
+    "local": "Chapada dos Guimarães",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "3ª CIPM",
+    "local": "Santo Antônio de Leverger",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "4ª CIPM de Segurança Institucional",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "20ª CIPM de Força Tática",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "21ª CIPM",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "24ª CIPM de Motopatrulhamento Tático (RAIO)",
+    "local": "Cuiabá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Várzea Grande",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Rosário Oeste",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Várzea Grande",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "6ª CIPM",
+    "local": "Poconé",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "15ª CIPM de Força Tática",
+    "local": "Várzea Grande",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Sinop",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Sorriso",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "26ª CIPM de Força Tática",
+    "local": "Sinop",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Rondonópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Alto Araguaia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Jaciara",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "14ª CIPM de Força Tática",
+    "local": "Rondonópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "17ª CIPM",
+    "local": "Rondonópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Barra do Garças",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "29ª CIPM de Força Tática",
+    "local": "Barra do Garças",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Cáceres",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Mirassol d'Oeste",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "23ª CIPM de Força Tática",
+    "local": "Cáceres",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Tangará da Serra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "12ª CIPM",
+    "local": "Barra do Bugres",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "16ª CIPM",
+    "local": "Campo Novo do Parecis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "22ª CIPM de Força Tática",
+    "local": "Tangará da Serra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Juína",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Juara",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "10ª CIPM",
+    "local": "Aripuanã",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "11ª CIPM",
+    "local": "Colniza",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "33ª CIPM de Força Tática",
+    "local": "Juína",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Alta Floresta",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "31ª CIPM",
+    "local": "Colíder",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Vila Rica",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "27ª CIPM",
+    "local": "Confresa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Primavera do Leste",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "8ª CIPM",
+    "local": "Campo Verde",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "30ª CIPM de Força Tática",
+    "local": "Primavera do Leste",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Pontes e Lacerda",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "2ª CIPM",
+    "local": "Comodoro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Água Boa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "5ª CIPM",
+    "local": "Canarana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "19ª CIPM",
+    "local": "Querência",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "28ª CIPM de Força Tática",
+    "local": "Água Boa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "32ª CIPM",
+    "local": "Nova Xavantina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Lucas do Rio Verde",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Nova Mutum",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "9ª CIPM",
+    "local": "Diamantino",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "18ª CIPM",
+    "local": "São José do Rio Claro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Peixoto de Azevedo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   },
+   {
+    "nome": "13ª CIPM",
+    "local": "Guarantã do Norte",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Cuiabá, MT",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+ },
+ "efetivo": {
+  "valor": 6840,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Mato_Grosso",
+  "https://www.pm.mt.gov.br/patrono-da-policia",
+  "https://www.pm.mt.gov.br/lista-de-unidades"
+ ]
+}

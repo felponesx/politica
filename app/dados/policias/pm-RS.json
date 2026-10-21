@@ -1,0 +1,314 @@
+{
+ "chave": "pm:RS",
+ "nome": "Brigada Militar do Rio Grande do Sul",
+ "sigla": "BM",
+ "uf": "RS",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "É a polícia militar do Rio Grande do Sul: faz o policiamento ostensivo no estado. É a única PM do Brasil que não usa o nome \"Polícia Militar\".",
+  "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+ },
+ "fundacao": {
+  "data": "1837-11-18",
+  "texto": "A Lei Provincial nº 7 criou a Força Policial da Província, com 19 oficiais e 344 praças.",
+  "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+ },
+ "historia": [
+  {
+   "ano": "1837",
+   "texto": "Em plena Revolução Farroupilha, a Lei Provincial nº 7, de 18 de novembro, criou a Força Policial da Província para auxiliar a justiça e manter a ordem.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "ano": "1874",
+   "texto": "A Força Policial participou da campanha contra os Mucker, em Sapiranga. Em 2 de agosto, soldados mataram Jacobina Mentz Maurer e 16 seguidores.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "ano": "1892",
+   "texto": "O Ato nº 357, de 15 de outubro, criou a Brigada Militar, nome mantido até hoje.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "ano": "1893",
+   "texto": "Na Revolução Federalista, a Brigada lutou ao lado do governo de Júlio de Castilhos; o Combate do Salsinho é considerado seu batismo de fogo.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "ano": "1961",
+   "texto": "Na Campanha da Legalidade, a Brigada guarneceu o Palácio Piratini e as antenas da Rádio Guaíba, em apoio ao governador Leonel Brizola.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "ano": "1964",
+   "texto": "Durante a ditadura militar, a Brigada integrou, como força auxiliar do Exército, o aparelho de repressão política.",
+   "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+  },
+  {
+   "ano": "1985",
+   "texto": "Criação da Companhia de Polícia Militar Feminina, com 135 policiais.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "ano": "2024",
+   "texto": "Nas enchentes de abril e maio, a maior mobilização de sua história: a Brigada contabilizou o resgate de mais de 23 mil pessoas e 5 mil animais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+  }
+ ],
+ "patrono": {
+  "nome": "Coronel Affonso Emílio Massot",
+  "texto": "Instituído patrono em 20 de outubro de 1953. Dedicou a maior parte da vida à corporação, foi comandante-geral (a partir de 1917) e atuou na Revolução Federalista e na mobilização das tropas em 1923 e 1924.",
+  "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+ },
+ "homenageados": [
+  {
+   "nome": "Coronel Pillar",
+   "texto": "Coronel morto durante a Revolução Federalista; a Brigada inaugurou um cenotáfio em sua homenagem.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  },
+  {
+   "nome": "Anita Garibaldi",
+   "texto": "Homenageada pela primeira turma de oficiais mulheres da Brigada, formada em 24 de julho de 1987.",
+   "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+  }
+ ],
+ "organizacao": {
+  "texto": "O policiamento é dividido entre o Comando de Polícia da Capital (CPC), o Comando Metropolitano (CPM) e 19 Comandos Regionais (CRPM), além dos comandos de Aviação, Ambiental, Choque, Rodoviário e de Órgãos Especiais. A lista abaixo, tirada da Wikipédia, é parcial.",
+  "fonte": "https://www.brigadamilitar.rs.gov.br/comandos-de-execucao",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões e regimentos",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar (Batalhão de Ferro)",
+    "local": "Porto Alegre (zona sul)",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Porto Alegre (Centro)",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Porto Alegre (zona norte)",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Porto Alegre (zona norte)",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Porto Alegre (zona leste / Partenon)",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Porto Alegre (extremo sul / Restinga)",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "4º Regimento de Polícia Montada",
+    "local": "Porto Alegre",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Canoas",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Novo Hamburgo",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Gravataí",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Viamão",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Alvorada",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar",
+    "local": "Sapucaia do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "34º Batalhão de Polícia Militar",
+    "local": "Esteio",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Caxias do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "36º Batalhão de Polícia Militar",
+    "local": "Farroupilha",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Vacaria",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "1º Batalhão de Policiamento em Áreas Turísticas",
+    "local": "Gramado",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "3º Batalhão de Policiamento em Áreas Turísticas",
+    "local": "Bento Gonçalves",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "3º Regimento de Polícia Montada",
+    "local": "Passo Fundo",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Erechim",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "38º Batalhão de Polícia Militar",
+    "local": "Carazinho",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Pelotas",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Rio Grande",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Camaquã",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Osório",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "2º Batalhão de Policiamento em Áreas Turísticas",
+    "local": "Capão da Canoa",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "2º Regimento de Polícia Montada",
+    "local": "Santana do Livramento",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "1º Batalhão de Policiamento de Área de Fronteira",
+    "local": "Uruguaiana",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "2º Batalhão de Policiamento de Área de Fronteira",
+    "local": "São Borja",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "4º Batalhão de Policiamento de Área de Fronteira",
+    "local": "Santa Rosa",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Três Passos",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "1º Regimento de Polícia Montada",
+    "local": "Santa Maria",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "7º Regimento de Polícia Montada",
+    "local": "Santo Ângelo",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "São Luiz Gonzaga",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar",
+    "local": "Ijuí",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Cruz Alta",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "39º Batalhão de Polícia Militar",
+    "local": "Palmeira das Missões",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Santa Cruz do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Rio Pardo",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "35º Batalhão de Polícia Militar",
+    "local": "Cachoeira do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Lajeado",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   },
+   {
+    "nome": "40º Batalhão de Polícia Militar",
+    "local": "Estrela",
+    "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Porto Alegre (Centro Histórico), RS – Rua dos Andradas, 522",
+  "fonte": "https://www.brigadamilitar.rs.gov.br/historia"
+ },
+ "efetivo": {
+  "valor": 17440,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Brigada_Militar_do_Rio_Grande_do_Sul",
+  "https://www.brigadamilitar.rs.gov.br/historia",
+  "https://www.brigadamilitar.rs.gov.br/comandos-de-execucao"
+ ]
+}

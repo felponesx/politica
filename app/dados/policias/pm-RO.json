@@ -1,0 +1,152 @@
+{
+ "chave": "pm:RO",
+ "nome": "Polícia Militar do Estado de Rondônia",
+ "sigla": "PMRO",
+ "uf": "RO",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública em Rondônia. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+ },
+ "fundacao": {
+  "data": "1975-11-26",
+  "texto": "A Lei nº 6.270 criou a Polícia Militar do então Território Federal de Rondônia; a regulamentação só saiu em janeiro de 1977.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+ },
+ "historia": [
+  {
+   "ano": "1944",
+   "texto": "No recém-criado Território Federal do Guaporé (1943), o governador Aluízio Ferreira cria a Guarda Territorial, corporação civil comandada por um oficial do Exército, para a ordem pública e obras.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+  },
+  {
+   "ano": "1975",
+   "texto": "A Lei nº 6.270, de 26 de novembro, cria a Polícia Militar do Território de Rondônia.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+  },
+  {
+   "ano": "1977",
+   "texto": "O Decreto federal nº 79.108 regulamenta a PM, e em setembro a Guarda Territorial é extinta de vez; seus integrantes passam por seleção para entrar na nova corporação.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+  },
+  {
+   "ano": "1995",
+   "texto": "Massacre de Corumbiara: em 9 de agosto, policiais militares e pistoleiros atacam cerca de 600 sem-terra na Fazenda Santa Elina. O número oficial é de 16 mortos, entre eles dois policiais e uma criança, e sete desaparecidos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_de_Corumbiara"
+  },
+  {
+   "ano": "2013",
+   "texto": "Dois camponeses haviam sido condenados pela morte de dois policiais em Corumbiara. Em 2013, a CCJ da Câmara aprovou proposta de anistia aos trabalhadores rurais e aos policiais militares punidos no caso.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_de_Corumbiara"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da corporação, segundo a ficha da PM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A PMRO tem 11 batalhões de área, três deles em Porto Velho e os demais nas principais cidades do interior, além de unidades especializadas: ambiental, trânsito, guarda, BOPE e Choque.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia",
+  "unidades_total": 16,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Porto Velho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Ji-Paraná",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Vilhena",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Cacoal",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Porto Velho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Guajará-Mirim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Ariquemes",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Jaru",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Porto Velho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Rolim de Moura",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "São Miguel do Guaporé",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Batalhão de Polícia Ambiental",
+    "local": "Candeias do Jamari",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Batalhão de Polícia de Trânsito",
+    "local": "Porto Velho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Companhia Independente de Polícia de Guarda",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   },
+   {
+    "nome": "Batalhão de Choque",
+    "local": "Porto Velho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Porto Velho (Embratel), RO",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+ },
+ "efetivo": {
+  "valor": 5095,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Rond%C3%B4nia",
+  "https://pt.wikipedia.org/wiki/Massacre_de_Corumbiara"
+ ]
+}

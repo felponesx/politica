@@ -1,0 +1,57 @@
+{
+ "chave": "u:SP:GIR",
+ "nome": "Grupo de Intervenção Rápida (Secretaria da Administração Penitenciária)",
+ "sigla": "GIR",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Grupo de agentes penitenciários (hoje policiais penais) da Secretaria da Administração Penitenciária de SP, treinado para conter presos, revistar celas e retomar a ordem em motins, no lugar da PM quando necessário.",
+  "fonte": "https://www.al.sp.gov.br/spl/2019/12/Acessorio/1000315289_1000346345_Acessorio.pdf"
+ },
+ "fundacao": {
+  "data": "2001",
+  "texto": "Segundo informações oficiais citadas em pesquisa da UFSCar, o GIR foi criado em 2001 para prevenir e intervir em rebeliões e motins nos presídios paulistas.",
+  "fonte": "https://repositorio.ufscar.br/handle/ufscar/11969"
+ },
+ "historia": [
+  {
+   "ano": "2001",
+   "texto": "Criação do GIR para atuar em rebeliões e motins nos presídios de São Paulo.",
+   "fonte": "https://repositorio.ufscar.br/handle/ufscar/11969"
+  },
+  {
+   "ano": "2019",
+   "texto": "Indicação na Assembleia Legislativa pede regras para a atuação do GIR nas unidades prisionais; a Corregedoria-Geral da Justiça (TJ-SP) se manifesta sobre o tema.",
+   "fonte": "https://www.al.sp.gov.br/spl/2019/12/Acessorio/1000315289_1000346345_Acessorio.pdf"
+  },
+  {
+   "ano": "2024",
+   "texto": "No primeiro semestre, o GIR faz 125 intervenções em unidades prisionais do estado, segundo moção da Assembleia Legislativa.",
+   "fonte": "https://www.al.sp.gov.br/spl/2025/06/Propositura/1000611605_1000754679_Propositura.pdf"
+  },
+  {
+   "ano": "2025",
+   "texto": "Operação do GIR no Centro de Progressão Penitenciária de Tremembé termina com a transferência de 61 presos.",
+   "fonte": "https://www.metropoles.com/sao-paulo/presos-transferidos-tremembe-sp"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Formado por agentes especialmente treinados da SAP, acionados quando há ameaça de descontrole, brigas entre presos, indícios de motim ou suspeita de organização interna entre presos. Não foi achada lista oficial de bases.",
+  "fonte": "https://www.metropoles.com/sao-paulo/presos-transferidos-tremembe-sp",
+  "unidades_total": null,
+  "unidades_tipo": "bases",
+  "data_ref": "2025",
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://repositorio.ufscar.br/handle/ufscar/11969",
+  "https://www.al.sp.gov.br/spl/2019/12/Acessorio/1000315289_1000346345_Acessorio.pdf",
+  "https://www.al.sp.gov.br/spl/2025/06/Propositura/1000611605_1000754679_Propositura.pdf",
+  "https://www.metropoles.com/sao-paulo/presos-transferidos-tremembe-sp"
+ ]
+}

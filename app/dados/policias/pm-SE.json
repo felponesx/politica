@@ -1,0 +1,177 @@
+{
+ "chave": "pm:SE",
+ "nome": "Polícia Militar do Estado de Sergipe",
+ "sigla": "PMSE",
+ "uf": "SE",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública em Sergipe. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+ },
+ "fundacao": {
+  "data": "1835-02-28",
+  "texto": "Lei de 28 de fevereiro de 1835 criou o Corpo Policial da Província, com 200 integrantes, oito deles no policiamento montado.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+ },
+ "historia": [
+  {
+   "ano": "1835",
+   "texto": "Criado o Corpo Policial da Província de Sergipe, com efetivo inicial de 200 integrantes, sendo oito do policiamento montado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1917",
+   "texto": "O Decreto nº 658 torna a corporação Força Auxiliar do Exército.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1920",
+   "texto": "A Lei nº 791 reestrutura a corporação como um Batalhão Policial, com uma Seção de Bombeiros.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1946",
+   "texto": "A partir deste ano a PMSE ganha a configuração atual, criando aos poucos as modalidades de policiamento de hoje.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+  },
+  {
+   "ano": "1991",
+   "texto": "Boletim Interno nº 043 descreve o brasão da PMSE, que traz a data de criação (28.02.1835), o contorno do estado e as armas de Sergipe.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Na capital, três batalhões de área divididos em companhias de polícia comunitária (26 Postos de Atendimento ao Cidadão), além de radiopatrulha, choque, guardas, BOPE, trânsito e companhias independentes. No interior, oito batalhões, a companhia de operações na Caatinga (CIOPAC) e a 5ª CIPM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe",
+  "unidades_total": 22,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "Batalhão de Polícia de Radiopatrulha (BPRp)",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "Batalhão de Polícia de Choque",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "Batalhão de Polícia de Guardas (BPGd)",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "Companhia de Polícia de Trânsito",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "1ª Companhia Independente de Polícia Militar",
+    "local": "São Cristóvão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "2ª Companhia Independente de Polícia Militar",
+    "local": "Barra dos Coqueiros",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "3ª Companhia Independente de Polícia Militar",
+    "local": "Laranjeiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "6ª Companhia Independente de Polícia Militar",
+    "local": "Aracaju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Propriá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Itabaiana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Canindé de São Francisco",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Estância",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Lagarto",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Carmópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Nossa Senhora das Dores",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Tobias Barreto",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "Companhia Independente de Operações Policiais em Área de Caatinga (CIOPAC)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   },
+   {
+    "nome": "5ª Companhia Independente de Polícia Militar",
+    "local": "Neópolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Aracaju, SE",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+ },
+ "efetivo": {
+  "valor": 5610,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_Sergipe"
+ ]
+}

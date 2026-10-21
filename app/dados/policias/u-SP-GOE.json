@@ -1,0 +1,66 @@
+{
+ "chave": "u:SP:GOE",
+ "nome": "Grupo de Operações Especiais (Polícia Civil)",
+ "sigla": "GOE",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pc:SP",
+ "resumo": {
+  "texto": "Grupo tático da Polícia Civil paulista que apoiava as delegacias em operações de alto risco, como prisão de criminosos perigosos, ocorrências com reféns e rebeliões. Em 2019 seus policiais foram levados para o GARRA.",
+  "fonte": "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)"
+ },
+ "fundacao": {
+  "data": "1991",
+  "texto": "Fundado em 1991, ligado ao Departamento de Polícia Judiciária da Capital (Decap).",
+  "fonte": "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)"
+ },
+ "historia": [
+  {
+   "ano": "1991",
+   "texto": "Criação do GOE para apoiar unidades da Polícia Civil em operações de alto risco.",
+   "fonte": "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)"
+  },
+  {
+   "ano": "2005",
+   "texto": "O grupo muda para uma base própria no bairro de Campo Belo, na zona sul de São Paulo.",
+   "fonte": "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)"
+  },
+  {
+   "ano": "2011",
+   "texto": "O Decreto 57.546 cria um Grupo de Operações Especiais no Departamento de Polícia de Proteção à Cidadania (DPPC).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2011/decreto-57546-28.11.2011.html"
+  },
+  {
+   "ano": "2018",
+   "texto": "O Decreto 63.852 cria um GOE na Assistência Policial do Departamento de Homicídios e de Proteção à Pessoa (DHPP).",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2018/decreto-63852-27.11.2018.html"
+  },
+  {
+   "ano": "2019",
+   "texto": "Decreto do governo paulista cria o Departamento de Operações Policiais Estratégicas (Dope). Segundo a reportagem, o GOE foi extinto e seus policiais foram para o GARRA; o diretor do Dope disse que o GOE não estava sendo extinto, e sim assimilado.",
+   "fonte": "https://www.jb.com.br/pais/2019/08/1014251-novo-departamento-de-elite-da-policia-civil-de-sp-comeca-a-funcionar.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Antes de 2019 o GOE tinha cerca de 200 integrantes, 5 subdivisões táticas e uma unidade de inteligência. Desde 2019 seus policiais foram incorporados ao GARRA, dentro do Dope.",
+  "fonte": "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)",
+  "unidades_total": null,
+  "unidades_tipo": "base",
+  "data_ref": "2019",
+  "unidades": []
+ },
+ "sede": {
+  "local": "São Paulo (Campo Belo), SP",
+  "fonte": "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://en.wikipedia.org/wiki/Special_Operations_Group_(Brazil)",
+  "https://www.jb.com.br/pais/2019/08/1014251-novo-departamento-de-elite-da-policia-civil-de-sp-comeca-a-funcionar.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2011/decreto-57546-28.11.2011.html",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2018/decreto-63852-27.11.2018.html",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+ ]
+}

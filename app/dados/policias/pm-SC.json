@@ -1,0 +1,73 @@
+{
+ "chave": "pm:SC",
+ "nome": "Polícia Militar de Santa Catarina",
+ "sigla": "PMSC",
+ "uf": "SC",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo e cuida da ordem pública em Santa Catarina. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Santa_Catarina"
+ },
+ "fundacao": {
+  "data": "1835-05-05",
+  "texto": "A Lei provincial nº 12, do presidente da província Feliciano Nunes Pires, criou a Força Policial, origem da PMSC.",
+  "fonte": "https://pt.wikipedia.org/wiki/Feliciano_Nunes_Pires"
+ },
+ "historia": [
+  {
+   "ano": "1835",
+   "texto": "Em 5 de maio, a Lei provincial nº 12 criou a Força Policial de Santa Catarina.",
+   "fonte": "https://pt.wikipedia.org/wiki/Feliciano_Nunes_Pires"
+  },
+  {
+   "ano": "1983",
+   "texto": "A Lei estadual nº 6.217, de 10 de fevereiro, criou a Organização Básica da Polícia Militar e do Corpo de Bombeiros, que então fazia parte da PM.",
+   "fonte": "https://pt.wikipedia.org/wiki/Corpo_de_Bombeiros_Militar_de_Santa_Catarina"
+  },
+  {
+   "ano": "1984",
+   "texto": "Em 15 de março começou a funcionar, em Florianópolis, o Colégio Policial Militar Feliciano Nunes Pires; depois vieram unidades em Lages, Joinville, Blumenau e Laguna.",
+   "fonte": "https://portalelegis.alesc.sc.gov.br/documentos/K9vxB"
+  },
+  {
+   "ano": "2003",
+   "texto": "A Emenda Constitucional estadual nº 33, de 13 de junho, tornou o Corpo de Bombeiros Militar uma corporação independente da PM.",
+   "fonte": "https://pt.wikipedia.org/wiki/Corpo_de_Bombeiros_Militar_de_Santa_Catarina"
+  }
+ ],
+ "patrono": {
+  "nome": "Feliciano Nunes Pires",
+  "texto": "Presidente da província de Santa Catarina de 1831 a 1835, criou a Força Policial pela Lei provincial nº 12, de 5 de maio de 1835. É o patrono da PMSC.",
+  "fonte": "https://pt.wikipedia.org/wiki/Feliciano_Nunes_Pires"
+ },
+ "homenageados": [
+  {
+   "nome": "Coronel Lopes Vieira",
+   "texto": "Dá nome à medalha de mérito policial militar Coronel Lopes Vieira, entregue pela PMSC.",
+   "fonte": "https://www.tjsc.jus.br/web/imprensa/noticias/-/asset_publisher/GP1QtxFaSsX0/content/id/19933436"
+  }
+ ],
+ "organizacao": {
+  "texto": "Não foi possível montar a lista de batalhões com fonte aberta: o site da PMSC não abriu para esta pesquisa e a Wikipédia não traz a lista. A Wikipédia cita unidades como o BOPE, as companhias e pelotões de Patrulhamento Tático e os batalhões de Polícia Militar Rodoviária.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Santa_Catarina",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Florianópolis (Centro), SC – Rua Visconde de Ouro Preto, 549",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Santa_Catarina"
+ },
+ "efetivo": {
+  "valor": 9950,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Santa_Catarina"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Santa_Catarina",
+  "https://pt.wikipedia.org/wiki/Feliciano_Nunes_Pires",
+  "https://pt.wikipedia.org/wiki/Corpo_de_Bombeiros_Militar_de_Santa_Catarina"
+ ]
+}

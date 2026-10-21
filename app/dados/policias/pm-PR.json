@@ -1,0 +1,304 @@
+{
+ "chave": "pm:PR",
+ "nome": "Polícia Militar do Paraná",
+ "sigla": "PMPR",
+ "uf": "PR",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Cuida da ordem pública, do policiamento ostensivo e de atividades de defesa civil no Paraná; o Corpo de Bombeiros do estado faz parte dela.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+ },
+ "fundacao": {
+  "data": "1854-08-10",
+  "texto": "A Lei nº 7 criou a Companhia de Força Policial, uma unidade de infantaria leve.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+ },
+ "historia": [
+  {
+   "ano": "1854",
+   "texto": "Em 10 de agosto, a Lei nº 7 criou a Companhia de Força Policial da Província do Paraná.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1866",
+   "texto": "Na Guerra do Paraguai, policiais formaram corpos de Voluntários da Pátria e lutaram em batalhas como Tuiuti (1866) e Avaí (1868).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1894",
+   "texto": "Na Revolução Federalista, o Regimento de Segurança resistiu 26 dias no Cerco da Lapa. Em 7 de fevereiro morreram o coronel Carneiro e o coronel Dulcídio, comandante do regimento.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1912",
+   "texto": "No início da Guerra do Contestado, o Regimento de Segurança enfrentou revoltosos no Combate do Irani, com muitos mortos e feridos dos dois lados; o confronto levou à intervenção federal.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1946",
+   "texto": "A corporação passou a se chamar Polícia Militar do Estado do Paraná.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+  },
+  {
+   "ano": "1993",
+   "texto": "Primeiros PMs do Paraná em missão de paz da ONU, como observadores policiais na Guerra da Bósnia (UNPROFOR).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+  },
+  {
+   "ano": "2015",
+   "texto": "Em 29 de abril, ação policial contra manifestantes, a maioria servidores contra mudanças na previdência, em frente ao Palácio Iguaçu (Curitiba), ficou conhecida como Batalha do Centro Cívico. O então governador e apoiadores viraram réus por improbidade.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalha_do_Centro_C%C3%ADvico"
+  }
+ ],
+ "patrono": {
+  "nome": "Coronel Joaquim Antônio de Moraes Sarmento",
+  "texto": "Reconhecido patrono da PMPR por ter dedicado a vida à corporação e pela luta no Combate do Irani, em 1912. A Medalha Coronel Sarmento leva seu nome.",
+  "fonte": "https://www.fazenda.pr.gov.br/Noticia/Servidores-da-Fazenda-recebem-medalha-Coronel-Sarmento-em-cerimonia-da-Academia-da-Policia"
+ },
+ "homenageados": [
+  {
+   "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+   "texto": "Dá nome ao Espadim Tiradentes, arma símbolo do cadete, entregue aos futuros oficiais na Academia Policial Militar do Guatupê.",
+   "fonte": "https://www.parana.pr.gov.br/Noticia/Policia-Militar-comemora-167-anos-com-foco-na-eficiencia-e-na-protecao-da-sociedade"
+  }
+ ],
+ "organizacao": {
+  "texto": "Segundo o mapa de articulação de 2025, os batalhões de área ficam sob 7 Comandos Regionais (CRPM): 33 batalhões numerados (1º ao 34º, sem o 24º) e 10 companhias independentes. A sede de cada um vem da Wikipédia e, nos batalhões novos (32º, 33º e 34º), das páginas oficiais. As unidades especializadas não estão na lista.",
+  "fonte": "https://www.pmpr.pr.gov.br/sites/default/arquivos_restritos/files/documento/2025-08/ARTICULA%C3%87%C3%83O%20PM%20-%20CRPM%20-%20BPM_0.pdf",
+  "unidades_total": 33,
+  "unidades_tipo": "batalhões de área",
+  "data_ref": "2025-08",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Ponta Grossa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Jacarezinho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Pato Branco",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Maringá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Londrina (zonas sul, leste e oeste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Cascavel",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Cruzeiro do Oeste",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Paranavaí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Paranaguá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Apucarana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Campo Mourão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Curitiba (região centro/noroeste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Curitiba (região sul)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Foz do Iguaçu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Rolândia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Guarapuava",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "São José dos Pinhais",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Cornélio Procópio",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Toledo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Curitiba (região leste/nordeste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Francisco Beltrão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Colombo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Curitiba (região sudoeste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Umuarama",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Telêmaco Borba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar",
+    "local": "União da Vitória",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Lapa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar",
+    "local": "Piraquara",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Londrina (zona norte)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar",
+    "local": "Assis Chateaubriand",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "32º Batalhão de Polícia Militar",
+    "local": "Sarandi",
+    "fonte": "https://www.pmpr.pr.gov.br/Pagina/32o-Batalhao-de-Policia-Militar"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar",
+    "local": "Curitiba (área central)",
+    "fonte": "https://www.pmpr.pr.gov.br/Pagina/33o-Batalhao-de-Policia-Militar-do-Parana"
+   },
+   {
+    "nome": "34º Batalhão de Polícia Militar",
+    "local": "Almirante Tamandaré",
+    "fonte": "https://www.pmpr.pr.gov.br/Pagina/34o-Batalhao-de-Policia-Militar"
+   },
+   {
+    "nome": "3ª Companhia Independente (CIPM)",
+    "local": "Loanda",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "4ª Companhia Independente (CIPM)",
+    "local": "Londrina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "5ª Companhia Independente (CIPM)",
+    "local": "Cianorte",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "6ª Companhia Independente (CIPM)",
+    "local": "Ivaiporã",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "7ª Companhia Independente (CIPM)",
+    "local": "Arapongas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "8ª Companhia Independente (CIPM)",
+    "local": "Irati",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "9ª Companhia Independente (CIPM)",
+    "local": "Colorado",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "10ª Companhia Independente (CIPM)",
+    "local": "Laranjeiras do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "11ª Companhia Independente (CIPM)",
+    "local": "Cambé",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   },
+   {
+    "nome": "12ª Companhia Independente (CIPM)",
+    "local": "Palmas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Curitiba (Rebouças), PR – Av. Marechal Floriano Peixoto, 1401",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+ },
+ "efetivo": {
+  "valor": 17650,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Paran%C3%A1",
+  "https://www.pmpr.pr.gov.br/sites/default/arquivos_restritos/files/documento/2025-08/ARTICULA%C3%87%C3%83O%20PM%20-%20CRPM%20-%20BPM_0.pdf",
+  "https://www.fazenda.pr.gov.br/Noticia/Servidores-da-Fazenda-recebem-medalha-Coronel-Sarmento-em-cerimonia-da-Academia-da-Policia"
+ ]
+}

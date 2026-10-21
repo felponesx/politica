@@ -1,0 +1,86 @@
+{
+ "chave": "pm:RN",
+ "nome": "Polícia Militar do Estado do Rio Grande do Norte",
+ "sigla": "PMRN",
+ "uf": "RN",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Rio Grande do Norte. Integra a Secretaria de Segurança Pública e Defesa Social (Sesed) e é força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "fundacao": {
+  "data": "1834-06-27",
+  "texto": "Resolução do Conselho Geral da Província criou o Corpo Policial da Província, com apenas 40 praças, por proposta do presidente Basílio Quaresma Torreão.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "historia": [
+  {
+   "ano": "1834",
+   "texto": "Criado o Corpo Policial da Província, com 40 praças, por temor de que as desordens de Pernambuco chegassem ao Rio Grande do Norte.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "1836",
+   "texto": "A Resolução nº 26, de 4 de novembro, organiza o Corpo Policial do Rio Grande do Norte, com 70 praças. O Decreto nº 21.705, de 2010, reconheceu 1834 como data de criação e 1836 como data de organização.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "1927",
+   "texto": "O cangaceiro Jararaca é preso em Mossoró; foto da época o mostra ao lado de dois soldados da PMRN. A corporação teve papel no combate ao cangaço.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "1947",
+   "texto": "Depois de nomes como Batalhão de Segurança, Regimento Policial Militar e Força Pública Militar, a corporação passa a se chamar Polícia Militar.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "1986",
+   "texto": "É criada a Companhia de Polícia Feminina. Em 1987 as duas primeiras mulheres entram no quadro de oficiais, e em 1990 começa o primeiro curso de soldados femininos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "2002",
+   "texto": "A Lei Complementar nº 230 dá autonomia ao Corpo de Bombeiros, que deixa a PMRN e passa a ter estrutura administrativa e financeira própria.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  },
+  {
+   "ano": "2010",
+   "texto": "Angélica Fernandes de Oliveira Azevedo, uma das duas primeiras oficiais, é promovida a primeira tenente-coronel da PMRN.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da corporação, segundo a ficha da PM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "homenageados": [
+  {
+   "nome": "Coronel Milton Freire de Andrade",
+   "texto": "Dá nome à Academia de Polícia Militar do Rio Grande do Norte. A fonte não explica o motivo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+  }
+ ],
+ "organizacao": {
+  "texto": "As fontes consultadas não trazem a lista de batalhões da PMRN e o site oficial (pm.rn.gov.br) não pôde ser acessado. A PMRN faz parte da Sesed com a Polícia Civil, os Bombeiros e o Itep, e divide com eles o centro de operações aéreas (Ciopaer, 2002) e o centro de atendimento de emergências (Ciosp, 2010).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Natal (Tirol), RN",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "efetivo": {
+  "valor": 8380,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_Grande_do_Norte"
+ ]
+}

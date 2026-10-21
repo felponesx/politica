@@ -1,0 +1,78 @@
+{
+ "chave": "pm:MG",
+ "nome": "Polícia Militar de Minas Gerais",
+ "sigla": "PMMG",
+ "uf": "MG",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Sua função principal é o policiamento ostensivo e a preservação da ordem pública em Minas Gerais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais"
+ },
+ "fundacao": {
+  "data": "1775-06-09",
+  "texto": "Criação dos Dragões (Regimento Regular de Cavalaria de Minas), que deu origem à atual PMMG.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais"
+ },
+ "historia": [
+  {
+   "ano": "1775",
+   "texto": "Em 9 de junho, no Quartel dos Dragões, em Cachoeira do Campo (Ouro Preto), foi criado o Regimento Regular de Cavalaria de Minas, que guardava a exploração do ouro e a cobrança de impostos. É considerado a célula-mãe da PMMG.",
+   "fonte": "https://pt.wikipedia.org/wiki/Regimento_Regular_de_Cavalaria_de_Minas"
+  },
+  {
+   "ano": "1831",
+   "texto": "O Regimento foi extinto por decreto de 4 de maio. Hoje o Regimento de Cavalaria Alferes Tiradentes, da PMMG, é tido como herdeiro de suas tradições.",
+   "fonte": "https://pt.wikipedia.org/wiki/Regimento_Regular_de_Cavalaria_de_Minas"
+  },
+  {
+   "ano": "1997",
+   "texto": "Em junho, praças da PM fizeram em Belo Horizonte um movimento por salários, descrito como a primeira greve armada da corporação. Em 24 de junho, na tentativa de invadir o Alto-Comando, na Praça da Liberdade, um cabo foi baleado e morreu.",
+   "fonte": "https://anpuh.org.br/uploads/anais-simposios/pdf/2019-01/1548177543_5df6243d5679e3280c38781ded8254b9.pdf"
+  },
+  {
+   "ano": "1999",
+   "texto": "A Lei estadual nº 13.406 criou a Medalha Coronel José Vargas, para oficiais da PMMG que completam 50 anos de oficialato.",
+   "fonte": "https://pt.wikipedia.org/wiki/Medalha_Coronel_Jos%C3%A9_Vargas"
+  },
+  {
+   "ano": "2021",
+   "texto": "Em 31 de outubro, ação da PRF e da PMMG contra suspeitos de planejar um assalto em Varginha deixou 26 mortos. A PF indiciou 39 policiais em 2024; em agosto de 2025, o MPF denunciou 6 policiais rodoviários e 4 PMs por 5 das mortes.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_de_Varginha"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da PMMG.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais"
+ },
+ "homenageados": [
+  {
+   "nome": "Coronel José Vargas da Silva",
+   "texto": "Idealizador e primeiro comandante da Academia de Polícia Militar de Minas Gerais e ex-comandante-geral. Dá nome à Medalha Coronel José Vargas (Lei estadual nº 13.406/1999).",
+   "fonte": "https://pt.wikipedia.org/wiki/Medalha_Coronel_Jos%C3%A9_Vargas"
+  }
+ ],
+ "organizacao": {
+  "texto": "Não foi possível montar a lista de batalhões com fonte aberta: o site da PMMG não abriu para esta pesquisa e a Wikipédia não traz a lista. O grupamento de honra são os Dragões da Inconfidência, presentes nas posses do governador e dos deputados.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Belo Horizonte (Serra Verde – Cidade Administrativa), MG – Rodovia Papa João Paulo II, 4143, Prédio Minas",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais"
+ },
+ "efetivo": {
+  "valor": 36820,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Minas_Gerais",
+  "https://pt.wikipedia.org/wiki/Regimento_Regular_de_Cavalaria_de_Minas",
+  "https://pt.wikipedia.org/wiki/Medalha_Coronel_Jos%C3%A9_Vargas"
+ ]
+}

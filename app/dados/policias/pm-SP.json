@@ -1,0 +1,675 @@
+{
+ "chave": "pm:SP",
+ "nome": "Polícia Militar do Estado de São Paulo",
+ "sigla": "PMESP",
+ "uf": "SP",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da ordem pública no estado de São Paulo. É a maior polícia do Brasil em número de policiais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "fundacao": {
+  "data": "1831-12-15",
+  "texto": "Criada por lei da Assembleia Provincial como Corpo de Guardas Municipais Permanentes, com 100 homens a pé e 30 a cavalo.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "historia": [
+  {
+   "ano": "1831",
+   "texto": "Em 15 de dezembro, lei da Assembleia Provincial, proposta pelo presidente da província Rafael Tobias de Aguiar, criou o Corpo de Guardas Municipais Permanentes: 100 homens a pé e 30 a cavalo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1906",
+   "texto": "O governo paulista contratou uma Missão Militar Francesa para instruir a então Força Pública. Ela ficou até 1924 e trouxe escolas de formação, o estado-maior e o uso de bicicletas e cães.",
+   "fonte": "https://www.policiamilitar.sp.gov.br/institucional/historia-da-pm"
+  },
+  {
+   "ano": "1932",
+   "texto": "Na Revolução Constitucionalista, a Força Pública, com cerca de 10 mil homens, foi o centro das tropas paulistas que lutaram por três meses contra o governo Vargas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1970",
+   "texto": "A Força Pública se uniu à Guarda Civil e formou a atual Polícia Militar. No mesmo ano, em 15 de outubro, foram criadas as Rondas Ostensivas Tobias de Aguiar (Rota).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "1992",
+   "texto": "Em 2 de outubro, uma ação da PM para conter rebelião na Casa de Detenção (Carandiru) deixou 111 presos mortos. Júris condenaram 74 policiais; o TJ-SP anulou em 2016, o STJ restabeleceu as condenações em 2021 e o STF manteve em 2022.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_do_Carandiru"
+  },
+  {
+   "ano": "1997",
+   "texto": "Policiais militares foram filmados torturando e matando um civil na Favela Naval, em Diadema. O caso virou escândalo e levou à demissão de vários policiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  },
+  {
+   "ano": "2026",
+   "texto": "Pela primeira vez em 194 anos, uma mulher foi nomeada comandante-geral da PMESP: a coronel Glauce Anselmo Cavalli.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+  }
+ ],
+ "patrono": {
+  "nome": "Brigadeiro Rafael Tobias de Aguiar",
+  "texto": "Presidente da Província de São Paulo, propôs a lei de 15 de dezembro de 1831 que criou a corporação. É o patrono da PMESP, e a Rota (Rondas Ostensivas Tobias de Aguiar) leva seu nome.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "homenageados": [
+  {
+   "nome": "João Negrão",
+   "texto": "Pioneiro da aviação da antiga Força Pública (criada em 1913). A unidade aérea da PM recebeu seu nome: Grupamento de Radiopatrulha Aérea \"João Negrão\".",
+   "fonte": "https://www.policiamilitar.sp.gov.br/institucional/historia-da-pm"
+  },
+  {
+   "nome": "Diogo Antônio Feijó",
+   "texto": "Listado pela PM entre seus \"vultos históricos\": como ministro da Justiça, determinou pela lei de 10 de outubro de 1831 que as províncias organizassem suas polícias.",
+   "fonte": "https://www.policiamilitar.sp.gov.br/institucional/vultos-historicos"
+  },
+  {
+   "nome": "Luiz Gama",
+   "texto": "Abolicionista, advogado e jornalista. Serviu no Corpo Policial Permanente (atual PM) de 1848 a 1854, chegando a cabo; a PM o lista entre seus \"vultos históricos\".",
+   "fonte": "https://www.policiamilitar.sp.gov.br/institucional/vultos-historicos"
+  }
+ ],
+ "organizacao": {
+  "texto": "O cadastro oficial de unidades divide a PM em Comandos de Policiamento de Área na Grande São Paulo (CPA/M-1 a 12), dez Comandos do Interior (CPI-1 a CPI-10) e comandos especializados: Choque, Rodoviário, Ambiental, Trânsito e Aviação. A lista traz 115 dos 128 batalhões; faltam os 6 rodoviários, 5 ambientais e 2 de trânsito.",
+  "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais",
+  "unidades_total": 128,
+  "unidades_tipo": "batalhões e unidades equivalentes (área e especializados)",
+  "data_ref": "2026-10",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Santo Amaro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Penha)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Jabaquara)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Vila Leopoldina)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Vila Pedrosa)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Bernardo do Campo (Planalto)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Higienópolis)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Tatuape)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Santana)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar Metropolitano",
+    "local": "Santo André (Bairro Jardim)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Liberdade)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Campo Belo)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Campos Elíseos)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar Metropolitano",
+    "local": "Osasco (Jaguaribe)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar Metropolitano",
+    "local": "Guarulhos (Gopouva)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Rio Pequeno)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar Metropolitano",
+    "local": "Mogi das Cruzes (Vila Vitoria)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Freguesia do Ó)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Vila Tostoi)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar Metropolitano",
+    "local": "Barueri (Jardim Paulista)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Mooca)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Campo Grande)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Alto de Pinheiros)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar Metropolitano",
+    "local": "Diadema (Centro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar Metropolitano",
+    "local": "Itapecerica da Serra (Jardim Itapecerica)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar Metropolitano",
+    "local": "Franco da Rocha (Centro - Complexo Juqeuri)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Pq America)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Parque do Carmo)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Limoeiro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar Metropolitano",
+    "local": "Mauá (Parque São Vicente)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar Metropolitano",
+    "local": "Guarulhos (Haroldo Veloso)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "32º Batalhão de Polícia Militar Metropolitano",
+    "local": "Suzano (Jd Monte Cristo)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar Metropolitano",
+    "local": "Carapicuíba (Cidade Ariston)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "35º Batalhão de Polícia Militar Metropolitano",
+    "local": "Itaquaquecetuba (Vl Bartira)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "36º Batalhão de Polícia Militar Metropolitano",
+    "local": "Embu das Artes (Santabarbara)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "37º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Jd Alvorada)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "38º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Iguatemi)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "39º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Jardim Cotinha)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "40º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Bernardo do Campo (Parque Espacial)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "43º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Santana)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "44º Batalhão de Polícia Militar Metropolitano",
+    "local": "Guarulhos (Cecap)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "46º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Ipiranga)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "48º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Jose Bonifacio)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "49º Batalhão de Polícia Militar Metropolitano",
+    "local": "São Paulo (Jaragua)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar do Interior",
+    "local": "São José dos Campos (Jardim Augusta)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar do Interior",
+    "local": "Araçatuba (Rural)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar do Interior",
+    "local": "Ribeirão Preto (Jardim Indepêndencia)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar do Interior",
+    "local": "Bauru (Jd Colonial)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar do Interior",
+    "local": "Taubaté (Independência)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar do Interior",
+    "local": "Santos (Gonzaga)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar do Interior",
+    "local": "Sorocaba (Jd. Santa Rosália)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar do Interior",
+    "local": "Campinas (Bonfim)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar do Interior",
+    "local": "Marília (Jardim Regina)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar do Interior",
+    "local": "Piracicaba (Vila Algodoal)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar do Interior",
+    "local": "Jundiaí (Anhangabaú)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar do Interior",
+    "local": "Botucatu (Vila Silvinha)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar do Interior",
+    "local": "Araraquara (Vila Ferroviaria)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar do Interior",
+    "local": "Registro (Vila Ribeiropolis)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar do Interior",
+    "local": "Franca (Nucleo Alpha)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar do Interior",
+    "local": "Fernandópolis (Coester)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar do Interior",
+    "local": "São José do Rio Preto (Jd São Francisco)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar do Interior",
+    "local": "Presidente Prudente (Vila Formosa)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar do Interior",
+    "local": "Americana (Loteamento Industrial Nossa Senhora de Fátima)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar do Interior",
+    "local": "Caraguatatuba (Sumaré)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar do Interior",
+    "local": "Guarujá (Jd Guaiúba)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar do Interior",
+    "local": "Itapetininga (Vila Judith)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar do Interior",
+    "local": "Lorena (Bairro Santo Antonio)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar do Interior",
+    "local": "São João da Boa Vista (Jardim Nova São João)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar do Interior",
+    "local": "Dracena (Metrópole)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar do Interior",
+    "local": "Mogi Guaçu (Jardim Novo I)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar do Interior",
+    "local": "Jaú (Vila Nova)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar do Interior",
+    "local": "Andradina (Parque Santo Antonio)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar do Interior",
+    "local": "Itanhaém (Jardim Umuarama)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar do Interior",
+    "local": "Catanduva (Vila Guzzo)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar do Interior",
+    "local": "Ourinhos (Vila Perino)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "32º Batalhão de Polícia Militar do Interior",
+    "local": "Assis (Vila Fiúza)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar do Interior",
+    "local": "Barretos (Frigorífico)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "34º Batalhão de Polícia Militar do Interior",
+    "local": "Bragança Paulista (Centro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "35º Batalhão de Polícia Militar do Interior",
+    "local": "Campinas (Vila Marieta)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "36º Batalhão de Polícia Militar do Interior",
+    "local": "Limeira (Jardim das Laranjeiras)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "37º Batalhão de Polícia Militar do Interior",
+    "local": "Rio Claro (Jardim Anhanguera)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "38º Batalhão de Polícia Militar do Interior",
+    "local": "São Carlos (Centreville)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "39º Batalhão de Polícia Militar do Interior",
+    "local": "São Vicente (Jardim Boa Vista)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "40º Batalhão de Polícia Militar do Interior",
+    "local": "Votorantim (Jardim Icatu)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "41º Batalhão de Polícia Militar do Interior",
+    "local": "Jacareí (Jardim Santa Maria)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "42º Batalhão de Polícia Militar do Interior",
+    "local": "Presidente Venceslau (Jd Coroados)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "43º Batalhão de Polícia Militar do Interior",
+    "local": "Sertãozinho (Jd São Sebastiao)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "44º Batalhão de Polícia Militar do Interior",
+    "local": "Lins (Residencial Florestan Fernandes)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "45º Batalhão de Polícia Militar do Interior",
+    "local": "Praia Grande (Sítio do Campo)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "46º Batalhão de Polícia Militar do Interior",
+    "local": "São José dos Campos (Jardim Petropolis)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "47º Batalhão de Polícia Militar do Interior",
+    "local": "Campinas (Jd. Indianópolis)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "48º Batalhão de Polícia Militar do Interior",
+    "local": "Sumaré (Vila Yolanda)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "49º Batalhão de Polícia Militar do Interior",
+    "local": "Jundiaí (Vila Arens e Progresso)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "50º Batalhão de Polícia Militar do Interior",
+    "local": "Itu (Vila Leis)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "51º Batalhão de Polícia Militar do Interior",
+    "local": "Ribeirão Preto (Nova Ribeirania)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "52º Batalhão de Polícia Militar do Interior",
+    "local": "Mirassol (São José)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "53º Batalhão de Polícia Militar do Interior",
+    "local": "Avaré (Centro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "54º Batalhão de Polícia Militar do Interior",
+    "local": "Itapeva (Centro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "1º Batalhão de Ações Especiais de Polícia",
+    "local": "Campinas (Ponte Preta)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "2º Batalhão de Ações Especiais de Polícia",
+    "local": "Santos (Ponta da Praia)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "3º Batalhão de Ações Especiais de Polícia",
+    "local": "São José dos Campos (Jardim Augusta)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "4º Batalhão de Ações Especiais de Polícia",
+    "local": "São Paulo (Sao Miguel)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "5º Batalhão de Ações Especiais de Polícia",
+    "local": "Barueri (Parque Santa Luzia)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "10º Batalhão de Ações Especiais de Polícia",
+    "local": "Piracicaba (Parque Taquaral)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "11º Batalhão de Ações Especiais de Polícia",
+    "local": "Ribeirão Preto (Jardim Indepêndencia)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "12º Batalhão de Ações Especiais de Polícia",
+    "local": "Araçatuba (Umuarama)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "13º Batalhão de Ações Especiais de Polícia",
+    "local": "Bauru (Vila Cardia)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "15º Batalhão de Ações Especiais de Polícia",
+    "local": "Guarulhos (Cecap)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "1º Batalhão de Polícia de Choque (ROTA)",
+    "local": "São Paulo (Bom Retiro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "2º Batalhão de Polícia de Choque",
+    "local": "São Paulo (Bom Retiro)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "3º Batalhão de Polícia de Choque",
+    "local": "São Paulo (Vila Maria)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "4º Batalhão de Polícia de Choque",
+    "local": "São Paulo (Vila Albertina)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "5º Batalhão de Polícia de Choque",
+    "local": "São Paulo (Vila Albertina)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "Regimento de Polícia Montada",
+    "local": "São Paulo (Luz)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   },
+   {
+    "nome": "Comando de Aviação da Polícia Militar",
+    "local": "São Paulo (Santana)",
+    "fonte": "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo (Bom Retiro), SP – Praça Coronel Fernando Prestes, 115",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "efetivo": {
+  "valor": 93802,
+  "data_ref": "2026",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo",
+  "https://www.policiamilitar.sp.gov.br/institucional/historia-da-pm",
+  "https://www.policiamilitar.sp.gov.br/institucional/vultos-historicos",
+  "https://servicesapp.policiamilitar.sp.gov.br/UnidadesPoliciais"
+ ]
+}

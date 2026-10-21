@@ -1,0 +1,264 @@
+{
+ "chave": "pm:DF",
+ "nome": "Polícia Militar do Distrito Federal",
+ "sigla": "PMDF",
+ "uf": "DF",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo e cuida da ordem pública no Distrito Federal. É força auxiliar e reserva do Exército e se subordina ao governo do DF.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Distrito_Federal"
+ },
+ "fundacao": {
+  "data": "1809-05-13",
+  "texto": "Decreto de D. João VI criou no Rio de Janeiro a Divisão da Guarda Real de Polícia, origem da PMDF.",
+  "fonte": "https://portal.pm.df.gov.br/historia/"
+ },
+ "historia": [
+  {
+   "ano": "1809",
+   "texto": "Em 13 de maio, D. João VI criou no Rio de Janeiro, então capital, a Divisão da Guarda Real de Polícia, nos moldes da Guarda Real de Polícia de Portugal.",
+   "fonte": "https://portal.pm.df.gov.br/historia/"
+  },
+  {
+   "ano": "1920",
+   "texto": "O decreto federal nº 14.477 deu à corporação, ainda no Rio de Janeiro, o nome de Polícia Militar do Distrito Federal.",
+   "fonte": "https://portal.pm.df.gov.br/historia/"
+  },
+  {
+   "ano": "1966",
+   "texto": "Com a mudança da capital, 150 policiais militares chegaram a Brasília em 15 de fevereiro e se instalaram no Forte Apache. A primeira turma de praças formada em Brasília saiu em 1967.",
+   "fonte": "https://portal.pm.df.gov.br/historia/"
+  },
+  {
+   "ano": "1973",
+   "texto": "Inauguração do Palácio Tiradentes, sede do comando da PMDF em Brasília.",
+   "fonte": "https://portal.pm.df.gov.br/historia/"
+  },
+  {
+   "ano": "1983",
+   "texto": "Criação da Companhia de Polícia Militar Feminina: as mulheres passam a atuar no policiamento.",
+   "fonte": "https://portal.pm.df.gov.br/historia/"
+  },
+  {
+   "ano": "1990",
+   "texto": "Começam as aulas da Academia de Polícia Militar de Brasília, com a primeira turma do Curso de Formação de Oficiais.",
+   "fonte": "https://portal.pm.df.gov.br/historia/"
+  },
+  {
+   "ano": "2023",
+   "texto": "Em 8 de janeiro, sedes dos Três Poderes foram invadidas. Em dezembro de 2025, o STF condenou 5 ex-integrantes da cúpula da PMDF a 16 anos por omissão e absolveu 2 oficiais por falta de provas; ainda cabe recurso.",
+   "fonte": "https://sbtnews.sbt.com.br/noticia/brasil/por-unanimidade-stf-condena-ex-pm-s-do-df-a-16-anos-por-omissao-em-8-1"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+  "texto": "Joaquim José da Silva Xavier, o Tiradentes, é o patrono da PMDF. A sede do comando-geral, em Brasília, se chama Palácio Tiradentes.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Distrito_Federal"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Abaixo do Comando-Geral ficam quatro comandos regionais (Metropolitano, Sul, Oeste e Leste), o Comando de Missões Especiais, o Comando de Polícia Especializada e o Comando de Trânsito. Os batalhões de área são numerados; os especializados incluem BOPE, Choque, ROTAM, aviação, cães, ambiental, rural, escolar, trânsito e rodoviário.",
+  "fonte": "https://portal.pm.df.gov.br/lista-telefonica/",
+  "unidades_total": 36,
+  "unidades_tipo": "batalhões e regimento",
+  "data_ref": "2026-10",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Brasília (Asa Sul – Setor Policial Sul)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Taguatinga (Taguatinga Norte)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Brasília (Asa Norte)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Guará (Guará II)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Lago Sul",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Brasília (Asa Norte – SGMN)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Sudoeste",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Ceilândia",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Gama",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Ceilândia (Setor de Indústria)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Samambaia",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Distrito Federal",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Sobradinho",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Planaltina",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "SCIA (Setor Complementar de Indústria e Abastecimento)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Brazlândia",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Águas Claras",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Distrito Federal",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Paranoá",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "São Sebastião",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Lago Norte",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Núcleo Bandeirante",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Santa Maria",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar",
+    "local": "Recanto das Emas",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Riacho Fundo I",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Operações Especiais (BOPE)",
+    "local": "Brasília (Setor Policial Sul)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Polícia de Choque (BPChoque)",
+    "local": "Brasília (Setor Policial Sul)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Rondas Ostensivas Táticas Motorizadas (ROTAM)",
+    "local": "SCIA",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Aviação Operacional (BAVOP)",
+    "local": "Guará (Guará II)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Regimento de Polícia Montada (RPMon)",
+    "local": "Riacho Fundo I",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Policiamento com Cães (BPCães)",
+    "local": "Brasília (Setor Policial Sul)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Policiamento Ambiental (BPMA)",
+    "local": "Distrito Federal",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Policiamento Rural (BPRural)",
+    "local": "Águas Claras",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Policiamento Escolar (BPEsc)",
+    "local": "Águas Claras",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Policiamento de Trânsito (BPTran)",
+    "local": "Guará (SIA Trecho 2)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   },
+   {
+    "nome": "Batalhão de Policiamento Rodoviário (BPRv)",
+    "local": "Guará (SIA Trecho 2)",
+    "fonte": "https://portal.pm.df.gov.br/lista-telefonica/"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Brasília (Setor Policial Sul), DF – Palácio Tiradentes, SPO AE Conjunto 04",
+  "fonte": "https://portal.pm.df.gov.br/historia/"
+ },
+ "efetivo": {
+  "valor": 10815,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Distrito_Federal"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Distrito_Federal",
+  "https://portal.pm.df.gov.br/historia/",
+  "https://portal.pm.df.gov.br/estrutura-organizacional-da-pmdf/",
+  "https://portal.pm.df.gov.br/lista-telefonica/"
+ ]
+}

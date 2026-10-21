@@ -1,0 +1,233 @@
+{
+ "chave": "pm:ES",
+ "nome": "Polícia Militar do Espírito Santo",
+ "sigla": "PMES",
+ "uf": "ES",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo e cuida da ordem pública no Espírito Santo. Está presente nos 78 municípios do estado.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+ },
+ "fundacao": {
+  "data": "1835-04-06",
+  "texto": "A Lei Provincial nº 9 criou a Companhia de Guarda de Polícia Provincial, com cem soldados; o primeiro comandante foi o alferes Antônio Ferreira Rufino.",
+  "fonte": "https://pm.es.gov.br/historia"
+ },
+ "historia": [
+  {
+   "ano": "1831",
+   "texto": "Documentos do Arquivo Público citados na Wikipédia mostram que o Conselho de Governo criou, em 12 de dezembro de 1831, uma Companhia de Guardas Permanentes com 100 soldados, antes da lei de 1835.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+  },
+  {
+   "ano": "1835",
+   "texto": "Em 6 de abril, a Lei Provincial nº 9 criou a Companhia de Guarda de Polícia Provincial: três oficiais, sargentos, cabos, cornetas e cem soldados.",
+   "fonte": "https://pm.es.gov.br/historia"
+  },
+  {
+   "ano": "1920",
+   "texto": "A PMES esteve na origem da revolta que terminou com intervenção federal no Espírito Santo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+  },
+  {
+   "ano": "1963",
+   "texto": "Atuou na Questão Lindeira, conflitos de divisa com Minas Gerais no norte do estado, resolvidos em 15 de setembro de 1963.",
+   "fonte": "https://pm.es.gov.br/historia"
+  },
+  {
+   "ano": "1997",
+   "texto": "O Corpo de Bombeiros deixou a PM com a Emenda Constitucional estadual nº 12, de 20 de agosto de 1997.",
+   "fonte": "https://pm.es.gov.br/historia"
+  },
+  {
+   "ano": "2017",
+   "texto": "Em fevereiro, protestos de familiares por salários paralisaram a PM; 199 pessoas sofreram mortes violentas no estado durante o movimento. Em 16 de janeiro de 2019 foi aprovada a anistia aos policiais que participaram.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+  }
+ ],
+ "patrono": {
+  "nome": "Capitão João Antunes Barbosa Brandão",
+  "texto": "Tenente-coronel honorário do Exército, comandou a Companhia de Polícia de 1873 a 1883 e serviu mais de 25 anos à população capixaba. É o patrono da PMES.",
+  "fonte": "https://pm.es.gov.br/historia"
+ },
+ "homenageados": [
+  {
+   "nome": "Coronel Francisco Eugênio de Assis",
+   "texto": "Dá nome à biblioteca da Academia de Polícia Militar do Espírito Santo (APM/ES).",
+   "fonte": "https://pm.es.gov.br/historia"
+  }
+ ],
+ "organizacao": {
+  "texto": "A PMES tem 17 batalhões (BPM) e 13 companhias independentes, ligados a seis Comandos de Polícia Ostensiva Regional (dois na Grande Vitória e quatro no interior). Um comando especializado reúne Polícia Montada, Trânsito, Ambiental, Missões Especiais, Cães, Guarda, Escolar e a CIOE (essas não estão na lista).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo",
+  "unidades_total": 30,
+  "unidades_tipo": "batalhões e companhias independentes de área",
+  "data_ref": "2022",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Vitória",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Nova Venécia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Alegre",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Vila Velha",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Aracruz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Serra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Cariacica",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Colatina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Cachoeiro de Itapemirim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Guarapari",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Barra de São Francisco",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Linhares",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "São Mateus",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Ibatiba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Afonso Cláudio",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Marataízes",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Viana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "6ª Companhia Independente",
+    "local": "Domingos Martins",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "8ª Companhia Independente",
+    "local": "Santa Teresa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "10ª Companhia Independente",
+    "local": "Anchieta",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "12ª Companhia Independente",
+    "local": "Vitória (Jardim Camburi)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "13ª Companhia Independente",
+    "local": "Vila Velha (Grande Terra Vermelha)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "14ª Companhia Independente",
+    "local": "Serra (Feu Rosa)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "15ª Companhia Independente",
+    "local": "Mimoso do Sul",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "16ª Companhia Independente",
+    "local": "Cariacica (Nova Rosa da Penha)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "17ª Companhia Independente",
+    "local": "Vila Velha (Cobilândia)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "18ª Companhia Independente",
+    "local": "Jaguaré",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "19ª Companhia Independente",
+    "local": "Pinheiros",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "20ª Companhia Independente",
+    "local": "Castelo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   },
+   {
+    "nome": "21ª Companhia Independente",
+    "local": "Santa Maria de Jetibá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Vitória (Maruípe), ES – Av. Maruípe, 2111",
+  "fonte": "https://pm.es.gov.br/historia"
+ },
+ "efetivo": {
+  "valor": 8175,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Esp%C3%ADrito_Santo",
+  "https://pm.es.gov.br/historia"
+ ]
+}

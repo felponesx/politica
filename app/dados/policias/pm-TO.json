@@ -1,0 +1,73 @@
+{
+ "chave": "pm:TO",
+ "nome": "Polícia Militar do Estado do Tocantins",
+ "sigla": "PMTO",
+ "uf": "TO",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Tocantins. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+ },
+ "fundacao": {
+  "data": "1989-01-01",
+  "texto": "Criada com o novo estado do Tocantins; o primeiro quartel do comando-geral ficou na capital provisória, Miracema do Tocantins.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+ },
+ "historia": [
+  {
+   "ano": "1989",
+   "texto": "A PMTO nasce com o estado. O primeiro quartel do comando-geral funciona em Miracema do Tocantins, a capital provisória, onde hoje fica a sede da 6ª CIPM.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+  },
+  {
+   "ano": "1990",
+   "texto": "Em 17 de abril, depois da instalação da capital definitiva, o comando da PMTO se muda para Palmas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+  },
+  {
+   "ano": "2002",
+   "texto": "Em 21 de abril, o Quartel do Comando-Geral passa para a sede atual, na Quadra AE 304 Sul, em Palmas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+  },
+  {
+   "ano": "2005",
+   "texto": "Um curso reconhecido depois como o 1º Curso de Patrulhamento Tático do Tocantins usa pela primeira vez o nome Força Tática para os grupos táticos dos batalhões.",
+   "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_T%C3%A1tica_da_Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+  },
+  {
+   "ano": "2015",
+   "texto": "A Instrução Normativa nº 001/2015 padroniza a Força Tática, grupo especializado ligado aos batalhões e companhias que apoia o policiamento comum em todo o estado.",
+   "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_T%C3%A1tica_da_Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "As fontes consultadas não trazem a lista de batalhões da PMTO e o site oficial (pm.to.gov.br) não pôde ser acessado. Sabe-se que há batalhões e companhias independentes (CIPM), cada um com seu grupo de Força Tática.",
+  "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_T%C3%A1tica_da_Pol%C3%ADcia_Militar_do_Estado_do_Tocantins",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "6ª Companhia Independente de Polícia Militar (6ª CIPM)",
+    "local": "Miracema do Tocantins",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Palmas (Quadra AE 304 Sul), TO",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+ },
+ "efetivo": {
+  "valor": 2765,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Tocantins",
+  "https://pt.wikipedia.org/wiki/For%C3%A7a_T%C3%A1tica_da_Pol%C3%ADcia_Militar_do_Estado_do_Tocantins"
+ ]
+}

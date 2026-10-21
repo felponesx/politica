@@ -1,0 +1,85 @@
+{
+ "chave": "u:SP:ROTA",
+ "nome": "1º Batalhão de Polícia de Choque \"Tobias de Aguiar\" – Rondas Ostensivas Tobias de Aguiar",
+ "sigla": "ROTA",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pm:SP",
+ "resumo": {
+  "texto": "Batalhão da Polícia Militar paulista, ligado ao Comando de Policiamento de Choque, que faz patrulhamento tático com viaturas em todo o estado de São Paulo.",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+ },
+ "fundacao": {
+  "data": "1970-10-15",
+  "texto": "As Rondas Ostensivas Tobias de Aguiar foram criadas em 1970 dentro do 1º Batalhão de Choque, que existe desde 1891.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "historia": [
+  {
+   "ano": "1891",
+   "texto": "Criação do 1º Batalhão de Choque da força policial paulista, que hoje abriga a Rota.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_Tobias_de_Aguiar"
+  },
+  {
+   "ano": "1970",
+   "texto": "Criada a Rota, com equipes motorizadas de quatro homens com armamento pesado, para fazer ronda bancária contra assaltos a bancos atribuídos à guerrilha durante o regime militar; depois passou a atuar contra o crime comum.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_Tobias_de_Aguiar"
+  },
+  {
+   "ano": "1992",
+   "texto": "Policiais da Rota estiveram entre os PMs que entraram na Casa de Detenção (Carandiru) para conter uma rebelião; 111 presos morreram.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_do_Carandiru"
+  },
+  {
+   "ano": "2013",
+   "texto": "Júris realizados entre 2013 e 2014 condenaram 74 PMs pelo Massacre do Carandiru; o TJ-SP anulou os júris em 2016, o STJ restabeleceu as condenações em 2021 e o STF manteve essa decisão em 2022.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_do_Carandiru"
+  },
+  {
+   "ano": "2020",
+   "texto": "O Decreto estadual 65.096 define o 1º BPChq \"Tobias de Aguiar\" como responsável, prioritariamente, pelo patrulhamento tático, com atuação em todo o estado.",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+  },
+  {
+   "ano": "2023",
+   "texto": "Após a morte de um policial da Rota no Guarujá, a PM faz a Operação Escudo na Baixada Santista, com 28 mortos. Policiais da Rota viraram réus em alguns casos; em 2025 o MP-SP manteve o arquivamento de 11 inquéritos das operações Escudo e Verão.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_do_Guaruj%C3%A1"
+  }
+ ],
+ "patrono": {
+  "nome": "Rafael Tobias de Aguiar",
+  "texto": "Brigadeiro e político liberal paulista (1794–1857). Como presidente da província, propôs a lei de 1831 que criou a atual Polícia Militar de São Paulo; é o patrono da corporação e dá nome à Rota.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "É um batalhão do Comando de Policiamento de Choque (CPChq), sediado na capital e com atuação em todo o estado. Funciona no Quartel da Luz, em São Paulo.",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html",
+  "unidades_total": 1,
+  "unidades_tipo": "batalhão",
+  "data_ref": "2020",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia de Choque \"Tobias de Aguiar\" (Rota)",
+    "local": "São Paulo (Luz, Av. Tiradentes, 440)",
+    "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_Tobias_de_Aguiar"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo (Luz), SP",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_Tobias_de_Aguiar"
+ },
+ "efetivo": {
+  "valor": 800,
+  "data_ref": "2023",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_Tobias_de_Aguiar"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_Tobias_de_Aguiar",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_de_S%C3%A3o_Paulo",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html",
+  "https://pt.wikipedia.org/wiki/Massacre_do_Carandiru",
+  "https://pt.wikipedia.org/wiki/Chacina_do_Guaruj%C3%A1"
+ ]
+}

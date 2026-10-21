@@ -1,0 +1,75 @@
+{
+ "chave": "u:SP:GATE",
+ "nome": "Grupo de Ações Táticas Especiais",
+ "sigla": "GATE",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pm:SP",
+ "resumo": {
+  "texto": "Grupo de operações táticas especiais da PM paulista, acionado em ocorrências com reféns, motins em presídios, ameaças de bomba e terrorismo.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+ },
+ "fundacao": {
+  "data": "1988-08-04",
+  "texto": "Fundado em 4 de agosto de 1988 para intervir em ocorrências policiais de alto risco no estado de São Paulo.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+ },
+ "historia": [
+  {
+   "ano": "1988",
+   "texto": "Fundação do GATE; o fundador e primeiro comandante foi o então tenente Wanderley Mascarenhas, que se inspirou na SWAT e na polícia de Israel.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+  },
+  {
+   "ano": "1989",
+   "texto": "O GATE passa a atender também ocorrências com bombas (esquadrão antibombas).",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+  },
+  {
+   "ano": "2008",
+   "texto": "Em Santo André, após mais de 100 horas de sequestro, policiais do GATE e da Tropa de Choque invadem o apartamento onde estavam as reféns; Eloá Cristina, de 15 anos, foi baleada pelo sequestrador e morreu.",
+   "fonte": "https://pt.wikipedia.org/wiki/Sequestro_e_assassinato_de_Elo%C3%A1_Cristina"
+  },
+  {
+   "ano": "2020",
+   "texto": "O Decreto estadual 65.096 atribui ao 4º Batalhão de Choque, onde fica o GATE, as ações táticas especiais em ocorrências críticas.",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "O GATE é formado pela 4ª, 5ª e 6ª companhias do 4º Batalhão de Polícia de Choque, sob o comando de um major. Divide-se em intervenção tática, atiradores de precisão (snipers), negociação e esquadrão antibombas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)",
+  "unidades_total": 3,
+  "unidades_tipo": "companhias",
+  "data_ref": "2023",
+  "unidades": [
+   {
+    "nome": "4ª Companhia do 4º Batalhão de Polícia de Choque (GATE)",
+    "local": "São Paulo",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+   },
+   {
+    "nome": "5ª Companhia do 4º Batalhão de Polícia de Choque (GATE)",
+    "local": "São Paulo",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+   },
+   {
+    "nome": "6ª Companhia do 4º Batalhão de Polícia de Choque (GATE)",
+    "local": "São Paulo",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo (Av. Ten. Júlio Prado Neves, 965), SP",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Grupo_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_(PMESP)",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html",
+  "https://pt.wikipedia.org/wiki/Sequestro_e_assassinato_de_Elo%C3%A1_Cristina"
+ ]
+}

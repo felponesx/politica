@@ -1,0 +1,100 @@
+{
+ "chave": "u:SP:GARRA",
+ "nome": "Grupo Armado de Repressão a Roubos e Assaltos",
+ "sigla": "GARRA",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pc:SP",
+ "resumo": {
+  "texto": "Grupo especializado da Polícia Civil paulista que faz a perseguição imediata e a prevenção de roubos e outros crimes, com equipes em viaturas na capital e em outras cidades.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+ },
+ "fundacao": {
+  "data": "1976",
+  "texto": "Criado em 1976 pelo delegado Jorge Miguel, no lugar das Rondas Unificadas do Departamento de Investigações (RUDI); a ficha do artigo indica a data de 27/10/1977.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+ },
+ "historia": [
+  {
+   "ano": "1976",
+   "texto": "Criação do GARRA no antigo Departamento Estadual de Investigações Criminais (DEIC), substituindo a RUDI.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+  },
+  {
+   "ano": "1991",
+   "texto": "Em 27 de agosto, a Polícia Civil de São José dos Campos inaugura seu próprio grupo GARRA.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+  },
+  {
+   "ano": "2019",
+   "texto": "Com a criação do Departamento de Operações Policiais Estratégicas (Dope), o GARRA recebe os policiais do GOE e passa a ter cerca de 200 policiais, segundo o diretor do Dope.",
+   "fonte": "https://www.jb.com.br/pais/2019/08/1014251-novo-departamento-de-elite-da-policia-civil-de-sp-comeca-a-funcionar.html"
+  },
+  {
+   "ano": "2019",
+   "texto": "Com a reorganização que criou o Dope, o GARRA passa a ficar na Divisão de Operações Especiais (DOE) desse departamento.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "O GARRA da capital tem 5 grupos divididos em plantões, cada um com oito equipes supervisionadas por um delegado. Há GARRAs em outras cidades da Grande São Paulo e do interior, ligados aos departamentos regionais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)",
+  "unidades_total": null,
+  "unidades_tipo": "grupos",
+  "data_ref": "2022",
+  "unidades": [
+   {
+    "nome": "GARRA – São Paulo",
+    "local": "São Paulo",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – Santo André",
+    "local": "Santo André",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – São Bernardo do Campo",
+    "local": "São Bernardo do Campo",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – Diadema",
+    "local": "Diadema",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – Osasco",
+    "local": "Osasco",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – Taboão da Serra",
+    "local": "Taboão da Serra",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – Campinas",
+    "local": "Campinas",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   },
+   {
+    "nome": "GARRA – São José dos Campos",
+    "local": "São José dos Campos",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo, SP",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Grupo_Armado_de_Repress%C3%A3o_a_Roubos_e_Assaltos_(Garra)",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_de_S%C3%A3o_Paulo",
+  "https://www.jb.com.br/pais/2019/08/1014251-novo-departamento-de-elite-da-policia-civil-de-sp-comeca-a-funcionar.html"
+ ]
+}

@@ -1,0 +1,80 @@
+{
+ "chave": "u:SP:COE",
+ "nome": "Comandos e Operações Especiais",
+ "sigla": "COE",
+ "uf": "SP",
+ "corp": "u",
+ "subordinada_a": "pm:SP",
+ "resumo": {
+  "texto": "Tropa de operações especiais da PM paulista para ações de alto risco em mata, montanha, áreas urbanas complexas, mangue e mergulho, além de buscas e resgates.",
+  "fonte": "https://en.wikipedia.org/wiki/Comandos_e_Opera%C3%A7%C3%B5es_Especiais"
+ },
+ "fundacao": {
+  "data": "1970-03-13",
+  "texto": "Criado em 13 de março de 1970, com 33 policiais; já esteve subordinado ao 1º e ao 3º Batalhões de Choque.",
+  "fonte": "https://velhogeneral.com.br/wp-content/uploads/2024/04/Comandos-e-Operacoes-Especiais-Elite-da-Policia-Militar-Paulista.pdf"
+ },
+ "historia": [
+  {
+   "ano": "1970",
+   "texto": "Criação do COE, com efetivo inicial de 33 policiais militares.",
+   "fonte": "https://velhogeneral.com.br/wp-content/uploads/2024/04/Comandos-e-Operacoes-Especiais-Elite-da-Policia-Militar-Paulista.pdf"
+  },
+  {
+   "ano": "1972",
+   "texto": "Atua na retomada de um avião da Varig no aeroporto de Congonhas e no resgate de pessoas no incêndio do edifício Andraus, no centro de São Paulo.",
+   "fonte": "https://velhogeneral.com.br/wp-content/uploads/2024/04/Comandos-e-Operacoes-Especiais-Elite-da-Policia-Militar-Paulista.pdf"
+  },
+  {
+   "ano": "1974",
+   "texto": "Integrantes do COE trabalham com os bombeiros no resgate durante o incêndio do edifício Joelma.",
+   "fonte": "https://velhogeneral.com.br/wp-content/uploads/2024/04/Comandos-e-Operacoes-Especiais-Elite-da-Policia-Militar-Paulista.pdf"
+  },
+  {
+   "ano": "1996",
+   "texto": "Equipes do COE estão entre as primeiras a chegar ao local do acidente aéreo que matou a banda Mamonas Assassinas; no mesmo ano atuam na queda do voo TAM 402.",
+   "fonte": "https://velhogeneral.com.br/wp-content/uploads/2024/04/Comandos-e-Operacoes-Especiais-Elite-da-Policia-Militar-Paulista.pdf"
+  },
+  {
+   "ano": "2020",
+   "texto": "O Decreto estadual 65.096 atribui ao 4º Batalhão de Choque, do qual o COE faz parte, operações especiais em áreas de alto risco.",
+   "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "O COE é formado pela 1ª, 2ª e 3ª companhias do 4º Batalhão de Polícia de Choque; as outras três companhias formam o GATE. O batalhão é subordinado ao Comando de Policiamento de Choque e sediado na capital.",
+  "fonte": "https://en.wikipedia.org/wiki/Comandos_e_Opera%C3%A7%C3%B5es_Especiais",
+  "unidades_total": 3,
+  "unidades_tipo": "companhias",
+  "data_ref": "2024",
+  "unidades": [
+   {
+    "nome": "1ª Companhia do 4º Batalhão de Polícia de Choque (COE)",
+    "local": "São Paulo",
+    "fonte": "https://en.wikipedia.org/wiki/Comandos_e_Opera%C3%A7%C3%B5es_Especiais"
+   },
+   {
+    "nome": "2ª Companhia do 4º Batalhão de Polícia de Choque (COE)",
+    "local": "São Paulo",
+    "fonte": "https://en.wikipedia.org/wiki/Comandos_e_Opera%C3%A7%C3%B5es_Especiais"
+   },
+   {
+    "nome": "3ª Companhia do 4º Batalhão de Polícia de Choque (COE)",
+    "local": "São Paulo",
+    "fonte": "https://en.wikipedia.org/wiki/Comandos_e_Opera%C3%A7%C3%B5es_Especiais"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Paulo, SP",
+  "fonte": "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://en.wikipedia.org/wiki/Comandos_e_Opera%C3%A7%C3%B5es_Especiais",
+  "https://velhogeneral.com.br/wp-content/uploads/2024/04/Comandos-e-Operacoes-Especiais-Elite-da-Policia-Militar-Paulista.pdf",
+  "https://www.al.sp.gov.br/repositorio/legislacao/decreto/2020/decreto-65096-28.07.2020.html"
+ ]
+}
