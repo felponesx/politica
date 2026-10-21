@@ -32,6 +32,10 @@ PISTAS = {"lava-jato": ["lava jato", "petrolao", "petrobras"], "mensalao": ["men
           "sanguessugas": ["sanguessuga", "mafia das ambulancias"]}
 
 
+# conferidas à mão: a imagem do verbete não é um retrato da pessoa (ex.: foto de protesto)
+SEM_FOTO = {"Ricardo Fiuza"}
+
+
 def _n(s: str) -> str:
     return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
 
@@ -96,6 +100,8 @@ def _baixar_thumb(arquivo: str) -> str | None:
 
 def foto_de(nome: str, slug: str, nome_caso: str) -> str | None:
     """Pela Wikipédia: verbete com o nome (ou o apelido entre parênteses) que é de uma pessoa e cita o caso."""
+    if nome in SEM_FOTO:
+        return None
     apelido = re.search(r"\(([^)]+)\)\s*$", nome)
     for n in [nome] + ([apelido.group(1).strip("'\" ")] if apelido else []):
         try:
