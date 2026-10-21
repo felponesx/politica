@@ -1,0 +1,550 @@
+{
+ "chave": "pm:PA",
+ "nome": "Polícia Militar do Pará",
+ "sigla": "PMPA",
+ "uf": "PA",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Pará. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+ },
+ "fundacao": {
+  "data": "1818-03-10",
+  "texto": "Criada em 1818, no governo do Conde de Vila Flor, com o nome de Corpo de Polícia, sob o comando do major José Victorino de Amarante.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+ },
+ "historia": [
+  {
+   "ano": "1818",
+   "texto": "Criado o Corpo de Polícia do Grão-Pará, no governo do Conde de Vila Flor. Antes, em 1817, havia sido criado um esquadrão de cavalaria miliciana.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  },
+  {
+   "ano": "1897",
+   "texto": "Em Canudos (BA), em 25 de setembro, o tenente-coronel Antônio Sérgio Dias Vieira da Fontoura assume o comando da tropa paraense após o ferimento do coronel Sotero de Menezes. A data virou o Dia da Força Pública.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  },
+  {
+   "ano": "1930",
+   "texto": "Com a vitória da Revolução de 1930, a Força Pública é extinta e trocada pela Guarda Civil. Dois anos depois, ex-integrantes são chamados para conter um motim, e a corporação é reorganizada aos poucos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  },
+  {
+   "ano": "1935",
+   "texto": "O Decreto nº 1.516 dá à corporação o nome de Polícia Militar do Estado do Pará.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  },
+  {
+   "ano": "1980",
+   "texto": "Inspirada nos koban japoneses, a PM cria o sistema PM-Box, cabines com rádio onde policiais ficavam de serviço; nos anos 1990 começa o policiamento comunitário.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  },
+  {
+   "ano": "1996",
+   "texto": "Massacre de Eldorado do Carajás: em 17 de abril, 21 trabalhadores sem-terra foram mortos em ação da PM do Pará para desobstruir a rodovia.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_de_Eldorado_do_Caraj%C3%A1s"
+  },
+  {
+   "ano": "2012",
+   "texto": "O coronel Mário Colares Pantoja, que liderou a operação de Eldorado do Carajás, e o major José Maria Pereira de Oliveira são presos, condenados pelo massacre a 228 e 158 anos de prisão.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_de_Eldorado_do_Caraj%C3%A1s"
+  },
+  {
+   "ano": "2014",
+   "texto": "Nova Lei de Organização Básica: o efetivo previsto passa de 13 mil para 30 mil policiais e são criadas unidades como a de reabilitação, a assistência religiosa, o museu e o arquivo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  }
+ ],
+ "patrono": {
+  "nome": "Coronel Antônio Sérgio Dias Vieira da Fontoura",
+  "texto": "Comandou a tropa paraense na vitória em Canudos (1897) e foi comandante-geral da corporação de 1900 a 1911. Foi definido patrono em 1925; a medalha Coronel Fontoura leva seu nome.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+ },
+ "homenageados": [
+  {
+   "nome": "General Sotero de Menezes",
+   "texto": "Dá nome a uma medalha da PMPA. Comandou o Regimento Militar do Estado, a tropa paraense enviada a Canudos, em 1897.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+  }
+ ],
+ "organizacao": {
+  "texto": "Os batalhões (BPM) e companhias independentes (CIPM) respondem a comandos intermediários: dois da capital, um da Região Metropolitana, 14 regionais no interior (CPR I a XIV) e os comandos de Missões Especiais, de Policiamento Especializado e Ambiental.",
+  "fonte": "https://www.pm.pa.gov.br/comandos-operacionais-intermedi%C3%A1rios.html",
+  "unidades_total": 91,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Belém (área do CPC I)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Belém (Centro)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Belém (Condor)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar",
+    "local": "Belém (BR-316, Castanheira)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Belém (Centro)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "37º Batalhão de Polícia Militar",
+    "local": "Belém (Guamá)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Belém (Icoaraci)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Belém (Conjunto Maguari)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Belém (Chapéu Virado)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Belém (Outeiro)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Ananindeua (Coqueiro)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Marituba",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar",
+    "local": "Ananindeua (PAAR)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Ananindeua (Águas Lindas)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "39º Batalhão de Polícia Militar",
+    "local": "Benevides",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Polícia de Guardas",
+    "local": "Belém (Complexo Operacional da PMPA)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Polícia Rodoviária",
+    "local": "Alça Viária (PA-483, km 7)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Polícia de Eventos",
+    "local": "Belém (Mangueirão)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Polícia Turística",
+    "local": "Belém (Reduto)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Rural",
+    "local": "Marabá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Rural",
+    "local": "Castanhal",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Policiamento Escolar",
+    "local": "Belém (Marco)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Companhia Independente Especial de Polícia Assistencial (CIEPAS)",
+    "local": "Belém (Fátima)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Polícia de Choque",
+    "local": "Belém (Jurunas)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Regimento de Polícia Montada",
+    "local": "Belém (Mangueirão)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Rondas Ostensivas Táticas Motorizadas (Rotam)",
+    "local": "Belém (Marco)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Operações Especiais (BOPE)",
+    "local": "Belém (Marco)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Ações com Cães",
+    "local": "Belém (Marco)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão Especial Prisional",
+    "local": "Belém (Cremação)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "1º Batalhão de Missões Especiais",
+    "local": "Marabá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "2º Batalhão de Missões Especiais",
+    "local": "Santarém",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "3º Batalhão de Missões Especiais",
+    "local": "Castanhal",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "1ª Companhia Independente de Missões Especiais",
+    "local": "Itaituba",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "2ª Companhia Independente de Missões Especiais",
+    "local": "Redenção",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "3ª Companhia Independente de Missões Especiais",
+    "local": "Paragominas",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "4ª Companhia Independente de Missões Especiais",
+    "local": "Altamira",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Batalhão de Polícia Ambiental",
+    "local": "Belém (Curió-Utinga)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento Fluvial",
+    "local": "Belém (Val-de-Cães)",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento Ambiental",
+    "local": "Santarém",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Santarém",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Monte Alegre",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "41º Batalhão de Polícia Militar",
+    "local": "Monte Alegre",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "35º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "26ª Companhia Independente de Polícia Militar",
+    "local": "Alenquer",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "27ª Companhia Independente de Polícia Militar",
+    "local": "Almeirim",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "28ª Companhia Independente de Polícia Militar",
+    "local": "Juruti",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Marabá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "34º Batalhão de Polícia Militar",
+    "local": "Marabá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "24ª Companhia Independente de Polícia Militar",
+    "local": "Itupiranga",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Castanhal",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Santa Izabel do Pará",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "3ª Companhia Independente de Polícia Militar",
+    "local": "Vigia de Nazaré",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "48º Batalhão de Polícia Militar",
+    "local": "Tomé-Açu",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "42º Batalhão de Polícia Militar",
+    "local": "São Miguel do Guamá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Tucuruí",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "45º Batalhão de Polícia Militar",
+    "local": "Tailândia",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "23ª Companhia Independente de Polícia Militar",
+    "local": "Novo Repartimento",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "50º Batalhão de Polícia Militar",
+    "local": "Jacundá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Redenção",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Conceição do Araguaia",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "30ª Companhia Independente de Polícia Militar",
+    "local": "Santana do Araguaia",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "área: Paragominas, Aurora do Pará, Ipixuna e Mãe do Rio",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "51º Batalhão de Polícia Militar",
+    "local": "área: Dom Eliseu e Ulianópolis",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Capanema",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar",
+    "local": "área: Bragança e Tracuateua",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "44º Batalhão de Polícia Militar",
+    "local": "área: Salinópolis, Santarém Novo e São João de Pirabas",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "10ª Companhia Independente de Polícia Militar",
+    "local": "área: Capitão Poço, Garrafão do Norte, Ourém e Nova Esperança do Piriá",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "19ª Companhia Independente de Polícia Militar",
+    "local": "Viseu",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "15ª Companhia Independente de Polícia Militar",
+    "local": "Augusto Corrêa",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Altamira",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "16ª Companhia Independente de Polícia Militar",
+    "local": "Anapu",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "49º Batalhão de Polícia Militar",
+    "local": "área: Uruará e Medicilândia",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar",
+    "local": "Abaetetuba",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Barcarena",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "32º Batalhão de Polícia Militar",
+    "local": "área: Cametá, Limoeiro do Ajuru, Baião, Oeiras do Pará e Mocajuba",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "4ª Companhia Independente de Polícia Militar",
+    "local": "Acará",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "47º Batalhão de Polícia Militar",
+    "local": "Moju",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Itaituba",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "46º Batalhão de Polícia Militar",
+    "local": "Novo Progresso",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "17ª Companhia Independente de Polícia Militar",
+    "local": "área: Rurópolis e Placas",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "área: Soure, Cachoeira do Arari, Salvaterra e Santa Cruz do Arari",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "20ª Companhia Independente de Polícia Militar",
+    "local": "Muaná",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "área: Breves, Anajás, Bagre, Curralinho, Gurupá e São Sebastião da Boa Vista",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "22ª Companhia Independente de Polícia Militar",
+    "local": "área: Portel e Melgaço",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "32ª Companhia Independente de Polícia Militar",
+    "local": "área: Afuá e Chaves",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "36º Batalhão de Polícia Militar",
+    "local": "São Félix do Xingu",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Xinguara",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "31ª Companhia Independente de Polícia Militar",
+    "local": "Ourilândia do Norte",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Parauapebas",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "25ª Companhia Independente de Polícia Militar",
+    "local": "Eldorado do Carajás",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   },
+   {
+    "nome": "40º Batalhão de Polícia Militar",
+    "local": "Canaã dos Carajás",
+    "fonte": "https://www.pm.pa.gov.br/orgaos-de-execucao.html"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Belém (Parque Guajará, Icoaraci), PA",
+  "fonte": "https://www.pm.pa.gov.br/comandos-operacionais-intermedi%C3%A1rios.html"
+ },
+ "efetivo": {
+  "valor": 17770,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Par%C3%A1",
+  "https://www.pm.pa.gov.br/comandos-operacionais-intermedi%C3%A1rios.html",
+  "https://www.pm.pa.gov.br/orgaos-de-execucao.html",
+  "https://pt.wikipedia.org/wiki/Massacre_de_Eldorado_do_Caraj%C3%A1s"
+ ]
+}

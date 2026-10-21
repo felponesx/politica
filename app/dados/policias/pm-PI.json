@@ -1,0 +1,253 @@
+{
+ "chave": "pm:PI",
+ "nome": "Polícia Militar do Estado do Piauí",
+ "sigla": "PMPI",
+ "uf": "PI",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Piauí; está presente nos 224 municípios do estado.",
+  "fonte": "https://www.pm.pi.gov.br/apresentacao.php"
+ },
+ "fundacao": {
+  "data": "1835-06-25",
+  "texto": "A Lei Provincial nº 13 instituiu o Corpo de Polícia Provincial da Província do Piauí.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+ },
+ "historia": [
+  {
+   "ano": "1835",
+   "texto": "A Lei Provincial nº 13, de 25 de junho, oficializa o Corpo de Polícia Provincial do Piauí, embora o governo da capitania já tivesse tropa policial desde o período colonial.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "1845",
+   "texto": "Documentos mostram que os policiais ganhavam mais que os militares do Exército; a corporação adota o regulamento do Conde de Lippe para a disciplina.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "1859",
+   "texto": "A Resolução nº 457 sujeita os policiais a castigos físicos por delitos. Em 1865 o castigo físico é abolido e trocado pela perda de parte do salário.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "2012",
+   "texto": "A Lei nº 6.199 cria o Comando de Policiamento Comunitário e o Comando de Missões Especiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "2016",
+   "texto": "A Lei nº 6.792 cria o Comando de Policiamento Especializado, no lugar do Comando de Missões Especiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+  },
+  {
+   "ano": "2018",
+   "texto": "É criada a Fundação Reviver, hoje Fundação Polícia Militar do Piauí, para dar assistência social e de saúde a policiais, pensionistas e dependentes.",
+   "fonte": "https://www.pm.pi.gov.br/fundacao.php"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da corporação, segundo a ficha da PM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Segundo a PMPI, são 26 batalhões e 8 companhias independentes, em Teresina e no interior, organizados em grandes comandos: Metropolitano, Litoral Meio-Norte, Semiárido, Cerrados, Especializado, Comunitário, Aviação, Trânsito e Ambiental.",
+  "fonte": "https://www.pm.pi.gov.br/apresentacao.php",
+  "unidades_total": 26,
+  "unidades_tipo": "batalhões",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Teresina (Centro)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Teresina (Ininga)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Teresina (Distrito Industrial)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Teresina (Itararé, Dirceu)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Teresina (São Joaquim)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Teresina (Santa Maria da Codipi)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "José de Freitas",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Teresina (Esplanada, Conjunto Porto Alegre)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Teresina (Promorar)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Policiamento de Guardas",
+    "local": "Teresina (Ilhotas)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento Turístico (CIPTur)",
+    "local": "Luís Correia",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Parnaíba",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Piripiri",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Campo Maior",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar",
+    "local": "Parnaíba",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar",
+    "local": "Cocal",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Picos",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "São Raimundo Nonato",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Oeiras",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Paulistana",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Floriano",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Corrente",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Uruçuí",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Água Branca",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Bom Jesus",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": "Teresina (Ilhotas)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Policiamento Ambiental",
+    "local": "Teresina (Primavera II)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Polícia Rodoviária Estadual",
+    "local": "Teresina (Centro)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Rondas Ostensivas de Natureza Especial (Rone)",
+    "local": "Teresina (Matinha)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Polícia de Choque",
+    "local": "Teresina (Porto do Centro)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "Batalhão de Operações Aéreas",
+    "local": "Teresina (Ilhotas)",
+    "fonte": "https://www.pm.pi.gov.br/unidades.php"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Valença do Piauí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Esperantina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Canto do Buriti",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Barras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Teresina (Ilhotas), PI",
+  "fonte": "https://www.pm.pi.gov.br/unidades.php"
+ },
+ "efetivo": {
+  "valor": 5570,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Piau%C3%AD",
+  "https://www.pm.pi.gov.br/apresentacao.php",
+  "https://www.pm.pi.gov.br/unidades.php"
+ ]
+}

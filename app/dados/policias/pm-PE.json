@@ -1,0 +1,352 @@
+{
+ "chave": "pm:PE",
+ "nome": "Polícia Militar de Pernambuco",
+ "sigla": "PMPE",
+ "uf": "PE",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública em Pernambuco. É órgão da Secretaria de Defesa Social e força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Pernambuco"
+ },
+ "fundacao": {
+  "data": "1825-06-11",
+  "texto": "Decreto imperial de Pedro I criou um Corpo de Polícia na província de Pernambuco, depois da Confederação do Equador (1824), com 320 homens.",
+  "fonte": "https://www.pm.pe.gov.br/historico/"
+ },
+ "historia": [
+  {
+   "ano": "1636",
+   "texto": "Um contrato de Maurício de Nassau com a Companhia das Índias Ocidentais, de 23 de agosto de 1636, já faz referência à existência de uma polícia militar, segundo a PMPE.",
+   "fonte": "https://www.pm.pe.gov.br/historico/"
+  },
+  {
+   "ano": "1825",
+   "texto": "Decreto imperial cria o Corpo de Polícia do Recife, com 320 homens e quartel no Pátio do Paraíso. O 1º comandante, Antônio Maria da Silva Torres, tinha participado da repressão aos revolucionários de 1824.",
+   "fonte": "https://www.pm.pe.gov.br/historico/"
+  },
+  {
+   "ano": "1891",
+   "texto": "Depois de chamar-se Corpo de Guardas Municipais Permanentes, Força Policial e Guarda Cívica, a corporação vira Brigada Policial do Estado de Pernambuco.",
+   "fonte": "https://www.pm.pe.gov.br/historico/"
+  },
+  {
+   "ano": "1913",
+   "texto": "A Lei nº 1.165 transforma a corporação em Força Pública do Estado de Pernambuco.",
+   "fonte": "https://www.pm.pe.gov.br/historico/"
+  },
+  {
+   "ano": "1920",
+   "texto": "No início da década de 1920 é erguido o Quartel do Derby, no Recife, no terreno de um antigo hipódromo e de um mercado destruído por incêndio. Hoje é o quartel do comando-geral.",
+   "fonte": "https://pt.wikipedia.org/wiki/Quartel_do_Derby"
+  },
+  {
+   "ano": "1947",
+   "texto": "Decreto de 1º de janeiro dá à corporação o nome atual: Polícia Militar de Pernambuco.",
+   "fonte": "https://www.pm.pe.gov.br/historico/"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Henrique Dias",
+   "texto": "Dá nome ao 6º Batalhão (Batalhão Henrique Dias), em Jaboatão dos Guararapes. A fonte não explica o motivo.",
+   "fonte": "https://www.pm.pe.gov.br/dim/"
+  },
+  {
+   "nome": "Frei Caneca",
+   "texto": "Dá nome ao 16º Batalhão (Batalhão Frei Caneca), no Recife. A fonte não explica o motivo.",
+   "fonte": "https://www.pm.pe.gov.br/dim/"
+  },
+  {
+   "nome": "Matias de Albuquerque",
+   "texto": "Dá nome ao Batalhão de Polícia de Choque (Batalhão Matias de Albuquerque), no Recife. A fonte não explica o motivo.",
+   "fonte": "https://www.pm.pe.gov.br/diresp/"
+  },
+  {
+   "nome": "Miguel Arraes de Alencar",
+   "texto": "O ex-governador dá nome à 9ª Companhia Independente (Companhia Independente Governador Miguel Arraes de Alencar). A fonte não explica o motivo.",
+   "fonte": "https://www.pm.pe.gov.br/dinter-2/"
+  }
+ ],
+ "organizacao": {
+  "texto": "As unidades operacionais (batalhões e companhias independentes) respondem a quatro diretorias: Diretoria Integrada Metropolitana (DIM), Diretorias Integradas do Interior 1 e 2 (DINTER 1 e DINTER 2) e Diretoria Integrada Especializada (DIRESP).",
+  "fonte": "https://www.pm.pe.gov.br/unidades-operacionais/",
+  "unidades_total": 51,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "1º BPM – Batalhão Duarte Coelho",
+    "local": "Olinda (Rio Doce)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "2º BPM – Batalhão João Fernandes Vieira",
+    "local": "Nazaré da Mata",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "3º BPM – Batalhão Martim Soares Moreno",
+    "local": "Arcoverde",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "4º BPM – Batalhão Barreto de Menezes",
+    "local": "Caruaru",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "5º BPM – Batalhão Governador Nilo Coelho",
+    "local": "Petrolina",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "6º BPM – Batalhão Henrique Dias",
+    "local": "Jaboatão dos Guararapes (Prazeres)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "7º BPM – Batalhão Voluntários da Pátria",
+    "local": "Ouricuri",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "8º BPM – Batalhão Agamenon Magalhães",
+    "local": "Salgueiro",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "9º BPM – Batalhão Mons. Arruda Câmara",
+    "local": "Garanhuns",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "10º BPM – Batalhão Joaquim Nabuco",
+    "local": "Palmares",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "11º BPM – Batalhão 17 de Agosto",
+    "local": "Recife (Apipucos)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "12º BPM – Batalhão Arraial Novo do Bom Jesus",
+    "local": "Recife (Várzea)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "13º BPM – Batalhão Cel João Nunes",
+    "local": "Recife (Santo Amaro)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "14º BPM – Batalhão Cel. Manoel de Souza Ferraz",
+    "local": "Serra Talhada",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "15º BPM – Batalhão Des. João Paes",
+    "local": "Belo Jardim",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "16º BPM – Batalhão Frei Caneca",
+    "local": "Recife (São José)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "17º BPM – Batalhão Gal. Abreu e Lima",
+    "local": "Paulista",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "18º BPM – Batalhão Cel Agenor Cavalcanti",
+    "local": "Cabo de Santo Agostinho",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "19º BPM – Batalhão André Vidal de Negreiros",
+    "local": "Recife (Pina)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "20º BPM – Batalhão Cel Olinto de Melo Viana",
+    "local": "São Lourenço da Mata",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "21º BPM – Batalhão Monte das Tabocas",
+    "local": "Vitória de Santo Antão",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "22º BPM – Batalhão Cel PM Antônio Barbosa de Lucena",
+    "local": "Surubim",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "23º BPM – Batalhão Cel PM Presciliano Pereira de Moraes",
+    "local": "Afogados da Ingazeira",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "24º BPM – Batalhão Cel PM Nelson Ambrósio da Silva",
+    "local": "Santa Cruz do Capibaribe",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "25º BPM – Batalhão Cel PM Cláudio Galdino da Silva",
+    "local": "Jaboatão dos Guararapes (Centro)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "26º BPM – Batalhão 1º Sgt PM José Mariano Pimentel Neto",
+    "local": "Itapissuma",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "27º BPM – Batalhão Ten Cel PM Felipe Apurangy de Araújo",
+    "local": "Goiana",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão de Polícia de Radiopatrulha (BPRP)",
+    "local": "Recife (Boa Vista)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Regimento de Polícia Montada Dias Cardoso",
+    "local": "Recife (San Martin)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "1º Batalhão de Trânsito – Batalhão Felipe Camarão",
+    "local": "Recife (San Martin)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão de Polícia Rodoviária (BPRv)",
+    "local": "Recife (San Martin)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão de Choque – Batalhão Matias de Albuquerque",
+    "local": "Recife (Madalena)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão de Polícia de Guarda – Batalhão Paulo Guerra",
+    "local": "Recife (Santo Antônio)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão de Operações Especiais (BOPE)",
+    "local": "Recife (Jiquiá)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão Especializado de Policiamento do Interior (BEPI)",
+    "local": "Custódia",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "1º Batalhão Integrado Especializado (1º BIEsp)",
+    "local": "Caruaru",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "2º Batalhão Integrado Especializado (2º BIEsp)",
+    "local": "Petrolina",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Batalhão de Policiamento do Meio Ambiente",
+    "local": "Igarassu",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento com Motocicleta (CIPMoto)",
+    "local": "Recife (São José)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "Companhia Independente de Apoio ao Turista (CIATur)",
+    "local": "Olinda (Carmo)",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "1ª CIPM – Companhia Independente Rio São Francisco",
+    "local": "Belém de São Francisco",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "2ª CIPM – Cap PM Arlindo Rocha",
+    "local": "Cabrobó",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "3ª CIPM – Ten Cel Felipe Apurangy de Araújo",
+    "local": "Goiana",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "4ª CIPM – Ten PM Cirilo de Sousa Araújo",
+    "local": "Petrolândia",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "5ª CIPM – Cel PM Mário Mariano de Vasconcelos Araújo",
+    "local": "Gravatá",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "6ª CIPM – Antônio de Souza Vilaça",
+    "local": "Limoeiro",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "7ª CIPM – Cap Natanael Silva Barros",
+    "local": "Santa Maria da Boa Vista",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "8ª CIPM – Cap Rubem Quirino de Souza",
+    "local": "Pesqueira",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "9ª CIPM",
+    "local": "Araripina",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "10ª CIPM – Cel Theophanes Ferraz Torres",
+    "local": "Tamandaré",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   },
+   {
+    "nome": "11ª CIPM – 2º Sgt PM Antônio Pedro de Souza (Cabo Cobrinha)",
+    "local": "Lajedo",
+    "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Recife (Derby), PE",
+  "fonte": "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx"
+ },
+ "efetivo": {
+  "valor": 16425,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Pernambuco"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Pernambuco",
+  "https://www.pm.pe.gov.br/historico/",
+  "https://www.pm.pe.gov.br/unidades-operacionais/",
+  "https://www.pm.pe.gov.br/wp-content/uploads/2026/03/Unidades-da-PMPE-%E2%80%93-comandantes-enderecos-e-contatos.docx",
+  "https://pt.wikipedia.org/wiki/Quartel_do_Derby"
+ ]
+}

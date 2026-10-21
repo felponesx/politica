@@ -1,0 +1,232 @@
+{
+ "chave": "pm:PB",
+ "nome": "Polícia Militar da Paraíba",
+ "sigla": "PMPB",
+ "uf": "PB",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública na Paraíba. É força auxiliar e reserva do Exército; é o órgão público mais antigo em atividade no estado.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+ },
+ "fundacao": {
+  "data": "1832-02-03",
+  "texto": "O Conselho Provincial, no governo do padre Galdino da Costa Vilar, criou o Corpo de Guardas Municipais Permanentes da Paraíba.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+ },
+ "historia": [
+  {
+   "ano": "1832",
+   "texto": "Criado o Corpo de Guardas Municipais Permanentes, que começa a funcionar em 23 de outubro com 50 homens, sob o capitão Francisco Xavier de Albuquerque; primeiras missões: guarda da cadeia e rondas no centro da capital.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1835",
+   "texto": "A Lei nº 9 muda o nome para Força Policial, aumenta o efetivo e cria os primeiros destacamentos no interior, em Areia e Pombal.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1849",
+   "texto": "Primeiro combate: na Revolução Praieira, 40 homens defendem a vila de Pedra de Fogo contra rebeldes vindos de Pernambuco e a tropa legalista é derrotada.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1865",
+   "texto": "Todo o efetivo da Força Policial, 210 homens, embarca em Cabedelo para a Guerra do Paraguai e só volta ao fim do conflito, em 1870.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1874",
+   "texto": "A Força Policial é enviada ao brejo paraibano para conter a Revolta do Quebra-Quilos; após cerca de dois meses de confrontos, a revolta termina sem registro de mortes.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1930",
+   "texto": "No Movimento de Princesa, a Força Pública enfrenta por mais de quatro meses grupos armados do sertão; no desastre de Água Branca, cerca de 200 policiais morreram numa emboscada.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "1947",
+   "texto": "Por dispositivo constitucional, a corporação recebe o nome de Polícia Militar do Estado da Paraíba.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  },
+  {
+   "ano": "2022",
+   "texto": "O Quartel do Comando-Geral deixa o prédio de João Pessoa e passa para a nova sede em Cabedelo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+  }
+ ],
+ "patrono": {
+  "nome": "Coronel Elísio Sobreira",
+  "texto": "Destacou-se como alferes nas lutas do Cariri, em 1912, e, como comandante-geral, dirigiu os combates à Coluna Prestes (1926) e ao Movimento de Princesa (1930).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A PMPB tem três comandos regionais (Região Metropolitana, CPR-I e CPR-II), 15 batalhões de área, sete companhias independentes e unidades especializadas, como Bope, cavalaria, trânsito, ambiental, motos, turismo e o grupamento da Caatinga.",
+  "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/",
+  "unidades_total": 29,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "1º Batalhão",
+    "local": "João Pessoa (Centro)",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "2º Batalhão",
+    "local": "Campina Grande (São José)",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "3º Batalhão",
+    "local": "Patos",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "4º Batalhão",
+    "local": "Guarabira",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "5º Batalhão",
+    "local": "João Pessoa (Valentina de Figueiredo)",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "6º Batalhão",
+    "local": "Cajazeiras",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "7º Batalhão",
+    "local": "Santa Rita",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "8º Batalhão",
+    "local": "Itabaiana",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "9º Batalhão",
+    "local": "Picuí",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "10º Batalhão",
+    "local": "Campina Grande (Centro)",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "11º Batalhão",
+    "local": "Monteiro",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "12º Batalhão",
+    "local": "Catolé do Rocha",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "13º Batalhão",
+    "local": "Itaporanga",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "14º Batalhão",
+    "local": "Sousa",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "15º Batalhão",
+    "local": "Esperança",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Batalhão de Operações Especiais (Bope)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Regimento de Polícia Montada (RPMont)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Batalhão de Polícia de Trânsito Urbano e Rodoviário (BPTran)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Batalhão de Polícia Ambiental (BPAmb)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Batalhão Especializado em Policiamento com Motocicletas (BEPMotos)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Batalhão Especializado em Policiamento Turístico (BEPTur)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "Grupamento Especializado de Operações em Área de Caatinga (GEOsAC)",
+    "local": null,
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "1ª Companhia Independente",
+    "local": "Alhandra",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "2ª Companhia Independente",
+    "local": "Mamanguape",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "3ª Companhia Independente",
+    "local": "Queimadas",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "4ª Companhia Independente",
+    "local": "Bayeux",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "5ª Companhia Independente",
+    "local": "Princesa Isabel",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "6ª Companhia Independente",
+    "local": "Cabedelo",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   },
+   {
+    "nome": "7ª Companhia Independente",
+    "local": "Solânea",
+    "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Cabedelo (Ponta de Campina), PB",
+  "fonte": "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+ },
+ "efetivo": {
+  "valor": 8990,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Para%C3%ADba",
+  "https://www.pm.pb.gov.br/portal/contatos-da-pmpb/"
+ ]
+}
