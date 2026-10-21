@@ -56,7 +56,7 @@ HISTORICO = [("camara-proposicoes", {"inicio": date(a, 1, 1), "fim": min(date(a 
              for a in range(1985, date.today().year + 1, 5)] + (
     # anos antigos mudam pouco: a situação desde 1985 é atualizada só aos domingos (um arquivo grande por ano)
     [("camara-proposicoes-situacao", {"desde": 1985})] if date.today().weekday() == 6 else [])
-SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}),
+SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}), ("isp-rj-batalhoes", {}),
              *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 
 

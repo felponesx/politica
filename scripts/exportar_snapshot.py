@@ -67,6 +67,8 @@ FIXAS = [
     "/seguranca", "/dividas/familias-estados", "/escandalos",
 ]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
+FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))
+                          if not arq.name.startswith("aisp-")]
 # quantos detalhes (popouts) guardar por tipo
 TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "contratos": 1200, "obras": 1500,
                 "fornecedores": 400, "municipios": 6000}

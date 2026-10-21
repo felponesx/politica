@@ -1612,6 +1612,18 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 @keyframes anRevela{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes anPonto{from{opacity:0;transform:scale(.2)}}
 @keyframes anBarra{from{transform:scaleX(0)}}
+/* fichas das polícias (v1.5) */
+.pol-link{cursor:pointer;border-radius:10px;transition:background .15s}.pol-link:hover,.pol-link:focus-visible{background:var(--soft);outline:none}
+.pol-ver{font-size:12.5px;color:var(--blue);font-weight:600;margin-top:4px}
+.pol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.pol-card{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;background:var(--surface)}
+.pol-card:hover{border-color:var(--blue);background:var(--soft)}.pol-card small{display:block;color:var(--muted);font-size:12px;line-height:1.3}
+.pol-h{display:flex;gap:16px;align-items:center}.pol-h>span:first-child{flex:none}
+.pol-res{font-size:15.5px;max-width:860px;margin:4px 0 0}
+.pol-her{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pol-heroi{border:1px solid var(--line);border-radius:12px;padding:12px}.pol-heroi.pat{border-color:#E0BC4A;background:color-mix(in srgb,#E0BC4A 9%,var(--surface))}
+.pol-heroi b{display:block;margin:6px 0 4px}.pol-heroi p{margin:0;font-size:13.5px}
+.pol-f{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -4371,7 +4383,7 @@ function segEstado(uf){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04,d=
  const uns=segUnidades(uf);
  return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Segurança pública</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${e.populacao?nf(Math.round(e.populacao))+" habitantes. ":""}Valores arredondados; taxas por 100 mil habitantes.</p></div></div>
  <div class="ufrest">${segCompleto(e,d,uf)||rvazio("Sem dados de segurança deste estado ainda.")}
- ${e.efetivo?`<h3 class="seg-h">Quem faz a segurança <small>efetivo da ativa, ${ref.efetivo}</small></h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:""}
+ ${e.efetivo?`<h3 class="seg-h">Quem faz a segurança <small>efetivo da ativa, ${ref.efetivo} · toque numa polícia para ver história, batalhões e números</small></h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:""}
  <div class="un-w"${UNIDADES.some(x=>x[0]===uf)?"":" hidden"}><h3 class="seg-h">Unidades especiais</h3>${uns}</div>
  <p class="small" style="margin:12px 0 0"><a href="#/uf/${uf}">Ficha completa ${esc(deUF(uf))}</a></p></div>`}}
 const SEG_SEM=`<div class="rbanner">Os números de segurança pública aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
@@ -4417,9 +4429,9 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    <div id="segchartw" style="margin-top:14px"><h3 class="seg-h" id="segcht"></h3><div id="segchart"></div></div></div><div id="segstate" style="display:none"></div></div>
   ${segPorDia(B,d)}<div class="seg-ano">${segBlocos(B,null,ref)}</div>
   ${segAnoAno(d,null)}
-  ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais</p></div></div>${segEfetivo(B.efetivo,null)}
+  ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais. Toque numa polícia para ver a ficha.</p></div><a class="btn" href="#/policias">Todas as polícias ›</a></div>${segEfetivo(B.efetivo,null)}
    <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["Policiais (PM e Civil)",r=>{const f=gv(d.estados[r.uf],"efetivo")||{};return f.policia_militar==null&&f.policia_civil==null?"—":n0((f.policia_militar||0)+(f.policia_civil||0))},"n"],["Por mil habitantes",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"n"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
-  <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos</p></div></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt" open><summary class="small">Unidades dos estados</summary><div class="embl-grid" data-unids="ALL">${UNIDADES.filter(u=>u[0]!=="BR").map(cartaoUnidade).join("")}</div></details>`:""}</div>
+  <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos. Toque numa unidade para ver a história e os números.</p></div><a class="btn" href="#/policias">Todas as polícias ›</a></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt" open><summary class="small">Unidades dos estados</summary><div class="embl-grid" data-unids="ALL">${UNIDADES.filter(u=>u[0]!=="BR").map(cartaoUnidade).join("")}</div></details>`:""}</div>
   <div class="panel mt"><h2>Procurados pela Justiça</h2><p class="small" style="margin:6px 0 0">O número de mandados de prisão em aberto vem do Banco Nacional de Medidas Penais e Prisões (BNMP), do Conselho Nacional de Justiça. O BNMP não responde a servidores fora do Brasil; o número entra aqui quando o BRASIL+ rodar no servidor próprio. Enquanto isso, a consulta pública está no <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener">portal do BNMP</a>.</p></div>
   <div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:6px 0 0;padding-left:18px">${(d.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>
   ${RSRC(Object.values(d.fontes||{}).join("; "))}`;
@@ -4953,16 +4965,92 @@ function navVoltar(pai){const p=NAVH.pilha;location.hash="#/"+(p.length>=2?p[p.l
 function navRestaura(h){const y=NAVH.pos[h];if(!y){scrollTo(0,0);return}let n=0;const vai=()=>{if(NAVH.atual!==h)return;
  if(document.documentElement.scrollHeight-innerHeight>=y-4||n>12){scrollTo({top:y,behavior:"instant"});return}n++;setTimeout(vai,150)};scrollTo(0,0);vai()}
 document.addEventListener("click",e=>{const a=e.target.closest("[data-voltar]");if(!a)return;e.preventDefault();navVoltar(a.dataset.voltar)});
+/* ===================== fichas das polícias (v1.5): história, patrono e homenageados, batalhões, contingente ===================== */
+// tocar numa polícia (brasão, linha do efetivo, cartão de unidade) abre #/policia/<slug>; a lista completa fica em #/policias
+const polSlug=k=>String(k||"").replace(/:/g,"-").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Za-z0-9-]/g,"");
+let POL_LISTA=null,POL_P=null;
+function polLista(){return POL_LISTA?Promise.resolve(POL_LISTA):POL_P||(POL_P=apiGet("/policias").then(r=>(POL_LISTA=r.itens||[],POL_LISTA)).catch(()=>(POL_LISTA=[],POL_LISTA)))}
+const POL_CORP={pm:"Polícia Militar",pc:"Polícia Civil",pf:"Polícia Federal",prf:"Polícia Rodoviária Federal",spf:"Polícia Penal Federal",fn:"Força Nacional",u:"Unidade especial"};
+const POL_EF={pm:"policia_militar",pc:"policia_civil",pf:"policia_federal",prf:"prf",spf:"policia_penal_federal"};
+const polCor=c=>(CORP[c]||CORP.pm)[1];
+const polFonte=u=>u?` <a class="small pol-f" href="${esc(u)}" target="_blank" rel="noopener">fonte</a>`:"";
+const polAno=d=>{const m=String(d||"").match(/\d{4}/);return m?+m[0]:null};
+// marca como clicáveis os brasões e linhas de polícia que têm ficha
+function polMarca(){if(!POL_LISTA||!POL_LISTA.length)return;const tem=new Set(POL_LISTA.map(x=>x.slug));
+ document.querySelectorAll("[data-pol]:not([data-polk])").forEach(el=>{el.dataset.polk=1;const s=polSlug(el.dataset.pol);if(!tem.has(s))return;
+  const alvo=el.closest(".seg-efl,.embl-card")||el;alvo.classList.add("pol-link");alvo.dataset.polgo=s;alvo.setAttribute("role","link");alvo.tabIndex=0;
+  if(alvo.matches(".embl-card")&&!alvo.querySelector(".pol-ver"))alvo.querySelector("div")?.insertAdjacentHTML("beforeend",`<div class="pol-ver">Ver história, batalhões e números ›</div>`)})}
+document.addEventListener("click",ev=>{const a=ev.target.closest("[data-polgo]");if(!a||ev.target.closest("a[href]:not([data-polgo])"))return;ev.preventDefault();location.hash="#/policia/"+a.dataset.polgo});
+document.addEventListener("keydown",ev=>{if(ev.key!=="Enter")return;const a=ev.target.closest&&ev.target.closest("[data-polgo]");if(a)location.hash="#/policia/"+a.dataset.polgo});
+{let q=0;new MutationObserver(()=>{if(q)return;q=requestAnimationFrame(()=>{q=0;if(document.querySelector("[data-pol]:not([data-polk])"))polLista().then(polMarca)})}).observe(document.body,{childList:true,subtree:true})}
+
+P.policias=()=>({html:`<div class="ph"><div><h1>As polícias do Brasil</h1><p>Toque numa polícia para ver a história, o patrono e os homenageados, os batalhões e onde ficam, o contingente e os números de mortes e prisões.</p></div></div><div id="polL">${API.on?rload():SEG_SEM}</div>`,
+ mount(){if(!API.on)return;polLista().then(L=>{const box=$("#polL");if(!box)return;if(!L.length){box.innerHTML=rvazio("As fichas das polícias ainda não estão nesta cópia dos dados.");return}
+  const card=x=>`<a class="pol-card" href="#/policia/${x.slug}"><span data-pol="${esc(x.chave)}" data-h="44">${emblema(x.sigla||x.corp.toUpperCase(),x.corp==="u"?"pm":x.corp,40)}</span><span><b>${esc(x.sigla||"")}</b><small>${esc(x.nome)}</small></span></a>`;
+  const fed=L.filter(x=>x.uf==="BR"),est=UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>[u,L.filter(x=>x.uf===u.uf).sort((a,b)=>"pm pc u".indexOf(a.corp)-"pm pc u".indexOf(b.corp))]).filter(([,l])=>l.length);
+  box.innerHTML=`${fed.length?`<div class="panel"><h2>Federais e nacionais</h2><div class="pol-grid">${fed.map(card).join("")}</div></div>`:""}
+  ${est.map(([u,l])=>`<div class="panel mt"><h2 class="h1flag" style="font-size:18px">${bandeiraImg(u.uf,"flag flag-sm")}${esc(u.nome)}</h2><div class="pol-grid">${l.map(card).join("")}</div></div>`).join("")}`})}});
+
+P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
+ mount(){if(!API.on)return;Promise.all([apiGet("/policias/"+s),segDados().catch(()=>null)]).then(([f,d])=>{const box=$("#polD");if(!box)return;
+  const uf=f.uf&&f.uf!=="BR"?f.uf:null,E=d?(uf?d.estados[uf]:d.brasil)||{}:{},ef=E.efetivo||{},o=E.ocorrencias||{},v=E.violencia||{},ref=d?segRefs(d):{};
+  const kpx=(t,val,e="")=>`<div class="kpi"><span>${t}</span><strong>${val}</strong>${e?`<em>${e}</em>`:""}</div>`;
+  // contingente: o Raio-X do FBSP (mesma base do resto da aba) e, sem ele, o número da ficha
+  const kEf=POL_EF[f.corp],efN=kEf?ef[kEf]:null,prev=kEf&&ef.previsto?ef.previsto[kEf]:null;
+  const cont=efN?kpx("Contingente (efetivo da ativa)",n0(efN),`Raio-X das Forças de Segurança, ${ref.efetivo||""}`)+(prev?kpx("Previsto em lei",n0(prev),`${Math.round(100*efN/prev)}% das vagas preenchidas`):"")
+   :f.efetivo?kpx("Contingente",n0(f.efetivo.valor),`${esc(f.efetivo.data_ref||"")} ${polFonte(f.efetivo.fonte)}`):kpx("Contingente","—","não publicado em base aberta");
+  const org=f.organizacao,fa=polAno(f.fundacao&&f.fundacao.data);
+  const kUn=org&&org.unidades_total?kpx(`Total de ${esc(org.unidades_tipo)}`,nf(org.unidades_total),`${esc(org.data_ref||"")}${polFonte(org.fonte)}`):org&&org.unidades.length?kpx(`${esc(org.unidades_tipo)} listados`,nf(org.unidades.length),"com fonte"):"";
+  const kFun=fa?kpx("Criada em",String(fa),`há ${new Date().getFullYear()-fa} anos`):"";
+  // mortes e prisões: as bases abertas (Sinesp, Anuário) não separam por corporação, então os números são do estado inteiro
+  const est=uf&&(f.corp==="pm"||f.corp==="pc"||(f.corp==="u"&&f.subordinada_a))&&(o.mortes_intervencao!=null||v.mortes_intervencao!=null)?`<h3 class="seg-h">Mortes, prisões e policiais mortos <small>todas as polícias ${esc(deUF(uf))}</small></h3>
+   <div class="kpis kpis-c">${o.mortes_intervencao!=null?kpx("Mortes por intervenção de agente do Estado",n0(o.mortes_intervencao),`12 meses (${ref.ocorr}), Sinesp`):""}
+   ${o.mandados_cumpridos!=null?kpx("Presos por mandado de prisão",n0(o.mandados_cumpridos),`12 meses (${ref.ocorr}), Sinesp`):""}
+   ${o.agentes_mortos!=null?kpx("Agentes de segurança mortos",n0(o.agentes_mortos),`12 meses (${ref.ocorr}), Sinesp`):""}
+   ${v.policiais_mortos!=null?kpx("Policiais mortos",n0(v.policiais_mortos),`${v.ano||ref.violencia}, Anuário Brasileiro de Segurança Pública`):""}</div>
+   <p class="small muted" style="margin:6px 0 0">O Sinesp e o Anuário não separam esses números por corporação nem por batalhão: são de todas as polícias do estado. ${f.chave==="pm:RJ"?"No Rio, o ISP publica por área de batalhão (abaixo).":"Só o Rio de Janeiro publica em base aberta os números por área de batalhão."}</p>`:"";
+  const isp=f.isp_batalhoes;let ispH="";
+  if(isp){const S=isp.serie,anos=Object.keys(S),ult=S[isp.ano_ref]||{},ativos=isp.batalhoes.filter(b=>b.ativa),velhos=isp.batalhoes.filter(b=>!b.ativa);
+   const nomeB=b=>b.batalhao?`<b>${esc(b.batalhao)}</b>${b.nome?` <span class="small muted">${esc(b.nome)}</span>`:""}`:`<b>Área ${b.aisp}</b>`;
+   ispH=`<h3 class="seg-h">Por batalhão <small>áreas de batalhão (AISP) do ISP-RJ, ${isp.ano_ref}</small></h3>
+   <div class="kpis kpis-c">${kpx("Mortes por intervenção de agente do Estado",n0(ult.mortes_intervencao),`em ${isp.ano_ref}, estado do RJ`)}${kpx("Prisões",n0(ult.prisoes),`em flagrante e por mandado, ${isp.ano_ref}`)}${kpx("Policiais militares mortos em serviço",n0(ult.pms_mortos_servico),`em ${isp.ano_ref}`)}${kpx("PMs mortos em serviço desde "+anos[0],n0(anos.reduce((a,k)=>a+(S[k].pms_mortos_servico||0),0)))}</div>
+   <div class="grid g2 mt"><div class="panel"><h2>Mortes por intervenção de agente do Estado, por ano</h2>${lineChart([{n:"Mortes",v:anos.map(k=>S[k].mortes_intervencao),c:"#D92D20"}],anos,{h:190,fmt:n0})}${S[anos[anos.length-1]].meses<12?`<p class="small muted" style="margin:4px 0 0">${anos[anos.length-1]}: ${S[anos[anos.length-1]].meses} meses.</p>`:""}</div>
+   <div class="panel"><h2>Policiais militares mortos em serviço, por ano</h2>${lineChart([{n:"PMs mortos",v:anos.map(k=>S[k].pms_mortos_servico),c:"#1F3A68"}],anos,{h:190,fmt:n0})}</div></div>
+   <div class="panel mt">${table([["Batalhão",nomeB],["Sede e área",b=>`<span class="small">${esc(b.sede||"")}${b.sede&&b.area?" · ":""}<span class="muted">${esc(b.area||"")}</span></span>`],
+     ["Mortes por intervenção ("+isp.ano_ref+")",b=>n0(b.mortes_intervencao_ano),"n"],["Prisões ("+isp.ano_ref+")",b=>n0(b.prisoes_ano),"n"],["PMs mortos em serviço ("+isp.ano_ref+")",b=>n0(b.pms_mortos_servico_ano),"n"],
+     ["Mortes por intervenção desde "+(anos[0]||""),b=>n0(b.mortes_intervencao_total),"n"],["PMs mortos em serviço desde "+(anos[0]||""),b=>n0(b.pms_mortos_servico_total),"n"]],
+     ativos.slice().sort((a,b)=>(b.mortes_intervencao_ano||0)-(a.mortes_intervencao_ano||0)))}
+    ${velhos.length?`<p class="small muted" style="margin:8px 0 0">Áreas sem dados em ${isp.ano_ref} (extintas, renumeradas ou recriadas): ${velhos.map(b=>`área ${b.aisp} (${Object.keys(b.anos)[0]}–${b.ultimo_mes.slice(0,4)})`).join(", ")}.</p>`:""}
+    <p class="small muted" style="margin:8px 0 0">${esc(isp.aviso)} ${isp.mapa_fonte?`Tabela área → batalhão: <a href="${esc(isp.mapa_fonte)}" target="_blank" rel="noopener">fonte</a>. `:"A tabela área → batalhão ainda não tem fonte confirmada; as áreas aparecem pelo número. "}Dados: <a href="${esc(isp.url)}" target="_blank" rel="noopener">${esc(isp.fonte)}</a>, até ${mesCurto(isp.ultimo_mes)}.</p></div>`}
+  // história, patrono e homenageados, organização
+  const hist=f.historia.length?`<div class="panel mt"><h2>História</h2>${f.fundacao?`<p style="margin:0 0 12px">${esc(f.fundacao.texto||"")}${polFonte(f.fundacao.fonte)}</p>`:""}<ol class="esc-tl">${f.historia.map(h=>`<li><span class="esc-dt">${esc(h.ano||"")}</span><span>${esc(h.texto)}${polFonte(h.fonte)}</span></li>`).join("")}</ol></div>`:"";
+  const her=f.patrono||f.homenageados.length?`<div class="panel mt"><h2>Heróis da farda <small class="muted" style="font-weight:500">patrono e homenageados oficiais</small></h2><div class="pol-her">
+   ${f.patrono?`<div class="pol-heroi pat"><span class="tag">Patrono</span><b>${esc(f.patrono.nome)}</b><p>${esc(f.patrono.texto||"")}${polFonte(f.patrono.fonte)}</p></div>`:""}
+   ${f.homenageados.map(h=>`<div class="pol-heroi"><span class="tag">Homenageado</span><b>${esc(h.nome)}</b><p>${esc(h.texto||"")}${polFonte(h.fonte)}</p></div>`).join("")}</div>
+   <p class="small muted" style="margin:10px 0 0">Pessoas que a própria corporação homenageia oficialmente (lei, decreto, medalha, nome de unidade).${d&&v.policiais_mortos!=null&&uf?` Em ${v.ano||ref.violencia}, ${n0(v.policiais_mortos)} policiais foram mortos ${esc(deUF(uf))} (Anuário Brasileiro de Segurança Pública).`:""}</p></div>`:"";
+  const orgH=org?`<div class="panel mt"><h2>Organização${org.unidades_total?` <small class="muted" style="font-weight:500">${nf(org.unidades_total)} ${esc(org.unidades_tipo)}</small>`:""}</h2><p style="margin:0 0 10px">${esc(org.texto)}${polFonte(org.fonte)}</p>
+   ${org.unidades.length?table([["Unidade",u=>`<b>${esc(u.nome)}</b>`],["Onde fica",u=>esc(u.local||"—")],["",u=>polFonte(u.fonte)]],org.unidades):""}</div>`:"";
+  const mae=f.subordinada_a?(POL_LISTA||[]).find(x=>x.chave===f.subordinada_a):null;
+  const esp=(f.unidades_especiais||[]).length?`<div class="panel mt"><h2>Unidades especiais</h2><div class="pol-grid">${f.unidades_especiais.map(x=>`<a class="pol-card" href="#/policia/${x.slug}"><span data-pol="${esc(x.slug.replace(/-/g,":"))}" data-h="44">${emblema(x.sigla||"",f.corp,40)}</span><span><b>${esc(x.sigla||"")}</b><small>${esc(x.nome)}</small></span></a>`).join("")}</div></div>`:"";
+  box.innerHTML=`<div class="ph pol-h"><span data-pol="${esc(f.chave)}" data-h="76">${emblema(f.sigla||"",f.corp==="u"?"pm":f.corp,64)}</span><div><h1>${esc(f.nome)}</h1>
+   <p>${f.sigla?`<b>${esc(f.sigla)}</b> · `:""}${uf?`${bandeiraImg(uf,"flag flag-sm")} ${esc(UF[uf].nome)}`:"Nacional"} · ${esc(POL_CORP[f.corp]||"")}${f.subordinada_a?` · faz parte da <a href="#/policia/${polSlug(f.subordinada_a)}">${esc(mae?mae.nome:f.subordinada_a)}</a>`:""}${f.sede?` · sede: ${esc(f.sede.local)}`:""}</p></div></div>
+   ${f.resumo?`<p class="pol-res">${esc(f.resumo.texto)}${polFonte(f.resumo.fonte)}</p>`:""}
+   <div class="kpis kpis-c mt">${cont}${kUn}${kFun}</div>
+   ${est}${ispH}${hist}${her}${orgH}${esp}
+   ${f.fontes.length?`<p class="small muted mt">Mais fontes: ${f.fontes.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${i+1}</a>`).join(", ")}</p>`:""}
+   <p class="small muted">Textos resumidos das fontes indicadas em cada item. Encontrou um erro? Avise para corrigirmos.</p>`;
+  polLista().then(polMarca)}).catch(()=>{const box=$("#polD");if(box)box.innerHTML=rvazio("Ficha desta polícia não encontrada nesta cópia dos dados.")})}});
+
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={escandalo:"escandalos",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={escandalo:"escandalos",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}

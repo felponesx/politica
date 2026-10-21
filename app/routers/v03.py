@@ -510,3 +510,24 @@ def ia_indice():
     if not valor:
         raise HTTPException(404, "Índice da IA ainda não gerado: rode python -m scripts.indice_ia (ou o robô de coleta).")
     return valor
+
+
+@router.get("/policias", tags=["Segurança"])
+def policias_lista():
+    """Polícias com ficha (história, patrono, organização): chave, nome, sigla, estado e corporação mãe."""
+    from app import policias
+    return policias.listar()
+
+
+@router.get("/policias/{slug}", tags=["Segurança"])
+def policia(slug: str, db: Session = Depends(get_db)):
+    """Ficha de uma polícia ou unidade especial (ex.: pm-SP, pc-RJ, pf, u-RJ-BOPE). Na PM do Rio, inclui os números do
+    ISP-RJ por área de batalhão (mortes por intervenção, prisões e policiais mortos em serviço)."""
+    from app import policias
+    por = None
+    if slug == "pm-RJ":
+        por = {r.chave: r.dados for r in db.execute(select(Registro).where(Registro.fonte == "isp-rj", Registro.tipo == "aisp")).scalars()}
+    f = policias.ficha(slug, por)
+    if not f:
+        raise HTTPException(404, "Polícia não encontrada.")
+    return f
