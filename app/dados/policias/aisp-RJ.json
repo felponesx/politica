@@ -1,0 +1,596 @@
+{
+ "fonte": "https://www.ispdados.rj.gov.br/divisaoTerritorial.html",
+ "data_ref": "2026-07 (relação ISP); 2026-09 (comandantes ISP); 2026-10 (site da PM)",
+ "nota": "Montada em 21/10/2026 cruzando três fontes oficiais. (1) ISP: \"as AISP correspondem, geograficamente, às áreas de atuação de um batalhão da SEPM\" (página Divisão Territorial) e a relação RISP x AISP x CISP atualizada em julho de 2026 (bairros e municípios de cada CISP, usados no campo \"area\"). (2) ISP, arquivo \"Comandantes de batalhões de área\" (ComandantesBatalhao.csv), que dá por AISP o nome do comandante do BPM; em set/2026 o nome bate com o comandante do batalhão de mesmo número no site da PM nas AISP 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42; nas AISP 9, 20, 30, 31, 39 o nome difere (troca de comando ainda não refletida num dos dois sites), mas a área do batalhão descrita pela PM é a mesma da AISP. (3) Site da PM (SEPM), página de cada unidade: nome, endereço da sede (campo \"sede\") e bairros/municípios atendidos. Regra observada: AISP N = Nº BPM, com as exceções anotadas em \"obs\" (AISP 43 = 2ª CIPM, Paraty). Limites: o texto das Resoluções SSP 263/1999 e SESEG 478/2011 (anexos com a tabela oficial) não pôde ser aberto (servidores isp.rj.gov.br e arquivo.proderj.rj.gov.br fora do ar para nós); AISP foram renumeradas ao longo do tempo (ver \"vigencia\" e o arquivo de mudanças do ISP); a AISP 42 ainda não aparece nas séries de crimes; \"cisp\" e \"area\" seguem o ISP de jul/2026 e podem diferir do que a PM descreve para o batalhão.",
+ "fontes": [
+  "https://www.ispdados.rj.gov.br/divisaoTerritorial.html",
+  "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv",
+  "https://www.ispdados.rj.gov.br/Arquivos/ComandantesBatalhao.csv",
+  "https://www.ispdados.rj.gov.br/Arquivos/BaseDPEvolucaoMensalCisp.csv",
+  "https://www.ispdados.rj.gov.br/Arquivos/DesmembramentoDeCispEMudancaDeAisp.csv",
+  "https://sepm.rj.gov.br/institucional/"
+ ],
+ "aisp": {
+  "1": {
+   "batalhao": "1º BPM",
+   "nome": "Primeiro Batalhão de Polícia Militar",
+   "sede": "São Gonçalo (Venda da Cruz)",
+   "area": "Municípios: SÃ£o GonÃ§alo",
+   "cisp": [
+    "72",
+    "73"
+   ],
+   "risp": "4",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=159",
+   "vigencia": "desde 2026-01 (São Gonçalo); antes, 2003-01 a 2011-06 (antigo 1º BPM, no Centro do Rio)",
+   "obs": "O 1º BPM foi extinto em 2011 (Resolução SESEG 478) e reativado em São Gonçalo pelo Decreto 49.742, de 16/07/2025, com as CISP 72 e 73 tiradas do 7º BPM. Nas séries do ISP, a AISP 1 até jun/2011 é outra área (CISP 6 e 7, no Rio); de jul/2011 a dez/2025 não houve AISP 1."
+  },
+  "2": {
+   "batalhao": "2º BPM",
+   "nome": "Segundo Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Botafogo)",
+   "area": "Rio de Janeiro: Catete, Cosme Velho, Flamengo, GlÃ³ria e Laranjeiras; Botafogo, HumaitÃ¡ e Urca",
+   "cisp": [
+    "9",
+    "10"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=35"
+  },
+  "3": {
+   "batalhao": "3º BPM",
+   "nome": "Terceiro Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Méier)",
+   "area": "Rio de Janeiro: Cachambi, MÃ©ier (parte) e Todos os Santos (parte); AboliÃ§Ã£o, Ãgua Santa (parte), Encantado, Engenho de Dentro (parte), Pilares e Piedade; Engenho Novo, JacarÃ©, Jacarezinho, Riachuelo, Rocha, Sampaio e SÃ£o Francisco Xavier; Ãgua Santa (parte), Engenho de Dentro (parte), Lins de Vasconcelos e Todos os Santos; Del Castilho, Engenho da Rainha, InhaÃºma, Maria da GraÃ§a e TomÃ¡s Coelho",
+   "cisp": [
+    "23",
+    "24",
+    "25",
+    "26",
+    "44"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=36"
+  },
+  "4": {
+   "batalhao": "4º BPM",
+   "nome": "Quarto Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (São Cristóvão)",
+   "area": "Rio de Janeiro: Catumbi, Cidade Nova, EstÃ¡cio, Rio Comprido e Centro (parte); Caju, Mangueira, SÃ£o CristÃ³vÃ£o e Vasco da Gama",
+   "cisp": [
+    "6",
+    "17"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=37"
+  },
+  "5": {
+   "batalhao": "5º BPM",
+   "nome": "Quinto Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Gamboa)",
+   "area": "Rio de Janeiro: Centro (parte); Centro (parte), Gamboa, Santo Cristo e SaÃºde; Centro (parte), Lapa e PaquetÃ¡; Santa Teresa",
+   "cisp": [
+    "1",
+    "4",
+    "5",
+    "7"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=38"
+  },
+  "6": {
+   "batalhao": "6º BPM",
+   "nome": "Sexto Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Andaraí)",
+   "area": "Rio de Janeiro: MaracanÃ£, PraÃ§a da Bandeira e Tijuca (parte); Alto da Boa Vista e Tijuca (parte); AndaraÃ­, GrajaÃº e Vila Isabel",
+   "cisp": [
+    "18",
+    "19",
+    "20"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=39"
+  },
+  "7": {
+   "batalhao": "7º BPM",
+   "nome": "Sétimo Batalhão de Polícia Militar",
+   "sede": "São Gonçalo (Alcântara)",
+   "area": "Municípios: SÃ£o GonÃ§alo",
+   "cisp": [
+    "74",
+    "75"
+   ],
+   "risp": "4",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=40",
+   "obs": "Até dez/2025 a AISP 7 cobria todo o município de São Gonçalo (CISP 72 a 75); desde jan/2026 as CISP 72 e 73 são da AISP 1."
+  },
+  "8": {
+   "batalhao": "8º BPM",
+   "nome": "Oitavo Batalhão de Polícia Militar",
+   "sede": "Campos dos Goytacazes (Centro)",
+   "area": "Municípios: Campos dos Goytacazes, SÃ£o FidÃ©lis, SÃ£o JoÃ£o da Barra, SÃ£o Francisco de Itabapoana",
+   "cisp": [
+    "134",
+    "141",
+    "145",
+    "146",
+    "147"
+   ],
+   "risp": "6",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=41"
+  },
+  "9": {
+   "batalhao": "9º BPM",
+   "nome": "Nono Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Honório Gurgel)",
+   "area": "Rio de Janeiro: Cavalcanti, Engenheiro Leal, Madureira, TuriaÃ§u, Vaz Lobo, Oswaldo Cruz (parte), Cascadura e Quintino BocaiÃºva; Bento Ribeiro, Campinho, Marechal Hermes e Oswaldo Cruz (parte); Coelho Neto, ColÃ©gio (parte), HonÃ³rio Gurgel e Rocha Miranda",
+   "cisp": [
+    "29",
+    "30",
+    "40"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=42"
+  },
+  "10": {
+   "batalhao": "10º BPM",
+   "nome": "Décimo Batalhão de Polícia Militar",
+   "sede": "Barra do Piraí (Minuano)",
+   "area": "Municípios: Barra do PiraÃ­, ValenÃ§a, Rio das Flores, PiraÃ­, Vassouras, Miguel Pereira, Paty do Alferes, Mendes, Engenheiro Paulo de Frontin",
+   "cisp": [
+    "88",
+    "91",
+    "92",
+    "94",
+    "95",
+    "96",
+    "97",
+    "98"
+   ],
+   "risp": "5",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=43"
+  },
+  "11": {
+   "batalhao": "11º BPM",
+   "nome": "Décimo Primeiro Batalhão de Polícia Militar",
+   "sede": "Nova Friburgo (Vila Nova)",
+   "area": "Municípios: Nova Friburgo, Duas Barras, Cantagalo, Cordeiro, Macuco, Santa Maria Madalena, Trajano de Moraes, Bom Jardim, Cachoeiras de Macacu",
+   "cisp": [
+    "151",
+    "152",
+    "153",
+    "154",
+    "156",
+    "157",
+    "158",
+    "159"
+   ],
+   "risp": "7",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=44",
+   "obs": "Cachoeiras de Macacu (CISP 159) voltou da AISP 35 para a AISP 11 em jul/2026 (série mensal do ISP)."
+  },
+  "12": {
+   "batalhao": "12º BPM",
+   "nome": "Décimo Segundo Batalhão de Polícia Militar",
+   "sede": "Niterói (Centro)",
+   "area": "Municípios: NiterÃ³i, MaricÃ¡",
+   "cisp": [
+    "76",
+    "77",
+    "78",
+    "79",
+    "81",
+    "82"
+   ],
+   "risp": "4",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=45"
+  },
+  "13": {
+   "batalhao": "13º BPM (extinto em 2011)",
+   "nome": "Décimo Terceiro Batalhão de Polícia Militar",
+   "sede": null,
+   "area": "Parte do Centro do Rio de Janeiro (CISP 5); de abr/2003 a jun/2011. Desde jul/2011 a área é do 5º BPM (AISP 5).",
+   "cisp": [
+    "5"
+   ],
+   "risp": "1",
+   "vigencia": "2003-04 a 2011-06",
+   "obs": "Só existe nas séries antigas do ISP. O site da PM diz que em 2011 o 13º BPM foi extinto e o 5º BPM assumiu sua área; a Wikipédia lista um novo 13º BPM no Jacaré ainda \"a instalar\" (2026), sem AISP própria na relação do ISP de julho de 2026.",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=38"
+  },
+  "14": {
+   "batalhao": "14º BPM",
+   "nome": "Décimo Quarto Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Gericinó)",
+   "area": "Rio de Janeiro: Campo dos Afonsos, Deodoro, Jardim Sulacap, MagalhÃ£es Bastos, Realengo e Vila Militar; Bangu, GericinÃ³, Padre Miguel e Senador CamarÃ¡",
+   "cisp": [
+    "33",
+    "34"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=46"
+  },
+  "15": {
+   "batalhao": "15º BPM",
+   "nome": "Décimo Quinto Batalhão de Polícia Militar",
+   "sede": "Duque de Caxias (Centro)",
+   "area": "Municípios: Duque de Caxias",
+   "cisp": [
+    "59",
+    "60",
+    "61",
+    "62"
+   ],
+   "risp": "3",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=47"
+  },
+  "16": {
+   "batalhao": "16º BPM",
+   "nome": "Décimo Sexto Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Olaria)",
+   "area": "Rio de Janeiro: BrÃ¡s de Pina (parte), Olaria, Penha e Penha Circular (parte); BrÃ¡s de Pina (parte), Cordovil, Jardim AmÃ©rica, Parada de Lucas,Penha Circular (parte) e VigÃ¡rio Geral",
+   "cisp": [
+    "22",
+    "38"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=48"
+  },
+  "17": {
+   "batalhao": "17º BPM",
+   "nome": "Décimo Sétimo Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Ilha do Governador)",
+   "area": "Rio de Janeiro: BancÃ¡rios, Cacuia, Cidade UniversitÃ¡ria, CocotÃ¡, Freguesia, GaleÃ£o, Jardim Carioca, Jardim Guanabara, MonerÃ³, Pitangueiras, Portuguesa, Praia da Bandeira, Ribeira, TauÃ¡ e Zumbi",
+   "cisp": [
+    "37"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=49",
+   "obs": "A página do 17º BPM cita a \"17ª AISP\" e a Resolução SSP 478/2011, que mudou as AISP 4, 5, 6 e 17 (Paquetá passou ao 5º BPM)."
+  },
+  "18": {
+   "batalhao": "18º BPM",
+   "nome": "Décimo Oitavo Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Freguesia de Jacarepaguá)",
+   "area": "Rio de Janeiro: Vila Valqueire, PraÃ§a Seca e Tanque (parte); Anil, Cidade de Deus, Curicica, GardÃªnia Azul, JacarepaguÃ¡ e Taquara; Freguesia (JacarepaguÃ¡), Pechincha e Tanque (parte)",
+   "cisp": [
+    "28",
+    "32",
+    "41"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=50"
+  },
+  "19": {
+   "batalhao": "19º BPM",
+   "nome": "Décimo Nono Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Copacabana)",
+   "area": "Rio de Janeiro: Copacabana (parte) e Leme; Copacabana (parte)",
+   "cisp": [
+    "12",
+    "13"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=51"
+  },
+  "20": {
+   "batalhao": "20º BPM",
+   "nome": "Vigésimo Batalhão de Polícia Militar",
+   "sede": "Mesquita (Centro)",
+   "area": "Municípios: Nova IguaÃ§u, Mesquita, NilÃ³polis",
+   "cisp": [
+    "52",
+    "53",
+    "56",
+    "57",
+    "58"
+   ],
+   "risp": "3",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=52"
+  },
+  "21": {
+   "batalhao": "21º BPM",
+   "nome": "Vigésimo Primeiro Batalhão de Polícia Militar",
+   "sede": "São João de Meriti (Jardim José Bonifácio)",
+   "area": "Municípios: SÃ£o JoÃ£o de Meriti",
+   "cisp": [
+    "64"
+   ],
+   "risp": "3",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=53"
+  },
+  "22": {
+   "batalhao": "22º BPM",
+   "nome": "Vigésimo Segundo Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Bonsucesso)",
+   "area": "Rio de Janeiro: Benfica, Bonsucesso, HigienÃ³polis, Manguinhos, MarÃ© e Ramos",
+   "cisp": [
+    "21"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=54"
+  },
+  "23": {
+   "batalhao": "23º BPM",
+   "nome": "Vigésimo Terceiro Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Leblon)",
+   "area": "Rio de Janeiro: Rocinha; Ipanema e Leblon; GÃ¡vea, Jardim BotÃ¢nico, Lagoa, SÃ£o Conrado e Vidigal",
+   "cisp": [
+    "11",
+    "14",
+    "15"
+   ],
+   "risp": "1",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=55"
+  },
+  "24": {
+   "batalhao": "24º BPM",
+   "nome": "Vigésimo Quarto Batalhão de Polícia Militar",
+   "sede": "Queimados (Fanchen)",
+   "area": "Municípios: SeropÃ©dica, ItaguaÃ­, Paracambi, Queimados, Japeri",
+   "cisp": [
+    "48",
+    "50",
+    "51",
+    "55",
+    "63"
+   ],
+   "risp": "3",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=56"
+  },
+  "25": {
+   "batalhao": "25º BPM",
+   "nome": "Vigésimo Quinto Batalhão de Polícia Militar",
+   "sede": "Cabo Frio (Jardim Caiçara)",
+   "area": "Municípios: Araruama, Saquarema, SÃ£o Pedro da Aldeia, Cabo Frio, ArmaÃ§Ã£o dos BÃºzios, Iguaba Grande, Arraial do Cabo (o 25º BPM em si cobre hoje Cabo Frio, Armação dos Búzios, São Pedro da Aldeia e Arraial do Cabo, segundo a PM)",
+   "cisp": [
+    "118",
+    "124",
+    "125",
+    "126",
+    "127",
+    "129",
+    "132"
+   ],
+   "risp": "4",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=57",
+   "obs": "O 42º BPM (Araruama), criado pelo Decreto 50.123/2026, passou a policiar Araruama, Iguaba Grande e Saquarema, mas na relação do ISP de julho de 2026 e na série mensal até set/2026 essas CISP (118, 124, 129) ainda contam na AISP 25."
+  },
+  "26": {
+   "batalhao": "26º BPM",
+   "nome": "Vigésimo Sexto Batalhão de Polícia Militar",
+   "sede": "Petrópolis (Quitandinha)",
+   "area": "Municípios: PetrÃ³polis",
+   "cisp": [
+    "105",
+    "106"
+   ],
+   "risp": "7",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=58"
+  },
+  "27": {
+   "batalhao": "27º BPM",
+   "nome": "Vigésimo Sétimo Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Guaratiba)",
+   "area": "Rio de Janeiro: PaciÃªncia e Santa Cruz; Guaratiba, Pedra de Guaratiba e Sepetiba",
+   "cisp": [
+    "36",
+    "43"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=59"
+  },
+  "28": {
+   "batalhao": "28º BPM",
+   "nome": "Vigésimo Oitavo Batalhão de Polícia Militar",
+   "sede": "Volta Redonda (Voldac)",
+   "area": "Municípios: Barra Mansa, Volta Redonda, Pinheiral, Rio Claro",
+   "cisp": [
+    "90",
+    "93",
+    "101",
+    "168"
+   ],
+   "risp": "5",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=60",
+   "obs": "Barra Mansa (CISP 90) continua na AISP 28, embora desde 2026 seja policiada pela 3ª CIPM (Decreto 50.123/2026), segundo a PM."
+  },
+  "29": {
+   "batalhao": "29º BPM",
+   "nome": "Vigésimo Nono Batalhão de Polícia Militar",
+   "sede": "Itaperuna (Cidade Nova)",
+   "area": "Municípios: Laje do MuriaÃ©, PorciÃºncula, Natividade, Varre-Sai, Itaperuna, SÃ£o JosÃ© de UbÃ¡, Bom Jesus de Itabapoana, Italva, Cardoso Moreira",
+   "cisp": [
+    "138",
+    "139",
+    "140",
+    "143",
+    "144",
+    "148"
+   ],
+   "risp": "6",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=61"
+  },
+  "30": {
+   "batalhao": "30º BPM",
+   "nome": "Trigésimo Batalhão de Polícia Militar",
+   "sede": "Teresópolis (Pimenteiras)",
+   "area": "Municípios: SÃ£o JosÃ© do Vale do Rio Preto, TeresÃ³polis, Sumidouro, Carmo",
+   "cisp": [
+    "104",
+    "110",
+    "111",
+    "112"
+   ],
+   "risp": "7",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=62"
+  },
+  "31": {
+   "batalhao": "31º BPM",
+   "nome": "Trigésimo Primeiro Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Recreio dos Bandeirantes)",
+   "area": "Rio de Janeiro: Barra da Tijuca, ItanhangÃ¡, JoÃ¡; Recreio dos Bandeirantes, Barra de Guaratiba, Camorim, Grumari, Vargem Grande e Vargem Pequena",
+   "cisp": [
+    "16",
+    "42"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=63"
+  },
+  "32": {
+   "batalhao": "32º BPM",
+   "nome": "Trigésimo Segundo Batalhão de Polícia Militar",
+   "sede": "Macaé (Barra de Macaé)",
+   "area": "Municípios: Casimiro de Abreu, ConceiÃ§Ã£o de MacabÃº, MacaÃ©, Rio das Ostras, Carapebus, QuissamÃ£",
+   "cisp": [
+    "121",
+    "122",
+    "123",
+    "128",
+    "130"
+   ],
+   "risp": "6",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=64"
+  },
+  "33": {
+   "batalhao": "33º BPM",
+   "nome": "Trigésimo Terceiro Batalhão de Polícia Militar",
+   "sede": "Angra dos Reis (Parque Mambucaba)",
+   "area": "Municípios: Mangaratiba, Angra dos Reis",
+   "cisp": [
+    "165",
+    "166"
+   ],
+   "risp": "5",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=65"
+  },
+  "34": {
+   "batalhao": "34º BPM",
+   "nome": "Trigésimo Quarto Batalhão de Polícia Militar",
+   "sede": "Magé (Centro)",
+   "area": "Municípios: MagÃ©, Guapimirim",
+   "cisp": [
+    "65",
+    "66",
+    "67"
+   ],
+   "risp": "3",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=66"
+  },
+  "35": {
+   "batalhao": "35º BPM",
+   "nome": "Trigésimo Quinto Batalhão de Polícia Militar",
+   "sede": "Itaboraí (Centro)",
+   "area": "Municípios: TanguÃ¡, ItaboraÃ­, Rio Bonito, Silva Jardim",
+   "cisp": [
+    "70",
+    "71",
+    "119",
+    "120"
+   ],
+   "risp": "4",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=67"
+  },
+  "36": {
+   "batalhao": "36º BPM",
+   "nome": "Trigésimo Sexto Batalhão de Polícia Militar",
+   "sede": "Santo Antônio de Pádua (Arraialzinho)",
+   "area": "Municípios: Itaocara, AperibÃ©, Santo AntÃ´nio de PÃ¡dua, Miracema, Cambuci, SÃ£o SebastiÃ£o do Alto",
+   "cisp": [
+    "135",
+    "136",
+    "137",
+    "142",
+    "155"
+   ],
+   "risp": "6",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=68"
+  },
+  "37": {
+   "batalhao": "37º BPM",
+   "nome": "Trigésimo Sétimo Batalhão de Polícia Militar",
+   "sede": "Resende (Campo de Aviação)",
+   "area": "Municípios: Resende, Itatiaia, Porto Real, Quatis",
+   "cisp": [
+    "89",
+    "99",
+    "100"
+   ],
+   "risp": "5",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=69"
+  },
+  "38": {
+   "batalhao": "38º BPM",
+   "nome": "Trigésimo Oitavo Batalhão de Polícia Militar",
+   "sede": "Três Rios (Boa União)",
+   "area": "Municípios: ParaÃ­ba do Sul, Areal, Comendador Levy Gasparian, TrÃªs Rios, Sapucaia",
+   "cisp": [
+    "107",
+    "108",
+    "109"
+   ],
+   "risp": "7",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=70"
+  },
+  "39": {
+   "batalhao": "39º BPM",
+   "nome": "Trigésimo Nono Batalhão de Polícia Militar",
+   "sede": "Belford Roxo (Parque São Bernardo)",
+   "area": "Municípios: Belford Roxo",
+   "cisp": [
+    "54"
+   ],
+   "risp": "3",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=71"
+  },
+  "40": {
+   "batalhao": "40º BPM",
+   "nome": "Quadragésimo Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Campo Grande)",
+   "area": "Rio de Janeiro: Campo Grande, Cosmos, InhoaÃ­ba, SantÃ­ssimo e Senador Vasconcelos",
+   "cisp": [
+    "35"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=72"
+  },
+  "41": {
+   "batalhao": "41º BPM",
+   "nome": "Quadragésimo Primeiro Batalhão de Polícia Militar",
+   "sede": "Rio de Janeiro (Colégio)",
+   "area": "Rio de Janeiro: ColÃ©gio (parte), IrajÃ¡, Vicente de Carvalho, Vila Kosmos, Vila da Penha e Vista Alegre; Anchieta, Guadalupe, Parque Anchieta e Ricardo de Albuquerque; Acari, Barros Filho, Costa Barros, Parque ColÃºmbia e Pavuna",
+   "cisp": [
+    "27",
+    "31",
+    "39"
+   ],
+   "risp": "2",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=73",
+   "obs": "A página do 41º BPM diz que o batalhão \"está inserido na AISP 41\"."
+  },
+  "42": {
+   "batalhao": "42º BPM",
+   "nome": "Quadragésimo Segundo Batalhão de Polícia Militar",
+   "sede": "Araruama (Centro)",
+   "area": "Araruama, Iguaba Grande e Saquarema (segundo a PM)",
+   "cisp": [],
+   "risp": null,
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=170",
+   "vigencia": "desde 2026 (lista de comandantes do ISP)",
+   "obs": "Batalhão criado pelo Decreto 50.123, de 26/01/2026. O ISP já lista o comandante da AISP 42, mas a relação territorial (jul/2026) e a série mensal de crimes ainda põem essas cidades na AISP 25."
+  },
+  "43": {
+   "batalhao": "2ª CIPM",
+   "nome": "Segunda Companhia Independente de Polícia Militar",
+   "sede": "Paraty (Ilha das Cobras)",
+   "area": "Municípios: Paraty",
+   "cisp": [
+    "167"
+   ],
+   "risp": "5",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=152",
+   "vigencia": "desde 2024-07",
+   "obs": "A AISP 43 (Paraty, CISP 167) foi desmembrada da AISP 33 em jul/2024 (ISP). Não é área de batalhão: a unidade da PM responsável por Paraty é a 2ª Companhia Independente (2ª CIPM), segundo o site da PM. A ligação AISP 43 → 2ª CIPM foi feita pelo território (as duas fontes falam só de Paraty); o ISP não publica o comandante da AISP 43."
+  }
+ }
+}

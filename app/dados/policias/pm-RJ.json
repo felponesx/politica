@@ -1,0 +1,469 @@
+{
+ "chave": "pm:RJ",
+ "nome": "Polícia Militar do Estado do Rio de Janeiro",
+ "sigla": "PMERJ",
+ "uf": "RJ",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no estado do Rio de Janeiro. Funciona como Secretaria de Estado de Polícia Militar, ligada ao governador.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+ },
+ "fundacao": {
+  "data": "1809-05-13",
+  "texto": "Dom João VI criou a Divisão Militar da Guarda Real da Polícia da Corte, com 218 guardas, no aniversário do príncipe regente.",
+  "fonte": "https://sepm.rj.gov.br/resumo-historico-da-policia-militar-do-estado-do-rio-de-janeiro/"
+ },
+ "historia": [
+  {
+   "ano": "1809",
+   "texto": "Criada a Divisão Militar da Guarda Real da Polícia da Corte, no Rio de Janeiro, com um estado-maior, três companhias de infantaria e um esquadrão de cavalaria.",
+   "fonte": "https://sepm.rj.gov.br/resumo-historico-da-policia-militar-do-estado-do-rio-de-janeiro/"
+  },
+  {
+   "ano": "1835",
+   "texto": "Com a separação da Corte e da província, nasce em Niterói a Guarda Policial da Província do Rio de Janeiro (Lei provincial nº 16), a outra força que formaria a PMERJ.",
+   "fonte": "https://sepm.rj.gov.br/resumo-historico-da-policia-militar-do-estado-do-rio-de-janeiro/"
+  },
+  {
+   "ano": "1865",
+   "texto": "Na Guerra do Paraguai, 510 policiais partem do Quartel dos Barbonos como 31º Corpo de Voluntários da Pátria; daí vem o cão Bruto, mascote empalhado no Museu da PM.",
+   "fonte": "https://sepm.rj.gov.br/resumo-historico-da-policia-militar-do-estado-do-rio-de-janeiro/"
+  },
+  {
+   "ano": "1975",
+   "texto": "A fusão da Guanabara com o Rio de Janeiro junta as duas polícias militares na atual PMERJ, com quartel-general no antigo Quartel dos Barbonos, no Centro do Rio.",
+   "fonte": "https://sepm.rj.gov.br/resumo-historico-da-policia-militar-do-estado-do-rio-de-janeiro/"
+  },
+  {
+   "ano": "1993",
+   "texto": "Chacina da Candelária: 8 jovens mortos a tiros em frente à igreja, no Centro. Um ex-policial militar foi condenado; dois PMs acusados foram inocentados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_da_Candel%C3%A1ria"
+  },
+  {
+   "ano": "1993",
+   "texto": "Chacina de Vigário Geral: 21 moradores mortos por homens encapuzados, um dia após a morte de 4 PMs. Dos 52 policiais militares acusados, 6 foram condenados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_de_Vig%C3%A1rio_Geral"
+  },
+  {
+   "ano": "2013",
+   "texto": "O ajudante de pedreiro Amarildo de Souza desaparece após ser levado por PMs à UPP da Rocinha. Em 2019, a Justiça do Rio manteve a condenação de 8 policiais e absolveu 4.",
+   "fonte": "https://pt.wikipedia.org/wiki/Caso_Amarildo"
+  },
+  {
+   "ano": "2025",
+   "texto": "Operação Contenção, das polícias Civil e Militar nos complexos da Penha e do Alemão contra o Comando Vermelho, termina com 121 mortes, segundo a fonte; foi chamada de chacina por críticos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes (Joaquim José da Silva Xavier)",
+  "texto": "Alferes dos Dragões de Minas Gerais e líder da Inconfidência Mineira, executado em 1792. A PMERJ o tem como patrono.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+ },
+ "homenageados": [
+  {
+   "nome": "Dom João VI",
+   "texto": "Criador da corporação em 1809; dá nome à escola que forma os oficiais da PM, a Escola de Formação de Oficiais Dom João VI.",
+   "fonte": "https://sepm.rj.gov.br/institucional/"
+  },
+  {
+   "nome": "Luís Alves de Lima e Silva, Duque de Caxias",
+   "texto": "Comandou a corporação nos anos 1830. O 17º BPM recebeu o nome \"Batalhão Luiz Alves de Lima e Silva\" (Decreto \"E\" nº 3.120/1972) e ele é patrono do 15º BPM, em Duque de Caxias.",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=49"
+  },
+  {
+   "nome": "Joaquim Antônio Fernandes de Assunção",
+   "texto": "Tenente-coronel que liderou o 31º Corpo de Voluntários da Pátria na Guerra do Paraguai. O 5º BPM se chama \"Batalhão Coronel Assunção\" (Decreto nº 35.821/1954).",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=38"
+  },
+  {
+   "nome": "João Batista Mascarenhas de Moraes",
+   "texto": "Comandante da Força Expedicionária Brasileira na Itália, na Segunda Guerra. O 12º BPM, em Niterói, recebeu em 1969 o nome \"Batalhão Mascarenhas de Moraes\".",
+   "fonte": "https://sepm.rj.gov.br/unidade/?id=45"
+  }
+ ],
+ "organizacao": {
+  "texto": "O comando-geral fica no Centro do Rio. Abaixo dele, 8 Comandos de Policiamento de Área (CPA), um por região, chefiam os batalhões de área, que se dividem em companhias. Cada batalhão de área corresponde a uma Área Integrada de Segurança Pública (AISP) do ISP. Há ainda comandos de operações especiais (BOPE, Choque), especializado, ambiental, trânsito e proximidade (UPP).",
+  "fonte": "https://sepm.rj.gov.br/institucional/",
+  "unidades_total": 41,
+  "unidades_tipo": "batalhões de área",
+  "data_ref": "2026-10",
+  "unidades": [
+   {
+    "nome": "Primeiro Batalhão de Polícia Militar (1º BPM)",
+    "local": "São Gonçalo (Venda da Cruz)",
+    "aisp": "1",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=159"
+   },
+   {
+    "nome": "Segundo Batalhão de Polícia Militar (2º BPM)",
+    "local": "Rio de Janeiro (Botafogo)",
+    "aisp": "2",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=35"
+   },
+   {
+    "nome": "Terceiro Batalhão de Polícia Militar (3º BPM)",
+    "local": "Rio de Janeiro (Méier)",
+    "aisp": "3",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=36"
+   },
+   {
+    "nome": "Quarto Batalhão de Polícia Militar (4º BPM)",
+    "local": "Rio de Janeiro (São Cristóvão)",
+    "aisp": "4",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=37"
+   },
+   {
+    "nome": "Quinto Batalhão de Polícia Militar (5º BPM)",
+    "local": "Rio de Janeiro (Gamboa)",
+    "aisp": "5",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=38"
+   },
+   {
+    "nome": "Sexto Batalhão de Polícia Militar (6º BPM)",
+    "local": "Rio de Janeiro (Andaraí)",
+    "aisp": "6",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=39"
+   },
+   {
+    "nome": "Sétimo Batalhão de Polícia Militar (7º BPM)",
+    "local": "São Gonçalo (Alcântara)",
+    "aisp": "7",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=40"
+   },
+   {
+    "nome": "Oitavo Batalhão de Polícia Militar (8º BPM)",
+    "local": "Campos dos Goytacazes (Centro)",
+    "aisp": "8",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=41"
+   },
+   {
+    "nome": "Nono Batalhão de Polícia Militar (9º BPM)",
+    "local": "Rio de Janeiro (Honório Gurgel)",
+    "aisp": "9",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=42"
+   },
+   {
+    "nome": "Décimo Batalhão de Polícia Militar (10º BPM)",
+    "local": "Barra do Piraí (Minuano)",
+    "aisp": "10",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=43"
+   },
+   {
+    "nome": "Décimo Primeiro Batalhão de Polícia Militar (11º BPM)",
+    "local": "Nova Friburgo (Vila Nova)",
+    "aisp": "11",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=44"
+   },
+   {
+    "nome": "Décimo Segundo Batalhão de Polícia Militar (12º BPM)",
+    "local": "Niterói (Centro)",
+    "aisp": "12",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=45"
+   },
+   {
+    "nome": "Décimo Quarto Batalhão de Polícia Militar (14º BPM)",
+    "local": "Rio de Janeiro (Gericinó)",
+    "aisp": "14",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=46"
+   },
+   {
+    "nome": "Décimo Quinto Batalhão de Polícia Militar (15º BPM)",
+    "local": "Duque de Caxias (Centro)",
+    "aisp": "15",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=47"
+   },
+   {
+    "nome": "Décimo Sexto Batalhão de Polícia Militar (16º BPM)",
+    "local": "Rio de Janeiro (Olaria)",
+    "aisp": "16",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=48"
+   },
+   {
+    "nome": "Décimo Sétimo Batalhão de Polícia Militar (17º BPM)",
+    "local": "Rio de Janeiro (Ilha do Governador)",
+    "aisp": "17",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=49"
+   },
+   {
+    "nome": "Décimo Oitavo Batalhão de Polícia Militar (18º BPM)",
+    "local": "Rio de Janeiro (Freguesia de Jacarepaguá)",
+    "aisp": "18",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=50"
+   },
+   {
+    "nome": "Décimo Nono Batalhão de Polícia Militar (19º BPM)",
+    "local": "Rio de Janeiro (Copacabana)",
+    "aisp": "19",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=51"
+   },
+   {
+    "nome": "Vigésimo Batalhão de Polícia Militar (20º BPM)",
+    "local": "Mesquita (Centro)",
+    "aisp": "20",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=52"
+   },
+   {
+    "nome": "Vigésimo Primeiro Batalhão de Polícia Militar (21º BPM)",
+    "local": "São João de Meriti (Jardim José Bonifácio)",
+    "aisp": "21",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=53"
+   },
+   {
+    "nome": "Vigésimo Segundo Batalhão de Polícia Militar (22º BPM)",
+    "local": "Rio de Janeiro (Bonsucesso)",
+    "aisp": "22",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=54"
+   },
+   {
+    "nome": "Vigésimo Terceiro Batalhão de Polícia Militar (23º BPM)",
+    "local": "Rio de Janeiro (Leblon)",
+    "aisp": "23",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=55"
+   },
+   {
+    "nome": "Vigésimo Quarto Batalhão de Polícia Militar (24º BPM)",
+    "local": "Queimados (Fanchen)",
+    "aisp": "24",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=56"
+   },
+   {
+    "nome": "Vigésimo Quinto Batalhão de Polícia Militar (25º BPM)",
+    "local": "Cabo Frio (Jardim Caiçara)",
+    "aisp": "25",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=57"
+   },
+   {
+    "nome": "Vigésimo Sexto Batalhão de Polícia Militar (26º BPM)",
+    "local": "Petrópolis (Quitandinha)",
+    "aisp": "26",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=58"
+   },
+   {
+    "nome": "Vigésimo Sétimo Batalhão de Polícia Militar (27º BPM)",
+    "local": "Rio de Janeiro (Guaratiba)",
+    "aisp": "27",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=59"
+   },
+   {
+    "nome": "Vigésimo Oitavo Batalhão de Polícia Militar (28º BPM)",
+    "local": "Volta Redonda (Voldac)",
+    "aisp": "28",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=60"
+   },
+   {
+    "nome": "Vigésimo Nono Batalhão de Polícia Militar (29º BPM)",
+    "local": "Itaperuna (Cidade Nova)",
+    "aisp": "29",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=61"
+   },
+   {
+    "nome": "Trigésimo Batalhão de Polícia Militar (30º BPM)",
+    "local": "Teresópolis (Pimenteiras)",
+    "aisp": "30",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=62"
+   },
+   {
+    "nome": "Trigésimo Primeiro Batalhão de Polícia Militar (31º BPM)",
+    "local": "Rio de Janeiro (Recreio dos Bandeirantes)",
+    "aisp": "31",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=63"
+   },
+   {
+    "nome": "Trigésimo Segundo Batalhão de Polícia Militar (32º BPM)",
+    "local": "Macaé (Barra de Macaé)",
+    "aisp": "32",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=64"
+   },
+   {
+    "nome": "Trigésimo Terceiro Batalhão de Polícia Militar (33º BPM)",
+    "local": "Angra dos Reis (Parque Mambucaba)",
+    "aisp": "33",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=65"
+   },
+   {
+    "nome": "Trigésimo Quarto Batalhão de Polícia Militar (34º BPM)",
+    "local": "Magé (Centro)",
+    "aisp": "34",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=66"
+   },
+   {
+    "nome": "Trigésimo Quinto Batalhão de Polícia Militar (35º BPM)",
+    "local": "Itaboraí (Centro)",
+    "aisp": "35",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=67"
+   },
+   {
+    "nome": "Trigésimo Sexto Batalhão de Polícia Militar (36º BPM)",
+    "local": "Santo Antônio de Pádua (Arraialzinho)",
+    "aisp": "36",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=68"
+   },
+   {
+    "nome": "Trigésimo Sétimo Batalhão de Polícia Militar (37º BPM)",
+    "local": "Resende (Campo de Aviação)",
+    "aisp": "37",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=69"
+   },
+   {
+    "nome": "Trigésimo Oitavo Batalhão de Polícia Militar (38º BPM)",
+    "local": "Três Rios (Boa União)",
+    "aisp": "38",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=70"
+   },
+   {
+    "nome": "Trigésimo Nono Batalhão de Polícia Militar (39º BPM)",
+    "local": "Belford Roxo (Parque São Bernardo)",
+    "aisp": "39",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=71"
+   },
+   {
+    "nome": "Quadragésimo Batalhão de Polícia Militar (40º BPM)",
+    "local": "Rio de Janeiro (Campo Grande)",
+    "aisp": "40",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=72"
+   },
+   {
+    "nome": "Quadragésimo Primeiro Batalhão de Polícia Militar (41º BPM)",
+    "local": "Rio de Janeiro (Colégio)",
+    "aisp": "41",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=73"
+   },
+   {
+    "nome": "Quadragésimo Segundo Batalhão de Polícia Militar (42º BPM)",
+    "local": "Araruama (Centro)",
+    "aisp": "42",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=170"
+   },
+   {
+    "nome": "Primeira Companhia Independente de Polícia Militar (1ª CIPM) – guarda do Palácio Guanabara",
+    "local": "Rio de Janeiro (Laranjeiras)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=74"
+   },
+   {
+    "nome": "Segunda Companhia Independente de Polícia Militar (2ª CIPM)",
+    "local": "Paraty (Ilha das Cobras)",
+    "aisp": "43",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=152"
+   },
+   {
+    "nome": "Terceira Companhia Independente de Polícia Militar (3ª CIPM)",
+    "local": "Barra Mansa (Bom Pastor)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=168"
+   },
+   {
+    "nome": "Quarta Companhia Independente de Polícia Militar (4ª CIPM) – a instalar",
+    "local": "Itaguaí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+   },
+   {
+    "nome": "Décimo Terceiro Batalhão de Polícia Militar (13º BPM) – a instalar",
+    "local": "Rio de Janeiro (Jacaré)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+   },
+   {
+    "nome": "Quadragésimo Quarto Batalhão de Polícia Militar (44º BPM) – a instalar",
+    "local": "Nova Iguaçu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+   },
+   {
+    "nome": "Quadragésimo Quinto Batalhão de Polícia Militar (45º BPM) – a instalar",
+    "local": "Maricá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+   },
+   {
+    "nome": "Quadragésimo Sexto Batalhão de Polícia Militar (46º BPM) – a instalar",
+    "local": "Campos dos Goytacazes (Guarus)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+   },
+   {
+    "nome": "Quadragésimo Sétimo Batalhão de Polícia Militar (47º BPM) – a instalar",
+    "local": "Rio de Janeiro (Recreio dos Bandeirantes)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": "Rio de Janeiro (Laranjeiras)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=76"
+   },
+   {
+    "nome": "Batalhão de Polícia de Choque (BPChq)",
+    "local": "Rio de Janeiro (Cidade Nova)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=75"
+   },
+   {
+    "nome": "Batalhão de Ações com Cães (BAC)",
+    "local": "Rio de Janeiro (Olaria)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=77"
+   },
+   {
+    "nome": "Batalhão Tático de Motociclistas (BTM)",
+    "local": "Rio de Janeiro (Cidade Nova)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=158"
+   },
+   {
+    "nome": "Batalhão de Rondas Especiais e Controle de Multidão (RECOM)",
+    "local": "Rio de Janeiro (Centro)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=80"
+   },
+   {
+    "nome": "Batalhão Especializado em Policiamento em Estádios (BEPE)",
+    "local": "Rio de Janeiro (Deodoro)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=83"
+   },
+   {
+    "nome": "Batalhão de Polícia de Turismo (BPTur)",
+    "local": "Rio de Janeiro (Copacabana)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=79"
+   },
+   {
+    "nome": "Batalhão de Policiamento em Vias Especiais (BPVE)",
+    "local": "Rio de Janeiro (Bangu)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=82"
+   },
+   {
+    "nome": "Grupamento de Policiamento Ferroviário (GPFer)",
+    "local": "Rio de Janeiro (Deodoro)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=84"
+   },
+   {
+    "nome": "Regimento de Polícia Montada (RPMont)",
+    "local": "Rio de Janeiro (Campo Grande)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=85"
+   },
+   {
+    "nome": "Grupamento Aeromóvel (GAM)",
+    "local": "Niterói (Centro)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=147"
+   },
+   {
+    "nome": "Primeiro Batalhão de Polícia Rodoviária (1º BPRv)",
+    "local": "Niterói (Fonseca)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=172"
+   },
+   {
+    "nome": "Segundo Batalhão de Polícia Rodoviária (2º BPRv)",
+    "local": "Macaé (Cabiúnas)",
+    "fonte": "https://sepm.rj.gov.br/unidade/?id=173"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Rio de Janeiro (Centro), RJ – Rua Evaristo da Veiga, 78",
+  "fonte": "https://sepm.rj.gov.br/unidade/?id=1"
+ },
+ "efetivo": {
+  "valor": 43500,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro"
+ },
+ "fontes_gerais": [
+  "https://sepm.rj.gov.br/institucional/",
+  "https://sepm.rj.gov.br/resumo-historico-da-policia-militar-do-estado-do-rio-de-janeiro/",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Rio_de_Janeiro",
+  "https://www.ispdados.rj.gov.br/divisaoTerritorial.html",
+  "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv",
+  "https://www.ispdados.rj.gov.br/Arquivos/ComandantesBatalhao.csv"
+ ]
+}
