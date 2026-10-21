@@ -1,0 +1,67 @@
+{
+ "chave": "u:PR:BOPE",
+ "nome": "Batalhão de Operações Especiais",
+ "sigla": "BOPE",
+ "uf": "PR",
+ "corp": "u",
+ "subordinada_a": "pm:PR",
+ "resumo": {
+  "texto": "Unidade de operações especiais e de choque da Polícia Militar do Paraná: controle de distúrbios, resgate de reféns, rebeliões em presídios, explosivos, patrulhamento tático e policiamento com cães.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+ },
+ "fundacao": {
+  "data": "1964-10",
+  "texto": "A Companhia de Operações Especiais foi oficialmente instituída em outubro de 1964, como 5ª Companhia do Batalhão de Guardas; o aniversário é comemorado em 27 de outubro.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+ },
+ "historia": [
+  {
+   "ano": "1964",
+   "texto": "O capitão Goro Yassumoto, treinado em Fort Bragg (EUA), recebe a missão de criar a unidade; a Companhia de Operações Especiais é instituída em outubro.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+  },
+  {
+   "ano": "1965",
+   "texto": "Em 4 de julho, a companhia ganha autonomia e passa a responder direto ao Comando Geral.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+  },
+  {
+   "ano": "1967",
+   "texto": "Em 5 de setembro, vira Corpo de Operações Especiais, com três companhias, na origem uma unidade de contraguerrilha.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+  },
+  {
+   "ano": "1977",
+   "texto": "É constituída oficialmente, em 19 de abril, a Companhia de Polícia de Choque, que reforçada pelo canil assume as ações de choque e rebeliões.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+  },
+  {
+   "ano": "1988",
+   "texto": "A Companhia de Choque começa a ser remodelada para virar batalhão, com três companhias (patrulhamento tático, operações especiais e cães).",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+  },
+  {
+   "ano": "2010",
+   "texto": "Em outubro, o governador Orlando Pessuti transforma a Companhia de Polícia de Choque em Batalhão de Operações Especiais (BOPE).",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Subordinado ao Comando de Policiamento Especial. Tem seis companhias: duas de Rondas Ostensivas de Natureza Especial (RONE), duas de controle de distúrbios civis (Choque), uma de Operações Especiais (COE: táticos, atiradores e explosivos) e uma de polícia com cães (Canil).",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29",
+  "unidades_total": 6,
+  "unidades_tipo": "companhias",
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Curitiba (Rebouças), PR — Av. Marechal Floriano Peixoto, 1401",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMPR%29"
+ ]
+}

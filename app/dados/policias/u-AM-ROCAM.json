@@ -1,0 +1,59 @@
+{
+ "chave": "u:AM:ROCAM",
+ "nome": "Rondas Ostensivas Cândido Mariano",
+ "sigla": "ROCAM",
+ "uf": "AM",
+ "corp": "u",
+ "subordinada_a": "pm:AM",
+ "resumo": {
+  "texto": "Batalhão de policiamento tático da PM do Amazonas, com viaturas e motocicletas, para combate ao crime organizado, ocorrências de maior impacto e graves perturbações da ordem.",
+  "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+ },
+ "fundacao": {
+  "data": "1993-07-23",
+  "texto": "Surgiu em 23 de julho de 1993 como 2º Batalhão de Policiamento de Choque – Batalhão Rondas Ostensivas Cândido Mariano, com militares do GATE.",
+  "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+ },
+ "historia": [
+  {
+   "ano": "1993",
+   "texto": "Criado o 2º Batalhão de Policiamento de Choque – Rondas Ostensivas Cândido Mariano, formado por integrantes do GATE.",
+   "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+  },
+  {
+   "ano": "1997",
+   "texto": "Criada a Companhia de Rocam dentro do Batalhão de Policiamento Especial, para combater roubos e latrocínios contra taxistas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+  },
+  {
+   "ano": "2002",
+   "texto": "Na reestruturação da PM, em julho, a Rocam passa para o recém-criado Comando de Policiamento Especializado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+  },
+  {
+   "ano": "2021",
+   "texto": "O batalhão tinha 240 policiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "É o 2º Batalhão de Policiamento de Choque, dentro do Comando de Policiamento Especializado da PM do Amazonas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas",
+  "unidades_total": null,
+  "unidades_tipo": null,
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": {
+  "valor": 240,
+  "data_ref": "2021",
+  "fonte": "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Ronda_Ostensiva_C%C3%A2ndido_Mariano",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+ ]
+}

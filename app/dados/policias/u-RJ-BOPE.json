@@ -1,0 +1,83 @@
+{
+ "chave": "u:RJ:BOPE",
+ "nome": "Batalhão de Operações Policiais Especiais",
+ "sigla": "BOPE",
+ "uf": "RJ",
+ "corp": "u",
+ "subordinada_a": "pm:RJ",
+ "resumo": {
+  "texto": "Tropa de operações especiais da Polícia Militar do Rio de Janeiro. Atua em resgate de reféns, crises de alto risco e operações contra o crime organizado em áreas conflagradas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+ },
+ "fundacao": {
+  "data": "1978-01-19",
+  "texto": "Nasceu em 19 de janeiro de 1978 como Núcleo da Companhia de Operações Especiais (NuCOE), a partir de projeto do capitão Paulo César Amendola de Souza.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+ },
+ "historia": [
+  {
+   "ano": "1974",
+   "texto": "Uma ocorrência com reféns no Instituto Penal Evaristo de Moraes termina com a morte do diretor do presídio e de presos após a intervenção policial. O caso motivou a ideia de um grupo especialmente treinado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "1978",
+   "texto": "Criado o NuCOE, com cerca de 30 policiais voluntários, num acampamento em Sulacap, zona oeste do Rio.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "1991",
+   "texto": "Decreto nº 16.374, de 1º de março de 1991, cria o Batalhão de Operações Policiais Especiais (BOPE) e extingue a Companhia Independente de Operações Especiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "2000",
+   "texto": "No sequestro do ônibus 174, um policial atira sem ordem, erra o sequestrador e a refém Geísa Gonçalves morre baleada pelo sequestrador; ele morre asfixiado na viatura. A unidade passou a reforçar o treino em resgate de reféns.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "2001",
+   "texto": "Passa a usar veículos blindados, os 'caveirões', criticados por entidades de direitos humanos. Em 2006 a Anistia Internacional condenou o uso desses veículos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "2015",
+   "texto": "Operação 'Black Evil': policiais do BOPE são presos, suspeitos de receber propina do Comando Vermelho, e denunciados pelo Ministério Público. A investigação partiu do próprio comando do BOPE e da Corregedoria.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "2025",
+   "texto": "Em 28 de outubro, participa da Operação Contenção nos complexos da Penha e do Alemão, a ação policial mais letal da história do país, com pelo menos 122 mortos, entre eles dois sargentos do BOPE. As mortes são investigadas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Coronel Francisco Sérgio Rangel Gomes",
+   "texto": "Dá nome oficial à unidade: 'Batalhão Coronel Francisco Sérgio Rangel Gomes'.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  }
+ ],
+ "organizacao": {
+  "texto": "Subordinado ao Comando de Operações Especiais (COE) da PMERJ. Tem a Companhia de Operações (equipes Alfa, Bravo, Charlie e Delta), a Companhia de Intervenções Táticas (negociação, atiradores de precisão e retomada e resgate) e a Unidade de Engenharia, Demolição e Transporte.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais",
+  "unidades_total": null,
+  "unidades_tipo": null,
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Rio de Janeiro (Laranjeiras, no alto da favela Tavares Bastos), RJ",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+ },
+ "efetivo": {
+  "valor": 400,
+  "data_ref": "2010",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais",
+  "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "chave": "u:MG:ROTAM",
+ "nome": "Rondas Ostensivas Táticas Metropolitanas",
+ "sigla": "ROTAM",
+ "uf": "MG",
+ "corp": "u",
+ "subordinada_a": "pm:MG",
+ "resumo": {
+  "texto": "Força tática da Polícia Militar de Minas Gerais, acionada pelo Comando-Geral para atuar em qualquer parte do estado, principalmente contra a criminalidade violenta e o tráfico de drogas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ },
+ "fundacao": null,
+ "historia": [],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ ]
+}

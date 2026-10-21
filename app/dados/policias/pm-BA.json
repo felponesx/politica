@@ -1,0 +1,668 @@
+{
+ "chave": "pm:BA",
+ "nome": "Polícia Militar da Bahia",
+ "sigla": "PMBA",
+ "uf": "BA",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz, com exclusividade, o policiamento ostensivo fardado e a preservação da ordem pública na Bahia; sua ação é sobretudo preventiva. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+ },
+ "fundacao": {
+  "data": "1825-02-17",
+  "texto": "Decreto do imperador Pedro I mandou organizar um Corpo de Polícia na Cidade da Bahia (Salvador).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+ },
+ "historia": [
+  {
+   "ano": "1825",
+   "texto": "Decreto de Pedro I manda organizar um Corpo de Polícia na Cidade da Bahia. O primeiro comandante-geral foi o brigadeiro Manoel Joaquim Pinto Pacca.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+  },
+  {
+   "ano": "2010",
+   "texto": "Seis batalhões do interior (Feira de Santana, Ilhéus, Juazeiro, Vitória da Conquista, Barreiras e Teixeira de Freitas) deixam o policiamento e passam a formar policiais; 16 companhias independentes assumem suas áreas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+  },
+  {
+   "ano": "2012",
+   "texto": "Greve de parte da PM por cerca de 12 dias, concentrada em Salvador, por salários e gratificações. A Justiça considerou a greve ilegal e o governo pediu tropas federais e a Força Nacional.",
+   "fonte": "https://pt.wikipedia.org/wiki/Greve_da_Pol%C3%ADcia_Militar_da_Bahia_em_2012"
+  },
+  {
+   "ano": "2015",
+   "texto": "Chacina do Cabula: em 6 de fevereiro, 12 jovens de 16 a 27 anos foram mortos por nove PMs em Salvador. O MP-BA denunciou os nove; em 2018 o STJ negou levar o caso à Justiça Federal e o julgamento ficou no TJ-BA.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_do_Cabula"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da corporação, segundo a ficha da PM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A PMBA atua com batalhões, que cobrem áreas maiores, e companhias independentes (CIPM), menores e mais próximas da comunidade, na capital, na região metropolitana e no interior. Há ainda unidades especializadas (BOPE, Choque, rodoviária, guardas, eventos, cavalaria, aérea, CIPE regionais). A lista traz 120 das cerca de 150 unidades citadas na fonte (só o BOPE entre as especializadas).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia",
+  "unidades_total": 150,
+  "unidades_tipo": "batalhões, companhias independentes e unidades especializadas",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º BEIC (batalhão de formação)",
+    "local": "Feira de Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "2º BEIC (batalhão de formação)",
+    "local": "Ilhéus",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "3º BEIC (batalhão de formação)",
+    "local": "Juazeiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Alagoinhas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Euclides da Cunha",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Senhor do Bonfim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Irecê",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Porto Seguro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "9º BEIC (batalhão de formação)",
+    "local": "Vitória da Conquista",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "10º BEIC (batalhão de formação)",
+    "local": "Barreiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Itaberaba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Camaçari",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Santo Antônio de Jesus",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Itabuna",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Serrinha",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Guanambi",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Salvador (Centro Histórico)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Jequié",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Paulo Afonso",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "21º BEIC (batalhão de formação)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Salvador (Cajazeiras)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Vera Cruz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Brumado",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Candeias",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar",
+    "local": "Jacobina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Salvador (Nordeste de Amaralina)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "32º Batalhão de Polícia Militar",
+    "local": "Salvador (Itapuã)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "1ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Pernambués)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "2ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Barbalho)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "9ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Pirajá)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "11ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Barra / Graça)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "12ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Ondina / Rio Vermelho)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "13ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Pituba)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "14ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Lobato)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "16ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Comércio)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "17ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Uruguai)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "18ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Periperi)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "19ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Paripe)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "22ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Simões Filho",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "23ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Tancredo Neves)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "26ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Brotas)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "31ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Valéria)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "35ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Iguatemi)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "36ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Dias d'Ávila",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "37ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Liberdade)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "39ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Boca do Rio / Imbuí)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "41ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Garcia / Federação)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "47ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Pau da Lima)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "48ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Sussuarana)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "49ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (São Cristóvão)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "50ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Sete de Abril)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "51ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Conde",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "52ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Lauro de Freitas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "53ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Mata de São João / Praia do Forte",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "58ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (Cosme de Farias)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "59ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Vila de Abrantes / Arembepe",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "81ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Itinga",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "82ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Salvador (CAB / Paralela)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "4ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Macaúbas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "6ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Rio Real",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "7ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Eunápolis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "8ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Itapetinga",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "10ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Xique-Xique",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "20ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Santo Amaro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "21ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Cipó",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "24ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Jacobina",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "25ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Casa Nova",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "27ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Cruz das Almas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "28ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ibotirama",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "29ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Seabra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "30ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Santa Maria da Vitória",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "32ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Pojuca",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "33ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Valença",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "38ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Bom Jesus da Lapa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "42ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Lençóis",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "43ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Itamaraju",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "44ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Medeiros Neto",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "45ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Curaçá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "46ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Livramento de Nossa Senhora",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "54ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Campo Formoso",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "55ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ipiaú",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "56ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Entre Rios",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "57ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Santo Estêvão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "60ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Gandu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "61ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ubaitaba",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "62ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Camacan",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "63ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ibicaraí",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "64ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Feira de Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "65ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Feira de Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "66ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Feira de Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "67ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Feira de Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "68ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ilhéus (Centro)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "69ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ilhéus (Zona Sul)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "70ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ilhéus (Zona Norte)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "71ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Canavieiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "72ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Itacaré",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "73ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Juazeiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "74ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Juazeiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "75ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Juazeiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "76ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Juazeiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "77ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Vitória da Conquista (Leste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "78ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Vitória da Conquista (Oeste)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "79ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Poções",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "80ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Cândido Sales",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "83ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Barreiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "84ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Barreiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "85ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Luís Eduardo Magalhães",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "86ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Formosa do Rio Preto",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "87ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Teixeira de Freitas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "88ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Alcobaça / Caravelas / Prado",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "89ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Mucuri / Nova Viçosa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "90ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Riachão do Jacuípe",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "91ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Capim Grosso",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "92ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Vitória da Conquista (Ronda Rural)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "93ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Maracás",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "94ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Caetité",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "95ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Catu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "98ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Ipirá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "99ª Companhia Independente de Polícia Militar (CIPM)",
+    "local": "Amargosa",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": "Lauro de Freitas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Salvador (Largo dos Aflitos, Dois de Julho), BA",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+ },
+ "efetivo": {
+  "valor": 31180,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia",
+  "https://pt.wikipedia.org/wiki/Greve_da_Pol%C3%ADcia_Militar_da_Bahia_em_2012",
+  "https://pt.wikipedia.org/wiki/Chacina_do_Cabula"
+ ]
+}

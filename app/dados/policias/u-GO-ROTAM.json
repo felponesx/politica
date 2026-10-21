@@ -1,0 +1,61 @@
+{
+ "chave": "u:GO:ROTAM",
+ "nome": "Rondas Ostensivas Táticas Metropolitanas",
+ "sigla": "ROTAM",
+ "uf": "GO",
+ "corp": "u",
+ "subordinada_a": "pm:GO",
+ "resumo": {
+  "texto": "Batalhão tático da Polícia Militar de Goiás, criado para responder rápido a crimes graves, como roubos a bancos e de veículos.",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ },
+ "fundacao": {
+  "data": "1981",
+  "texto": "Nasceu em 1981 como Primeiro Pelotão de ROTAM, na Companhia de Choque do 1º Batalhão; o primeiro comandante foi o 1º tenente Antônio Marmo.",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ },
+ "historia": [
+  {
+   "ano": "1981",
+   "texto": "Criado o Primeiro Pelotão de ROTAM, na Companhia de Choque do 1º Batalhão da PM de Goiás.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+  },
+  {
+   "ano": "1985",
+   "texto": "Policiais da ROTAM fazem visita técnica à ROTA da PM de São Paulo, que inspirou a unidade.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+  },
+  {
+   "ano": "1989",
+   "texto": "A Companhia de Choque vira Companhia Independente de Operações Especiais (CIOE), com a ROTAM como seu primeiro pelotão.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+  },
+  {
+   "ano": "1991",
+   "texto": "A CIOE vira Batalhão de Choque e o pelotão de ROTAM passa a ser a Primeira Companhia de ROTAM.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+  },
+  {
+   "ano": "1997",
+   "texto": "O modelo é levado ao interior do estado: o curso da ROTAM dá origem ao Curso de Patrulhamento Tático.",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+  },
+  {
+   "ano": "2002",
+   "texto": "Pela Portaria nº 404, a Companhia de ROTAM se torna unidade independente e cria o Curso Operacional de ROTAM (COR).",
+   "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+  }
+ ],
+ "patrono": {
+  "nome": "Coronel Divino Efigênio de Almeida",
+  "texto": "Apontado como patrono da ROTAM; foi quem, em 2002, tornou a Companhia de ROTAM uma unidade independente e iniciou o curso próprio da unidade.",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ },
+ "homenageados": [],
+ "organizacao": null,
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ ]
+}

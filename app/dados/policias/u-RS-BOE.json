@@ -1,0 +1,76 @@
+{
+ "chave": "u:RS:BOE",
+ "nome": "1º Batalhão de Operações Especiais",
+ "sigla": "BOE",
+ "uf": "RS",
+ "corp": "u",
+ "subordinada_a": "pm:RS",
+ "resumo": {
+  "texto": "Tropa especial da Brigada Militar, com atuação em todo o Rio Grande do Sul: choque, policiamento de estádios, reintegrações de posse, ações táticas especiais (GATE), cães e batedores.",
+  "fonte": "https://gremio.net/noticias/detalhes/29318/gremio-homenageia-os-61-anos-do-boe"
+ },
+ "fundacao": {
+  "data": "1964-03-10",
+  "texto": "A origem é a Companhia de Segurança, criada em 10 de março de 1964 a partir do 3º Batalhão de Polícia Militar.",
+  "fonte": "https://gremio.net/noticias/detalhes/29318/gremio-homenageia-os-61-anos-do-boe"
+ },
+ "historia": [
+  {
+   "ano": "1964",
+   "texto": "Criada a Companhia de Segurança, no mesmo ano chamada de Companhia de Policiamento Militar.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  },
+  {
+   "ano": "1974",
+   "texto": "Em 13 de agosto, passa a se chamar Companhia de Polícia de Choque.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  },
+  {
+   "ano": "1981",
+   "texto": "Criado o Batalhão de Polícia de Choque; em 1982 ganha um pelotão de cães.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  },
+  {
+   "ano": "1983",
+   "texto": "Criado o GUAPO (Grupamento Aéreo de Policiamento Ostensivo), origem do atual Grupamento de Polícia Militar Aéreo.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  },
+  {
+   "ano": "1990",
+   "texto": "O Grupo de Ações Táticas Especiais (GATE) é incorporado ao batalhão.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  },
+  {
+   "ano": "1997",
+   "texto": "Recebe o nome de 'Batalhão Capitão André Lago Paris', em homenagem ao integrante do GATE morto em serviço.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  },
+  {
+   "ano": "1998",
+   "texto": "Passa a se chamar Batalhão de Operações Especiais (BOE).",
+   "fonte": "https://gremio.net/noticias/detalhes/29318/gremio-homenageia-os-61-anos-do-boe"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Capitão André Lago Paris",
+   "texto": "Integrante do GATE morto em serviço; desde 1997 o batalhão leva o nome 'Batalhão Capitão André Lago Paris'.",
+   "fonte": "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar"
+  }
+ ],
+ "organizacao": {
+  "texto": "Quatro companhias de operações especiais: a 1ª e a 2ª fazem choque, estádios e reintegrações de posse; a 3ª reúne o GATE, o canil e o pelotão de batedores motociclistas; a 4ª tem as Patrulhas Especiais (Patres).",
+  "fonte": "https://gremio.net/noticias/detalhes/29318/gremio-homenageia-os-61-anos-do-boe",
+  "unidades_total": 4,
+  "unidades_tipo": "companhias",
+  "data_ref": "2025",
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.gremio.net/noticias/detalhes/27957/gremio-sauda-60-anos-do-1--batalhao-de-operacoes-especiais-da-brigada-militar",
+  "https://gremio.net/noticias/detalhes/29318/gremio-homenageia-os-61-anos-do-boe"
+ ]
+}

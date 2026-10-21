@@ -1,0 +1,23 @@
+{
+ "chave": "u:DF:ROTAM",
+ "nome": "Rondas Ostensivas Táticas Motorizadas",
+ "sigla": "ROTAM",
+ "uf": "DF",
+ "corp": "u",
+ "subordinada_a": "pm:DF",
+ "resumo": {
+  "texto": "Unidade tática da Polícia Militar do Distrito Federal, do grupo de unidades ROTAM inspiradas na ROTA paulista, voltadas a ocorrências mais graves com viaturas e armamento reforçados.",
+  "fonte": "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas"
+ },
+ "fundacao": null,
+ "historia": [],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Rondas_Ostensivas_T%C3%A1ticas_Metropolitanas",
+  "https://jornaldebrasilia.com.br/brasilia/rotam-faz-surpresa-para-jovem-aprovado-em-concurso-da-policia-militar/"
+ ]
+}

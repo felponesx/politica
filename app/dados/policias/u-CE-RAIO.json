@@ -1,0 +1,83 @@
+{
+ "chave": "u:CE:RAIO",
+ "nome": "Comando de Policiamento de Rondas de Ações Intensivas e Ostensivas",
+ "sigla": "RAIO",
+ "uf": "CE",
+ "corp": "u",
+ "subordinada_a": "pm:CE",
+ "resumo": {
+  "texto": "Policiamento da PM do Ceará feito principalmente em motocicletas, com patrulhas, cercos e abordagens em áreas de mais crimes, em todo o estado.",
+  "fonte": "https://belt.al.ce.gov.br/index.php/legislacao-do-ceara/organizacao-tematica/defesa-social/item/download/7172_e9e4794686c6a58642c93362f4c9cb6d"
+ },
+ "fundacao": {
+  "data": "2004",
+  "texto": "O grupamento do Raio foi criado em 2004, em Fortaleza, com 16 policiais militares.",
+  "fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350"
+ },
+ "historia": [
+  {
+   "ano": "2004",
+   "texto": "Criado o Raio em Fortaleza, com 16 policiais.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350"
+  },
+  {
+   "ano": "2011",
+   "texto": "O efetivo passa de 200 policiais e a unidade vira companhia independente.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350"
+  },
+  {
+   "ano": "2012",
+   "texto": "Reestruturado como Batalhão de Rondas de Ações Intensivas e Ostensivas.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350"
+  },
+  {
+   "ano": "2015",
+   "texto": "O governo começa a levar bases do Raio às nove macrorregiões do estado.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350"
+  },
+  {
+   "ano": "2019",
+   "texto": "Vira grande comando (CPRaio), com cinco batalhões, 16 companhias e 44 pelotões.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350"
+  },
+  {
+   "ano": "2020",
+   "texto": "Durante a paralisação de policiais militares, o batalhão do Raio em Sobral é tomado por policiais aderentes ao movimento.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/seguranca/batalhao-do-raio-em-sobral-e-tomado-por-policiais-adeptos-a-movimentos-de-paralisacao-1.2213865"
+  },
+  {
+   "ano": "2021",
+   "texto": "Lei estadual nº 17.575, de 2 de agosto de 2021, fixa o CPRAIO na estrutura da PM, com regras de seleção e atuação.",
+   "fonte": "https://belt.al.ce.gov.br/index.php/legislacao-do-ceara/organizacao-tematica/defesa-social/item/download/7172_e9e4794686c6a58642c93362f4c9cb6d"
+  },
+  {
+   "ano": "2022",
+   "texto": "Inaugurada em Messejana, Fortaleza, a 69ª base do Raio.",
+   "fonte": "https://mais.opovo.com.br/jornal/cidades/2022/10/20/base-do-cpraio-em-messejana-reforcara-seguranca-em-42-bairros-em-fortaleza.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Comando de Policiamento (CPRaio) com batalhões, companhias e bases. Em outubro de 2022 eram 69 bases: 2 em Fortaleza, 14 na Região Metropolitana e 53 no interior, atendendo 68 municípios. A fonte não traz a lista com o nome de cada base.",
+  "fonte": "https://mais.opovo.com.br/jornal/cidades/2022/10/20/base-do-cpraio-em-messejana-reforcara-seguranca-em-42-bairros-em-fortaleza.html",
+  "unidades_total": 69,
+  "unidades_tipo": "bases",
+  "data_ref": "2022",
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": {
+  "valor": 2882,
+  "data_ref": "2022",
+  "fonte": "https://mais.opovo.com.br/jornal/cidades/2022/10/20/base-do-cpraio-em-messejana-reforcara-seguranca-em-42-bairros-em-fortaleza.html"
+ },
+ "fontes_gerais": [
+  "https://diariodonordeste.verdesmares.com.br/pontopoder/deputados-analisam-projeto-para-fixar-o-raio-na-pm-veja-historico-e-resultados-do-grupamento-1.3107350",
+  "https://belt.al.ce.gov.br/index.php/legislacao-do-ceara/organizacao-tematica/defesa-social/item/download/7172_e9e4794686c6a58642c93362f4c9cb6d",
+  "https://mais.opovo.com.br/jornal/cidades/2022/10/20/base-do-cpraio-em-messejana-reforcara-seguranca-em-42-bairros-em-fortaleza.html",
+  "https://diariodonordeste.verdesmares.com.br/seguranca/batalhao-do-raio-em-sobral-e-tomado-por-policiais-adeptos-a-movimentos-de-paralisacao-1.2213865",
+  "https://poverty-action.org/militarized-motorized-patrols-reduce-homicides-and-other-violent-crimes-ceara-brazil",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+ ]
+}

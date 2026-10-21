@@ -1,0 +1,342 @@
+{
+ "chave": "pm:MA",
+ "nome": "Polícia Militar do Maranhão",
+ "sigla": "PMMA",
+ "uf": "MA",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Maranhão. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+ },
+ "fundacao": {
+  "data": "1836-06-17",
+  "texto": "A Lei Provincial nº 21 criou o Corpo de Polícia da Província do Maranhão, com um estado-maior e quatro companhias de infantaria, 412 policiais ao todo.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+ },
+ "historia": [
+  {
+   "ano": "1836",
+   "texto": "Criado o Corpo de Polícia da Província do Maranhão, com estado-maior e quatro companhias de infantaria, num total de 412 policiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "ano": "1841",
+   "texto": "Começa a interiorização, com a criação do Corpo de Guardas Campestres (Lei nº 110).",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "ano": "1920",
+   "texto": "Lei nº 872 fixa o efetivo da corporação em 250 policiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "ano": "1951",
+   "texto": "Depois de nomes como Corpo de Segurança Pública e Brigada Auxiliar do Norte, a corporação passa a se chamar Polícia Militar do Maranhão.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "ano": "1966",
+   "texto": "São criados a Companhia Escola e os dois primeiros batalhões: o 1º BPM, para a capital, e o 2º BPM, para o interior. A primeira turma de oficiais se forma na academia da PM de Minas Gerais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "ano": "1993",
+   "texto": "Criada a Academia de Polícia Militar do Maranhão, que passa a formar os próprios oficiais; a primeira turma, de 29 aspirantes, se forma em dezembro de 1995.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  }
+ ],
+ "patrono": {
+  "nome": "Antônio Feliciano Falcão",
+  "texto": "Indicado como patrono na ficha da corporação na Wikipédia, que não traz detalhes sobre ele.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+ },
+ "homenageados": [
+  {
+   "nome": "Capitão PM Daniel Nunes Esteves",
+   "texto": "Dá nome ao Batalhão de Operações Especiais (BOPE) da PMMA, em São Luís. A fonte não explica o motivo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  },
+  {
+   "nome": "Major QOPM Luís Fábio Siqueira Silva",
+   "texto": "Dá nome ao Batalhão de Polícia Militar de Choque (BPChoq), em São Luís. A fonte não explica o motivo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+  }
+ ],
+ "organizacao": {
+  "texto": "Comando de Missões Especiais (BOPE e Choque), Comando de Policiamento Especializado (ambiental, rodoviária, turismo), Comando de Policiamento Metropolitano com quatro áreas na Grande São Luís, Comando de Segurança Comunitária e Comando do Interior com oito áreas (CPAI-1 a 8), cada uma com seus batalhões.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o",
+  "unidades_total": 51,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": "2021",
+  "unidades": [
+   {
+    "nome": "Batalhão de Operações Especiais (BOPE) Cap PM Daniel Nunes Esteves",
+    "local": "São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "Batalhão de Polícia Militar de Choque (BPChoq) Maj QOPM Luís Fábio Siqueira Silva",
+    "local": "São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "Batalhão de Polícia Ambiental (BPA)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "Batalhão de Polícia Militar Rodoviária (BPRv)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "Batalhão de Polícia Militar de Turismo (BPTur)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar de Turismo",
+    "local": "Barreirinhas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "38º Batalhão de Polícia Militar (Tiradentes)",
+    "local": "São Luís (Liberdade, Camboa)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "Companhia de Polícia de Guarda Independente",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "1ª Companhia Independente",
+    "local": "São Luís (Vila Luizão)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "São José de Ribamar",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Paço do Lumiar",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "4ª Companhia Independente",
+    "local": "São Luís (Cidade Olímpica)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Região Metropolitana de São Luís",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "3ª Companhia Independente",
+    "local": "São Luís (Coroadinho)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Bacabal",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Pedreiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "São Mateus do Maranhão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "39º Batalhão de Polícia Militar",
+    "local": "Lago da Pedra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Barra do Corda",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Presidente Dutra",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "33º Batalhão de Polícia Militar",
+    "local": "Colinas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "37º Batalhão de Polícia Militar",
+    "local": "Grajaú",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Imperatriz (área)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Estreito",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Imperatriz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "2º Esquadrão de Polícia Montada",
+    "local": "Imperatriz",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "26º Batalhão de Polícia Militar",
+    "local": "Açailândia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "30º Batalhão de Polícia Militar",
+    "local": "Buriticupu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "34º Batalhão de Polícia Militar",
+    "local": "Amarante do Maranhão",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Caxias",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Timon",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Codó",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Coroatá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Pinheiro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "36º Batalhão de Polícia Militar",
+    "local": "Viana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Cururupu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "2ª Companhia Independente",
+    "local": "Mirinzal",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Balsas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "35º Batalhão de Polícia Militar",
+    "local": "São João dos Patos",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "46º Batalhão de Polícia Militar",
+    "local": "São Raimundo das Mangabeiras",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Chapadinha",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "27º Batalhão de Polícia Militar",
+    "local": "Rosário",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "28º Batalhão de Polícia Militar",
+    "local": "Itapecuru Mirim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "31º Batalhão de Polícia Militar",
+    "local": "Governador Nunes Freire",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "29º Batalhão de Polícia Militar",
+    "local": "Zé Doca",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Pindaré-Mirim",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+   }
+  ]
+ },
+ "sede": {
+  "local": "São Luís (Calhau), MA",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+ },
+ "efetivo": {
+  "valor": 10690,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Maranh%C3%A3o"
+ ]
+}

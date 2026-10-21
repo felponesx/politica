@@ -1,0 +1,81 @@
+{
+ "chave": "u:BA:RONDESP",
+ "nome": "Rondas Especiais",
+ "sigla": "RONDESP",
+ "uf": "BA",
+ "corp": "u",
+ "subordinada_a": "pm:BA",
+ "resumo": {
+  "texto": "Radiopatrulhamento tático da PM da Bahia em Salvador e Região Metropolitana, com viaturas maiores e equipamentos reforçados, em apoio às demais unidades.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia"
+ },
+ "fundacao": null,
+ "historia": [
+  {
+   "ano": "2015",
+   "texto": "Em 6 de fevereiro, uma operação de policiais da Rondesp Central na Vila Moisés, no Cabula (Salvador), deixa 12 mortos e 6 feridos. Nove PMs são denunciados pelo Ministério Público.",
+   "fonte": "https://www.correio24horas.com.br/salvador/justica-absolve-pms-envolvidos-na-morte-de-12-pessoas-no-cabula-0715"
+  },
+  {
+   "ano": "2015",
+   "texto": "Em julho, a juíza Marivalda Almeida Moutinho absolve os nove policiais antes da fase de instrução; o Ministério Público recorre.",
+   "fonte": "https://www.correio24horas.com.br/salvador/justica-absolve-pms-envolvidos-na-morte-de-12-pessoas-no-cabula-0715"
+  },
+  {
+   "ano": "2025",
+   "texto": "Em março, a major Ana Cidreira assume a Rondesp Central, primeira mulher no comando de uma Rondesp.",
+   "fonte": "https://atarde.com.br/bahia/rondesp-ganha-primeira-comandante-mulher-da-historia-da-pmba-1311217"
+  },
+  {
+   "ano": "2025",
+   "texto": "Em julho, o processo do Cabula segue na fase de instrução; a absolvição havia sido anulada após recurso do MP-BA. Os réus respondem em liberdade.",
+   "fonte": "https://almapreta.com.br/?p=55332"
+  },
+  {
+   "ano": "2025",
+   "texto": "Decreto de 8 de setembro converte as Rondesp de Salvador (Atlântico, Baía de Todos-os-Santos e Central) e da Região Metropolitana em batalhões, com comando próprio. Entidades de direitos humanos criticaram a medida.",
+   "fonte": "https://www.correio24horas.com.br/minha-bahia/rondesp-agora-sao-batalhoes-o-que-as-comunidades-de-salvador-e-rms-podem-esperar-0925"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Antes subordinadas a comandos de policiamento, as Rondesp viraram batalhões em setembro de 2025, cada um com um tenente-coronel no comando.",
+  "fonte": "https://www.correio24horas.com.br/minha-bahia/rondesp-agora-sao-batalhoes-o-que-as-comunidades-de-salvador-e-rms-podem-esperar-0925",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões",
+  "data_ref": "2025",
+  "unidades": [
+   {
+    "nome": "Rondesp Atlântico",
+    "local": "Salvador",
+    "fonte": "https://www.correio24horas.com.br/minha-bahia/rondesp-agora-sao-batalhoes-o-que-as-comunidades-de-salvador-e-rms-podem-esperar-0925"
+   },
+   {
+    "nome": "Rondesp Baía de Todos-os-Santos (BTS)",
+    "local": "Salvador",
+    "fonte": "https://www.correio24horas.com.br/minha-bahia/rondesp-agora-sao-batalhoes-o-que-as-comunidades-de-salvador-e-rms-podem-esperar-0925"
+   },
+   {
+    "nome": "Rondesp Central",
+    "local": "Salvador (Tancredo Neves, Sussuarana e bairros vizinhos)",
+    "fonte": "https://atarde.com.br/bahia/rondesp-ganha-primeira-comandante-mulher-da-historia-da-pmba-1311217"
+   },
+   {
+    "nome": "Rondesp Região Metropolitana",
+    "local": "Região Metropolitana de Salvador",
+    "fonte": "https://www.correio24horas.com.br/minha-bahia/rondesp-agora-sao-batalhoes-o-que-as-comunidades-de-salvador-e-rms-podem-esperar-0925"
+   }
+  ]
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_da_Bahia",
+  "https://www.correio24horas.com.br/minha-bahia/rondesp-agora-sao-batalhoes-o-que-as-comunidades-de-salvador-e-rms-podem-esperar-0925",
+  "https://atarde.com.br/bahia/rondesp-ganha-primeira-comandante-mulher-da-historia-da-pmba-1311217",
+  "https://www.correio24horas.com.br/salvador/justica-absolve-pms-envolvidos-na-morte-de-12-pessoas-no-cabula-0715",
+  "https://almapreta.com.br/?p=55332",
+  "https://pt.wikipedia.org/wiki/Chacina_do_Cabula"
+ ]
+}

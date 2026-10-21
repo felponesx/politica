@@ -1,0 +1,70 @@
+{
+ "chave": "u:RJ:CORE",
+ "nome": "Coordenadoria de Recursos Especiais",
+ "sigla": "CORE",
+ "uf": "RJ",
+ "corp": "u",
+ "subordinada_a": "pc:RJ",
+ "resumo": {
+  "texto": "Unidade de operações especiais da Polícia Civil do Rio de Janeiro. Entra primeiro em áreas de alto risco para dar segurança às equipes que cumprem mandados e cuida de resgate de reféns, explosivos, atiradores de precisão e cães farejadores.",
+  "fonte": "https://pt.wikipedia.org/wiki/Coordenadoria_de_Recursos_Especiais"
+ },
+ "fundacao": {
+  "data": "1969-07-04",
+  "texto": "Criada em 4 de julho de 1969.",
+  "fonte": "https://pt.wikipedia.org/wiki/Coordenadoria_de_Recursos_Especiais"
+ },
+ "historia": [
+  {
+   "ano": "1969",
+   "texto": "Criação da unidade de operações especiais da Polícia Civil fluminense.",
+   "fonte": "https://pt.wikipedia.org/wiki/Coordenadoria_de_Recursos_Especiais"
+  },
+  {
+   "ano": "2010",
+   "texto": "Participa das operações em resposta aos ataques do crime organizado no Rio, quando territórios dominados pelo Comando Vermelho foram ocupados.",
+   "fonte": "https://pt.wikipedia.org/wiki/Coordenadoria_de_Recursos_Especiais"
+  },
+  {
+   "ano": "2021",
+   "texto": "Em 6 de maio, a operação 'Exceptis' da Polícia Civil no Jacarezinho termina com pelo menos 29 mortos, entre eles um policial. Foi a operação mais letal da cidade até então.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_do_Jacarezinho"
+  },
+  {
+   "ano": "2021",
+   "texto": "Em outubro, a Justiça aceita denúncia contra dois policiais da CORE pela morte de Omar Pereira da Silva no Jacarezinho; eles viram réus por homicídio e fraude processual e são afastados.",
+   "fonte": "https://www.poder360.com.br/justica/justica-aceita-denuncia-e-afasta-policiais-envolvidos-em-operacao-no-jacarezinho/"
+  },
+  {
+   "ano": "2022",
+   "texto": "Em maio, o Ministério Público arquiva o inquérito sobre 23 mortes no Jacarezinho, aceitando a versão dos policiais.",
+   "fonte": "https://catracalivre.com.br/cidadania/jacarezinho-mp-decide-por-versao-dos-policiais-e-arquiva-23-mortes/"
+  },
+  {
+   "ano": "2022",
+   "texto": "Em junho, a Justiça rejeita a denúncia do MP contra outros dois policiais civis pelas mortes de Richard Gabriel da Silva Ferreira e Isaac Pinheiro de Oliveira no Jacarezinho.",
+   "fonte": "https://almapreta.com.br/sessao/cotidiano/justica-rejeita-denuncia-contra-policiais-civis-envolvidos-na-chacina-do-jacarezinho/"
+  },
+  {
+   "ano": "2025",
+   "texto": "Em 28 de outubro, participa da Operação Contenção nos complexos da Penha e do Alemão, com pelo menos 122 mortos, entre eles três policiais civis.",
+   "fonte": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": {
+  "local": "Rio de Janeiro, RJ",
+  "fonte": "https://pt.wikipedia.org/wiki/Coordenadoria_de_Recursos_Especiais"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Coordenadoria_de_Recursos_Especiais",
+  "https://pt.wikipedia.org/wiki/Chacina_do_Jacarezinho",
+  "https://www.poder360.com.br/justica/justica-aceita-denuncia-e-afasta-policiais-envolvidos-em-operacao-no-jacarezinho/",
+  "https://catracalivre.com.br/cidadania/jacarezinho-mp-decide-por-versao-dos-policiais-e-arquiva-23-mortes/",
+  "https://almapreta.com.br/sessao/cotidiano/justica-rejeita-denuncia-contra-policiais-civis-envolvidos-na-chacina-do-jacarezinho/",
+  "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+ ]
+}

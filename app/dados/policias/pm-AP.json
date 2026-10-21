@@ -1,0 +1,127 @@
+{
+ "chave": "pm:AP",
+ "nome": "Polícia Militar do Estado do Amapá",
+ "sigla": "PMAP",
+ "uf": "AP",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Amapá. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+ },
+ "fundacao": {
+  "data": "1975-11-26",
+  "texto": "A Lei nº 6.270, de 1975, criou a Polícia Militar do Território Federal do Amapá, que substituiu aos poucos a Guarda Territorial.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+ },
+ "historia": [
+  {
+   "ano": "1943",
+   "texto": "É criada a Guarda Territorial do Amapá, de caráter civil, que juntava segurança pública e construção de obras. Depois ganhou o Departamento de Segurança Pública e Guarda Territorial.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+  },
+  {
+   "ano": "1945",
+   "texto": "Todos os municípios do território já tinham delegado, escrivão e guardas. Os delegados eram oficiais e os comissários, inspetores da Guarda.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+  },
+  {
+   "ano": "1975",
+   "texto": "Criada a Polícia Militar do Território Federal do Amapá. O primeiro efetivo veio de 38 oficiais R/2 do Exército e três oficiais da PM de Sergipe; os sargentos foram formados em Minas Gerais e Goiás.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+  },
+  {
+   "ano": "2011",
+   "texto": "A PMAP troca o brasão usado desde 1975 por um novo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Os batalhões se dividem entre a capital, Macapá (inclusive BOPE, trânsito e policiamento rodoviário), e o interior: Santana, Porto Grande, Laranjal do Jari e Oiapoque.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1",
+  "unidades_total": 13,
+  "unidades_tipo": "batalhões",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar (BOPE)",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar (Comando, Serviço e Guarda)",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar (Zona Oeste)",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "9º Batalhão de Policiamento de Trânsito (BPTran)",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "13º Batalhão de Policiamento Rodoviário Estadual (BPRE)",
+    "local": "Macapá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar (Polícia Ambiental)",
+    "local": "Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Santana",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Porto Grande",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Laranjal do Jari",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Oiapoque",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Macapá, AP",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+ },
+ "efetivo": {
+  "valor": 3310,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Amap%C3%A1"
+ ]
+}

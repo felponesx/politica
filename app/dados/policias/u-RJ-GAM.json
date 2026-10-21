@@ -1,0 +1,66 @@
+{
+ "chave": "u:RJ:GAM",
+ "nome": "Grupamento Aeromóvel",
+ "sigla": "GAM",
+ "uf": "RJ",
+ "corp": "u",
+ "subordinada_a": "pm:RJ",
+ "resumo": {
+  "texto": "Unidade de helicópteros da Polícia Militar do Rio de Janeiro: patrulhamento aéreo e apoio aéreo às tropas em operações policiais.",
+  "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf"
+ },
+ "fundacao": {
+  "data": "2002-03-20",
+  "texto": "Criado em 20 de março de 2002 pelo Comando Geral da PMERJ como Grupamento AeroMarítimo (GAM); a criação foi ratificada pelo Decreto Estadual nº 35.145, de 7 de abril de 2004.",
+  "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf"
+ },
+ "historia": [
+  {
+   "ano": "1985",
+   "texto": "Criada a Coordenadoria Geral de Operações Aéreas (CGOA), que reunia a aviação usada em segurança pública, bombeiros e defesa civil no estado.",
+   "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf"
+  },
+  {
+   "ano": "2002",
+   "texto": "A PMERJ cria o Grupamento AeroMarítimo (GAM) e passa a usar helicópteros em apoio a operações em áreas de risco.",
+   "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf"
+  },
+  {
+   "ano": "2009",
+   "texto": "Em 17 de outubro, o helicóptero Fênix 03 (Esquilo AS 350 B2) é derrubado por tiros de armas curtas, segundo artigo do próprio GAM.",
+   "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf"
+  },
+  {
+   "ano": "2012",
+   "texto": "Os serviços aéreo e marítimo são separados: o GAM passa a se chamar Grupamento AeroMóvel e a parte marítima vai para o Grupamento Marítimo Fluvial.",
+   "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf"
+  },
+  {
+   "ano": "2019",
+   "texto": "Um helicóptero do GAM faz pouso de emergência na Baía de Guanabara e afunda; um sargento morre. A PM informou que o GAM tinha sete aeronaves, três em condições de voo.",
+   "fonte": "https://www.jb.com.br/rio/2019/01/972480-sargento-que-morreu-em-queda-de-helicoptero-no-rio-sera-sepultado-hoje.html"
+  },
+  {
+   "ano": "2026",
+   "texto": "O comandante-geral da PMERJ anuncia uma base do GAM em Volta Redonda, para dar apoio aéreo no Sul Fluminense.",
+   "fonte": "https://www.correiodamanha.com.br/sul-fluminense/costa-verde/2026/08/amp/312744-volta-redonda-ganha-batalhao-de-caes-da-policia-militar.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Subordinado ao Comando de Operações Especiais (COE) da PMERJ. Em 2019 tinha sete aeronaves. As fontes consultadas não trazem a lista de bases.",
+  "fonte": "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf",
+  "unidades_total": null,
+  "unidades_tipo": null,
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.pilotopolicial.com.br/wp-content/uploads/2013/05/Problematiza%C3%A7%C3%A3o-do-Tiro-de-Conten%C3%A7%C3%A3o-Embarcado-em-Aeronaves-da-Pol%C3%ADcia-Militar-do-Estado-do-Rio-de-Janeiro.pdf",
+  "https://www.jb.com.br/rio/2019/01/972480-sargento-que-morreu-em-queda-de-helicoptero-no-rio-sera-sepultado-hoje.html",
+  "https://www.correiodamanha.com.br/sul-fluminense/costa-verde/2026/08/amp/312744-volta-redonda-ganha-batalhao-de-caes-da-policia-militar.html"
+ ]
+}

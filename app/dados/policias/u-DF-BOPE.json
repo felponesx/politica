@@ -1,0 +1,60 @@
+{
+ "chave": "u:DF:BOPE",
+ "nome": "Batalhão de Operações Policiais Especiais",
+ "sigla": "BOPE",
+ "uf": "DF",
+ "corp": "u",
+ "subordinada_a": "pm:DF",
+ "resumo": {
+  "texto": "Unidade de elite da Polícia Militar do Distrito Federal. Cuida com exclusividade de resgate tático de reféns e da detecção e desativação de explosivos, e é muito usada na proteção de autoridades em Brasília.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29"
+ },
+ "fundacao": {
+  "data": "1971",
+  "texto": "Criado em 1971.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29"
+ },
+ "historia": [
+  {
+   "ano": "1971",
+   "texto": "Criação do batalhão de operações especiais da PMDF.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29"
+  },
+  {
+   "ano": "2008",
+   "texto": "Em 20 de agosto, um assaltante faz sete reféns numa farmácia em Ceilândia; após negociação, todos são resgatados sem ferimentos e o sequestrador é atingido por um atirador de elite.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29"
+  },
+  {
+   "ano": "2012",
+   "texto": "Em 30 de setembro, o BOPE liberta cinco reféns de uma pensão na Asa Sul e imobiliza o homem que os mantinha; ninguém se feriu.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29"
+  },
+  {
+   "ano": "2015",
+   "texto": "Em 13 de dezembro, o esquadrão de bombas desativa um explosivo preso sob um carro em Sobradinho.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29"
+  },
+  {
+   "ano": "2023",
+   "texto": "Nos ataques de 8 de janeiro às sedes dos Três Poderes, o BOPE da PMDF aparece entre as forças do lado do governo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Ataques_de_8_de_janeiro_em_Bras%C3%ADlia"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Subordinado ao Comando de Policiamento de Missões Especiais (CPME) da PMDF. As fontes consultadas não detalham as subunidades.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29",
+  "unidades_total": null,
+  "unidades_tipo": null,
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Especiais_%28PMDF%29",
+  "https://pt.wikipedia.org/wiki/Ataques_de_8_de_janeiro_em_Bras%C3%ADlia"
+ ]
+}

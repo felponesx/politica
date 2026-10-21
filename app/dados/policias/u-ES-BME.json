@@ -1,0 +1,50 @@
+{
+ "chave": "u:ES:BME",
+ "nome": "Batalhão de Missões Especiais",
+ "sigla": "BME",
+ "uf": "ES",
+ "corp": "u",
+ "subordinada_a": "pm:ES",
+ "resumo": {
+  "texto": "Tropa especializada da PM do Espírito Santo para ações fora da rotina: crises com reféns, distúrbios civis, manifestações, presídios e patrulhamento tático em áreas de alto risco. Não atende o 190 no dia a dia.",
+  "fonte": "https://www.agazeta.com.br/es/cotidiano/bme-entenda-como-vai-atuar-a-tropa-de-elite-da-policia-militar-do-es-0821"
+ },
+ "fundacao": null,
+ "historia": [
+  {
+   "ano": "2017",
+   "texto": "Após a greve dos policiais militares, o governo rebaixa o batalhão a Companhia Independente de Missões Especiais (Cimesp), dizendo que a maior parte da tropa aderiu ao movimento.",
+   "fonte": "https://www.agazeta.com.br/es/cotidiano/bme-entenda-como-vai-atuar-a-tropa-de-elite-da-policia-militar-do-es-0821"
+  },
+  {
+   "ano": "2021",
+   "texto": "Em 11 de agosto, o governador Renato Casagrande anuncia a volta do BME, promessa de campanha; a Cimesp tinha cerca de 210 policiais, que seriam herdados pelo batalhão.",
+   "fonte": "https://www.agazeta.com.br/es/cotidiano/bme-entenda-como-vai-atuar-a-tropa-de-elite-da-policia-militar-do-es-0821"
+  },
+  {
+   "ano": "2021",
+   "texto": "Em 27 de setembro, é assinado o decreto da reestruturação da PM que oficializa a volta do BME.",
+   "fonte": "https://www.agazeta.com.br/es/cotidiano/casagrande-assina-decreto-de-reestruturacao-da-pm-e-do-corpo-de-bombeiros-0921"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Pelo plano anunciado em 2021, o BME seria formado por duas companhias, comandadas por um tenente-coronel e dois majores. A fonte não traz a lista de bases.",
+  "fonte": "https://www.agazeta.com.br/es/cotidiano/bme-entenda-como-vai-atuar-a-tropa-de-elite-da-policia-militar-do-es-0821",
+  "unidades_total": 2,
+  "unidades_tipo": "companhias",
+  "data_ref": "2021",
+  "unidades": []
+ },
+ "sede": {
+  "local": "Cariacica (Jardim América), ES",
+  "fonte": "https://www.agazeta.com.br/es/cotidiano/bme-entenda-como-vai-atuar-a-tropa-de-elite-da-policia-militar-do-es-0821"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.agazeta.com.br/es/cotidiano/casagrande-anuncia-volta-do-bme-e-concurso-para-a-policia-militar-no-es-0821",
+  "https://www.agazeta.com.br/es/cotidiano/bme-entenda-como-vai-atuar-a-tropa-de-elite-da-policia-militar-do-es-0821",
+  "https://www.agazeta.com.br/es/cotidiano/casagrande-assina-decreto-de-reestruturacao-da-pm-e-do-corpo-de-bombeiros-0921"
+ ]
+}

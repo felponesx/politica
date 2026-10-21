@@ -1,0 +1,220 @@
+{
+ "chave": "pm:AM",
+ "nome": "Polícia Militar do Amazonas",
+ "sigla": "PMAM",
+ "uf": "AM",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Amazonas. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+ },
+ "fundacao": {
+  "data": "1837-04-04",
+  "texto": "O presidente da província do Grão-Pará, general Soares de Andrea, autorizou a criação de uma Guarda Policial para combater a Cabanagem; o efetivo inicial era de 1.339 homens.",
+  "fonte": "https://pm.am.gov.br/portal/pagina/historia_da_pmam"
+ },
+ "historia": [
+  {
+   "ano": "1837",
+   "texto": "Criada a Guarda Policial, com a missão de combater a revolta da Cabanagem (1835–1840). O primeiro comandante foi o tenente-coronel de artilharia Albino dos Santos Pereira.",
+   "fonte": "https://pm.am.gov.br/portal/pagina/historia_da_pmam"
+  },
+  {
+   "ano": "1897",
+   "texto": "Na quarta expedição contra Canudos (BA), a PMAM participa com o 1º Batalhão de Infantaria, sob o comando do tenente-coronel Cândido Mariano.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+  },
+  {
+   "ano": "1938",
+   "texto": "Depois de vários nomes (Corpo Policial, Batalhão Militar de Segurança, Força Policial), a corporação passa a se chamar Polícia Militar do Amazonas, em 14 de novembro.",
+   "fonte": "https://pm.am.gov.br/portal/pagina/historia_da_pmam"
+  },
+  {
+   "ano": "1942",
+   "texto": "Na Segunda Guerra Mundial, a PMAM ajuda no esforço da borracha: policiamento e transporte dos soldados da borracha, hospedarias para migrantes e serviços no porto de Manaus.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+  },
+  {
+   "ano": "1983",
+   "texto": "Pela primeira vez o comando-geral é ocupado por um coronel da própria PMAM, Hélcio Rodrigues Mota. No mesmo ano, 8 de novembro entra no calendário como data do retorno da campanha de Canudos.",
+   "fonte": "https://pm.am.gov.br/portal/pagina/historia_da_pmam"
+  },
+  {
+   "ano": "2002",
+   "texto": "O Regimento de Policiamento Montado, criado em 1988 como esquadrão, recebe o nome de Regimento Coronel Bentes, em homenagem ao seu primeiro comandante.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Coronel Bentes",
+   "texto": "Dá nome ao Regimento de Policiamento Montado (Regimento Coronel Bentes) desde 2002, em homenagem por ter sido o primeiro comandante da unidade.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+  },
+  {
+   "nome": "Cândido Mariano",
+   "texto": "Dá nome ao 2º Batalhão de Policiamento de Choque (Rondas Ostensivas Cândido Mariano – Rocam). Comandou o batalhão da PMAM que lutou em Canudos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+  }
+ ],
+ "organizacao": {
+  "texto": "Em Manaus, o Comando de Policiamento Metropolitano reúne seis comandos de área e as companhias comunitárias (CICOM). No interior, batalhões e companhias independentes. Há ainda os comandos especializado (choque, BOPE, cavalaria, cães, explosivos, aéreo) e ambiental.",
+  "fonte": "https://pm.am.gov.br/portal/organizacao",
+  "unidades_total": null,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Itacoatiara",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Tefé",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Humaitá",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Coari",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Tabatinga",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Manacapuru",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "1ª Companhia Independente de Polícia Militar",
+    "local": "Eirunepé",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "2ª Companhia Independente de Polícia Militar",
+    "local": "São Gabriel da Cachoeira",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "3ª Companhia Independente de Polícia Militar",
+    "local": "Rio Preto da Eva",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "4ª Companhia Independente de Polícia Militar",
+    "local": "Lábrea",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "5ª Companhia Independente de Polícia Militar",
+    "local": "Boca do Acre",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "6ª Companhia Independente de Polícia Militar",
+    "local": "Barcelos",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "7ª Companhia Independente de Polícia Militar",
+    "local": "Presidente Figueiredo",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "8ª Companhia Independente de Polícia Militar",
+    "local": "Iranduba",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "9ª Companhia Independente de Polícia Militar",
+    "local": "Borba",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "10ª Companhia Independente de Polícia Militar",
+    "local": "Maués",
+    "fonte": "https://pm.am.gov.br/portal/organizacao"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar (Força Tática)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Batalhão de Policiamento de Trânsito (BPTran)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Companhia de Policiamento Turístico (CPTur)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "1º Batalhão de Policiamento de Choque (Batalhão Coronel Mar)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "2º Batalhão de Policiamento de Choque (Rocam)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Regimento de Policiamento Montado (Regimento Coronel Bentes)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento com Cães (CIPCães)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE, Batalhão Guarani)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Grupamento de Manejo de Artefatos Explosivos (Marte)",
+    "local": "Manaus (Novo Aleixo)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Grupamento de Radiopatrulhamento Aéreo (Graer)",
+    "local": "Manaus (Dom Pedro I)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   },
+   {
+    "nome": "Batalhão de Policiamento Ambiental (BPAmb)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Manaus (Petrópolis), AM",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+ },
+ "efetivo": {
+  "valor": 8540,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Amazonas",
+  "https://pm.am.gov.br/portal/pagina/historia_da_pmam",
+  "https://pm.am.gov.br/portal/organizacao"
+ ]
+}

@@ -1,0 +1,252 @@
+{
+ "chave": "pm:AL",
+ "nome": "Polícia Militar de Alagoas",
+ "sigla": "PMAL",
+ "uf": "AL",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública em Alagoas. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+ },
+ "fundacao": {
+  "data": "1832-02-03",
+  "texto": "Data de criação da corporação registrada na Wikipédia.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+ },
+ "historia": [
+  {
+   "ano": "1839",
+   "texto": "Primeira operação de guerra: a corporação enfrenta e vence tropas que se opunham à mudança da capital da cidade de Alagoas (atual Marechal Deodoro) para Maceió.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+  },
+  {
+   "ano": "1865",
+   "texto": "Na Guerra do Paraguai, é criado o 20º Batalhão de Voluntários da Pátria, com 400 soldados alagoanos; 201 deles morreram em combate.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+  },
+  {
+   "ano": "1922",
+   "texto": "Primeiro combate contra cangaceiros: em 8 de julho, uma tropa de 30 homens ataca um bando que havia atacado Água Branca. Morrem cinco cangaceiros, um sargento e um soldado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+  },
+  {
+   "ano": "1938",
+   "texto": "Em 28 de julho, a volante alagoana do tenente João Bezerra ataca o bando de Lampião na fazenda Angicos (SE). Lampião, Maria Bonita e nove cangaceiros morrem; os corpos foram degolados e as cabeças, expostas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Massacre_de_Angico"
+  },
+  {
+   "ano": "2007",
+   "texto": "A PMAL passa a lavrar o Termo Circunstanciado de Ocorrência (TCO) para crimes de menor potencial ofensivo, primeiro em projeto piloto em Maceió, de forma pioneira no Nordeste.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+  },
+  {
+   "ano": "2023",
+   "texto": "O Decreto nº 93.446/2023 reorganiza a estrutura operacional em comandos regionais: Metropolitano, Sertão, Agreste, Norte e Zona da Mata, Sul, além dos comandos especializado e de missões especiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+  }
+ ],
+ "patrono": {
+  "nome": "Alferes Joaquim José da Silva Xavier (Tiradentes)",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da PMAL, segundo a ficha da corporação.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Desde o Decreto nº 93.446/2023, a PMAL tem um comando para a Região Metropolitana e quatro comandos regionais (Sertão, Agreste, Norte e Zona da Mata, Sul), com batalhões (BPM) e companhias independentes (CPM/I), além do Comando de Policiamento Especializado e do Comando de Missões Especiais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas",
+  "unidades_total": 35,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": "2023",
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar (1º BPM)",
+    "local": "Maceió (Vergel)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar (4º BPM)",
+    "local": "Maceió (Farol)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar (5º BPM)",
+    "local": "Maceió (Benedito Bentes)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar (8º BPM)",
+    "local": "Rio Largo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar (12º BPM)",
+    "local": "Maceió (Cidade Universitária)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar (13º BPM)",
+    "local": "Maceió (Jacintinho)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "2ª Companhia de Polícia Militar Independente",
+    "local": "Paripueira",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "4ª Companhia de Polícia Militar Independente",
+    "local": "Marechal Deodoro",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "5ª Companhia de Polícia Militar Independente",
+    "local": "Maceió (Antares)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar (7º BPM)",
+    "local": "Santana do Ipanema",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar (9º BPM)",
+    "local": "Delmiro Gouveia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "6ª Companhia de Polícia Militar Independente",
+    "local": "Batalha",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar (3º BPM)",
+    "local": "Arapiraca",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar (10º BPM)",
+    "local": "Palmeira dos Índios",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "3ª Companhia de Polícia Militar Independente",
+    "local": "Atalaia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "7ª Companhia de Polícia Militar Independente",
+    "local": "Girau do Ponciano",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar (2º BPM)",
+    "local": "União dos Palmares",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar (6º BPM)",
+    "local": "Maragogi",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar (14º BPM)",
+    "local": "Novo Lino",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "8ª Companhia de Polícia Militar Independente",
+    "local": "São Luís do Quitunde",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar (11º BPM)",
+    "local": "Penedo",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "1ª Companhia de Polícia Militar Independente",
+    "local": "São Miguel dos Campos",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "9ª Companhia de Polícia Militar Independente",
+    "local": "Coruripe",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "10ª Companhia de Polícia Militar Independente",
+    "local": "Teotônio Vilela",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Batalhão de Polícia Ambiental (BPA)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Batalhão de Polícia de Trânsito (BPTran)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Batalhão de Polícia Rodoviária (BPRv)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Batalhão de Polícia Escolar (BPEsc)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Companhia Independente Fazendária",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (Bope)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Batalhão de Ronda Ostensiva Tática Motorizada (Rotam)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Regimento de Polícia Montada (RPMon)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento de Choque",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Companhia Independente de Operações Policiais Especiais do Sertão (COPES)",
+    "local": "Piranhas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   },
+   {
+    "nome": "Companhia Independente Ronda de Ação Intensiva Ostensiva (Raio)",
+    "local": "Maceió",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Maceió, AL",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+ },
+ "efetivo": {
+  "valor": 7040,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_de_Alagoas",
+  "https://pt.wikipedia.org/wiki/Massacre_de_Angico"
+ ]
+}

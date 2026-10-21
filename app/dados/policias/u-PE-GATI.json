@@ -1,0 +1,42 @@
+{
+ "chave": "u:PE:GATI",
+ "nome": "Grupo de Apoio Tático Itinerante",
+ "sigla": "GATI",
+ "uf": "PE",
+ "corp": "u",
+ "subordinada_a": "pm:PE",
+ "resumo": {
+  "texto": "Equipes táticas ligadas aos batalhões da Polícia Militar de Pernambuco, usadas em ocorrências especiais e operações contra o tráfico e o porte de armas.",
+  "fonte": "https://www.radiotoritama.com.br/equipe-gati-24o-batalhao-da-policia-militar-e-extinta/"
+ },
+ "fundacao": null,
+ "historia": [
+  {
+   "ano": "2014",
+   "texto": "É noticiada a extinção da equipe do GATI do 24º Batalhão, em Santa Cruz do Capibaribe.",
+   "fonte": "https://www.radiotoritama.com.br/equipe-gati-24o-batalhao-da-policia-militar-e-extinta/"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Não é uma unidade única: cada batalhão pode ter sua equipe de GATI (por exemplo, a do 17º BPM, com sede em Paulista). Não há lista oficial aberta das equipes.",
+  "fonte": "https://www.sds.pe.gov.br/noticias/77-geral/6531-gati-do-17-bpm-prende-traficantes-e-apreende-armas-e-drogas-em-itapissuma",
+  "unidades_total": null,
+  "unidades_tipo": null,
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "GATI do 17º Batalhão de Polícia Militar",
+    "local": "Paulista",
+    "fonte": "https://www.sds.pe.gov.br/noticias/77-geral/6531-gati-do-17-bpm-prende-traficantes-e-apreende-armas-e-drogas-em-itapissuma"
+   }
+  ]
+ },
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.sds.pe.gov.br/noticias/77-geral/6531-gati-do-17-bpm-prende-traficantes-e-apreende-armas-e-drogas-em-itapissuma",
+  "https://www.radiotoritama.com.br/equipe-gati-24o-batalhao-da-policia-militar-e-extinta/"
+ ]
+}

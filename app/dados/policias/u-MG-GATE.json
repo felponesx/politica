@@ -1,0 +1,103 @@
+{
+ "chave": "u:MG:GATE",
+ "nome": "Grupamento de Ações Táticas Especiais",
+ "sigla": "GATE",
+ "uf": "MG",
+ "corp": "u",
+ "subordinada_a": "pm:MG",
+ "resumo": {
+  "texto": "Foi a unidade de operações especiais da PM de Minas Gerais: resgate de reféns, bombas e explosivos, ameaças químicas e invasões táticas. Em 2016 virou o BOPE da PMMG.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+ },
+ "fundacao": {
+  "data": "1987-02-02",
+  "texto": "Criado em 2 de fevereiro de 1987.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+ },
+ "historia": [
+  {
+   "ano": "1940",
+   "texto": "Na década de 1940 forma-se o primeiro curso de comandos da PM mineira, origem das operações especiais no estado.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+  },
+  {
+   "ano": "1970",
+   "texto": "No fim da década de 1970 é criado o Batalhão de Polícia de Choque, com o embrião da Companhia de Operações Especiais, depois Batalhão de Missões Especiais e, por fim, GATE.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+  },
+  {
+   "ano": "1987",
+   "texto": "Criação do GATE, em 2 de fevereiro.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+  },
+  {
+   "ano": "2010",
+   "texto": "Apresenta o blindado 'Pacificador', comprado por R$ 1,4 milhão para resgates e controle de multidões.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+  },
+  {
+   "ano": "2013",
+   "texto": "O GATE de Belo Horizonte tinha 98 integrantes.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+  },
+  {
+   "ano": "2016",
+   "texto": "Em setembro, o GATE é extinto e transformado no Batalhão de Operações Policiais Especiais (BOPE) da PMMG.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Tinha time tático, equipe de operações em mananciais e florestas (COMAF), time de gerenciamento de crises, esquadrão antibombas e atiradores de elite. Além de Belo Horizonte, tinha lotações em seis cidades.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29",
+  "unidades_total": 7,
+  "unidades_tipo": "lotações",
+  "data_ref": "2013",
+  "unidades": [
+   {
+    "nome": "GATE Belo Horizonte",
+    "local": "Belo Horizonte (Pampulha)",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   },
+   {
+    "nome": "GATE Governador Valadares",
+    "local": "Governador Valadares",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   },
+   {
+    "nome": "GATE Uberlândia",
+    "local": "Uberlândia",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   },
+   {
+    "nome": "GATE Juiz de Fora",
+    "local": "Juiz de Fora",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   },
+   {
+    "nome": "GATE Uberaba",
+    "local": "Uberaba",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   },
+   {
+    "nome": "GATE Ipatinga",
+    "local": "Ipatinga (Bethânia)",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   },
+   {
+    "nome": "GATE Teófilo Otoni",
+    "local": "Teófilo Otoni",
+    "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Belo Horizonte (Pampulha), MG — Rua Antero de Quental, 94",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Grupamento_de_A%C3%A7%C3%B5es_T%C3%A1ticas_Especiais_%28PMMG%29"
+ ]
+}

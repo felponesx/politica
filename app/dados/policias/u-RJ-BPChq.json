@@ -1,0 +1,54 @@
+{
+ "chave": "u:RJ:BPChq",
+ "nome": "Batalhão de Polícia de Choque",
+ "sigla": "BPChq",
+ "uf": "RJ",
+ "corp": "u",
+ "subordinada_a": "pm:RJ",
+ "resumo": {
+  "texto": "Tropa de choque da Polícia Militar do Rio de Janeiro: controle de distúrbios e manifestações e apoio a operações em áreas de risco.",
+  "fonte": "https://www.vice.com/pt/article/e-o-choque/"
+ },
+ "fundacao": null,
+ "historia": [
+  {
+   "ano": "1982",
+   "texto": "Por boletim da PM de 7 de abril de 1982, o núcleo que deu origem ao BOPE passa a funcionar nas instalações do Batalhão de Polícia de Choque, como sua Companhia de Operações Especiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "2011",
+   "texto": "O BOPE, o BAC e o Batalhão de Choque terminam treinamento de dois anos com a Polícia Nacional Francesa sobre controle de manifestações e atendimento a feridos em tumultos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais"
+  },
+  {
+   "ano": "2014",
+   "texto": "Antes da Copa do Mundo, agentes do FBI e das polícias de Los Angeles e Chicago dão um curso de controle de distúrbios civis na sede do batalhão; 27 dos 40 alunos eram do Choque.",
+   "fonte": "https://www.vice.com/pt/article/e-o-choque/"
+  },
+  {
+   "ano": "2025",
+   "texto": "Em 28 de outubro, participa da Operação Contenção nos complexos da Penha e do Alemão, que deixou pelo menos 122 mortos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+  },
+  {
+   "ano": "2025",
+   "texto": "Em 28 de novembro, cinco policiais do Batalhão de Choque são presos a pedido da Corregedoria da PM, após câmeras corporais registrarem possíveis crimes na Operação Contenção; dez são investigados pela 1ª Delegacia de Polícia Judiciária Militar.",
+   "fonte": "https://www.correiobraziliense.com.br/brasil/2025/11/7302577-policiais-sao-presos-por-crimes-cometidos-na-megaoperacao-no-rj.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": {
+  "local": "Rio de Janeiro (Estácio), RJ — Regimento Marechal Caetano de Farias",
+  "fonte": "https://www.vice.com/pt/article/e-o-choque/"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.vice.com/pt/article/e-o-choque/",
+  "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_Opera%C3%A7%C3%B5es_Policiais_Especiais",
+  "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o",
+  "https://www.correiobraziliense.com.br/brasil/2025/11/7302577-policiais-sao-presos-por-crimes-cometidos-na-megaoperacao-no-rj.html"
+ ]
+}

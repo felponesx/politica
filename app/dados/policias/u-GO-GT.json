@@ -1,0 +1,35 @@
+{
+ "chave": "u:GO:GT",
+ "nome": "Grupo Tático 3",
+ "sigla": "GT3",
+ "uf": "GO",
+ "corp": "u",
+ "subordinada_a": "pc:GO",
+ "resumo": {
+  "texto": "Unidade de elite da Polícia Civil de Goiás. Apoia as delegacias contra quadrilhas e criminosos perigosos e atua em casos com reféns, escoltas de presos de risco e proteção de pessoas ameaçadas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_T%C3%A1tico_3"
+ },
+ "fundacao": {
+  "data": "1999",
+  "texto": "Criado em 1999 pela união do Grupo Anti-assalto a Banco (GAB), do Grupo Anti-sequestro (GAS) e do Grupo Tático — daí o nome Grupo Tático 3.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_T%C3%A1tico_3"
+ },
+ "historia": [
+  {
+   "ano": "1999",
+   "texto": "Unificação do GAB, do GAS e do Grupo Tático no G.T.3, da Polícia Civil de Goiás.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_T%C3%A1tico_3"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": {
+  "local": "Goiânia, GO",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_T%C3%A1tico_3"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Grupo_T%C3%A1tico_3"
+ ]
+}

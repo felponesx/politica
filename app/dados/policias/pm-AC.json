@@ -1,0 +1,152 @@
+{
+ "chave": "pm:AC",
+ "nome": "Polícia Militar do Estado do Acre",
+ "sigla": "PMAC",
+ "uf": "AC",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Acre. É subordinada ao governo do estado e é força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+ },
+ "fundacao": {
+  "data": "1916-05-25",
+  "texto": "O governo federal criou as Companhias Regionais do então Território do Acre, consideradas o embrião da PM; a Lei estadual nº 812, de 1984, fixou essa data como aniversário.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+ },
+ "historia": [
+  {
+   "ano": "1916",
+   "texto": "Decreto federal cria as Companhias Regionais, com a missão de manter a ordem pública em cada departamento do Território do Acre. É a data oficial de aniversário da corporação.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+  },
+  {
+   "ano": "1921",
+   "texto": "Com a unificação dos departamentos, as Companhias Regionais são extintas e dão lugar à Força Policial do Território Federal do Acre, que também trabalhava em obras, ensino e administração.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+  },
+  {
+   "ano": "1934",
+   "texto": "A Força Policial passa a se chamar Polícia Militar do Território Federal do Acre. Em 1945 a corporação vira Guarda Territorial do Acre.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+  },
+  {
+   "ano": "1963",
+   "texto": "A primeira Constituição do Estado do Acre cria a Polícia Militar do Estado e declara o coronel José Plácido de Castro seu patrono.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+  },
+  {
+   "ano": "1974",
+   "texto": "Por falta de estrutura, a PMAC só é instalada de fato em 31 de março de 1974.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+  },
+  {
+   "ano": "1999",
+   "texto": "O ex-comandante da PMAC Hildebrando Pascoal, eleito deputado federal em 1998, tem o mandato cassado. Depois foi condenado por liderar um grupo de extermínio no Acre e por tráfico, entre outros crimes.",
+   "fonte": "https://pt.wikipedia.org/wiki/Hildebrando_Pascoal"
+  }
+ ],
+ "patrono": {
+  "nome": "Coronel José Plácido de Castro",
+  "texto": "A primeira Constituição do Estado do Acre, de 1963 (art. 48), declarou o coronel José Plácido de Castro patrono da Polícia Militar do Estado.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Abaixo do comandante-geral, a tropa se divide em três Comandos de Policiamento Ostensivo (CPO-I, II e III), com 10 batalhões de área e duas companhias independentes, e em unidades especiais: BOPE, Batalhão Ambiental e Companhia de Trânsito. A fonte não informa a cidade-sede de cada batalhão.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre",
+  "unidades_total": 15,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": null,
+  "unidades": [
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento de Guarda",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "Companhia Independente de Policiamento Escolar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "Batalhão de Operações Especiais (BOPE)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "Batalhão de Policiamento Ambiental",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   },
+   {
+    "nome": "Companhia de Trânsito Urbano e Rodoviário",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Rio Branco, AC",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+ },
+ "efetivo": {
+  "valor": 2466,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Acre",
+  "https://pt.wikipedia.org/wiki/Hildebrando_Pascoal"
+ ]
+}

@@ -1,0 +1,62 @@
+{
+ "chave": "u:PR:GOST",
+ "nome": "Grupo de Operações de Socorro Tático",
+ "sigla": "GOST",
+ "uf": "PR",
+ "corp": "u",
+ "subordinada_a": "pm:PR",
+ "resumo": {
+  "texto": "Unidade de busca e salvamento do Corpo de Bombeiros do Paraná (ligado à Polícia Militar do Paraná), com bombeiros treinados para resgates que exigem técnicas e equipamentos especiais, inclusive com cães.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+ },
+ "fundacao": {
+  "data": "2006",
+  "texto": "Ativado em 2006 e oficializado pelo Governo do Estado em outubro de 2010.",
+  "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+ },
+ "historia": [
+  {
+   "ano": "1949",
+   "texto": "Em 6 de junho, dois bombeiros morrem eletrocutados ao tentar socorrer um trabalhador preso à rede elétrica em Curitiba; o caso levou a corporação a investir em equipamentos de proteção e salvamento.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  },
+  {
+   "ano": "1956",
+   "texto": "Em 1º de março, é criado o Serviço de Salvamento e Proteção (SSP), para resgates em desabamentos, inundações, afogamentos, elevadores e matas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  },
+  {
+   "ano": "1994",
+   "texto": "O Grupamento de Busca e Salvamento (GBS) é dissolvido e o efetivo espalhado por outros grupamentos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  },
+  {
+   "ano": "2006",
+   "texto": "Ativado o Grupo de Operações de Socorro Tático (GOST).",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  },
+  {
+   "ano": "2009",
+   "texto": "O cão Lost e seu condutor atuam no rompimento da barragem de Algodões, em Cocal (PI), ajudando a localizar vítimas.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  },
+  {
+   "ano": "2010",
+   "texto": "O GOST é oficializado pelo Governo do Estado, em outubro.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  },
+  {
+   "ano": "2014",
+   "texto": "Começa a fazer cinoterapia (terapia com cães) com crianças em tratamento de câncer, com a associação APACN.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": null,
+ "sede": null,
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Grupo_de_Opera%C3%A7%C3%B5es_de_Socorro_T%C3%A1tico"
+ ]
+}

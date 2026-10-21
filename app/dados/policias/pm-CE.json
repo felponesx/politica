@@ -1,0 +1,320 @@
+{
+ "chave": "pm:CE",
+ "nome": "Polícia Militar do Estado do Ceará",
+ "sigla": "PMCE",
+ "uf": "CE",
+ "corp": "pm",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Faz o policiamento ostensivo (fardado, nas ruas) e cuida da preservação da ordem pública no Ceará; está presente nos 184 municípios. É força auxiliar e reserva do Exército.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+ },
+ "fundacao": {
+  "data": "1835-05-24",
+  "texto": "O presidente da província, José Martiniano de Alencar, assinou a Resolução Provincial nº 13, que criou a Força Pública do Ceará.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+ },
+ "historia": [
+  {
+   "ano": "1835",
+   "texto": "Criada a Força Pública do Ceará pela Resolução Provincial nº 13, assinada pelo presidente da província, padre José Martiniano de Alencar.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "1947",
+   "texto": "Depois de 11 nomes diferentes, a corporação recebe, em 4 de janeiro, o nome atual: Polícia Militar do Estado do Ceará.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "2015",
+   "texto": "Chacina do Curió (Grande Messejana): 11 mortos e 7 feridos em Fortaleza na noite de 11 para 12 de novembro. O MP-CE disse que PMs agiram por vingança pela morte de um colega e denunciou 45 policiais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Chacina_da_Grande_Messejana"
+  },
+  {
+   "ano": "2019",
+   "texto": "A Lei nº 16.863 define a organização básica atual da PMCE, depois detalhada pelo Decreto nº 34.053, de 2021.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+  },
+  {
+   "ano": "2020",
+   "texto": "Motim de parte da PM por reajuste salarial a partir de 19 de fevereiro. O senador Cid Gomes foi baleado em Sobral ao avançar com uma retroescavadeira sobre um batalhão; mais de 300 inquéritos foram abertos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Crise_de_seguran%C3%A7a_p%C3%BAblica_no_Cear%C3%A1_em_2020"
+  },
+  {
+   "ano": "2025",
+   "texto": "No 4º júri da Chacina do Curió, sete PMs acusados de omissão foram absolvidos. Até ali, o saldo era de 6 policiais condenados e 21 absolvidos; o MP-CE anunciou recurso.",
+   "fonte": "https://www.cnnbrasil.com.br/nacional/nordeste/ce/ce-juri-absolve-sete-pms-acusados-de-omissao-na-chacina-do-curio/"
+  },
+  {
+   "ano": "2025",
+   "texto": "No 5º júri, em setembro, dois PMs foram condenados pelas 11 mortes, com penas que somam 591 anos e perda do cargo. As defesas recorreram.",
+   "fonte": "https://diariodonordeste.verdesmares.com.br/seguranca/pms-acusados-pela-chacina-do-curio-sao-condenados-a-591-anos-de-prisao-1.3693758"
+  }
+ ],
+ "patrono": {
+  "nome": "Tiradentes",
+  "texto": "O alferes Joaquim José da Silva Xavier, o Tiradentes, é o patrono da corporação, segundo a ficha da PM.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+ },
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Segundo a Lei nº 16.863/2019, a PMCE tem quatro Comandos Regionais (capital, região metropolitana, interior norte e interior sul) com batalhões e companhias independentes, além dos comandos de policiamento especializado, de choque (Cotam, Choque, BOPE, BEPI) e de rondas (Raio).",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1",
+  "unidades_total": 47,
+  "unidades_tipo": "batalhões e companhias",
+  "data_ref": "2021",
+  "unidades": [
+   {
+    "nome": "5º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Centro)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "6º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Parangaba)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "8º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Meireles)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "16º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Messejana)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "17º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Conjunto Ceará)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "18º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Antônio Bezerra)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "19º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Jardim das Oliveiras)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "20º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Cristo Redentor)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "21º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Conjunto Esperança)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "22º Batalhão de Polícia Militar",
+    "local": "Fortaleza (Papicu)",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "12º Batalhão de Polícia Militar",
+    "local": "Caucaia",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "14º Batalhão de Polícia Militar",
+    "local": "Maracanaú",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "15º Batalhão de Polícia Militar",
+    "local": "Eusébio",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "23º Batalhão de Polícia Militar",
+    "local": "Paracuru",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "24º Batalhão de Polícia Militar",
+    "local": "Maranguape",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "25º Batalhão de Polícia Militar",
+    "local": "Horizonte",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "3º Batalhão de Polícia Militar",
+    "local": "Sobral",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "4º Batalhão de Polícia Militar",
+    "local": "Canindé",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "7º Batalhão de Polícia Militar",
+    "local": "Crateús",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "11º Batalhão de Polícia Militar",
+    "local": "Itapipoca",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "1º Batalhão de Polícia Militar",
+    "local": "Russas",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "2º Batalhão de Polícia Militar",
+    "local": "Juazeiro do Norte",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "9º Batalhão de Polícia Militar",
+    "local": "Quixadá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "10º Batalhão de Polícia Militar",
+    "local": "Iguatu",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "13º Batalhão de Polícia Militar",
+    "local": "Tauá",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "1ª Companhia Independente do 3º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "2ª Companhia Independente do 3º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "3ª Companhia Independente do 3º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "1ª Companhia Independente do 4º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "2ª Companhia Independente do 4º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "3ª Companhia Independente do 4º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "4ª Companhia Independente do 4º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "5ª Companhia Independente do 4º CRPM",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Regimento de Polícia Montada (RPMont)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Polícia do Meio Ambiente (BPMA)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Policiamento de Turismo (BPTur)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Polícia de Trânsito Urbano e Rodoviário Estadual (BPRE)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Policiamento de Guarda Externa dos Presídios (BPGEP)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Policiamento de Prevenção Especializada (BPEsp)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Comando Tático Motorizado (Cotam)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Polícia de Choque (BPChoque)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Operações Policiais Especiais (BOPE)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão Especializado de Policiamento do Interior (BEPI)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "1º Batalhão de Rondas de Ações Intensivas e Ostensivas (BPRaio)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "2º BPRaio",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "3º BPRaio",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   },
+   {
+    "nome": "Batalhão de Segurança Patrimonial (BSP)",
+    "local": null,
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Fortaleza (Fátima), CE",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+ },
+ "efetivo": {
+  "valor": 20515,
+  "data_ref": "2022",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Militar_do_Estado_do_Cear%C3%A1",
+  "https://pt.wikipedia.org/wiki/Chacina_da_Grande_Messejana",
+  "https://pt.wikipedia.org/wiki/Crise_de_seguran%C3%A7a_p%C3%BAblica_no_Cear%C3%A1_em_2020",
+  "https://www.cnnbrasil.com.br/nacional/nordeste/ce/ce-juri-absolve-sete-pms-acusados-de-omissao-na-chacina-do-curio/",
+  "https://diariodonordeste.verdesmares.com.br/seguranca/pms-acusados-pela-chacina-do-curio-sao-condenados-a-591-anos-de-prisao-1.3693758"
+ ]
+}

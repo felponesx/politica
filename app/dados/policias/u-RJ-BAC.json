@@ -1,0 +1,74 @@
+{
+ "chave": "u:RJ:BAC",
+ "nome": "Batalhão de Ações com Cães",
+ "sigla": "BAC",
+ "uf": "RJ",
+ "corp": "u",
+ "subordinada_a": "pm:RJ",
+ "resumo": {
+  "texto": "Única unidade da PM do Rio que trabalha com cães: faro de armas, drogas e explosivos, busca de pessoas perdidas ou soterradas, controle de distúrbios e apoio tático. Atua em todo o estado.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+ },
+ "fundacao": {
+  "data": "1955-11-06",
+  "texto": "Fundado em 6 de novembro de 1955 pelo coronel João Ururahy de Magalhães como Serviço de Cães, com 40 cães.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+ },
+ "historia": [
+  {
+   "ano": "1955",
+   "texto": "Criado o Serviço de Cães, com 40 cães treinados por policiais que fizeram curso em São Paulo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+  },
+  {
+   "ano": "1969",
+   "texto": "Ganha autonomia como Companhia Independente de Cães de Policiamento (CICP).",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+  },
+  {
+   "ano": "1981",
+   "texto": "Com a extinção do Batalhão de Atividades Especiais, o canil vira companhia do 16º BPM, na Invernada de Olaria.",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+  },
+  {
+   "ano": "2001",
+   "texto": "Recupera a autonomia como Companhia Independente de Polícia Militar com Cães (CIPM Cães).",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+  },
+  {
+   "ano": "2011",
+   "texto": "Pela resolução nº 506 da Secretaria de Segurança, em 18 de outubro, a companhia vira Batalhão de Ações com Cães (BAC).",
+   "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+  },
+  {
+   "ano": "2025",
+   "texto": "Participa da Operação Contenção nos complexos da Penha e do Alemão, em 28 de outubro, que deixou pelo menos 122 mortos.",
+   "fonte": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+  },
+  {
+   "ano": "2026",
+   "texto": "Inaugurada a 3ª Companhia do BAC em Volta Redonda, no Sul Fluminense.",
+   "fonte": "https://www.correiodamanha.com.br/sul-fluminense/costa-verde/2026/08/amp/312744-volta-redonda-ganha-batalhao-de-caes-da-policia-militar.html"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Subordinado ao Comando de Operações Especiais (COE). Tem patrulhas de operações com cães, equipe de faro, centro veterinário e um núcleo cinófilo que apoia o grupo de resgate de reféns do BOPE. Em 2026 abriu a 3ª Companhia, em Volta Redonda.",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es",
+  "unidades_total": null,
+  "unidades_tipo": null,
+  "data_ref": null,
+  "unidades": []
+ },
+ "sede": {
+  "local": "Rio de Janeiro (Olaria), RJ — Rua Paranapanema, 769",
+  "fonte": "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Batalh%C3%A3o_de_A%C3%A7%C3%B5es_com_C%C3%A3es",
+  "https://www.correiodamanha.com.br/sul-fluminense/costa-verde/2026/08/amp/312744-volta-redonda-ganha-batalhao-de-caes-da-policia-militar.html",
+  "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%A3o_Conten%C3%A7%C3%A3o"
+ ]
+}
