@@ -1618,7 +1618,8 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .pol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
 .pol-card{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;background:var(--surface)}
 .pol-card:hover{border-color:var(--blue);background:var(--soft)}.pol-card small{display:block;color:var(--muted);font-size:12px;line-height:1.3}
-.pol-h{display:flex;gap:16px;align-items:center}.pol-h>span:first-child{flex:none}
+.pol-h{display:flex;gap:16px;align-items:center;justify-content:flex-start!important}.pol-h p{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}
+.pol-area{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:420px;font-size:12px}.pol-h>span:first-child{flex:none}
 .pol-res{font-size:15.5px;max-width:860px;margin:4px 0 0}
 .pol-her{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .pol-heroi{border:1px solid var(--line);border-radius:12px;padding:12px}.pol-heroi.pat{border-color:#E0BC4A;background:color-mix(in srgb,#E0BC4A 9%,var(--surface))}
@@ -4974,6 +4975,8 @@ const POL_CORP={pm:"Polícia Militar",pc:"Polícia Civil",pf:"Polícia Federal",
 const POL_EF={pm:"policia_militar",pc:"policia_civil",pf:"policia_federal",prf:"prf",spf:"policia_penal_federal"};
 const polCor=c=>(CORP[c]||CORP.pm)[1];
 const polFonte=u=>u?` <a class="small pol-f" href="${esc(u)}" target="_blank" rel="noopener">fonte</a>`:"";
+// anos em faixas: [2003..2011, 2026] → "2003–2011 e 2026"
+const polFaixas=an=>{const r=[];an.map(Number).sort((a,b)=>a-b).forEach(y=>{const u=r[r.length-1];if(u&&y===u[1]+1)u[1]=y;else r.push([y,y])});return r.map(([a,b])=>a===b?a:a+"–"+b).join(" e ")};
 const polAno=d=>{const m=String(d||"").match(/\d{4}/);return m?+m[0]:null};
 // marca como clicáveis os brasões e linhas de polícia que têm ficha
 function polMarca(){if(!POL_LISTA||!POL_LISTA.length)return;const tem=new Set(POL_LISTA.map(x=>x.slug));
@@ -5011,16 +5014,16 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
    <p class="small muted" style="margin:6px 0 0">O Sinesp e o Anuário não separam esses números por corporação nem por batalhão: são de todas as polícias do estado. ${f.chave==="pm:RJ"?"No Rio, o ISP publica por área de batalhão (abaixo).":"Só o Rio de Janeiro publica em base aberta os números por área de batalhão."}</p>`:"";
   const isp=f.isp_batalhoes;let ispH="";
   if(isp){const S=isp.serie,anos=Object.keys(S),ult=S[isp.ano_ref]||{},ativos=isp.batalhoes.filter(b=>b.ativa),velhos=isp.batalhoes.filter(b=>!b.ativa);
-   const nomeB=b=>b.batalhao?`<b>${esc(b.batalhao)}</b>${b.nome?` <span class="small muted">${esc(b.nome)}</span>`:""}`:`<b>Área ${b.aisp}</b>`;
+   const nomeB=b=>`<b>${esc(b.batalhao||"Área "+b.aisp)}</b>${b.sede?`<div class="small">${esc(b.sede)}</div>`:""}${b.area?`<div class="small muted pol-area" title="${esc(b.area)}">${esc(b.area)}</div>`:""}`;
    ispH=`<h3 class="seg-h">Por batalhão <small>áreas de batalhão (AISP) do ISP-RJ, ${isp.ano_ref}</small></h3>
    <div class="kpis kpis-c">${kpx("Mortes por intervenção de agente do Estado",n0(ult.mortes_intervencao),`em ${isp.ano_ref}, estado do RJ`)}${kpx("Prisões",n0(ult.prisoes),`em flagrante e por mandado, ${isp.ano_ref}`)}${kpx("Policiais militares mortos em serviço",n0(ult.pms_mortos_servico),`em ${isp.ano_ref}`)}${kpx("PMs mortos em serviço desde "+anos[0],n0(anos.reduce((a,k)=>a+(S[k].pms_mortos_servico||0),0)))}</div>
    <div class="grid g2 mt"><div class="panel"><h2>Mortes por intervenção de agente do Estado, por ano</h2>${lineChart([{n:"Mortes",v:anos.map(k=>S[k].mortes_intervencao),c:"#D92D20"}],anos,{h:190,fmt:n0})}${S[anos[anos.length-1]].meses<12?`<p class="small muted" style="margin:4px 0 0">${anos[anos.length-1]}: ${S[anos[anos.length-1]].meses} meses.</p>`:""}</div>
    <div class="panel"><h2>Policiais militares mortos em serviço, por ano</h2>${lineChart([{n:"PMs mortos",v:anos.map(k=>S[k].pms_mortos_servico),c:"#1F3A68"}],anos,{h:190,fmt:n0})}</div></div>
-   <div class="panel mt">${table([["Batalhão",nomeB],["Sede e área",b=>`<span class="small">${esc(b.sede||"")}${b.sede&&b.area?" · ":""}<span class="muted">${esc(b.area||"")}</span></span>`],
+   <div class="panel mt">${table([["Batalhão, sede e área",nomeB],
      ["Mortes por intervenção ("+isp.ano_ref+")",b=>n0(b.mortes_intervencao_ano),"n"],["Prisões ("+isp.ano_ref+")",b=>n0(b.prisoes_ano),"n"],["PMs mortos em serviço ("+isp.ano_ref+")",b=>n0(b.pms_mortos_servico_ano),"n"],
      ["Mortes por intervenção desde "+(anos[0]||""),b=>n0(b.mortes_intervencao_total),"n"],["PMs mortos em serviço desde "+(anos[0]||""),b=>n0(b.pms_mortos_servico_total),"n"]],
      ativos.slice().sort((a,b)=>(b.mortes_intervencao_ano||0)-(a.mortes_intervencao_ano||0)))}
-    ${velhos.length?`<p class="small muted" style="margin:8px 0 0">Áreas sem dados em ${isp.ano_ref} (extintas, renumeradas ou recriadas): ${velhos.map(b=>`área ${b.aisp} (${Object.keys(b.anos)[0]}–${b.ultimo_mes.slice(0,4)})`).join(", ")}.</p>`:""}
+    ${velhos.length?`<p class="small muted" style="margin:8px 0 0">Áreas sem dados em ${isp.ano_ref} (extintas, renumeradas ou recriadas): ${velhos.map(b=>`área ${b.aisp}${b.batalhao?`, ${esc(b.batalhao)}`:""}: dados de ${polFaixas(Object.keys(b.anos))}`).join("; ")}.</p>`:""}
     <p class="small muted" style="margin:8px 0 0">${esc(isp.aviso)} ${isp.mapa_fonte?`Tabela área → batalhão: <a href="${esc(isp.mapa_fonte)}" target="_blank" rel="noopener">fonte</a>. `:"A tabela área → batalhão ainda não tem fonte confirmada; as áreas aparecem pelo número. "}Dados: <a href="${esc(isp.url)}" target="_blank" rel="noopener">${esc(isp.fonte)}</a>, até ${mesCurto(isp.ultimo_mes)}.</p></div>`}
   // história, patrono e homenageados, organização
   const hist=f.historia.length?`<div class="panel mt"><h2>História</h2>${f.fundacao?`<p style="margin:0 0 12px">${esc(f.fundacao.texto||"")}${polFonte(f.fundacao.fonte)}</p>`:""}<ol class="esc-tl">${f.historia.map(h=>`<li><span class="esc-dt">${esc(h.ano||"")}</span><span>${esc(h.texto)}${polFonte(h.fonte)}</span></li>`).join("")}</ol></div>`:"";
