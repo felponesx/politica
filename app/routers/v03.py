@@ -393,11 +393,18 @@ def recuperacao_judicial_resumo(tipo: str = "recuperacao_judicial", db: Session 
             k = fn(r) or "Não informado"
             out[k] = out.get(k, 0) + 1
         return dict(sorted(out.items(), key=lambda x: -x[1]))
+    # por estado e ano em que a situação foi registrada (para os gráficos em linha: quantas acumuladas até cada ano)
+    por_uf_ano = {}
+    for r in regs:
+        if r.uf and r.ano:
+            o = por_uf_ano.setdefault(r.uf, {})
+            o[str(r.ano)] = o.get(str(r.ano), 0) + 1
     ativas = [r for r in regs if (r.dados or {}).get("situacao_cadastral") == "Ativa"]
     return {"total": len(regs), "ativas": len(ativas), "capital_social_ativas": round(sum(r.valor or 0 for r in ativas), 2),
             "por_uf": contar(lambda r: r.uf), "por_porte": contar(lambda r: (r.dados or {}).get("porte")),
             "por_situacao_cadastral": contar(lambda r: (r.dados or {}).get("situacao_cadastral")),
             "por_ano": dict(sorted(contar(lambda r: str(r.ano) if r.ano else None).items())),
+            "por_uf_ano": por_uf_ano,
             "mes_base": next(((r.dados or {}).get("mes_base") for r in regs), None), "aviso": AVISO_RJ,
             "fonte": "Receita Federal — dados abertos do CNPJ"}
 

@@ -3207,26 +3207,10 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}" class="an-p" style="--d:2.6s">${lista[f.k].uf}</text>`});
  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.6}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
-function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,nota=""}={}){
- // gráfico em linha do ranking (quando só há um período): os 5 estados em ordem, ligados por uma linha; os 3 primeiros
- // pontos grandes e em cores vivas, os 2 últimos menores e em pastel; cada gráfico com a própria escala
- const o=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);if(!o.length)return"";
- const graf=(t,lista,cores)=>{const W=400,H=210,L=50,Rp=24,T=26,B=36,v=lista.map(u=>vals[u.uf]),mx=Math.max(...v.map(Math.abs))*1.12||1,mn=Math.min(0,...v);
-  const x=k=>L+22+k*(W-L-Rp-22)/(lista.length-1||1),y=val=>T+(1-(val-mn)/(mx-mn||1))*(H-T-B),cor=k=>k<3?cores[k]:misturaBranco(cores[k],.3);let g="";
-  for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" class="lc-grade"/>${k<3?`<text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(val)}</text>`:""}`}
-  // área clara embaixo e a linha, cada trecho na cor do ponto de onde sai
-  g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07" class="an-a"/>`;
-  for(let k=0;k<v.length-1;k++)g+=`<path d="M${x(k).toFixed(1)},${y(v[k]).toFixed(1)} L${x(k+1).toFixed(1)},${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round" pathLength="1" class="an-l an-s" style="--d:${(k*.6+.3).toFixed(2)}s"/>`;
-  lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2" class="an-p" style="--d:${(k*.6).toFixed(2)}s"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
-   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"#667085"}" class="an-p" style="--d:${(k*.6+.15).toFixed(2)}s">${fmt(v[k])}</text>
-   <text x="${x(k).toFixed(1)}" y="${H-16}" text-anchor="middle" font-size="12" font-weight="${k<3?700:500}" fill="${k<3?"var(--ink)":"#667085"}">${u.uf}</text><text x="${x(k).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="10.5" class="lc-eixo">${k+1}º</text>`});
-  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cor(k)}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(v[k])}</b></div>`).join("");
-  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}">${g}</svg><div class="lr-leg">${leg}</div></div>`};
- return`<div class="rk-duplo lr">${graf(alto,o.slice(0,n),coresAlto)}${graf(baixo,o.slice(-n).reverse(),coresBaixo)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
 // serie: {UF:{ano:valor}}; anos em ordem; vals: valor de hoje (escolhe os 5 maiores e os 5 menores). Sem 2 anos ou mais, volta às barras.
 function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
  const ok=UFS.filter(u=>vals[u.uf]!=null&&serie&&serie[u.uf]&&Object.keys(serie[u.uf]).length>=2).sort((a,b)=>vals[b.uf]-vals[a.uf]);
- if(!anos||anos.length<2||ok.length<n*2)return rankLinhas(vals,fmt,{alto,baixo,coresAlto,coresBaixo,attr,href,n});
+ if(!anos||anos.length<2||ok.length<n*2)return rankDuplo(vals,fmt,{alto,baixo,corAlto:coresAlto[0],corBaixo:coresBaixo[0],attr,href,n});
  const p={attr,href,rot,vals},corpo=an=>`<div class="rk-duplo lr">${linhasGraf(alto,ok.slice(0,n),serie,an,coresAlto,fmt,p)}${linhasGraf(baixo,ok.slice(-n).reverse(),serie,an,coresBaixo,fmt,p)}</div>`;
  // botões de período (10 anos / 5 anos / Tudo) quando a série tem mais anos do que o corte
  const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)?[]:[[10,"10 anos"],[5,"5 anos"]].filter(([m])=>{const c=yr.filter(y=>y>=u-m).length;return c<anos.length&&c>=3});
@@ -3447,7 +3431,7 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
  $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
  <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
- <div class="mapwrap mapbig mt"><div id="flMapa">${mapaValores(val,rs)}</div><div class="zside" id="flLados">${rankLinhas(val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO})}</div></div>
+ <div class="mapwrap mapbig mt"><div id="flMapa">${mapaValores(val,rs)}</div><div class="zside" id="flLados">${linhasDuplo(null,null,val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO})}</div></div>
  <h3 class="seg-h">Todos os estados <small>do que mais recebe de volta ao que menos recebe · toque no título da coluna para ordenar</small></h3>${table([["Estado",e=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span>`],["Pagou de impostos",e=>`${brl(e.arrecadado)}<div class="small muted">${pct(e.participacao_arrecadacao_nacional*100)} do país</div>`,"n"],["Voltou ao estado",e=>`${brl(e.retornado)}<div class="small muted">${pct(e.participacao_nas_transferencias*100)} dos repasses</div>`,"n"],["Saldo",saldo,"n"],["Para cada R$ 1",e=>`<b>${rs(e.retorno_por_real_arrecadado)}</b><div class="bar" style="height:6px;margin-top:5px;min-width:80px"><i style="width:${Math.max(2,e.retorno_por_real_arrecadado/mxR*100)}%;background:${e.retorno_por_real_arrecadado>=1?"#1BAF7A":"#EB6834"}"></i></div>`,"n"]],es,e=>"#/uf/"+e.uf)}
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
@@ -4494,6 +4478,9 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
 /* ===================== v0.6: Dívidas numa tela só — seletor de tipo, mapa que muda e zoom no estado ===================== */
 let DV_MAPA_EST=null;
 async function dvPop(){if(DV_MAPA_EST)return DV_MAPA_EST;try{DV_MAPA_EST=(await apiGet("/mapa/estados")).estados||{}}catch(e){DV_MAPA_EST={}}return DV_MAPA_EST}
+// títulos dos gráficos de cada tipo de dívida (maiores × menores)
+const DIV_ROT={familias:{alto:"Mais inadimplentes",baixo:"Menos inadimplentes"},empresas:{alto:"Mais empresas em recuperação",baixo:"Menos empresas em recuperação"},
+ municipios:{alto:"Mais cidades com nota boa",baixo:"Menos cidades com nota boa"}};
 const DIV_MAPA={
  publica:(D,M)=>{const g=govEstados(D.es),v={};Object.keys(g).forEach(u=>{const p=M[u]&&M[u].pop;if(p)v[u]=g[u].c/p});return Object.keys(v).length?{t:"Dívida do governo do estado por habitante",s:"Dívida consolidada estadual dividida pela população (IBGE). A dívida federal não se divide por estado.",v,f:x=>"R$ "+nf(Math.round(x))}:null},
  estados:D=>{const g=govEstados(D.es),v={};Object.keys(g).forEach(u=>v[u]=g[u].c);return Object.keys(v).length?{t:"Dívida consolidada de cada governo estadual",s:"Relatório de Gestão Fiscal (Tesouro, SICONFI).",v,f:brl}:null},
@@ -4522,7 +4509,14 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
   const desenha=()=>{const q=quadroDivida(tipo,D);$("#dvQ").innerHTML=q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"";
    const m=DIV_MAPA[tipo](D,M);const card=$("#dvcard");if($("#dvstate").style.display!=="none")inlineZoomOut(DZ);
    if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE});
-    const opD={alto:"Mais endividados",baixo:"Menos endividados",coresAlto:LIN_AZUL,attr:"data-dvz",href:()=>"#/dividas"};$("#dvside").innerHTML=rankLinhas(m.v,m.f,opD);
+    const opD={alto:"Mais endividados",baixo:"Menos endividados",coresAlto:LIN_AZUL,attr:"data-dvz",href:()=>"#/dividas",...(DIV_ROT[tipo]||{})};
+    const ligaDv=()=>document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)});
+    // famílias: inadimplência no fim de cada ano (SCR.data); empresas: em recuperação judicial acumuladas até cada ano
+    let hs=null;if(tipo==="familias"){const h=D.scr&&D.scr.historico;if(h&&h.anos.length>=2)hs={serie:h.estados,anos:h.anos,nota:"Inadimplência das pessoas (atraso acima de 90 dias) no último mês de cada ano, SCR.data do Banco Central."}}
+    if(tipo==="empresas"){const P=D.rj&&D.rj.por_uf_ano;if(P){const anos=[...new Set(Object.values(P).flatMap(o=>Object.keys(o)))].sort().filter(a=>+a>=2015),serie={};
+     Object.entries(P).forEach(([uf,o])=>{let acc=Object.entries(o).filter(([a])=>+a<+(anos[0]||0)).reduce((t,[,n])=>t+n,0);serie[uf]={};anos.forEach(a=>{acc+=o[a]||0;serie[uf][a]=acc})});
+     if(anos.length>=2)hs={serie,anos,nota:"Empresas em recuperação judicial acumuladas até cada ano, pelo ano em que a situação foi registrada no CNPJ (só as que continuam nessa situação hoje)."}}}
+    $("#dvside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,m.v,m.f,{...opD,nota:hs?hs.nota:""});ligaDv();
     if(tipo==="estados"||tipo==="publica")histUF().then(H=>{const dv=H&&H.divida;if(!dv||dv.anos.length<2||!$("#dvside"))return;const pc={};Object.entries(dv.estados).forEach(([uf,o])=>{const pp=UF[uf]&&UF[uf].pop;if(!pp)return;pc[uf]={};Object.entries(o).forEach(([a,v])=>pc[uf][a]=m.v[uf]!=null&&/habitante/i.test(m.t)?v/pp:v)});
      const MQ={1:"abr",2:"ago",3:"dez"},rq=a=>{const[y,q]=String(a).split(".");return q?`${MQ[q]}/${y.slice(2)}`:y};
      $("#dvside").innerHTML=linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,rot:rq,nota:"Dívida consolidada ao fim de cada quadrimestre (abril, agosto e dezembro), pelos relatórios fiscais dos estados. Valores nominais, sem correção pela inflação."});document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});

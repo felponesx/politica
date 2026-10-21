@@ -190,8 +190,13 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Projetos: situação via `camara-proposicoes-situacao` (arquivo anual da Câmara `proposicoes-AAAA.json`, campo
   `ultimoStatus`); no site `sitProj`/`sitProjTag` traduzem para palavras simples ("Aguardando votação", "Virou lei"…).
 - Gráficos em linha (maiores × menores): `linhasDuplo(serie,anos,vals,fmt,…)` — 5 linhas por gráfico, 3 primeiras vivas e
-  grossas, 2 apagadas; sem 2 anos de dados cai para `rankDuplo` (barras). Segurança usa `segHist` (histórico anual do
-  `/seguranca`); dívida e arrecadação usam `/historico-estados` (anos coletados pelo robô: receita, tesouro e siconfi-divida).
+  grossas, 2 apagadas; sem 2 anos de dados cai para `rankDuplo` (barras; a antiga "linha ligando os estados" saiu). Segurança usa
+  `segHist` (histórico anual do `/seguranca`); dívida e arrecadação usam `/historico-estados` (anos coletados pelo robô: receita,
+  tesouro e siconfi-divida, 2015 em diante); famílias, `historico` do `/dividas/familias-estados` (SCR.data, último mês de cada ano:
+  robô com `bcb-scr-estados ano=AAAA`); empresas, `por_uf_ano` do `/recuperacao-judicial/resumo` (acumuladas até cada ano).
+- Impostômetro (`/contadores`): federal = soma das colunas do CSV da Receita (sem subtotais preenchidos desde 2000; 2025 = R$ 2,86 tri)
+  no ritmo do ano; estados e prefeituras pelo RREO Anexo 03 em 12 meses; prefeitura sem relatório estimada pela média por habitante
+  das cidades do mesmo estado e da mesma faixa de tamanho. Gastômetro divide o ano incompleto pelo tempo que os bimestres cobrem.
 - Barras de porcentagem (v1.3): `.bar` vira 10 quadradinhos arredondados (cada um = 10%, o do meio parcialmente cheio) por máscara
   CSS, 150 px de largura; as barras de comparação de `hbars` (`.hb-b`) continuam lisas. CSS no fim do `<style>` do site.
 - Animação e período (v1.4; linhas em 2,6 s e barras em 1,8 s, para dar tempo de ver crescer; v1.7: pizzas `donut` e anéis `ring` (`.pz`) giram como ponteiro por máscara `.an-pz`, legenda `.an-f` linha a linha): gráficos (`.lc`, `svg.lr-svg`, `.hb`, `.bar`) ficam parados (`.an-pre`) até entrarem na tela

@@ -266,7 +266,20 @@ def dividas_familias_estados(db: Session = Depends(get_db)):
                 t["inadimplida"] += e[k]["inadimplida"] or 0
     for t in tot.values():
         t["inadimplencia"] = round(100 * t["inadimplida"] / t["carteira"], 2) if t["carteira"] else None
+    # histórico para os gráficos em linha: último mês coletado de cada ano, inadimplência das pessoas por estado
+    ult = {}
+    for r in regs:
+        rf = str((r.dados or {}).get("referencia") or "")
+        if rf[:4].isdigit() and rf > ult.get(rf[:4], ""):
+            ult[rf[:4]] = rf
+    hist = {}
+    for r in regs:
+        d = r.dados or {}
+        rf = str(d.get("referencia") or "")
+        if r.uf and ult.get(rf[:4]) == rf and (d.get("pf") or {}).get("inadimplencia") is not None:
+            hist.setdefault(r.uf, {})[rf[:4]] = d["pf"]["inadimplencia"]
     return {"referencia": ref, "estados": estados, "brasil": tot,
+            "historico": {"anos": sorted(ult), "estados": hist, "meses": ult},
             "fonte": "Banco Central do Brasil — SCR.data (Sistema de Informações de Créditos)",
             "nota": "Carteira ativa: tudo o que as pessoas (ou empresas) do estado devem aos bancos. Inadimplência: "
                     "parte com atraso acima de 90 dias."}
