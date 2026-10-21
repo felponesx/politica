@@ -131,11 +131,14 @@
    "tipo": "empresário",
    "situacao": "condenado",
    "detalhe": "Apontado como um dos chefes do esquema; fez acordo de colaboração premiada. Segundo o STF (out/2017), já condenado em primeira instância; situação dos recursos não confirmada.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2017-10-17",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/",
+   "liberdade_data": "2021-02-17",
+   "liberdade_fonte": "https://conjur.com.br/2021-fev-17/trf-ve-prescricao-acao-principal-mafia-sanguessugas/",
+   "liberdade_detalhe": "Em fev/2021 o TRF-1 declarou a pena da ação principal prescrita; não cumprirá pena nesse processo."
   },
   {
    "nome": "Darci José Vedoin",
@@ -170,11 +173,14 @@
    "tipo": "agente público",
    "situacao": "condenado",
    "detalhe": "Condenado pelo STF por corrupção passiva e lavagem de dinheiro a 12 anos, 6 meses e 6 dias em regime fechado, com perda do mandato; fraude em licitação e quadrilha prescreveram. Na condenação já estava no PR.",
-   "liberdade": null,
+   "liberdade": "prisão domiciliar",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2017-05-02",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-determina-perda-de-mandato-do-deputado-paulo-feijo-pr-rj/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-determina-perda-de-mandato-do-deputado-paulo-feijo-pr-rj/",
+   "liberdade_data": "2019-05-27",
+   "liberdade_fonte": "https://www.meon.com.br/noticias/brasil/rosa-weber-autoriza-ex-deputado-federal-paulo-feijo-a-cumprir-pena-em-casa",
+   "liberdade_detalhe": "Em mai/2019 o STF autorizou que cumprisse a pena em casa, por causa de um câncer; informação mais recente encontrada."
   },
   {
    "nome": "Josué Bengtson",
@@ -183,11 +189,14 @@
    "tipo": "agente público",
    "situacao": "prescrito",
    "detalhe": "STF declarou extinta a punibilidade: quadrilha e lavagem prescreveram pela pena em abstrato e corrupção passiva pela pena em concreto.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2016-09-06",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/extinta-punibilidade-contra-deputado-acusado-de-envolvimento-no-superfaturamento-de-ambulancias/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/extinta-punibilidade-contra-deputado-acusado-de-envolvimento-no-superfaturamento-de-ambulancias/",
+   "liberdade_data": "2023-11-21",
+   "liberdade_fonte": "https://alepa.pa.gov.br/Comunicacao/Noticia/8869/alepa-celebra-50-anos-de-fundacao-da-igreja-do-evangelho-quadrangular",
+   "liberdade_detalhe": "Punibilidade extinta pelo STF em 2016; em nov/2023 presidia a Igreja Quadrangular no Pará."
   },
   {
    "nome": "Benjamin Maranhão",
@@ -196,11 +205,14 @@
    "tipo": "agente público",
    "situacao": "absolvido",
    "detalhe": "Absolvido por unanimidade pelo STF por falta de provas suficientes (quadrilha, corrupção passiva e fraude à licitação).",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2017-10-17",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-deputado-benjamim-maranhao-de-envolvimento-com-mafia-dos-sanguessugas/",
+   "liberdade_data": "2024-10-06",
+   "liberdade_fonte": "https://apps.tre-pb.jus.br/aplicativos/resultadosVotacao/arquivos_ele2024_t1/oficial/Eleicao-2024-t1-relatorio-resultado-totalizacao-Araruna.pdf",
+   "liberdade_detalhe": "Absolvido pelo STF em 2017; foi candidato a prefeito de Araruna (PB) em 2024."
   },
   {
    "nome": "Laura Carneiro",
@@ -209,11 +221,14 @@
    "tipo": "agente público",
    "situacao": "absolvido",
    "detalhe": "Absolvida por unanimidade pelo STF; a própria PGR pediu a absolvição. Prevaleceu o entendimento de que não houve prova da existência do fato.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2019-05-28",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-a-ex-deputada-laura-carneiro-acusada-de-participacao-na-mafia-dos-sanguessugas/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/1a-turma-absolve-a-ex-deputada-laura-carneiro-acusada-de-participacao-na-mafia-dos-sanguessugas/",
+   "liberdade_data": "2026-10",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/74856",
+   "liberdade_detalhe": "Absolvida pelo STF em 2019; é deputada federal em exercício (RJ)."
   },
   {
    "nome": "Jefferson Campos",
@@ -222,11 +237,14 @@
    "tipo": "agente público",
    "situacao": "absolvido",
    "detalhe": "Absolvido por unanimidade pelo STF: a relatora entendeu que os crimes ocorreram, mas não havia prova do envolvimento do deputado.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2014-12-02",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/deputado-jefferson-campos-e-absolvido-de-envolvimento-com-mafia-dos-sanguessugas/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/deputado-jefferson-campos-e-absolvido-de-envolvimento-com-mafia-dos-sanguessugas/",
+   "liberdade_data": "2026-10",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/74273",
+   "liberdade_detalhe": "Absolvido pelo STF em 2014; é deputado federal em exercício (SP)."
   },
   {
    "nome": "Ezequiel Fonseca",
@@ -248,11 +266,14 @@
    "tipo": "agente público",
    "situacao": "absolvido",
    "detalhe": "Inocentado pelo Conselho de Ética do Senado da acusação de participar do esquema (processo disciplinar, não judicial); recebeu censura verbal por falhas no controle de assessores.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2006-11-28",
-   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/conselho-de-etica-inocenta-suassuna-de-participacao-na-mafia-das-ambulancias"
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/conselho-de-etica-inocenta-suassuna-de-participacao-na-mafia-das-ambulancias",
+   "liberdade_data": "2024-03-07",
+   "liberdade_fonte": "https://www.correio24horas.com.br/brasil/academia-brasileira-de-letras-elege-novo-imortal-nesta-quinta-0324",
+   "liberdade_detalhe": "Em mar/2024 disputou uma vaga na Academia Brasileira de Letras."
   },
   {
    "nome": "Serys Slhessarenko",
@@ -274,11 +295,14 @@
    "tipo": "agente público",
    "situacao": "processo arquivado",
    "detalhe": "Conselho de Ética do Senado arquivou a representação por unanimidade, por 'insuficiência de provas' (processo disciplinar).",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2006-11-28",
-   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas"
+   "fonte": "https://www12.senado.leg.br/noticias/materias/2006/11/28/magno-malta-e-absolvido-por-insuficiencia-de-provas",
+   "liberdade_data": "2026-10",
+   "liberdade_fonte": "https://www25.senado.leg.br/web/senadores/senador/-/perfil/631",
+   "liberdade_detalhe": "Representação arquivada em 2006; é senador em exercício (ES)."
   },
   {
    "nome": "Mário Negromonte",
@@ -287,11 +311,14 @@
    "tipo": "agente público",
    "situacao": "processo arquivado",
    "detalhe": "STF arquivou o inquérito a pedido do procurador-geral, que não viu indício de participação do deputado.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2007-06-28",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/supremo-arquiva-inquerito-contra-deputado-federal-mario-negromonte/"
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/supremo-arquiva-inquerito-contra-deputado-federal-mario-negromonte/",
+   "liberdade_data": "2025-07-03",
+   "liberdade_fonte": "https://atarde.com.br/politica/bahia/tcm-se-despede-de-mario-negromonte-apos-11-anos-1332842",
+   "liberdade_detalhe": "Inquérito arquivado pelo STF em 2007; foi conselheiro do TCM-BA até se aposentar em jul/2025."
   }
  ],
  "fontes": [

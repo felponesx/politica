@@ -95,11 +95,14 @@
    "tipo": "agente público",
    "situacao": "renunciou",
    "detalhe": "Apontado pela CPI como chefe do esquema; alegou ter enriquecido ganhando na loteria. Renunciou ao mandato em 23/03/1994, antes do julgamento. Morreu em 14/11/2004.",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-03-23",
-   "fonte": "https://www.camara.leg.br/deputados/133980/biografia"
+   "fonte": "https://www.camara.leg.br/deputados/133980/biografia",
+   "liberdade_data": "2004-11-14",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/133980/biografia",
+   "liberdade_detalhe": "Morreu em 14/11/2004."
   },
   {
    "nome": "Genebaldo Correia",
@@ -121,11 +124,14 @@
    "tipo": "agente público",
    "situacao": "renunciou",
    "detalhe": "Renunciou ao mandato em 23/03/1994, antes do julgamento. Morreu em 28/10/2004.",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-03-23",
-   "fonte": "https://www.camara.leg.br/deputados/133995/biografia"
+   "fonte": "https://www.camara.leg.br/deputados/133995/biografia",
+   "liberdade_data": "2004-10-28",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/133995/biografia",
+   "liberdade_detalhe": "Morreu em 28/10/2004."
   },
   {
    "nome": "Manoel Moreira",
@@ -147,11 +153,14 @@
    "tipo": "agente público",
    "situacao": "cassado",
    "detalhe": "Perdeu o mandato em 18/05/1994 (Resolução nº 65/1994) após a CPI. Segundo a Câmara, foi inocentado das acusações pela Justiça em 2000; voltou a ser deputado federal em 2007. Morreu em 24/01/2020.",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-05-18",
-   "fonte": "https://www.camara.leg.br/deputados/133853/biografia"
+   "fonte": "https://www.camara.leg.br/deputados/133853/biografia",
+   "liberdade_data": "2020-01-24",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/133853/biografia",
+   "liberdade_detalhe": "Morreu em 24/01/2020."
   },
   {
    "nome": "Féres Nader",
@@ -160,11 +169,14 @@
    "tipo": "agente público",
    "situacao": "cassado",
    "detalhe": "Perdeu o mandato em 13/04/1994 (Resolução nº 61/1994).",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-04-13",
-   "fonte": "https://www.camara.leg.br/deputados/133970/biografia"
+   "fonte": "https://www.camara.leg.br/deputados/133970/biografia",
+   "liberdade_data": "2017-12-29",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/133970/biografia",
+   "liberdade_detalhe": "Morreu em 29/12/2017."
   },
   {
    "nome": "Carlos Benevides",
@@ -186,11 +198,14 @@
    "tipo": "agente público",
    "situacao": "cassado",
    "detalhe": "Perdeu o mandato em 19/04/1994 (Resolução nº 63/1994). Morreu em 22/12/2005.",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-04-19",
-   "fonte": "https://www.camara.leg.br/deputados/65472/biografia"
+   "fonte": "https://www.camara.leg.br/deputados/65472/biografia",
+   "liberdade_data": "2005-12-22",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/65472/biografia",
+   "liberdade_detalhe": "Morreu em 22/12/2005."
   },
   {
    "nome": "Raquel Cândido",
@@ -225,11 +240,14 @@
    "tipo": "agente público",
    "situacao": "absolvido",
    "detalhe": "Investigado pela CPI; foi absolvido pelo plenário da Câmara e manteve o mandato. Morreu em 12/12/2005.",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994",
-   "fonte": "https://memoria.ebc.com.br/agenciabrasil/noticia/2006-08-04/saiba-mais-sobre-cpis-do-orcamento-1993-e-da-corrupcao-1988"
+   "fonte": "https://memoria.ebc.com.br/agenciabrasil/noticia/2006-08-04/saiba-mais-sobre-cpis-do-orcamento-1993-e-da-corrupcao-1988",
+   "liberdade_data": "2005-12-12",
+   "liberdade_fonte": "https://www.camara.leg.br/deputados/74557/biografia",
+   "liberdade_detalhe": "Morreu em 12/12/2005."
   }
  ],
  "fontes": [

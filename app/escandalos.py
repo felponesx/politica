@@ -38,7 +38,8 @@ def _lib(p: dict, liberdade) -> dict:
         return {"liberdade_data": None, "liberdade_fonte": None, "liberdade_detalhe": ""}
     fonte = p.get("liberdade_fonte") if _url(p.get("liberdade_fonte")) else p.get("fonte")
     return {"liberdade_data": p.get("liberdade_data") or (p.get("data_situacao") if fonte == p.get("fonte") else None),
-            "liberdade_fonte": fonte, "liberdade_detalhe": (p.get("liberdade_detalhe") or "")[:200]}
+            "liberdade_fonte": fonte, "liberdade_detalhe": (p.get("liberdade_detalhe") or "")[:200],
+            "liberdade_outro_processo": bool(p.get("liberdade_outro_processo"))}
 
 
 def _pessoa(p) -> dict | None:

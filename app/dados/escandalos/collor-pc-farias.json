@@ -117,11 +117,15 @@
    "tipo": "agente público",
    "situacao": "renunciou",
    "detalhe": "Renunciou em 29/12/1992, no início do julgamento no Senado; mesmo assim o Senado aprovou a perda do cargo e a inelegibilidade por 8 anos. No STF, foi absolvido em dezembro de 1994, por 5 votos a 3, da acusação de corrupção passiva, por falta de provas. Em 2014 o STF o absolveu em outra ação sobre o período em que era presidente (peculato, corrupção passiva e falsidade ideológica).",
-   "liberdade": null,
+   "liberdade": "prisão domiciliar",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-12-12",
-   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html",
+   "liberdade_data": "2026-01-02",
+   "liberdade_fonte": "https://www.otempo.com.br/politica/judiciario/2026/1/2/paulinho-da-forca-visitara-collor-em-prisao-domiciliar-em-maceio",
+   "liberdade_detalhe": "Cumpre em casa, desde mai/2025, a pena de outra condenação (Lava Jato), com tornozeleira.",
+   "liberdade_outro_processo": true
   },
   {
    "nome": "Paulo César Farias (PC Farias)",
@@ -130,11 +134,14 @@
    "tipo": "operador financeiro",
    "situacao": "morreu",
    "detalhe": "Absolvido de corrupção passiva pelo STF em 1994, mas condenado por unanimidade por falsidade ideológica (contas fantasmas) a 7 anos; também condenado pela Justiça Federal a 4 anos por sonegação fiscal. Fugiu do país em 1993 e foi capturado na Tailândia; obteve liberdade condicional em 28/12/1995. Foi encontrado morto em junho de 1996.",
-   "liberdade": null,
+   "liberdade": "morreu",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1996-06-23",
-   "fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos"
+   "fonte": "https://www.migalhas.com.br/quentes/302364/condenacao-de-pc-farias-por-esquema-de-corrupcao-completa-25-anos",
+   "liberdade_data": "1996-06-23",
+   "liberdade_fonte": "https://www1.folha.uol.com.br/fsp/1996/6/24/brasil/4.html",
+   "liberdade_detalhe": "Morreu em 23/06/1996, assassinado com um tiro em sua casa de praia em Maceió."
   },
   {
    "nome": "Jorge Bandeira de Mello",
@@ -143,11 +150,14 @@
    "tipo": "empresário",
    "situacao": "condenado",
    "detalhe": "Condenado pelo STF em dezembro de 1994 por falsidade ideológica no caso das contas fantasmas (pena não informada na fonte). Pilotou o avião da fuga de PC Farias em 1993.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "1994-12-13",
-   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html"
+   "fonte": "https://www1.folha.uol.com.br/fsp/1994/12/14/brasil/20.html",
+   "liberdade_data": "2013-05-11",
+   "liberdade_fonte": "https://www.jb.com.br/pais/noticias/2013/05/11/veja-como-estao-hoje-os-personagens-do-esquema-montado-por-pc-farias.html",
+   "liberdade_detalhe": "Ficou nove meses preso por sonegação fiscal; em 2013 era dono e chef de um restaurante em Maceió."
   },
   {
    "nome": "Rosinete Melanias",

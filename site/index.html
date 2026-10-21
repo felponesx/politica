@@ -4557,7 +4557,7 @@ const escSit=s=>s?`<span class="tag esc-${ESC_SIT[s]||"neu"}">${esc(s[0].toUpper
 const escLib=l=>l?`<span class="tag lib-${{"preso":"pre","prisão domiciliar":"dom","foragido":"for","em liberdade":"liv"}[l]||"liv"}">${esc(l[0].toUpperCase()+l.slice(1))}</span>`:'<span class="muted small">—</span>';
 // prisão em palavras simples, juntando a situação na Justiça: "Solto · responde ao processo", "Solto · cumpriu a pena"…
 const escPrisao=p=>{const l=p.liberdade,s=p.situacao||"";if(!l)return{t:"Prisão: sem informação",c:"nd"};
- const F={"preso":["Preso","pre"],"prisão domiciliar":["Prisão domiciliar","dom"],"foragido":["Foragido","for"],"morreu":["Morreu","mor"]}[l];if(F)return{t:F[0],c:F[1]};
+ const F={"preso":["Preso","pre"],"prisão domiciliar":["Prisão domiciliar","dom"],"foragido":["Foragido","for"],"morreu":["Morreu","mor"]}[l];if(F)return{t:F[0]+(p.liberdade_outro_processo&&l!=="morreu"?" (outro processo)":""),c:F[1]};
  return{t:/^(investigado|indiciado|denunciado|réu|condenado \(recorre\))$/.test(s)?"Solto · responde ao processo":s==="pena cumprida"?"Solto · cumpriu a pena":s==="condenado"?"Solto · condenado":"Solto",c:"liv"}};
 const escPrisaoTag=(p,cls="tag")=>{const x=escPrisao(p);return`<span class="${cls} lib-${x.c}" title="${esc((p.liberdade_detalhe||"")+(p.liberdade_data?` (${escData(p.liberdade_data)})`:""))}">${esc(x.t)}</span>`};
 // valor sempre com a frase da fonte embaixo (ex.: "acusado de receber…"), para o número não parecer mais do que a fonte diz
