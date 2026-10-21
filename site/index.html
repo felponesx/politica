@@ -4979,6 +4979,7 @@ const polCor=c=>(CORP[c]||CORP.pm)[1];
 const polFonte=u=>u?` <a class="small pol-f" href="${esc(u)}" target="_blank" rel="noopener">fonte</a>`:"";
 // anos em faixas: [2003..2011, 2026] → "2003–2011 e 2026"
 const polFaixas=an=>{const r=[];an.map(Number).sort((a,b)=>a-b).forEach(y=>{const u=r[r.length-1];if(u&&y===u[1]+1)u[1]=y;else r.push([y,y])});return r.map(([a,b])=>a===b?a:a+"–"+b).join(" e ")};
+const polSig=x=>x.sigla||((({pm:"PM",pc:"PC"})[x.corp]||"")+(x.uf&&x.uf!=="BR"?x.uf:""))||"";
 const polAno=d=>{const m=String(d||"").match(/\d{4}/);return m?+m[0]:null};
 // marca como clicáveis os brasões e linhas de polícia que têm ficha
 function polMarca(){if(!POL_LISTA||!POL_LISTA.length)return;const tem=new Set(POL_LISTA.map(x=>x.slug));
@@ -4991,7 +4992,7 @@ document.addEventListener("keydown",ev=>{if(ev.key!=="Enter")return;const a=ev.t
 
 P.policias=()=>({html:`<div class="ph"><div><h1>As polícias do Brasil</h1><p>Toque numa polícia para ver a história, o patrono e os homenageados, os batalhões e onde ficam, o contingente e os números de mortes e prisões.</p></div></div><div id="polL">${API.on?rload():SEG_SEM}</div>`,
  mount(){if(!API.on)return;polLista().then(L=>{const box=$("#polL");if(!box)return;if(!L.length){box.innerHTML=rvazio("As fichas das polícias ainda não estão nesta cópia dos dados.");return}
-  const card=x=>`<a class="pol-card" href="#/policia/${x.slug}"><span data-pol="${esc(x.chave)}" data-h="44">${emblema(x.sigla||x.corp.toUpperCase(),x.corp==="u"?"pm":x.corp,40)}</span><span><b>${esc(x.sigla||"")}</b><small>${esc(x.nome)}</small></span></a>`;
+  const card=x=>`<a class="pol-card" href="#/policia/${x.slug}"><span data-pol="${esc(x.chave)}" data-h="44">${emblema(polSig(x),x.corp==="u"?"pm":x.corp,40)}</span><span><b>${esc(polSig(x))}</b><small>${esc(x.nome)}</small></span></a>`;
   const fed=L.filter(x=>x.uf==="BR"),est=UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>[u,L.filter(x=>x.uf===u.uf).sort((a,b)=>"pm pc u".indexOf(a.corp)-"pm pc u".indexOf(b.corp))]).filter(([,l])=>l.length);
   box.innerHTML=`${fed.length?`<div class="panel"><h2>Federais e nacionais</h2><div class="pol-grid">${fed.map(card).join("")}</div></div>`:""}
   ${est.map(([u,l])=>`<div class="panel mt"><h2 class="h1flag" style="font-size:18px">${bandeiraImg(u.uf,"flag flag-sm")}${esc(u.nome)}</h2><div class="pol-grid">${l.map(card).join("")}</div></div>`).join("")}`})}});
@@ -5037,8 +5038,8 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
    ${org.unidades.length?table([["Unidade",u=>`<b>${esc(u.nome)}</b>`],["Onde fica",u=>esc(u.local||"—")],["",u=>polFonte(u.fonte)]],org.unidades):""}</div>`:"";
   const mae=f.subordinada_a?(POL_LISTA||[]).find(x=>x.chave===f.subordinada_a):null;
   const esp=(f.unidades_especiais||[]).length?`<div class="panel mt"><h2>Unidades especiais</h2><div class="pol-grid">${f.unidades_especiais.map(x=>`<a class="pol-card" href="#/policia/${x.slug}"><span data-pol="${esc(x.slug.replace(/-/g,":"))}" data-h="44">${emblema(x.sigla||"",f.corp,40)}</span><span><b>${esc(x.sigla||"")}</b><small>${esc(x.nome)}</small></span></a>`).join("")}</div></div>`:"";
-  box.innerHTML=`<div class="ph pol-h"><span data-pol="${esc(f.chave)}" data-h="76">${emblema(f.sigla||"",f.corp==="u"?"pm":f.corp,64)}</span><div><h1>${esc(f.nome)}</h1>
-   <p>${f.sigla?`<b>${esc(f.sigla)}</b> · `:""}${uf?`${bandeiraImg(uf,"flag flag-sm")} ${esc(UF[uf].nome)}`:"Nacional"} · ${esc(POL_CORP[f.corp]||"")}${f.subordinada_a?` · faz parte da <a href="#/policia/${polSlug(f.subordinada_a)}">${esc(mae?mae.nome:f.subordinada_a)}</a>`:""}${f.sede?` · sede: ${esc(f.sede.local)}`:""}</p></div></div>
+  box.innerHTML=`<div class="ph pol-h"><span data-pol="${esc(f.chave)}" data-h="76">${emblema(polSig(f),f.corp==="u"?"pm":f.corp,64)}</span><div><h1>${esc(f.nome)}</h1>
+   <p>${polSig(f)?`<b>${esc(polSig(f))}</b> · `:""}${uf?`${bandeiraImg(uf,"flag flag-sm")} ${esc(UF[uf].nome)}`:"Nacional"} · ${esc(POL_CORP[f.corp]||"")}${f.subordinada_a?` · faz parte da <a href="#/policia/${polSlug(f.subordinada_a)}">${esc(mae?mae.nome:f.subordinada_a)}</a>`:""}${f.sede?` · sede: ${esc(f.sede.local)}`:""}</p></div></div>
    ${f.resumo?`<p class="pol-res">${esc(f.resumo.texto)}${polFonte(f.resumo.fonte)}</p>`:""}
    <div class="kpis kpis-c mt">${cont}${kUn}${kFun}</div>
    ${est}${ispH}${hist}${her}${orgH}${esp}

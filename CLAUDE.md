@@ -190,3 +190,14 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   barras crescendo); "reduzir movimento" desliga. `lineChart` reconhece anos/meses nos rótulos (ou `o.datas`) e mostra botões
   10 anos / 5 anos / 1 ano / 6 meses / Tudo (`LC_PER`, `lcCorte`; `o.per` = corte inicial em meses, `o.periodo:false` esconde);
   `serieChart` corta pelo calendário. `linhasDuplo` ganha 10 anos / 5 anos / Tudo (`LD_REG`). Só aparecem os botões que cortam algo.
+
+## Polícias (out/2026)
+- Fichas curadas em `app/dados/policias/<chave>.json` (`pm-UF`, `pc-UF`, `pf`, `prf`, `spf`, `fn`, `u-UF-SIGLA`): resumo, criação, marcos
+  da história (inclusive chacinas e casos com a situação judicial da fonte), patrono e homenageados oficiais ("Heróis da farda"),
+  organização (batalhões/delegacias com cidade), sede e efetivo — tudo com fonte; sem fonte é descartado (`app/policias.py`).
+  API `/policias` e `/policias/{slug}`; site `#/policias` e `#/policia/<slug>` (`P.policias`, `P.policia`); brasões e linhas do
+  efetivo na Segurança viram links (`polMarca`, `data-polgo`; `POL_ALIAS` para siglas repetidas).
+- Contingente: Raio-X do FBSP (o mesmo da aba). Mortes por intervenção, presos por mandado e policiais mortos: Sinesp/Anuário do
+  estado inteiro (não separam por corporação). Só o Rio publica por batalhão: coletor `isp-rj-batalhoes` (`app/collectors/isp_rj.py`,
+  ISP por área AISP desde 2003) + tabela AISP → batalhão `aisp-RJ.json`; sempre com o aviso de que é "na área", não "pelo" batalhão.
+- Atualizar a cópia: `python -m scripts.policias_copia [site/dados] [csv_do_isp]` (o robô exporta pelas FIXAS).
