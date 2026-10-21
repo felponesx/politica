@@ -36,7 +36,9 @@ def _n(s: str) -> str:
 
 
 RAW = "https://pt.wikipedia.org/w/index.php"
-_IMG = re.compile(r"\|\s*(?:imagem|image|foto)\s*=\s*(?:\[\[(?:Ficheiro|Arquivo|File|Imagem):)?([^\n|\]]+\.(?:jpe?g|png|webp|tiff?))", re.I)
+_IMG = re.compile(r"\|\s*(?:imagem|image|foto)\s*=\s*(?:\[\[)?(?:(?:Ficheiro|Arquivo|File|Imagem):)?([^\n|\]]+\.(?:jpe?g|png|webp|tiff?))",
+                  re.I)
+_INFO = re.compile(r"\{\{\s*(Info/[^}|\n]+?)\s*\}\}")
 
 
 def _raw(titulo: str, saltos: int = 2) -> tuple[str, str] | None:
@@ -119,14 +121,16 @@ def _baixar_thumb(arquivo: str) -> str | None:
 
 
 def foto_de(nome: str, slug: str, nome_caso: str) -> str | None:
-    """Pela Wikipédia (verbete com o nome e que cita o caso); se ela não responder, pelo Wikidata (um só brasileiro
-    com esse nome exato)."""
-    try:
-        img = _foto_wikipedia(nome, slug, nome_caso)
-    except Exception:
-        img = None
-    if img:
-        return img
+    """Pela Wikipédia (verbete com o nome, ou com o apelido entre parênteses, e que cita o caso); se ela não responder,
+    pelo Wikidata (um só brasileiro com esse nome exato)."""
+    apelido = re.search(r"\(([^)]+)\)\s*$", nome)
+    for n in [nome] + ([apelido.group(1).strip("'\" ")] if apelido else []):
+        try:
+            img = _foto_wikipedia(n, slug, nome_caso)
+        except Exception:
+            img = None
+        if img:
+            return img
     arq = _wikidata(re.sub(r"\s*\(.*\)$", "", nome))
     return _baixar_thumb(arq) if arq else None
 
@@ -142,8 +146,13 @@ def _foto_wikipedia(nome: str, slug: str, nome_caso: str) -> str | None:
         return None  # outro verbete com o mesmo nome, ou que não fala do caso: sem foto
     m = _IMG.search(txt)
     if not m:
+        # quadro de dados em página própria ({{Info/Político/Fulano}}): a foto está nela
+        info = _INFO.search(txt)
+        sub = _raw("Predefinição:" + info.group(1)) if info else None
+        m = _IMG.search(sub[1]) if sub else None
+    if not m:
         return None
-    return _baixar_thumb(m.group(1))
+    return _baixar_thumb(m.group(1).strip())
 
 
 def fotos_escandalos(cache: str | None = None) -> dict:
