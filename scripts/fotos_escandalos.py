@@ -1,6 +1,6 @@
 """Fotos das pessoas dos escândalos (árvore e lista), da Wikipédia/Wikimedia Commons.
 
-    python -m scripts.fotos_escandalos [site/midia]
+    python -m scripts.fotos_escandalos [site/midia] [arquivo_de_cache.json]
 
 Só entra a foto quando o verbete da Wikipédia em português tem o mesmo nome da pessoa (ou redireciona para ele) E cita
 o escândalo no texto (palavras de PISTAS): assim um homônimo nunca ganha a foto de outra pessoa. Grava nos blocos
@@ -65,7 +65,7 @@ def _get(url: str, params: dict | None = None) -> tuple[int, bytes]:
     if params:
         url += ("&" if "?" in url else "?") + "&".join(f"{k}={quote(str(v))}" for k, v in params.items())
     # devagar (1,5 s entre pedidos) e, no 429/403 de limite, espera e tenta de novo
-    for espera in (0, 20, 60, 120):
+    for espera in (0, 10, 30):
         time.sleep(espera or 1.5)
         try:
             r = subprocess.run(["curl", "-s", "-L", "-m", "40", "-A", UA["User-Agent"], "-w", "\n%{http_code}", url],
@@ -145,13 +145,23 @@ def _foto_wikipedia(nome: str, slug: str, nome_caso: str) -> str | None:
     return _baixar_thumb(m.group(1))
 
 
-def fotos_escandalos() -> dict:
+def fotos_escandalos(cache: str | None = None) -> dict:
+    """{"esc:<nome>": data-URL}. Com `cache` (arquivo JSON), guarda o resultado de cada pessoa e retoma de onde parou."""
+    feito = {}
+    if cache and os.path.exists(cache):
+        feito = json.load(open(cache, encoding="utf-8"))
     out = {}
     for slug, c in escandalos.casos().items():
         for p in c["pessoas"]:
-            img = foto_de(p["nome"], slug, c["nome"])
-            if img:
-                out["esc:" + p["nome"]] = img
+            k = "esc:" + p["nome"]
+            if k not in feito:
+                feito[k] = foto_de(p["nome"], slug, c["nome"])
+                log.info("%s: %s", p["nome"], "foto" if feito[k] else "sem foto")
+                if cache:
+                    with open(cache, "w", encoding="utf-8") as f:
+                        json.dump(feito, f)
+            if feito[k]:
+                out[k] = feito[k]
     log.info("fotos dos escândalos: %d", len(out))
     return out
 
@@ -159,7 +169,7 @@ def fotos_escandalos() -> dict:
 def main(argv):
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     pasta = argv[0] if argv else "site/midia"
-    novas = fotos_escandalos()
+    novas = fotos_escandalos(argv[1] if len(argv) > 1 else None)
     for i in range(BLOCOS):
         arq = os.path.join(pasta, f"fotos_{i}.json")
         bloco = json.load(open(arq, encoding="utf-8"))
