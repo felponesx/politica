@@ -15,7 +15,7 @@
    "batalhao": "1º BPM",
    "nome": "Primeiro Batalhão de Polícia Militar",
    "sede": "São Gonçalo (Venda da Cruz)",
-   "area": "Municípios: SÃ£o GonÃ§alo",
+   "area": "Municípios: São Gonçalo",
    "cisp": [
     "72",
     "73"
@@ -29,7 +29,7 @@
    "batalhao": "2º BPM",
    "nome": "Segundo Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Botafogo)",
-   "area": "Rio de Janeiro: Catete, Cosme Velho, Flamengo, GlÃ³ria e Laranjeiras; Botafogo, HumaitÃ¡ e Urca",
+   "area": "Rio de Janeiro: Catete, Cosme Velho, Flamengo, Glória e Laranjeiras; Botafogo, Humaitá e Urca",
    "cisp": [
     "9",
     "10"
@@ -41,7 +41,7 @@
    "batalhao": "3º BPM",
    "nome": "Terceiro Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Méier)",
-   "area": "Rio de Janeiro: Cachambi, MÃ©ier (parte) e Todos os Santos (parte); AboliÃ§Ã£o, Ãgua Santa (parte), Encantado, Engenho de Dentro (parte), Pilares e Piedade; Engenho Novo, JacarÃ©, Jacarezinho, Riachuelo, Rocha, Sampaio e SÃ£o Francisco Xavier; Ãgua Santa (parte), Engenho de Dentro (parte), Lins de Vasconcelos e Todos os Santos; Del Castilho, Engenho da Rainha, InhaÃºma, Maria da GraÃ§a e TomÃ¡s Coelho",
+   "area": "Rio de Janeiro: Cachambi, Méier (parte) e Todos os Santos (parte); Abolição, Água Santa (parte), Encantado, Engenho de Dentro (parte), Pilares e Piedade; Engenho Novo, Jacaré, Jacarezinho, Riachuelo, Rocha, Sampaio e São Francisco Xavier; Água Santa (parte), Engenho de Dentro (parte), Lins de Vasconcelos e Todos os Santos; Del Castilho, Engenho da Rainha, Inhaúma, Maria da Graça e Tomás Coelho",
    "cisp": [
     "23",
     "24",
@@ -56,7 +56,7 @@
    "batalhao": "4º BPM",
    "nome": "Quarto Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (São Cristóvão)",
-   "area": "Rio de Janeiro: Catumbi, Cidade Nova, EstÃ¡cio, Rio Comprido e Centro (parte); Caju, Mangueira, SÃ£o CristÃ³vÃ£o e Vasco da Gama",
+   "area": "Rio de Janeiro: Catumbi, Cidade Nova, Estácio, Rio Comprido e Centro (parte); Caju, Mangueira, São Cristóvão e Vasco da Gama",
    "cisp": [
     "6",
     "17"
@@ -68,7 +68,7 @@
    "batalhao": "5º BPM",
    "nome": "Quinto Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Gamboa)",
-   "area": "Rio de Janeiro: Centro (parte); Centro (parte), Gamboa, Santo Cristo e SaÃºde; Centro (parte), Lapa e PaquetÃ¡; Santa Teresa",
+   "area": "Rio de Janeiro: Centro (parte); Centro (parte), Gamboa, Santo Cristo e Saúde; Centro (parte), Lapa e Paquetá; Santa Teresa",
    "cisp": [
     "1",
     "4",
@@ -82,7 +82,7 @@
    "batalhao": "6º BPM",
    "nome": "Sexto Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Andaraí)",
-   "area": "Rio de Janeiro: MaracanÃ£, PraÃ§a da Bandeira e Tijuca (parte); Alto da Boa Vista e Tijuca (parte); AndaraÃ­, GrajaÃº e Vila Isabel",
+   "area": "Rio de Janeiro: Maracanã, Praça da Bandeira e Tijuca (parte); Alto da Boa Vista e Tijuca (parte); Andaraí, Grajaú e Vila Isabel",
    "cisp": [
     "18",
     "19",
@@ -95,7 +95,7 @@
    "batalhao": "7º BPM",
    "nome": "Sétimo Batalhão de Polícia Militar",
    "sede": "São Gonçalo (Alcântara)",
-   "area": "Municípios: SÃ£o GonÃ§alo",
+   "area": "Municípios: São Gonçalo",
    "cisp": [
     "74",
     "75"
@@ -108,7 +108,7 @@
    "batalhao": "8º BPM",
    "nome": "Oitavo Batalhão de Polícia Militar",
    "sede": "Campos dos Goytacazes (Centro)",
-   "area": "Municípios: Campos dos Goytacazes, SÃ£o FidÃ©lis, SÃ£o JoÃ£o da Barra, SÃ£o Francisco de Itabapoana",
+   "area": "Municípios: Campos dos Goytacazes, São Fidélis, São João da Barra, São Francisco de Itabapoana",
    "cisp": [
     "134",
     "141",
@@ -123,7 +123,7 @@
    "batalhao": "9º BPM",
    "nome": "Nono Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Honório Gurgel)",
-   "area": "Rio de Janeiro: Cavalcanti, Engenheiro Leal, Madureira, TuriaÃ§u, Vaz Lobo, Oswaldo Cruz (parte), Cascadura e Quintino BocaiÃºva; Bento Ribeiro, Campinho, Marechal Hermes e Oswaldo Cruz (parte); Coelho Neto, ColÃ©gio (parte), HonÃ³rio Gurgel e Rocha Miranda",
+   "area": "Rio de Janeiro: Cavalcanti, Engenheiro Leal, Madureira, Turiaçu, Vaz Lobo, Oswaldo Cruz (parte), Cascadura e Quintino Bocaiúva; Bento Ribeiro, Campinho, Marechal Hermes e Oswaldo Cruz (parte); Coelho Neto, Colégio (parte), Honório Gurgel e Rocha Miranda",
    "cisp": [
     "29",
     "30",
@@ -136,7 +136,7 @@
    "batalhao": "10º BPM",
    "nome": "Décimo Batalhão de Polícia Militar",
    "sede": "Barra do Piraí (Minuano)",
-   "area": "Municípios: Barra do PiraÃ­, ValenÃ§a, Rio das Flores, PiraÃ­, Vassouras, Miguel Pereira, Paty do Alferes, Mendes, Engenheiro Paulo de Frontin",
+   "area": "Municípios: Barra do Piraí, Valença, Rio das Flores, Piraí, Vassouras, Miguel Pereira, Paty do Alferes, Mendes, Engenheiro Paulo de Frontin",
    "cisp": [
     "88",
     "91",
@@ -173,7 +173,7 @@
    "batalhao": "12º BPM",
    "nome": "Décimo Segundo Batalhão de Polícia Militar",
    "sede": "Niterói (Centro)",
-   "area": "Municípios: NiterÃ³i, MaricÃ¡",
+   "area": "Municípios: Niterói, Maricá",
    "cisp": [
     "76",
     "77",
@@ -202,7 +202,7 @@
    "batalhao": "14º BPM",
    "nome": "Décimo Quarto Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Gericinó)",
-   "area": "Rio de Janeiro: Campo dos Afonsos, Deodoro, Jardim Sulacap, MagalhÃ£es Bastos, Realengo e Vila Militar; Bangu, GericinÃ³, Padre Miguel e Senador CamarÃ¡",
+   "area": "Rio de Janeiro: Campo dos Afonsos, Deodoro, Jardim Sulacap, Magalhães Bastos, Realengo e Vila Militar; Bangu, Gericinó, Padre Miguel e Senador Camará",
    "cisp": [
     "33",
     "34"
@@ -228,7 +228,7 @@
    "batalhao": "16º BPM",
    "nome": "Décimo Sexto Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Olaria)",
-   "area": "Rio de Janeiro: BrÃ¡s de Pina (parte), Olaria, Penha e Penha Circular (parte); BrÃ¡s de Pina (parte), Cordovil, Jardim AmÃ©rica, Parada de Lucas,Penha Circular (parte) e VigÃ¡rio Geral",
+   "area": "Rio de Janeiro: Brás de Pina (parte), Olaria, Penha e Penha Circular (parte); Brás de Pina (parte), Cordovil, Jardim América, Parada de Lucas,Penha Circular (parte) e Vigário Geral",
    "cisp": [
     "22",
     "38"
@@ -240,7 +240,7 @@
    "batalhao": "17º BPM",
    "nome": "Décimo Sétimo Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Ilha do Governador)",
-   "area": "Rio de Janeiro: BancÃ¡rios, Cacuia, Cidade UniversitÃ¡ria, CocotÃ¡, Freguesia, GaleÃ£o, Jardim Carioca, Jardim Guanabara, MonerÃ³, Pitangueiras, Portuguesa, Praia da Bandeira, Ribeira, TauÃ¡ e Zumbi",
+   "area": "Rio de Janeiro: Bancários, Cacuia, Cidade Universitária, Cocotá, Freguesia, Galeão, Jardim Carioca, Jardim Guanabara, Moneró, Pitangueiras, Portuguesa, Praia da Bandeira, Ribeira, Tauá e Zumbi",
    "cisp": [
     "37"
    ],
@@ -252,7 +252,7 @@
    "batalhao": "18º BPM",
    "nome": "Décimo Oitavo Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Freguesia de Jacarepaguá)",
-   "area": "Rio de Janeiro: Vila Valqueire, PraÃ§a Seca e Tanque (parte); Anil, Cidade de Deus, Curicica, GardÃªnia Azul, JacarepaguÃ¡ e Taquara; Freguesia (JacarepaguÃ¡), Pechincha e Tanque (parte)",
+   "area": "Rio de Janeiro: Vila Valqueire, Praça Seca e Tanque (parte); Anil, Cidade de Deus, Curicica, Gardênia Azul, Jacarepaguá e Taquara; Freguesia (Jacarepaguá), Pechincha e Tanque (parte)",
    "cisp": [
     "28",
     "32",
@@ -277,7 +277,7 @@
    "batalhao": "20º BPM",
    "nome": "Vigésimo Batalhão de Polícia Militar",
    "sede": "Mesquita (Centro)",
-   "area": "Municípios: Nova IguaÃ§u, Mesquita, NilÃ³polis",
+   "area": "Municípios: Nova Iguaçu, Mesquita, Nilópolis",
    "cisp": [
     "52",
     "53",
@@ -292,7 +292,7 @@
    "batalhao": "21º BPM",
    "nome": "Vigésimo Primeiro Batalhão de Polícia Militar",
    "sede": "São João de Meriti (Jardim José Bonifácio)",
-   "area": "Municípios: SÃ£o JoÃ£o de Meriti",
+   "area": "Municípios: São João de Meriti",
    "cisp": [
     "64"
    ],
@@ -303,7 +303,7 @@
    "batalhao": "22º BPM",
    "nome": "Vigésimo Segundo Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Bonsucesso)",
-   "area": "Rio de Janeiro: Benfica, Bonsucesso, HigienÃ³polis, Manguinhos, MarÃ© e Ramos",
+   "area": "Rio de Janeiro: Benfica, Bonsucesso, Higienópolis, Manguinhos, Maré e Ramos",
    "cisp": [
     "21"
    ],
@@ -314,7 +314,7 @@
    "batalhao": "23º BPM",
    "nome": "Vigésimo Terceiro Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Leblon)",
-   "area": "Rio de Janeiro: Rocinha; Ipanema e Leblon; GÃ¡vea, Jardim BotÃ¢nico, Lagoa, SÃ£o Conrado e Vidigal",
+   "area": "Rio de Janeiro: Rocinha; Ipanema e Leblon; Gávea, Jardim Botânico, Lagoa, São Conrado e Vidigal",
    "cisp": [
     "11",
     "14",
@@ -327,7 +327,7 @@
    "batalhao": "24º BPM",
    "nome": "Vigésimo Quarto Batalhão de Polícia Militar",
    "sede": "Queimados (Fanchen)",
-   "area": "Municípios: SeropÃ©dica, ItaguaÃ­, Paracambi, Queimados, Japeri",
+   "area": "Municípios: Seropédica, Itaguaí, Paracambi, Queimados, Japeri",
    "cisp": [
     "48",
     "50",
@@ -342,7 +342,7 @@
    "batalhao": "25º BPM",
    "nome": "Vigésimo Quinto Batalhão de Polícia Militar",
    "sede": "Cabo Frio (Jardim Caiçara)",
-   "area": "Municípios: Araruama, Saquarema, SÃ£o Pedro da Aldeia, Cabo Frio, ArmaÃ§Ã£o dos BÃºzios, Iguaba Grande, Arraial do Cabo (o 25º BPM em si cobre hoje Cabo Frio, Armação dos Búzios, São Pedro da Aldeia e Arraial do Cabo, segundo a PM)",
+   "area": "Municípios: Araruama, Saquarema, São Pedro da Aldeia, Cabo Frio, Armação dos Búzios, Iguaba Grande, Arraial do Cabo (o 25º BPM em si cobre hoje Cabo Frio, Armação dos Búzios, São Pedro da Aldeia e Arraial do Cabo, segundo a PM)",
    "cisp": [
     "118",
     "124",
@@ -360,7 +360,7 @@
    "batalhao": "26º BPM",
    "nome": "Vigésimo Sexto Batalhão de Polícia Militar",
    "sede": "Petrópolis (Quitandinha)",
-   "area": "Municípios: PetrÃ³polis",
+   "area": "Municípios: Petrópolis",
    "cisp": [
     "105",
     "106"
@@ -372,7 +372,7 @@
    "batalhao": "27º BPM",
    "nome": "Vigésimo Sétimo Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Guaratiba)",
-   "area": "Rio de Janeiro: PaciÃªncia e Santa Cruz; Guaratiba, Pedra de Guaratiba e Sepetiba",
+   "area": "Rio de Janeiro: Paciência e Santa Cruz; Guaratiba, Pedra de Guaratiba e Sepetiba",
    "cisp": [
     "36",
     "43"
@@ -399,7 +399,7 @@
    "batalhao": "29º BPM",
    "nome": "Vigésimo Nono Batalhão de Polícia Militar",
    "sede": "Itaperuna (Cidade Nova)",
-   "area": "Municípios: Laje do MuriaÃ©, PorciÃºncula, Natividade, Varre-Sai, Itaperuna, SÃ£o JosÃ© de UbÃ¡, Bom Jesus de Itabapoana, Italva, Cardoso Moreira",
+   "area": "Municípios: Laje do Muriaé, Porciúncula, Natividade, Varre-Sai, Itaperuna, São José de Ubá, Bom Jesus de Itabapoana, Italva, Cardoso Moreira",
    "cisp": [
     "138",
     "139",
@@ -415,7 +415,7 @@
    "batalhao": "30º BPM",
    "nome": "Trigésimo Batalhão de Polícia Militar",
    "sede": "Teresópolis (Pimenteiras)",
-   "area": "Municípios: SÃ£o JosÃ© do Vale do Rio Preto, TeresÃ³polis, Sumidouro, Carmo",
+   "area": "Municípios: São José do Vale do Rio Preto, Teresópolis, Sumidouro, Carmo",
    "cisp": [
     "104",
     "110",
@@ -429,7 +429,7 @@
    "batalhao": "31º BPM",
    "nome": "Trigésimo Primeiro Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Recreio dos Bandeirantes)",
-   "area": "Rio de Janeiro: Barra da Tijuca, ItanhangÃ¡, JoÃ¡; Recreio dos Bandeirantes, Barra de Guaratiba, Camorim, Grumari, Vargem Grande e Vargem Pequena",
+   "area": "Rio de Janeiro: Barra da Tijuca, Itanhangá, Joá; Recreio dos Bandeirantes, Barra de Guaratiba, Camorim, Grumari, Vargem Grande e Vargem Pequena",
    "cisp": [
     "16",
     "42"
@@ -441,7 +441,7 @@
    "batalhao": "32º BPM",
    "nome": "Trigésimo Segundo Batalhão de Polícia Militar",
    "sede": "Macaé (Barra de Macaé)",
-   "area": "Municípios: Casimiro de Abreu, ConceiÃ§Ã£o de MacabÃº, MacaÃ©, Rio das Ostras, Carapebus, QuissamÃ£",
+   "area": "Municípios: Casimiro de Abreu, Conceição de Macabú, Macaé, Rio das Ostras, Carapebus, Quissamã",
    "cisp": [
     "121",
     "122",
@@ -468,7 +468,7 @@
    "batalhao": "34º BPM",
    "nome": "Trigésimo Quarto Batalhão de Polícia Militar",
    "sede": "Magé (Centro)",
-   "area": "Municípios: MagÃ©, Guapimirim",
+   "area": "Municípios: Magé, Guapimirim",
    "cisp": [
     "65",
     "66",
@@ -481,7 +481,7 @@
    "batalhao": "35º BPM",
    "nome": "Trigésimo Quinto Batalhão de Polícia Militar",
    "sede": "Itaboraí (Centro)",
-   "area": "Municípios: TanguÃ¡, ItaboraÃ­, Rio Bonito, Silva Jardim",
+   "area": "Municípios: Tanguá, Itaboraí, Rio Bonito, Silva Jardim",
    "cisp": [
     "70",
     "71",
@@ -495,7 +495,7 @@
    "batalhao": "36º BPM",
    "nome": "Trigésimo Sexto Batalhão de Polícia Militar",
    "sede": "Santo Antônio de Pádua (Arraialzinho)",
-   "area": "Municípios: Itaocara, AperibÃ©, Santo AntÃ´nio de PÃ¡dua, Miracema, Cambuci, SÃ£o SebastiÃ£o do Alto",
+   "area": "Municípios: Itaocara, Aperibé, Santo Antônio de Pádua, Miracema, Cambuci, São Sebastião do Alto",
    "cisp": [
     "135",
     "136",
@@ -523,7 +523,7 @@
    "batalhao": "38º BPM",
    "nome": "Trigésimo Oitavo Batalhão de Polícia Militar",
    "sede": "Três Rios (Boa União)",
-   "area": "Municípios: ParaÃ­ba do Sul, Areal, Comendador Levy Gasparian, TrÃªs Rios, Sapucaia",
+   "area": "Municípios: Paraíba do Sul, Areal, Comendador Levy Gasparian, Três Rios, Sapucaia",
    "cisp": [
     "107",
     "108",
@@ -547,7 +547,7 @@
    "batalhao": "40º BPM",
    "nome": "Quadragésimo Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Campo Grande)",
-   "area": "Rio de Janeiro: Campo Grande, Cosmos, InhoaÃ­ba, SantÃ­ssimo e Senador Vasconcelos",
+   "area": "Rio de Janeiro: Campo Grande, Cosmos, Inhoaíba, Santíssimo e Senador Vasconcelos",
    "cisp": [
     "35"
    ],
@@ -558,7 +558,7 @@
    "batalhao": "41º BPM",
    "nome": "Quadragésimo Primeiro Batalhão de Polícia Militar",
    "sede": "Rio de Janeiro (Colégio)",
-   "area": "Rio de Janeiro: ColÃ©gio (parte), IrajÃ¡, Vicente de Carvalho, Vila Kosmos, Vila da Penha e Vista Alegre; Anchieta, Guadalupe, Parque Anchieta e Ricardo de Albuquerque; Acari, Barros Filho, Costa Barros, Parque ColÃºmbia e Pavuna",
+   "area": "Rio de Janeiro: Colégio (parte), Irajá, Vicente de Carvalho, Vila Kosmos, Vila da Penha e Vista Alegre; Anchieta, Guadalupe, Parque Anchieta e Ricardo de Albuquerque; Acari, Barros Filho, Costa Barros, Parque Colúmbia e Pavuna",
    "cisp": [
     "27",
     "31",

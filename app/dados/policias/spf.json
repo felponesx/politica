@@ -1,0 +1,127 @@
+{
+ "chave": "spf",
+ "nome": "Polícia Penal Federal (Sistema Penitenciário Federal)",
+ "sigla": "PPF",
+ "uf": "BR",
+ "corp": "spf",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Cuida das penitenciárias federais de segurança máxima, que recebem presos considerados de alta periculosidade, como chefes de facções. É ligada à Secretaria Nacional de Políticas Penais (Senappen), do Ministério da Justiça.",
+  "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+ },
+ "fundacao": {
+  "data": "2006-06-23",
+  "texto": "O sistema começou a funcionar com a inauguração da Penitenciária Federal de Catanduvas (PR); a carreira de policial penal federal foi criada por lei em 31 de maio de 2024.",
+  "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+ },
+ "historia": [
+  {
+   "ano": "1984",
+   "texto": "A Lei de Execução Penal (art. 72) prevê estabelecimentos penais federais; a Lei dos Crimes Hediondos (1990) repete a previsão.",
+   "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+  },
+  {
+   "ano": "2006",
+   "texto": "Inaugurada em 23 de junho a Penitenciária Federal de Catanduvas (PR), a primeira do sistema; em dezembro, a de Campo Grande (MS).",
+   "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+  },
+  {
+   "ano": "2007",
+   "texto": "O Decreto nº 6.049 aprova o Regulamento Penitenciário Federal, com regras do regime nas unidades federais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+  },
+  {
+   "ano": "2009",
+   "texto": "Inauguradas as penitenciárias federais de Porto Velho (RO), em junho, e de Mossoró (RN), em julho.",
+   "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+  },
+  {
+   "ano": "2018",
+   "texto": "Inaugurada a Penitenciária Federal de Brasília (DF), a quinta do sistema.",
+   "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+  },
+  {
+   "ano": "2019",
+   "texto": "A Emenda Constitucional nº 104 cria as polícias penais, que passam a integrar a lista de órgãos de segurança pública.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Penal_do_Brasil"
+  },
+  {
+   "ano": "2024",
+   "texto": "Em 14 de fevereiro ocorre a primeira fuga registrada no sistema federal: dois presos saem da Penitenciária Federal de Mossoró. Em 31 de maio, a Lei 14.875 cria a Polícia Penal Federal.",
+   "fonte": "https://pt.wikipedia.org/wiki/Penitenci%C3%A1ria_Federal_de_Mossor%C3%B3"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Lucas Barbosa Costa",
+   "texto": "Policial penal federal (1990–2012), incluído pela Senappen na Galeria de Heróis da Polícia Penal Federal.",
+   "fonte": "https://www.gov.br/senappen/pt-br/composicao/galeria-de-herois"
+  },
+  {
+   "nome": "Alex Belarmino A. Silva",
+   "texto": "Policial penal federal (1981–2016), incluído pela Senappen na Galeria de Heróis da Polícia Penal Federal.",
+   "fonte": "https://www.gov.br/senappen/pt-br/composicao/galeria-de-herois"
+  },
+  {
+   "nome": "Henri Charle Gama e Silva",
+   "texto": "Policial penal federal (1967–2017), incluído pela Senappen na Galeria de Heróis da Polícia Penal Federal.",
+   "fonte": "https://www.gov.br/senappen/pt-br/composicao/galeria-de-herois"
+  },
+  {
+   "nome": "Melissa de Almeida Araújo",
+   "texto": "Especialista federal em assistência à execução penal (1980–2017), incluída pela Senappen na Galeria de Heróis da Polícia Penal Federal.",
+   "fonte": "https://www.gov.br/senappen/pt-br/composicao/galeria-de-herois"
+  }
+ ],
+ "organizacao": {
+  "texto": "A Diretoria do Sistema Penitenciário Federal, em Brasília, coordena classificação e movimentação de presos, assistência, inteligência e as cinco penitenciárias federais, cada uma com capacidade para 208 presos em celas individuais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal",
+  "unidades_total": 5,
+  "unidades_tipo": "penitenciárias federais",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "Penitenciária Federal em Catanduvas",
+    "local": "Catanduvas, PR",
+    "fonte": "https://www.gov.br/senappen/pt-br/composicao/ppf/penitenciarias-federais/"
+   },
+   {
+    "nome": "Penitenciária Federal em Campo Grande",
+    "local": "Campo Grande, MS",
+    "fonte": "https://www.gov.br/senappen/pt-br/composicao/ppf/penitenciarias-federais/"
+   },
+   {
+    "nome": "Penitenciária Federal em Porto Velho",
+    "local": "Porto Velho, RO",
+    "fonte": "https://www.gov.br/senappen/pt-br/composicao/ppf/penitenciarias-federais/"
+   },
+   {
+    "nome": "Penitenciária Federal em Mossoró",
+    "local": "Mossoró, RN",
+    "fonte": "https://www.gov.br/senappen/pt-br/composicao/ppf/penitenciarias-federais/"
+   },
+   {
+    "nome": "Penitenciária Federal em Brasília",
+    "local": "Brasília, DF",
+    "fonte": "https://www.gov.br/senappen/pt-br/composicao/ppf/penitenciarias-federais/"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Brasília (Asa Norte, SCN Quadra 4), DF",
+  "fonte": "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal"
+ },
+ "efetivo": {
+  "valor": 1224,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-infografico.pdf"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Sistema_Penitenci%C3%A1rio_Federal",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Penal_do_Brasil",
+  "https://www.gov.br/senappen/pt-br/composicao/ppf/penitenciarias-federais/",
+  "https://www.gov.br/senappen/pt-br/composicao/galeria-de-herois",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-infografico.pdf"
+ ]
+}

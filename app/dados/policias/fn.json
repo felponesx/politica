@@ -1,0 +1,82 @@
+{
+ "chave": "fn",
+ "nome": "Força Nacional de Segurança Pública",
+ "sigla": "FNSP",
+ "uf": "BR",
+ "corp": "fn",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Programa de cooperação do governo federal, formado por policiais militares, policiais civis, bombeiros e peritos cedidos pelos estados. É enviada, por tempo limitado, para reforçar a segurança em crises, grandes eventos, terras indígenas e desastres.",
+  "fonte": "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/forca-nacional-de-seguranca-publica"
+ },
+ "fundacao": {
+  "data": "2004-11-29",
+  "texto": "Criada pelo Decreto nº 5.289, coordenada pela Secretaria Nacional de Segurança Pública (Senasp) do Ministério da Justiça.",
+  "fonte": "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/forca-nacional-de-seguranca-publica"
+ },
+ "historia": [
+  {
+   "ano": "2004",
+   "texto": "O Decreto nº 5.289 cria a Força Nacional, idealizada na gestão do ministro da Justiça Márcio Thomaz Bastos.",
+   "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica"
+  },
+  {
+   "ano": "2011",
+   "texto": "A perícia forense passa a integrar a Força Nacional durante as enchentes da região serrana do Rio de Janeiro.",
+   "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica"
+  },
+  {
+   "ano": "2013",
+   "texto": "O Decreto nº 7.957 permite que ministros de Estado, e não só governadores, peçam o emprego da Força Nacional, por exemplo na proteção ambiental.",
+   "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica"
+  },
+  {
+   "ano": "2019",
+   "texto": "Primeira missão internacional: 20 bombeiros atuam em Moçambique após o Ciclone Idai.",
+   "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica"
+  },
+  {
+   "ano": "2023",
+   "texto": "Acionada após os ataques de 8 de janeiro para proteger a Praça dos Três Poderes em Brasília; no mesmo ano passa a apoiar a retirada de invasores de terras indígenas no Pará, em Roraima e em Rondônia.",
+   "fonte": "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/operacoes-nos-estados"
+  },
+  {
+   "ano": "2024",
+   "texto": "Cerca de 350 agentes atuam na ajuda humanitária às vítimas das enchentes no Rio Grande do Sul.",
+   "fonte": "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/missoes-humanitarias"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [
+  {
+   "nome": "Luiz Pedro de Souza Gomes",
+   "texto": "Policial militar de Mato Grosso do Sul que morreu em serviço em 14/11/2013, em Rondônia, num resgate de agentes emboscados; dá nome à Medalha Mérito da Força Nacional.",
+   "fonte": "https://conexaoto.com.br/2022/11/23/secretario-wlademir-costa-e-agraciado-com-medalha-merito-da-forca-nacional"
+  }
+ ],
+ "organizacao": {
+  "texto": "A Diretoria da Força Nacional, em Brasília, tem coordenações-gerais de Operações, de Administração e de Polícias Judiciária e Científica. A tropa não tem quartéis nos estados: os agentes são mobilizados e enviados às operações; a unidade fixa de pronto emprego é o Batalhão de Pronta Resposta, no Gama (DF).",
+  "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica",
+  "unidades_total": null,
+  "unidades_tipo": "batalhão",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "Batalhão de Pronta Resposta (BPR)",
+    "local": "Brasília (Gama), DF",
+    "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Brasília, DF",
+  "fonte": "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/forca-nacional-de-seguranca-publica",
+  "https://pt.wikipedia.org/wiki/For%C3%A7a_Nacional_de_Seguran%C3%A7a_P%C3%BAblica",
+  "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/missoes-humanitarias",
+  "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/forca-nacional/operacoes-nos-estados"
+ ]
+}

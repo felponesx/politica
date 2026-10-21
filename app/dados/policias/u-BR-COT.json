@@ -1,0 +1,79 @@
+{
+ "chave": "u:BR:COT",
+ "nome": "Comando de Operações Táticas",
+ "sigla": "COT",
+ "uf": "BR",
+ "corp": "u",
+ "subordinada_a": "pf",
+ "resumo": {
+  "texto": "Grupo tático da Polícia Federal para situações de alto risco em todo o país, como resgate de reféns, sequestro de aviões, terrorismo e prisões perigosas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+ },
+ "fundacao": {
+  "data": "1987",
+  "texto": "A primeira equipe, com 20 agentes, um delegado e um escrivão, foi formada em 1987 numa sala do edifício-sede da PF em Brasília.",
+  "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+ },
+ "historia": [
+  {
+   "ano": "1983",
+   "texto": "Uma CPMI sobre terrorismo recomenda ao Ministério da Justiça formar um grupo de policiais especializados em contraterrorismo.",
+   "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+  },
+  {
+   "ano": "1984",
+   "texto": "Começam os estudos para criar o grupo, com plano inspirado no GSG 9, unidade da polícia federal alemã.",
+   "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+  },
+  {
+   "ano": "1987",
+   "texto": "Formada a primeira equipe do COT, ainda sem sede própria.",
+   "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+  },
+  {
+   "ano": "1988",
+   "texto": "Desenhada a sede do COT, construída ao lado da Superintendência da PF em Brasília, com cerca de 40 mil m².",
+   "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+  },
+  {
+   "ano": "1990",
+   "texto": "O COT passa a fazer parte do organograma oficial do Departamento de Polícia Federal.",
+   "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas"
+  },
+  {
+   "ano": "2009",
+   "texto": "A PF cria os Grupos de Pronta Intervenção (GPI) nos estados, treinados pelo COT, para a primeira resposta até o COT chegar.",
+   "fonte": "https://pt.wikipedia.org/wiki/Grupo_de_Pronta_Interven%C3%A7%C3%A3o"
+  },
+  {
+   "ano": "2024",
+   "texto": "Apoia as buscas aos dois presos que fugiram da Penitenciária Federal de Mossoró (RN).",
+   "fonte": "https://pt.wikipedia.org/wiki/Penitenci%C3%A1ria_Federal_de_Mossor%C3%B3"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "Uma coordenação com dois serviços: Serviço de Estratégias Táticas (SET) e Serviço de Operações Táticas (SOT). Tem uma única base, em Brasília, de onde envia equipes para todo o país; nos estados, os GPIs da PF dão o primeiro atendimento.",
+  "fonte": "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas",
+  "unidades_total": 1,
+  "unidades_tipo": "base",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "Base do COT",
+    "local": "Brasília (Setor Policial Sul), DF",
+    "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Brasília (Setor Policial Sul), DF",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)"
+ },
+ "efetivo": null,
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Comando_de_Opera%C3%A7%C3%B5es_T%C3%A1ticas",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)"
+ ]
+}

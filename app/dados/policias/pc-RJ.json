@@ -70,7 +70,7 @@
   }
  ],
  "organizacao": {
-  "texto": "Chefia de Polícia com subchefias administrativa e operacional. A parte operacional tem os departamentos-gerais de polícia da Capital, da Baixada Fluminense, do Interior e Especializada, a CORE e a polícia técnico-científica (IML, Criminalística, Identificação). Cada delegacia distrital tem a área de uma CISP de mesmo número. A lista traz as 120 DPs das 1ª a 6ª RISP (local = área atendida); faltam as 17 da Região Serrana (7ª RISP), pelo limite de 120 itens.",
+  "texto": "Chefia de Polícia; departamentos-gerais de polícia da Capital, da Baixada, do Interior e Especializada; CORE; polícia técnico-científica (IML, Criminalística, Identificação). Cada delegacia distrital atende uma CISP de mesmo número. A lista traz 120 DPs (1ª a 6ª RISP; local = área atendida); faltam as 17 da Região Serrana.",
   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Civil_do_Estado_do_Rio_de_Janeiro",
   "unidades_total": 137,
   "unidades_tipo": "delegacias distritais (CISP)",
@@ -78,55 +78,55 @@
   "unidades": [
    {
     "nome": "9ª Delegacia de Polícia (9ª DP)",
-    "local": "Rio de Janeiro (Catete, Cosme Velho, Flamengo, GlÃ³ria e Laranjeiras)",
+    "local": "Rio de Janeiro (Catete, Cosme Velho, Flamengo, Glória e Laranjeiras)",
     "aisp": "2",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "10ª Delegacia de Polícia (10ª DP)",
-    "local": "Rio de Janeiro (Botafogo, HumaitÃ¡ e Urca)",
+    "local": "Rio de Janeiro (Botafogo, Humaitá e Urca)",
     "aisp": "2",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "23ª Delegacia de Polícia (23ª DP)",
-    "local": "Rio de Janeiro (Cachambi, MÃ©ier (parte) e Todos os Santos (parte))",
+    "local": "Rio de Janeiro (Cachambi, Méier (parte) e Todos os Santos (parte))",
     "aisp": "3",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "24ª Delegacia de Polícia (24ª DP)",
-    "local": "Rio de Janeiro (AboliÃ§Ã£o, Ãgua Santa (parte), Encantado, Engenho de Dentro (parte), Pilares e Piedade)",
+    "local": "Rio de Janeiro (Abolição, Água Santa (parte), Encantado, Engenho de Dentro (parte), Pilares e Piedade)",
     "aisp": "3",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "25ª Delegacia de Polícia (25ª DP)",
-    "local": "Rio de Janeiro (Engenho Novo, JacarÃ©, Jacarezinho, Riachuelo, Rocha, Sampaio e SÃ£o Francisco Xavier)",
+    "local": "Rio de Janeiro (Engenho Novo, Jacaré, Jacarezinho, Riachuelo, Rocha, Sampaio e São Francisco Xavier)",
     "aisp": "3",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "26ª Delegacia de Polícia (26ª DP)",
-    "local": "Rio de Janeiro (Ãgua Santa (parte), Engenho de Dentro (parte), Lins de Vasconcelos e Todos os Santos)",
+    "local": "Rio de Janeiro (Água Santa (parte), Engenho de Dentro (parte), Lins de Vasconcelos e Todos os Santos)",
     "aisp": "3",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "44ª Delegacia de Polícia (44ª DP)",
-    "local": "Rio de Janeiro (Del Castilho, Engenho da Rainha, InhaÃºma, Maria da GraÃ§a e TomÃ¡s Coelho)",
+    "local": "Rio de Janeiro (Del Castilho, Engenho da Rainha, Inhaúma, Maria da Graça e Tomás Coelho)",
     "aisp": "3",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "6ª Delegacia de Polícia (6ª DP)",
-    "local": "Rio de Janeiro (Catumbi, Cidade Nova, EstÃ¡cio, Rio Comprido e Centro (parte))",
+    "local": "Rio de Janeiro (Catumbi, Cidade Nova, Estácio, Rio Comprido e Centro (parte))",
     "aisp": "4",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "17ª Delegacia de Polícia (17ª DP)",
-    "local": "Rio de Janeiro (Caju, Mangueira, SÃ£o CristÃ³vÃ£o e Vasco da Gama)",
+    "local": "Rio de Janeiro (Caju, Mangueira, São Cristóvão e Vasco da Gama)",
     "aisp": "4",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -138,13 +138,13 @@
    },
    {
     "nome": "4ª Delegacia de Polícia (4ª DP)",
-    "local": "Rio de Janeiro (Centro (parte), Gamboa, Santo Cristo e SaÃºde)",
+    "local": "Rio de Janeiro (Centro (parte), Gamboa, Santo Cristo e Saúde)",
     "aisp": "5",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "5ª Delegacia de Polícia (5ª DP)",
-    "local": "Rio de Janeiro (Centro (parte), Lapa e PaquetÃ¡)",
+    "local": "Rio de Janeiro (Centro (parte), Lapa e Paquetá)",
     "aisp": "5",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -156,7 +156,7 @@
    },
    {
     "nome": "18ª Delegacia de Polícia (18ª DP)",
-    "local": "Rio de Janeiro (MaracanÃ£, PraÃ§a da Bandeira e Tijuca (parte))",
+    "local": "Rio de Janeiro (Maracanã, Praça da Bandeira e Tijuca (parte))",
     "aisp": "6",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -168,25 +168,25 @@
    },
    {
     "nome": "20ª Delegacia de Polícia (20ª DP)",
-    "local": "Rio de Janeiro (AndaraÃ­, GrajaÃº e Vila Isabel)",
+    "local": "Rio de Janeiro (Andaraí, Grajaú e Vila Isabel)",
     "aisp": "6",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "22ª Delegacia de Polícia (22ª DP)",
-    "local": "Rio de Janeiro (BrÃ¡s de Pina (parte), Olaria, Penha e Penha Circular (parte))",
+    "local": "Rio de Janeiro (Brás de Pina (parte), Olaria, Penha e Penha Circular (parte))",
     "aisp": "16",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "38ª Delegacia de Polícia (38ª DP)",
-    "local": "Rio de Janeiro (BrÃ¡s de Pina (parte), Cordovil, Jardim AmÃ©rica, Parada de Lucas,Penha Circular (parte) e VigÃ¡rio Geral)",
+    "local": "Rio de Janeiro (Brás de Pina (parte), Cordovil, Jardim América, Parada de Lucas,Penha Circular (parte) e Vigário Geral)",
     "aisp": "16",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "37ª Delegacia de Polícia (37ª DP)",
-    "local": "Rio de Janeiro (BancÃ¡rios, Cacuia, Cidade UniversitÃ¡ria, CocotÃ¡, Freguesia, GaleÃ£o, Jardim Carioca, Jardim Guanabara, MonerÃ³, Pitangueiras, Portuguesa, Praia da Bandeira, Ribeira, TauÃ¡ e Zumbi)",
+    "local": "Rio de Janeiro (Bancários, Cacuia, Cidade Universitária, Cocotá, Freguesia, Galeão, Jardim Carioca, Jardim Guanabara, Moneró, Pitangueiras, Portuguesa, Praia da Bandeira, Ribeira, Tauá e Zumbi)",
     "aisp": "17",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -204,7 +204,7 @@
    },
    {
     "nome": "21ª Delegacia de Polícia (21ª DP)",
-    "local": "Rio de Janeiro (Benfica, Bonsucesso, HigienÃ³polis, Manguinhos, MarÃ© e Ramos)",
+    "local": "Rio de Janeiro (Benfica, Bonsucesso, Higienópolis, Manguinhos, Maré e Ramos)",
     "aisp": "22",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -222,13 +222,13 @@
    },
    {
     "nome": "15ª Delegacia de Polícia (15ª DP)",
-    "local": "Rio de Janeiro (GÃ¡vea, Jardim BotÃ¢nico, Lagoa, SÃ£o Conrado e Vidigal)",
+    "local": "Rio de Janeiro (Gávea, Jardim Botânico, Lagoa, São Conrado e Vidigal)",
     "aisp": "23",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "29ª Delegacia de Polícia (29ª DP)",
-    "local": "Rio de Janeiro (Cavalcanti, Engenheiro Leal, Madureira, TuriaÃ§u, Vaz Lobo, Oswaldo Cruz (parte), Cascadura e Quintino BocaiÃºva)",
+    "local": "Rio de Janeiro (Cavalcanti, Engenheiro Leal, Madureira, Turiaçu, Vaz Lobo, Oswaldo Cruz (parte), Cascadura e Quintino Bocaiúva)",
     "aisp": "9",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -240,43 +240,43 @@
    },
    {
     "nome": "40ª Delegacia de Polícia (40ª DP)",
-    "local": "Rio de Janeiro (Coelho Neto, ColÃ©gio (parte), HonÃ³rio Gurgel e Rocha Miranda)",
+    "local": "Rio de Janeiro (Coelho Neto, Colégio (parte), Honório Gurgel e Rocha Miranda)",
     "aisp": "9",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "33ª Delegacia de Polícia (33ª DP)",
-    "local": "Rio de Janeiro (Campo dos Afonsos, Deodoro, Jardim Sulacap, MagalhÃ£es Bastos, Realengo e Vila Militar)",
+    "local": "Rio de Janeiro (Campo dos Afonsos, Deodoro, Jardim Sulacap, Magalhães Bastos, Realengo e Vila Militar)",
     "aisp": "14",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "34ª Delegacia de Polícia (34ª DP)",
-    "local": "Rio de Janeiro (Bangu, GericinÃ³, Padre Miguel e Senador CamarÃ¡)",
+    "local": "Rio de Janeiro (Bangu, Gericinó, Padre Miguel e Senador Camará)",
     "aisp": "14",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "28ª Delegacia de Polícia (28ª DP)",
-    "local": "Rio de Janeiro (Vila Valqueire, PraÃ§a Seca e Tanque (parte))",
+    "local": "Rio de Janeiro (Vila Valqueire, Praça Seca e Tanque (parte))",
     "aisp": "18",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "32ª Delegacia de Polícia (32ª DP)",
-    "local": "Rio de Janeiro (Anil, Cidade de Deus, Curicica, GardÃªnia Azul, JacarepaguÃ¡ e Taquara)",
+    "local": "Rio de Janeiro (Anil, Cidade de Deus, Curicica, Gardênia Azul, Jacarepaguá e Taquara)",
     "aisp": "18",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "41ª Delegacia de Polícia (41ª DP)",
-    "local": "Rio de Janeiro (Freguesia (JacarepaguÃ¡), Pechincha e Tanque (parte))",
+    "local": "Rio de Janeiro (Freguesia (Jacarepaguá), Pechincha e Tanque (parte))",
     "aisp": "18",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "36ª Delegacia de Polícia (36ª DP)",
-    "local": "Rio de Janeiro (PaciÃªncia e Santa Cruz)",
+    "local": "Rio de Janeiro (Paciência e Santa Cruz)",
     "aisp": "27",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -288,7 +288,7 @@
    },
    {
     "nome": "16ª Delegacia de Polícia (16ª DP)",
-    "local": "Rio de Janeiro (Barra da Tijuca, ItanhangÃ¡, JoÃ¡)",
+    "local": "Rio de Janeiro (Barra da Tijuca, Itanhangá, Joá)",
     "aisp": "31",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -300,13 +300,13 @@
    },
    {
     "nome": "35ª Delegacia de Polícia (35ª DP)",
-    "local": "Rio de Janeiro (Campo Grande, Cosmos, InhoaÃ­ba, SantÃ­ssimo e Senador Vasconcelos)",
+    "local": "Rio de Janeiro (Campo Grande, Cosmos, Inhoaíba, Santíssimo e Senador Vasconcelos)",
     "aisp": "40",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "27ª Delegacia de Polícia (27ª DP)",
-    "local": "Rio de Janeiro (ColÃ©gio (parte), IrajÃ¡, Vicente de Carvalho, Vila Kosmos, Vila da Penha e Vista Alegre)",
+    "local": "Rio de Janeiro (Colégio (parte), Irajá, Vicente de Carvalho, Vila Kosmos, Vila da Penha e Vista Alegre)",
     "aisp": "41",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -318,7 +318,7 @@
    },
    {
     "nome": "39ª Delegacia de Polícia (39ª DP)",
-    "local": "Rio de Janeiro (Acari, Barros Filho, Costa Barros, Parque ColÃºmbia e Pavuna)",
+    "local": "Rio de Janeiro (Acari, Barros Filho, Costa Barros, Parque Colúmbia e Pavuna)",
     "aisp": "41",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -348,7 +348,7 @@
    },
    {
     "nome": "52ª Delegacia de Polícia (52ª DP)",
-    "local": "Nova IguaÃ§u",
+    "local": "Nova Iguaçu",
     "aisp": "20",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -360,37 +360,37 @@
    },
    {
     "nome": "56ª Delegacia de Polícia (56ª DP)",
-    "local": "Nova IguaÃ§u",
+    "local": "Nova Iguaçu",
     "aisp": "20",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "57ª Delegacia de Polícia (57ª DP)",
-    "local": "NilÃ³polis",
+    "local": "Nilópolis",
     "aisp": "20",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "58ª Delegacia de Polícia (58ª DP)",
-    "local": "Nova IguaÃ§u",
+    "local": "Nova Iguaçu",
     "aisp": "20",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "64ª Delegacia de Polícia (64ª DP)",
-    "local": "SÃ£o JoÃ£o de Meriti",
+    "local": "São João de Meriti",
     "aisp": "21",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "48ª Delegacia de Polícia (48ª DP)",
-    "local": "SeropÃ©dica",
+    "local": "Seropédica",
     "aisp": "24",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "50ª Delegacia de Polícia (50ª DP)",
-    "local": "ItaguaÃ­",
+    "local": "Itaguaí",
     "aisp": "24",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -414,13 +414,13 @@
    },
    {
     "nome": "65ª Delegacia de Polícia (65ª DP)",
-    "local": "MagÃ©",
+    "local": "Magé",
     "aisp": "34",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "66ª Delegacia de Polícia (66ª DP)",
-    "local": "MagÃ©",
+    "local": "Magé",
     "aisp": "34",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -438,61 +438,61 @@
    },
    {
     "nome": "72ª Delegacia de Polícia (72ª DP)",
-    "local": "SÃ£o GonÃ§alo",
+    "local": "São Gonçalo",
     "aisp": "1",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "73ª Delegacia de Polícia (73ª DP)",
-    "local": "SÃ£o GonÃ§alo",
+    "local": "São Gonçalo",
     "aisp": "1",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "74ª Delegacia de Polícia (74ª DP)",
-    "local": "SÃ£o GonÃ§alo",
+    "local": "São Gonçalo",
     "aisp": "7",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "75ª Delegacia de Polícia (75ª DP)",
-    "local": "SÃ£o GonÃ§alo",
+    "local": "São Gonçalo",
     "aisp": "7",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "76ª Delegacia de Polícia (76ª DP)",
-    "local": "NiterÃ³i",
+    "local": "Niterói",
     "aisp": "12",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "77ª Delegacia de Polícia (77ª DP)",
-    "local": "NiterÃ³i",
+    "local": "Niterói",
     "aisp": "12",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "78ª Delegacia de Polícia (78ª DP)",
-    "local": "NiterÃ³i",
+    "local": "Niterói",
     "aisp": "12",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "79ª Delegacia de Polícia (79ª DP)",
-    "local": "NiterÃ³i",
+    "local": "Niterói",
     "aisp": "12",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "81ª Delegacia de Polícia (81ª DP)",
-    "local": "NiterÃ³i",
+    "local": "Niterói",
     "aisp": "12",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "82ª Delegacia de Polícia (82ª DP)",
-    "local": "MaricÃ¡",
+    "local": "Maricá",
     "aisp": "12",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -510,7 +510,7 @@
    },
    {
     "nome": "125ª Delegacia de Polícia (125ª DP)",
-    "local": "SÃ£o Pedro da Aldeia",
+    "local": "São Pedro da Aldeia",
     "aisp": "25",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -522,7 +522,7 @@
    },
    {
     "nome": "127ª Delegacia de Polícia (127ª DP)",
-    "local": "ArmaÃ§Ã£o dos BÃºzios",
+    "local": "Armação dos Búzios",
     "aisp": "25",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -540,13 +540,13 @@
    },
    {
     "nome": "70ª Delegacia de Polícia (70ª DP)",
-    "local": "TanguÃ¡",
+    "local": "Tanguá",
     "aisp": "35",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "71ª Delegacia de Polícia (71ª DP)",
-    "local": "ItaboraÃ­",
+    "local": "Itaboraí",
     "aisp": "35",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -564,13 +564,13 @@
    },
    {
     "nome": "88ª Delegacia de Polícia (88ª DP)",
-    "local": "Barra do PiraÃ­",
+    "local": "Barra do Piraí",
     "aisp": "10",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "91ª Delegacia de Polícia (91ª DP)",
-    "local": "ValenÃ§a",
+    "local": "Valença",
     "aisp": "10",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -582,7 +582,7 @@
    },
    {
     "nome": "94ª Delegacia de Polícia (94ª DP)",
-    "local": "PiraÃ­",
+    "local": "Piraí",
     "aisp": "10",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -678,13 +678,13 @@
    },
    {
     "nome": "141ª Delegacia de Polícia (141ª DP)",
-    "local": "SÃ£o FidÃ©lis",
+    "local": "São Fidélis",
     "aisp": "8",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "145ª Delegacia de Polícia (145ª DP)",
-    "local": "SÃ£o JoÃ£o da Barra",
+    "local": "São João da Barra",
     "aisp": "8",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -696,19 +696,19 @@
    },
    {
     "nome": "147ª Delegacia de Polícia (147ª DP)",
-    "local": "SÃ£o Francisco de Itabapoana",
+    "local": "São Francisco de Itabapoana",
     "aisp": "8",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "138ª Delegacia de Polícia (138ª DP)",
-    "local": "Laje do MuriaÃ©",
+    "local": "Laje do Muriaé",
     "aisp": "29",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "139ª Delegacia de Polícia (139ª DP)",
-    "local": "PorciÃºncula",
+    "local": "Porciúncula",
     "aisp": "29",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -720,7 +720,7 @@
    },
    {
     "nome": "143ª Delegacia de Polícia (143ª DP)",
-    "local": "Itaperuna, SÃ£o JosÃ© de UbÃ¡",
+    "local": "Itaperuna, São José de Ubá",
     "aisp": "29",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -744,13 +744,13 @@
    },
    {
     "nome": "122ª Delegacia de Polícia (122ª DP)",
-    "local": "ConceiÃ§Ã£o de MacabÃº",
+    "local": "Conceição de Macabú",
     "aisp": "32",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
    {
     "nome": "123ª Delegacia de Polícia (123ª DP)",
-    "local": "MacaÃ©",
+    "local": "Macaé",
     "aisp": "32",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -762,7 +762,7 @@
    },
    {
     "nome": "130ª Delegacia de Polícia (130ª DP)",
-    "local": "Carapebus, QuissamÃ£",
+    "local": "Carapebus, Quissamã",
     "aisp": "32",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -774,7 +774,7 @@
    },
    {
     "nome": "136ª Delegacia de Polícia (136ª DP)",
-    "local": "AperibÃ©, Santo AntÃ´nio de PÃ¡dua",
+    "local": "Aperibé, Santo Antônio de Pádua",
     "aisp": "36",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    },
@@ -792,7 +792,7 @@
    },
    {
     "nome": "155ª Delegacia de Polícia (155ª DP)",
-    "local": "SÃ£o SebastiÃ£o do Alto",
+    "local": "São Sebastião do Alto",
     "aisp": "36",
     "fonte": "https://www.ispdados.rj.gov.br/Arquivos/Relacao_RISPxAISPxCISP.csv"
    }

@@ -1,0 +1,215 @@
+{
+ "chave": "pf",
+ "nome": "Polícia Federal",
+ "sigla": "PF",
+ "uf": "BR",
+ "corp": "pf",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Polícia da União, ligada ao Ministério da Justiça e Segurança Pública. Investiga crimes contra bens e interesses federais, tráfico de drogas, contrabando e crimes que atravessam estados ou fronteiras, e cuida de passaportes, imigração, fronteiras, portos e aeroportos.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)"
+ },
+ "fundacao": {
+  "data": "1944-03-28",
+  "texto": "O Decreto-Lei nº 6.378 transformou a antiga Polícia Civil do Distrito Federal (Rio de Janeiro) no Departamento Federal de Segurança Pública (DFSP), origem da atual PF.",
+  "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+ },
+ "historia": [
+  {
+   "ano": "1808",
+   "texto": "D. João VI cria a Intendência-Geral de Polícia da Corte, apontada pela própria PF como a origem remota da instituição.",
+   "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+  },
+  {
+   "ano": "1944",
+   "texto": "Decreto-Lei nº 6.378 cria o Departamento Federal de Segurança Pública (DFSP), no Rio de Janeiro, então capital do país.",
+   "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+  },
+  {
+   "ano": "1960",
+   "texto": "Com a inauguração de Brasília, o DFSP muda para a nova capital, instalado de início num galpão de madeira da Novacap.",
+   "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+  },
+  {
+   "ano": "1964",
+   "texto": "A Lei nº 4.483, de 16 de novembro de 1964, reorganiza o DFSP e dá a ele atuação em todo o território nacional, incluindo a censura de diversões públicas.",
+   "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+  },
+  {
+   "ano": "1967",
+   "texto": "O Decreto-Lei nº 200 muda o nome do órgão para Departamento de Polícia Federal.",
+   "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+  },
+  {
+   "ano": "1988",
+   "texto": "A nova Constituição define as funções da PF no art. 144; no mesmo ano é extinta a Divisão de Censura de Diversões Públicas, que funcionava dentro da PF.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)"
+  },
+  {
+   "ano": "2003",
+   "texto": "A Operação Anaconda, que teve juízes, integrantes do Ministério Público e policiais entre os alvos, é apontada como marco do trabalho de inteligência da PF.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A direção-geral fica em Brasília, com diretorias especializadas (investigação, crime organizado, inteligência, perícia, Academia Nacional de Polícia). Nos estados há 27 superintendências regionais (uma em cada UF) e, abaixo delas, 94 delegacias em cidades do interior (portaria de 2022), além de postos avançados.",
+  "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf",
+  "unidades_total": 27,
+  "unidades_tipo": "superintendências regionais",
+  "data_ref": "2022",
+  "unidades": [
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/AC",
+    "local": "Rio Branco, AC",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/AL",
+    "local": "Maceió, AL",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/AP",
+    "local": "Macapá, AP",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/AM",
+    "local": "Manaus, AM",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/BA",
+    "local": "Salvador, BA",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/CE",
+    "local": "Fortaleza, CE",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/DF",
+    "local": "Brasília, DF",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/ES",
+    "local": "Vila Velha, ES",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/GO",
+    "local": "Goiânia, GO",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/MA",
+    "local": "São Luís, MA",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/MT",
+    "local": "Cuiabá, MT",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/MS",
+    "local": "Campo Grande, MS",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/MG",
+    "local": "Belo Horizonte, MG",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/PA",
+    "local": "Belém, PA",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/PB",
+    "local": "João Pessoa, PB",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/PR",
+    "local": "Curitiba, PR",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/PE",
+    "local": "Recife, PE",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/PI",
+    "local": "Teresina, PI",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/RJ",
+    "local": "Rio de Janeiro, RJ",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/RN",
+    "local": "Natal, RN",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/RS",
+    "local": "Porto Alegre, RS",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/RO",
+    "local": "Porto Velho, RO",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/RR",
+    "local": "Boa Vista, RR",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/SC",
+    "local": "Florianópolis, SC",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/SP",
+    "local": "São Paulo, SP",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/SE",
+    "local": "Aracaju, SE",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   },
+   {
+    "nome": "Superintendência Regional de Polícia Federal - SR/PF/TO",
+    "local": "Palmas, TO",
+    "fonte": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Brasília (Asa Sul, SAS Quadra 6), DF",
+  "fonte": "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico"
+ },
+ "efetivo": {
+  "valor": 12536,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-infografico.pdf"
+ },
+ "fontes_gerais": [
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Federal_(Brasil)",
+  "https://www.gov.br/pf/pt-br/acesso-a-informacao/institucional/historico",
+  "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos/legislacao/p16145.pdf",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-infografico.pdf"
+ ]
+}

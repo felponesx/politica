@@ -1,0 +1,215 @@
+{
+ "chave": "prf",
+ "nome": "Polícia Rodoviária Federal",
+ "sigla": "PRF",
+ "uf": "BR",
+ "corp": "prf",
+ "subordinada_a": null,
+ "resumo": {
+  "texto": "Polícia federal ostensiva, ligada ao Ministério da Justiça e Segurança Pública. Patrulha as rodovias federais: fiscaliza o trânsito, atende acidentes e combate crimes como tráfico de drogas e de armas nas estradas.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Rodovi%C3%A1ria_Federal"
+ },
+ "fundacao": {
+  "data": "1928-07-24",
+  "texto": "Criada pelo presidente Washington Luís como \"Polícia de Estradas\"; recebeu o nome de Polícia Rodoviária Federal em 1945.",
+  "fonte": "https://www.gov.br/prf/pt-br/acesso-a-informacao/institucional"
+ },
+ "historia": [
+  {
+   "ano": "1928",
+   "texto": "O presidente Washington Luís cria a Polícia de Estradas, no contexto da expansão das rodovias do país.",
+   "fonte": "https://www.gov.br/prf/pt-br/acesso-a-informacao/institucional"
+  },
+  {
+   "ano": "1935",
+   "texto": "A polícia sai do papel no governo Getúlio Vargas: o primeiro grupo de patrulheiros, criado em 23 de julho, atua nas rodovias Rio-Petrópolis, Rio-São Paulo e União Indústria.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Rodovi%C3%A1ria_Federal"
+  },
+  {
+   "ano": "1945",
+   "texto": "A corporação passa a se chamar Polícia Rodoviária Federal, ligada ao Departamento Nacional de Estradas de Rodagem (DNER).",
+   "fonte": "https://www.gov.br/prf/pt-br/acesso-a-informacao/institucional"
+  },
+  {
+   "ano": "1988",
+   "texto": "A Constituição inclui a PRF entre os órgãos de segurança pública (art. 144); depois ela passa ao Ministério da Justiça.",
+   "fonte": "https://www.gov.br/prf/pt-br/acesso-a-informacao/institucional"
+  },
+  {
+   "ano": "2022",
+   "texto": "Em 25 de maio, Genivaldo de Jesus Santos morre em Umbaúba (SE) após ser trancado numa viatura com gás. Três ex-agentes da PRF foram demitidos em 2023 e condenados pela Justiça Federal em dezembro de 2024.",
+   "fonte": "https://pt.wikipedia.org/wiki/Assassinato_de_Genivaldo_de_Jesus"
+  },
+  {
+   "ano": "2022",
+   "texto": "No 2º turno da eleição presidencial, operações da PRF que pararam ônibus e vans, concentradas no Nordeste, foram questionadas pelo TSE, que mandou suspender ações que atrapalhassem o transporte de eleitores.",
+   "fonte": "https://pt.wikipedia.org/wiki/Opera%C3%A7%C3%B5es_policiais_nas_elei%C3%A7%C3%B5es_gerais_no_Brasil_em_2022"
+  },
+  {
+   "ano": "2023",
+   "texto": "A nova direção adota câmeras corporais, cria uma coordenação-geral de Direitos Humanos e extingue os Comandos de Operações Especiais regionais.",
+   "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Rodovi%C3%A1ria_Federal"
+  }
+ ],
+ "patrono": null,
+ "homenageados": [],
+ "organizacao": {
+  "texto": "A Direção-Geral fica em Brasília, com diretorias (operações, inteligência, gestão de pessoas, administração, tecnologia e corregedoria). Em cada estado e no DF há uma superintendência, com delegacias e unidades operacionais (postos) ao longo das rodovias federais.",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Rodovi%C3%A1ria_Federal",
+  "unidades_total": 27,
+  "unidades_tipo": "superintendências",
+  "data_ref": "2026",
+  "unidades": [
+   {
+    "nome": "Superintendência da PRF - AC",
+    "local": "Rio Branco (Centro), AC",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/acre"
+   },
+   {
+    "nome": "Superintendência da PRF - AL",
+    "local": "Maceió (Tabuleiro do Martins), AL",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/alagoas"
+   },
+   {
+    "nome": "Superintendência da PRF - AP",
+    "local": "Macapá (Centro), AP",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/amapa"
+   },
+   {
+    "nome": "Superintendência da PRF - AM",
+    "local": "Manaus (Conjunto DNER), AM",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/amazonas"
+   },
+   {
+    "nome": "Superintendência da PRF - BA",
+    "local": "Salvador (Brotas), BA",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/bahia"
+   },
+   {
+    "nome": "Superintendência da PRF - CE",
+    "local": "Fortaleza (Cajazeiras), CE",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/ceara"
+   },
+   {
+    "nome": "Superintendência da PRF - DF",
+    "local": "Brasília (SIA/Guará), DF",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/distrito-federal"
+   },
+   {
+    "nome": "Superintendência da PRF - ES",
+    "local": "Vitória (Centro), ES",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/espirito-santo"
+   },
+   {
+    "nome": "Superintendência da PRF - GO",
+    "local": "Goiânia (Setor Marista), GO",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/goias"
+   },
+   {
+    "nome": "Superintendência da PRF - MA",
+    "local": "São Luís (Vila Itamar), MA",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/maranhao"
+   },
+   {
+    "nome": "Superintendência da PRF - MT",
+    "local": "Cuiabá, MT",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/mato-grosso"
+   },
+   {
+    "nome": "Superintendência da PRF - MS",
+    "local": "Campo Grande, MS",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/mato-grosso-do-sul"
+   },
+   {
+    "nome": "Superintendência da PRF - MG",
+    "local": "Contagem (Cidade Industrial), MG",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/minas-gerais"
+   },
+   {
+    "nome": "Superintendência da PRF - PA",
+    "local": "Belém (Val de Cans), PA",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/para"
+   },
+   {
+    "nome": "Superintendência da PRF - PB",
+    "local": "João Pessoa, PB",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/paraiba"
+   },
+   {
+    "nome": "Superintendência da PRF - PR",
+    "local": "Curitiba (Prado Velho), PR",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/parana"
+   },
+   {
+    "nome": "Superintendência da PRF - PE",
+    "local": "Recife, PE",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/pernambuco"
+   },
+   {
+    "nome": "Superintendência da PRF - PI",
+    "local": "Teresina (Noivos), PI",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/piaui"
+   },
+   {
+    "nome": "Superintendência da PRF - RJ",
+    "local": "Rio de Janeiro, RJ",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/rio-de-janeiro"
+   },
+   {
+    "nome": "Superintendência da PRF - RN",
+    "local": "Natal (Lagoa Nova), RN",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/rio-grande-do-norte"
+   },
+   {
+    "nome": "Superintendência da PRF - RS",
+    "local": "Porto Alegre (Anchieta), RS",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/rio-grande-do-sul"
+   },
+   {
+    "nome": "Superintendência da PRF - RO",
+    "local": "Porto Velho, RO",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/rondonia"
+   },
+   {
+    "nome": "Superintendência da PRF - RR",
+    "local": "Boa Vista (São Vicente), RR",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/roraima"
+   },
+   {
+    "nome": "Superintendência da PRF - SC",
+    "local": "Florianópolis, SC",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/santa-catarina"
+   },
+   {
+    "nome": "Superintendência da PRF - SP",
+    "local": "São Paulo (Vila Guilherme), SP",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/sao-paulo"
+   },
+   {
+    "nome": "Superintendência da PRF - SE",
+    "local": "Aracaju, SE",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/sergipe"
+   },
+   {
+    "nome": "Superintendência da PRF - TO",
+    "local": "Palmas (Plano Diretor Norte), TO",
+    "fonte": "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf/tocantins"
+   }
+  ]
+ },
+ "sede": {
+  "local": "Brasília (SPO, Quadra 3, Complexo Sede PRF), DF",
+  "fonte": "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Rodovi%C3%A1ria_Federal"
+ },
+ "efetivo": {
+  "valor": 12328,
+  "data_ref": "2025",
+  "fonte": "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-infografico.pdf"
+ },
+ "fontes_gerais": [
+  "https://www.gov.br/prf/pt-br/acesso-a-informacao/institucional",
+  "https://pt.wikipedia.org/wiki/Pol%C3%ADcia_Rodovi%C3%A1ria_Federal",
+  "https://www.gov.br/prf/pt-br/canais-de-atendimento/unidades-prf",
+  "https://forumseguranca.org.br/wp-content/uploads/2026/08/raio-x-forcas-seguranca-2026-infografico.pdf"
+ ]
+}
