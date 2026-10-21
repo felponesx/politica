@@ -131,7 +131,10 @@
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-07-21",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-07/pf-apreende-carros-de-luxo-em-operacao-contra-careca-do-inss"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-07/pf-apreende-carros-de-luxo-em-operacao-contra-careca-do-inss",
+   "liberdade_data": "2026-10-18",
+   "liberdade_fonte": "https://www.terra.com.br/noticias/eleicoes/quem-e-o-careca-do-inss-conheca-o-empresario-preso-por-fraudes-em-aposentadorias-que-foi-citado-no-debate-da-band,429c5ae966b80afbc29e6e629518d113b34jwf3d.html",
+   "liberdade_detalhe": "Segue preso preventivamente; a defesa contesta a prisão."
   },
   {
    "nome": "Maurício Camisotti",
@@ -144,7 +147,10 @@
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-08-27",
-   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/"
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/",
+   "liberdade_data": "2026-08-27",
+   "liberdade_fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/",
+   "liberdade_detalhe": "Preso preventivamente; está na carceragem da PF em São Paulo enquanto a delação é analisada."
   },
   {
    "nome": "Alessandro Antônio Stefanutto",
@@ -161,7 +167,10 @@
    },
    "devolveu": null,
    "data_situacao": "2026-07-14",
-   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/pf-indicia-ex-presidente-do-inss-careca-e-outros-em-inquerito/"
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/pf-indicia-ex-presidente-do-inss-careca-e-outros-em-inquerito/",
+   "liberdade_data": "2026-10-08",
+   "liberdade_fonte": "https://timesbrasil.com.br/brasil/pgr-defende-soltura-de-ex-presidente-do-inss-com-uso-de-tornozeleira-eletronica/",
+   "liberdade_detalhe": "Preso preventivamente desde nov/2025; em out/2026 a PGR passou a defender a soltura com tornozeleira."
   },
   {
    "nome": "Virgílio Antônio Ribeiro de Oliveira Filho",
@@ -170,11 +179,14 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "Indiciado pela PF nos inquéritos da Operação Sem Desconto (jul e ago/2026). Estava preso desde nov/2025 e negociava delação (mai/2026); situação de prisão atual não confirmada.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-08-06",
-   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/"
+   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/",
+   "liberdade_data": "2026-09-09",
+   "liberdade_fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/andre-mendonca-manda-soltar-filho-do-careca-do-inss",
+   "liberdade_detalhe": "Preso de nov/2025 a 09/09/2026, quando Mendonça mandou soltá-lo com tornozeleira."
   },
   {
    "nome": "André Fidelis",
@@ -183,11 +195,14 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "Indiciado pela PF nos inquéritos da Operação Sem Desconto (jul e ago/2026). Negociava delação premiada em mai/2026.",
-   "liberdade": null,
+   "liberdade": "preso",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-08-06",
-   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/"
+   "fonte": "https://www.cnnbrasil.com.br/politica/o-que-se-sabe-sobre-o-novo-indiciamento-do-ex-presidente-do-inss/",
+   "liberdade_data": "2026-05-06",
+   "liberdade_fonte": "https://timesbrasil.com.br/brasil/politica/desvio-de-aposentadorias-pgr-pede-a-mendonca-que-mantenha-prisao-de-ex-integrantes-da-cupula-do-inss/",
+   "liberdade_detalhe": "Preso preventivamente desde nov/2025; em mai/2026 a PGR pediu que seguisse preso (não há notícia mais nova)."
   },
   {
    "nome": "José Carlos Oliveira (Ahmed Mohamad Oliveira)",
@@ -196,11 +211,14 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "A PF o descreve como 'pilar institucional' do esquema; passou a usar tornozeleira eletrônica em 13/11/2025. Citado pela CNN entre os indiciados pela PF (ago/2026).",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-08-27",
-   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/"
+   "fonte": "https://www.cnnbrasil.com.br/blogs/elijonasmaia/politica/inss-empresario-entrega-organograma-e-delacao-entra-em-fase-final/",
+   "liberdade_data": "2026-09-10",
+   "liberdade_fonte": "https://www.jb.com.br/brasil/justica/2026/09/1060867-stf-manda-soltar-ex-procurador-geral-do-inss-investigado-na-operacao-sem-desconto.html",
+   "liberdade_detalhe": "Não foi preso; em set/2026 Mendonça retirou sua tornozeleira eletrônica."
   },
   {
    "nome": "Adroaldo Portal",
@@ -226,7 +244,10 @@
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-08-04",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/pf-investiga-senador-weverton-rocha-por-suspeita-de-desvios-no-inss"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-08/pf-investiga-senador-weverton-rocha-por-suspeita-de-desvios-no-inss",
+   "liberdade_data": "2026-09-09",
+   "liberdade_fonte": "https://m.imirante.com/noticias/sao-luis/2026/09/09/ipolitica-tre-ma-rejeita-acao-contra-weverton-e-defere-registro",
+   "liberdade_detalhe": "Alvo de buscas; candidato à reeleição ao Senado em 2026, com registro aprovado pelo TRE-MA."
   },
   {
    "nome": "Maria Gorete Pereira",
@@ -235,11 +256,14 @@
    "tipo": "agente público",
    "situacao": "investigado",
    "detalhe": "PF aponta que recebeu valores ligados ao esquema. O ministro André Mendonça negou o pedido de prisão e impôs tornozeleira eletrônica (17/03/2026).",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-03-17",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/inss-mendonca-decide-por-uso-de-tornozeleira-para-deputada-do-ceara",
+   "liberdade_data": "2026-10-11",
+   "liberdade_fonte": "https://diariodonordeste.verdesmares.com.br/pontopoder/gorete-pereira-e-indiciada-pela-pf-sob-suspeita-de-desvios-no-inss-diz-jornal-1.3797986",
+   "liberdade_detalhe": "O STF negou sua prisão; fez campanha em 2026 com tornozeleira e foi indiciada pela PF em out/2026."
   },
   {
    "nome": "Cecília Rodrigues Mota",
@@ -265,7 +289,10 @@
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-08-12",
-   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-08/policia-federal-prende-presidente-da-conafer"
+   "fonte": "https://agenciabrasil.ebc.com.br/geral/noticia/2026-08/policia-federal-prende-presidente-da-conafer",
+   "liberdade_data": "2026-10-08",
+   "liberdade_fonte": "https://revistaforum.com.br/politica/pgr-defende-soltar-ex-presidente-do-inss/",
+   "liberdade_detalhe": "Preso desde 12/08/2026, depois de ficar foragido; em out/2026 a PGR se opôs à soltura."
   },
   {
    "nome": "Aristides Veras dos Santos",
@@ -291,7 +318,10 @@
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2026-09-09",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/andre-mendonca-manda-soltar-filho-do-careca-do-inss"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/andre-mendonca-manda-soltar-filho-do-careca-do-inss",
+   "liberdade_data": "2026-09-09",
+   "liberdade_fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-09/andre-mendonca-manda-soltar-filho-do-careca-do-inss",
+   "liberdade_detalhe": "Preso de dez/2025 a 09/09/2026; solto com tornozeleira e outras restrições."
   }
  ],
  "fontes": [

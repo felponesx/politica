@@ -109,11 +109,15 @@
    "tipo": "agente público",
    "situacao": "processo arquivado",
    "detalhe": "Investigado por suposta prevaricação; a PF concluiu que não houve crime e o STF arquivou o inquérito a pedido da PGR (pode ser reaberto se surgirem novas provas).",
-   "liberdade": null,
+   "liberdade": "prisão domiciliar",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2022-04",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-04/ministra-do-stf-arquiva-inquerito-contra-presidente-no-caso-covaxin"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2022-04/ministra-do-stf-arquiva-inquerito-contra-presidente-no-caso-covaxin",
+   "liberdade_data": "2026-10-16",
+   "liberdade_fonte": "https://www.bahianoticias.com.br/noticia/322540-moraes-permite-que-bolsonaro-receba-10-convidados-para-aniversario-da-filha",
+   "liberdade_detalhe": "Em prisão domiciliar pela condenação na trama golpista (outro processo); este caso foi arquivado.",
+   "liberdade_outro_processo": true
   },
   {
    "nome": "Ricardo Barros",
@@ -122,11 +126,14 @@
    "tipo": "agente público",
    "situacao": "processo arquivado",
    "detalhe": "A CPI pediu indiciamento por organização criminosa, entre outros; o STF arquivou a apuração a pedido da PGR em jun/2023 e a 2ª Turma manteve o arquivamento em nov/2024.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2024-11",
-   "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/"
+   "fonte": "https://jornaldebrasilia.com.br/noticias/politica-e-poder/investigacao-sobre-desvios-em-compra-de-vacina-da-covid-volta-ao-stf-e-pgr-analisa-em-segredo/",
+   "liberdade_data": "2026-09-03",
+   "liberdade_fonte": "https://maringapost.com.br/2026/09/03/ricardo-barros-grava-participacao-na-serie-de-entrevistas-maringa-post-de-olho-nas-urnas/",
+   "liberdade_detalhe": "Deputado federal; candidato à reeleição em 2026."
   },
   {
    "nome": "Francisco Emerson Maximiano",

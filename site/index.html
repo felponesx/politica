@@ -4618,7 +4618,7 @@ function escLinhas(c){const box=$("#escArv");if(!box||!c.organograma)return;cons
  svg.innerHTML=h}
 P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
  mount(){apiGet("/escandalos/"+slug).then(c=>{const box=$("#escD");if(!box)return;const P_=c.pessoas,dv=c.valores.desviado,rc=c.valores.recuperado;
-  const cond=P_.filter(p=>/^condenado|pena cumprida|indultado/.test(p.situacao||"")).length,pres=P_.filter(p=>/preso|domiciliar/.test(p.liberdade||"")).length,forag=P_.filter(p=>p.liberdade==="foragido").length;
+  const cond=P_.filter(p=>/^condenado|pena cumprida|indultado/.test(p.situacao||"")).length,pres=P_.filter(p=>/preso|domiciliar/.test(p.liberdade||"")&&!p.liberdade_outro_processo).length,forag=P_.filter(p=>p.liberdade==="foragido").length;
   const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
   box.innerHTML=`<div class="ph"><div><h1>${esc(c.nome)}</h1><p>${esc(escPer(c.periodo))}${c.outros_nomes.length?" · também chamado de "+c.outros_nomes.map(esc).join(", "):""}</p></div></div>
   ${escAviso(c.aviso)}

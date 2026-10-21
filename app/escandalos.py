@@ -105,7 +105,7 @@ def resumo(c: dict) -> dict:
                               "verificado_em")} | {
         "pessoas": len(p),
         "condenados": sum(1 for x in p if (x["situacao"] or "").startswith("condenado") or x["situacao"] in ("pena cumprida", "indultado")),
-        "presos": sum(1 for x in p if x["liberdade"] in ("preso", "prisão domiciliar")),
+        "presos": sum(1 for x in p if x["liberdade"] in ("preso", "prisão domiciliar") and not x["liberdade_outro_processo"]),
         "foragidos": sum(1 for x in p if x["liberdade"] == "foragido"),
         "partidos": sorted({x["partido_na_epoca"] for x in p if x["partido_na_epoca"]}),
     }

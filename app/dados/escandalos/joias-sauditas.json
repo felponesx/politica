@@ -119,7 +119,7 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "Indiciado pela PF por peculato, associação criminosa e lavagem de dinheiro; sempre negou irregularidades. A PGR pediu arquivamento em mar/2026; decisão pendente. Está em prisão domiciliar por condenação em outro processo (trama golpista), não por este caso.",
-   "liberdade": null,
+   "liberdade": "prisão domiciliar",
    "valor_recebido": {
     "valor": null,
     "texto": "US$ 86 mil, segundo a delação de Mauro Cid (acusação, não comprovada em juízo).",
@@ -127,7 +127,11 @@
    },
    "devolveu": null,
    "data_situacao": "2026-03-18",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita",
+   "liberdade_data": "2026-10-16",
+   "liberdade_fonte": "https://www.bahianoticias.com.br/noticia/322540-moraes-permite-que-bolsonaro-receba-10-convidados-para-aniversario-da-filha",
+   "liberdade_detalhe": "Em prisão domiciliar pela condenação na trama golpista (outro processo), não por este caso.",
+   "liberdade_outro_processo": true
   },
   {
    "nome": "Bento Albuquerque",
@@ -136,11 +140,14 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "Indiciado por peculato e associação criminosa. Recebeu censura ética da Comissão de Ética Pública em jul/2025.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2025-07-28",
-   "fonte": "https://g1.globo.com/politica/noticia/2025/07/28/comissao-de-etica-da-presidencia-aplica-censura-a-ex-ministro-de-bolsonaro-por-caso-das-joias-sauditas.ghtml"
+   "fonte": "https://g1.globo.com/politica/noticia/2025/07/28/comissao-de-etica-da-presidencia-aplica-censura-a-ex-ministro-de-bolsonaro-por-caso-das-joias-sauditas.ghtml",
+   "liberdade_data": "2026-05-06",
+   "liberdade_fonte": "https://agenciainfra.com/blog/?p=40684",
+   "liberdade_detalhe": "Em mai/2026 foi eleito presidente do conselho da Gasmig."
   },
   {
    "nome": "José Roberto Bueno Júnior",
@@ -188,11 +195,15 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "Indiciado por lavagem de dinheiro.",
-   "liberdade": null,
+   "liberdade": "preso",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2024-07-04",
-   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml",
+   "liberdade_data": "2026-04-24",
+   "liberdade_fonte": "https://www.poder360.com.br/poder-justica/moraes-determina-prisao-dos-condenados-do-nucleo-2-do-golpe/",
+   "liberdade_detalhe": "Preso pela condenação a 21 anos na trama golpista (outro processo), não por este caso.",
+   "liberdade_outro_processo": true
   },
   {
    "nome": "Marcos André dos Santos Soeiro",
@@ -214,11 +225,15 @@
    "tipo": "agente público",
    "situacao": "indiciado",
    "detalhe": "Indiciado por peculato, associação criminosa e lavagem de dinheiro; fez delação premiada com a PF.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2024-07-04",
-   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml",
+   "liberdade_data": "2026-07-06",
+   "liberdade_fonte": "https://www.diariodepernambuco.com.br/politica/2026/07/11718255-mauro-cid-recebeu-convite-para-lecionar-em-curso-na-espanha-diz-defesa.html",
+   "liberdade_detalhe": "Condenado a 2 anos em regime aberto na trama golpista (outro processo); pede que a pena seja dada como cumprida.",
+   "liberdade_outro_processo": true
   },
   {
    "nome": "Mauro Cesar Lourena Cid",
@@ -253,11 +268,14 @@
    "tipo": "outro",
    "situacao": "indiciado",
    "detalhe": "Indiciado por lavagem de dinheiro e associação criminosa; diz que só soube do fato pela imprensa e que agiu como advogado.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2024-07-04",
-   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml"
+   "fonte": "https://g1.globo.com/politica/noticia/2024/07/04/pf-indicia-bolsonaro-em-inquerito-das-joias.ghtml",
+   "liberdade_data": "2026-07-08",
+   "liberdade_fonte": "https://www.correiobraziliense.com.br/politica/2026/07/7457647-wajngarten-cobra-troca-na-equipe-da-pre-campanha-de-flavio-bolsonaro.html",
+   "liberdade_detalhe": "Ativo na política: em jul/2026 cobrou mudanças na pré-campanha de Flávio Bolsonaro."
   },
   {
    "nome": "Frederick Wassef",
@@ -266,7 +284,7 @@
    "tipo": "outro",
    "situacao": "indiciado",
    "detalhe": "Indiciado por lavagem de dinheiro e associação criminosa. Em mar/2026, Moraes pediu à PGR que analisasse a parte do relatório da PF sobre ele.",
-   "liberdade": null,
+   "liberdade": "em liberdade",
    "valor_recebido": null,
    "devolveu": {
     "valor": null,
@@ -274,7 +292,10 @@
     "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
    },
    "data_situacao": "2026-03-18",
-   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita"
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-03/stf-pede-novo-parecer-da-pgr-sobre-caso-das-joias-saudita",
+   "liberdade_data": "2026-09-17",
+   "liberdade_fonte": "https://iclnoticias.com.br/mendonca-cezinha-madureira-wassef/",
+   "liberdade_detalhe": "Ativo na política: coordena campanha de candidato do PL em São Paulo (2026)."
   }
  ],
  "fontes": [
