@@ -1602,11 +1602,11 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 /* animação dos gráficos e botões de período (v1.4) */
 .lc-per{margin:0 0 8px;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
 @media (prefers-reduced-motion:no-preference){
-:is(.an-pre,.an-go) .an-l{stroke-dasharray:1 2;animation:anLinha 1.4s cubic-bezier(.45,0,.25,1) var(--d,0s) both}
-:is(.an-pre,.an-go) .an-s{animation-duration:.35s}
-:is(.an-pre,.an-go) .an-a{animation:anRevela 1.4s cubic-bezier(.45,0,.25,1) both}
-:is(.an-pre,.an-go) .an-p{transform-box:fill-box;transform-origin:center;animation:anPonto .4s cubic-bezier(.3,1.5,.6,1) var(--d,0s) both}
-:is(.an-pre,.an-go) .hb-b i,.bar:is(.an-pre,.an-go) i{transform-origin:left center;animation:anBarra .9s cubic-bezier(.3,.8,.3,1) both}
+:is(.an-pre,.an-go) .an-l{stroke-dasharray:1 2;animation:anLinha 2.6s cubic-bezier(.45,0,.25,1) var(--d,0s) both}
+:is(.an-pre,.an-go) .an-s{animation-duration:.6s}
+:is(.an-pre,.an-go) .an-a{animation:anRevela 2.6s cubic-bezier(.45,0,.25,1) both}
+:is(.an-pre,.an-go) .an-p{transform-box:fill-box;transform-origin:center;animation:anPonto .6s cubic-bezier(.3,1.5,.6,1) var(--d,0s) both}
+:is(.an-pre,.an-go) .hb-b i,.bar:is(.an-pre,.an-go) i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) both}
 .an-pre,.an-pre *{animation-play-state:paused!important}}
 @keyframes anLinha{from{stroke-dashoffset:1.001}to{stroke-dashoffset:0}}
 @keyframes anRevela{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
@@ -1851,14 +1851,14 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  const cs=k=>series[k].c||RANK_VIVO[k%3],gid="lg"+(++LC_N);
  // linha na cor viva, área em degradê embaixo da 1ª série e só o último ponto marcado
  if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cs(0)}" stop-opacity=".22"/><stop offset="1" stop-color="${cs(0)}" stop-opacity=".02"/></linearGradient></defs>`+g+`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="url(#${gid})" class="an-a"/>`}
- series.forEach((s,k)=>{g+=`<path fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="an-l" d="M${s.v.map((v,i)=>x(i)+","+y(v)).join(" L")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2" class="an-p" style="--d:1.25s"/>`});
+ series.forEach((s,k)=>{g+=`<path fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="an-l" d="M${s.v.map((v,i)=>x(i)+","+y(v)).join(" L")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2" class="an-p" style="--d:2.45s"/>`});
  const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
  return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;display:block" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
 // animação (v1.4): cada gráfico espera parado até entrar na tela e então se monta (linhas desenhadas da esquerda para a direita,
 // área revelada junto, pontos surgindo; barras crescendo). Sem IntersectionObserver ou com "reduzir movimento", nada anima.
 const AN_SEL=".lc,svg.lr-svg,.hb,.bar:not(.hb-b)";
-const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.2,rootMargin:"0px 0px -30px 0px"}):null;
-function anJoga(el){el.classList.remove("an-pre");el.classList.add("an-go");clearTimeout(el._anT);el._anT=setTimeout(()=>el.classList.remove("an-go"),2400)}
+const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.35,rootMargin:"0px 0px -40px 0px"}):null;
+function anJoga(el){el.classList.remove("an-pre");el.classList.add("an-go");clearTimeout(el._anT);el._anT=setTimeout(()=>el.classList.remove("an-go"),4200)}
 // botões de período dos gráficos em linha
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-lcp] button");if(!b)return;const w=b.parentElement,id=w.dataset.lcp,d=LC_REG.get(id);if(!d)return;
  d[4]=lcCorte(d[3],+b.dataset.m);w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
@@ -3183,10 +3183,10 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
   g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}" pathLength="1" class="an-l"/>`;
-  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}" class="an-p" style="--d:${(anos.length<2?0:i/(anos.length-1)*1.3).toFixed(2)}s"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
+  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}" class="an-p" style="--d:${(anos.length<2?0:i/(anos.length-1)*2.5).toFixed(2)}s"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
   const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
  fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<13)fim[i].y=fim[i-1].y+13;
- fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}" class="an-p" style="--d:1.35s">${lista[f.k].uf}</text>`});
+ fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}" class="an-p" style="--d:2.6s">${lista[f.k].uf}</text>`});
  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.6}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
  return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
 function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,nota=""}={}){
@@ -3198,9 +3198,9 @@ function rankLinhas(vals,fmt,{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,
   for(let k=0;k<=3;k++){const val=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp+10}" y1="${y(val).toFixed(1)}" y2="${y(val).toFixed(1)}" class="lc-grade"/>${k<3?`<text x="${L-6}" y="${(y(val)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(val)}</text>`:""}`}
   // área clara embaixo e a linha, cada trecho na cor do ponto de onde sai
   g+=`<path d="M${x(0)},${y(mn)} ${v.map((val,k)=>"L"+x(k).toFixed(1)+","+y(val).toFixed(1)).join(" ")} L${x(v.length-1)},${y(mn)}Z" fill="${cores[0]}" fill-opacity=".07" class="an-a"/>`;
-  for(let k=0;k<v.length-1;k++)g+=`<path d="M${x(k).toFixed(1)},${y(v[k]).toFixed(1)} L${x(k+1).toFixed(1)},${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round" pathLength="1" class="an-l an-s" style="--d:${(k*.3+.15).toFixed(2)}s"/>`;
-  lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2" class="an-p" style="--d:${(k*.3).toFixed(2)}s"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
-   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"#667085"}" class="an-p" style="--d:${(k*.3+.1).toFixed(2)}s">${fmt(v[k])}</text>
+  for(let k=0;k<v.length-1;k++)g+=`<path d="M${x(k).toFixed(1)},${y(v[k]).toFixed(1)} L${x(k+1).toFixed(1)},${y(v[k+1]).toFixed(1)}" stroke="${cor(k)}" stroke-width="${k<2?3:2}" stroke-linecap="round" pathLength="1" class="an-l an-s" style="--d:${(k*.6+.3).toFixed(2)}s"/>`;
+  lista.forEach((u,k)=>{g+=`<circle cx="${x(k).toFixed(1)}" cy="${y(v[k]).toFixed(1)}" r="${k<3?6.5:4.5}" fill="${cor(k)}" stroke="var(--bg)" stroke-width="2" class="an-p" style="--d:${(k*.6).toFixed(2)}s"><title>${k+1}º ${esc(u.nome)}: ${fmt(v[k])}</title></circle>
+   <text x="${x(k).toFixed(1)}" y="${(y(v[k])-11).toFixed(1)}" text-anchor="middle" font-size="11.5" font-weight="${k<3?700:500}" fill="${k<3?cores[k]:"#667085"}" class="an-p" style="--d:${(k*.6+.15).toFixed(2)}s">${fmt(v[k])}</text>
    <text x="${x(k).toFixed(1)}" y="${H-16}" text-anchor="middle" font-size="12" font-weight="${k<3?700:500}" fill="${k<3?"var(--ink)":"#667085"}">${u.uf}</text><text x="${x(k).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="10.5" class="lc-eixo">${k+1}º</text>`});
   const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cor(k)}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(v[k])}</b></div>`).join("");
   return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}">${g}</svg><div class="lr-leg">${leg}</div></div>`};
