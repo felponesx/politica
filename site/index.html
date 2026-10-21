@@ -1625,6 +1625,12 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .pol-heroi{border:1px solid var(--line);border-radius:12px;padding:12px}.pol-heroi.pat{border-color:#E0BC4A;background:color-mix(in srgb,#E0BC4A 9%,var(--surface))}
 .pol-heroi b{display:block;margin:6px 0 4px}.pol-heroi p{margin:0;font-size:13.5px}
 .pol-f{white-space:nowrap}
+/* árvore dos escândalos: foto e situação de prisão (v1.6) */
+.arv-top{display:flex;gap:9px;align-items:center;width:100%}.arv-nm{display:flex;flex-direction:column;gap:2px;min-width:0}
+.arv-foto{flex:none;display:inline-grid;place-items:center;border-radius:50%;background:var(--soft);color:var(--muted);font-weight:700;font-size:14px;border:1px solid var(--line)}
+.arv-top img.rfoto{flex:none;border-radius:50%;object-fit:cover;object-position:50% 20%;border:1px solid var(--line)}
+.arv-tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag.lib-mor{background:#475467;color:#fff}.tag.lib-nd{background:none;border:1px dashed var(--line);color:var(--muted);font-weight:500}
 </style>
 </head>
 <body>
@@ -4549,6 +4555,11 @@ const ESC_SIT={"investigado":"inv","indiciado":"den","denunciado":"den","réu":"
  "indultado":"con","cassado":"con","condenação anulada":"abs","absolvido":"abs","processo arquivado":"abs","prescrito":"abs","renunciou":"neu","exonerado":"neu","morreu":"neu"};
 const escSit=s=>s?`<span class="tag esc-${ESC_SIT[s]||"neu"}">${esc(s[0].toUpperCase()+s.slice(1))}</span>`:'<span class="muted small">—</span>';
 const escLib=l=>l?`<span class="tag lib-${{"preso":"pre","prisão domiciliar":"dom","foragido":"for","em liberdade":"liv"}[l]||"liv"}">${esc(l[0].toUpperCase()+l.slice(1))}</span>`:'<span class="muted small">—</span>';
+// prisão em palavras simples, juntando a situação na Justiça: "Solto · responde ao processo", "Solto · cumpriu a pena"…
+const escPrisao=p=>{const l=p.liberdade,s=p.situacao||"";if(!l)return{t:"Prisão: sem informação",c:"nd"};
+ const F={"preso":["Preso","pre"],"prisão domiciliar":["Prisão domiciliar","dom"],"foragido":["Foragido","for"],"morreu":["Morreu","mor"]}[l];if(F)return{t:F[0],c:F[1]};
+ return{t:/^(investigado|indiciado|denunciado|réu|condenado \(recorre\))$/.test(s)?"Solto · responde ao processo":s==="pena cumprida"?"Solto · cumpriu a pena":s==="condenado"?"Solto · condenado":"Solto",c:"liv"}};
+const escPrisaoTag=(p,cls="tag")=>{const x=escPrisao(p);return`<span class="${cls} lib-${x.c}" title="${esc((p.liberdade_detalhe||"")+(p.liberdade_data?` (${escData(p.liberdade_data)})`:""))}">${esc(x.t)}</span>`};
 // valor sempre com a frase da fonte embaixo (ex.: "acusado de receber…"), para o número não parecer mais do que a fonte diz
 const escVal=v=>!v?"—":`<a href="${esc(v.fonte)}" target="_blank" rel="noopener">${v.valor!=null?`<b>${brl(v.valor)}</b>`:"ver fonte"}</a>${v.texto?`<div class="small muted esc-vt">${esc(v.texto)}</div>`:""}`;
 const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
@@ -4572,10 +4583,10 @@ P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos</h1><p>Os principa
 const ESC_NIV=[,"Apontados como chefes do esquema","Operadores e intermediários","Executores e beneficiários"];
 function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.fromEntries(c.pessoas.map(p=>[p.nome,p]));
  const no=x=>{const p=pes[x.nome]||{},sit=ESC_SIT[p.situacao]||"neu";return`<button type="button" class="arv-no arv-${sit}" data-arv="${esc(x.nome)}" aria-expanded="false">
-  <span class="arv-n">${esc(x.nome.replace(/\s*\(.*\)$/,""))}</span>${p.partido_na_epoca?`<span class="esc-p small">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:""}
+  <span class="arv-top"><span class="arv-foto" data-foto="esc:${esc(x.nome)}" data-nome="${esc(x.nome)}" style="width:46px;height:46px">${esc(iniciais(x.nome.replace(/\s*\(.*\)$/,"")))}</span><span class="arv-nm"><span class="arv-n">${esc(x.nome.replace(/\s*\(.*\)$/,""))}</span>${p.partido_na_epoca?`<span class="esc-p small">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:""}</span></span>
   <span class="arv-c">${esc(p.cargo_na_epoca||"")}</span>${x.nucleo?`<span class="arv-nuc">${esc(x.nucleo)}</span>`:""}
-  ${x.acima?`<span class="arv-ac">Responde a: <b>${esc(x.acima.replace(/\s*\(.*\)$/,""))}</b></span>`:""}<span class="arv-p">${esc(x.papel)}</span>${escSit(p.situacao)}
-  <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a></span></button>`};
+  ${x.acima?`<span class="arv-ac">Responde a: <b>${esc(x.acima.replace(/\s*\(.*\)$/,""))}</b></span>`:""}<span class="arv-p">${esc(x.papel)}</span><span class="arv-tags">${escSit(p.situacao)}${escPrisaoTag(p)}</span>
+  <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a>${p.liberdade_detalhe?`<br><b>Prisão:</b> ${esc(p.liberdade_detalhe)}${p.liberdade_data?` (${escData(p.liberdade_data)})`:""}${p.liberdade_fonte?` <a href="${esc(p.liberdade_fonte)}" target="_blank" rel="noopener">fonte</a>`:""}`:""}</span></button>`};
  // quem a Justiça absolveu, teve a condenação anulada ou o processo arquivado não fica nos andares: vai para a faixa de baixo
  const naoConf=x=>["absolvido","condenação anulada","processo arquivado"].includes((pes[x.nome]||{}).situacao);
  const ord=l=>l.sort((a,b)=>a.nivel-b.nivel||String(a.nucleo||"").localeCompare(String(b.nucleo||"")));
@@ -4584,6 +4595,7 @@ function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.from
  return`<div class="panel mt"><h2>Como o esquema funcionava <small>segundo a acusação</small></h2>
  <p class="small muted" style="margin-top:0">${esc(o.explicacao)} ${o.explicacao_fonte?`<a href="${esc(o.explicacao_fonte)}" target="_blank" rel="noopener">fonte</a>`:""} Os papéis são os descritos pela investigação ou pela acusação, não uma conclusão do BRASIL+. A cor da borda mostra a situação na Justiça: quem foi absolvido ou teve a condenação anulada aparece em verde. Toque numa pessoa para ver o trecho da fonte.</p>
  <div class="arv-leg small"><span><i class="arv-con"></i>Condenado</span><span><i class="arv-den"></i>Réu ou denunciado</span><span><i class="arv-inv"></i>Investigado</span><span><i class="arv-abs"></i>Absolvido, anulado ou arquivado</span><span><i class="arv-neu"></i>Outros</span></div>
+ <p class="small muted" style="margin:4px 0 8px">Etiqueta de prisão: <span class="tag lib-pre">Preso</span> <span class="tag lib-dom">Prisão domiciliar</span> <span class="tag lib-for">Foragido</span> <span class="tag lib-liv">Solto</span> <span class="tag lib-mor">Morreu</span>, na data da fonte. Fotos: Wikipédia/Wikimedia Commons, quando o verbete é da mesma pessoa.</p>
  <div class="arv" id="escArv"><svg class="arv-svg" aria-hidden="true"></svg>${niveis.map(([n,l])=>`<div class="arv-nivel"><div class="arv-t">${ESC_NIV[n]}</div><div class="arv-linha">${l.map(no).join("")}</div></div>`).join("")}
  ${contest.length?`<div class="arv-nivel arv-band"><div class="arv-t">A acusação apontou, mas a Justiça não confirmou</div><p class="small muted" style="margin:0">Absolvidos, com condenação anulada ou processo arquivado. O texto mostra o papel que a acusação descreveu.</p><div class="arv-linha">${contest.map(no).join("")}</div></div>`:""}</div>
  ${fora.length?`<p class="small muted" style="margin:10px 0 0">Fora da árvore (sem papel descrito nas fontes ou acusação descartada pela Justiça): ${fora.map(p=>esc(p.nome.replace(/\s*\(.*\)$/,""))).join(", ")}.</p>`:""}</div>`}
@@ -4620,7 +4632,7 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
   <div class="panel mt" id="escN" hidden><h2>Notícias recentes sobre o caso</h2><div id="escNl"></div></div>
   <div class="panel mt"><h2>Fontes</h2><ul class="esc-fontes">${c.fontes.map(u=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,90))}</a></li>`).join("")}</ul><p class="small muted">Conferido em ${escData(c.verificado_em)}.</p></div>`;
   $("#escP").innerHTML=table([["Nome",p=>`<b style="font-weight:600">${esc(p.nome)}</b>${p.detalhe?`<div class="small muted esc-det" title="Toque para ler tudo">${esc(p.detalhe)}</div>`:""}`],["Cargo na época",p=>esc(p.cargo_na_epoca||"—")],
-   ["Partido",p=>p.partido_na_epoca?`<span class="esc-p">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:"—"],["Situação na Justiça",p=>escSit(p.situacao)],["Prisão",p=>escLib(p.liberdade)],
+   ["Partido",p=>p.partido_na_epoca?`<span class="esc-p">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:"—"],["Situação na Justiça",p=>escSit(p.situacao)],["Prisão",p=>`${escPrisaoTag(p)}${p.liberdade_detalhe?`<div class="small muted esc-vt">${esc(p.liberdade_detalhe)}${p.liberdade_data?` (${escData(p.liberdade_data)})`:""} ${p.liberdade_fonte?`<a href="${esc(p.liberdade_fonte)}" target="_blank" rel="noopener">fonte</a>`:""}</div>`:""}`],
    ["Valor citado",p=>escVal(p.valor_recebido)],["Devolveu",p=>escVal(p.devolveu)],["Fonte",p=>`<a href="${esc(p.fonte)}" target="_blank" rel="noopener">${escData(p.data_situacao)||"ver"}</a>`]],P_);
   const termos=[c.nome,...c.outros_nomes].map(t=>snapNorm(t).replace(/^(operacao|caso|escandalo d[oa]s?|fraude n[oa]s?)\s+/,"")).filter(t=>t.length>3);
   apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;

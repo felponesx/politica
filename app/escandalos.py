@@ -17,7 +17,7 @@ AVISO = ("Todos são presumidos inocentes até a condenação definitiva (sem re
 SITUACOES = {"investigado", "indiciado", "denunciado", "réu", "condenado", "condenado (recorre)", "condenação anulada",
              "absolvido", "processo arquivado", "prescrito", "pena cumprida", "indultado", "cassado", "renunciou",
              "exonerado", "morreu"}
-LIBERDADE = {"preso", "prisão domiciliar", "em liberdade", "foragido"}
+LIBERDADE = {"preso", "prisão domiciliar", "em liberdade", "foragido", "morreu"}
 
 
 def _url(u) -> bool:
@@ -32,6 +32,15 @@ def _valor(v):
     return {"valor": n if isinstance(n, (int, float)) else None, "texto": v.get("texto") or "", "fonte": v["fonte"]}
 
 
+def _lib(p: dict, liberdade) -> dict:
+    """Data, fonte e frase da situação de prisão; sem fonte própria, vale a fonte geral da pessoa (quando há situação)."""
+    if liberdade not in LIBERDADE:
+        return {"liberdade_data": None, "liberdade_fonte": None, "liberdade_detalhe": ""}
+    fonte = p.get("liberdade_fonte") if _url(p.get("liberdade_fonte")) else p.get("fonte")
+    return {"liberdade_data": p.get("liberdade_data") or (p.get("data_situacao") if fonte == p.get("fonte") else None),
+            "liberdade_fonte": fonte, "liberdade_detalhe": (p.get("liberdade_detalhe") or "")[:200]}
+
+
 def _pessoa(p) -> dict | None:
     if not isinstance(p, dict) or not p.get("nome") or not _url(p.get("fonte")):
         return None
@@ -39,7 +48,7 @@ def _pessoa(p) -> dict | None:
     liberdade = (p.get("liberdade") or "").strip().lower() or None
     return {"nome": p["nome"].strip(), "cargo_na_epoca": p.get("cargo_na_epoca"), "partido_na_epoca": p.get("partido_na_epoca"),
             "tipo": p.get("tipo"), "situacao": situacao if situacao in SITUACOES else None, "detalhe": p.get("detalhe") or "",
-            "liberdade": liberdade if liberdade in LIBERDADE else None, "valor_recebido": _valor(p.get("valor_recebido")),
+            "liberdade": liberdade if liberdade in LIBERDADE else None, **_lib(p, liberdade), "valor_recebido": _valor(p.get("valor_recebido")),
             "devolveu": _valor(p.get("devolveu")), "data_situacao": p.get("data_situacao"), "fonte": p["fonte"]}
 
 

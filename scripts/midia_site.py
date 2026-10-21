@@ -22,7 +22,7 @@ from datetime import date
 import httpx
 
 log = logging.getLogger("brasilplus.midia")
-UA = {"User-Agent": "BRASIL+ (dados publicos; github.com/felponesx/politica)"}
+UA = {"User-Agent": "BRASILmais-midia/1.0 (https://github.com/felponesx/politica; dados publicos) httpx"}
 WIKI = "https://pt.wikipedia.org/w/api.php"
 BLOCOS = 16
 
@@ -493,6 +493,8 @@ def main(pasta: str):
             lg = json.load(f)
     with SessionLocal() as db:
         fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_wikipedia(nomes_indicados())}
+    from scripts.fotos_escandalos import fotos_escandalos
+    fotos.update(fotos_escandalos())
     blocos = [{} for _ in range(BLOCOS)]
     for k, v in fotos.items():
         blocos[fnv1a(k) % BLOCOS][k] = v
