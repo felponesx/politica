@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-16T17:34+00:00",
+ "gerado_em": "2026-10-21T20:28+00:00",
  "shards": 128,
  "bases": {
   "/parlamentares": [
@@ -1988,7 +1988,7 @@
   },
   "/noticias": {
    "na_copia": 1500,
-   "no_banco": 3388
+   "no_banco": 3936
   },
   "/parlamentares/1/despesas": {
    "na_copia": 50,
@@ -4425,6 +4425,6 @@
   "proposicoes": 37859,
   "normas": 1047
  },
- "consultas": 26691,
- "bytes": 155741140
+ "consultas": 26793,
+ "bytes": 156926041
 }
