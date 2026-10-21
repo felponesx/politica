@@ -22,7 +22,7 @@ from datetime import date
 import httpx
 
 log = logging.getLogger("brasilplus.midia")
-UA = {"User-Agent": "BRASILmais-midia/1.0 (https://github.com/felponesx/politica; dados publicos) httpx"}
+UA = {"User-Agent": "BRASILmais-midia/1.0 (https://github.com/felponesx/politica; dados publicos)"}
 WIKI = "https://pt.wikipedia.org/w/api.php"
 BLOCOS = 16
 
