@@ -196,7 +196,8 @@
    "valor_recebido": null,
    "devolveu": null,
    "data_situacao": "2016-03-22",
-   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html"
+   "fonte": "https://g1.globo.com/politica/mensalao/noticia/2016/03/ministro-do-stf-perdoa-pena-de-seis-condenados-no-mensalao.html",
+   "liberdade_outro_processo": true
   },
   {
    "nome": "Valdemar Costa Neto",
