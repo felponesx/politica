@@ -51,8 +51,9 @@ def _raw(titulo: str, saltos: int = 2) -> tuple[str, str] | None:
     return titulo, texto
 
 
-def _thumb(arquivo: str, largura: int = 300) -> list[str]:
-    """Endereços da miniatura no Wikimedia Commons (e, se o arquivo for só da Wikipédia em português, no acervo dela)."""
+def _thumb(arquivo: str, largura: int = 250) -> list[str]:
+    """Endereços da miniatura no Wikimedia Commons (e, se o arquivo for só da Wikipédia em português, no acervo dela).
+    A Wikimedia só serve larguras padronizadas (250, 330, 500...); outras dão erro 400."""
     nome = arquivo.strip().replace(" ", "_")
     h = hashlib.md5(nome.encode()).hexdigest()
     q = quote(nome)
