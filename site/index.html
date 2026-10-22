@@ -1698,7 +1698,8 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 @media (max-width:700px){.emp-card{grid-template-columns:22px 40px 1fr}.emp-v{grid-column:3;text-align:left}}
 
 /* encaixe (v2.0): abas de Empresas cabem no celular; botões com ícone com respiro */
-.btn svg{margin-right:6px;vertical-align:-3px;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1.25;text-decoration:none;text-align:center}.btn svg{flex:none}
+@media (max-width:520px){.btn{min-height:38px}}
 @media (max-width:600px){.tabl{padding:10px 8px;font-size:13px}.tabs.tabs-emp,.tabs{gap:0}}
 @media (max-width:760px){.hstats{gap:8px}.hstat{padding:9px 8px;border:1px solid var(--line2);border-radius:10px;background:var(--surface)}}
 @media (max-width:520px){
@@ -1709,6 +1710,8 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 }
 }
 }
+.ia-perg{text-align:left;line-height:1.25}.ia-perg svg{margin-right:0;flex:none}
+@media (max-width:520px){.ia-perg .ia-n{display:none}}
 </style>
 </head>
 <body>
@@ -5057,7 +5060,7 @@ document.addEventListener("click",fecharPilulas);document.addEventListener("keyd
  if(!q){q=true;requestAnimationFrame(()=>{q=false;pilulas()})}clearTimeout(t);t=setTimeout(aplicarMidia,60)}).observe(document.documentElement,{childList:true,subtree:true})}
 
 function route(){if(skipRoute){skipRoute=false;return}renderRoute(location.hash.replace(/^#\/?/,"")||"inicio")}
-const iaBotao=nome=>`<button type="button" class="btn ia-perg" data-ia-abrir data-ia-q="${esc(`O que as notícias recentes dizem sobre ${nome}? E quantos mandatos já ganhou?`)}">${svgI("ia")}Perguntar à IA sobre ${esc(nome)}</button>`;
+const iaBotao=nome=>`<button type="button" class="btn ia-perg" data-ia-abrir data-ia-q="${esc(`O que as notícias recentes dizem sobre ${nome}? E quantos mandatos já ganhou?`)}">${svgI("ia")}<span>Perguntar à IA<span class="ia-n"> sobre ${esc(nome)}</span></span></button>`;
 /* ===================== IA do BRASIL+ =====================
    Perguntas em português sobre os dados do site. Com o Claude (capacidade "sample" da página publicada), a IA
    chama as ferramentas abaixo, que leem o índice /ia/indice (rankings de gastos, mais votados e mandatos, montado
