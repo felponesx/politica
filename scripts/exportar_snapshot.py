@@ -36,7 +36,10 @@ from app.models import Norma, Parlamentar, Proposicao, Votacao  # noqa: E402
 from app.utils import UFS  # noqa: E402
 
 log = logging.getLogger("snapshot")
-SHARDS = 128
+# 256 arquivos de ~300 KB; cada resposta maior que GRANDE vai para um arquivo só dela em g/ (no arquivo do grupo fica só
+# {"__arquivo": "g/<hash>.json"}): assim uma página comum não baixa os 5 MB do índice de busca ou de uma eleição inteira
+SHARDS = 256
+GRANDE = 150_000
 ARQUIVOS_DE_OUTROS_ROBOS = ("noticias.json",)
 VERSAO = 1
 
@@ -303,15 +306,8 @@ class Exportador:
         pasta.mkdir(parents=True)
         for nome, conteudo in proprios.items():
             (pasta / nome).write_bytes(conteudo)
-        shards = [dict() for _ in range(SHARDS)]
-        for k, v in self.dados.items():  # textos e siglas padronizados também nos dados já gravados
-            shards[fnv1a(k) % SHARDS][k] = limpar(v)
-        tamanho = 0
-        for i, s in enumerate(shards):
-            # algumas fontes (ex.: descrições do ObrasGov) já chegam com letras perdidas (U+FFFD); na cópia viram "?"
-            texto = json.dumps(s, ensure_ascii=False, separators=(",", ":"), default=_json).replace("\ufffd", "?")
-            (pasta / f"s{i}.json").write_text(texto, encoding="utf-8")
-            tamanho += len(texto.encode())
+        # textos e siglas padronizados também nos dados já gravados
+        tamanho = gravar_partes(pasta, {k: limpar(v) for k, v in self.dados.items()})
         with SessionLocal() as db:
             ultima = db.scalar(select(func.max(Parlamentar.id)))  # noqa: F841 (só garante que o banco responde)
             contagem = {"parlamentares": db.scalar(select(func.count()).select_from(Parlamentar)),
@@ -323,6 +319,31 @@ class Exportador:
                     "consultas": len(self.dados), "bytes": tamanho}
         (pasta / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1, default=_json), encoding="utf-8")
         return manifest
+
+
+def _texto(v) -> str:
+    # algumas fontes (ex.: descrições do ObrasGov) já chegam com letras perdidas (U+FFFD); na cópia viram "?"
+    return json.dumps(v, ensure_ascii=False, separators=(",", ":"), default=_json).replace("\ufffd", "?")
+
+
+def gravar_partes(pasta: Path, dados: dict, shards: int = SHARDS, grande: int = GRANDE) -> int:
+    """Grava s<N>.json (N = fnv1a(chave) % shards) e, para respostas grandes, g/<hash>.json. Devolve os bytes gravados."""
+    grupos = [dict() for _ in range(shards)]
+    (pasta / "g").mkdir(exist_ok=True)
+    tamanho = 0
+    for k, v in dados.items():
+        texto = _texto(v)
+        if len(texto.encode()) > grande:
+            nome = f"g/{fnv1a(k):08x}.json"
+            (pasta / nome).write_text(texto, encoding="utf-8")
+            tamanho += len(texto.encode())
+            v = {"__arquivo": nome}
+        grupos[fnv1a(k) % shards][k] = v
+    for i, g in enumerate(grupos):
+        texto = _texto(g)
+        (pasta / f"s{i}.json").write_text(texto, encoding="utf-8")
+        tamanho += len(texto.encode())
+    return tamanho
 
 
 def _intercalar(*listas):

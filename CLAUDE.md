@@ -225,3 +225,20 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   porte, tabela somando tudo e separada, as que mais devem e as grandes que menos devem, ranking completo ordenável. Logo e resumo da
   Wikipédia em `logos.json` → `empresas` (`logos_empresas` em `scripts/midia_site.py`: só verbete {{Info/Empresa}} cujo título tem só
   palavras da razão social); sem verbete, a atividade principal do CNPJ. Robô: tarefas `receita-empresas-porte; midia`.
+
+## Leveza (v1.9, out/2026)
+- Cópia dos dados: 256 arquivos `s<N>.json` e respostas acima de 150 KB num arquivo só delas (`dados/g/<hash>.json`, com o marcador
+  `{"__arquivo": "g/…"}` no shard; `snapLer` segue o marcador). `exportar_snapshot.py` (`gravar_partes`) já grava assim; para uma
+  cópia pronta: `python -m scripts.reorganizar_copia site/dados`.
+- Mídia: `logos.json` é só o índice; cada grupo (partidos, polícias, estados, veículos, empresas) fica em `logos_<grupo>.json` e o
+  site baixa só o que a tela mostra (`midiaGrupo`). Logos e fotos em WebP quando fica menor (`scripts/logos_arquivo.py`: `ler`/`gravar`/`webp`).
+  Fotos em 64 blocos (~0,5 MB); para refazer os blocos de uma cópia pronta: `python -m scripts.midia_site --reblocar site/midia`.
+- Animações: linhas reveladas por uma cortina (`anCortina`, só transform) em vez de desenhar cada linha e cada ponto; tabelas e
+  listas de porcentagem animam as barras juntas, em cascata (grupo `.tw`/`.pb` em `AN_GRUPO`).
+- Tabelas (`table()`): só as 10 linhas visíveis entram na página; o resto fica em `TW_REG` e entra ao tocar em "Ver todos" (em pedaços
+  de 400, `twCompleta`) ou ao ordenar. Clique na linha (`tr[data-href]`) é um ouvinte só para a página toda (`rowLinks` não faz mais nada).
+- Porcentagens: `pbars(items)` — barra de bloquinhos (a mesma das tabelas) com o valor ao lado; usada nas Empresas (dívida por porte),
+  eleições por partido, CAPAG por estado e demais listas em %. `hbars` fica para comparar valores (R$, quantidades, % acima de 100).
+- Troca de aba nas Dívidas: `trocaSuave(el, html)` — o conteúdo antigo fica por cima e some enquanto o novo aparece (no mapa as cores
+  passam de um tipo para o outro); `surgeSuave` para o detalhe. CSS no bloco "troca suave" (`.xf`, `.xf-velho`, `.xf-mapa`).
+- Robô: `receita-empresas-porte` tem limite de 215 min em `LIMITES` (`scripts/coleta_ci.py`); com o limite padrão (45 min) a coleta parava no meio.

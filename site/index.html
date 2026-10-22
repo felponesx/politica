@@ -1518,7 +1518,7 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .sd-mais{color:#4EE28B}[data-theme="dark"] .sd-menos{color:#F88752}
 
 /* gráficos em linha */
-.lr-svg{display:block;margin:2px auto 6px;overflow:visible}
+.lr-svg{display:block;overflow:visible}.lr-w{margin:2px auto 6px}
 .lr-leg{display:grid;gap:2px}
 .lr-l{display:grid;grid-template-columns:22px 10px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;padding:3px 0}
 .lr-l .rk-p{grid-area:auto}.lr-l i{width:10px;height:10px;border-radius:50%}.lr-l a{color:var(--ink2);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lr-l a:hover{color:var(--c1)}
@@ -1602,16 +1602,28 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 /* animação dos gráficos e botões de período (v1.4) */
 .lc-per{margin:0 0 8px;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
 @media (prefers-reduced-motion:no-preference){
+:is(.an-pre,.an-go):is(.lc,.an-w){position:relative;clip-path:inset(-40px 0 -40px -90px)}
+:is(.an-pre,.an-go):is(.lc,.an-w)::after{content:"";position:absolute;top:-2px;bottom:-2px;left:calc(var(--an-x,0px) - 10px);width:calc(100% + 48px);pointer-events:none;
+ background:linear-gradient(90deg,transparent,var(--an-bg,var(--surface)) 26px);will-change:transform;animation:anCortina 2.6s cubic-bezier(.45,0,.25,1) both}
 :is(.an-pre,.an-go) .an-l{stroke-dasharray:1 2;animation:anLinha 2.6s cubic-bezier(.45,0,.25,1) var(--d,0s) both}
 :is(.an-pre,.an-go) .an-s{animation-duration:.6s}
-:is(.an-pre,.an-go) .an-a{animation:anRevela 2.6s cubic-bezier(.45,0,.25,1) both}
-:is(.an-pre,.an-go) .an-p{transform-box:fill-box;transform-origin:center;animation:anPonto .6s cubic-bezier(.3,1.5,.6,1) var(--d,0s) both}
 :is(.an-pre,.an-go) .hb-b i,.bar:is(.an-pre,.an-go) i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) both}
-.an-pre,.an-pre *{animation-play-state:paused!important}}
+.an-pre,.an-pre *,.an-pre::after{animation-play-state:paused!important}}
 @keyframes anLinha{from{stroke-dashoffset:1.001}to{stroke-dashoffset:0}}
-@keyframes anRevela{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes anPonto{from{opacity:0;transform:scale(.2)}}
+@keyframes anCortina{to{transform:translateX(100%)}}
 @keyframes anBarra{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion:no-preference){:is(.tw,.pb):is(.an-pre,.an-go) .bar:not(.hb-b) i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) var(--d,0s) both}
+:is(tr,.pb-l):nth-child(2) .bar i{--d:0.07s}:is(tr,.pb-l):nth-child(3) .bar i{--d:0.14s}:is(tr,.pb-l):nth-child(4) .bar i{--d:0.21s}:is(tr,.pb-l):nth-child(5) .bar i{--d:0.28s}:is(tr,.pb-l):nth-child(6) .bar i{--d:0.35s}:is(tr,.pb-l):nth-child(7) .bar i{--d:0.42s}:is(tr,.pb-l):nth-child(8) .bar i{--d:0.49s}:is(tr,.pb-l):nth-child(9) .bar i{--d:0.56s}:is(tr,.pb-l):nth-child(10) .bar i{--d:0.63s}}
+/* troca suave entre abas (trocaSuave/surgeSuave, v1.9) */
+.xf{position:relative}.xf-velho{position:absolute;top:0;left:0;right:0;pointer-events:none;z-index:2}
+@media (prefers-reduced-motion:no-preference){.xf-in>.xf-velho{animation:xfSai .4s ease both}.xf-in>:not(.xf-velho){animation:xfEntra .5s ease .2s both}.xf-surge{animation:xfEntra .5s ease both}
+ .xf-mapa.xf-in>.xf-velho{animation-duration:.8s}.xf-mapa.xf-in>:not(.xf-velho){animation:none}
+ .xf-mapa.xf-in>.xf-velho>.legend{animation:xfSai .15s ease both}.xf-mapa.xf-in>.legend{animation:xfEntra .4s ease .15s both}}
+@keyframes xfSai{to{opacity:0}}@keyframes xfEntra{from{opacity:0}}
+/* porcentagens em bloquinhos (pbars, v1.9) */
+.pb-l{display:grid;grid-template-columns:minmax(90px,1fr) 150px 62px;gap:12px;align-items:center;font-size:13.5px;padding:6px 0}
+.pb-l .bar{width:150px}.pb-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pb-v{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}.pb-l.hb-top .pb-v{font-weight:700}
+@media (max-width:640px){.pb-l{grid-template-columns:minmax(70px,1fr) 110px 54px;gap:8px;font-size:13px}.pb-l .bar{width:110px}}
 /* fichas das polícias (v1.5) */
 .pol-link{cursor:pointer;border-radius:10px;transition:background .15s}.pol-link:hover,.pol-link:focus-visible{background:var(--soft);outline:none}
 .pol-ver{font-size:12.5px;color:var(--blue);font-weight:600;margin-top:4px}
@@ -1842,6 +1854,10 @@ const RANK_VIVO=["var(--c1)","var(--c2)","var(--c3)"];
 function rankPos(items){const ord=items.map((it,i)=>[+it[1]||0,i]).sort((a,b)=>b[0]-a[0]);const pos=[];ord.forEach(([,i],r)=>pos[i]=r);return pos}
 const rankCor=(r,n)=>r<3?"var(--r-top)":n<6||r>=n-3?"var(--r-low)":"var(--r-mid)";
 function hbars(items,{fmt=brl,color}={}){const mx=Math.max(...items.map(i=>i[1]))||1,pos=rankPos(items),n=items.length;return`<div class="hb">${items.map((it,k)=>`<div class="hb-l${pos[k]<3?" hb-top":""}"><span class="hb-n">${it[2]?`<a href="${it[2]}">${esc(it[0])}</a>`:esc(it[0])}</span><div class="bar hb-b"><i style="width:${Math.max(.5,it[1]/mx*100)}%;background:${color||rankCor(pos[k],n)}"></i></div><span class="hb-v">${fmt(it[1])}</span></div>`).join("")}</div>`}
+/* porcentagens (v1.9): uma linha por item com a barra de bloquinhos (10 quadradinhos = 100%), a mesma das tabelas, e o
+   valor à direita. Os 3 maiores em cor viva. items: [nome, porcentagem 0–100, link?] */
+function pbars(items,{fmt=v=>pct(v),color}={}){const pos=rankPos(items),n=items.length;
+ return`<div class="pb">${items.map((it,k)=>`<div class="pb-l${pos[k]<3?" hb-top":""}"><span class="pb-n">${it[2]?`<a href="${it[2]}">${esc(it[0])}</a>`:esc(it[0])}</span><div class="bar"><i style="width:${Math.max(0,Math.min(100,+it[1]||0)).toFixed(1)}%;background:${color||rankCor(pos[k],n)}"></i></div><b class="pb-v">${fmt(it[1])}</b></div>`).join("")}</div>`}
 // gráfico de linha desenhado na largura real do quadro (letras sempre do mesmo tamanho, nada cortado nas bordas);
 // sai primeiro com 600 de largura e é redesenhado quando o quadro aparece ou muda de tamanho
 const LC_REG=new Map();let LC_N=0;
@@ -1873,15 +1889,20 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  vis.forEach(([l,i],k)=>{const an=k===0&&x(i)-p<20?"start":i===n-1||x(i)>W-dir-24?"end":"middle";g+=`<text x="${x(i)}" y="${H-6}" font-size="11.5" text-anchor="${an}" class="lc-eixo">${l}</text>`});
  const cs=k=>series[k].c||RANK_VIVO[k%3],gid="lg"+(++LC_N);
  // linha na cor viva, área em degradê embaixo da 1ª série e só o último ponto marcado
- if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cs(0)}" stop-opacity=".22"/><stop offset="1" stop-color="${cs(0)}" stop-opacity=".02"/></linearGradient></defs>`+g+`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="url(#${gid})" class="an-a"/>`}
- series.forEach((s,k)=>{g+=`<path fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="an-l" d="M${s.v.map((v,i)=>x(i)+","+y(v)).join(" L")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2" class="an-p" style="--d:2.45s"/>`});
+ if(series.length===1&&series[0].v.length>1){const s0=series[0].v;g=`<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cs(0)}" stop-opacity=".22"/><stop offset="1" stop-color="${cs(0)}" stop-opacity=".02"/></linearGradient></defs>`+g+`<path d="M${x(0)},${y(mn)} ${s0.map((v,i)=>"L"+x(i)+","+y(v)).join(" ")} L${x(s0.length-1)},${y(mn)}Z" fill="url(#${gid})"/>`}
+ series.forEach((s,k)=>{g+=`<path fill="none" stroke="${cs(k)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" d="M${s.v.map((v,i)=>x(i)+","+y(v)).join(" L")}"/>`;const i=s.v.length-1;if(i>=0)g+=`<circle cx="${x(i)}" cy="${y(s.v[i])}" r="4.5" fill="${cs(k)}" stroke="var(--surface)" stroke-width="2"/>`});
  const leg=series.length>1?`<div class="legend" style="justify-content:flex-start">${series.map((s,k)=>`<i style="background:${cs(k)}"></i>${s.n}`).join("&nbsp;&nbsp;")}</div>`:"";
- return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;display:block" role="img" aria-label="Gráfico de evolução">${g}</svg>${leg}`}
-// animação (v1.4): cada gráfico espera parado até entrar na tela e então se monta (linhas desenhadas da esquerda para a direita,
-// área revelada junto, pontos surgindo; barras crescendo). Sem IntersectionObserver ou com "reduzir movimento", nada anima.
-const AN_SEL=".lc,svg.lr-svg,.hb,.bar:not(.hb-b),.pz";
+ return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;display:block" role="img" aria-label="Gráfico de evolução" data-ax="${Math.round(p)}">${g}</svg>${leg}`}
+// animação (v1.4; v1.9 mais leve): cada gráfico espera parado até entrar na tela e então se monta. As linhas são reveladas da
+// esquerda para a direita por uma "cortina" da cor do fundo que corre por cima (.lc/.an-w ::after, só transform: não trava
+// quando a página ainda está montando); barras crescendo. Sem IntersectionObserver ou com "reduzir movimento", nada anima.
+// as barras de uma tabela ou de uma lista de porcentagens (.pb) crescem juntas, em cascata, quando o grupo aparece
+const AN_SEL=".lc,.lr-w,.hb,.bar:not(.hb-b),.pz,.pb,.tw",AN_GRUPO=".tw,.pb";
 const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.35,rootMargin:"0px 0px -40px 0px"}):null;
-function anJoga(el){el.classList.remove("an-pre");el.classList.add("an-go");clearTimeout(el._anT);el._anT=setTimeout(()=>el.classList.remove("an-go"),4200)}
+// cor da "cortina" que revela as linhas: o fundo do quadro onde o gráfico está; começa depois dos números do eixo
+function anFundo(el){if(!el.classList.contains("an-w")&&!el.classList.contains("lc"))return;const ax=el.querySelector("svg[data-ax]");if(ax)el.style.setProperty("--an-x",ax.dataset.ax+"px");
+ for(let e=el.parentElement;e&&e!==document.documentElement;e=e.parentElement){const c=getComputedStyle(e).backgroundColor;if(c&&c!=="transparent"&&!/,\s*0\)$/.test(c)){el.style.setProperty("--an-bg",c);return}}}
+function anJoga(el){anFundo(el);el.classList.remove("an-pre");el.classList.add("an-go");clearTimeout(el._anT);el._anT=setTimeout(()=>el.classList.remove("an-go"),4200)}
 // botões de período dos gráficos em linha
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-lcp] button");if(!b)return;const w=b.parentElement,id=w.dataset.lcp,d=LC_REG.get(id);if(!d)return;
  d[4]=lcCorte(d[3],+b.dataset.m);w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
@@ -1889,7 +1910,8 @@ document.addEventListener("click",ev=>{const b=ev.target.closest("[data-lcp] but
 {const RO=window.ResizeObserver?new ResizeObserver(es=>es.forEach(e=>{const el=e.target,w=Math.round(e.contentRect.width),d=LC_REG.get(el.dataset.lc);
   if(!d||!w||Math.abs(w-(+el.dataset.w||0))<6)return;el.dataset.w=w;el.innerHTML=lineSVG(...lcCut(el.dataset.lc),w)})):null;
  let q=0;const liga=()=>{q=0;document.querySelectorAll(".lc[data-lc]:not([data-obs])").forEach(el=>{el.dataset.obs=1;RO&&RO.observe(el)});
-  if(AN_IO)document.querySelectorAll(AN_SEL).forEach(el=>{if(el.dataset.an)return;el.dataset.an=1;el.classList.add("an-pre");AN_IO.observe(el)});
+  if(AN_IO)document.querySelectorAll(AN_SEL).forEach(el=>{if(el.dataset.an)return;el.dataset.an=1;
+   if(el.classList.contains("bar")?el.closest(AN_GRUPO):el.matches(".tw")&&!el.querySelector(".bar"))return;el.classList.add("an-pre");AN_IO.observe(el)});
   if(LC_REG.size>200)for(const id of LC_REG.keys())if(!document.querySelector(`[data-lc="${id}"]`))LC_REG.delete(id)};
  new MutationObserver(()=>{if(!q)q=requestAnimationFrame(liga)}).observe(document.body,{childList:true,subtree:true})}
 // pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
@@ -2275,7 +2297,7 @@ mount(){const draw=()=>{const e=ELEI[eid];$("#esub").textContent=e.nome+". Perce
   $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false});
   const top=UFS.filter(u=>!reg||u.reg===reg).map(u=>[u,elec(eid,u)[modo]]).sort((a,b)=>b[1]-a[1]);
   $("#eside").innerHTML=`<div class="pdest"><i style="background:${PCOL[modo]}"></i><div><span>${nome} ${reg?"na região "+REG[reg]:"no Brasil"}</span><b>${pct(bv[modo])}</b><small>dos votos válidos</small></div></div>
-  <div class="small muted" style="margin:12px 0 4px">Por região</div>${hbars(Object.entries(REG).map(([k,v])=>[v,elecRegion(eid,k)[modo]]),{fmt:pct,color:rp[3]})}
+  <div class="small muted" style="margin:12px 0 4px">Por região</div>${pbars(Object.entries(REG).map(([k,v])=>[v,elecRegion(eid,k)[modo]]),{fmt:pct,color:rp[3]})}
   <div class="small muted" style="margin:12px 0 4px">Estados onde foi mais votado</div>${top.slice(0,5).map(([u,x])=>`<div class="ptop"><span>${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</span><b>${pct(x)}</b></div>`).join("")}
   <div class="legend" style="justify-content:flex-start;margin-top:12px">${pct(mn)} ${rp.map(c=>`<i style="background:${c}"></i>`).join("")} ${pct(mx)}</div>`}
  bindMap($("#emap"),null,null,(u,el)=>inlineZoomIn(ELZ,u,el));
@@ -2289,14 +2311,14 @@ const V={
 pais:()=>`<div class="kpis kpis-c"><div class="kpi"><span>Dívida bruta do governo</span><strong>R$ 9,1 tri</strong><em>76,8% do PIB</em></div><div class="kpi"><span>Dívida líquida do setor público</span><strong>R$ 7,2 tri</strong><em>61,2% do PIB</em></div><div class="kpi"><span>Juros pagos em 12 meses</span><strong>R$ 905 bi</strong><em>7,9% do PIB</em></div><div class="kpi"><span>Prazo médio da dívida</span><strong>4,1 anos</strong></div></div>
 <div class="grid g2 mt"><div class="panel"><h2>Evolução da dívida bruta <small>% do PIB</small></h2>${lineChart([{n:"Dívida bruta",v:[65.5,69.8,73.7,75.3,74.4,86.9,77.3,71.7,73.8,76.5,76.8]},{n:"Dívida líquida",v:[35.6,46.1,51.4,52.8,54.7,61.4,55.1,56.1,60.4,61.1,61.2]}],["2015","16","17","18","19","20","21","22","23","24","25"],{h:200,fmt:v=>v.toFixed(0)+"%"})}</div>
 <div class="panel"><h2>Composição da dívida federal</h2>${donut([["Atrelada à Selic",46],["Prefixada",22],["Atrelada à inflação",27],["Atrelada ao câmbio",5]])}</div></div>
-<div class="panel mt"><h2>Quem financia a dívida</h2>${hbars([["Instituições financeiras",29],["Fundos de investimento",23],["Previdência",22],["Não residentes",10],["Governo",4],["Seguradoras",4],["Outros",8]],{fmt:v=>v+"%"})}</div>`,
+<div class="panel mt"><h2>Quem financia a dívida</h2>${pbars([["Instituições financeiras",29],["Fundos de investimento",23],["Previdência",22],["Não residentes",10],["Governo",4],["Seguradoras",4],["Outros",8]],{fmt:v=>v+"%"})}</div>`,
 estados:()=>`<div class="kpis kpis-c"><div class="kpi"><span>Dívida consolidada dos estados</span><strong>${brl(tot("dcl"))}</strong></div><div class="kpi"><span>Acima do limite da LRF (200%)</span><strong>${UFS.filter(u=>u.dclr>200).length}</strong><em>estados</em></div><div class="kpi"><span>Acima de 100% da receita</span><strong>${UFS.filter(u=>u.dclr>100).length}</strong><em>estados</em></div></div>
 <div class="panel mt" id="dcard"><div id="dmain" class="zmain" data-zinline><div class="hd"><div><h2>Dívida em relação à receita</h2><p>Toque em um estado no mapa ou no ranking.</p></div></div><div class="mapwrap mapbig"><div><div id="dmap">${brMap("dclr",null,null)}</div><p class="small muted" style="margin:6px 0 0">Dívida consolidada líquida dividida pela receita corrente líquida. O limite legal é 200%.</p></div><div class="zside"><div class="small muted" style="margin-bottom:6px">Ranking</div>${hbars([...UFS].sort((a,b)=>b.dclr-a.dclr).slice(0,12).map(u=>[u.nome,u.dclr,"#/uf/"+u.uf]),{fmt:v=>v.toFixed(0)+"%"})}</div></div></div><div id="dstate" style="display:none"></div></div>`,
 pessoas:()=>`<div class="kpis kpis-c"><div class="kpi"><span>Famílias com dívidas</span><strong>77,9%</strong></div><div class="kpi"><span>Renda comprometida com dívidas</span><strong>26,8%</strong><em>média mensal</em></div><div class="kpi"><span>Pessoas inadimplentes</span><strong>72,4 mi</strong><em>${pct(72.4/159*100)} dos adultos</em></div><div class="kpi"><span>Dívida média por pessoa</span><strong>R$ 5.920</strong></div></div>
-<div class="panel mt" id="dcard"><div id="dmain" class="zmain" data-zinline><div class="hd"><div><h2>Adultos inadimplentes por estado</h2><p>Toque em um estado para ver as dívidas das pessoas de lá.</p></div></div><div class="mapwrap mapbig"><div id="dmap">${brMap("inad",null,null)}</div><div class="zside"><div class="small muted" style="margin-bottom:6px">Por região</div>${hbars(Object.entries(REG).map(([k,v])=>[v,UFS.filter(u=>u.reg===k).reduce((a,u)=>a+u.inad*u.pop,0)/UFS.filter(u=>u.reg===k).reduce((a,u)=>a+u.pop,0)]),{fmt:pct})}<div class="small muted" style="margin:16px 0 6px">Tipo de dívida</div>${hbars([["Cartão de crédito",86],["Carnês",17],["Financiamento de veículo",11],["Crédito pessoal",9],["Financiamento imobiliário",9],["Cheque especial",4]],{fmt:v=>v+"%"})}<p class="small muted" style="margin:6px 0 0">Percentual de famílias endividadas com cada tipo. Uma família pode ter mais de um.</p></div></div></div><div id="dstate" style="display:none"></div></div>
-<div class="grid g2 mt"><div class="panel"><h2>Evolução</h2>${lineChart([{n:"Famílias endividadas",v:[63,65.6,70.9,77.9,78.5,78.1,77.9]},{n:"Com contas em atraso",v:[24,24.6,25.2,28.9,29.4,28.8,29.1]}],["2019","20","21","22","23","24","25"],{h:190,fmt:v=>v.toFixed(0)+"%"})}</div><div class="panel"><h2>Famílias endividadas por faixa de renda</h2>${hbars([["Até 3 salários mínimos",79.6],["3 a 5 salários",78.4],["5 a 10 salários",76.1],["Mais de 10 salários",70.2]],{fmt:pct})}<p class="small muted" style="margin:8px 0 0">Nas famílias de menor renda, a parcela com contas em atraso é cerca de duas vezes maior.</p></div></div>`,
+<div class="panel mt" id="dcard"><div id="dmain" class="zmain" data-zinline><div class="hd"><div><h2>Adultos inadimplentes por estado</h2><p>Toque em um estado para ver as dívidas das pessoas de lá.</p></div></div><div class="mapwrap mapbig"><div id="dmap">${brMap("inad",null,null)}</div><div class="zside"><div class="small muted" style="margin-bottom:6px">Por região</div>${pbars(Object.entries(REG).map(([k,v])=>[v,UFS.filter(u=>u.reg===k).reduce((a,u)=>a+u.inad*u.pop,0)/UFS.filter(u=>u.reg===k).reduce((a,u)=>a+u.pop,0)]),{fmt:pct})}<div class="small muted" style="margin:16px 0 6px">Tipo de dívida</div>${pbars([["Cartão de crédito",86],["Carnês",17],["Financiamento de veículo",11],["Crédito pessoal",9],["Financiamento imobiliário",9],["Cheque especial",4]],{fmt:v=>v+"%"})}<p class="small muted" style="margin:6px 0 0">Percentual de famílias endividadas com cada tipo. Uma família pode ter mais de um.</p></div></div></div><div id="dstate" style="display:none"></div></div>
+<div class="grid g2 mt"><div class="panel"><h2>Evolução</h2>${lineChart([{n:"Famílias endividadas",v:[63,65.6,70.9,77.9,78.5,78.1,77.9]},{n:"Com contas em atraso",v:[24,24.6,25.2,28.9,29.4,28.8,29.1]}],["2019","20","21","22","23","24","25"],{h:190,fmt:v=>v.toFixed(0)+"%"})}</div><div class="panel"><h2>Famílias endividadas por faixa de renda</h2>${pbars([["Até 3 salários mínimos",79.6],["3 a 5 salários",78.4],["5 a 10 salários",76.1],["Mais de 10 salários",70.2]],{fmt:pct})}<p class="small muted" style="margin:8px 0 0">Nas famílias de menor renda, a parcela com contas em atraso é cerca de duas vezes maior.</p></div></div>`,
 empresas:()=>`<div class="kpis kpis-c"><div class="kpi"><span>Empresas inadimplentes</span><strong>6,9 mi</strong></div><div class="kpi"><span>Dívida ativa da União</span><strong>R$ 2,8 tri</strong><em>inclui pessoas físicas</em></div><div class="kpi"><span>Pedidos de recuperação judicial</span><strong>2.273</strong><em>em 12 meses</em></div><div class="kpi"><span>Crédito às empresas</span><strong>R$ 2,4 tri</strong></div></div>
-<div class="grid g2 mt"><div class="panel"><h2>Inadimplentes por setor</h2>${hbars([["Serviços",54],["Comércio",36],["Indústria",8],["Agropecuária",1],["Outros",1]],{fmt:v=>v+"%"})}</div><div class="panel"><h2>Por porte</h2>${donut([["Microempresas",71],["Pequenas",22],["Médias",5],["Grandes",2]])}</div></div>
+<div class="grid g2 mt"><div class="panel"><h2>Inadimplentes por setor</h2>${pbars([["Serviços",54],["Comércio",36],["Indústria",8],["Agropecuária",1],["Outros",1]],{fmt:v=>v+"%"})}</div><div class="panel"><h2>Por porte</h2>${donut([["Microempresas",71],["Pequenas",22],["Médias",5],["Grandes",2]])}</div></div>
 <div class="panel mt"><h2>Fornecedores do governo com dívida ativa <small>exemplos fictícios</small></h2>${table([["Empresa",e=>`<a href="#/empresa/${e.id}">${e.nome}</a>`],["Local",e=>e.mun+", "+e.uf],["Dívida inscrita",e=>brl(2e5+rnd(e.id*13)*9e6),"n"],["Situação",e=>`<span class="tag">${["Parcelada","Em cobrança","Garantida"][e.id%3]}</span>`]],EMPRESAS,e=>"#/empresa/"+e.id)}</div>`};
 return{html:`<div class="ph"><div><h1>Dívidas</h1><p>Quanto devem o país, os estados, as pessoas e as empresas, e como isso muda ao longo do tempo.</p></div><span class="demo"><i></i>Dados demonstrativos</span></div>
 <div class="seg" id="dseg" style="margin-bottom:14px">${Object.entries(TAB).map(([k,v])=>`<button data-t="${k}" class="${k===tab?"on":""}">${v}</button>`).join("")}</div><div id="dv"></div>
@@ -2378,8 +2400,8 @@ function debtState(uf,tab){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.0
 const hero=(sub,line)=>`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">${sub}</div><h1 class="h1flag">${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</h1><p>${line}</p></div></div>`;
 if(tab==="pessoas"){const ad=Math.round(u.pop*.78),ni=Math.round(ad*u.inad/100);const cs=cities(uf).map(c=>({...c,ip:u.inad+(rnd(hs(c.nome)+5)-.5)*12})).sort((a,b)=>b.ip-a.ip);
  return{html:hero("Dívidas das pessoas",`${pct(u.inad)} dos adultos estão com contas em atraso.`)+`<div class="ufrest"><div class="kpis kpis-c"><div class="kpi"><span>Adultos inadimplentes</span><strong>${nf(ni)}</strong></div><div class="kpi"><span>Percentual dos adultos</span><strong>${pct(u.inad)}</strong></div><div class="kpi"><span>Dívida média</span><strong>R$ ${nf(Math.round(4800+rnd(hs(uf))*2600))}</strong></div><div class="kpi"><span>Média do Brasil</span><strong>${pct(UFS.reduce((a,x)=>a+x.inad*x.pop,0)/tot("pop"))}</strong></div></div>
- <div class="grid g2 mt"><div class="panel"><h2>Tipo de dívida</h2>${hbars([["Cartão de crédito",Math.round(80+rnd(hs(uf)+1)*10)],["Carnês",Math.round(12+rnd(hs(uf)+2)*10)],["Financiamento de veículo",Math.round(8+rnd(hs(uf)+3)*6)],["Crédito pessoal",Math.round(7+rnd(hs(uf)+4)*6)],["Financiamento imobiliário",Math.round(6+rnd(hs(uf)+6)*6)]],{fmt:v=>v+"%"})}</div>
- <div class="panel"><h2>Cidades com mais inadimplência</h2>${hbars(cs.slice(0,8).map(c=>[c.nome,c.ip]),{fmt:pct})}</div></div><p class="small muted" style="margin-top:12px"><a href="#/uf/${uf}/dividas">Ver ficha completa de ${u.nome}</a></p></div>`}}
+ <div class="grid g2 mt"><div class="panel"><h2>Tipo de dívida</h2>${pbars([["Cartão de crédito",Math.round(80+rnd(hs(uf)+1)*10)],["Carnês",Math.round(12+rnd(hs(uf)+2)*10)],["Financiamento de veículo",Math.round(8+rnd(hs(uf)+3)*6)],["Crédito pessoal",Math.round(7+rnd(hs(uf)+4)*6)],["Financiamento imobiliário",Math.round(6+rnd(hs(uf)+6)*6)]],{fmt:v=>v+"%"})}</div>
+ <div class="panel"><h2>Cidades com mais inadimplência</h2>${pbars(cs.slice(0,8).map(c=>[c.nome,c.ip]),{fmt:pct})}</div></div><p class="small muted" style="margin-top:12px"><a href="#/uf/${uf}/dividas">Ver ficha completa de ${u.nome}</a></p></div>`}}
 return{html:hero("Dívida do governo estadual",`${u.dclr.toFixed(0)}% da receita corrente líquida.`)+`<div class="ufrest"><div class="kpis kpis-c"><div class="kpi"><span>Dívida consolidada</span><strong>${brl(u.dcl)}</strong></div><div class="kpi"><span>Em relação à receita</span><strong>${u.dclr.toFixed(0)}%</strong></div><div class="kpi"><span>Média dos estados</span><strong>${bm.toFixed(0)}%</strong></div><div class="kpi"><span>Dívida por habitante</span><strong>R$ ${nf(Math.round(u.dcl/u.pop))}</strong></div></div>
 <div class="panel mt"><div class="small muted" style="margin-bottom:6px">Distância do limite legal de 200% da receita</div><div class="bar" style="height:14px"><i style="width:${Math.min(100,u.dclr/2)}%;background:${u.dclr>150?"#F69981":u.dclr>100?"#F9CE75":"#8CDBB6"}"></i></div><div class="small" style="display:flex;justify-content:space-between;margin-top:4px"><span>0%</span><span>100%</span><span>200% (limite)</span></div></div>
 <div class="grid g2 mt"><div class="panel"><h2>Evolução</h2>${lineChart([{n:"Dívida / receita",v:[1.12,1.08,1.05,1.02,.99,1].map(x=>x*u.dclr)}],["2021","2022","2023","2024","2025","2026"],{h:180,fmt:v=>v.toFixed(0)+"%"})}</div>
@@ -2507,19 +2529,32 @@ ${SRC}`}};
 
 /* tabelas: poucas colunas e só as 10 primeiras linhas, com "Ver todos" (listas que já carregam mais mostram tudo) */
 const TBL={todos:false};
+// só as linhas visíveis entram na página; as outras ficam guardadas (TW_REG) e entram ao tocar em "Ver todos" ou ao ordenar
+const TW_REG=new Map();let TW_N=0;
 function table(cols,rows,href){const lim=t=>String(t).replace(/<[^>]+>/g,"").replace(/"/g,"&quot;");const max=TBL.todos||rows.length<=15?rows.length:10;
- return`<div class="tw${max<rows.length?" tw-corte":""}"><table class="resp"><thead><tr>${cols.map(c=>`<th class="${c[2]||""}">${c[0]}</th>`).join("")}</tr></thead><tbody>${rows.map((r,i)=>`<tr ${href?`data-href="${href(r)}"`:""}${i>=max?' class="tw-x"':""}>${cols.map(c=>`<td class="${c[2]||""}" data-label="${lim(c[0])}">${c[1](r)}</td>`).join("")}</tr>`).join("")}</tbody></table>${max<rows.length?`<button type="button" class="chip tw-mais">Ver todos (${rows.length.toLocaleString("pt-BR")})</button>`:""}</div>`}
+ const tr=(r,i)=>`<tr ${href?`data-href="${href(r)}"`:""}${i>=max?' class="tw-x"':""}>${cols.map(c=>`<td class="${c[2]||""}" data-label="${lim(c[0])}">${c[1](r)}</td>`).join("")}</tr>`;
+ let id="";if(max<rows.length){id="tw"+(++TW_N);const resto=rows.slice(max);TW_REG.set(id,{f:tr,rows:resto,i:0,max});if(TW_REG.size>80)TW_REG.delete(TW_REG.keys().next().value)}
+ return`<div class="tw${max<rows.length?" tw-corte":""}"${id?` data-tw="${id}"`:""}><table class="resp"><thead><tr>${cols.map(c=>`<th class="${c[2]||""}">${c[0]}</th>`).join("")}</tr></thead><tbody>${rows.slice(0,max).map(tr).join("")}</tbody></table>${max<rows.length?`<button type="button" class="chip tw-mais">Ver todos (${rows.length.toLocaleString("pt-BR")})</button>`:""}</div>`}
+// põe na tabela as linhas guardadas: todas de uma vez (n=0) ou um pedaço
+function twCompleta(w,n=0){const id=w&&w.dataset.tw,d=id&&TW_REG.get(id);if(!d)return true;const corpo=w.querySelector("tbody");if(!corpo){TW_REG.delete(id);return true}
+ const fim=n?Math.min(d.rows.length,d.i+n):d.rows.length;let h="";for(let i=d.i;i<fim;i++)h+=d.f(d.rows[i],d.max+i);d.i=fim;corpo.insertAdjacentHTML("beforeend",h);
+ if(d.i>=d.rows.length){TW_REG.delete(id);delete w.dataset.tw;return true}return false}
 // ordenar ao tocar no título da coluna (entende R$, mil/mi/bi/tri, % e datas)
 const numTab=t=>{t=String(t).trim();if(!t||t==="—")return null;const dt=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(t);if(dt)return+(dt[3]+dt[2]+dt[1]);
  if(!/^(R\$\s*)?[-+]?[\d.]/.test(t))return NaN;const m=/([-+]?[\d.]+(?:,\d+)?)\s*(tri|bi|mi|mil)?/i.exec(t.replace(/^R\$\s*/,""));if(!m)return NaN;
  return parseFloat(m[1].replace(/\./g,"").replace(",","."))*({tri:1e12,bi:1e9,mi:1e6,mil:1e3}[(m[2]||"").toLowerCase()]||1)};
-document.addEventListener("click",e=>{const th=e.target.closest&&e.target.closest("#view thead th,.pop-b thead th");if(!th)return;const tb=th.closest("table"),corpo=tb.tBodies[0];if(!corpo||corpo.rows.length<3)return;
+document.addEventListener("click",e=>{const th=e.target.closest&&e.target.closest("#view thead th,.pop-b thead th");if(!th)return;const tb=th.closest("table"),corpo=tb.tBodies[0];if(!corpo)return;twCompleta(tb.closest(".tw"));if(corpo.rows.length<3)return;
  const col=[...th.parentNode.children].indexOf(th),dir=th.dataset.ord==="desc"?"asc":"desc";tb.querySelectorAll("thead th").forEach(x=>delete x.dataset.ord);th.dataset.ord=dir;
  const linhas=[...corpo.rows].map(r=>{const t=r.cells[col]?r.cells[col].innerText:"";return[r,numTab(t),t]}),ehNum=linhas.some(l=>l[1]!=null)&&linhas.every(l=>l[1]==null||!isNaN(l[1]));
  linhas.sort((a,b)=>{const x=ehNum?(a[1]??-Infinity)-(b[1]??-Infinity):a[2].localeCompare(b[2],"pt-BR");return dir==="asc"?x:-x});
  const corte=tb.closest(".tw-corte:not(.aberta)");linhas.forEach(([r],i)=>{corpo.appendChild(r);if(corte)r.classList.toggle("tw-x",i>=10)})});
-document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".tw-mais");if(!b)return;const w=b.closest(".tw");if(w)w.classList.add("aberta");b.remove()});
-function rowLinks(){document.querySelectorAll("tr[data-href]").forEach(tr=>tr.onclick=e=>{if(e.target.closest("a"))return;const p=tr.dataset.href.slice(2);if(!openPop(p))location.hash=tr.dataset.href})}
+// "Ver todos": as linhas entram em pedaços de 400 por quadro, para a página não travar nas listas longas
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".tw-mais");if(!b)return;const w=b.closest(".tw");b.remove();if(!w)return;
+ const passo=()=>{if(!w.isConnected)return;if(!twCompleta(w,400))requestAnimationFrame(passo)};twCompleta(w,200);w.classList.add("aberta");requestAnimationFrame(passo)});
+// linha da tabela que leva a outra tela: um ouvinte só para a página toda (vale também para as linhas que entram depois)
+document.addEventListener("click",e=>{const tr=e.target.closest&&e.target.closest("tr[data-href]");if(!tr||e.target.closest("a,button,input,select,label"))return;
+ const p=tr.dataset.href.slice(2);if(!openPop(p))location.hash=tr.dataset.href});
+function rowLinks(){}
 
 P.orgaos=()=>{let e="",pd="",uf="";return{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios, secretarias, prefeituras, câmaras, assembleias, tribunais, autarquias e empresas públicas.</p></div></div>
 <div class="panel"><div class="filters"><select id="oe" data-titulo="Esfera"><option value="">Todas as esferas</option><option>Federal</option><option>Estadual</option><option>Municipal</option></select><select id="opd" data-titulo="Poder"><option value="">Todos os poderes</option><option>Executivo</option><option>Legislativo</option><option>Judiciário</option><option>Controle</option></select><select id="ouf" data-titulo="Estado"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div><div id="ot"></div>${SRC}</div>`,
@@ -3107,7 +3142,10 @@ function snapHash(s){let h=0x811c9dc5;for(const ch of s){h^=ch.codePointAt(0);h=
 async function snapNoticias(){if(!SNAP.nw)SNAP.nw=fetch("dados/noticias.json?t="+Math.floor(Date.now()/60000)).then(r=>r.ok?r.json():null).then(d=>d&&Array.isArray(d.itens)?d:null).catch(()=>null);return SNAP.nw}
 async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)return x}const n=snapHash(k)%SNAP.m.shards;
  if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
- return(await SNAP.cache[n])[k]}
+ const v=(await SNAP.cache[n])[k];
+ // respostas grandes ficam num arquivo só delas (dados/g/…): só são baixadas quando a página pede
+ if(v&&typeof v==="object"&&v.__arquivo){const f=v.__arquivo;if(!SNAP.cache[f])SNAP.cache[f]=fetch("dados/"+f).then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[f];throw e});return SNAP.cache[f]}
+ return v}
 const snapNorm=t=>String(t??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* filtros das listas: "=campo" compara sem diferenciar maiúsculas; "~campo1,campo2" procura o texto em qualquer um */
 const SNAP_FILTROS={"/parlamentares":{casa:"=casa",uf:"=uf",partido:"=partido",q:"~nome"},"/votacoes":{casa:"=casa",q:"~descricao,materia"},
@@ -3209,13 +3247,13 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if((i%passo===0&&anos.length-1-i>=Math.max(1,passo/2+.5))||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="11.5" class="lc-eixo">${rot(a)}</text>`});
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
-  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}" pathLength="1" class="an-l"/>`;
-  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}" class="an-p" style="--d:${(anos.length<2?0:i/(anos.length-1)*2.5).toFixed(2)}s"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
+  g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}"/>`;
+  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
   const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
  fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<13)fim[i].y=fim[i-1].y+13;
- fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}" class="an-p" style="--d:2.6s">${lista[f.k].uf}</text>`});
+ fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}">${lista[f.k].uf}</text>`});
  const leg=lista.map((u,k)=>`<div class="lr-l${k<3?" lr-top":""}"><span class="rk-p">${k+1}º</span><i style="background:${cores[k]};opacity:${k<3?1:.6}"></i><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><b>${fmt(vals[u.uf])}</b></div>`).join("");
- return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${Math.round(W*1.15)}px" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg><div class="lr-leg">${leg}</div></div>`}
+ return`<div class="rk"><h4 class="rk-t"><i style="background:${cores[0]}"></i>${t}</h4><div class="lr-w an-w" style="max-width:${Math.round(W*1.15)}px;--an-x:${(L/W*100).toFixed(1)}%"><svg class="lr-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(t)}: evolução por ano">${g}</svg></div><div class="lr-leg">${leg}</div></div>`}
 // serie: {UF:{ano:valor}}; anos em ordem; vals: valor de hoje (escolhe os 5 maiores e os 5 menores). Sem 2 anos ou mais, volta às barras.
 function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
  const ok=UFS.filter(u=>vals[u.uf]!=null&&serie&&serie[u.uf]&&Object.keys(serie[u.uf]).length>=2).sort((a,b)=>vals[b.uf]-vals[a.uf]);
@@ -3230,7 +3268,7 @@ function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menor
 const LD_REG=new Map();
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ldp] button");if(!b)return;const w=b.parentElement,id=w.dataset.ldp,f=LD_REG.get(id),anos=LD_REG.get(id+"a"),el=document.querySelector(`[data-ld="${id}"]`);if(!f||!el)return;
  const m=+b.dataset.m,u=parseInt(anos[anos.length-1],10);w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
- el.innerHTML=f(m?anos.filter(a=>parseInt(a,10)>=u-m):anos);if(typeof AN_IO!=="undefined"&&AN_IO)el.querySelectorAll("svg.lr-svg").forEach(sv=>{sv.dataset.an=1;anJoga(sv)})});
+ el.innerHTML=f(m?anos.filter(a=>parseInt(a,10)>=u-m):anos);if(typeof AN_IO!=="undefined"&&AN_IO)el.querySelectorAll(".lr-w").forEach(sv=>{sv.dataset.an=1;anJoga(sv)})});
 // série por ano dos indicadores de segurança que têm histórico (Sinesp anual, Sisdepen semestral, Anuário)
 function segHist(d,met){const h=d&&d.historico;if(!h)return null;const pop=uf=>gv(d.estados[uf],"populacao");const serie={};let anos=[],parcial=null;
  const k=met==="hom"?"homicidio_doloso":met==="detidos"?"mandados_cumpridos":met.startsWith("c_")?met.slice(2):null;
@@ -3856,7 +3894,7 @@ const CARGOS_UF=["GOVERNADOR","SENADOR","DEPUTADO FEDERAL","DEPUTADO ESTADUAL","
 P.uf=(id,g)=>{const r=_uf4(id,g);if(!API.on)return r;const u=UF[id]||UF.SP;
 return{html:r.html,mount(){r.mount&&r.mount();(async()=>{try{const anos=await apiGet("/eleicoes/anos");for(const ano of anos){const cs=(await apiGet(`/eleicoes/${ano}/${u.uf}/cargos`)).filter(c=>CARGOS_UF.includes(c));if(!cs.length)continue;
   const res=await Promise.all(cs.map(c=>apiGet(`/eleicoes/${ano}/${u.uf}`+qs({cargo:c,turno:1})).catch(()=>null)));const sec=document.getElementById("s-eleicoes");if(!sec)return;
-  sec.innerHTML=`<h2 class="ufsec-h">Eleições ${ano}</h2><div class="grid g2">${res.filter(Boolean).map(d=>{const pp=Object.entries(d.por_partido).slice(0,6);return`<div class="panel"><h2>${esc(CARGON(d.cargo))}</h2>${hbars(pp.map(([p,o])=>[p,o.percentual]),{fmt:x=>x.toLocaleString("pt-BR")+"%"})}${d.eleitos.length?`<p class="small muted" style="margin:8px 0 0">${d.eleitos.length===1?"Eleito":"Eleitos"}: ${d.eleitos.slice(0,6).map(e=>esc(e.nome)+" ("+esc(e.partido||"")+")").join(", ")}${d.eleitos.length>6?` e mais ${d.eleitos.length-6}`:""}</p>`:""}</div>`}).join("")}</div><p class="small muted">Fonte: TSE. Mapa por município e comparação com a eleição anterior em <a href="#/eleicoes">Eleições</a>.</p>`;return}}catch(e){}})()}}};
+  sec.innerHTML=`<h2 class="ufsec-h">Eleições ${ano}</h2><div class="grid g2">${res.filter(Boolean).map(d=>{const pp=Object.entries(d.por_partido).slice(0,6);return`<div class="panel"><h2>${esc(CARGON(d.cargo))}</h2>${pbars(pp.map(([p,o])=>[p,o.percentual]),{fmt:x=>x.toLocaleString("pt-BR")+"%"})}${d.eleitos.length?`<p class="small muted" style="margin:8px 0 0">${d.eleitos.length===1?"Eleito":"Eleitos"}: ${d.eleitos.slice(0,6).map(e=>esc(e.nome)+" ("+esc(e.partido||"")+")").join(", ")}${d.eleitos.length>6?` e mais ${d.eleitos.length-6}`:""}</p>`:""}</div>`}).join("")}</div><p class="small muted">Fonte: TSE. Mapa por município e comparação com a eleição anterior em <a href="#/eleicoes">Eleições</a>.</p>`;return}}catch(e){}})()}}};
 
 /* Eleições: mapa por município (cargos majoritários) */
 async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=["GOVERNADOR","PRESIDENTE","SENADOR","PREFEITO"];if(!maj.includes(String(f.cargo).toUpperCase()))return;
@@ -4123,7 +4161,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   mount(){apiGet(`/eleicoes/${f.ano}/${uf}`+qs({cargo:f.cargo,turno:f.turno})).then(d=>{const box=$("#elufres");if(!box)return;const pp=Object.entries(d.por_partido);const L=d.eleitos.length&&!MAJ.includes(f.cargo)?d.eleitos:d.mais_votados;
     box.innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Votos válidos nominais</span><strong>${nf(d.votos_validos_nominais)}</strong></div><div class="kpi"><span>${MAJ.includes(f.cargo)?"Candidatos":"Eleitos"}</span><strong>${MAJ.includes(f.cargo)?nf(d.mais_votados.length):nf(d.eleitos.length)}</strong></div><div class="kpi"><span>Partidos com votos</span><strong>${pp.length}</strong></div></div>
     <div class="grid g2 mt"><div class="panel"><h2>${MAJ.includes(f.cargo)?"Candidatos neste estado":d.eleitos.length?"Eleitos neste estado":"Mais votados neste estado"}</h2>${L.slice(0,MAJ.includes(f.cargo)?20:80).map(c=>`<div class="elrow"><i style="background:${chave()?corDe(c.sq_candidato):corSigla(c.partido)}"></i><span><b style="font-weight:600">${lcand({...c,uf},f.ano,f.cargo)}</b> ${sigla(c.partido)}${f.cargo==="PREFEITO"&&c.unidade?` <small>${esc(tit(c.unidade))}</small>`:""}${/^ELEITO/.test(c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(c.percentual)}</b><div class="bar"><i style="width:${Math.min(100,c.percentual*(MAJ.includes(f.cargo)?1:4))}%;background:${chave()?corDe(c.sq_candidato):corSigla(c.partido)}"></i></div><small class="muted">${nf(c.votos)} votos</small></div>`).join("")}</div>
-    <div class="panel"><h2>Votos por partido neste estado</h2>${hbars(pp.slice(0,12).map(([p,o])=>[p,o.percentual]),{fmt:pctN})}${d.comparativo_eleicao_anterior?`<p class="small muted" style="margin:10px 0 0">Comparação com ${d.comparativo_eleicao_anterior.ano}: ${Object.entries(d.comparativo_eleicao_anterior.partidos).sort((a,b)=>b[1].percentual_atual-a[1].percentual_atual).slice(0,5).map(([p,o])=>`${esc(p)} ${o.variacao_pp>0?"+":""}${o.variacao_pp.toLocaleString("pt-BR")} p.p.`).join(" · ")}</p>`:""}</div></div>`;
+    <div class="panel"><h2>Votos por partido neste estado</h2>${pbars(pp.slice(0,12).map(([p,o])=>[p,o.percentual]),{fmt:pctN})}${d.comparativo_eleicao_anterior?`<p class="small muted" style="margin:10px 0 0">Comparação com ${d.comparativo_eleicao_anterior.ano}: ${Object.entries(d.comparativo_eleicao_anterior.partidos).sort((a,b)=>b[1].percentual_atual-a[1].percentual_atual).slice(0,5).map(([p,o])=>`${esc(p)} ${o.variacao_pp>0?"+":""}${o.variacao_pp.toLocaleString("pt-BR")} p.p.`).join(" · ")}</p>`:""}</div></div>`;
     if(MAJ.includes(f.cargo))mapaMunicipal({ano:f.ano,uf,cargo:f.cargo,turno:f.turno})}).catch(e=>{const box=$("#elufres");if(box)box.innerHTML=e.status===404?rvazio("Sem resultados deste cargo neste estado."):rerro(e)})}}};
  apiGet("/eleicoes/anos").then(l=>{anos=l||[];if(!anos.length){demoComAviso(_eleicoes,a,"Nenhum resultado do TSE coletado ainda.");return}f.ano=anos[0];
   $("#elanos").innerHTML=anos.map(x=>`<button data-a="${x}" class="${x===f.ano?"on":""}">${x}${x===2026?" <small>1º turno</small>":""}</button>`).join("");
@@ -4187,7 +4225,7 @@ const TELA_DIV={
   const r=ufs.map(u=>[u,boa(u)]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
   return resumoBox(`<p>Das ${nf(n)} prefeituras com nota, <b>${pct(capagBoa(t)/n*100)}</b> têm capacidade de pagamento <b>A ou B</b> — podem pegar empréstimos com garantia da União. ${nf(Object.entries(t).filter(([k])=>/^[CD]/.test(k)).reduce((a,x)=>a+x[1],0))} têm nota C ou D. Melhor situação: ${r.slice(0,3).map(([u,v])=>`${UF[u].nome} (${pct(v)})`).join(", ")}. Pior: ${r.slice(-3).reverse().map(([u,v])=>`${UF[u].nome} (${pct(v)})`).join(", ")}.</p><p class="small muted" style="margin:0">A CAPAG, do Tesouro Nacional, avalia o endividamento, a poupança corrente e a liquidez de cada prefeitura. "N.D.": dados não disponíveis; "N.E.": não enviou os dados.</p>`)+
   `<div class="kpis kpis-c mt">${Object.entries(t).sort().map(([k,v])=>`<div class="kpi"><span>CAPAG ${esc(k)}</span><strong>${nf(v)}</strong></div>`).join("")}</div>
-  <div class="panel mt"><h2>Ranking dos estados</h2>${hbars(r.slice(0,27).map(([u,v])=>[UF[u].nome,v,"#/uf/"+u]),{fmt:pct})}</div>${RSRC("Tesouro Nacional, Capacidade de Pagamento (CAPAG) dos municípios")}`},
+  <div class="panel mt"><h2>Ranking dos estados</h2>${pbars(r.slice(0,27).map(([u,v])=>[UF[u].nome,v,"#/uf/"+u]),{fmt:pct})}</div>${RSRC("Tesouro Nacional, Capacidade de Pagamento (CAPAG) dos municípios")}`},
  familias:D=>{const s=D.s,e=s.endividamento_familias,i=s.inadimplencia_pf;if(!e&&!i)return rvazio("Séries do Banco Central ainda não coletadas.");
   return resumoBox(`<p>${e?`As dívidas das famílias com bancos e financeiras equivalem a <b>${pctF(e.ultimo.valor)} da renda</b> de um ano (${mesAno(e.ultimo.data)}), ${txtVar(varPP(e))}.`:""}${i?` A <b>inadimplência</b> das pessoas — empréstimos com atraso de mais de 90 dias — está em <b>${pctF(i.ultimo.valor)}</b> da carteira de crédito, ${txtVar(varPP(i))}.`:""}</p><p class="small muted" style="margin:0">Endividamento: saldo das dívidas no sistema financeiro dividido pela renda das famílias nos 12 meses anteriores. Inadimplência: parcela do crédito às pessoas com parcelas atrasadas há mais de 90 dias.</p>`)+
   `<div class="kpis kpis-c mt">${kpiS("Endividamento das famílias (% da renda)",e)}${kpiS("Inadimplência das pessoas",i)}</div><div class="grid g2 mt">${e?`<div class="panel"><h2>Endividamento das famílias, % da renda</h2>${serieChart(e.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${i?`<div class="panel"><h2>Inadimplência das pessoas, % da carteira</h2>${serieChart(i.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 29037 e 21084 do SGS")}`},
@@ -4208,7 +4246,7 @@ function telaEmpresasDiv(){const box=$("#dvE");if(!box)return;apiGet("/dividas/e
  const linhaP=[...ps.map(p=>[p,P[p]]),["Todas as empresas",T]];
  box.innerHTML=`<div class="kpis kpis-c">${kp("Empresas ativas no país",nf(T.total),`cadastro do CNPJ, ${esc(E.mes_cnpj||"")}`)}${kp("Com dívida com a União",pct(pc(T.com_divida,T.total)),`${nf(T.com_divida)} empresas`)}${kp("Em recuperação judicial",nf(T.recuperacao_judicial),pct(pc(T.recuperacao_judicial,T.total))+" das ativas")}${kp("Falidas (ainda ativas no CNPJ)",nf(T.falidas))}${kp("Quanto devem à União",brl(T.divida_total),"empresas ativas, "+esc(E.pgfn_referencia||""))}</div>
  <div class="grid g2 mt"><div class="panel"><h2>Quantas empresas existem, por porte</h2>${donut(ps.map(p=>[p,P[p].total]))}</div>
- <div class="panel"><h2>Quantas de cada porte devem à União</h2>${hbars(ps.map(p=>[p,pc(P[p].com_divida,P[p].total)]).concat([["Todas",pc(T.com_divida,T.total)]]),{fmt:v=>pct(v)})}<p class="small muted" style="margin:6px 0 0">Porcentagem das empresas ativas de cada porte que têm dívida inscrita na dívida ativa da União.</p></div></div>
+ <div class="panel"><h2>Quantas de cada porte devem à União</h2>${pbars(ps.map(p=>[p,pc(P[p].com_divida,P[p].total)]).concat([["Todas",pc(T.com_divida,T.total)]]))}<p class="small muted" style="margin:6px 0 0">Porcentagem das empresas ativas de cada porte que têm dívida inscrita na dívida ativa da União.</p></div></div>
  <div class="panel mt"><h2>Por porte, somando tudo e separado</h2>${table([["Porte",r=>`<b>${esc(r[0])}</b>`],["Empresas ativas",r=>nf(r[1].total),"n"],["% do país",r=>pct(pc(r[1].total,T.total)),"n"],
    ["Com dívida com a União",r=>`${nf(r[1].com_divida)}<div class="small muted">${pct(pc(r[1].com_divida,r[1].total))} do porte</div>`,"n"],["% endividadas",r=>`<div class="bar"><i style="width:${Math.min(100,pc(r[1].com_divida,r[1].total)).toFixed(1)}%"></i></div>`],
    ["Recuperação judicial",r=>nf(r[1].recuperacao_judicial),"n"],["Falidas",r=>nf(r[1].falidas),"n"],["Quanto devem",r=>brl(r[1].divida_total),"n"]],linhaP)}</div>
@@ -4506,6 +4544,17 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
  return{html,mount(){r.mount&&r.mount();segDados().then(d=>{const el=document.getElementById("ufseg-"+uf);if(!el)return;const e=d.estados[uf]||{};
   el.innerHTML=(segCompleto(e,d,uf)||rvazio("Sem dados de segurança deste estado ainda."))+(e.efetivo?`<h3 class="seg-h">Quem faz a segurança</h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:"")}).catch(()=>{const el=document.getElementById("ufseg-"+uf);if(el)el.innerHTML=rvazio("Dados de segurança indisponíveis.")})}}}}
 
+/* troca suave (v1.9): o conteúdo novo entra por baixo enquanto o antigo, por cima, vai sumindo — as cores do mapa passam de uma
+   para a outra em vez de trocar de uma vez. Só opacidade (leve). Se outra troca chega no meio, o antigo continua sumindo e só o novo muda. */
+const XF_MOV=!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+function trocaSuave(el,html){if(!el)return;const atual=[...el.children].find(c=>c.classList.contains("xf-velho"));
+ if(atual){[...el.childNodes].forEach(n=>{if(n!==atual)n.remove()});atual.insertAdjacentHTML("beforebegin",html);return}
+ if(!XF_MOV||!el.firstElementChild||!el.offsetParent){el.innerHTML=html;return}
+ const velho=document.createElement("div");velho.className="xf-velho";velho.setAttribute("aria-hidden","true");velho.append(...el.childNodes);
+ el.innerHTML=html;el.classList.add("xf");el.appendChild(velho);el.classList.remove("xf-in");void el.offsetWidth;el.classList.add("xf-in");
+ clearTimeout(el._xf);el._xf=setTimeout(()=>{velho.remove();el.classList.remove("xf-in")},850)}
+function surgeSuave(el){if(!el||!XF_MOV)return;el.classList.remove("xf-surge");void el.offsetWidth;el.classList.add("xf-surge");clearTimeout(el._xs);el._xs=setTimeout(()=>el.classList.remove("xf-surge"),600)}
+
 /* ===================== v0.6: Dívidas numa tela só — seletor de tipo, mapa que muda e zoom no estado ===================== */
 let DV_MAPA_EST=null;
 async function dvPop(){if(DV_MAPA_EST)return DV_MAPA_EST;try{DV_MAPA_EST=(await apiGet("/mapa/estados")).estados||{}}catch(e){DV_MAPA_EST={}}return DV_MAPA_EST}
@@ -4535,11 +4584,12 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
   const DZ={card:"#dvcard",main:"#dvmain",holder:"#dvstate",map:"#dvmap",back:"‹ Voltar ao mapa",render:uf=>dvEstado(uf,D,M)};
   box.innerHTML=`<div class="seg seg-grupo" id="dvSeg" data-pill="Tipo de dívida">${DIV_TIPOS.map(([k,n])=>`<button data-k="${k}" class="${k===tipo?"on":""}">${n}</button>`).join("")}</div>
   <div class="dvq-linha" id="dvQ"></div>
-  <div class="panel mt" id="dvcard"><div id="dvmain" class="zmain"><div class="hd"><div><h2 id="dvmT"></h2><p id="dvmS"></p></div></div><div class="mapwrap mapbig"><div id="dvmap"></div><div class="zside" id="dvside"></div></div></div><div id="dvstate" style="display:none"></div></div>
+  <div class="panel mt" id="dvcard"><div id="dvmain" class="zmain"><div class="hd"><div><h2 id="dvmT"></h2><p id="dvmS"></p></div></div><div class="mapwrap mapbig"><div id="dvmap" class="xf-mapa"></div><div class="zside" id="dvside"></div></div></div><div id="dvstate" style="display:none"></div></div>
   <div id="dvDet" class="mt"></div>`;
-  const desenha=()=>{const q=quadroDivida(tipo,D);$("#dvQ").innerHTML=q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"";
+  const desenha=()=>{const q=quadroDivida(tipo,D);trocaSuave($("#dvQ"),q?q.replace('<span class="dvq-a">Ver resumo ›</span>',""):"");
    const m=DIV_MAPA[tipo](D,M);const card=$("#dvcard");if($("#dvstate").style.display!=="none")inlineZoomOut(DZ);
-   if(m){card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;$("#dvmap").innerHTML=mapaValores(m.v,m.f,{escala:SCALE});
+   if(m){const volta=card.hidden;card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;surgeSuave($("#dvmain .hd"));
+    if(volta){$("#dvmap").innerHTML="";$("#dvside").innerHTML=""}trocaSuave($("#dvmap"),mapaValores(m.v,m.f,{escala:SCALE}));
     const opD={alto:"Mais endividados",baixo:"Menos endividados",coresAlto:LIN_AZUL,attr:"data-dvz",href:()=>"#/dividas",...(DIV_ROT[tipo]||{})};
     const ligaDv=()=>document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)});
     // famílias: inadimplência no fim de cada ano (SCR.data); empresas: em recuperação judicial acumuladas até cada ano
@@ -4547,13 +4597,13 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
     if(tipo==="empresas"){const P=D.rj&&D.rj.por_uf_ano;if(P){const anos=[...new Set(Object.values(P).flatMap(o=>Object.keys(o)))].sort().filter(a=>+a>=2015),serie={};
      Object.entries(P).forEach(([uf,o])=>{let acc=Object.entries(o).filter(([a])=>+a<+(anos[0]||0)).reduce((t,[,n])=>t+n,0);serie[uf]={};anos.forEach(a=>{acc+=o[a]||0;serie[uf][a]=acc})});
      if(anos.length>=2)hs={serie,anos,nota:"Empresas em recuperação judicial acumuladas até cada ano, pelo ano em que a situação foi registrada no CNPJ (só as que continuam nessa situação hoje)."}}}
-    $("#dvside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,m.v,m.f,{...opD,nota:hs?hs.nota:""});ligaDv();
+    trocaSuave($("#dvside"),linhasDuplo(hs&&hs.serie,hs&&hs.anos,m.v,m.f,{...opD,nota:hs?hs.nota:""}));ligaDv();
     if(tipo==="estados"||tipo==="publica")histUF().then(H=>{const dv=H&&H.divida;if(!dv||dv.anos.length<2||!$("#dvside"))return;const pc={};Object.entries(dv.estados).forEach(([uf,o])=>{const pp=UF[uf]&&UF[uf].pop;if(!pp)return;pc[uf]={};Object.entries(o).forEach(([a,v])=>pc[uf][a]=m.v[uf]!=null&&/habitante/i.test(m.t)?v/pp:v)});
      const MQ={1:"abr",2:"ago",3:"dez"},rq=a=>{const[y,q]=String(a).split(".");return q?`${MQ[q]}/${y.slice(2)}`:y};
-     $("#dvside").innerHTML=linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,rot:rq,nota:"Dívida consolidada ao fim de cada quadrimestre (abril, agosto e dezembro), pelos relatórios fiscais dos estados. Valores nominais, sem correção pela inflação."});document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
+     trocaSuave($("#dvside"),linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,rot:rq,nota:"Dívida consolidada ao fim de cada quadrimestre (abril, agosto e dezembro), pelos relatórios fiscais dos estados. Valores nominais, sem correção pela inflação."}));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
     bindMap($("#dvmap"),null,null,(u,el)=>inlineZoomIn(DZ,u,el));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})}
    else{card.hidden=true}
-   $("#dvDet").innerHTML=TELA_DIV[tipo](D,sub);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};
+   const det=$("#dvDet"),primeira=!det.firstElementChild;det.innerHTML=TELA_DIV[tipo](D,sub);if(!primeira)surgeSuave(det);TELA_DIV[tipo].mount&&TELA_DIV[tipo].mount(D,sub);rowLinks()};
   document.querySelectorAll("#dvSeg button").forEach(b=>b.onclick=()=>{tipo=b.dataset.k;sub=undefined;document.querySelectorAll("#dvSeg button").forEach(x=>x.classList.toggle("on",x===b));try{history.replaceState(null,"","#/dividas/"+tipo)}catch(e){}desenha()});
   desenha()}).catch(e=>{const b=$("#dvT");if(b)b.innerHTML=rerro(e)})}}};
 
@@ -4716,7 +4766,14 @@ function etapasObra(o){const k=obSitK(o.situacao);const n=k==="ok"?3:k==="and"||
 const MIDIA={idx:undefined,logos:null,blocos:{}};
 async function midiaJSON(n){try{const r=await fetch("midia/"+n,{headers:{Accept:"application/json"}});return r.ok?await r.json():null}catch(e){return null}}
 async function midiaIdx(){if(MIDIA.idx===undefined)MIDIA.idx=midiaJSON("indice.json");return MIDIA.idx}
-function midiaLogos(){if(!MIDIA.logos)MIDIA.logos=midiaIdx().then(i=>i?midiaJSON("logos.json"):null).then(L=>{const o={partidos:{},policias:(L&&L.policias)||{},unidades:(L&&L.unidades)||[],veiculos:(L&&L.veiculos)||{},estados:(L&&L.estados)||{},empresas:(L&&L.empresas)||{}};Object.entries((L&&L.partidos)||{}).forEach(([k,v])=>o.partidos[normSig(k)]=v);return o});return MIDIA.logos}
+// logos.json é só o índice: cada grupo (partidos, polícias, estados, veículos, empresas) fica num arquivo próprio e só é
+// baixado quando a tela mostra algo dele (antes era um arquivo único de 16 MB). Cópias antigas com tudo junto continuam valendo.
+const LOGO_GRUPOS=["partidos","policias","estados","veiculos","empresas"];MIDIA.grupos={};
+function midiaGrupo(g){if(!MIDIA.grupos[g]){if(!MIDIA.logos)MIDIA.logos=midiaIdx().then(i=>i?midiaJSON("logos.json"):null).then(L=>L||{});
+  MIDIA.grupos[g]=MIDIA.logos.then(L=>L.grupos&&L.grupos[g]?midiaJSON(L.grupos[g]):L[g]).then(x=>{x=x||{};if(g!=="partidos")return x;const o={};Object.entries(x).forEach(([k,v])=>o[normSig(k)]=v);return o})}
+ return MIDIA.grupos[g]}
+async function midiaLogos(gs=LOGO_GRUPOS){const L=await midiaGrupo(gs[0]||"partidos").then(()=>MIDIA.logos),o={unidades:L.unidades||[]};
+ const vs=await Promise.all(LOGO_GRUPOS.map(g=>gs.includes(g)?midiaGrupo(g):{}));LOGO_GRUPOS.forEach((g,k)=>o[g]=vs[k]);return o}
 async function fotoDe(chave){const i=await midiaIdx();if(!i||!i.blocos)return null;const b=snapHash(chave)%i.blocos;if(!MIDIA.blocos[b])MIDIA.blocos[b]=midiaJSON("fotos_"+b+".json").then(x=>x||{});return(await MIDIA.blocos[b])[chave]||null}
 const logoPart=(L,s)=>L&&L.partidos[normSig(s)];
 function imgLogo(l,h,alt){const im=document.createElement("img");im.className="plogo-img";im.src=l.img;im.alt=alt||"";im.height=h;im.style.height=h+"px";im.style.width="auto";im.title=alt?`${alt} (logo: Wikimedia Commons)`:"";return im}
@@ -4727,7 +4784,9 @@ function aplicarMidia(){
    im.onerror=()=>{if(im.isConnected)im.replaceWith(el)};im.src=src;el.replaceWith(im)})});
  const marcas=document.querySelectorAll("[data-plogo]:not([data-mok])"),bolas=document.querySelectorAll("svg.hemi:not([data-mok])"),pol=document.querySelectorAll("[data-pol]:not([data-mok])"),unids=document.querySelectorAll("[data-unids]:not([data-uok])"),vls=document.querySelectorAll("[data-vlogo]:not([data-mok])");
  if(!marcas.length&&!bolas.length&&!pol.length&&!unids.length&&!vls.length&&!document.querySelector("[data-elogo]:not([data-mok]),[data-eres]:not([data-mok])"))return;
-midiaLogos().then(L=>{
+const gs=[];if(marcas.length||bolas.length)gs.push("partidos");if(pol.length||unids.length)gs.push("policias","estados");if(vls.length)gs.push("veiculos");
+ if(document.querySelector("[data-elogo]:not([data-mok]),[data-eres]:not([data-mok])"))gs.push("empresas");
+midiaLogos(gs).then(L=>{
   document.querySelectorAll("[data-elogo]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const l=(L.empresas||{})[el.dataset.elogo];if(!l||!el.isConnected)return;
    if(l.img){const im=document.createElement("img");im.src=l.img;im.alt="";im.className="emp-img";im.style.width=el.style.width;im.style.height=el.style.height;im.title="Logo: Wikipédia/Wikimedia Commons";el.replaceWith(im)}});
   document.querySelectorAll("[data-eres]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const l=(L.empresas||{})[el.dataset.eres];if(l&&l.resumo)el.innerHTML=`${esc(l.resumo)} <a href="${esc(l.pagina)}" target="_blank" rel="noopener">Wikipédia</a>`});

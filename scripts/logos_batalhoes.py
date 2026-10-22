@@ -9,7 +9,6 @@ _g_pc.png → g:pc, distintivo geral da Polícia Civil, usado quando o estado n�
 """
 import base64
 import io
-import json
 import os
 import sys
 from collections import deque
@@ -62,8 +61,8 @@ def data_uri(im: Image.Image) -> str:
 
 
 def main(pasta=PASTA, logos=LOGOS):
-    with open(logos, encoding="utf-8") as f:
-        L = json.load(f)
+    from scripts.logos_arquivo import gravar, ler
+    L = ler(logos)
     feitos = []
     for nome in sorted(os.listdir(pasta)):
         base, ext = os.path.splitext(nome)
@@ -85,8 +84,7 @@ def main(pasta=PASTA, logos=LOGOS):
         L.setdefault("policias", {})[chave] = {
             "img": data_uri(im), "titulo": titulo, "arquivo": f"enviado pelo BRASIL+ ({nome})", "pagina": ""}
         feitos.append(chave)
-    with open(logos, "w", encoding="utf-8") as f:
-        json.dump(L, f, ensure_ascii=False, separators=(",", ":"))
+    gravar(logos, L)
     print(f"{len(feitos)} logos: {', '.join(feitos)}")
 
 

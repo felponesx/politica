@@ -1,7 +1,8 @@
 """Fotos oficiais e logos para o site sem servidor (o site publicado não pode carregar imagens de outros endereços).
 
 Gera em `site/midia/`:
-- `logos.json`: logos dos partidos e brasões das polícias, da Wikipédia/Wikimedia Commons (com o arquivo de origem);
+- `logos.json` (índice) + `logos_<grupo>.json`: logos dos partidos, brasões das polícias, veículos e empresas, da
+  Wikipédia/Wikimedia Commons (com o arquivo de origem), em WebP e um arquivo por grupo (`scripts/logos_arquivo.py`);
 - `fotos_<N>.json`: fotos oficiais em miniatura (Câmara, Senado e TSE), em blocos por hash da chave;
 - `indice.json`: quantos blocos e de onde vem cada coisa.
 
@@ -25,7 +26,8 @@ import httpx
 log = logging.getLogger("brasilplus.midia")
 UA = {"User-Agent": "BRASILmais-midia/1.0 (https://github.com/felponesx/politica; dados publicos)"}
 WIKI = "https://pt.wikipedia.org/w/api.php"
-BLOCOS = 16
+# fotos em 64 blocos (~0,6 MB cada): a tela baixa só os blocos das pessoas que mostra
+BLOCOS = 64
 
 # sigla do partido (como vem da Câmara/TSE) -> artigo da Wikipédia
 PARTIDOS = {
@@ -541,12 +543,12 @@ def fotos_wikipedia(nomes: list[str]) -> dict:
 def main(pasta: str):
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     from app.db import SessionLocal
+    from scripts.logos_arquivo import gravar, ler
     os.makedirs(pasta, exist_ok=True)
     lg = logos()
     # a Wikimedia às vezes limita os pedidos (429): o que não veio desta vez fica como estava na cópia anterior
     try:
-        with open(os.path.join(pasta, "logos.json"), encoding="utf-8") as f:
-            antes = json.load(f)
+        antes = ler(os.path.join(pasta, "logos.json"))
         for k in ("partidos", "policias", "veiculos", "estados"):
             for chave, v in (antes.get(k) or {}).items():
                 lg.setdefault(k, {}).setdefault(chave, v)
@@ -554,28 +556,20 @@ def main(pasta: str):
         lg.setdefault("unidades", []).extend(u for u in antes.get("unidades", []) if (u["uf"], u["sigla"]) not in tem)
     except (OSError, ValueError, KeyError):
         pass
-    with open(os.path.join(pasta, "logos.json"), "w", encoding="utf-8") as f:
-        json.dump(lg, f, ensure_ascii=False, separators=(",", ":"))
+    gravar(os.path.join(pasta, "logos.json"), lg)
     # logos de batalhões enviados à mão (site/midia/batalhoes/UF-SIGLA.png) valem mais que os da Wikipédia
     if os.path.isdir(os.path.join(pasta, "batalhoes")):
         from scripts.logos_batalhoes import main as batalhoes
         batalhoes(os.path.join(pasta, "batalhoes"), os.path.join(pasta, "logos.json"))
-        with open(os.path.join(pasta, "logos.json"), encoding="utf-8") as f:
-            lg = json.load(f)
+        lg = ler(os.path.join(pasta, "logos.json"))
     with SessionLocal() as db:
         lg["empresas"] = logos_empresas(db) or lg.get("empresas") or {}
-    with open(os.path.join(pasta, "logos.json"), "w", encoding="utf-8") as f:
-        json.dump(lg, f, ensure_ascii=False, separators=(",", ":"))
+    gravar(os.path.join(pasta, "logos.json"), lg)
     with SessionLocal() as db:
         fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_wikipedia(nomes_indicados())}
     from scripts.fotos_escandalos import fotos_escandalos
     fotos.update(fotos_escandalos())
-    blocos = [{} for _ in range(BLOCOS)]
-    for k, v in fotos.items():
-        blocos[fnv1a(k) % BLOCOS][k] = v
-    for i, b in enumerate(blocos):
-        with open(os.path.join(pasta, f"fotos_{i}.json"), "w", encoding="utf-8") as f:
-            json.dump(b, f, separators=(",", ":"))
+    gravar_fotos(pasta, fotos)
     with open(os.path.join(pasta, "indice.json"), "w", encoding="utf-8") as f:
         json.dump({"gerado_em": date.today().isoformat(), "blocos": BLOCOS, "fotos": len(fotos),
                    "partidos": len(lg["partidos"]), "policias": len(lg["policias"]),
@@ -584,5 +578,38 @@ def main(pasta: str):
                               "logos": "Wikipédia / Wikimedia Commons (arquivo indicado em cada logo)"}}, f, ensure_ascii=False)
 
 
+def gravar_fotos(pasta: str, fotos: dict) -> None:
+    """Fotos em BLOCOS arquivos (fotos_<N>.json, pelo hash da chave), em WebP quando fica menor; apaga blocos que sobraram."""
+    from scripts.logos_arquivo import webp
+    blocos = [{} for _ in range(BLOCOS)]
+    for k, v in fotos.items():
+        blocos[fnv1a(k) % BLOCOS][k] = webp(v, 80)
+    for i, b in enumerate(blocos):
+        with open(os.path.join(pasta, f"fotos_{i}.json"), "w", encoding="utf-8") as f:
+            json.dump(b, f, separators=(",", ":"))
+    for nome in os.listdir(pasta):
+        m = re.fullmatch(r"fotos_(\d+)\.json", nome)
+        if m and int(m.group(1)) >= BLOCOS:
+            os.remove(os.path.join(pasta, nome))
+
+
+def reblocar(pasta: str) -> None:
+    """Refaz os blocos de uma cópia pronta (sem banco): python -m scripts.midia_site --reblocar site/midia"""
+    with open(os.path.join(pasta, "indice.json"), encoding="utf-8") as f:
+        idx = json.load(f)
+    fotos = {}
+    for i in range(idx.get("blocos", 16)):
+        with open(os.path.join(pasta, f"fotos_{i}.json"), encoding="utf-8") as f:
+            fotos.update(json.load(f))
+    gravar_fotos(pasta, fotos)
+    idx.update(blocos=BLOCOS, fotos=len(fotos))
+    with open(os.path.join(pasta, "indice.json"), "w", encoding="utf-8") as f:
+        json.dump(idx, f, ensure_ascii=False)
+    print(f"{len(fotos)} fotos em {BLOCOS} blocos")
+
+
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "site/midia")
+    if sys.argv[1:2] == ["--reblocar"]:
+        reblocar(sys.argv[2] if len(sys.argv) > 2 else "site/midia")
+    else:
+        main(sys.argv[1] if len(sys.argv) > 1 else "site/midia")

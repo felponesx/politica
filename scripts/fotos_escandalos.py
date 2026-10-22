@@ -19,6 +19,7 @@ import unicodedata
 from urllib.parse import quote
 
 from app import escandalos
+from scripts.logos_arquivo import webp
 from scripts.midia_site import BLOCOS, fnv1a, miniatura
 
 log = logging.getLogger("brasilplus.midia")
@@ -176,7 +177,7 @@ def main(argv):
             mudou = True
         for k, v in novas.items():
             if fnv1a(k) % BLOCOS == i:
-                bloco[k] = v
+                bloco[k] = webp(v, 80)
                 mudou = True
         if mudou:
             with open(arq, "w", encoding="utf-8") as f:
