@@ -8,7 +8,7 @@ conferido na primeira coleta real; a que trouxer resultados é usada.
 """
 import logging
 import re
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as _SEGURO
 
 from app import http
 from app.collectors.base import registrar_coleta
@@ -34,7 +34,7 @@ def _local(tag: str) -> str:
 
 def interpretar(xml_texto: str):
     """Gera (total, [registros]) do XML SRU; cada registro é um dict com os campos Dublin Core + urn."""
-    raiz = ET.fromstring(xml_texto)
+    raiz = _SEGURO.fromstring(xml_texto)
     total = next((int(e.text) for e in raiz.iter() if _local(e.tag) == "numberOfRecords" and (e.text or "").isdigit()), 0)
     regs = []
     for rec in (e for e in raiz.iter() if _local(e.tag) == "recordData"):

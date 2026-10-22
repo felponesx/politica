@@ -1719,6 +1719,9 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .rodape-i{max-width:1240px;margin-inline:auto;padding:18px 28px 22px;font-size:12px;line-height:1.55;color:var(--muted)}
 .rodape-i p{margin:0 0 8px}.rodape-i b{color:var(--ink2)}.rodape-l{margin-top:4px!important}.rodape-l a{color:var(--blue)}
 @media (max-width:760px){.rodape-i{padding:16px 14px calc(78px + env(safe-area-inset-bottom,0px));font-size:11.5px}}
+
+/* leveza: painéis fora da tela só desenham quando chegam perto (menos layout e pintura ao abrir telas longas) */
+.page>.panel:nth-child(n+4),.page>.grid>.panel:nth-child(n+3),.page .ufsec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 520px}
 </style>
 </head>
 <body>
@@ -5090,11 +5093,11 @@ async function midiaLogos(gs=LOGO_GRUPOS){const L=await midiaGrupo(gs[0]||"parti
  const vs=await Promise.all(LOGO_GRUPOS.map(g=>gs.includes(g)?midiaGrupo(g):{}));LOGO_GRUPOS.forEach((g,k)=>o[g]=vs[k]);return o}
 async function fotoDe(chave){const i=await midiaIdx();if(!i||!i.blocos)return null;const b=snapHash(chave)%i.blocos;if(!MIDIA.blocos[b])MIDIA.blocos[b]=midiaJSON("fotos_"+b+".json").then(x=>x||{});return(await MIDIA.blocos[b])[chave]||null}
 const logoPart=(L,s)=>L&&L.partidos[normSig(s)];
-function imgLogo(l,h,alt){const im=document.createElement("img");im.className="plogo-img";im.src=l.img;im.alt=alt||"";im.height=h;im.style.height=h+"px";im.style.width="auto";im.title=alt?`${alt} (logo: Wikimedia Commons)`:"";return im}
+function imgLogo(l,h,alt){const im=document.createElement("img");im.decoding="async";im.className="plogo-img";im.src=l.img;im.alt=alt||"";im.height=h;im.style.height=h+"px";im.style.width="auto";im.title=alt?`${alt} (logo: Wikimedia Commons)`:"";return im}
 function aplicarMidia(){
  document.querySelectorAll("[data-foto]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const k=el.dataset.foto;
   fotoDe(k).then(src=>{if(!el.isConnected)return;const sz=el.style.width;
-   if(!src&&/^https?:/.test(k)){src=k}if(!src)return;const im=document.createElement("img");im.className="rfoto";im.alt="Foto de "+(el.dataset.nome||"");im.style.width=sz;im.style.height=el.style.height;im.width=parseInt(sz)||48;im.height=parseInt(el.style.height)||48;
+   if(!src&&/^https?:/.test(k)){src=k}if(!src)return;const im=document.createElement("img");im.className="rfoto";im.decoding="async";im.loading="lazy";im.alt="Foto de "+(el.dataset.nome||"");im.style.width=sz;im.style.height=el.style.height;im.width=parseInt(sz)||48;im.height=parseInt(el.style.height)||48;
    im.onerror=()=>{if(im.isConnected)im.replaceWith(el)};im.src=src;el.replaceWith(im)})});
  const marcas=document.querySelectorAll("[data-plogo]:not([data-mok])"),bolas=document.querySelectorAll("svg.hemi:not([data-mok])"),pol=document.querySelectorAll("[data-pol]:not([data-mok])"),unids=document.querySelectorAll("[data-unids]:not([data-uok])"),vls=document.querySelectorAll("[data-vlogo]:not([data-mok])");
  if(!marcas.length&&!bolas.length&&!pol.length&&!unids.length&&!vls.length&&!document.querySelector("[data-elogo]:not([data-mok]),[data-eres]:not([data-mok])"))return;
@@ -5102,7 +5105,7 @@ const gs=[];if(marcas.length||bolas.length)gs.push("partidos");if(pol.length||un
  if(document.querySelector("[data-elogo]:not([data-mok]),[data-eres]:not([data-mok])"))gs.push("empresas");
 midiaLogos(gs).then(L=>{
   document.querySelectorAll("[data-elogo]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const l=(L.empresas||{})[el.dataset.elogo];if(!l||!el.isConnected)return;
-   if(l.img){const im=document.createElement("img");im.src=l.img;im.alt="";im.className="emp-img";im.style.width=el.style.width;im.style.height=el.style.height;im.title="Logo: Wikipédia/Wikimedia Commons";el.replaceWith(im)}});
+   if(l.img){const im=document.createElement("img");im.src=l.img;im.alt="";im.className="emp-img";im.decoding="async";im.loading="lazy";im.style.width=el.style.width;im.style.height=el.style.height;im.title="Logo: Wikipédia/Wikimedia Commons";el.replaceWith(im)}});
   document.querySelectorAll("[data-eres]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const l=(L.empresas||{})[el.dataset.eres];if(l&&l.resumo)el.innerHTML=`${esc(l.resumo)} <a href="${esu(l.pagina)}" target="_blank" rel="noopener">Wikipédia</a>`});
   vls.forEach(el=>{el.dataset.mok=1;const l=(L.veiculos||{})[el.dataset.vlogo];if(!l||!el.isConnected)return;const im=document.createElement("img");im.src=l.img;im.alt=el.dataset.vlogo;im.style.height=(el.dataset.h||20)+"px";im.title="Logo: Wikimedia Commons";el.replaceChildren(im)});
   unids.forEach(g=>{g.dataset.uok=1;if(!g.isConnected)return;const q=g.dataset.unids,tem=new Set(UNIDADES.map(u=>`u:${u[0]}:${u[2]}`)),nomes=new Set(UNIDADES.map(u=>u[0]+":"+normNw(u[3])));

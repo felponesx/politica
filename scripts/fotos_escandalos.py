@@ -64,7 +64,7 @@ def _thumb(arquivo: str, largura: int = 250) -> list[str]:
     """Endereços da miniatura no Wikimedia Commons (e, se o arquivo for só da Wikipédia em português, no acervo dela).
     A Wikimedia só serve larguras padronizadas (250, 330, 500...); outras dão erro 400."""
     nome = arquivo.strip().replace(" ", "_")
-    h = hashlib.md5(nome.encode()).hexdigest()
+    h = hashlib.md5(nome.encode(), usedforsecurity=False).hexdigest()
     q = quote(nome)
     return [f"https://upload.wikimedia.org/wikipedia/{w}/thumb/{h[0]}/{h[:2]}/{q}/{largura}px-{q}" for w in ("commons", "pt")]
 

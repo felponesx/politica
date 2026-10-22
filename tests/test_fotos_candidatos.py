@@ -1,6 +1,5 @@
 """Fotos: prefeitos eleitos pelo zip remoto do TSE (Range) e retratos oficiais da Câmara para os envolvidos nos escândalos."""
 import io
-import struct
 import zipfile
 from types import SimpleNamespace
 

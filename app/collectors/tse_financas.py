@@ -10,7 +10,6 @@ import os
 import tempfile
 import zipfile
 
-from sqlalchemy import select
 
 from app import http
 from app.collectors.base import registrar_coleta

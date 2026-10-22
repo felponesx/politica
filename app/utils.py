@@ -66,7 +66,7 @@ def upsert(db, model, chaves: dict, valores: dict):
 
 
 def hash_curto(*partes) -> str:
-    return hashlib.sha1("|".join(str(p) for p in partes).encode()).hexdigest()[:24]
+    return hashlib.sha1("|".join(str(p) for p in partes).encode(), usedforsecurity=False).hexdigest()[:24]
 
 
 def para_data(valor) -> date | None:
@@ -209,3 +209,31 @@ def formatar_documento(d: str | None) -> str | None:
     if len(d) == 11:
         return f"***.{d[3:6]}.{d[6:9]}-**"  # CPF de pessoa física: mostra só o miolo
     return d
+
+
+# ---------- cache de respostas pesadas (por processo, com validade curta) ----------
+import threading as _threading
+import time as _time
+
+_MEMO: dict = {}
+_MEMO_TRAVA = _threading.Lock()
+
+
+def memo(chave, fn, ttl: int | None = None):
+    """Guarda por `ttl` segundos (settings.cache_segundos) o resultado de `fn()` — consultas agregadas que seriam refeitas a cada visita.
+    No máximo 256 respostas guardadas; erro não é guardado."""
+    from app.config import settings
+    ttl = settings.cache_segundos if ttl is None else min(ttl, settings.cache_segundos)
+    if ttl <= 0:
+        return fn()
+    agora = _time.monotonic()
+    with _MEMO_TRAVA:
+        hit = _MEMO.get(chave)
+        if hit and agora - hit[0] < ttl:
+            return hit[1]
+    valor = fn()
+    with _MEMO_TRAVA:
+        if len(_MEMO) >= 256:
+            _MEMO.pop(min(_MEMO, key=lambda k: _MEMO[k][0]), None)
+        _MEMO[chave] = (agora, valor)
+    return valor

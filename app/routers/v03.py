@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.collectors.bcb import SERIES
 from app.db import get_db
+from app.utils import memo
 from app.models import (Candidato, Contrato, Despesa, DevedorPGFN, Municipio, Norma, Obra, Parlamentar, Proposicao,
                         Registro, Votacao)
 
@@ -167,6 +168,10 @@ def _ancorar_gas(gas, hoje):
 
 @router.get("/contadores", tags=["Economia"])
 def contadores(db: Session = Depends(get_db)):
+    return memo(("contadores",), lambda: _contadores(db=db), ttl=60)
+
+
+def _contadores(db: Session):
     """Base real do impostômetro e do gastômetro: valor por segundo calculado com os últimos dados oficiais."""
     hoje = date.today()
     imp = None

@@ -10,14 +10,14 @@ import logging
 import time
 from datetime import date, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 
 from app import http
 from app.collectors import camara, senado
 from app.collectors.base import registrar_coleta
 from app.config import settings
 from app.models import Despesa, Parlamentar, Proposicao, Registro, Votacao
-from app.utils import achar_lista, cavar, hash_curto, para_data, para_float, pegar, sem_acento, so_digitos, upsert
+from app.utils import achar_lista, cavar, hash_curto, para_float, pegar, sem_acento, so_digitos, upsert
 
 log = logging.getLogger("brasilplus.congresso")
 

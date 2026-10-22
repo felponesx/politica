@@ -4,8 +4,14 @@
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"
 		-Server
 	}
-	# as coletas só são disparadas pelo agendador, nunca pela internet
-	@coletas method POST
+	# as coletas só são disparadas pelo agendador, nunca pela internet: POST só nas duas rotas da IA do site (com limite diário)
+	@coletas {
+		method POST
+		not path /ia/web /busca/web
+	}
 	respond @coletas "Método não permitido" 405
+	request_body {
+		max_size 256KB
+	}
 	reverse_proxy api:8000
 }

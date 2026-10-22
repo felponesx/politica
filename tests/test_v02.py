@@ -1,5 +1,4 @@
 """Fontes da versão 0.2 com respostas e arquivos simulados (sem internet)."""
-import io
 import os
 import zipfile
 

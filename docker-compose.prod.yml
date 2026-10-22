@@ -41,6 +41,11 @@ services:
       SOMENTE_LEITURA: "true"
       PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY:-}
       LIMITE_REQ_POR_MINUTO: ${LIMITE_REQ_POR_MINUTO:-120}
+    # a API só lê: sistema de arquivos somente leitura, sem privilégios extras
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
     depends_on:
       db: {condition: service_healthy}
       agendador: {condition: service_started}

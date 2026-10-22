@@ -11,7 +11,7 @@ from app.db import get_db
 from app.models import (Contrato, Despesa, DevedorPGFN, EmpresaCadastro, IndicadorMunicipal, Municipio,
                         OcorrenciaDesastre, Parlamentar, Registro, ResultadoEleicao)
 from app.routers.ligacoes import AVISO, resumo_fornecedor
-from app.utils import UFS, formatar_documento, so_digitos
+from app.utils import UFS, formatar_documento, so_digitos, memo
 
 router = APIRouter()
 
@@ -476,6 +476,10 @@ SETORES_ECO = {"industria": "Indústria", "construcao": "Construção", "comerci
 
 @router.get("/economia-empresas", tags=["Empresas"])
 def empresas_economia(db: Session = Depends(get_db)):
+    return memo(("econ",), lambda: _empresas_economia(db=db))
+
+
+def _empresas_economia(db: Session):
     """Como é a economia das empresas: faturamento médio, para onde vai a receita e quanto sobra, por setor (IBGE)."""
     r = db.scalar(select(Registro).where(Registro.fonte == "ibge", Registro.tipo == "empresas_economia")
                   .order_by(Registro.ano.desc()))
@@ -511,6 +515,10 @@ def empresas_economia(db: Session = Depends(get_db)):
 
 @router.get("/resumo-contratos", tags=["Contratos"])
 def contratos_resumo(db: Session = Depends(get_db)):
+    return memo(("ctres",), lambda: _contratos_resumo(db=db))
+
+
+def _contratos_resumo(db: Session):
     """Quanto o poder público gasta em contratos: total, média, mediana, por esfera e por faixa de valor."""
     valores = sorted(v for (v,) in db.execute(select(Contrato.valor).where(Contrato.valor.isnot(None), Contrato.valor > 0)))
     if not valores:

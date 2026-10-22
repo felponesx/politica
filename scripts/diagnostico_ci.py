@@ -4,7 +4,6 @@ Serve para conferir formato, tempo de resposta e bloqueios quando um coletor fal
 """
 import io
 import time
-import zipfile
 
 import httpx
 

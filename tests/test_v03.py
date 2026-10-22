@@ -1,5 +1,4 @@
 """Fontes da versão 0.3 com respostas simuladas (sem internet)."""
-import io
 import os
 import zipfile
 from datetime import date
@@ -12,7 +11,7 @@ from app import http  # noqa: E402
 from app.collectors import agenda, bcb, congresso_extra, tse_financas  # noqa: E402
 from app.db import SessionLocal, criar_tabelas  # noqa: E402
 from app.main import app  # noqa: E402
-from app.models import Candidato, CandidatoFinancas, Parlamentar, Proposicao, Registro  # noqa: E402
+from app.models import CandidatoFinancas, Parlamentar, Proposicao, Registro  # noqa: E402
 
 criar_tabelas()
 cliente = TestClient(app)

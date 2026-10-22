@@ -650,7 +650,6 @@ def test_obrasgov_pagina_mesmo_com_last_true(monkeypatch):
 
 
 def test_economia_empresas_e_resumo_contratos(monkeypatch):
-    from app.models import Contrato
     db = SessionLocal()
     db.add(Registro(fonte="ibge", tipo="empresas_economia", chave="2024", ano=2024, dados={"ano": 2024, "setores": {
         "servicos": {"empresas": 100, "pessoal": 1000, "receita": 1e9, "gastos_pessoal": 2e8, "valor_adicionado": 6e8}}}))
@@ -792,3 +791,16 @@ def test_saida_http_barra_rede_interna():
         with pytest.raises(ValueError):
             url_segura(u)
     url_segura("https://servicodados.ibge.gov.br/api/v3/agregados")  # público (ou sem resolução aqui): passa
+
+
+def test_memo_guarda_e_expira(monkeypatch):
+    from app import utils
+    from app.config import settings
+    monkeypatch.setattr(settings, "cache_segundos", 100)
+    utils._MEMO.clear()
+    n = {"c": 0}
+    f = lambda: n.__setitem__("c", n["c"] + 1) or n["c"]
+    assert utils.memo(("t",), f) == 1 and utils.memo(("t",), f) == 1  # segunda vem da memória
+    monkeypatch.setattr(settings, "cache_segundos", 0)
+    assert utils.memo(("t",), f) == 2  # desligado: sempre recalcula
+    utils._MEMO.clear()

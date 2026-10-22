@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.busca import ENTIDADES, buscar
 from app.db import get_db
+from app.utils import memo
 from app.models import Candidato, Contrato, Indicador, Obra
 
 router = APIRouter()
@@ -86,6 +87,10 @@ def obras(uf: str | None = None, situacao: str | None = None, tipo: str | None =
 @router.get("/obras-gestao", tags=["Obras"])
 def obras_gestao(escopo: str = Query("pais", pattern="^(pais|uf|municipios)$"), uf: str | None = None,
                  db: Session = Depends(get_db)):
+    return memo(("og", escopo, (uf or "").upper()), lambda: _obras_gestao(escopo, uf, db))
+
+
+def _obras_gestao(escopo: str, uf: str | None, db: Session):
     """Andamento das obras de um governo: `pais` (presidente), `uf` (governador: obras do estado) ou `municipios`
     (prefeitos: resumo de cada prefeitura do estado, chave = nome sem acento em maiúsculas)."""
     from app.obras_gestao import eh_estadual, nome_municipio, resumir
@@ -109,6 +114,10 @@ def obras_gestao(escopo: str = Query("pais", pattern="^(pais|uf|municipios)$"), 
 
 @router.get("/obras-gestao/lista", tags=["Obras"])
 def obras_gestao_lista(uf: str = Query(..., min_length=2, max_length=2), db: Session = Depends(get_db)):
+    return memo(("ogl", uf.upper()), lambda: _obras_gestao_lista(uf, db))
+
+
+def _obras_gestao_lista(uf: str, db: Session):
     """Todas as obras com dinheiro federal de um estado, em linhas curtas (campos em `campos`), para as telas de governador, prefeito
     e presidente filtrarem: o que começou, o que não começou, no prazo e atrasadas."""
     from app.obras_gestao import CAMPOS_LISTA, lista_compacta

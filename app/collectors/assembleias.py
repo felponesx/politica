@@ -12,8 +12,7 @@ Para as demais Assembleias: `assembleia-arquivo uf=XX arquivo=deputados.csv` imp
 (colunas nome, partido e, se houver, e-mail, foto e situação). Para criar um adaptador novo, siga o modelo de MG.
 """
 import logging
-import re
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as _SEGURO
 from datetime import date, timedelta
 
 from app import http
@@ -109,7 +108,7 @@ def mg_votacoes(db, n, inicio: date, fim: date):
 def _xml_registros(url: str):
     """Baixa o XML da Alesp e gera dicts {campo: texto} de cada registro (filhos diretos da raiz)."""
     texto = http.get(url, headers={"Accept": "application/xml"}).content
-    raiz = ET.fromstring(texto)
+    raiz = _SEGURO.fromstring(texto)
     for el in raiz:
         d = {c.tag.rsplit("}", 1)[-1]: (c.text or "").strip() for c in el}
         if d:

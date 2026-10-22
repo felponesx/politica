@@ -158,7 +158,7 @@ def coletar_noticias(dias: int = 14):
                 continue
             feitos.add((veiculo, tema))
             for it in itens:
-                chave = hashlib.sha1(it["link"].encode()).hexdigest()[:20]
+                chave = hashlib.sha1(it["link"].encode(), usedforsecurity=False).hexdigest()[:20]
                 ano = int(it["data"][:4]) if it["data"] else None
                 upsert(db, Registro, {"fonte": "noticias", "tipo": "materia", "chave": chave},
                        {"ano": ano, "titulo": it["titulo"][:500], "dados": it})
