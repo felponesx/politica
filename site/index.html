@@ -4493,24 +4493,34 @@ function segPorDia(e,d,uf){const o=e.ocorrencias||{},p=e.prisional||{},R=d.refer
  if(p.abandonos&&sem)it.push(`<div class="kpi"><span>Não voltaram para a prisão</span><strong>${fd(p.abandonos/sem)}</strong><em>por dia · ${ref.prisional}</em></div>`);
  return it.length?`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="kpis kpis-c kpis-dia">${it.join("")}</div>`:""}
 function _dias(ref){if(!ref)return 182;const[a,sm]=String(ref).split("/");return sm==="2"?184:((+a%4===0&&+a%100!==0)||+a%400===0?182:181)}
-// tabela ano a ano com uma barra para escolher o indicador (homicídios dolosos, feminicídios, presos, mortes…); cada estado e o país têm a sua
+// gráfico do indicador escolhido (homicídios dolosos, feminicídios, presos, mortes…): por mês (país, Sinesp) ou por ano; estados só por ano
 const SA_REG=new Map();let SA_N=0;
-function segAnoAno(d,uf){const H=d.historico||{},O=H.ocorrencias||{},V=H.violencia||{},Pr=H.prisional||{};const anos=[...new Set([...Object.keys(O),...Object.keys(V)])].sort().reverse();if(!anos.length)return"";
+function segAnoAno(d,uf,sm){const H=d.historico||{},O=H.ocorrencias||{},V=H.violencia||{},Pr=H.prisional||{};const anos=[...new Set([...Object.keys(O),...Object.keys(V)])].sort();if(!anos.length)return"";
+ sm=uf?[]:(sm||[]);
  const pick=(a,k)=>{const x=O[a];if(!x)return null;const b=uf?x.estados[uf]:x.brasil;return b?b[k]:null};
  const mvi=a=>{const x=V[a];if(!x)return null;const b=uf?x.estados[uf]:x.brasil;return b?b.mvi:null};
  const pres=a=>{const k=Object.keys(Pr).filter(r=>r.startsWith(a)).sort().pop();if(!k)return null;const b=uf?Pr[k].estados[uf]:Pr[k].brasil;return b?b.populacao:null};
- const rows=anos.map(a=>({a,m:O[a]?O[a].meses:null}));
- const IND=[];SEG_DIA.forEach(([k,t])=>{const f=k==="homicidio_doloso"?a=>pick(a,k)??mvi(a):a=>pick(a,k);if(anos.some(a=>f(a)!=null))IND.push([k,k==="mandados_cumpridos"?"Presos por mandado":t,f])});
- if(anos.some(a=>mvi(a)!=null))IND.splice(Math.min(IND.length,4),0,["mvi","Mortes violentas (todas)",mvi]);
- if(anos.some(a=>pres(a)!=null))IND.splice(Math.min(IND.length,4),0,["pres","Presos no sistema prisional",pres]);
+ const IND=[];SEG_DIA.forEach(([k,t])=>{const f=k==="homicidio_doloso"?a=>pick(a,k)??mvi(a):a=>pick(a,k);const mes=sm.filter(x=>x[k]!=null);if(anos.some(a=>f(a)!=null)||mes.length>1)IND.push([k,k==="mandados_cumpridos"?"Presos por mandado":t,f,mes])});
+ if(anos.some(a=>mvi(a)!=null))IND.splice(Math.min(IND.length,4),0,["mvi","Mortes violentas (todas)",mvi,[]]);
+ if(anos.some(a=>pres(a)!=null))IND.splice(Math.min(IND.length,4),0,["pres","Presos no sistema prisional",pres,[]]);
  if(!IND.length)return"";
- const tab=k=>{const[,t,f]=IND.find(x=>x[0]===k)||IND[0];const rs=rows.filter(r=>f(r.a)!=null);
-  return table([["Ano",r=>`<b>${r.a}</b>${r.m&&r.m<12?` <small class="muted">(${r.m} meses)</small>`:""}`],[t,r=>n0(f(r.a)),"n"],
-   ["Mudança no ano",r=>{const i=rs.indexOf(r),ant=rs[i+1];if(!ant||(r.m&&r.m<12)||(ant.m&&ant.m<12)||!f(ant.a))return"—";const v=(f(r.a)/f(ant.a)-1)*100;return`<span class="${v>0.05?"var-up":v<-0.05?"var-dn":""}">${v>0?"+":""}${v.toFixed(1).replace(".",",")}%</span>`},"n"]],rs)};
- const id="sa"+(++SA_N);SA_REG.set(id,tab);if(SA_REG.size>40)SA_REG.delete(SA_REG.keys().next().value);
- return`<h3 class="seg-h">Ano a ano <small>${uf?esc(UF[uf].nome):"Brasil"}</small></h3><div class="panel seg-anos"><div class="seg seg-grupo" data-pill="Indicador" data-ayp="${id}">${IND.map(([k,t],n)=>`<button type="button" data-k="${k}" class="${n?"":"on"}">${esc(t)}</button>`).join("")}</div><div id="${id}">${tab(IND[0][0])}</div></div>`}
-document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ayp] button[data-k]");if(!b)return;const w=b.closest("[data-ayp]"),f=SA_REG.get(w.dataset.ayp),el=document.getElementById(w.dataset.ayp);if(!f||!el)return;
- w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));trocaSuave(el,f(b.dataset.k));const tb=el.querySelector(":scope>.tw");if(tb&&AN_IO)anJoga(tb)},true); // captura: o menu da pílula não deixa o clique subir
+ const lugar=uf?esc(UF[uf].nome):"Brasil";
+ const graf=(k,modo)=>{const[,t,f,mes]=IND.find(x=>x[0]===k)||IND[0];const pa=anos.filter(a=>f(a)!=null);
+  const m=modo==="mes"&&mes.length>1?"mes":"ano";
+  const tem=mes.length>1&&pa.length>1;
+  const sw=tem?`<div class="seg lc-per" data-aym="${k}" role="group" aria-label="Escala do gráfico"><button type="button" data-m="mes" class="${m==="mes"?"on":""}">Por mês</button><button type="button" data-m="ano" class="${m==="ano"?"on":""}">Por ano</button></div>`:"";
+  let corpo;
+  if(m==="mes")corpo=lineChart([{n:t,v:mes.map(x=>x[k]),c:"#4A7FC1"}],mes.map(x=>mesCurto(x.mes)),{h:200,fmt:n0});
+  else if(pa.length>1){const parc=pa.filter(a=>O[a]&&O[a].meses&&O[a].meses<12);
+   corpo=lineChart([{n:t,v:pa.map(a=>f(a)),c:"#4A7FC1"}],pa,{h:200,fmt:n0,datas:pa,periodo:false})+(parc.length?`<p class="small muted" style="margin:6px 0 0">${parc.join(", ")}: ano incompleto (${parc.map(a=>O[a].meses+" meses").join(", ")}).</p>`:"")}
+  else corpo=pa.length?`<p class="small">${pa[0]}: <b>${n0(f(pa[0]))}</b></p>`:rvazio("Sem série para este indicador.");
+  return`<h3 class="seg-h" style="margin-top:0">${esc(t)} ${m==="mes"?"por mês":"por ano"} <small>${lugar}${m==="mes"?" · Sinesp":""}</small></h3>${sw}<div class="sa-graf">${corpo}</div>`};
+ const id="sa"+(++SA_N);SA_REG.set(id,graf);if(SA_REG.size>40)SA_REG.delete(SA_REG.keys().next().value);
+ return`<div class="seg-anos" style="margin-top:14px"><div class="seg seg-grupo" data-pill="Indicador" data-ayp="${id}">${IND.map(([k,t],n)=>`<button type="button" data-k="${k}" class="${n?"":"on"}">${esc(t)}</button>`).join("")}</div><div id="${id}" data-k="${IND[0][0]}">${graf(IND[0][0],"mes")}</div></div>`}
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ayp] button[data-k],[data-aym] button[data-m]");if(!b)return;const raiz=b.closest(".seg-anos");if(!raiz)return;const el=raiz.querySelector("[id^=sa]"),f=el&&SA_REG.get(el.id);if(!f)return;
+ let k=el.dataset.k,modo="mes";
+ if(b.dataset.k){k=b.dataset.k;el.dataset.k=k;raiz.querySelectorAll("[data-ayp] button").forEach(x=>x.classList.toggle("on",x===b))}else modo=b.dataset.m;
+ trocaSuave(el,f(k,modo));const lc=el.querySelector(".lc");if(lc&&AN_IO){lc.dataset.an=1;anJoga(lc)}},true); // captura: o menu da pílula não deixa o clique subir
 function segCompleto(e,d,uf){return segPorDia(e,d,uf)+`<div class="seg-ano">${segBlocos(e,null,segRefs(d),!!uf)}</div>`+segAnoAno(d,uf)}
 
 P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"#segstate",map:"#segmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>segEstado(uf)};
@@ -4522,8 +4532,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    <div class="kpis kpis-c" id="segkpi" style="margin-bottom:12px"></div>
    <div class="mapwrap mapbig"><div id="segmap"></div><div class="zside" id="segside"></div></div>
    <p class="small muted" style="margin:8px 0 0">Toque em um estado para ver todas as taxas dele.</p>
-   <div id="segchartw" style="margin-top:14px"><h3 class="seg-h" id="segcht"></h3><div id="segchart"></div></div>
-   ${segAnoAno(d,null)}</div><div id="segstate" style="display:none"></div></div>
+   ${segAnoAno(d,null,sm)}</div><div id="segstate" style="display:none"></div></div>
   ${segPorDia(B,d)}<div class="seg-ano">${segBlocos(B,null,ref)}</div>
   ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais. Toque numa polícia para ver a ficha.</p></div><a class="btn" href="#/policias">Todas as polícias ›</a></div>${segEfetivo(B.efetivo,null)}
    <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["Policiais (PM e Civil)",r=>{const f=gv(d.estados[r.uf],"efetivo")||{};return f.policia_militar==null&&f.policia_civil==null?"—":n0((f.policia_militar||0)+(f.policia_civil||0))},"n"],["Por mil habitantes",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"n"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
@@ -4542,8 +4551,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    XF("#segside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,vals,fmt,opS);
    bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ();graf()};
   const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
-  const graf=()=>{const w=$("#segchartw");if(!w)return;const k=SEG_SERIE[met]||(met.startsWith("c_")?met.slice(2):null);const pts=k?sm.filter(x=>x[k]!=null).map(x=>({data:x.mes,valor:x[k]})):[];
-   w.style.display=pts.length>1?"":"none";if(pts.length>1){$("#segcht").innerHTML=`${(SEG_DIA.find(x=>x[0]===k)||[0,SEG_MET[met][4]])[1]} por mês no Brasil <small>Sinesp</small>`;$("#segchart").innerHTML=lineChart([{n:k,v:pts.map(p=>p.valor),c:"#4A7FC1"}],pts.map(p=>mesCurto(p.data)),{h:200,fmt:n0})}};
+  const graf=()=>{};
   document.querySelectorAll("#segcard .segj button").forEach(b=>b.onclick=()=>{met=b.dataset.m;document.querySelectorAll("#segcard .segj button").forEach(x=>x.classList.toggle("on",x===b));desenha()});
   if(met)desenha();else{$("#segcard").remove()}graf();rowLinks()}).catch(e=>{const b=$("#segbox");if(b)b.innerHTML=rerro(e)})}}};
 
