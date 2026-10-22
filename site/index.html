@@ -1371,7 +1371,8 @@ a.rrow b{font-weight:500}
 .hier-topo{display:flex;flex-direction:column;align-items:center;gap:10px}
 .hier-gov{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;width:100%}
 .hier-sen{width:100%}.xgrid3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.xcard-gov{min-width:230px;max-width:100%;border-color:var(--blue)}
+.xcard-gov{min-width:230px;max-width:100%}
+.rep-ver{display:flex;justify-content:center;margin:14px 0 4px}
 @media (max-width:900px){.xgrid3{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:600px){#ufRepSel{flex-wrap:nowrap}#ufRepSel button{flex:1 1 0;min-width:0;padding:7px 4px;font-size:12px}}
 
@@ -1695,6 +1696,10 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .emp-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.emp-v{text-align:right}.emp-v strong{display:block;font-size:15px}
 .emp-mini{display:inline-flex;gap:8px;align-items:center}
 @media (max-width:700px){.emp-card{grid-template-columns:22px 40px 1fr}.emp-v{grid-column:3;text-align:left}}
+
+/* encaixe (v2.0): abas de Empresas cabem no celular; botões com ícone com respiro */
+.btn svg{margin-right:6px;vertical-align:-3px;flex:none}
+@media (max-width:600px){.tabl{padding:10px 8px;font-size:13px}.tabs.tabs-emp,.tabs{gap:0}}
 </style>
 </head>
 <body>
@@ -3495,9 +3500,9 @@ mount(){let f={uf:"",esfera:"",municipio:"",ordenar:"valor"};
   <div><h3 class="seg-h" style="margin-top:0">Tamanho dos contratos <small>quantidade por faixa de valor</small></h3>${donut(r.por_faixa.filter(x=>x.contratos>0).map(x=>[x.faixa,x.contratos]))}</div></div>
   <p class="small muted" style="margin:10px 0 0">${esc(r.nota)}</p>`}).catch(()=>{const b=$("#ctRes");if(b)b.innerHTML=rvazio("Os contratos ainda estão sendo coletados.")});
  $("#fcform").onsubmit=e=>{e.preventDefault();const d=$("#fccnpj").value.replace(/\D/g,"");if(d.length>=11)location.hash="#/fornecedor/"+d};
- apiGet("/fornecedores-cruzados?limit=60").then(r=>{$("#fcl").innerHTML=r.itens.length?`<p class="small muted" style="margin:0 0 10px">${esc(r.aviso)}</p>`+table([["Empresa",f=>`<a href="#/fornecedor/${f.cnpj}">${esc(f.nome||f.documento)}</a><div class="small muted">${esc(f.documento)}</div>`],["Contratos com o governo",f=>brl(f.total_contratos_publicos),"n"],["Cota parlamentar",f=>`${brl(f.total_cota_parlamentar)}<div class="small muted">${nf(f.parlamentares)} parlamentar${f.parlamentares==1?"":"es"}</div>`,"n"]],r.itens,f=>"#/fornecedor/"+f.cnpj):rvazio("Nenhum cruzamento encontrado ainda. Ele aparece quando há contratos (PNCP) e despesas da cota coletados.");rowLinks()}).catch(e=>{const b=$("#fcl");if(b)b.innerHTML=rerro(e)});
+ apiGet("/fornecedores-cruzados?limit=60").then(r=>{$("#fcl").innerHTML=r.itens.length?`<p class="small muted" style="margin:0 0 10px">${esc(r.aviso)}</p>`+table([["Empresa",f=>`<span class="emp-mini">${fornLogo(f.cnpj||f.documento,f.nome,32)}<span><a href="#/fornecedor/${f.cnpj}">${esc(f.nome||f.documento)}</a><div class="small muted">${esc(f.documento)}</div></span></span>`],["Contratos com o governo",f=>brl(f.total_contratos_publicos),"n"],["Cota parlamentar",f=>`${brl(f.total_cota_parlamentar)}<div class="small muted">${nf(f.parlamentares)} parlamentar${f.parlamentares==1?"":"es"}</div>`,"n"]],r.itens,f=>"#/fornecedor/"+f.cnpj):rvazio("Nenhum cruzamento encontrado ainda. Ele aparece quando há contratos (PNCP) e despesas da cota coletados.");rowLinks()}).catch(e=>{const b=$("#fcl");if(b)b.innerHTML=rerro(e)});
  const pg=listaPaginada({url:()=>"/contratos"+qs(f),alvo:"#ctl",mais:"#ctm",vazio:"Nenhum contrato com esses filtros.",
-  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} contratos</p>`+table([["Contrato",c=>`<a href="#/contrato/r${c.id}" class="rclamp">${esc(c.objeto||"Contrato")}</a><div class="small muted">${[c.orgao,(c.municipio?c.municipio+", ":"")+(c.uf||""),c.data_assinatura?fdr(c.data_assinatura):""].filter(Boolean).map(esc).join(" · ")}</div>`],["Empresa",c=>c.cnpj_fornecedor?`<a href="#/fornecedor/${c.cnpj_fornecedor}">${esc(c.fornecedor||c.cnpj_fornecedor)}</a>`:esc(c.fornecedor||"—")],["Valor",c=>brlR(c.valor),"n"]],it,c=>"#/contrato/r"+c.id),
+  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} contratos</p>`+table([["Contrato",c=>`<a href="#/contrato/r${c.id}" class="rclamp">${esc(c.objeto||"Contrato")}</a><div class="small muted">${[c.orgao,(c.municipio?c.municipio+", ":"")+(c.uf||""),c.data_assinatura?fdr(c.data_assinatura):""].filter(Boolean).map(esc).join(" · ")}</div>`],["Empresa",c=>`<span class="emp-mini">${fornLogo(c.cnpj_fornecedor,c.fornecedor,32)}<span>${c.cnpj_fornecedor?`<a href="#/fornecedor/${c.cnpj_fornecedor}">${esc(c.fornecedor||c.cnpj_fornecedor)}</a>`:esc(c.fornecedor||"—")}</span></span>`],["Valor",c=>brlR(c.valor),"n"]],it,c=>"#/contrato/r"+c.id),
   aoCarregar:(it,tot)=>{if(!tot&&!f.uf&&!f.esfera&&!f.municipio)demoComAviso(_empresas,["contratos"],"Nenhum contrato coletado ainda (coleta pncp-contratos).")}});
  pg(true);$("#ctuf").onchange=e=>{f.uf=e.target.value;pg(true)};$("#ctes").onchange=e=>{f.esfera=e.target.value;pg(true)};$("#ctord").onchange=e=>{f.ordenar=e.target.value;pg(true)};$("#ctmun").oninput=debounce(e=>{f.municipio=e.target.value.trim();pg(true)})}};
 return{html:topo+`<div class="panel"><h2>As empresas do país</h2><p class="small muted" style="margin:0 0 8px">Todas as empresas ativas do cadastro de CNPJ.</p><div id="empGeral">${rload()}</div></div>
@@ -3532,7 +3537,7 @@ mount(){apiGet("/contratos/"+String(id).slice(1)).then(d=>{const c=d.contrato,f=
 P.fornecedor=(doc)=>{if(!API.on){location.hash="#/empresas";return{html:""}}
 return{html:`<div class="crumb"><a href="#/empresas">Fornecedores</a> / Fornecedor</div><div id="rf">${rload()}</div>`,
 mount(){apiGet("/fornecedores/"+encodeURIComponent(doc)).then(d=>{const c=d.contratos_publicos,q=d.cota_parlamentar;
- $("#rf").innerHTML=`<div class="ph"><div><h1>${esc(d.nome)}</h1><p class="rsel">${esc(d.documento)}</p></div></div>
+ $("#rf").innerHTML=`<div class="ph"><div class="emp-mini" style="gap:14px">${fornLogo(d.documento,d.nome,64)}<span><h1>${esc(d.nome)}</h1><p class="rsel">${esc(d.documento)}</p><p class="small muted" data-eres="${String(d.documento||"").replace(/\D/g,"").slice(0,8)}" style="margin:4px 0 0"></p></span></div></div>
  <div class="kpis"><div class="kpi"><span>Contratos públicos</span><strong>${nf(c.quantidade)}</strong></div><div class="kpi"><span>Valor contratado</span><strong>${brl(c.total)}</strong></div><div class="kpi"><span>Notas da cota parlamentar</span><strong>${nf(q.quantidade)}</strong></div><div class="kpi"><span>Pago pela cota</span><strong>${brl(q.total)}</strong></div></div>
  ${d.aparece_nas_duas_bases?`<div class="rbanner mt">${esc(d.aviso)}</div>`:""}
  <div class="grid g2 mt"><div class="panel"><h2>Maiores contratos</h2>${(c.maiores||[]).length?table([["Objeto",o=>`<a href="#/contrato/r${o.id}" class="rclamp">${esc(o.objeto||"Contrato")}</a><div class="small muted">${esc(o.orgao||"")}</div>`],["Valor",o=>brlR(o.valor),"n"]],c.maiores,o=>"#/contrato/r"+o.id):rvazio("Nenhum contrato público coletado.")}</div>
@@ -4157,8 +4162,13 @@ async function representantesUF(uf){const box=$("#ufRep");if(!box)return;
     <div class="hier-c"><div id="ufRepH"></div></div></div>
   </div>${dicaHemi()}${RSRC("TSE (governador, prefeitos e deputados estaduais eleitos), Câmara dos Deputados e Senado Federal")}`;
   const mostra=k=>{const b=BANC.find(x=>x[0]===k),h=H[k];document.querySelectorAll("#ufRepSel button").forEach(x=>x.classList.toggle("on",x.dataset.b===k));
-   XF("#ufRepH").innerHTML=`<h4 class="hier-sub" style="margin-top:0">${b[1]} <small class="muted">${b[3]}</small></h4>${h?`<div id="ufRepHm">${h.html}</div>`:rvazio(k==="p"?"Prefeitos ainda não coletados.":"Sem dados.")}`;
-   setTimeout(()=>{if(h&&$("#ufRepHm"))ligarHemiciclo($("#ufRepHm"),h.lista)},30)};
+   XF("#ufRepH").innerHTML=`<h4 class="hier-sub" style="margin-top:0">${b[1]} <small class="muted">${b[3]}</small></h4>${h?`<div id="ufRepHm">${h.html}</div><div class="rep-ver"><button type="button" class="btn" id="ufRepBtn" aria-expanded="false">Ver ${b[1].toLowerCase()} (${nf(b[2].length)})</button></div><div id="ufRepL" hidden><input id="ufRepLq" placeholder="Buscar pelo nome, cidade ou partido" autocomplete="off" class="hier-busca"><div class="xgrid" id="ufRepLg"></div><div id="ufRepLm"></div></div>`:rvazio(k==="p"?"Prefeitos ainda não coletados.":"Sem dados.")}`;
+   setTimeout(()=>{if(!h||!$("#ufRepHm"))return;ligarHemiciclo($("#ufRepHm"),h.lista);
+    let mostraN=24;const arr=b[2];const des=()=>{const q=nrm($("#ufRepLq").value.trim());const l=arr.filter(p=>!q||nrm(p.nome+" "+p.cargo+" "+p.partido).includes(q));
+     $("#ufRepLg").innerHTML=l.slice(0,mostraN).map(card).join("")||rvazio("Ninguém com esse nome.");
+     $("#ufRepLm").innerHTML=l.length>mostraN?`<button class="btn" type="button" style="margin-top:10px">Ver mais (${nf(l.length-mostraN)})</button>`:"";const m=$("#ufRepLm button");if(m)m.onclick=()=>{mostraN+=48;des()}};
+    $("#ufRepBtn").onclick=e=>{const L=$("#ufRepL"),abre=L.hidden;L.hidden=!abre;e.currentTarget.setAttribute("aria-expanded",abre);e.currentTarget.textContent=(abre?"Esconder a lista de ":"Ver ")+b[1].toLowerCase()+(abre?"":` (${nf(arr.length)})`);if(abre){mostraN=24;des();surgeSuave(L)}};
+    $("#ufRepLq").oninput=debounce(()=>{mostraN=24;des()},150)},30)};
   document.querySelectorAll("#ufRepSel button").forEach(x=>x.onclick=()=>mostra(x.dataset.b));mostra("c")}
  catch(e){box.innerHTML=rerro(e)}}
 
@@ -4345,6 +4355,7 @@ TELA_DIV.empresas.mount=(D,sub)=>{if(sub==="recuperacao"||sub==="falencia")ligar
    falência; ranking das que mais devem e das grandes que menos devem, com logo e resumo (Wikipédia) ou a atividade do CNPJ */
 const empLogo=(e,sz=44)=>`<span class="emp-logo" data-elogo="${e.cnpj_basico}" style="width:${sz}px;height:${sz}px">${esc(iniciais((e.nome||"?").replace(/\b(S\.?\s?A|LTDA|EIRELI)\b\.?/gi,"").trim()||"?"))}</span>`;
 const empTags=e=>`${e.recuperacao_judicial?'<span class="tag esc-den">Recuperação judicial</span>':""}${e.falida?'<span class="tag esc-con">Falida</span>':""}${e.ativa===false?'<span class="tag">Não está ativa</span>':""}`;
+const fornLogo=(cnpj,nome,sz=28)=>empLogo({cnpj_basico:String(cnpj||"").replace(/\D/g,"").slice(0,8),nome},sz);
 function empCard(e,k,tipo){return`<div class="emp-card"><span class="emp-pos">${k+1}º</span>${empLogo(e)}<div class="emp-tx"><b>${esc(e.nome||"Empresa "+e.cnpj_basico)}</b>
  <div class="small muted">${[e.porte,e.uf,e.atividade].filter(Boolean).map(esc).join(" · ")}</div><div class="small emp-res" data-eres="${e.cnpj_basico}"></div><div class="emp-tags">${empTags(e)}</div></div>
  <div class="emp-v">${tipo==="capital"?`<strong>${e.capital_social?brl(e.capital_social):"—"}</strong><span class="small muted">capital social · deve à União: ${e.divida_uniao?brl(e.divida_uniao):"nada"}</span>`:`<strong>${e.divida_uniao?brl(e.divida_uniao):"Nada"}</strong><span class="small muted">${tipo==="cap"&&e.capital_social?`capital ${brl(e.capital_social)}`:"devido à União"}</span>`}</div></div>`}

@@ -461,6 +461,20 @@ def logos_empresas(db) -> dict:
         if e["cnpj_basico"] not in vistos and e.get("nome"):
             vistos.add(e["cnpj_basico"])
             alvo.append(e)
+    # os fornecedores que mais receberam em contratos públicos (aba Empresas e Contratos › Contratos públicos)
+    try:
+        from sqlalchemy import func
+        from app.models import Contrato
+        top = (db.query(Contrato.cnpj_fornecedor, func.max(Contrato.fornecedor), func.sum(Contrato.valor).label("t"))
+               .filter(Contrato.cnpj_fornecedor.isnot(None)).group_by(Contrato.cnpj_fornecedor)
+               .order_by(func.sum(Contrato.valor).desc()).limit(200).all())
+        for cnpj, nome, _ in top:
+            b8 = "".join(ch for ch in str(cnpj) if ch.isdigit())
+            if len(b8) == 14 and b8[:8] not in vistos and nome:
+                vistos.add(b8[:8])
+                alvo.append({"cnpj_basico": b8[:8], "nome": nome})
+    except Exception as e:  # noqa: BLE001 - sem contratos coletados, ficam só as empresas dos rankings
+        log.warning("fornecedores de contratos fora dos logos: %s", e)
     achados = {}
     for e in alvo:
         w = empresa_wikipedia(e["nome"])
