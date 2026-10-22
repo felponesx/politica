@@ -1,4 +1,5 @@
-"""Fotos das pessoas dos escândalos (árvore e lista), da Wikipédia/Wikimedia Commons.
+"""Fotos das pessoas dos escândalos (árvore e lista): retrato oficial da Câmara para quem foi deputado federal e, para os demais,
+da Wikipédia/Wikimedia Commons.
 
     python -m scripts.fotos_escandalos [site/midia] [arquivo_de_cache.json]
 
@@ -99,8 +100,80 @@ def _baixar_thumb(arquivo: str) -> str | None:
     return None
 
 
-def foto_de(nome: str, slug: str, nome_caso: str) -> str | None:
-    """Pela Wikipédia: verbete com o nome (ou o apelido entre parênteses) que é de uma pessoa e cita o caso."""
+CAMARA = "https://dadosabertos.camara.leg.br/api/v2/deputados"
+LEGISLATURAS = ",".join(str(i) for i in range(45, 58))  # 1975 em diante: a API só lista a atual se não pedir
+# siglas do mesmo partido ao longo do tempo (o cadastro da Câmara guarda a sigla de cada legislatura)
+PARTIDOS_IGUAIS = [{"PP", "PPB", "PPR", "PDS"}, {"PMDB", "MDB"}, {"PFL", "DEM"}, {"PL", "PR"}, {"PTB"}, {"PT"}, {"PSDB"}]
+
+
+def _sigla(p: str) -> str:
+    return re.sub(r"[^A-Z]", "", (p or "").upper())
+
+
+def _mesmo_partido(a: str, b: str) -> bool:
+    a, b = _sigla(a), _sigla(b)
+    return a == b or any(a in g and b in g for g in PARTIDOS_IGUAIS)
+
+
+def escolher_deputado(pessoa: dict, linhas: list[dict]) -> dict | None:
+    """Entre as linhas do cadastro da Câmara (uma por legislatura), o deputado que é a pessoa do caso: nome igual ao da pessoa
+    (ou ao apelido entre parênteses), partido e estado da época quando o caso os informa, e uma única pessoa (mesmo `id`)
+    depois dos filtros. Na dúvida (homônimo, dois candidatos), devolve None: sem foto é melhor que foto da pessoa errada."""
+    cargo = _n(pessoa.get("cargo_na_epoca") or "")
+    if "deputado" not in cargo or "estadual" in cargo or "distrital" in cargo:
+        return None
+    nome = pessoa["nome"]
+    apelido = re.search(r"\(([^)]+)\)\s*$", nome)
+    nomes = {_n(re.sub(r"\s*\(.*\)$", "", nome)).strip()} | ({_n(apelido.group(1)).strip("'\" ")} if apelido else set())
+    por_id: dict[int, list[dict]] = {}
+    for d in linhas:
+        if _n(d.get("nome")).strip() in nomes:
+            por_id.setdefault(d["id"], []).append(d)
+    partido = pessoa.get("partido_na_epoca")
+    uf = re.search(r"\(([A-Z]{2})\)", pessoa.get("cargo_na_epoca") or "")
+    if partido:
+        por_id = {i: v for i, v in por_id.items() if any(_mesmo_partido(partido, d.get("siglaPartido")) for d in v)}
+    if uf:
+        por_id = {i: v for i, v in por_id.items() if any(d.get("siglaUf") == uf.group(1) for d in v)}
+    if len(por_id) != 1:
+        return None
+    return next(iter(por_id.values()))[-1]
+
+
+def foto_camara(pessoa: dict) -> str | None:
+    """Retrato oficial da Câmara dos Deputados (inclusive de quem já saiu) para quem foi deputado federal."""
+    cargo = _n(pessoa.get("cargo_na_epoca") or "")
+    if "deputado" not in cargo or "estadual" in cargo or "distrital" in cargo:
+        return None
+    apelido = re.search(r"\(([^)]+)\)\s*$", pessoa["nome"])
+    consulta = apelido.group(1).strip("'\" ") if apelido else re.sub(r"\s*\(.*\)$", "", pessoa["nome"])
+    cod, corpo = _get(CAMARA, {"nome": consulta, "idLegislatura": LEGISLATURAS, "itens": 100})
+    if cod != 200:
+        return None
+    escolhido = escolher_deputado(pessoa, json.loads(corpo).get("dados") or [])
+    if not escolhido or not escolhido.get("urlFoto"):
+        return None
+    from scripts.midia_site import foto_maior
+    for url in (foto_maior(escolhido["urlFoto"]), escolhido["urlFoto"]):
+        cod, img = _get(url)
+        if cod == 200 and img:
+            return miniatura(img, ALTURA)
+    return None
+
+
+def foto_de(nome: str, slug: str, nome_caso: str, pessoa: dict | None = None) -> str | None:
+    """Foto oficial da Câmara (quem foi deputado federal) e, se não houver, a da Wikipédia: verbete com o nome (ou o apelido
+    entre parênteses) que é de uma pessoa e cita o caso."""
+    if pessoa:
+        try:
+            img = foto_camara({**pessoa, "nome": nome})
+        except Limite:
+            raise
+        except Exception as e:  # noqa: BLE001
+            log.warning("%s: Câmara fora do ar (%s)", nome, e)
+            img = None
+        if img:
+            return img
     if nome in SEM_FOTO:
         return None
     apelido = re.search(r"\(([^)]+)\)\s*$", nome)
@@ -150,7 +223,7 @@ def fotos_escandalos(cache: str | None = None) -> dict:
             k = "esc:" + p["nome"]
             if k not in feito:
                 try:
-                    feito[k] = foto_de(p["nome"], slug, c["nome"])
+                    feito[k] = foto_de(p["nome"], slug, c["nome"], p)
                 except Limite:
                     log.warning("%s: limite da Wikimedia, fica para a próxima rodada", p["nome"])
                     continue

@@ -93,3 +93,21 @@ def test_marcar_em_exercicio_tira_quem_saiu_e_protege_lista_cortada():
         assert estado == {"a": True, "b": True, "c": False}
         db.query(Parlamentar).filter(Parlamentar.casa == "casa-teste").delete()
         db.commit()
+
+
+def test_midia_tamanho_do_site_e_cobertura_de_fotos(tmp_path):
+    site = tmp_path / "site"
+    (site / "dados").mkdir(parents=True)
+    (site / "midia").mkdir()
+    (site / "index.html").write_text("x" * 1000)
+    prefeitos = [{"sq_candidato": str(i)} for i in range(10)]
+    _copia(site / "dados", {"/candidatos?cargo=PREFEITO&eleitos=true": {"itens": prefeitos}})
+    (site / "midia" / "indice.json").write_text(json.dumps({"blocos": 1}))
+    (site / "midia" / "fotos_0.json").write_text(json.dumps({f"tse:{i}": "data:" for i in range(4)}))  # 4 de 10
+    rel = rv.revisar(site / "dados", AGORA, rede=False)
+    assert _niveis(rel, "Tamanho do site") == ["ok"]
+    assert _niveis(rel, "Fotos: Prefeitos eleitos") == ["aviso"]
+    (site / "midia" / "fotos_0.json").write_text(json.dumps({f"tse:{i}": "data:" for i in range(10)}))
+    assert _niveis(rv.revisar(site / "dados", AGORA, rede=False), "Fotos: Prefeitos eleitos") == ["ok"]
+    (site / "grande.bin").write_bytes(b"0" * (251 * 1024 * 1024))
+    assert _niveis(rv.revisar(site / "dados", AGORA, rede=False), "Tamanho do site") == ["erro"]

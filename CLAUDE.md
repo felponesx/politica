@@ -118,6 +118,18 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - `marcar_em_exercicio` (`base.py`): as listas atuais da Câmara (mín. 400) e do Senado (mín. 70) tiram `em_exercicio` de quem saiu; o revisor achou 526 deputados
   e 86 senadores "em exercício". Quem só aparece em votações entra como em exercício até a próxima coleta semanal de deputados.
 
+## Fotos de candidatos e de envolvidos nos escândalos (out/2026)
+- Prefeitos eleitos de 2024 (`fotos_prefeitos`/`fotos_prefeitos_de` em `scripts/midia_site.py`, chave `tse:<sq>`): cada foto vem do zip do TSE do estado
+  (`foto_cand2024_UF_div.zip`, até 2 GB) por pedido Range, só os bytes dela (`_foto_do_zip` + `entradas_zip` de `bcb_scr.py`), a 200 px (WebP ~4 KB) para caber nos
+  256 MB do Artifact (o site estava com ~204 MB antes dos prefeitos; o revisor avisa acima de 235 MB). Antes só entravam presidente, governador, senador e eleitos
+  de 2022/2026. `python -m scripts.fotos_extra [site/midia] [site/dados]` acrescenta o que falta (prefeitos da lista da cópia dos dados + retratos oficiais) sem
+  refazer o passo de horas e sem apagar nada.
+- Envolvidos nos escândalos (`foto_camara`, `escolher_deputado` em `scripts/fotos_escandalos.py`): quem foi deputado federal ganha o retrato oficial da Câmara
+  (`/deputados?nome=…&idLegislatura=45..57`, que lista também quem já saiu). Vale só com nome igual ao da pessoa (ou ao apelido entre parênteses), partido
+  (siglas da mesma linhagem) e estado do cargo da época, e uma única pessoa depois dos filtros; na dúvida, sem foto. Vem antes da Wikipédia (que segue as
+  regras de sempre). Quem não foi parlamentar (empresários, servidores, assessores) continua só pela Wikipédia; fotos enviadas à mão seriam o caminho.
+- `revisar_dados` (grupo `midia`): tamanho do site e cobertura de fotos (prefeitos ≥ 90%, governadores, presidente, Congresso, escândalos).
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.

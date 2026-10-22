@@ -10,7 +10,8 @@ foi encontrado. Níveis: "erro" (número impossível ou dado vencido que o site 
   contadores  Impostômetro e Gasto Brasil do site contra a leitura ao vivo e contra os marcos publicados na imprensa;
   externas    comparação com o IBGE ao vivo (população do país) e com os links de fonte dos escândalos (`--urls`);
   escandalos  dados dos casos: pessoa ou marco descartado por falta de fonte, conferência vencida;
-  noticias    letras quebradas, links repetidos, datas no futuro.
+  noticias    letras quebradas, links repetidos, datas no futuro;
+  midia       tamanho do site (limite de 256 MB do Artifact) e cobertura de fotos: prefeitos e governadores eleitos, Congresso, escândalos.
 Sai com código 1 quando há "erro" (o robô avisa por e-mail do GitHub).
 """
 import json
@@ -314,11 +315,47 @@ def noticias(c: Copia, r: Relatorio, agora: datetime):
         r.add(g, "ok" if h < 6 else "aviso", "Matéria mais recente", f"publicada há {h:.1f} h", "menos de 6 h", f"{h:.1f} h")
 
 
+def midia(c: Copia, r: Relatorio):
+    g = "midia"
+    site = c.pasta.parent
+    if (site / "index.html").exists():
+        mb = sum(f.stat().st_size for f in site.rglob("*") if f.is_file()) / 1048576
+        r.add(g, "ok" if mb < 235 else "aviso" if mb < 250 else "erro", "Tamanho do site publicado",
+              f"{mb:.0f} MB de {site.name}/ (o Artifact aceita até 256 MB por versão)", "menos de 235 MB", f"{mb:.0f} MB")
+    pasta = site / "midia"
+    try:
+        idx = json.loads((pasta / "indice.json").read_text(encoding="utf-8"))
+        chaves = set()
+        for i in range(idx["blocos"]):
+            chaves |= set(json.loads((pasta / f"fotos_{i}.json").read_text(encoding="utf-8")))
+    except (OSError, ValueError, KeyError):
+        return r.add(g, "nao_verificado", "Fotos", "site/midia não encontrado ou sem índice")
+
+    def cobertura(titulo, total, com, minimo):
+        if not total:
+            return
+        pct = com / total
+        r.add(g, "ok" if pct >= minimo else "aviso", titulo, f"{com} de {total} com foto ({pct:.0%})", f"pelo menos {minimo:.0%}", f"{pct:.0%}")
+    for cargo, rotulo, minimo in (("PREFEITO", "Prefeitos eleitos", 0.9), ("GOVERNADOR", "Governadores eleitos", 0.95), ("PRESIDENTE", "Presidente eleito", 1.0)):
+        lista = (c.get(f"/candidatos?cargo={cargo}&eleitos=true") or {}).get("itens") or []
+        cobertura(f"Fotos: {rotulo}", len(lista), sum(1 for x in lista if f"tse:{x.get('sq_candidato')}" in chaves), minimo)
+    parl = [x for x in ((c.get("/parlamentares") or {}).get("itens") or []) if x.get("casa") in ("camara", "senado") and x.get("foto_url")]
+    cobertura("Fotos: deputados e senadores", len(parl), sum(1 for x in parl if x["foto_url"] in chaves), 0.95)
+    try:
+        from app import escandalos
+        pessoas = {p["nome"] for caso in escandalos.casos().values() for p in caso["pessoas"]}
+        com = sum(1 for n in pessoas if f"esc:{n}" in chaves)
+        r.add(g, "ok" if com / max(1, len(pessoas)) >= 0.5 else "aviso", "Fotos: pessoas dos escândalos",
+              f"{com} de {len(pessoas)} com foto ({com / max(1, len(pessoas)):.0%}); só entra foto de fonte oficial ou de verbete que cita o caso")
+    except Exception as ex:  # noqa: BLE001
+        r.add(g, "nao_verificado", "Fotos: pessoas dos escândalos", f"{type(ex).__name__}: {str(ex)[:100]}")
+
+
 def revisar(pasta: Path, agora: datetime | None = None, rede: bool = True, urls: bool = False) -> dict:
     agora = agora or datetime.now(timezone.utc)
     c, r = Copia(pasta), Relatorio()
     for etapa in (lambda: frescor(c, r, agora), lambda: consistencia(c, r), lambda: contadores(c, r, agora, rede),
-                  lambda: externas(c, r, rede, urls), lambda: escandalos_(r, agora), lambda: noticias(c, r, agora)):
+                  lambda: externas(c, r, rede, urls), lambda: escandalos_(r, agora), lambda: noticias(c, r, agora), lambda: midia(c, r)):
         try:
             etapa()
         except Exception as ex:  # noqa: BLE001 - uma conferência quebrada não impede as outras

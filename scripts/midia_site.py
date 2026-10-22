@@ -377,8 +377,8 @@ def fotos_congresso(db) -> dict:
 
 
 def fotos_tse(db, anos=(2022, 2026)) -> dict:
-    """Eleitos (menos vereadores e prefeitos de fora das capitais) e todos os candidatos a presidente, governador e
-    senador de cada ano, a partir dos zips de fotos do TSE por estado."""
+    """Eleitos (menos vereadores e prefeitos, que vão por `fotos_prefeitos`) e todos os candidatos a presidente, governador
+    e senador de cada ano, a partir dos zips de fotos do TSE por estado."""
     from sqlalchemy import or_, select
 
     from app.models import Candidato
@@ -411,6 +411,72 @@ def fotos_tse(db, anos=(2022, 2026)) -> dict:
             except Exception as e:
                 log.warning("fotos TSE %s %s: %s", ano, uf, e)
     log.info("fotos do TSE: %d", len(out))
+    return out
+
+
+ALTURA_PREFEITO = 200  # a ficha mostra a foto em até 92 px; 200 px dá nitidez em tela dupla e cabe nos 256 MB do Artifact
+
+
+def _foto_do_zip(url: str, nome_len: int, comp: int, metodo: int, off: int) -> bytes | None:
+    """Uma foto de dentro de um zip remoto de GBs, por pedido Range (só os bytes dela). Cabeçalho local = 30 bytes + nome + extra."""
+    import struct
+    import zlib
+    for folga in (255, 4096):
+        r = cli.get(url, headers={"Range": f"bytes={off}-{off + 29 + nome_len + folga + comp}"}, timeout=90)
+        if r.status_code != 206 or r.content[:4] != b"PK\x03\x04":
+            return None  # o servidor ignorou o Range (viria o zip inteiro) ou o endereço mudou
+        nl, el = struct.unpack("<HH", r.content[26:30])
+        dados = r.content[30 + nl + el:30 + nl + el + comp]
+        if len(dados) == comp:
+            return dados if metodo == 0 else zlib.decompress(dados, -15) if metodo == 8 else None
+    return None
+
+
+def fotos_prefeitos(db, ano: int = 2024, altura: int = ALTURA_PREFEITO) -> dict:
+    """Prefeitos eleitos (do banco): a foto de cada um, lida do zip do TSE do estado só pelos bytes dela (Range), em vez de
+    baixar GBs de fotos de vereadores e candidatos que perderam. Chave `tse:<sq_candidato>`, a mesma dos demais candidatos."""
+    from sqlalchemy import select
+
+    from app.models import Candidato
+    por_uf: dict[str, set] = {}
+    for sq, uf in db.execute(select(Candidato.sq_candidato, Candidato.uf).where(
+            Candidato.ano == ano, Candidato.cargo == "PREFEITO", Candidato.resultado.ilike("ELEITO%"))):
+        por_uf.setdefault(uf, set()).add(str(sq))
+    return fotos_prefeitos_de(por_uf, ano, altura)
+
+
+def fotos_prefeitos_de(por_uf: dict[str, set], ano: int = 2024, altura: int = ALTURA_PREFEITO) -> dict:
+    """Mesma coisa a partir de {UF: {sq_candidato}} (scripts/fotos_extra.py usa a lista da cópia dos dados, sem banco)."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from app.collectors.bcb_scr import entradas_zip
+    out = {}
+    for uf, sqs in sorted(por_uf.items()):
+        url = f"https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes{ano}/fotos/foto_cand{ano}_{uf}_div.zip"
+        try:
+            _, entradas = entradas_zip(url)
+        except Exception as e:  # noqa: BLE001 - um estado fora do ar não derruba os outros
+            log.warning("fotos de prefeitos %s %s: %s", ano, uf, e)
+            continue
+        alvo = []
+        for nome, comp, metodo, off in entradas:
+            m = re.match(r"F[A-Z]{2}(\d+)_div\.\w+$", os.path.basename(nome))
+            if m and m.group(1) in sqs:
+                alvo.append((m.group(1), len(nome), comp, metodo, off))
+
+        def uma(a, url=url):
+            sq, nl, comp, metodo, off = a
+            try:
+                bruto = _foto_do_zip(url, nl, comp, metodo, off)
+                return sq, (miniatura(bruto, altura) if bruto else None)
+            except Exception:  # noqa: BLE001
+                return sq, None
+        with ThreadPoolExecutor(6) as ex:
+            for sq, img in ex.map(uma, alvo):
+                if img:
+                    out[f"tse:{sq}"] = img
+        log.info("fotos de prefeitos %s: %d de %d", uf, sum(1 for sq, *_ in alvo if f"tse:{sq}" in out), len(sqs))
+    log.info("fotos de prefeitos: %d", len(out))
     return out
 
 
@@ -580,7 +646,7 @@ def main(pasta: str):
         lg["empresas"] = logos_empresas(db) or lg.get("empresas") or {}
     gravar(os.path.join(pasta, "logos.json"), lg)
     with SessionLocal() as db:
-        fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_wikipedia(nomes_indicados())}
+        fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_prefeitos(db), **fotos_wikipedia(nomes_indicados())}
     from scripts.fotos_escandalos import fotos_escandalos
     fotos.update(fotos_escandalos())
     gravar_fotos(pasta, fotos)
