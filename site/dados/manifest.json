@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-22T02:57+00:00",
+ "gerado_em": "2026-10-22T05:21+00:00",
  "shards": 256,
  "bases": {
   "/parlamentares": [
@@ -1947,8 +1947,8 @@
    "no_banco": 41535
   },
   "/obras": {
-   "na_copia": 2700,
-   "no_banco": 2700
+   "na_copia": 3000,
+   "no_banco": 74441
   },
   "/candidatos?cargo=DEPUTADO ESTADUAL,DEPUTADO DISTRITAL&eleitos=true": {
    "na_copia": 1059,
@@ -4425,6 +4425,6 @@
   "proposicoes": 37859,
   "normas": 1047
  },
- "consultas": 26794,
- "bytes": 157141837
+ "consultas": 26796,
+ "bytes": 158418581
 }
