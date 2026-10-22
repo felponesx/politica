@@ -1712,6 +1712,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 }
 .ia-perg{text-align:left;line-height:1.25}.ia-perg svg{margin-right:0;flex:none}
 @media (max-width:520px){.ia-perg .ia-n{display:none}}
+.prop-ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:13.5px;line-height:1.4}.prop-ul li::marker{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -4325,6 +4326,14 @@ function obrasResumoHtml(g){const f=v=>v==null?"—":nf(v);
 function obrasGestaoHtml(g,quem){const f=v=>v==null?"—":nf(v);
  return obrasResumoHtml(g)+`<div class="mt"><div><h3 class="seg-h" style="margin-top:0">Datas e prazos</h3><div class="facts"><div><span>Com prazo ainda no futuro</span>${f(g.no_prazo)} obras</div><div><span>Próximo término previsto</span>${g.proximo_termino?fdr(g.proximo_termino):"—"}</div><div><span>Maior atraso</span>${g.atraso.dias_maior!=null&&g.atraso.dias_maior<20000?`${nf(g.atraso.dias_maior)} dias (${(g.atraso.dias_maior/365).toLocaleString("pt-BR",{maximumFractionDigits:1})} anos)`:"—"}</div><div><span>Valor das obras atrasadas</span>${brl(g.atraso.valor)}</div><div><span>Sem data de término informada</span>${f(g.sem_data_prevista)} obras</div></div></div></div>
   <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. Fonte: ${esc(g.fonte)}. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
+/* o que o candidato propõe: trechos do plano de governo registrado no TSE (site/midia/propostas.json, scripts/propostas_resumo.py) */
+let PROP=null;const propostasDe=sq=>(PROP||(PROP=midiaJSON("propostas.json").then(x=>x||{}))).then(P=>P[String(sq)]||null);
+const PROP_ROT={seguranca:"Segurança",transporte:"Transporte e mobilidade",economia:"Economia e emprego",saude:"Saúde",educacao:"Educação",social:"Assistência e moradia",ambiente:"Meio ambiente"};
+function propostasHtml(p,nome){const cab=`<h2>O que propõe <small>plano de governo registrado no TSE${p.ano?" em "+p.ano:""}</small></h2>`;
+ if(!p.legivel)return cab+`<p class="small muted" style="margin:0">O plano registrado é um documento digitalizado (imagem) ou muito curto, sem texto para resumir. Ele está no site do TSE (DivulgaCandContas).</p>`;
+ const T=Object.keys(PROP_ROT).filter(k=>(p.temas||{})[k]&&p.temas[k].length);if(!T.length)return cab+`<p class="small muted" style="margin:0">Não achei trechos sobre segurança, transporte, economia, saúde ou educação neste plano.</p>`;
+ return cab+`<div class="grid g2">${T.map(k=>`<div><h3 class="seg-h" style="margin-top:0">${PROP_ROT[k]}</h3><ul class="prop-ul">${p.temas[k].slice(0,2).map(x=>`<li>${esc(x.length>210?x.slice(0,207).replace(/\s+\S*$/,"")+"…":x)}</li>`).join("")}</ul></div>`).join("")}</div>
+  <p class="small muted" style="margin:10px 0 0">Resumo por trechos do próprio plano (${nf(p.paginas||0)} páginas), escolhidos automaticamente por assunto; não é avaliação e não confirma que algo foi cumprido. Fonte: TSE, Proposta de governo (dados abertos).</p>`}
 /* obras de quem governa: percentuais de entrega + lista de todas as obras (começaram × não começaram, no prazo × atrasadas) */
 const OB_CAT={concluida:["Concluída","ok"],execucao:["Em andamento",""],parada:["Parada","warn"],nao_iniciada:["Não começou",""],sem_situacao:["Sem situação",""],cancelada:["Cancelada",""]};
 const OB_HOJE=()=>new Date().toISOString().slice(0,10);
@@ -4397,6 +4406,7 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
     "Votos por cidade":()=>`<div class="panel">${mun.length?`<h2>Cidades com mais votos</h2>${hbars(mun.slice(0,15).map(m=>[tit(m.municipio),m.votos]),{fmt:nf})}`:rvazio("Votos por cidade não disponíveis para este candidato.")}</div>`,
     "Patrimônio e campanha":()=>`<div class="panel">${fin?`<div class="kpis kpis-c"><div class="kpi"><span>Patrimônio declarado</span><strong>${brlR(fin.patrimonio)}</strong></div><div class="kpi"><span>Arrecadou na campanha</span><strong>${brlR(fin.receitas)}</strong></div><div class="kpi"><span>Gastou na campanha</span><strong>${brlR(fin.despesas)}</strong></div></div>
       <div class="grid g2 mt">${fin.bens_por_tipo?`<div><h3 class="rh3">Bens declarados</h3>${hbars(Object.entries(fin.bens_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${fin.receitas_por_fonte?`<div><h3 class="rh3">De onde veio o dinheiro</h3>${hbars(Object.entries(fin.receitas_por_fonte).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${fin.despesas_por_tipo?`<div><h3 class="rh3">Em que foi gasto</h3>${hbars(Object.entries(fin.despesas_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}</div>`:rvazio("Bens e contas de campanha não disponíveis para esta candidatura.")}</div>`};
+   {const R0=TABS.Resumo;TABS.Resumo=()=>R0()+`<div class="panel mt" id="propR" hidden></div>`}
    const obrasOk=obrasEleito(cargo,ano,turnos.length?turnos[turnos.length-1].situacao:"");
    if(obrasOk){TABS["Obras e projetos"]=()=>`<div class="panel"><h2>Obras e projetos de ${esc(tit(nome))} <small>${esc(ELN[cargo]||tit(cargo||""))}</small></h2><div id="obrasT">${rload()}</div></div>`;
     const R=TABS.Resumo;TABS.Resumo=()=>R()+`<div class="panel mt"><div class="hd"><div><h2>Andamento das obras</h2><p>O que já foi concluído, o que falta e o que está atrasado em ${OBR_CARGOS[normNome(cargo)]}.</p></div><a href="#" id="obrasVer">Ver detalhes ›</a></div><div id="obrasR">${rload()}</div></div>`}
@@ -4405,6 +4415,7 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
    let OBG=null;const obg=()=>OBG||(OBG=obrasGestaoDe(cargo,uf,d.unidade||c.unidade));
    const troca=t=>{tab=t;document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.textContent===t));des()};
    const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks();
+    if(tab==="Resumo")propostasDe(id).then(p=>{const e=$("#propR");if(!e||!p)return;e.innerHTML=propostasHtml(p,nome);e.hidden=false}).catch(()=>{});
     if(obrasOk&&tab==="Resumo")obg().then(g=>{const e=$("#obrasR");if(e)e.innerHTML=obrasResumoHtml(g)}).catch(x=>{const e=$("#obrasR");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?x.message:"Andamento das obras ainda não coletado.")});
     if(obrasOk&&tab==="Resumo"){const v=$("#obrasVer");if(v)v.onclick=e=>{e.preventDefault();troca("Obras e projetos")}}
     if(obrasOk&&tab==="Obras e projetos")obg().then(g=>{const e=$("#obrasT");if(e){e.innerHTML=obrasTelaHtml(g);obrasTelaMount(g,{cargo,uf,unidade:d.unidade||c.unidade})}}).catch(x=>{const e=$("#obrasT");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?"Nenhuma obra com dinheiro federal cadastrada no ObrasGov para este governo.":"Andamento das obras ainda não coletado.")})};

@@ -319,3 +319,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   calcula o ritmo (média desde 1º de janeiro até o marco). A conta própria (Receita + SICONFI) ficava ~14% acima do Impostômetro e sai em `calculo_proprio`.
   Para atualizar, acrescente um marco novo (data, valor, link da notícia) no JSON; sem marco do ano, volta a conta própria. Os sites de origem não abrem
   pelo ambiente do Claude (rede bloqueada): os marcos vêm de reportagens.
+
+## Propostas de governo no perfil (out/2026)
+- `scripts/propostas_resumo.py` (roda no passo `midia` do robô; à mão: `python -m scripts.propostas_resumo [site/midia] [site/dados] [ano…]`): baixa dos dados abertos do TSE
+  (`proposta_governo_<ano>_<UF>.zip`, 2022 e 2026 inteiros; 2024 só as capitais, por pedido Range) o PDF de cada candidato a presidente, governador e prefeito, tira o texto
+  com `pdftotext` e guarda até 3 trechos por tema (segurança, transporte, economia, saúde, educação, assistência e moradia, meio ambiente) em `site/midia/propostas.json`
+  (`{sq: {ano, uf, paginas, legivel, temas}}`). Escolha por palavras-chave e verbos de ação; frase que cita quase todos os assuntos é descartada. É um resumo por trechos do
+  próprio plano, sem avaliar nem conferir. PDF digitalizado (sem texto) fica `legivel: false`. O SQ varia de 11 a 12 dígitos e, em 2026, o arquivo tem sufixo `_01`.
+- Site: quadro "O que propõe" no Resumo do `#/candidato/<sq>` (`propostasDe`, `propostasHtml`), 2 trechos por tema, com o aviso de que não confirma cumprimento.

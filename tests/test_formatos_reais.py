@@ -759,3 +759,14 @@ def test_rota_obras_gestao_lista():
 def test_obras_categoria_paralisada():
     from app.obras_gestao import categoria
     assert categoria("Paralisada") == "parada" and categoria("Em execução") == "execucao" and categoria("Cadastrada") == "nao_iniciada"
+
+
+def test_propostas_resumo_por_tema():
+    from scripts.propostas_resumo import resumir
+    txt = ("Vamos ampliar o policiamento ostensivo e reduzir a criminalidade nos bairros mais violentos da capital.\n\n"
+           "Vamos construir novas linhas de ônibus e ampliar a mobilidade urbana com ciclovias e corredores exclusivos.\n\n"
+           "Vamos atrair investimento privado e gerar emprego e renda com apoio às microempresas e ao turismo regional.\n\n"
+           "Texto curto.\n\nA saúde, a educação, a segurança, o transporte, a economia e o meio ambiente são prioridades de todos os governos.")
+    r = resumir(txt)
+    assert "policiamento" in r["seguranca"][0] and "ônibus" in r["transporte"][0] and "emprego" in r["economia"][0]
+    assert not any("prioridades de todos" in f for f in r.get("saude", []))  # frase que lista todos os assuntos não resume nenhum

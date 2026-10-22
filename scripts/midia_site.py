@@ -655,6 +655,11 @@ def main(pasta: str):
         perfis(pasta)
     except Exception as e:  # noqa: BLE001 - não derruba as fotos
         log.warning("perfis de indicados não atualizados: %s", e)
+    try:  # resumo das propostas de governo (presidente, governadores e prefeitos das capitais), do TSE
+        from scripts.propostas_resumo import main as propostas
+        propostas([pasta, os.path.join(os.path.dirname(os.path.normpath(pasta)), "dados")])
+    except Exception as e:  # noqa: BLE001 - não derruba as fotos
+        log.warning("propostas de governo não atualizadas: %s", e)
     with open(os.path.join(pasta, "indice.json"), "w", encoding="utf-8") as f:
         json.dump({"gerado_em": date.today().isoformat(), "blocos": BLOCOS, "fotos": len(fotos),
                    "partidos": len(lg["partidos"]), "policias": len(lg["policias"]),
