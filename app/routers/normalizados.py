@@ -112,7 +112,7 @@ def obras_gestao_lista(uf: str = Query(..., min_length=2, max_length=2), db: Ses
     """Todas as obras com dinheiro federal de um estado, em linhas curtas (campos em `campos`), para as telas de governador, prefeito
     e presidente filtrarem: o que começou, o que não começou, no prazo e atrasadas."""
     from app.obras_gestao import CAMPOS_LISTA, lista_compacta
-    linhas = db.execute(select(Obra.id, Obra.nome, Obra.descricao, Obra.situacao, Obra.executor, Obra.valor_previsto, Obra.fim_previsto)
+    linhas = db.execute(select(Obra.id, Obra.nome, Obra.descricao, Obra.situacao, Obra.executor, Obra.valor_previsto, Obra.fim_previsto, Obra.tipo)
                         .where(Obra.uf == uf.upper())).all()
     return {"uf": uf.upper(), "campos": CAMPOS_LISTA, "itens": lista_compacta(linhas)}
 

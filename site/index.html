@@ -4324,8 +4324,7 @@ function obrasResumoHtml(g){const f=v=>v==null?"—":nf(v);
  <div class="kpi"><span>Em atraso</span><strong>${f(g.atraso.obras)}</strong><em>${g.atraso.dias_medio!=null?`${g.atraso.pct_das_abertas!=null?pct(g.atraso.pct_das_abertas)+" das que faltam · ":""}atraso médio de ${nf(g.atraso.dias_medio)} dias`:"nenhuma com prazo vencido"}</em></div></div>`}
 function obrasGestaoHtml(g,quem){const f=v=>v==null?"—":nf(v);
  return obrasResumoHtml(g)+`<div class="mt"><div><h3 class="seg-h" style="margin-top:0">Datas e prazos</h3><div class="facts"><div><span>Com prazo ainda no futuro</span>${f(g.no_prazo)} obras</div><div><span>Próximo término previsto</span>${g.proximo_termino?fdr(g.proximo_termino):"—"}</div><div><span>Maior atraso</span>${g.atraso.dias_maior!=null&&g.atraso.dias_maior<20000?`${nf(g.atraso.dias_maior)} dias (${(g.atraso.dias_maior/365).toLocaleString("pt-BR",{maximumFractionDigits:1})} anos)`:"—"}</div><div><span>Valor das obras atrasadas</span>${brl(g.atraso.valor)}</div><div><span>Sem data de término informada</span>${f(g.sem_data_prevista)} obras</div></div></div></div>
- ${g.mais_atrasadas.length?`<h3 class="seg-h">Obras atrasadas de maior valor</h3>${table([["Obra",o=>`<a href="#/obra/${o.id}" class="rclamp">${esc(o.nome)}</a><div class="small muted">${esc(tit(o.executor||""))}</div>`],["Situação",o=>esc(o.situacao||"—")],["Prazo previsto",o=>fdr(o.fim_previsto),"n"],["Atraso",o=>`${nf(o.dias_atraso)} dias`,"n"],["Valor",o=>brl(o.valor),"n"]],g.mais_atrasadas,o=>"#/obra/"+o.id)}`:""}
- <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. Fonte: ${esc(g.fonte)}. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
+  <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. Fonte: ${esc(g.fonte)}. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
 /* obras de quem governa: percentuais de entrega + lista de todas as obras (começaram × não começaram, no prazo × atrasadas) */
 const OB_CAT={concluida:["Concluída","ok"],execucao:["Em andamento",""],parada:["Parada","warn"],nao_iniciada:["Não começou",""],sem_situacao:["Sem situação",""],cancelada:["Cancelada",""]};
 const OB_HOJE=()=>new Date().toISOString().slice(0,10);
@@ -4341,36 +4340,54 @@ function obrasEntregaHtml(g){const S=Object.fromEntries(g.situacoes.map(x=>[x.ch
   ${pbars([[`Já começaram (${nf(comecou)})`,P(comecou)],[`Não começaram (${nf(naoC)})`,P(naoC)],...(semSit?[[`Sem situação (${nf(semSit)})`,P(semSit)]]:[])])}
   <h3 class="seg-h">Das que começaram <small>${nf(comecou)} obras</small></h3>
   ${pbars([[`Concluídas (${nf(q("concluida"))})`,comecou?100*q("concluida")/comecou:0],[`Em andamento (${nf(q("execucao"))})`,comecou?100*q("execucao")/comecou:0],[`Paradas (${nf(q("parada"))})`,comecou?100*q("parada")/comecou:0]])}</div></div>`}
-function obrasListaHtml(){return`<div class="seg" id="obF1"></div><div class="seg" id="obF2" style="margin-top:-2px"></div><div class="filters" style="margin-bottom:8px">
+/* categorias das obras (metrô, estradas, ruas...): pelo tipo do ObrasGov e pelas palavras do nome; a primeira que combinar vale */
+const OB_GRUPOS=[["metro","Metrô e trens",/metr[oô]\b|\bvlt\b|\btrens?\b|ferrovi|monotrilho|\bbrt\b|mobilidade urbana|corredor de [oô]nibus/],
+ ["estradas","Estradas e pontes",/rodovi|estrada|\b(br|sp|rj|mg|rs|pr|sc|ba|go|mt|ms|pa|am|ce|pe|ma|to|ro|ac|ap|rr|pi|rn|pb|al|se|es|df)[- ]?\d{2,3}\b|ponte\b|viaduto|duplica[cç]|contorno|travessia/],
+ ["saneamento","Água, esgoto e drenagem",/saneamento|esgot|[aá]gua|abastecimento|barragem|adutora|drenagem|inunda|contenção|conten[cç][aã]o de encostas|tratamento de/],
+ ["ruas","Ruas e pavimentação",/pavimenta|asfalt|\bruas?\b|\bvias?\b|urbaniza|cal[cç]ad|infraestrutura urbana|requalifica[cç]/],
+ ["saude","Saúde",/sa[uú]de|hospital|\bubs\b|\bupa\b|policl[ií]nica|posto de sa/],
+ ["educacao","Escolas e educação",/escola|educa[cç]|creche|ensino|universidade|instituto federal|campus|pr[eé]-escola/],
+ ["habitacao","Moradia",/habita[cç]|moradia|residencial|minha casa|casas\b/],
+ ["portos","Portos e aeroportos",/porto\b|portu|aeroporto|hidrovia|terminal|dragagem/],
+ ["energia","Energia",/energia|transmiss|usina|subesta|el[eé]trica|ilumina[cç]/],
+ ["seguranca","Segurança e prédios públicos",/delegacia|pres[ií]dio|penitenci|quartel|f[oó]rum|pol[ií]cia|bombeiro|cadeia|sede d[aeo]/],
+ ["esporte","Esporte, cultura e lazer",/esporte|quadra|gin[aá]sio|est[aá]dio|cultura|teatro|museu|pra[cç]a|parque|lazer|orla/]];
+const OB_OUTRAS=["outras","Outras obras"];
+const grupoObra=r=>{if(r._g)return r._g;const t=normNome(`${r.tipo_obra||""} ${r.nome||""}`).toLowerCase();const g=OB_GRUPOS.find(x=>x[2].test(t));return r._g=g?g[0]:OB_OUTRAS[0]};
+const grupoNome=k=>(OB_GRUPOS.find(x=>x[0]===k)||OB_OUTRAS)[1];
+function obrasListaHtml(){return`<h3 class="seg-h">Obras <small>escolha o tipo, o andamento e o prazo, ou pesquise pelo nome</small></h3>
+ <div class="seg" id="obF0"></div><div class="seg" id="obF1"></div><div class="seg" id="obF2"></div>
+ <div class="filters" style="margin:8px 0">
  <select id="obF3" data-titulo="Ordenar"><option value="valor">Maior valor</option><option value="atraso">Mais atrasadas</option><option value="prazo">Prazo mais próximo</option></select>
- <input id="obF4" placeholder="Buscar obra ou órgão" autocomplete="off" style="flex:1;min-width:160px"></div><div id="obUF"></div><div id="obL">${rload()}</div>`}
-function obrasLista(ctx){const hoje=OB_HOJE();let L=[],f={a:"todas",p:"todas",o:"valor",q:""};
- const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+ <input id="obF4" type="search" placeholder="Pesquisar obra (ex.: metrô, escola, BR-101, ponte…)" autocomplete="off" style="flex:1;min-width:180px"></div><div id="obUF"></div><div id="obL">${rload()}</div>`}
+function obrasLista(ctx){const hoje=OB_HOJE();let L=[],f={c:"todas",a:"todas",p:"todas",o:"valor",q:""};
+ const norm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
  const dias=r=>r.fim&&r.fim<hoje&&!["concluida","cancelada"].includes(r.cat)?Math.round((new Date(hoje)-new Date(r.fim))/864e5):0;
  const aberta=r=>!["concluida","cancelada"].includes(r.cat);
- const filtro=r=>{if(f.a==="comecou"&&!["concluida","execucao","parada"].includes(r.cat))return false;if(f.a==="nao"&&r.cat!=="nao_iniciada")return false;
-  if(["concluida","execucao","parada","cancelada"].includes(f.a)&&r.cat!==f.a)return false;
-  if(f.p==="prazo"&&!(aberta(r)&&r.fim&&r.fim>=hoje))return false;if(f.p==="atraso"&&!(dias(r)>0))return false;if(f.p==="sem"&&!(aberta(r)&&!r.fim))return false;
-  if(f.q&&!norm(r.nome+" "+r.executor).includes(norm(f.q)))return false;return true};
+ const okA=r=>f.a==="todas"||(f.a==="comecou"?["concluida","execucao","parada"].includes(r.cat):f.a==="nao"?r.cat==="nao_iniciada":r.cat===f.a);
+ const okP=r=>f.p==="todas"||(f.p==="prazo"?aberta(r)&&r.fim&&r.fim>=hoje:f.p==="atraso"?dias(r)>0:aberta(r)&&!r.fim);
+ const okC=r=>f.c==="todas"||grupoObra(r)===f.c;
+ const okQ=r=>!f.q||norm(r.nome+" "+r.executor+" "+(r.tipo_obra||"")+" "+grupoNome(grupoObra(r))).includes(norm(f.q));
  const botoes=(id,ops,k)=>{const el=$(id);if(!el)return;el.innerHTML=ops.map(([v,t,n])=>`<button type="button" data-v="${v}" class="${f[k]===v?"on":""}">${t}${n!=null?` <small>${nf(n)}</small>`:""}</button>`).join("")};
- const des=()=>{const C=(fn)=>L.filter(fn).length;
-  botoes("#obF1",[["todas","Todas",L.length],["comecou","Já começaram",C(r=>["concluida","execucao","parada"].includes(r.cat))],["nao","Não começaram",C(r=>r.cat==="nao_iniciada")],["execucao","Em andamento",C(r=>r.cat==="execucao")],["parada","Paradas",C(r=>r.cat==="parada")],["concluida","Concluídas",C(r=>r.cat==="concluida")],["cancelada","Canceladas",C(r=>r.cat==="cancelada")]],"a");
-  botoes("#obF2",[["todas","Todos os prazos",null],["prazo","No prazo",C(r=>aberta(r)&&r.fim&&r.fim>=hoje)],["atraso","Atrasadas",C(r=>dias(r)>0)],["sem","Sem prazo informado",C(r=>aberta(r)&&!r.fim)]],"p");
-  document.querySelectorAll("#obF1 button,#obF2 button").forEach(b=>b.onclick=()=>{const k=b.parentElement.id==="obF1"?"a":"p";f[k]=b.dataset.v;des()});
-  let rows=L.filter(filtro);rows=f.o==="atraso"?rows.sort((a,b)=>dias(b)-dias(a)):f.o==="prazo"?rows.filter(r=>r.fim).sort((a,b)=>a.fim<b.fim?-1:1).concat(rows.filter(r=>!r.fim)):rows.sort((a,b)=>b.valor-a.valor);
+ const des=()=>{const C=(fn,base)=>(base||L).filter(fn).length,cats={};L.filter(r=>okA(r)&&okP(r)&&okQ(r)).forEach(r=>{const g=grupoObra(r);cats[g]=(cats[g]||0)+1});
+  const gs=[...OB_GRUPOS.map(x=>x[0]),OB_OUTRAS[0]].filter(k=>cats[k]);
+  botoes("#obF0",[["todas","Todos os tipos",Object.values(cats).reduce((a,x)=>a+x,0)],...gs.map(k=>[k,grupoNome(k),cats[k]])],"c");
+  const B=L.filter(r=>okC(r)&&okQ(r));
+  botoes("#obF1",[["todas","Todas",B.length],["comecou","Já começaram",C(r=>["concluida","execucao","parada"].includes(r.cat),B)],["nao","Não começaram",C(r=>r.cat==="nao_iniciada",B)],["execucao","Em andamento",C(r=>r.cat==="execucao",B)],["parada","Paradas",C(r=>r.cat==="parada",B)],["concluida","Concluídas",C(r=>r.cat==="concluida",B)],["cancelada","Canceladas",C(r=>r.cat==="cancelada",B)]],"a");
+  botoes("#obF2",[["todas","Todos os prazos",null],["prazo","No prazo",C(r=>aberta(r)&&r.fim&&r.fim>=hoje,B)],["atraso","Atrasadas",C(r=>dias(r)>0,B)],["sem","Sem prazo informado",C(r=>aberta(r)&&!r.fim,B)]],"p");
+  document.querySelectorAll("#obF0 button,#obF1 button,#obF2 button").forEach(b=>b.onclick=()=>{f[b.parentElement.id==="obF0"?"c":b.parentElement.id==="obF1"?"a":"p"]=b.dataset.v;des()});
+  let rows=L.filter(r=>okC(r)&&okA(r)&&okP(r)&&okQ(r));rows=f.o==="atraso"?rows.sort((a,b)=>dias(b)-dias(a)):f.o==="prazo"?rows.filter(r=>r.fim).sort((a,b)=>a.fim<b.fim?-1:1).concat(rows.filter(r=>!r.fim)):rows.sort((a,b)=>b.valor-a.valor);
   const soma=rows.reduce((s,r)=>s+r.valor,0);
-  $("#obL").innerHTML=`<p class="small muted" style="margin:0 0 8px"><b>${nf(rows.length)}</b> obras · ${brl(soma)} previstos${rows.length>=L.length?"":` · de ${nf(L.length)} no total`}</p>`+(rows.length?table([["Obra",r=>`<a href="#/obra/${r.id}" class="rclamp">${esc(r.nome)}</a><div class="small muted">${esc(tit(r.executor||""))}</div>`],
-   ["Situação",r=>`<span class="tag">${OB_CAT[r.cat][0]}</span>`],["Prazo previsto",r=>r.fim?fdr(r.fim):"—","n"],["Atraso",r=>dias(r)?`${nf(dias(r))} dias`:(aberta(r)&&r.fim?"no prazo":"—"),"n"],["Valor",r=>brl(r.valor),"n"]],rows,r=>"#/obra/"+r.id):rvazio("Nenhuma obra com esses filtros."));};
+  $("#obL").innerHTML=`<p class="small muted" style="margin:0 0 8px"><b>${nf(rows.length)}</b> obras · ${brl(soma)} previstos${rows.length>=L.length?"":` · de ${nf(L.length)} no total`}</p>`+(rows.length?table([["Obra",r=>`<a href="#/obra/${r.id}" class="rclamp">${esc(r.nome)}</a><div class="small muted">${esc(grupoNome(grupoObra(r)))} · ${esc(tit(r.executor||""))}</div>`],
+   ["Situação",r=>`<span class="tag">${OB_CAT[r.cat][0]}</span>`],["Prazo previsto",r=>r.fim?fdr(r.fim):"—","n"],["Atraso",r=>dias(r)?`${nf(dias(r))} dias`:(aberta(r)&&r.fim?"no prazo":"—"),"n"],["Valor",r=>brl(r.valor),"n"]],rows,r=>"#/obra/"+r.id):rvazio("Nenhuma obra com esses filtros."))};
  const carrega=uf=>{$("#obL").innerHTML=rload();return apiGet("/obras-gestao/lista?uf="+uf).then(d=>{const c=d.campos;let l=d.itens.map(a=>Object.fromEntries(c.map((k,i)=>[k,a[i]])));
    const cg=normNome(ctx.cargo);if(cg==="GOVERNADOR")l=l.filter(r=>r.tipo==="E");else if(cg==="PREFEITO")l=l.filter(r=>r.municipio===normNome(ctx.unidade));L=l;des()}).catch(()=>{$("#obL").innerHTML=rvazio("A lista de obras deste estado ainda não foi coletada.")})};
  $("#obF3").onchange=e=>{f.o=e.target.value;des()};$("#obF4").oninput=debounce(e=>{f.q=e.target.value.trim();des()},200);
  if(normNome(ctx.cargo)==="PRESIDENTE"){$("#obUF").innerHTML=`<div class="filters" style="margin:0 0 8px"><select id="obUFs" data-titulo="Estado">${UFS.map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("")}</select></div><p class="small muted" style="margin:0 0 8px">O país tem ${nf(ctx.total||0)} obras: escolha o estado para ver as dele.</p>`;
   $("#obUFs").onchange=e=>carrega(e.target.value);carrega(UFS[0].uf)}
  else carrega(ctx.uf)}
-function obrasTelaHtml(g,ctx){return`<div class="tabs" id="obTabs" style="margin-top:0"><button class="on" data-t="p">Porcentagens</button><button data-t="l">Todas as obras</button></div>
- <div id="obP">${obrasGestaoHtml(g).replace(/<h3 class="seg-h" style="margin-top:0">Em que pé estão/,'<h3 class="seg-h" style="margin-top:0">Em que pé estão')}</div><div id="obT2" hidden>${obrasListaHtml()}</div>`}
-function obrasTelaMount(g,ctx){let lista=false;const P=$("#obP");if(P){const k=P.querySelector(".kpis");if(k)k.insertAdjacentHTML("afterend",obrasEntregaHtml(g))}
- document.querySelectorAll("#obTabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#obTabs button").forEach(x=>x.classList.toggle("on",x===b));const l=b.dataset.t==="l";$("#obP").hidden=l;$("#obT2").hidden=!l;if(l&&!lista){lista=true;obrasLista({...ctx,total:g.total})}})}
+function obrasTelaHtml(g,ctx){return obrasGestaoHtml(g)+`<div id="obT2">${obrasListaHtml()}</div>`}
+function obrasTelaMount(g,ctx){const P=$("#obrasT");if(P){const k=P.querySelector(".kpis");if(k)k.insertAdjacentHTML("afterend",obrasEntregaHtml(g))}obrasLista({...ctx,total:g.total})}
 P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a> / Candidato</div><div id="rcd">${rload()}</div>`,
  mount(){const id=decodeURIComponent(sq||"");
   const desenha=(d,parcial)=>{const c=ELCAND[id]||{};const nome=d.nome||c.nome||"Candidato",part=d.partido||c.partido,cargo=d.cargo||c.cargo,ano=d.ano||c.ano,uf=d.uf||c.uf;

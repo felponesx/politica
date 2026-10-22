@@ -84,7 +84,7 @@ def resumir(obras, hoje: date | None = None, lista: int = 8) -> dict:
             "aviso": AVISO, "fonte": "ObrasGov (Ministério da Gestão e Inovação / Ministério da Integração)", "data": hoje}
 
 
-CAMPOS_LISTA = ["id", "nome", "cat", "fim", "valor", "tipo", "municipio", "executor"]
+CAMPOS_LISTA = ["id", "nome", "cat", "fim", "valor", "tipo", "municipio", "executor", "tipo_obra"]
 
 
 def lista_compacta(obras) -> list:
@@ -96,6 +96,6 @@ def lista_compacta(obras) -> list:
         tipo = "M" if mun else ("E" if eh_estadual(o.executor) else "F")
         fim = o.fim_previsto.isoformat() if o.fim_previsto and o.fim_previsto.year >= 1990 else ""
         out.append([o.id, (o.descricao or o.nome or "Obra")[:110], categoria(o.situacao), fim, round(o.valor_previsto or 0), tipo,
-                    mun or "", (o.executor or "")[:70]])
+                    mun or "", (o.executor or "")[:70], (getattr(o, "tipo", None) or "")[:60]])
     out.sort(key=lambda r: -r[4])
     return out
