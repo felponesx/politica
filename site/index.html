@@ -4628,7 +4628,7 @@ function dvEstado(uf,D,M){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04
 P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"];return _divDemo(ok.includes(t)?t:undefined)}
  if(t==="empresas"){setTimeout(()=>{location.replace("#/empresas/dividas"+(sub?"/"+sub:""))},0);return{html:`<div class="ph"><div><h1>Dívidas</h1><p>A dívida das empresas agora fica em Empresas e Contratos.</p></div></div>`}}
  let tipo=DIV_TIPOS.some(x=>x[0]===t)?t:"publica";
- return{html:`<div class="ph"><div><h1>Dívidas</h1><p>Quanto devem o governo, os estados, as cidades, as famílias e as empresas. Escolha o tipo: o mapa muda; toque em um estado para ver todas as dívidas dele.</p></div></div><div id="dvT">${rload()}</div>`,
+ return{html:`<div class="ph"><div><h1>Dívidas</h1><p>Quanto devem o governo, os estados, as cidades e as famílias (a dívida das empresas está em Empresas e Contratos). Escolha o tipo: o mapa muda; toque em um estado para ver todas as dívidas dele.</p></div></div><div id="dvT">${rload()}</div>`,
  mount(){Promise.all([dadosDividas(),dvPop(),apiGet("/dividas/familias-estados").catch(()=>null)]).then(([D,M,scr])=>{const box=$("#dvT");if(!box)return;D.scr=scr;
   const DZ={card:"#dvcard",main:"#dvmain",holder:"#dvstate",map:"#dvmap",back:"‹ Voltar ao mapa",render:uf=>dvEstado(uf,D,M)};
   box.innerHTML=`<div class="seg seg-grupo" id="dvSeg" data-pill="Tipo de dívida">${DIV_TIPOS.map(([k,n])=>`<button data-k="${k}" class="${k===tipo?"on":""}">${n}</button>`).join("")}</div>
