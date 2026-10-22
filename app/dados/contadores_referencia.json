@@ -1,0 +1,21 @@
+{
+  "impostometro": {
+    "nome": "Impostômetro (ACSP)",
+    "url": "https://impostometro.com.br/",
+    "criterio": "tributos, taxas e contribuições da União, dos estados e dos municípios, com multas, juros e correção monetária",
+    "marcos": [
+      {"data": "2026-03-27", "valor": 1000000000000, "url": "https://www.cnnbrasil.com.br/economia/macroeconomia/acsp-impostometro-de-2026-atinge-r-1-trilhao-nesta-sexta-27/"},
+      {"data": "2026-09-28", "valor": 3000000000000, "url": "https://agenciadcnews.com.br/publicacao/s/impostometro-atinge-r-3-trilhoes-e-antecipa-marca-em-relacao-a-2025"}
+    ],
+    "fechamento_2025": {"valor": 3980000000000, "url": "https://acsp.com.br/publicacao-imprensa/s/brasil-encerra-2025-com-arrecadacao-recorde-de-r-3-98-trilhoes-em-impostos-diz-acsp"}
+  },
+  "gastometro": {
+    "nome": "Gasto Brasil (CACB/ACSP)",
+    "url": "https://gastobrasil.com.br/",
+    "criterio": "despesa paga da União, dos estados e dos municípios (dados do Tesouro Nacional), corrigida pelo IPCA",
+    "marcos": [
+      {"data": "2026-07-15", "valor": 3000000000000, "url": "https://cacb.org.br/despesa-publica-tem-ritmo-mais-acelerado-em-2026-e-ja-chega-a-r-3-trilhoes/",
+       "por_esfera": {"U": 1400000000000, "M": 829000000000, "E": 811000000000}}
+    ]
+  }
+}

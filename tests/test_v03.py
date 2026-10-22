@@ -32,7 +32,8 @@ def test_bcb_e_economia(monkeypatch):
     assert e["ipca_12m"]["ultimo"]["valor"] == 4.2 and e["ipca_12m"]["doze_meses_antes"]["valor"] == 5.1
 
 
-def test_contadores():
+def test_contadores(monkeypatch):
+    monkeypatch.setattr("app.routers.v03._referencia", lambda: {})
     db = SessionLocal()
     for mes in (1, 2, 3):
         db.add(Registro(fonte="receita", tipo="arrecadacao_uf", chave=f"SP-2026-{mes}", uf="SP", ano=2026, valor=100e9,
@@ -165,6 +166,7 @@ def test_bcb_pagina_de_erro_e_coleta_parcial(monkeypatch):
 
 
 def test_impostometro_soma_estados_e_municipios(monkeypatch):
+    monkeypatch.setattr("app.routers.v03._referencia", lambda: {})
     from app.collectors import siconfi
     from app.models import Municipio
     # Anexo 03 resumido (formato do SICONFI): linhas por conta e coluna; vale a coluna dos últimos 12 meses
@@ -193,3 +195,13 @@ def test_impostometro_soma_estados_e_municipios(monkeypatch):
     assert imp["partes_ano"]["estadual"] == round(300e9 * 27, 2)
     assert imp["partes_ano"]["municipal"] >= 40e9 and "municipais" in imp["base"]
     assert imp["por_segundo"] > imp["partes_ano"]["federal"] / (365 * 24 * 3600)
+
+
+def test_contadores_ancorados_nos_marcos_publicados():
+    from datetime import date
+    from app.routers.v03 import _ancorar_gas, _ancorar_imp
+    imp = _ancorar_imp({"por_segundo": 147115.01, "base": "x", "fonte": "y"}, date(2026, 10, 22))
+    assert 128000 < imp["por_segundo"] < 129000 and imp["calculo_proprio"]["por_segundo"] == 147115.01 and imp["data_base"] == "2026-09-28"
+    gas = _ancorar_gas({"por_segundo": 194189, "base": "z", "fonte": "w", "bimestre": 4}, date(2026, 10, 22))
+    assert 177000 < gas["por_segundo"] < 178500 and set(gas["por_esfera"]) == {"U", "M", "E"} and "bimestre" not in gas
+    assert _ancorar_imp(None, date(2025, 6, 1)) is None  # sem marco do ano: fica o cálculo próprio

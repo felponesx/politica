@@ -85,6 +85,71 @@ def _tributos_subnacionais(db):
     return None
 
 
+def _referencia():
+    import json
+    import os
+    try:
+        with open(os.path.join(os.path.dirname(__file__), "..", "dados", "contadores_referencia.json"), encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def _marco(ref, ano):
+    """Último marco publicado do ano: (data, valor, dicionário do marco) ou None."""
+    ms = [m for m in (ref or {}).get("marcos", []) if m["data"][:4] == str(ano)]
+    if not ms:
+        return None
+    m = max(ms, key=lambda x: x["data"])
+    return date.fromisoformat(m["data"]), float(m["valor"]), m
+
+
+def _fmt_tri(v):
+    return f"R$ {v / 1e12:.2f}".replace(".", ",") + " tri"
+
+
+def _ancorar_imp(imp, hoje):
+    """O ritmo passa a vir do último marco publicado pelo Impostômetro da ACSP (a conta própria, com a Receita e o SICONFI,
+    ficava cerca de 14% acima: ela soma taxas e IRRF dos estados e municípios). A conta própria continua no resultado."""
+    ref = _referencia().get("impostometro")
+    m = _marco(ref, hoje.year)
+    if not m:
+        return imp
+    d, v, mm = m
+    seg = (datetime(d.year, d.month, d.day, 12) - datetime(d.year, 1, 1)).total_seconds()
+    out = dict(imp or {})
+    if imp:
+        out["calculo_proprio"] = {"por_segundo": imp["por_segundo"], "base": imp.get("base"), "fonte": imp.get("fonte")}
+    out.update({"por_segundo": round(v / seg, 2), "total_base": v, "ano": d.year, "data_base": d.isoformat(),
+                "base": f"números publicados pelo {ref['nome']}: {_fmt_tri(v)} em {d.strftime('%d/%m/%Y')}",
+                "fonte": f"{ref['nome']} — {ref['url']}", "referencia_url": mm.get("url") or ref["url"],
+                "nota": f"Critério da ACSP: {ref['criterio']}. O ritmo é a média desde 1º de janeiro até o último marco publicado. "
+                        "A divisão entre federal, estadual e municipal é a do cálculo próprio (Receita Federal e SICONFI)."
+                        + " Estimativa, não o registro de cada pagamento."})
+    return out
+
+
+def _ancorar_gas(gas, hoje):
+    ref = _referencia().get("gastometro")
+    m = _marco(ref, hoje.year)
+    if not m:
+        return gas
+    d, v, mm = m
+    seg = (datetime(d.year, d.month, d.day, 12) - datetime(d.year, 1, 1)).total_seconds()
+    out = dict(gas or {})
+    if gas:
+        out["calculo_proprio"] = {"por_segundo": gas["por_segundo"], "base": gas.get("base"), "fonte": gas.get("fonte")}
+    out.update({"por_segundo": round(v / seg, 2), "total_base": v, "ano": d.year, "data_base": d.isoformat(),
+                "base": f"contagem publicada pelo {ref['nome']}: {_fmt_tri(v)} em {d.strftime('%d/%m/%Y')}",
+                "fonte": f"{ref['nome']} — {ref['url']}", "referencia_url": mm.get("url") or ref["url"],
+                "nota": f"Critério: {ref['criterio']}. O ritmo é a média desde 1º de janeiro até o último marco publicado."})
+    pe = mm.get("por_esfera")
+    if pe:
+        out["por_esfera"] = {k: float(x) for k, x in pe.items()}
+        out.pop("bimestre", None)
+    return out
+
+
 @router.get("/contadores", tags=["Economia"])
 def contadores(db: Session = Depends(get_db)):
     """Base real do impostômetro e do gastômetro: valor por segundo calculado com os últimos dados oficiais."""
@@ -142,7 +207,7 @@ def contadores(db: Session = Depends(get_db)):
                        + (", capitais" if "C" in por_esfera else "") + (" e municípios" if "M" in por_esfera else "") + ")",
                "fonte": "SICONFI (RREO Anexo 02)"}
         break
-    return {"impostometro": imp, "gastometro": gas}
+    return {"impostometro": _ancorar_imp(imp, hoje), "gastometro": _ancorar_gas(gas, hoje)}
 
 
 @router.get("/agora/eventos", tags=["Legislativo"])

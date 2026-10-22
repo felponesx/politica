@@ -1700,6 +1700,15 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 /* encaixe (v2.0): abas de Empresas cabem no celular; botões com ícone com respiro */
 .btn svg{margin-right:6px;vertical-align:-3px;flex:none}
 @media (max-width:600px){.tabl{padding:10px 8px;font-size:13px}.tabs.tabs-emp,.tabs{gap:0}}
+@media (max-width:760px){.hstats{gap:8px}.hstat{padding:9px 8px;border:1px solid var(--line2);border-radius:10px;background:var(--surface)}}
+@media (max-width:520px){
+.pbar{display:grid!important;grid-template-columns:minmax(0,1fr);gap:0!important;overflow:hidden}
+.pbar>.pill-w{min-width:0;flex:none}.pbar>.pill-w+.pill-w{border-left:0;border-top:1px solid var(--line)}
+.pbar>.pill-w>.pill,.pbar>.pill-w:first-child>.pill,.pbar>.pill-w:last-child>.pill{border-radius:0;width:100%;justify-content:space-between;padding-top:11px;padding-bottom:11px}
+.pbar .pill .pill-v{max-width:none}
+}
+}
+}
 </style>
 </head>
 <body>
@@ -3907,8 +3916,9 @@ return{html:r.html,mount(){r.mount&&r.mount();apiGet("/contadores").then(c=>{con
    b.innerHTML=stack(nomes.map(([k])=>P[k]||0),nomes.map(x=>x[1]),cores,8);l.innerHTML=nomes.map(([k,n],j)=>`<span><i style="background:${cores[j]}"></i>${n} ${(P[k]||0).toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
   else imp.querySelectorAll(".m-bar,.m-leg").forEach(e=>e.remove())}
  if(g&&gas){gas.querySelector(".m-sub").textContent=`ritmo calculado com a ${g.base}`;const b=gas.querySelector(".m-bar"),l=gas.querySelector(".m-leg");
-  const cores=["#EB6834","#F5A524","#2F6FED","#8B5CF6","#C3CBD6"],fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
-  if(b)b.innerHTML=stack([...fs.map(x=>x.percentual),outros],[...fs.map(x=>x.funcao),"Outras"],cores,8);if(l)l.innerHTML=[...fs,{funcao:"Outras",percentual:outros}].map((x,k)=>`<span><i style="background:${cores[k]}"></i>${esc(x.funcao)} ${x.percentual.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
+  const cores=["#EB6834","#F5A524","#2F6FED","#8B5CF6","#C3CBD6"];let fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
+  if(g.referencia_url&&g.por_esfera){const NE={U:"União",E:"Estados",M:"Municípios",C:"Capitais"},T=Object.values(g.por_esfera).reduce((a,x)=>a+x,0);fs=Object.entries(g.por_esfera).sort((x,y)=>y[1]-x[1]).map(([k,v])=>({funcao:NE[k]||k,percentual:100*v/T}));outros=0}
+  if(b)b.innerHTML=stack([...fs.map(x=>x.percentual),outros],[...fs.map(x=>x.funcao),"Outras"],cores,8);if(l)l.innerHTML=[...fs,{funcao:"Outras",percentual:outros}].filter(x=>x.percentual>0.05).map((x,k)=>`<span><i style="background:${cores[k]}"></i>${esc(x.funcao)} ${x.percentual.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
  const nota=document.querySelector(".m-note");if(nota)nota.textContent=[i&&`Impostômetro: ${i.fonte}. ${i.nota}`,g&&`Gastômetro: ${g.fonte}.`].filter(Boolean).join(" ")}).catch(()=>{})}}};
 
 /* Agora: o que acontece hoje no Congresso */
@@ -4428,7 +4438,7 @@ const quando=d=>{if(!d)return"";const x=new Date(String(d).slice(0,10)+"T12:00:0
 async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados").catch(()=>null),apiGet("/contadores").catch(()=>null)]);
  const kg=document.querySelector(".kgrid4");
  if(kg&&m){const E=m.estados,soma=k=>UFS.reduce((a,u)=>a+(((E[u.uf]||{})[k])||0),0),g=c&&c.gastometro;
-  kg.innerHTML=kcardR("gastos","Despesa pública liquidada",g?brl(g.total_base):brl(soma("gasto")),g?`em ${g.ano}: União, estados e capitais`:"governos estaduais")+kcardR("contratos","Contratos publicados no PNCP",brl(soma("contratos_valor")),`${nf(soma("contratos"))} contratos coletados`)
+  kg.innerHTML=kcardR("gastos","Despesa pública no ano",g?brl(g.total_base):brl(soma("gasto")),g?(g.data_base?`gasto público até ${fdr(g.data_base)}, segundo o Gasto Brasil`:`em ${g.ano}: União, estados e capitais`):"governos estaduais")+kcardR("contratos","Contratos publicados no PNCP",brl(soma("contratos_valor")),`${nf(soma("contratos"))} contratos coletados`)
    +kcardR("obras","Obras com recursos federais",nf(soma("obras")),"cadastradas no ObrasGov.br")+kcardR("arrecadacao","Tributos federais arrecadados",brl(soma("arr")),`em ${m.anos.fluxo||""}, Receita Federal`)}
  if(m){const E=m.estados,porReg=k=>Object.fromEntries(Object.keys(REG).map(r=>[r,UFS.filter(u=>u.reg===r).reduce((a,u)=>a+(((E[u.uf]||{})[k])||0),0)]));
   const gasto=porReg("gasto"),pop=porReg("pop");Object.keys(REGV).forEach(r=>REGV[r]=gasto[r]);CMP.pc[1]=Object.fromEntries(Object.keys(REG).map(r=>[r,pop[r]?Math.round(gasto[r]/pop[r]):0]));

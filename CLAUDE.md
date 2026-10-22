@@ -278,3 +278,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   (chave = nome sem acento em maiúsculas). O robô exporta `pais`, `uf` e `municipios` por estado.
 - Site: perfil do eleito (`#/candidato/<sq>`, só presidente/governador eleitos desde 2022 e prefeito desde 2024): quadro "Andamento das obras" no Resumo e aba
   "Obras e projetos". Sempre com o aviso: não é o plano de governo (não há base aberta que o acompanhe) e o percentual de execução física de cada obra não é aberto.
+
+## Contadores ancorados nos números publicados (out/2026)
+- `/contadores` (impostômetro e gastômetro) usa o último marco do ano de `app/dados/contadores_referencia.json` — Impostômetro (ACSP, impostometro.com.br:
+  R$ 1 tri em 27/03/2026 e R$ 3 tri em 28/09/2026) e Gasto Brasil (CACB/ACSP, gastobrasil.com.br: R$ 3 tri em 15/07/2026, com divisão por esfera) — e
+  calcula o ritmo (média desde 1º de janeiro até o marco). A conta própria (Receita + SICONFI) ficava ~14% acima do Impostômetro e sai em `calculo_proprio`.
+  Para atualizar, acrescente um marco novo (data, valor, link da notícia) no JSON; sem marco do ano, volta a conta própria. Os sites de origem não abrem
+  pelo ambiente do Claude (rede bloqueada): os marcos vêm de reportagens.
