@@ -1,5 +1,9 @@
+import ipaddress
 import logging
+import socket
 import time
+from functools import lru_cache
+from urllib.parse import urlsplit
 
 import httpx
 
@@ -7,7 +11,46 @@ from app.config import settings
 
 log = logging.getLogger("brasilplus.http")
 
+
+
+@lru_cache(maxsize=1024)
+def _enderecos(host: str) -> tuple:
+    try:
+        return tuple({a[4][0] for a in socket.getaddrinfo(host, None)})
+    except OSError:
+        return ()  # não resolveu aqui (ex.: DNS só pelo proxy): deixa o httpx tentar; o que importa é nunca chegar a um IP interno
+
+
+def url_segura(url) -> None:
+    """Barra endereço que não seja http(s) público: localhost, rede privada, link-local (metadados de nuvem) etc. Vale para cada
+    requisição de saída, inclusive os redirecionamentos, para que uma URL passada em POST /coletas não alcance a rede interna (SSRF)."""
+    u = urlsplit(str(url))
+    if u.scheme not in ("http", "https") or not u.hostname:
+        raise ValueError(f"URL não permitida: {u.scheme or '?'}")
+    host = u.hostname.lower()
+    if host in ("localhost", "metadata.google.internal") or host.endswith((".local", ".internal")):
+        raise ValueError("endereço interno não permitido")
+    for ip in (host,) if _eh_ip(host) else _enderecos(host):
+        a = ipaddress.ip_address(ip)
+        if a.is_private or a.is_loopback or a.is_link_local or a.is_reserved or a.is_multicast or a.is_unspecified:
+            raise ValueError("endereço interno não permitido")
+
+
+def _eh_ip(h: str) -> bool:
+    try:
+        ipaddress.ip_address(h)
+        return True
+    except ValueError:
+        return False
+
+
+def _barrar_interno(request: httpx.Request):
+    if settings.bloquear_rede_interna:
+        url_segura(request.url)
+
+
 _cliente = httpx.Client(
+    event_hooks={"request": [_barrar_interno]},
     timeout=settings.http_timeout,
     follow_redirects=True,
     headers={"Accept": "application/json", "User-Agent": "BRASIL+ coletor (transparencia)"},

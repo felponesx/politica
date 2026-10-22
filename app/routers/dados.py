@@ -16,8 +16,8 @@ router = APIRouter()
 
 @router.get("/registros", response_model=Pagina, tags=["Dados"])
 def listar_registros(fonte: str | None = None, tipo: str | None = None, uf: str | None = None,
-                     ano: int | None = None, q: str | None = None, limit: int = Query(50, le=500),
-                     offset: int = 0, db: Session = Depends(get_db)):
+                     ano: int | None = None, q: str | None = None, limit: int = Query(50, ge=1, le=500),
+                     offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     """Contratos (pncp/transparencia), obras (obrasgov), candidatos (tse), indicadores (ibge),
     finanças estaduais (siconfi), órgãos (camara/transparencia)."""
     stmt = select(Registro).order_by(Registro.ano.desc().nullslast(), Registro.valor.desc().nullslast())
@@ -155,7 +155,7 @@ def historico_estados(db: Session = Depends(get_db)):
 # ---------- coletas ----------
 
 @router.get("/coletas", response_model=list[ColetaOut], tags=["Coletas"])
-def listar_coletas(limit: int = 50, db: Session = Depends(get_db)):
+def listar_coletas(limit: int = Query(50, ge=1, le=200), db: Session = Depends(get_db)):
     return db.scalars(select(Coleta).order_by(Coleta.id.desc()).limit(limit)).all()
 
 

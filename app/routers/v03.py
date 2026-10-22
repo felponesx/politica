@@ -445,8 +445,8 @@ def empresas_setores(db: Session = Depends(get_db)):
 
 
 @router.get("/empresas", tags=["Empresas"])
-def empresas(setor: str | None = None, uf: str | None = None, q: str | None = None, limit: int = Query(50, le=200),
-             offset: int = 0, db: Session = Depends(get_db)):
+def empresas(setor: str | None = None, uf: str | None = None, q: str | None = None, limit: int = Query(50, ge=1, le=200),
+             offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     """Fornecedores com cadastro na Receita, com setor (pela CNAE) e o total recebido em contratos públicos."""
     from app.models import EmpresaCadastro
     from app.setores import setor_de_cnae
@@ -484,8 +484,8 @@ def _rj_filtro(tipo, uf, q, situacao):
 
 @router.get("/recuperacao-judicial", tags=["Empresas", "Dívidas"])
 def recuperacao_judicial(tipo: str = "recuperacao_judicial", uf: str | None = None, q: str | None = None,
-                         situacao: str | None = None, ordenar: str = "capital", limit: int = Query(50, le=500),
-                         offset: int = 0, db: Session = Depends(get_db)):
+                         situacao: str | None = None, ordenar: str = "capital", limit: int = Query(50, ge=1, le=500),
+                         offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     """Empresas em recuperação judicial (ou `tipo=falencia`) segundo a base aberta do CNPJ.
     `situacao`: situação cadastral (Ativa, Baixada, Inapta...). `ordenar`: capital (padrão), data ou nome."""
     from app.utils import formatar_documento
@@ -534,7 +534,7 @@ def recuperacao_judicial_resumo(tipo: str = "recuperacao_judicial", db: Session 
 # ---------- notícias de política ----------
 
 @router.get("/noticias", tags=["Notícias"])
-def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Query(50, le=1500), offset: int = 0,
+def noticias(veiculo: str | None = None, q: str | None = None, limit: int = Query(50, ge=1, le=1500), offset: int = Query(0, ge=0, le=1_000_000),
              db: Session = Depends(get_db)):
     """Últimas matérias de política dos principais veículos (título, resumo, data e link para o original)."""
     from app.utils import sem_acento

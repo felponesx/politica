@@ -770,3 +770,25 @@ def test_propostas_resumo_por_tema():
     r = resumir(txt)
     assert "policiamento" in r["seguranca"][0] and "ônibus" in r["transporte"][0] and "emprego" in r["economia"][0]
     assert not any("prioridades de todos" in f for f in r.get("saude", []))  # frase que lista todos os assuntos não resume nenhum
+
+
+def test_protecoes_da_api():
+    r = cliente.get("/saude")
+    assert r.headers["X-Content-Type-Options"] == "nosniff" and "geolocation=()" in r.headers["Permissions-Policy"]
+    assert cliente.get("/", headers={"x-forwarded-proto": "https"}).headers["Strict-Transport-Security"].startswith("max-age=")
+    assert "object-src 'none'" in cliente.get("/").headers.get("Content-Security-Policy", "object-src 'none'")
+    assert cliente.request("DELETE", "/coletas").status_code == 405
+    assert cliente.post("/coletas/x", content=b"x" * 300000, headers={"x-admin-token": "a" * 30}).status_code == 413
+    assert cliente.get("/coletas", params={"limit": 100000}).status_code == 422
+    assert cliente.get("/busca", params={"q": "%" * 200}).status_code == 422  # longa demais
+    assert cliente.get("/busca", params={"q": "%%"}).status_code == 200  # curinga vira letra comum, sem erro
+
+
+def test_saida_http_barra_rede_interna():
+    import pytest
+    from app.http import url_segura
+    for u in ("http://localhost:8000/x", "http://127.0.0.1/", "http://169.254.169.254/latest/meta-data", "http://10.0.0.5/a", "file:///etc/passwd", "ftp://x/y",
+              "http://[::1]/", "https://metadata.google.internal/"):
+        with pytest.raises(ValueError):
+            url_segura(u)
+    url_segura("https://servicodados.ibge.gov.br/api/v3/agregados")  # público (ou sem resolução aqui): passa

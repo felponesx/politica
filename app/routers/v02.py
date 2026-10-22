@@ -31,7 +31,7 @@ def _uf(uf):
 @router.get("/municipios", tags=["Municípios"])
 def municipios(uf: str | None = None, q: str | None = None, capag: str | None = None,
                ordenar: str = Query("nome", pattern="^(nome|populacao|pib)$"),
-               limit: int = Query(100, le=1000), offset: int = 0, db: Session = Depends(get_db)):
+               limit: int = Query(100, ge=1, le=1000), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Municipio)
     if uf:
         stmt = stmt.where(Municipio.uf == _uf(uf))
@@ -311,7 +311,7 @@ def dividas_estados(db: Session = Depends(get_db)):
 
 
 @router.get("/dividas/devedores", tags=["Dívidas"])
-def dividas_devedores(uf: str | None = None, q: str | None = None, limit: int = Query(50, le=200), offset: int = 0,
+def dividas_devedores(uf: str | None = None, q: str | None = None, limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0, le=1_000_000),
                       db: Session = Depends(get_db)):
     """Maiores empresas devedoras da União (somando os tipos de dívida da referência mais recente)."""
     ref = db.scalar(select(func.max(DevedorPGFN.referencia)))
@@ -399,7 +399,7 @@ def saneamento(db: Session = Depends(get_db)):
 # ---------- desastres ----------
 
 @router.get("/riscos", tags=["Municípios"])
-def riscos(uf: str | None = None, anos: int = Query(10, le=50), db: Session = Depends(get_db)):
+def riscos(uf: str | None = None, anos: int = Query(10, ge=1, le=50), db: Session = Depends(get_db)):
     """Desastres reconhecidos nos últimos `anos`: por município e por tipo."""
     corte = date(date.today().year - anos, 1, 1)
     stmt = select(OcorrenciaDesastre).where(or_(OcorrenciaDesastre.data.is_(None), OcorrenciaDesastre.data >= corte))

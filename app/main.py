@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -23,7 +25,15 @@ async def lifespan(_app):
 
 app = FastAPI(title="BRASIL+ API", description="Transparência em um só lugar", version="0.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
+app.add_middleware(GZipMiddleware, minimum_size=1024, compresslevel=5)  # respostas grandes (listas, cópias) viajam bem menores
 app.add_middleware(Protecao)
+
+
+@app.exception_handler(Exception)
+async def erro_inesperado(request, exc):
+    """Erro não previsto: vai para o log com o caminho, e quem chamou recebe só uma mensagem simples (nada de pilha de erro ou SQL)."""
+    logging.getLogger("brasilplus.api").exception("erro em %s %s", request.method, request.url.path)
+    return JSONResponse({"detail": "Erro interno. Tente de novo em instantes."}, status_code=500)
 
 
 @app.get("/saude", tags=["Sistema"])

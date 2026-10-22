@@ -16,7 +16,7 @@ def _norma(n: Norma) -> dict:
 
 @router.get("/legislacao")
 def listar_normas(q: str | None = None, tipo: str | None = None, ano: int | None = None,
-                  esfera: str | None = None, uf: str | None = None, limit: int = Query(50, le=500), offset: int = 0, db: Session = Depends(get_db)):
+                  esfera: str | None = None, uf: str | None = None, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Norma).order_by(Norma.data.desc().nullslast(), Norma.id.desc())
     if tipo:
         stmt = stmt.where(Norma.tipo == tipo.upper())

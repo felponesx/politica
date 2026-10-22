@@ -4,6 +4,9 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.config import settings
 
 _connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
+if settings.database_url.startswith("postgres") and settings.somente_leitura and settings.consulta_timeout_ms > 0:
+    # API pública: uma consulta pesada não segura o banco (as coletas, que usam outro processo, não têm esse limite)
+    _connect_args["options"] = f"-c statement_timeout={int(settings.consulta_timeout_ms)}"
 engine = create_engine(settings.database_url, pool_pre_ping=True, connect_args=_connect_args)
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 

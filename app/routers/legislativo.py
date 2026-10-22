@@ -19,7 +19,7 @@ def _paginar(db, stmt, schema, limit, offset):
 
 @router.get("/parlamentares", response_model=Pagina)
 def listar_parlamentares(casa: str | None = None, uf: str | None = None, partido: str | None = None,
-                         q: str | None = None, limit: int = Query(50, le=600), offset: int = 0,
+                         q: str | None = None, limit: int = Query(50, ge=1, le=600), offset: int = Query(0, ge=0, le=1_000_000),
                          db: Session = Depends(get_db)):
     stmt = select(Parlamentar).order_by(Parlamentar.nome)
     if casa:
@@ -56,7 +56,7 @@ def detalhe_parlamentar(pid: int, db: Session = Depends(get_db)):
 
 @router.get("/votacoes", response_model=Pagina)
 def listar_votacoes(casa: str | None = None, desde: date | None = None, ate: date | None = None,
-                    q: str | None = None, limit: int = Query(50, le=500), offset: int = 0,
+                    q: str | None = None, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
                     db: Session = Depends(get_db)):
     stmt = select(Votacao).order_by(Votacao.data.desc())
     if casa:
@@ -98,7 +98,7 @@ def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
 
 @router.get("/proposicoes", response_model=Pagina)
 def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: str | None = None,
-                       q: str | None = None, limit: int = Query(50, le=500), offset: int = 0,
+                       q: str | None = None, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
                        db: Session = Depends(get_db)):
     stmt = select(Proposicao).order_by(Proposicao.ano.desc(), Proposicao.id.desc())
     if casa:
@@ -113,8 +113,8 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
 
 
 @router.get("/parlamentares/{pid}/despesas", response_model=Pagina)
-def despesas_parlamentar(pid: int, ano: int | None = None, limit: int = Query(100, le=1000),
-                         offset: int = 0, db: Session = Depends(get_db)):
+def despesas_parlamentar(pid: int, ano: int | None = None, limit: int = Query(100, ge=1, le=1000),
+                         offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Despesa).where(Despesa.parlamentar_id == pid).order_by(Despesa.ano.desc(), Despesa.mes.desc())
     if ano:
         stmt = stmt.where(Despesa.ano == ano)

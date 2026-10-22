@@ -32,7 +32,13 @@ def tsvector(expr: str) -> str:
     return f"to_tsvector('portuguese'::regconfig, f_unaccent({expr}))"
 
 
+def _sem_curinga(q: str) -> str:
+    """% e _ digitados pelo usuário valem como letras comuns nos LIKE/ILIKE (senão uma busca só com '%' varre a tabela inteira)."""
+    return q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 def buscar(db, q: str, tipos: list[str] | None = None, limite: int = 10) -> dict:
+    q = q.strip()[:120]
     postgres = db.bind.dialect.name == "postgresql"
     resultado = {}
     for tabela in tipos or ENTIDADES:
@@ -43,12 +49,12 @@ def buscar(db, q: str, tipos: list[str] | None = None, limite: int = 10) -> dict
                    f"WHERE {tsvector(expr)} @@ consulta ORDER BY relevancia DESC LIMIT :lim")
         elif postgres:
             sql = (f"SELECT id, {titulo} AS titulo, {sub} AS subtitulo, similarity(f_unaccent({expr}), f_unaccent(:q)) AS relevancia "
-                   f"FROM {tabela} WHERE f_unaccent({expr}) ILIKE '%' || f_unaccent(:q) || '%' "
+                   f"FROM {tabela} WHERE f_unaccent({expr}) ILIKE '%' || f_unaccent(:qlike) || '%' ESCAPE '\\' "
                    f"ORDER BY relevancia DESC LIMIT :lim")
         else:
             sql = (f"SELECT id, {titulo} AS titulo, {sub} AS subtitulo, 1.0 AS relevancia "
-                   f"FROM {tabela} WHERE {expr} LIKE '%' || :q || '%' LIMIT :lim")
-        linhas = db.execute(text(sql), {"q": q, "lim": limite}).mappings().all()
+                   f"FROM {tabela} WHERE {expr} LIKE '%' || :qlike || '%' ESCAPE '\\' LIMIT :lim")
+        linhas = db.execute(text(sql), {"q": q, "qlike": _sem_curinga(q), "lim": max(1, min(int(limite), 50))}).mappings().all()
         if linhas:
             resultado[tabela] = [dict(l) for l in linhas]
     return resultado

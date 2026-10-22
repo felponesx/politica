@@ -56,7 +56,7 @@ def fornecedor(documento: str, db: Session = Depends(get_db)):
 
 
 @router.get("/fornecedores-cruzados")
-def fornecedores_cruzados(limit: int = Query(50, le=200), db: Session = Depends(get_db)):
+def fornecedores_cruzados(limit: int = Query(50, ge=1, le=200), db: Session = Depends(get_db)):
     """Fornecedores que aparecem ao mesmo tempo em contratos públicos e na cota parlamentar."""
     contratos = (select(Contrato.cnpj_fornecedor.label("cnpj"), func.sum(Contrato.valor).label("total_contratos"),
                         func.max(Contrato.fornecedor).label("nome"))

@@ -21,7 +21,7 @@ def _pagina(db, stmt, limit, offset):
 
 
 @router.get("/busca", tags=["Busca"])
-def busca(q: str = Query(..., min_length=2), tipos: str | None = None, limite: int = Query(8, le=50),
+def busca(q: str = Query(..., min_length=2, max_length=120), tipos: str | None = None, limite: int = Query(8, ge=1, le=50),
           db: Session = Depends(get_db)):
     """Busca única do site (caixa de pesquisa). `tipos`: lista separada por vírgula entre
     parlamentares, candidatos, proposicoes, normas, votacoes, contratos, obras, municipios."""
@@ -33,7 +33,7 @@ def busca(q: str = Query(..., min_length=2), tipos: str | None = None, limite: i
 def contratos(uf: str | None = None, ano: int | None = None, esfera: str | None = None,
               cnpj_fornecedor: str | None = None, cnpj_orgao: str | None = None, municipio: str | None = None,
               valor_min: float | None = None, ordenar: str = Query("valor", pattern="^(valor|data)$"),
-              limit: int = Query(50, le=500), offset: int = 0, db: Session = Depends(get_db)):
+              limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Contrato)
     for col, val in ((Contrato.ano, ano), (Contrato.esfera, esfera and esfera.upper()),
                      (Contrato.cnpj_fornecedor, cnpj_fornecedor), (Contrato.cnpj_orgao, cnpj_orgao)):
@@ -72,7 +72,7 @@ def contrato(cid: int, db: Session = Depends(get_db)):
 
 @router.get("/obras", tags=["Obras"])
 def obras(uf: str | None = None, situacao: str | None = None, tipo: str | None = None,
-          limit: int = Query(50, le=500), offset: int = 0, db: Session = Depends(get_db)):
+          limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Obra).order_by(Obra.valor_previsto.desc().nullslast())
     if uf:
         stmt = stmt.where(Obra.uf == uf.upper())
@@ -134,7 +134,7 @@ def obras_resumo(uf: str, db: Session = Depends(get_db)):
 
 @router.get("/candidatos", tags=["Eleições"])
 def candidatos(ano: int | None = None, uf: str | None = None, cargo: str | None = None, partido: str | None = None,
-               q: str | None = None, eleitos: bool = False, limit: int = Query(50, le=500), offset: int = 0,
+               q: str | None = None, eleitos: bool = False, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
                db: Session = Depends(get_db)):
     """`cargo` aceita vários separados por vírgula. Com `eleitos=true` e sem `ano`, usa a eleição mais recente
     daquele cargo cujo mandato já começou (ex.: em 2026, deputados estaduais eleitos em 2022 e prefeitos eleitos
