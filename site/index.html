@@ -1374,7 +1374,8 @@ a.rrow b{font-weight:500}
 .xcard-gov{min-width:230px;max-width:100%}
 .rep-ver{display:flex;justify-content:center;margin:14px 0 4px}
 @media (max-width:900px){.xgrid3{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:600px){#ufRepSel{flex-wrap:nowrap}#ufRepSel button{flex:1 1 0;min-width:0;padding:7px 4px;font-size:12px}}
+#ufRepSel{display:grid;grid-template-columns:repeat(3,minmax(0,210px));gap:6px;align-items:stretch}#ufRepSel button{box-sizing:border-box;height:42px;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.15;white-space:normal;border:1px solid var(--line)}#ufRepSel button.on{border-color:var(--blue,#2F6FED)}
+@media (max-width:600px){#ufRepSel{grid-template-columns:repeat(3,minmax(0,1fr))}#ufRepSel button{padding:4px;font-size:12px}}
 
 .gov-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 26px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none;min-width:220px}
 .gov-card b{font-size:18px}.gov-card .rfoto{border-radius:50%}
@@ -1722,6 +1723,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 
 /* leveza: painéis fora da tela só desenham quando chegam perto (menos layout e pintura ao abrir telas longas) */
 .page>.panel:nth-child(n+4),.page>.grid>.panel:nth-child(n+3),.page .ufsec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 520px}
+.page>.panel:has(.pill-w.open),.page>.grid>.panel:has(.pill-w.open),.page .ufsec:has(.pill-w.open){content-visibility:visible}
 </style>
 </head>
 <body>
