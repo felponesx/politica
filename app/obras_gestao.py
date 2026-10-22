@@ -54,7 +54,7 @@ def resumir(obras, hoje: date | None = None, lista: int = 8) -> dict:
         por[k]["valor"] += o.valor_previsto or 0
         if k in ("concluida", "cancelada"):
             continue
-        if not o.fim_previsto:
+        if not o.fim_previsto or o.fim_previsto.year < 1990:  # data vazia ou absurda (ex.: 1900) não conta como atraso
             sem_data += 1
         elif o.fim_previsto < hoje:
             atrasos.append((o, (hoje - o.fim_previsto).days))

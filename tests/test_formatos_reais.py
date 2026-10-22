@@ -730,3 +730,12 @@ def test_rota_obras_gestao():
     assert mun["BELA VISTA"]["total"] == 1 and mun["BELA VISTA"]["atraso"]["obras"] == 1
     assert cliente.get("/obras-gestao").json()["total"] >= 3
     db.close()
+
+
+def test_obras_gestao_ignora_prazo_absurdo():
+    from datetime import date
+    from types import SimpleNamespace as N
+    from app.obras_gestao import resumir
+    o = N(id=1, nome="n", descricao="d", situacao="Em execução", executor="X", valor_previsto=1.0, fim_previsto=date(1900, 1, 1))
+    r = resumir([o], date(2026, 10, 22))
+    assert r["atraso"]["obras"] == 0 and r["sem_data_prevista"] == 1
