@@ -4522,9 +4522,9 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    <div class="kpis kpis-c" id="segkpi" style="margin-bottom:12px"></div>
    <div class="mapwrap mapbig"><div id="segmap"></div><div class="zside" id="segside"></div></div>
    <p class="small muted" style="margin:8px 0 0">Toque em um estado para ver todas as taxas dele.</p>
-   <div id="segchartw" style="margin-top:14px"><h3 class="seg-h" id="segcht"></h3><div id="segchart"></div></div></div><div id="segstate" style="display:none"></div></div>
+   <div id="segchartw" style="margin-top:14px"><h3 class="seg-h" id="segcht"></h3><div id="segchart"></div></div>
+   ${segAnoAno(d,null)}</div><div id="segstate" style="display:none"></div></div>
   ${segPorDia(B,d)}<div class="seg-ano">${segBlocos(B,null,ref)}</div>
-  ${segAnoAno(d,null)}
   ${B.efetivo?`<div class="panel mt"><div class="hd"><div><h2>Quem faz a segurança no Brasil</h2><p>Efetivo da ativa em ${ref.efetivo}: militares, civis, penais, guardas, federais. Toque numa polícia para ver a ficha.</p></div><a class="btn" href="#/policias">Todas as polícias ›</a></div>${segEfetivo(B.efetivo,null)}
    <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["Policiais (PM e Civil)",r=>{const f=gv(d.estados[r.uf],"efetivo")||{};return f.policia_militar==null&&f.policia_civil==null?"—":n0((f.policia_militar||0)+(f.policia_civil||0))},"n"],["Por mil habitantes",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"n"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
   <div class="panel mt"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos. Toque numa unidade para ver a história e os números.</p></div><a class="btn" href="#/policias">Todas as polícias ›</a></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt" open><summary class="small">Unidades dos estados</summary><div class="embl-grid" data-unids="ALL">${UNIDADES.filter(u=>u[0]!=="BR").map(cartaoUnidade).join("")}</div></details>`:""}</div>
