@@ -457,6 +457,66 @@ def composicao(db: Session = Depends(get_db)):
             "presidente": _eleitos_por_partido(db, ["PRESIDENTE"])}
 
 
+SETORES_ECO = {"industria": "Indústria", "construcao": "Construção", "comercio": "Comércio", "servicos": "Serviços"}
+
+
+@router.get("/economia-empresas", tags=["Empresas"])
+def empresas_economia(db: Session = Depends(get_db)):
+    """Como é a economia das empresas: faturamento médio, para onde vai a receita e quanto sobra, por setor (IBGE)."""
+    r = db.scalar(select(Registro).where(Registro.fonte == "ibge", Registro.tipo == "empresas_economia")
+                  .order_by(Registro.ano.desc()))
+    if not r:
+        raise HTTPException(404, "Sem dados. Rode a coleta ibge-empresas-economia.")
+    bruto = (r.dados or {}).get("setores") or {}
+
+    def derivar(d):
+        emp, rec, pes = d.get("empresas") or 0, d.get("receita") or 0, d.get("pessoal") or 0
+        gp, va = d.get("gastos_pessoal") or 0, d.get("valor_adicionado") or 0
+        if not emp or not rec:
+            return None
+        insumos = max(rec - va, 0)
+        sobra = va - gp
+        return {"empresas": emp, "pessoal": pes, "receita": rec, "valor_adicionado": va, "gastos_pessoal": gp,
+                "receita_media": rec / emp, "pessoal_medio": pes / emp, "gasto_medio": (insumos + gp) / emp,
+                "pessoal_medio_gasto": gp / emp, "custo_por_pessoa": gp / pes if pes else None,
+                "partes": {"insumos": round(insumos / rec * 100, 1), "pessoal": round(gp / rec * 100, 1),
+                           "sobra": round(sobra / rec * 100, 1)},
+                "margem": round(sobra / rec * 100, 1), "taxa_margem_comercializacao": d.get("taxa_margem")}
+
+    setores = {k: x for k, v in bruto.items() if (x := derivar(v))}
+    soma = {c: sum(x[c] for x in setores.values()) for c in ("empresas", "pessoal", "receita", "valor_adicionado", "gastos_pessoal")}
+    total = derivar({"empresas": soma["empresas"], "pessoal": soma["pessoal"], "receita": soma["receita"],
+                     "valor_adicionado": soma["valor_adicionado"], "gastos_pessoal": soma["gastos_pessoal"]}) if setores else None
+    return {"ano": (r.dados or {}).get("ano"), "setores": [{"chave": k, "nome": SETORES_ECO.get(k, k), **v} for k, v in setores.items()],
+            "total": total, "fonte": "IBGE — Pesquisa Industrial Anual, Pesquisa Anual da Indústria da Construção, Pesquisa Anual de Comércio e Pesquisa Anual de Serviços",
+            "nota": ("Totais do país por setor, não por empresa (o faturamento de cada empresa não é público). Cobre indústria, construção, comércio e serviços "
+                     "não financeiros; fora ficam agropecuária e bancos. \"Sobra\" = valor adicionado menos gastos com pessoal, em % da receita: é a margem "
+                     "operacional bruta, antes de impostos sobre o lucro, juros e depreciação; não é o lucro líquido. \"Gasto\" = compras de insumos e "
+                     "mercadorias mais gastos com pessoal. No comércio a conta de pessoal considera só salários e retiradas.")}
+
+
+@router.get("/resumo-contratos", tags=["Contratos"])
+def contratos_resumo(db: Session = Depends(get_db)):
+    """Quanto o poder público gasta em contratos: total, média, mediana, por esfera e por faixa de valor."""
+    valores = sorted(v for (v,) in db.execute(select(Contrato.valor).where(Contrato.valor.isnot(None), Contrato.valor > 0)))
+    if not valores:
+        raise HTTPException(404, "Sem contratos coletados.")
+    n = len(valores)
+    esf = {"F": "Federal", "E": "Estadual", "M": "Municipal"}
+    por_esfera = [{"esfera": k, "nome": esf.get(k or "", "Não informada"), "contratos": q, "valor": round(v or 0, 2),
+                   "media": round((v or 0) / q, 2)} for k, q, v in db.execute(
+        select(Contrato.esfera, func.count(), func.sum(Contrato.valor)).where(Contrato.valor > 0).group_by(Contrato.esfera))]
+    faixas = [("Até R$ 10 mil", 0, 1e4), ("R$ 10 mil a 100 mil", 1e4, 1e5), ("R$ 100 mil a 1 milhão", 1e5, 1e6),
+              ("R$ 1 a 10 milhões", 1e6, 1e7), ("Acima de R$ 10 milhões", 1e7, float("inf"))]
+    por_faixa = []
+    for nome, lo, hi in faixas:
+        sel = [v for v in valores if lo <= v < hi]
+        por_faixa.append({"faixa": nome, "contratos": len(sel), "valor": round(sum(sel), 2)})
+    return {"contratos": n, "valor_total": round(sum(valores), 2), "media": round(sum(valores) / n, 2),
+            "mediana": round(valores[n // 2], 2), "maior": round(valores[-1], 2), "por_esfera": por_esfera, "por_faixa": por_faixa,
+            "nota": "Contratos já coletados do PNCP e do Portal da Transparência: é uma amostra, não o total dos contratos do país."}
+
+
 @router.get("/dividas/empresas", tags=["Dívidas", "Empresas"])
 def dividas_empresas(db: Session = Depends(get_db)):
     """Empresas ativas do país por porte (MEI, ME, EPP, demais) e quantas têm dívida com a União, estão em recuperação

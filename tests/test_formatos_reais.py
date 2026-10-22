@@ -647,3 +647,16 @@ def test_obrasgov_pagina_mesmo_com_last_true(monkeypatch):
 
     monkeypatch.setattr(http, "get_json", pagina)
     assert obrasgov.coletar_obras(ufs=["AC"], tamanho=3) == 7
+
+
+def test_economia_empresas_e_resumo_contratos(monkeypatch):
+    from app.models import Contrato
+    db = SessionLocal()
+    db.add(Registro(fonte="ibge", tipo="empresas_economia", chave="2024", ano=2024, dados={"ano": 2024, "setores": {
+        "servicos": {"empresas": 100, "pessoal": 1000, "receita": 1e9, "gastos_pessoal": 2e8, "valor_adicionado": 6e8}}}))
+    db.commit()
+    d = cliente.get("/economia-empresas").json()
+    s = d["setores"][0]
+    assert s["receita_media"] == 1e7 and s["margem"] == 40.0 and s["partes"]["insumos"] == 40.0
+    assert d["total"]["empresas"] == 100
+    db.close()

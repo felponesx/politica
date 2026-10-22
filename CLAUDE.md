@@ -242,3 +242,15 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Troca de aba nas Dívidas: `trocaSuave(el, html)` — o conteúdo antigo fica por cima e some enquanto o novo aparece (no mapa as cores
   passam de um tipo para o outro); `surgeSuave` para o detalhe. CSS no bloco "troca suave" (`.xf`, `.xf-velho`, `.xf-mapa`).
 - Robô: `receita-empresas-porte` tem limite de 215 min em `LIMITES` (`scripts/coleta_ci.py`); com o limite padrão (45 min) a coleta parava no meio.
+
+## Empresas e Contratos (out/2026)
+- Abas (`ABAS_EMP`): Empresas (resumo de tudo: empresas do país, "como as empresas ganham e gastam", dívidas, contratos, maiores) · Dívidas
+  (tudo o que era Dívidas › Empresas; `#/dividas/empresas` redireciona) · Maiores empresas (capital social, declarado e não conferido) ·
+  Contratos públicos (pizzas de valor por esfera e de tamanho dos contratos, busca de CNPJ, lista de contratos, cruzamento fornecedores × cota).
+- `ibge-empresas-economia` (`app/collectors/ibge_empresas.py`, API de agregados do IBGE, ano 2024): totais do país por setor (PIA-Empresa 10451,
+  construção 10463, PAC 10645, PAS 10758: empresas, pessoal, receita, valor adicionado, gastos com pessoal). `GET /economia-empresas` deriva
+  faturamento médio, gasto médio (compras + pessoal), margem = (valor adicionado − pessoal) ÷ receita (margem operacional bruta, NÃO lucro líquido),
+  custo por pessoa e a repartição de cada R$ 100. Não existe faturamento por empresa em base aberta (só estes totais). `GET /resumo-contratos`:
+  total, média, mediana, por esfera e por faixa de valor. As rotas não podem ficar sob `/empresas/…` nem `/contratos/…` (já têm `{documento}`/`{cid}`).
+- Obras: o ObrasGov devolve `last: true` em toda página; `coletar_obras` só para em página curta (até 40 páginas por estado, estados em paralelo).
+

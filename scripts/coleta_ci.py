@@ -39,7 +39,7 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
 EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
-          ("noticias-politica", {}), ("bcb-scr-estados", {}),
+          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("ibge-empresas-economia", {}),
           # anos anteriores para os gráficos em linha dos estados (retorno por R$ 1 e dívida do governo estadual)
           ("receita-arrecadacao", {"ano_minimo": date.today().year - 6}),
           *[("tesouro-transferencias", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
