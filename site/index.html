@@ -1631,7 +1631,8 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) *{scrollbar-color:#3A4558 transparent}}
 /* nunca rolar para os lados (celular e telas largas): o que passar da tela é cortado, não vira barra de rolagem (v1.10) */
 html,body{overflow-x:clip;max-width:100%}
-.busca-cid input{min-width:260px;max-width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--surface);color:var(--ink)}
+.pill-q{display:block;width:calc(100% - 16px);margin:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink)}
+.pill-m{max-height:min(70vh,520px);overflow-y:auto}.pill-q{position:sticky;top:0;z-index:1}
 /* segurança: "por dia" em quatro quadros simples (v1.10) */
 .sd-grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
 .sd-g h4{margin:0 0 8px;font-size:15px}.sd-c,.sd-l{display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,150px);gap:10px;align-items:baseline}
@@ -1906,7 +1907,7 @@ function lineChart(series,labels,o={}){const id="lc"+(++LC_N);
  const dt=o.datas?{gera:true,anual:o.datas.every(d=>String(d).length===4),m:o.datas.map(d=>{d=String(d);return +d.slice(0,4)*12+(d.length>=7?+d.slice(5,7)-1:11)})}:lcMeses(labels);
  const k=lcCorte(dt,o.per);let chips="";
  if(dt&&o.periodo!==false){const n=dt.m.length,ops=LC_PER.filter(([mm])=>{const c=lcCorte(dt,mm);return c>0&&n-c>=2});
-  if(ops.length){const cur=k&&ops.some(x=>x[0]==o.per)?o.per:0;chips=`<div class="seg lc-per" data-lcp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Tudo"]].map(([mm,t])=>`<button type="button" data-m="${mm}" class="${mm==cur?"on":""}">${t}</button>`).join("")}</div>`}}
+  if(ops.length){const cur=k&&ops.some(x=>x[0]==o.per)?o.per:0;chips=`<div class="seg lc-per" data-lcp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Todos"]].map(([mm,t])=>`<button type="button" data-m="${mm}" class="${mm==cur?"on":""}">${t}</button>`).join("")}</div>`}}
  LC_REG.set(id,[series,labels||[],o,dt,k]);return`${chips}<div class="lc" data-lc="${id}">${lineSVG(...lcCut(id),600)}</div>`}
 function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.round(W));const H=h,all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);
  const ticks=[0,1,2,3,4].map(t=>mn+(mx-mn)*t/4),rot=ticks.map(v=>fmt(v).replace("R$ ","")),p=Math.max(30,Math.max(...rot.map(t=>t.length))*6.6+10),dir=14;
@@ -2624,7 +2625,9 @@ function comoCasa(casa){let t,f,extra="";
  else[t,f]=COMO[casa];
  return`<h2>${t}</h2><div class="facts">${f.map(x=>`<div><span>${x[0]}</span>${x[1]}</div>`).join("")}</div>${extra}`}
 const avIni=(n,vaga)=>`<span class="rfoto ini${vaga?" vaga":""}" style="width:52px;height:52px">${vaga?"":esc(iniciais(n))}</span>`;
-function cardIndicado(nome,linha1,linha2,tags){const vaga=nome==="Vaga aberta";return`<div class="pcard2 indc2${vaga?" vaga":""}">${vaga?avIni(nome,vaga):fotoR("wiki:"+nome,nome,52)}<div style="min-width:0"><b>${esc(nome)}</b><div class="small muted">${esc(linha1)}</div><div style="margin-top:4px">${tags}</div>${linha2?`<div class="small muted" style="margin-top:2px">${esc(linha2)}</div>`:""}</div></div>`}
+const slugNome=n=>snapNorm(n).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function cardIndicado(nome,linha1,linha2,tags){const vaga=nome==="Vaga aberta";const ini=`${vaga?avIni(nome,vaga):fotoR("wiki:"+nome,nome,52)}<div style="min-width:0"><b>${esc(nome)}</b><div class="small muted">${esc(linha1)}</div><div style="margin-top:4px">${tags}</div>${linha2?`<div class="small muted" style="margin-top:2px">${esc(linha2)}</div>`:""}</div>`;
+ return vaga?`<div class="pcard2 indc2 vaga">${ini}</div>`:`<a class="pcard2 indc2" href="#/indicado/${slugNome(nome)}">${ini}</a>`}
 function pessoasDaCasa(casa){
  if(casa==="ministros")return MINISTROS.map(m=>cardIndicado(m[1].replace(/ \(.*\)$/,""),m[0],"",`<span class="tag tind">Indicado</span> <span class="tag">${esc(pastaCurta(m[0]))}</span>${m[2]?"":' <span class="tag">a confirmar</span>'}`));
  if(casa[0]==="t"){const c=COLEGIADOS[+casa.slice(1)],nc=NO_CARGO.find(x=>x.n===c.n);if(!nc)return null;
@@ -2660,7 +2663,7 @@ mount(){const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
   listaPaginada({url:()=>tse?"/candidatos"+qs({cargo:tse,eleitos:"true",...filtros()}):"/parlamentares"+qs({casa:alCasa||casa,...filtros()}),alvo:"#plist",mais:"#plm",limite:60,
    vazio:"Ninguém com esses filtros.",
    render:it=>tse?it.map(c=>{const n=c.nome_urna||c.nome||"";const card=`<div style="min-width:0"><b>${esc(n)}</b><div class="small muted">${esc(CARGON(c.cargo))}${c.unidade&&c.unidade!==c.uf?", "+esc(c.unidade):""}. ${esc(c.uf||"")}</div><div style="margin-top:4px"><span class="tag sit-ex">Eleito em ${c.ano}</span> ${c.partido?sigla(c.partido):""}</div>${c.nome&&c.nome!==n?`<div class="small muted" style="margin-top:2px">${esc(c.nome)}</div>`:""}</div>`;
-     const ft=c.sq_candidato?fotoR("tse:"+c.sq_candidato,n,52):avIni(n);return c.parlamentar_id?`<a class="pcard2" href="#/parlamentar/${c.parlamentar_id}">${ft}${card}</a>`:`<div class="pcard2 indc2">${ft}${card}</div>`}).join("")
+     const ft=c.sq_candidato?fotoR("tse:"+c.sq_candidato,n,52):avIni(n);return c.parlamentar_id?`<a class="pcard2" href="#/parlamentar/${c.parlamentar_id}">${ft}${card}</a>`:c.sq_candidato?`<a class="pcard2" href="#/candidato/${esc(c.sq_candidato)}">${ft}${card}</a>`:`<div class="pcard2 indc2">${ft}${card}</div>`}).join("")
     :it.map(p=>`<a class="pcard2" href="#/parlamentar/${p.id}">${fotoR(p.foto_url,p.nome,52)}<div style="min-width:0"><b>${esc(p.nome)}</b><div class="small muted">${cargoParl(alCasa||casa)}${p.partido?", "+esc(p.partido):""}. ${esc(p.uf||"")}</div><div style="margin-top:4px"><span class="tag sit-ex">Em exercício</span> ${sigla(p.partido)}</div></div></a>`).join(""),
    aoCarregar:(it,tot)=>{$("#plistN").textContent=tot?`${nf(tot)} ${tot===1?"pessoa":"pessoas"}`:"";if(!tot&&!uf&&!pt&&!q){$("#plistMais").innerHTML="";demo();$("#plistN").textContent="Ainda não há dados coletados para esta casa. Mostrando a demonstração."}}})(true)};
  const lista=()=>{$("#plistT").textContent=casa[0]==="t"?COLEGIADOS[+casa.slice(1)].n:CASA_LISTA[casa];$("#pinfo").innerHTML=comoCasa(casa);$("#plistMais").innerHTML="";
@@ -2939,7 +2942,7 @@ $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEven
 
 
 /* ---------- janelas flutuantes ---------- */
-const DETAIL={pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma"};
+const DETAIL={indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma"};
 let popStack=[];
 function popTitle(path,k){const h=$("#popB h1");return`${DETAIL[k]}: <b>${h?esc(h.textContent):""}</b>`}
 function openPop(path,push=true){const[k,...args]=path.split("/");if(!DETAIL[k]||!P[k])return false;
@@ -3273,11 +3276,12 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const tod=pts.flat().filter(v=>v!=null);if(!tod.length)return"";const mx=Math.max(...tod)*1.06||1,mn=Math.min(0,...tod);
  const x=i=>L+(anos.length<2?0:i*(W-L-Rp)/(anos.length-1)),y=v=>T+(1-(v-mn)/(mx-mn||1))*(H-T-B);
  let g="";for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" class="lc-grade"/><text x="${L-6}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(v)}</text>`}
- const passo=Math.max(1,Math.ceil(anos.length/7));anos.forEach((a,i)=>{if((i%passo===0&&anos.length-1-i>=Math.max(1,passo/2+.5))||i===anos.length-1)g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="11.5" class="lc-eixo">${rot(a)}</text>`});
+ {const rs=anos.map(a=>String(rot(a))),ini=anos.map((_,i)=>i).filter(i=>i===0||rs[i]!==rs[i-1]),passo=Math.max(1,Math.ceil(ini.length/6));  // um rótulo por ano (o primeiro ponto de cada ano), nunca dois iguais
+ ini.forEach((i,k)=>{if(k%passo===0&&(ini.length-1-k>=Math.max(1,passo/2+.5)||k===ini.length-1))g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="11.5" class="lc-eixo">${rs[i]}</text>`})}
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
   g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}"/>`;
-  d.forEach((p,i)=>{if(p)g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3:2.2}" fill="${c}" opacity="${forte?1:.6}"><title>${esc(lista[k].nome)} · ${rot(anos[i])}: ${fmt(vs[i])}</title></circle>`});
+  {let ui=-1;d.forEach((p,i)=>{if(p)ui=i});if(ui>=0){const p=d[ui];g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${forte?3.6:2.8}" fill="${c}" opacity="${forte?1:.7}"><title>${esc(lista[k].nome)} · ${rot(anos[ui])}: ${fmt(vs[ui])}</title></circle>`}}
   const ui=vs.map((v,i)=>v!=null?i:-1).filter(i=>i>=0).pop();if(ui!=null)fim.push({k,y:y(vs[ui]),x:x(ui)})});
  fim.sort((a,b)=>a.y-b.y);for(let i=1;i<fim.length;i++)if(fim[i].y-fim[i-1].y<13)fim[i].y=fim[i-1].y+13;
  fim.forEach(f=>{g+=`<text x="${(f.x+6).toFixed(1)}" y="${(f.y+3.5).toFixed(1)}" font-size="12" font-weight="${f.k<3?700:500}" fill="${cores[f.k]}" opacity="${f.k<3?1:.75}">${lista[f.k].uf}</text>`});
@@ -3289,9 +3293,9 @@ function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menor
  if(!anos||anos.length<2||ok.length<n*2)return rankDuplo(vals,fmt,{alto,baixo,corAlto:coresAlto[0],corBaixo:coresBaixo[0],attr,href,n,sub:o.sub});
  const p={attr,href,rot,vals},corpo=an=>`<div class="rk-duplo lr">${linhasGraf(alto,ok.slice(0,n),serie,an,coresAlto,fmt,p)}${linhasGraf(baixo,ok.slice(-n).reverse(),serie,an,coresBaixo,fmt,p)}</div>`;
  // botões de período (10 anos / 5 anos / Tudo) quando a série tem mais anos do que o corte
- const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)?[]:[[10,"10 anos"],[5,"5 anos"],[1,"1 ano"]].filter(([m])=>{const c=yr.filter(y=>y>=u-m).length;return c<anos.length&&c>=2});
+ const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)||new Set(yr).size<2?[]:[[10,"10 anos"],[5,"5 anos"],[1,"1 ano"]].filter(([m])=>yr.filter(y=>y>=u-m).length>=2);
  let chips="";if(ops.length){const id="ld"+(++LC_N);LD_REG.set(id,an=>corpo(an));LD_REG.set(id+"a",anos);
-  chips=`<div class="seg lc-per" data-ldp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Tudo"]].map(([m,t])=>`<button type="button" data-m="${m}" class="${m?"":"on"}">${t}</button>`).join("")}</div>`;
+  chips=`<div class="seg lc-per" data-ldp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Todos"]].map(([m,t])=>`<button type="button" data-m="${m}" class="${m?"":"on"}">${t}</button>`).join("")}</div>`;
   return`${chips}<div data-ld="${id}">${corpo(anos)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
  return corpo(anos)+(nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:"")}
 const LD_REG=new Map();
@@ -3354,21 +3358,55 @@ mount(){apiGet("/votacoes/"+vid).then(d=>{const v=d.votacao;const pl=d.placar||{
   desenha();$("#rvq").oninput=e=>{q=e.target.value;desenha()};$("#rvv").onchange=e=>{fv=e.target.value;desenha()}}
 }).catch(e=>{$("#rv").innerHTML=rerro(e)})}}};
 
+/* ---------- perfil de quem chega ao cargo por indicação: ministros de Estado, tribunais superiores e Banco Central ---------- */
+let PERFIS_IND=null;const perfisInd=()=>PERFIS_IND||(PERFIS_IND=midiaJSON("perfis.json").then(x=>x||{}));
+function indicadoCargos(nome){const l=[];
+ NO_CARGO.forEach(c=>c.lista.forEach(m=>{if(m[0]===nome)l.push({orgao:c.n.replace(/ \(.*\)$/,""),sigla:(/\(([^)]+)\)/.exec(c.n)||[])[1]||"",cargo:m[1]||"",nota:m[2]||"",obs:c.obs,fonte:c.fonte,col:COLEGIADOS.find(x=>x.n===c.n)||null})}));
+ MINISTROS.forEach(m=>{if(m[1].replace(/ \(.*\)$/,"")===nome)l.push({orgao:"Governo federal",sigla:"",cargo:m[0],nota:m[2]?"":"A confirmar: último dado público anterior a 2026",ministro:true,obs:"",fonte:"Levantamento de notícias e do Diário Oficial (out/2026)"})});
+ return l}
+const fdBR=d=>d.slice(8,10)+"/"+d.slice(5,7)+"/"+d.slice(0,4);
+P.indicado=(slug)=>({html:`<div class="crumb"><a href="#/indicacoes">Candidatos e Indicações</a> / Indicado</div><div id="rind">${rload()}</div>`,
+ mount(){const todos=[...new Set([...NO_CARGO.flatMap(c=>c.lista.map(m=>m[0])),...MINISTROS.map(m=>m[1].replace(/ \(.*\)$/,""))])].filter(n=>n!=="Vaga aberta");
+  const nome=todos.find(n=>slugNome(n)===slug);if(!nome){$("#rind").innerHTML=rvazio("Pessoa não encontrada nesta lista.");return}
+  const cs=indicadoCargos(nome);
+  perfisInd().then(PF=>{const pf=PF[nome]||null;if(!$("#rind"))return;
+   const linhas=cs.map(c=>{const m=/Indicad[oa] por ([^,]+?),? (\d{4})/.exec(c.nota||"");
+    let como="",ate="";
+    if(c.ministro){como="Nomeado(a) pelo Presidente da República. É um cargo de confiança: não passa pelo Senado.";ate="Enquanto o Presidente mantiver. O mandato do presidente da República termina em 1º de janeiro de 2027."}
+    else if(c.col&&/STF/.test(c.sigla)||/STF|STJ|TCU|STM/.test(c.sigla)&&!c.ministro){como=m?`Indicado(a) por ${m[1]} em ${m[2]}; aprovado(a) pelo Senado.`:(c.col?c.col.r:"");
+     const nasc=pf&&pf.nascimento;ate=nasc?`Até os 75 anos: aposentadoria compulsória em ${fdBR((+nasc.slice(0,4)+75)+nasc.slice(4))}.`:"Até os 75 anos (aposentadoria compulsória)."}
+    else if(c.sigla==="TSE"){como=c.nota||"Composição do TSE: ministros do STF, do STJ e juristas.";ate="Mandato de 2 anos, que pode ser renovado uma vez."}
+    else if(/Banco Central/.test(c.orgao)){como="Indicado(a) pelo Presidente da República e aprovado(a) pelo Senado.";ate=c.nota||"Mandato fixo de 4 anos, que não coincide com o do Presidente."}
+    return{...c,como,ate,ano:m?m[2]:""}});
+   $("#rind").innerHTML=`<div class="pcard keep">${fotoR("wiki:"+nome,nome,92)}<div style="flex:1;min-width:0"><span class="tag tind">Indicado</span><h1>${esc(nome)}</h1><div class="muted pline">${linhas.map(l=>`${esc(l.cargo||"Ministro(a)")}${l.orgao&&!l.ministro?`, ${esc(l.sigla||l.orgao)}`:""}`).join(" · ")}</div>${iaBotao(nome)}</div></div>
+   ${pf?`<div class="panel mt"><h2>Quem é</h2><p style="margin:0;max-width:75ch">${esc(pf.resumo)}</p>${pf.pagina?`<p class="small muted" style="margin:8px 0 0">Resumo do verbete da Wikipédia. <a href="${esc(pf.pagina)}" target="_blank" rel="noopener">Ler o verbete completo</a></p>`:""}</div>`:""}
+   ${linhas.map(l=>`<div class="panel mt"><h2>${esc(l.ministro?"No governo federal":l.orgao)}</h2><div class="facts"><div><span>Cargo</span>${esc(l.cargo||("Ministro(a)"+(l.sigla?" do "+l.sigla:"")))}</div>${l.como?`<div><span>Como chegou lá</span>${esc(l.como)}</div>`:""}${l.ano?`<div><span>No cargo desde</span>${esc(l.ano)}</div>`:""}${l.ate?`<div><span>Até quando</span>${esc(l.ate)}</div>`:""}${l.nota&&!/^Indicad/.test(l.nota)&&l.nota!==l.ate?`<div><span>Observação</span>${esc(l.nota)}</div>`:""}</div><p class="small muted" style="margin:10px 0 0">Fonte: ${esc(l.fonte||"")}.${l.col?" Regra do cargo: "+esc(l.col.r):""}</p></div>`).join("")}
+   <div class="panel mt"><h2>Presença e votos</h2><p style="margin:0" class="small">Ministros de Estado e magistrados não votam em plenário do Congresso, então não existe uma lista aberta de presença como a dos deputados e senadores. As decisões dos tribunais estão nos sites de cada tribunal.</p></div>
+   ${RSRC("Wikipédia e Wikidata; portais oficiais de cada órgão")}`;
+   rowLinks()})}});
 /* ---------- parlamentar real ---------- */
+const ATU={};
 P.parlamentar=(id,t)=>{if(!API.on){location.hash="#/pessoas";return{html:""}}let tab=t?decodeURIComponent(t):"Resumo";
 return{html:`<div class="crumb"><a href="#/pessoas">Candidatos e parlamentares</a> / Perfil</div><div id="rp">${rload()}</div>`,
 mount(){Promise.all([apiGet("/parlamentares/"+id),apiGet("/parlamentares/"+id+"/ligacoes").catch(()=>null)]).then(([d,lg])=>{const p=d.perfil;
  const anos=[...new Set(d.gastos_por_tipo.map(g=>g.ano))];const ano=anos[0];
  const TABS={Resumo:()=>`<div class="grid g2"><div class="panel"><h2>Dados do mandato</h2><div class="facts"><div><span>Casa</span>${esc(casaN(p.casa))}</div><div><span>Partido</span>${esc(p.partido||"—")}</div><div><span>Estado</span>${esc(UF[p.uf]?UF[p.uf].nome:(p.uf||"—"))}</div>${p.email?`<div><span>E-mail do gabinete</span><span class="rsel">${esc(p.email)}</span></div>`:""}</div></div>
-  <div class="panel"><h2>Atividade registrada</h2><div class="facts"><div><span>Votos nominais coletados</span>${nf(d.ultimos_votos.length)}${d.ultimos_votos.length>=20?"+":""}</div><div><span>Gasto da cota (período coletado)</span>${brl(d.total_gasto)}</div>${lg?`<div><span>Candidaturas no TSE</span>${lg.candidaturas.length}</div>`:""}</div></div></div>`,
-  Votações:()=>`<div class="panel">${d.ultimos_votos.length?table([["Data",x=>fdr(x.votacao.data)],["Votação",x=>`<a href="#/votacao/r${x.votacao.id}">${esc(x.votacao.materia||x.votacao.descricao||"Votação")}</a>`],["Voto",x=>`<span class="tag" style="background:${vcor(x.voto)}">${esc(x.voto)}</span>`],["Resultado",x=>esc(x.votacao.resultado||"—")]],d.ultimos_votos,x=>"#/votacao/r"+x.votacao.id):rvazio("Nenhum voto nominal coletado para este parlamentar.")}<p class="small muted">Últimos 20 votos nominais registrados pela casa.</p></div>`,
+  <div class="panel"><h2>Atividade registrada</h2><div class="facts"><div><span>Votos nominais coletados</span>${nf(d.ultimos_votos.length)}${d.ultimos_votos.length>=20?"+":""}</div><div><span>Gasto da cota (período coletado)</span>${brl(d.total_gasto)}</div>${lg?`<div><span>Candidaturas no TSE</span>${lg.candidaturas.length}</div>`:""}</div></div></div><div class="grid g2 mt" id="rpRes"><div class="panel"><h2>O que defende</h2>${rload()}</div><div class="panel"><h2>Presença nas votações</h2>${rload()}</div></div>`,
+  Votações:()=>`<div class="panel"><p id="rpVot" class="small" style="margin:0 0 10px"></p>${d.ultimos_votos.length?table([["Data",x=>fdr(x.votacao.data)],["Votação",x=>`<a href="#/votacao/r${x.votacao.id}">${esc(x.votacao.materia||x.votacao.descricao||"Votação")}</a>`],["Voto",x=>`<span class="tag" style="background:${vcor(x.voto)}">${esc(x.voto)}</span>`],["Resultado",x=>esc(x.votacao.resultado||"—")]],d.ultimos_votos,x=>"#/votacao/r"+x.votacao.id):rvazio("Nenhum voto nominal coletado para este parlamentar.")}<p class="small muted">Últimos 20 votos nominais registrados pela casa.</p></div>`,
   Gastos:()=>d.gastos_por_tipo.length?`<div class="grid g2"><div class="panel"><h2>Cota parlamentar em ${ano}</h2>${hbars(d.gastos_por_tipo.filter(g=>g.ano===ano).slice(0,8).map(g=>[g.tipo||"Outros",g.total]))}</div><div class="panel"><h2>Notas fiscais</h2><div id="rpd">${rload()}</div>${maisBtn("rpdm")}</div></div>`:`<div class="panel">${rvazio("Nenhuma despesa coletada. Rode a coleta camara-despesas.")}</div>`,
   Eleições:()=>`<div class="panel">${lg&&lg.candidaturas.length?table([["Ano",c=>c.ano],["Cargo",c=>`${esc(tit(c.cargo||""))} ${sigla(c.partido)}`],["Votos",c=>nfR(c.votos),"n"],["Resultado",c=>esc(tit(c.resultado||"—"))],["Patrimônio",c=>brlR(c.patrimonio),"n"]],lg.candidaturas)+((c=>c&&(c.bens_por_tipo||c.receitas_por_fonte)?`<div class="grid g2 mt">${c.bens_por_tipo?`<div><h3 class="rh3">Bens declarados em ${c.ano}</h3>${hbars(Object.entries(c.bens_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${c.receitas_por_fonte?`<div><h3 class="rh3">De onde veio o dinheiro da campanha</h3>${hbars(Object.entries(c.receitas_por_fonte).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}</div>`:"")(lg.candidaturas.find(c=>c.patrimonio!=null||c.receitas_campanha!=null))):rvazio("Nenhuma candidatura ligada no TSE. A ligação é feita por nome de urna, estado e cargo; homônimos ficam sem ligação.")}</div>`,
   Atuação:()=>`<div id="rpat">${rload()}</div>`,
   Fornecedores:()=>`<div class="panel">${lg&&lg.fornecedores_com_contratos_publicos.length?table([["Fornecedor",f=>`<a href="#/fornecedor/${f.cnpj}">${esc(f.nome||f.documento)}</a><div class="small muted">${esc(f.documento)}</div>`],["Pago pela cota",f=>brl(f.pago_pela_cota),"n"],["Contratos com o governo",f=>`${brl(f.valor_contratos_publicos)}<div class="small muted">${nf(f.contratos_publicos)} contrato${f.contratos_publicos==1?"":"s"}</div>`,"n"]],lg.fornecedores_com_contratos_publicos,f=>"#/fornecedor/"+f.cnpj):rvazio("Nenhum fornecedor da cota aparece também em contratos públicos coletados.")}<p class="small muted">${esc((lg&&lg.aviso)||"")}</p></div>`};
  $("#rp").innerHTML=`<div class="pcard keep">${fotoR(p.foto_url,p.nome,92)}<div style="flex:1;min-width:0">${sigla(p.partido,1)}<h1>${esc(p.nome)}</h1><div class="muted pline">${cargoParl(p.casa)}${p.partido?", "+esc(p.partido):""}${p.uf?". "+esc(p.uf):""}.</div>${iaBotao(p.nome)}</div></div>
  <div class="tabs keep" id="tabs">${Object.keys(TABS).map(x=>`<button class="${x===tab?"on":""}">${x}</button>`).join("")}</div><div id="tabc"></div>${RSRC(p.casa==="senado"?"Senado Federal; TSE":"Câmara dos Deputados; TSE; PNCP")}`;
- const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks();if(tab==="Atuação")apiGet("/parlamentares/"+id+"/atuacao").then(x=>{const b=$("#rpat");if(!b)return;b.innerHTML=`<div class="grid g2"><div class="panel"><h2>Comissões</h2>${x.comissoes.length?x.comissoes.map(c=>`<div class="list-row"><span class="tag">${esc(c.sigla||"")}</span><div style="flex:1;min-width:0"><b style="font-weight:500">${esc(c.nome||"")}</b><div class="small muted">${esc(c.cargo||"")}${c.inicio?" · desde "+fdr(c.inicio):""}</div></div></div>`).join(""):rvazio("Nenhuma comissão coletada (coleta congresso-atuacao).")}</div>
+ const atu=()=>ATU[id]||(ATU[id]=apiGet("/parlamentares/"+id+"/atuacao").catch(()=>null));
+ const pres=x=>x&&x.presenca?x.presenca:null;
+ const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks();
+  if(tab==="Resumo")atu().then(x=>{const b=$("#rpRes");if(!b)return;const pr=pres(x),lt=(x&&x.luta)||[],pj=(x&&x.projetos_autoria)||[];
+   b.innerHTML=`<div class="panel"><h2>O que defende</h2>${lt.length?`<p class="small muted" style="margin:0 0 8px">Assuntos dos projetos de lei que apresentou (${nf(pj.length)} de autoria coletados). Mostra no que atua, não resume todas as posições.</p>${pbars(lt.map(t=>[t.tema,t.projetos/Math.max(...lt.map(z=>z.projetos))*100]),{fmt:v=>""}).replace(/<b class="pb-v">[^<]*<\/b>/g,"")}<div class="small muted">${lt.map(t=>`${esc(t.tema)}: ${t.projetos} projeto${t.projetos==1?"":"s"}`).join(" · ")}</div>`:rvazio("Sem projetos de autoria coletados para este parlamentar.")}</div>
+   <div class="panel"><h2>Presença nas votações</h2>${pr?`<div class="kpis kpis-c"><div class="kpi"><span>Votou em</span><strong>${pr.votou} de ${pr.total}</strong><em>votações nominais, ${esc(pr.periodo)}</em></div><div class="kpi"><span>Presença</span><strong>${pct(pr.percentual)}</strong></div></div><div class="bar" style="margin-top:10px"><i style="width:${pr.percentual}%"></i></div><p class="small muted" style="margin:8px 0 0">${esc(pr.nota)}</p>`:rvazio("Sem votações nominais coletadas no período.")}</div>`});
+  if(tab==="Votações")atu().then(x=>{const el=$("#rpVot"),pr=pres(x);if(el)el.innerHTML=pr?`<b>Votou em ${pr.votou} de ${pr.total} votações nominais</b> (${pct(pr.percentual)} de presença, ${esc(pr.periodo)}).`:""});
+  if(tab==="Atuação")apiGet("/parlamentares/"+id+"/atuacao").then(x=>{const b=$("#rpat");if(!b)return;b.innerHTML=`<div class="grid g2"><div class="panel"><h2>Comissões</h2>${x.comissoes.length?x.comissoes.map(c=>`<div class="list-row"><span class="tag">${esc(c.sigla||"")}</span><div style="flex:1;min-width:0"><b style="font-weight:500">${esc(c.nome||"")}</b><div class="small muted">${esc(c.cargo||"")}${c.inicio?" · desde "+fdr(c.inicio):""}</div></div></div>`).join(""):rvazio("Nenhuma comissão coletada (coleta congresso-atuacao).")}</div>
   <div class="panel"><h2>Discursos</h2>${x.discursos_12_meses!=null?`<p style="margin:0 0 8px"><b>${nf(x.discursos_12_meses)}</b> discursos nos últimos 12 meses.</p>`:""}${x.ultimos_discursos.length?x.ultimos_discursos.map(d=>`<div class="list-row"><div style="flex:1;min-width:0"><b style="font-weight:500">${fdr(d.data)}</b> <span class="small muted">${esc(d.tipo||"")}</span><div class="small muted rclamp">${esc(d.resumo||"")}</div></div></div>`).join(""):rvazio(p.casa==="senado"?"Discursos do Senado ainda não entram nesta versão.":"Nenhum discurso coletado.")}</div></div>
   ${x.projetos_autoria.length?`<div class="panel mt"><h2>Projetos de autoria</h2>${x.projetos_autoria.map(j=>`<a class="list-row rrow" href="#/projeto/r${j.proposicao_id}"><b>${esc(j.titulo)}</b></a>`).join("")}</div>`:""}<p class="small muted">Fonte: ${esc(x.fonte)}.</p>`}).catch(e=>{const b=$("#rpat");if(b)b.innerHTML=rerro(e)});
  if(tab==="Gastos"&&$("#rpd"))listaPaginada({url:()=>`/parlamentares/${id}/despesas`,alvo:"#rpd",mais:"#rpdm",limite:20,vazio:"Sem notas.",render:it=>table([["Mês",x=>(x.mes?String(x.mes).padStart(2,"0")+"/":"")+x.ano],["Gasto com",x=>`${esc(tit(String(x.tipo||"").replace(/\.$/,"")))}<div class="small muted">${x.cnpj_cpf&&x.cnpj_cpf.length===14?`<a href="#/fornecedor/${x.cnpj_cpf}">${esc(x.fornecedor||x.cnpj_cpf)}</a>`:esc(x.fornecedor||"")}</div>`],["Valor",x=>brl(x.valor),"n"]],it)})(true)};
@@ -3603,11 +3641,11 @@ function anosChart(pts,fmt=curto){return pts.length>=2?lineChart([{n:"Valor",v:p
 /* ---------- Gastos públicos: despesa por função (SICONFI) ---------- */
 const _gastos=P.gastos;
 P.gastos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Gastos públicos</h1><p>Quanto a União, cada governo estadual e cada capital gastaram em saúde, educação, previdência e nas demais funções.</p></div></div>
-<div class="panel"><div class="segj-grupos" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<span id="gsmunw" class="busca-cid" hidden><input id="gsmun" list="gsmunl" placeholder="Pesquise a cidade pelo nome" autocomplete="off" aria-label="Cidade"><datalist id="gsmunl"></datalist></span><select id="gsano" data-pill="Ano"></select></div></div>
+<div class="panel"><div class="segj-grupos" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<select id="gsmun" data-pill="Cidade" hidden></select><select id="gsano" data-pill="Ano"></select></div></div>
 <div id="gsres" class="mt">${rload()}</div>${RSRC("SICONFI (Tesouro Nacional), RREO Anexo 02: despesa liquidada por função")}`,
 mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={};$("#gsuf").hidden=true;
  const anosDo=()=>{if(f.esfera==="M")return anosMun;const e=entes.find(x=>x.esfera===f.esfera&&(f.esfera==="U"||x.uf===f.uf));return e?e.anos:[]};
- const cidades=async()=>{$("#gsmun").placeholder="Carregando cidades…";try{const r=await apiGet("/municipios?uf="+f.uf+"&limit=1000");CIDS=Object.fromEntries(r.itens.map(m=>[snapNorm(m.nome),m.codigo_ibge]));$("#gsmunl").innerHTML=r.itens.map(m=>`<option value="${esc(m.nome)}"></option>`).join("");$("#gsmun").placeholder=`Pesquise entre ${nf(r.itens.length)} cidades`}catch(e){$("#gsmun").placeholder="Sem cidades coletadas"}};
+ const cidades=async()=>{$("#gsmun").innerHTML="<option value=''>Carregando cidades…</option>";try{const r=await apiGet("/municipios?uf="+f.uf+"&limit=1000");$("#gsmun").innerHTML="<option value=''>Escolha a cidade</option>"+r.itens.map(m=>`<option value="${m.codigo_ibge}">${esc(m.nome)}</option>`).join("")}catch(e){$("#gsmun").innerHTML="<option value=''>Sem cidades coletadas</option>"}};
  const anosCidade=async()=>{anosMun=[];if(!f.municipio)return;try{anosMun=(await apiGet("/gastos/evolucao?esfera=M&municipio="+f.municipio)).map(x=>x.ano).reverse()}catch(e){}};
  const carregar=async()=>{const anos=anosDo();$("#gsano").innerHTML=anos.map(x=>`<option>${x}</option>`).join("")||"<option value=''>Sem dados</option>";if(!anos.includes(+f.ano))f.ano=anos[0]||"";$("#gsano").value=f.ano;
   if(f.esfera!=="U"&&!f.uf){$("#gsres").innerHTML=`<div class="panel">${rvazio("Escolha o estado.")}</div>`;return}
@@ -3622,7 +3660,7 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={}
    <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${p>=10?"var(--c1)":"#71A2F9"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
   catch(e){$("#gsres").innerHTML=rerro(e)}};
  apiGet("/gastos/entes").then(es=>{entes=es;if(!es.length){demoComAviso(_gastos,a,"Nenhum gasto por função coletado ainda (coleta siconfi-despesas-funcao).");return}carregar()}).catch(e=>{$("#gsres").innerHTML=rerro(e)});
- $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmunw").hidden=f.esfera!=="M";$("#gsmun").value="";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").oninput=async e=>{const cod=CIDS[snapNorm(e.target.value.trim())];if(!cod||cod===f.municipio)return;f.municipio=cod;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);
+ $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmun").hidden=f.esfera!=="M";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").onchange=async e=>{f.municipio=e.target.value;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);
 
 /* ---------- Órgãos federais ---------- */
 const _orgaos=P.orgaos,_orgao=P.orgao;
@@ -4501,31 +4539,22 @@ function segRefs(d){const r=d.referencias||{},o=r.ocorrencias;return{prisional:r
 
 /* resumo de um lugar (Brasil ou estado): blocos de KPIs */
 const _n1=n1;
-function segBlocos(e,br,ref,arr){const n1=arr?n0:_n1,o=e.ocorrencias||{},p=e.prisional||{},v=e.violencia||{},f=e.efetivo||{},B=br||{};
+// quadros simples (nome · valor · detalhe), o mesmo desenho do "Por dia": crimes e prisões, sistema prisional e mortes violentas
+function segBlocos(e,br,ref,arr){const n1=arr?n0:_n1,o=e.ocorrencias||{},p=e.prisional||{},v=e.violencia||{},B=br||{};
  const cmp=(val,bv,fmt=n1)=>br&&bv!=null&&val!=null?`Brasil: ${fmt(bv)}`:"";
+ const quadro=(t,sub,l)=>{l=l.filter(x=>x&&x[1]!=null&&x[1]!=="—");return l.length?`<div class="panel sd-g"><h4>${t} <small class="muted" style="font-weight:500">${sub||""}</small></h4><div class="sd-c"><span></span><span>Valor</span><span>Detalhe</span></div>${l.map(([n,val,d],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span>${esc(n)}</span><b>${val}</b><small>${d||""}</small></div>`).join("")}</div>`:""};
+ const L=(n,val,d)=>val==null||val==="—"?null:[n,val,d];
  const out=[];
- if(e.ocorrencias)out.push(`<h3 class="seg-h">Crimes e prisões <small>${ref.ocorr}</small></h3><div class="kpis kpis-c">
-  ${kp("Homicídios dolosos",n0(o.homicidio_doloso),`${n1(o.homicidios_por_dia)} por dia`)}
-  ${kp("Taxa de homicídio",n1(o.taxa_homicidio),cmp(o.taxa_homicidio,gv(B,"ocorrencias","taxa_homicidio"))||"por 100 mil habitantes")}
-  ${kp("Presos por mandado, por dia",n1(o.detidos_por_dia),`${n0(o.mandados_cumpridos)} mandados cumpridos`)}
-  ${kp("Feminicídios",n0(o.feminicidio))}${kp("Latrocínios",n0(o.latrocinio),"roubo seguido de morte")}
-  ${kp("Mortes por intervenção policial",n0(o.mortes_intervencao))}${kp("Agentes de segurança mortos",n0(o.agentes_mortos))}
-  ${kp("Pessoas desaparecidas",n0(o.desaparecidos),o.localizados!=null?`${n0(o.localizados)} localizadas`:"")}</div>`);
- if(e.prisional)out.push(`<h3 class="seg-h">Sistema prisional <small>${ref.prisional}</small></h3><div class="kpis kpis-c">
-  ${kp("Presos",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`)}
-  ${kp("Em celas",n0(p.populacao_celas),`${n0(p.vagas)} vagas`)}
-  ${kp("Déficit de vagas",n0(p.deficit_vagas),p.vagas?`${n1(100*(p.populacao_celas||0)/p.vagas)} presos por 100 vagas`:"")}
-  ${kp("Prisão domiciliar",n0(p.populacao_domiciliar),"com ou sem tornozeleira")}
-  ${kp("Entradas no sistema por dia",n1(p.presos_por_dia),`${n0(p.entradas)} no semestre`)}
-  ${kp("Saídas temporárias",n0(p.saidas_temporarias),"autorizadas no semestre")}
-  ${kp("Não voltaram",n0(p.abandonos),p.nao_voltaram_por_mil_saidas!=null?`${n1(p.nao_voltaram_por_mil_saidas)} por mil saídas`:"")}
-  ${kp("Mortes no sistema",n0(p.obitos),"no semestre")}</div>`);
- if(e.violencia)out.push(`<h3 class="seg-h">Mortes violentas intencionais <small>${v.ano||ref.violencia}, Anuário Brasileiro de Segurança Pública</small></h3><div class="kpis kpis-c">
-  ${kp("Mortes violentas",n0(v.mvi),v.variacao_mvi!=null?`${v.variacao_mvi>0?"+":""}${n1(v.variacao_mvi)}% em um ano`:"")}
-  ${kp("Taxa por 100 mil",n1(v.taxa_mvi),cmp(v.taxa_mvi,gv(B,"violencia","taxa_mvi")))}
-  ${kp("Homicídios dolosos",n0(v.homicidio_doloso))}${kp("Mortes por intervenção policial",n0(v.mortes_intervencao))}
-  ${kp("Policiais mortos",n0(v.policiais_mortos))}</div>`);
- return out.join("")}
+ if(e.ocorrencias)out.push(quadro("Crimes e prisões",ref.ocorr,[L("Homicídios dolosos",n0(o.homicidio_doloso),`${n1(o.homicidios_por_dia)} por dia`),L("Taxa de homicídio",n1(o.taxa_homicidio),cmp(o.taxa_homicidio,gv(B,"ocorrencias","taxa_homicidio"))||"por 100 mil habitantes"),
+  L("Presos por mandado, por dia",n1(o.detidos_por_dia),`${n0(o.mandados_cumpridos)} mandados cumpridos`),L("Feminicídios",n0(o.feminicidio),""),L("Latrocínios",n0(o.latrocinio),"roubo seguido de morte"),
+  L("Mortes por intervenção policial",n0(o.mortes_intervencao),""),L("Agentes de segurança mortos",n0(o.agentes_mortos),""),L("Pessoas desaparecidas",n0(o.desaparecidos),o.localizados!=null?`${n0(o.localizados)} localizadas`:"")]));
+ if(e.prisional)out.push(quadro("Sistema prisional",ref.prisional,[L("Presos",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`),L("Em celas",n0(p.populacao_celas),`${n0(p.vagas)} vagas`),
+  L("Déficit de vagas",n0(p.deficit_vagas),p.vagas?`${n1(100*(p.populacao_celas||0)/p.vagas)} presos por 100 vagas`:""),L("Prisão domiciliar",n0(p.populacao_domiciliar),"com ou sem tornozeleira"),
+  L("Entradas no sistema por dia",n1(p.presos_por_dia),`${n0(p.entradas)} no semestre`),L("Saídas temporárias",n0(p.saidas_temporarias),"autorizadas no semestre"),
+  L("Não voltaram",n0(p.abandonos),p.nao_voltaram_por_mil_saidas!=null?`${n1(p.nao_voltaram_por_mil_saidas)} por mil saídas`:""),L("Mortes no sistema",n0(p.obitos),"no semestre")]));
+ if(e.violencia)out.push(quadro("Mortes violentas intencionais",`${v.ano||ref.violencia}`,[L("Mortes violentas",n0(v.mvi),v.variacao_mvi!=null?`${v.variacao_mvi>0?"+":""}${n1(v.variacao_mvi)}% em um ano`:""),L("Taxa por 100 mil",n1(v.taxa_mvi),cmp(v.taxa_mvi,gv(B,"violencia","taxa_mvi"))),
+  L("Homicídios dolosos",n0(v.homicidio_doloso),""),L("Mortes por intervenção policial",n0(v.mortes_intervencao),""),L("Policiais mortos",n0(v.policiais_mortos),"")]));
+ return out.length?`<div class="sd-grade" style="margin-top:14px">${out.join("")}</div>${v.ano||ref.violencia?`<p class="small muted" style="margin:6px 0 0">Mortes violentas: Anuário Brasileiro de Segurança Pública.</p>`:""}`:""}
 function segEfetivo(f,uf){if(!f)return"";const P=f.previsto||{},n1=uf?n0:_n1;
  const L=[["policia_militar","Polícia Militar","pm"],["policia_civil","Polícia Civil (judiciária)","pc"],["policia_penal","Polícia Penal (penitenciária)","penal"],["guardas_municipais","Guardas municipais (GCM)","gcm"],["bombeiros","Corpo de Bombeiros","pm"],["pericia","Perícia oficial","pc"],
   ["policia_federal","Polícia Federal","pf"],["prf","Polícia Rodoviária Federal","prf"],["policia_penal_federal","Polícia Penal Federal","penal"],["policia_legislativa","Polícia Legislativa (Câmara e Senado)","pf"]].filter(x=>f[x[0]]!=null&&f[x[0]]>0);
@@ -4583,22 +4612,18 @@ function segAnoAno(d,uf,sm){const H=d.historico||{},O=H.ocorrencias||{},V=H.viol
  if(anos.some(a=>pres(a)!=null))IND.splice(Math.min(IND.length,4),0,["pres","Presos no sistema prisional",pres,[]]);
  if(!IND.length)return"";
  const lugar=uf?esc(UF[uf].nome):"Brasil";
- const graf=(k,modo)=>{const[,t,f,mes]=IND.find(x=>x[0]===k)||IND[0];const pa=anos.filter(a=>f(a)!=null);
-  const m=modo==="mes"&&mes.length>1?"mes":"ano";
-  const tem=mes.length>1&&pa.length>1;
-  const sw=tem?`<div class="seg lc-per" data-aym="${k}" role="group" aria-label="Escala do gráfico"><button type="button" data-m="mes" class="${m==="mes"?"on":""}">Por mês</button><button type="button" data-m="ano" class="${m==="ano"?"on":""}">Por ano</button></div>`:"";
-  let corpo;
-  if(m==="mes")corpo=lineChart([{n:t,v:mes.map(x=>x[k]),c:"#4A7FC1"}],mes.map(x=>mesCurto(x.mes)),{h:200,fmt:n0});
-  else if(pa.length>1){const parc=pa.filter(a=>O[a]&&O[a].meses&&O[a].meses<12);
-   corpo=lineChart([{n:t,v:pa.map(a=>f(a)),c:"#4A7FC1"}],pa,{h:200,fmt:n0,datas:pa,periodo:false})+(parc.length?`<p class="small muted" style="margin:6px 0 0">${parc.join(", ")}: ano incompleto (${parc.map(a=>O[a].meses+" meses").join(", ")}).</p>`:"")}
-  else corpo=pa.length?`<p class="small">${pa[0]}: <b>${n0(f(pa[0]))}</b></p>`:rvazio("Sem série para este indicador.");
-  return`<h3 class="seg-h" style="margin-top:0">${esc(t)} ${m==="mes"?"por mês":"por ano"} <small>${lugar}${m==="mes"?" · Sinesp":""}</small></h3>${sw}<div class="sa-graf">${corpo}</div>`};
+ const graf=(k)=>{const[,t,f,mes]=IND.find(x=>x[0]===k)||IND[0];const pa=anos.filter(a=>f(a)!=null);
+  let corpo,por;
+  if(pa.length>1){por="por ano";const parc=pa.filter(a=>O[a]&&O[a].meses&&O[a].meses<12);
+   corpo=lineChart([{n:t,v:pa.map(a=>f(a)),c:"#4A7FC1"}],pa,{h:200,fmt:n0,datas:pa})+(parc.length?`<p class="small muted" style="margin:6px 0 0">${parc.join(", ")}: ano incompleto (${parc.map(a=>O[a].meses+" meses").join(", ")}).</p>`:"")}
+  else if(mes.length>1){por="por mês";corpo=lineChart([{n:t,v:mes.map(x=>x[k]),c:"#4A7FC1"}],mes.map(x=>mesCurto(x.mes)),{h:200,fmt:n0})}
+  else{por="";corpo=pa.length?`<p class="small">${pa[0]}: <b>${n0(f(pa[0]))}</b></p>`:rvazio("Sem série para este indicador.")}
+  return`<h3 class="seg-h" style="margin-top:0">${esc(t)} ${por} <small>${lugar}</small></h3><div class="sa-graf">${corpo}</div>`};
  const id="sa"+(++SA_N);SA_REG.set(id,graf);if(SA_REG.size>40)SA_REG.delete(SA_REG.keys().next().value);
- return`<div class="seg-anos" style="margin-top:14px"><div class="seg seg-grupo" data-pill="Indicador" data-ayp="${id}">${IND.map(([k,t],n)=>`<button type="button" data-k="${k}" class="${n?"":"on"}">${esc(t)}</button>`).join("")}</div><div id="${id}" data-k="${IND[0][0]}">${graf(IND[0][0],"mes")}</div></div>`}
-document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ayp] button[data-k],[data-aym] button[data-m]");if(!b)return;const raiz=b.closest(".seg-anos");if(!raiz)return;const el=raiz.querySelector("[id^=sa]"),f=el&&SA_REG.get(el.id);if(!f)return;
- let k=el.dataset.k,modo="mes";
- if(b.dataset.k){k=b.dataset.k;el.dataset.k=k;raiz.querySelectorAll("[data-ayp] button").forEach(x=>x.classList.toggle("on",x===b))}else modo=b.dataset.m;
- trocaSuave(el,f(k,modo));const lc=el.querySelector(".lc");if(lc&&AN_IO){lc.dataset.an=1;anJoga(lc)}},true); // captura: o menu da pílula não deixa o clique subir
+ return`<div class="seg-anos" style="margin-top:14px"><div class="seg seg-grupo" data-pill="Indicador" data-ayp="${id}">${IND.map(([k,t],n)=>`<button type="button" data-k="${k}" class="${n?"":"on"}">${esc(t)}</button>`).join("")}</div><div id="${id}" data-k="${IND[0][0]}">${graf(IND[0][0])}</div></div>`}
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ayp] button[data-k]");if(!b)return;const raiz=b.closest(".seg-anos");if(!raiz)return;const el=raiz.querySelector("[id^=sa]"),f=el&&SA_REG.get(el.id);if(!f)return;
+ const k=b.dataset.k;el.dataset.k=k;raiz.querySelectorAll("[data-ayp] button").forEach(x=>x.classList.toggle("on",x===b));
+ trocaSuave(el,f(k));const lc=el.querySelector(".lc");if(lc&&AN_IO){lc.dataset.an=1;anJoga(lc)}},true); // captura: o menu da pílula não deixa o clique subir
 function segCompleto(e,d,uf){return segPorDia(e,d,uf)+`<div class="seg-ano">${segBlocos(e,null,segRefs(d),!!uf)}</div>`+segAnoAno(d,uf)}
 
 P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"#segstate",map:"#segmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>segEstado(uf)};
@@ -4654,6 +4679,26 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   .replace(/(<section id="s-arrecadacao")/,`<section id="s-seguranca" class="ufsec"><h2 class="ufsec-h">Segurança pública</h2><div id="ufseg-${uf}">${rload()}</div></section>$1`);
  return{html,mount(){r.mount&&r.mount();segDados().then(d=>{const el=document.getElementById("ufseg-"+uf);if(!el)return;const e=d.estados[uf]||{};
   el.innerHTML=(segCompleto(e,d,uf)||rvazio("Sem dados de segurança deste estado ainda."))+(e.efetivo?`<h3 class="seg-h">Quem faz a segurança</h3><div class="panel">${segEfetivo(e.efetivo,uf)}</div>`:"")}).catch(()=>{const el=document.getElementById("ufseg-"+uf);if(el)el.innerHTML=rvazio("Dados de segurança indisponíveis.")})}}}}
+
+/* ===== condições de vida no estado (Início): saneamento, segurança e riscos — % e número de pessoas ===== */
+let SAN=null;
+function sanDados(){return SAN?Promise.resolve(SAN):apiGet("/saneamento").then(d=>{if(!d||!d.por_uf)throw new Error("sem saneamento");SAN=d;return d})}
+function sanHtml(uf,s,seg,risc){const e=s&&s.por_uf[uf];let h="";
+ if(e){const it=[["agua","Água encanada (rede geral)"],["luz","Luz elétrica"],["esgoto","Esgoto (rede ou fossa ligada à rede)"],["lixo","Coleta de lixo"]].filter(x=>e[x[0]]);
+  h+=`<h3 class="seg-h">Saneamento básico <small>${nf(Math.round(e.populacao))} habitantes (Censo 2022)</small></h3><div class="panel">${pbars(it.map(x=>[x[1],e[x[0]].pct]))}
+  <div class="grid g2 mt">${it.map(x=>{const v=e[x[0]];return`<div class="fact"><div class="small muted">${x[1]}</div><b>${nf(v.pessoas)} pessoas têm</b><div class="small muted">${nf(v.sem_pessoas)} não têm (${pct(100-v.pct)})</div></div>`}).join("")}</div>
+  <p class="small muted" style="margin:10px 0 0">${esc(s.metodologia)}</p></div>`}
+ const o=seg&&seg.estados[uf]&&seg.estados[uf].ocorrencias,pop=seg&&seg.estados[uf]&&seg.estados[uf].populacao;
+ if(o&&pop){const L=[["homicidio_doloso","Homicídios dolosos"],["roubo_veiculo","Roubos de veículos"],["estupro","Estupros"],["latrocinio","Latrocínios"],["feminicidio","Feminicídios"]].filter(x=>o[x[0]]!=null);
+  if(L.length)h+=`<h3 class="seg-h">Segurança <small>últimos 12 meses</small></h3><div class="panel"><div class="grid g2">${L.map(x=>`<div class="fact"><div class="small muted">${x[1]}</div><b>${nf(Math.round(o[x[0]]))}</b><div class="small muted">${(o[x[0]]/pop*1e5).toLocaleString("pt-BR",{maximumFractionDigits:1})} por 100 mil habitantes (${(o[x[0]]/pop*100).toLocaleString("pt-BR",{maximumFractionDigits:3})}% da população)</div></div>`).join("")}</div></div>`}
+ const t=risc&&risc.por_uf&&risc.por_uf[uf];
+ h+=`<h3 class="seg-h">Alagamentos e outros desastres</h3><div class="panel">${t?`<div class="fact"><div class="small muted">Desastres reconhecidos pela Defesa Civil nos últimos 10 anos</div><b>${nf(t)} ocorrências</b></div>`:`<p class="small muted" style="margin:0">Ainda não há número oficial de alagamento por estado nas bases abertas que o site lê (a Defesa Civil publica só planilhas de desastres reconhecidos). Assim que essa planilha for carregada, ela aparece aqui.</p>`}</div>`;
+ return h}
+{const _u7=P.uf;P.uf=(id,gs)=>{const r=_u7(id,gs);if(!API.on)return r;const uf=(UF[id]||UF.SP).uf;
+ const html=r.html.replace(/(<button class="chip[^"]*" data-s="seguranca">)/,`<button class="chip" data-s="saneamento">Saneamento</button>$1`)
+  .replace(/(<section id="s-seguranca")/,`<section id="s-saneamento" class="ufsec"><h2 class="ufsec-h">Saneamento, segurança e riscos</h2><div id="ufsan-${uf}">${rload()}</div></section>$1`);
+ return{html,mount(){r.mount&&r.mount();Promise.all([sanDados().catch(()=>null),segDados().catch(()=>null),apiGet("/riscos?uf="+uf).catch(()=>null)]).then(([s,g,k])=>{const el=document.getElementById("ufsan-"+uf);if(!el)return;
+  el.innerHTML=sanHtml(uf,s,g,k)||rvazio("Sem dados de saneamento deste estado ainda.")})}}}}
 
 /* troca suave (v1.9): o conteúdo novo entra por baixo enquanto o antigo, por cima, vai sumindo — as cores do mapa passam de uma
    para a outra em vez de trocar de uma vez. Só opacidade (leve). Se outra troca chega no meio, o antigo continua sumindo e só o novo muda. */
@@ -4714,7 +4759,7 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
      if(anos.length>=2)hs={serie,anos,nota:"Empresas em recuperação judicial acumuladas até cada ano, pelo ano em que a situação foi registrada no CNPJ (só as que continuam nessa situação hoje)."}}}
     trocaSuave($("#dvside"),linhasDuplo(hs&&hs.serie,hs&&hs.anos,m.v,m.f,{...opD,nota:hs?hs.nota:""}));ligaDv();
     if(tipo==="estados"||tipo==="publica")histUF().then(H=>{const dv=H&&H.divida;if(!dv||dv.anos.length<2||!$("#dvside"))return;const pc={};Object.entries(dv.estados).forEach(([uf,o])=>{const pp=UF[uf]&&UF[uf].pop;if(!pp)return;pc[uf]={};Object.entries(o).forEach(([a,v])=>pc[uf][a]=m.v[uf]!=null&&/habitante/i.test(m.t)?v/pp:v)});
-     const MQ={1:"abr",2:"ago",3:"dez"},rq=a=>{const[y,q]=String(a).split(".");return q?`${MQ[q]}/${y.slice(2)}`:y};
+     const rq=a=>String(a).split(".")[0];
      trocaSuave($("#dvside"),linhasDuplo(pc,dv.anos,m.v,m.f,{...opD,rot:rq,nota:"Dívida consolidada ao fim de cada quadrimestre (abril, agosto e dezembro), pelos relatórios fiscais dos estados. Valores nominais, sem correção pela inflação."}));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})});
     bindMap($("#dvmap"),null,null,(u,el)=>inlineZoomIn(DZ,u,el));document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)})}
    else{card.hidden=true}
@@ -4937,6 +4982,9 @@ function fazPilulaSelect(sel){sel.dataset.pok=1;const w=document.createElement("
  const b=document.createElement("button");b.type="button";b.className="pill";b.innerHTML=`<span class="pill-l">${esc(sel.dataset.pill)}</span><b class="pill-v"></b><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>`;
  const m=document.createElement("div");m.className="pill-m";m.hidden=true;const g=document.createElement("div");g.className="seg";m.appendChild(g);w.insertBefore(b,sel);w.insertBefore(m,sel);sel.style.display="none";
  const monta=()=>{const ops=[...sel.options];g.innerHTML=ops.map(o=>`<button type="button" data-v="${esc(o.value)}" class="${o.value===sel.value?"on":""}"${o.disabled?" disabled":""}>${esc(o.textContent)}</button>`).join("");m.classList.toggle("larga",ops.length>8);
+  if(ops.length>12&&!sel.hasAttribute("data-sembusca")){if(!m.querySelector(".pill-q")){const q=document.createElement("input");q.className="pill-q";q.type="search";q.placeholder="Pesquisar…";q.autocomplete="off";q.setAttribute("aria-label","Pesquisar na lista");m.insertBefore(q,g);
+    q.addEventListener("input",()=>{const t=snapNorm(q.value.trim());g.querySelectorAll("button").forEach(b=>b.hidden=!!t&&!snapNorm(b.textContent).includes(t))});q.addEventListener("click",e=>e.stopPropagation())}}
+  else{const q=m.querySelector(".pill-q");if(q)q.remove()}
   const o=sel.options[sel.selectedIndex];b.querySelector(".pill-v").textContent=o?o.textContent:"—";w.hidden=sel.hidden||!ops.length};
  monta();new MutationObserver(monta).observe(sel,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]});sel.addEventListener("change",monta);
  b.onclick=e=>{e.stopPropagation();const abrir=m.hidden;fecharPilulas();if(!abrir)return;monta();m.hidden=false;w.classList.add("open");m.style.left="0px";const r=m.getBoundingClientRect();if(r.right>innerWidth-12)m.style.left=Math.min(0,innerWidth-12-r.right)+"px"};
@@ -5274,13 +5322,13 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}

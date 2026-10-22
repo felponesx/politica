@@ -1,9 +1,10 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (agenda, assembleias, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
 _TAREFAS_BRUTAS = {
+    "ibge-saneamento": saneamento.coletar_saneamento,
     "ibge-empresas-economia": ibge_empresas.coletar_empresas_economia,  # ano
     "camara-deputados": camara.coletar_deputados,
     "camara-proposicoes": camara.coletar_proposicoes,      # inicio, fim

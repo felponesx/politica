@@ -7,7 +7,7 @@ from datetime import date, datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
+from sqlalchemy import distinct, func, select
 from sqlalchemy.orm import Session
 
 from app.collectors.bcb import SERIES
@@ -162,6 +162,40 @@ def eventos(dia: date | None = None, db: Session = Depends(get_db)):
             "fonte": "Câmara dos Deputados (eventos) e Senado Federal (agenda do plenário)"}
 
 
+# assuntos dos projetos de autoria: o que o parlamentar mais apresenta (por palavras-chave da ementa; não é uma posição política)
+TEMAS = [("Saúde", r"sa[uú]de|hospital|sus\b|m[eé]dic|doen[cç]a|vacina|medicamento"), ("Educação", r"educa[cç][aã]o|escola|ensino|professor|universidade|estudante"),
+         ("Segurança pública", r"seguran[cç]a p[uú]blica|pol[ií]cia|crime|penal|pris[aã]o|viol[eê]ncia|arma"), ("Economia e impostos", r"tribut|imposto|fiscal|econom|renda|sal[aá]rio|empreg"),
+         ("Meio ambiente", r"ambient|clima|floresta|saneamento|[aá]gua|energia"), ("Direitos e família", r"mulher|crian[cç]a|idoso|deficien|direitos|fam[ií]lia|ra[cç]a|g[eê]nero"),
+         ("Agricultura e campo", r"agr[ií]col|rural|agropecu|produtor|terra"), ("Transporte e cidades", r"transporte|tr[aâ]nsito|rodovia|habita[cç][aã]o|urban|cidade"),
+         ("Tecnologia e internet", r"internet|digital|dados pessoais|intelig[eê]ncia artificial|tecnologia")]
+
+
+def _temas(textos: list[str]) -> list[dict]:
+    import re
+    cont = {t: 0 for t, _ in TEMAS}
+    for x in textos:
+        for t, rx in TEMAS:
+            if re.search(rx, x or "", re.I):
+                cont[t] += 1
+    return [{"tema": t, "projetos": n} for t, n in sorted(cont.items(), key=lambda kv: -kv[1]) if n][:5]
+
+
+def _presenca(db: Session, p: Parlamentar) -> dict | None:
+    """Em quantas das votações nominais dos últimos 12 meses (da mesma casa) o parlamentar votou."""
+    from datetime import timedelta
+
+    from app.models import Voto, Votacao
+    desde = date.today() - timedelta(days=365)
+    ids = [i for (i,) in db.execute(select(Votacao.id).where(Votacao.casa == p.casa, Votacao.data >= desde,
+                                                              Votacao.secreta.isnot(True),
+                                                              Votacao.id.in_(select(Voto.votacao_id).distinct())))]
+    if not ids:
+        return None
+    votou = db.scalar(select(func.count(distinct(Voto.votacao_id))).where(Voto.parlamentar_id == p.id, Voto.votacao_id.in_(ids))) or 0
+    return {"votou": votou, "total": len(ids), "percentual": round(votou / len(ids) * 100, 1),
+            "periodo": "últimos 12 meses", "nota": "Votações nominais coletadas; quem não estava em exercício na data conta como ausente."}
+
+
 @router.get("/parlamentares/{pid}/atuacao", tags=["Legislativo"])
 def atuacao(pid: int, db: Session = Depends(get_db)):
     p = db.get(Parlamentar, pid)
@@ -171,7 +205,9 @@ def atuacao(pid: int, db: Session = Depends(get_db)):
     projetos = [x for x in db.scalars(select(Registro).where(Registro.tipo == "tramitacao"))
                 if any(str(a.get("id_externo")) == p.id_externo and (a.get("casa") or "camara") == p.casa
                        for a in (x.dados or {}).get("autores") or [])] if p.casa in ("camara", "senado") else []
-    return {"comissoes": (r.dados or {}).get("comissoes", []) if r else [],
+    luta = _temas([x.titulo for x in projetos] + [(x.dados or {}).get("ementa") or "" for x in projetos])
+    return {"luta": luta, "presenca": _presenca(db, p),
+            "comissoes": (r.dados or {}).get("comissoes", []) if r else [],
             "discursos_12_meses": (r.dados or {}).get("discursos") if r else None,
             "ultimos_discursos": (r.dados or {}).get("ultimos_discursos", []) if r else [],
             "projetos_autoria": [{"proposicao_id": int(x.chave), "titulo": x.titulo} for x in projetos[:50]],

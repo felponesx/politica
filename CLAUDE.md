@@ -254,3 +254,19 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   total, média, mediana, por esfera e por faixa de valor. As rotas não podem ficar sob `/empresas/…` nem `/contratos/…` (já têm `{documento}`/`{cid}`).
 - Obras: o ObrasGov devolve `last: true` em toda página; `coletar_obras` só para em página curta (até 40 páginas por estado, estados em paralelo).
 
+## Perfis de quem não é do Legislativo (out/2026)
+- `#/indicado/<nome-sem-acento>` (`P.indicado`, janela flutuante): ministros de Estado, STF, STJ, TSE, TCU, STM e Banco Central, a partir das listas
+  `NO_CARGO` e `MINISTROS` do site. Mostra quem é (resumo da Wikipédia em `site/midia/perfis.json`), como chegou ao cargo (quem indicou e o ano,
+  quando a lista traz), desde quando e até quando (STF/STJ/TCU/STM: 75 anos, calculado pela data de nascimento do Wikidata; TSE: 2 anos; ministro de
+  Estado: confiança do Presidente; BC: o mandato da lista). Não há base aberta de presença para ministros e juízes (o perfil diz isso).
+  `scripts/perfis_indicados.py` (lê `app/dados/indicados_nomes.json`; roda no passo `midia` do robô) — ao mudar as listas no site, atualize esse JSON.
+- Presidente, governadores e prefeitos (TSE) abrem o perfil de candidato (`#/candidato/<sq>`).
+- Parlamentares: `GET /parlamentares/{id}/atuacao` ganhou `luta` (assuntos dos projetos de autoria, por palavras-chave) e `presenca`
+  (votou em X das Y votações nominais dos últimos 12 meses); o Resumo mostra "O que defende" e "Presença nas votações".
+
+
+## Saneamento e condições de vida no estado (out/2026)
+- `ibge-saneamento` (`app/collectors/saneamento.py`): água (tabela 6803), esgoto (6805) e lixo (6892) do Censo 2022 por UF, luz da PNAD (9740) e
+  população (9514); pessoas = % × população (estimativa). API `GET /saneamento`. A ficha do estado (Início) tem a seção "Saneamento, segurança
+  e riscos" (`sanHtml`): % e número de pessoas com e sem cada serviço, segurança em 12 meses (total, por 100 mil, % da população) e desastres
+  da Defesa Civil (`/riscos`) quando a planilha foi carregada. Alagamento por estado não existe em base aberta própria.

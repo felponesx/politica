@@ -382,6 +382,20 @@ def empresa(documento: str, db: Session = Depends(get_db)):
             "fonte": "Receita Federal (CNPJ, via BrasilAPI), PGFN, PNCP e Câmara dos Deputados"}
 
 
+# ---------- saneamento ----------
+
+@router.get("/saneamento", tags=["Estados"])
+def saneamento(db: Session = Depends(get_db)):
+    """Água, esgoto, lixo e luz por estado (Censo 2022 e PNAD): % e número de pessoas com e sem o serviço."""
+    linhas = db.scalars(select(Registro).where(Registro.fonte == "ibge", Registro.tipo == "saneamento")).all()
+    if not linhas:
+        raise HTTPException(404, "Sem dados. Rode a coleta ibge-saneamento.")
+    return {"por_uf": {r.uf: r.dados for r in linhas}, "ano": 2022,
+            "metodologia": "Água, esgoto e lixo: Censo 2022 (domicílios com rede geral/fossa ligada à rede/coleta). Luz: PNAD Contínua "
+                           "(moradores com energia elétrica). Pessoas = % × população do Censo 2022 do estado (estimativa).",
+            "fonte": "IBGE"}
+
+
 # ---------- desastres ----------
 
 @router.get("/riscos", tags=["Municípios"])

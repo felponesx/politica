@@ -660,3 +660,37 @@ def test_economia_empresas_e_resumo_contratos(monkeypatch):
     assert s["receita_media"] == 1e7 and s["margem"] == 40.0 and s["partes"]["insumos"] == 40.0
     assert d["total"]["empresas"] == 100
     db.close()
+
+
+def test_atuacao_presenca_e_temas():
+    from datetime import date as _d, timedelta
+    from app.models import Parlamentar, Votacao, Voto
+    db = SessionLocal()
+    p = Parlamentar(casa="camara", id_externo="999001", nome="Fulana Teste", partido="PT", uf="SP")
+    db.add(p)
+    db.flush()
+    hoje = _d.today()
+    vs = [Votacao(casa="camara", id_externo=f"t{i}", data=hoje - timedelta(days=i + 1), orgao="PLEN", descricao="x", secreta=False) for i in range(3)]
+    db.add_all(vs)
+    db.flush()
+    db.add_all([Voto(votacao_id=vs[0].id, parlamentar_id=p.id, voto="Sim"), Voto(votacao_id=vs[1].id, parlamentar_id=p.id, voto="Não")])
+    outra = Parlamentar(casa="camara", id_externo="999002", nome="Outro", partido="PL", uf="RJ")
+    db.add(outra)
+    db.flush()
+    db.add(Voto(votacao_id=vs[2].id, parlamentar_id=outra.id, voto="Sim"))
+    db.commit()
+    pid = p.id
+    db.close()
+    a = cliente.get(f"/parlamentares/{pid}/atuacao").json()
+    assert a["presenca"]["votou"] == 2 and a["presenca"]["total"] >= 3
+    assert "luta" in a
+
+
+def test_saneamento_pessoas_e_pct():
+    from app.collectors.saneamento import _serie, montar_saneamento
+    resp = [{"resultados": [
+        {"classificacoes": [{"categoria": {"72129": "Total"}}], "series": [{"localidade": {"id": "35"}, "serie": {"2022": "100"}}]},
+        {"classificacoes": [{"categoria": {"72144": "Rede"}}], "series": [{"localidade": {"id": "35"}, "serie": {"2022": "90"}}]}]}]
+    tot, com = _serie(resp, 72129), _serie(resp, 72144)
+    d = montar_saneamento({"agua": (tot, com)}, {"SP": 1000.0}, {"SP": 99.0})
+    assert d["SP"]["agua"]["pct"] == 90.0 and d["SP"]["agua"]["pessoas"] == 900 and d["SP"]["luz"]["sem_pessoas"] == 10

@@ -570,6 +570,11 @@ def main(pasta: str):
     from scripts.fotos_escandalos import fotos_escandalos
     fotos.update(fotos_escandalos())
     gravar_fotos(pasta, fotos)
+    try:  # perfis dos indicados (ministros, tribunais, Banco Central): resumo da Wikipédia e data de nascimento
+        from scripts.perfis_indicados import main as perfis
+        perfis(pasta)
+    except Exception as e:  # noqa: BLE001 - não derruba as fotos
+        log.warning("perfis de indicados não atualizados: %s", e)
     with open(os.path.join(pasta, "indice.json"), "w", encoding="utf-8") as f:
         json.dump({"gerado_em": date.today().isoformat(), "blocos": BLOCOS, "fotos": len(fotos),
                    "partidos": len(lg["partidos"]), "policias": len(lg["policias"]),
