@@ -85,7 +85,12 @@ jobs:
       # fotos oficiais e logos (o site publicado não carrega imagens de fora): na carga completa ou se pedido
       - name: Fotos e logos para o site
         if: env.TAREFAS == '' || contains(env.TAREFAS, 'midia')
-        run: python -m scripts.midia_site site/midia || echo "Fotos e logos não atualizados nesta coleta."
+        run: |
+          # na carga completa, só refaz se o último conjunto tem mais de 7 dias (pedindo "midia" nas tarefas, sempre refaz)
+          if [ -z "$TAREFAS" ] && ! python -m scripts.coleta_ci midia-atrasada; then
+            echo "Fotos e logos atualizados há menos de 7 dias; pulados."; exit 0
+          fi
+          python -m scripts.midia_site site/midia || echo "Fotos e logos não atualizados nesta coleta."
       # grava num arquivo temporário: um dump interrompido nunca vai para o cache (a próxima coleta usaria um
       # banco vazio). Se a coleta foi cancelada, guarda o que já tinha sido gravado.
       - name: Guardar o banco para a próxima coleta

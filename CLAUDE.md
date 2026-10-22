@@ -96,6 +96,13 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - O robô pesado (`coletar-dados.yml`) não tem mais agendamento: só roda pelo botão ou ao mudar o próprio arquivo. `exportar_snapshot.py`
   preserva `noticias.json` ao refazer a pasta (`ARQUIVOS_DE_OUTROS_ROBOS`). Atenção: o GitHub só dispara `schedule` pelo branch padrão.
 
+## Carga completa mais curta (out/2026)
+- `scripts/coleta_ci.py` (`VALIDADE`, `ja_coletada`): na carga completa (campo "tarefas" vazio), `siconfi-tributos` das cidades só roda de novo
+  depois de 30 dias e `siconfi-despesas-funcao` de anos já fechados depois de 365 (o último ano fechado, 30); a conferência usa a tabela
+  `coletas` do banco restaurado (status ok/parcial, mesmos parâmetros). Tarefas pedidas à mão sempre rodam. O passo "Fotos e logos" só refaz
+  com o `indice.json` de `site/midia` mais velho que 7 dias (`midia-atrasada`, `MIDIA_DIAS`); pedindo `midia` nas tarefas, sempre refaz.
+- Pelos horários do Actions (13/10): cidades do SICONFI 77 min, gerar a cópia do site de 22 min a 1h40 (ainda sem explicação) e fotos/logos 1 a 2 h.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.

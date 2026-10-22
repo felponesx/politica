@@ -2,10 +2,12 @@
 
   python -m scripts.coleta_ci coletar   # roda as tarefas, cada uma num processo com limite de tempo
   python -m scripts.coleta_ci resumo    # tabela das coletas (vai para o resumo do Actions)
+  python -m scripts.coleta_ci midia-atrasada   # sai com 0 se as fotos e logos precisam ser refeitos (> MIDIA_DIAS dias)
 
 Sem a variável TAREFAS roda a carga inicial (scripts/coletar.py). Com ela, roda só as tarefas pedidas,
 separadas por ponto e vírgula: TAREFAS="tse-resultados ano=2022 uf=SP; tse-resultados ano=2018 uf=SP".
-Uma tarefa que trava não derruba as outras, e a coleta para antes do limite do Actions para sobrar tempo
+Na carga completa, tarefas que mudam pouco não rodam de novo enquanto a última coleta valer (VALIDADE abaixo);
+quem pede tarefas à mão sempre as recebe. Uma tarefa que trava não derruba as outras, e a coleta para antes do limite do Actions para sobrar tempo
 de gerar a cópia dos dados.
 """
 import os
@@ -62,6 +64,54 @@ SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {
              *[("seguranca-sinesp", {"ano": a}) for a in range(2015, date.today().year + 1)]]
 
 
+# tarefas da carga completa que mudam pouco: (fonte, tarefa) gravados em `coletas`, parâmetros que devem coincidir e dias de validade
+VALIDADE = {
+    "siconfi-tributos": ("siconfi", "tributos_entes", ("ano", "esferas"), lambda p: 30 if p.get("esferas") == "M" else None),
+    # anos fechados do RREO não mudam mais; o último ano fechado é revisto todo mês
+    "siconfi-despesas-funcao": ("siconfi", "despesas_funcao", ("ano",),
+                                lambda p: (365 if int(p.get("ano", 0)) < date.today().year - 1 else 30 if int(p.get("ano", 0)) == date.today().year - 1 else None)),
+}
+MIDIA_DIAS = int(os.environ.get("MIDIA_DIAS", "7"))
+
+
+def ja_coletada(cmd: list[str]) -> str | None:
+    """Texto "coletada há N dias" se a tarefa já rodou com os mesmos parâmetros dentro da validade; senão None."""
+    regra = VALIDADE.get(cmd[0])
+    if not regra:
+        return None
+    fonte, tarefa, chaves, dias_de = regra
+    params = dict(a.split("=", 1) for a in cmd[1:] if "=" in a)
+    dias = dias_de(params)
+    if not dias:
+        return None
+    try:
+        from datetime import datetime
+
+        from sqlalchemy import select
+
+        from app.db import SessionLocal
+        from app.models import Coleta
+        with SessionLocal() as db:
+            q = select(Coleta).where(Coleta.fonte == fonte, Coleta.tarefa == tarefa, Coleta.status.in_(("ok", "parcial")),
+                                     Coleta.fim >= datetime.now() - timedelta(days=dias)).order_by(Coleta.fim.desc())
+            for c in db.scalars(q):
+                if all(str((c.parametros or {}).get(k)) == params.get(k) for k in chaves):
+                    return f"coletada há {(datetime.now() - c.fim).days} dia(s), vale por {dias}"
+    except Exception as e:  # sem banco ou sem a tabela: roda normalmente
+        print(f"(não deu para conferir a última coleta de {cmd[0]}: {type(e).__name__})", flush=True)
+    return None
+
+
+def midia_atrasada(pasta: str = "site/midia"):
+    """Sai com 0 quando as fotos e logos precisam ser refeitos (índice ausente ou com mais de MIDIA_DIAS dias), 1 se estão em dia."""
+    import json
+    try:
+        gerado = date.fromisoformat(json.load(open(os.path.join(pasta, "indice.json"), encoding="utf-8"))["gerado_em"])
+    except (OSError, ValueError, KeyError):
+        sys.exit(0)
+    sys.exit(0 if (date.today() - gerado).days >= MIDIA_DIAS else 1)
+
+
 def comandos():
     pedidas = os.environ.get("TAREFAS", "").strip()
     if pedidas:
@@ -86,7 +136,11 @@ def comandos():
 
 def coletar():
     t0 = time.monotonic()
+    manual = bool(os.environ.get("TAREFAS", "").strip())
     for cmd in comandos():
+        if not manual and (motivo := ja_coletada(cmd)):
+            print(f"{' '.join(cmd)}: pulada ({motivo})", flush=True)
+            continue
         resto = ORCAMENTO - (time.monotonic() - t0)
         if resto < 120:
             print(f"::warning::Sem tempo para {' '.join(cmd)}; ficou para a próxima coleta.", flush=True)
@@ -120,4 +174,4 @@ def resumo():
 
 
 if __name__ == "__main__":
-    {"coletar": coletar, "resumo": resumo}[sys.argv[1] if len(sys.argv) > 1 else "coletar"]()
+    {"coletar": coletar, "resumo": resumo, "midia-atrasada": midia_atrasada}[sys.argv[1] if len(sys.argv) > 1 else "coletar"]()
