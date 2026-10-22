@@ -261,11 +261,23 @@ def entrada_zip(url, nome_parte):
 
 
 def main():
-    # TSE: anos antigos (1994 a 2016) — tamanho e cabeçalho dos arquivos de votação e de candidatos
-    for ano in (1994, 1996, 1998, 2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016):
-        for base in ("votacao_candidato_munzona", "consulta_cand"):
-            url = f"https://cdn.tse.jus.br/estatistica/sead/odsele/{base}/{base}_{ano}.zip"
-            zip_remoto(f"{base} {ano}", url, mostrar=("_SP.csv", "_BRASIL.csv"), linhas=2)
+    # ObrasGov: por que só 100 obras por estado? formato da resposta, paginação e totais
+    base = "https://api.obrasgov.gestao.gov.br/obrasgov/api/projeto-investimento"
+    for params in ({"uf": "AC", "pagina": 0, "tamanhoDaPagina": 100}, {"uf": "AC", "pagina": 1, "tamanhoDaPagina": 100},
+                   {"uf": "AC", "pagina": 0, "tamanhoDaPagina": 10}, {"uf": "AC", "pagina": 1, "tamanhoDaPagina": 10},
+                   {"uf": "AC", "pagina": 0, "tamanhoDaPagina": 1000}, {"uf": "AC", "page": 1, "size": 10}):
+        r = ver(f"obrasgov {params}", base, params=params, headers={"Accept": "application/json"}, n=0)
+        try:
+            j = r.json()
+            if isinstance(j, dict):
+                print({k: (v if not isinstance(v, (list, dict)) else f"{type(v).__name__}[{len(v)}]") for k, v in j.items()}, flush=True)
+                ids = [str(o.get("idUnico") or o.get("id")) for o in (j.get("content") or j.get("data") or [])]
+                print("primeiros ids:", ids[:3], "últimos:", ids[-2:], "únicos:", len(set(ids)), flush=True)
+            else:
+                print("lista de", len(j), "primeiro id:", (j[0].get("idUnico") if j else None), flush=True)
+        except Exception as e:
+            print("sem JSON:", e, flush=True)
+    ver("obrasgov sem filtro", base, params={"pagina": 0, "tamanhoDaPagina": 1}, headers={"Accept": "application/json"}, n=600)
 
 
 if __name__ == "__main__":
