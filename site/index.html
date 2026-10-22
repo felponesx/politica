@@ -1704,10 +1704,11 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 @media (max-width:600px){.tabl{padding:10px 8px;font-size:13px}.tabs.tabs-emp,.tabs{gap:0}}
 @media (max-width:760px){.hstats{gap:8px}.hstat{padding:9px 8px;border:1px solid var(--line2);border-radius:10px;background:var(--surface)}}
 @media (max-width:520px){
-.pbar{display:grid!important;grid-template-columns:minmax(0,1fr);gap:0!important;overflow:hidden}
+.pbar{display:grid!important;grid-template-columns:minmax(0,1fr);gap:0!important;overflow:visible}
 .pbar>.pill-w{min-width:0;flex:none}.pbar>.pill-w+.pill-w{border-left:0;border-top:1px solid var(--line)}
 .pbar>.pill-w>.pill,.pbar>.pill-w:first-child>.pill,.pbar>.pill-w:last-child>.pill{border-radius:0;width:100%;justify-content:space-between;padding-top:11px;padding-bottom:11px}
 .pbar .pill .pill-v{max-width:none}
+.pbar>.pill-w:first-child>.pill{border-radius:12px 12px 0 0}.pbar>.pill-w:last-child>.pill{border-radius:0 0 12px 12px}.pbar>.pill-w:only-child>.pill{border-radius:12px}
 }
 }
 }
