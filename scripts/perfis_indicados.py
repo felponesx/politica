@@ -67,6 +67,8 @@ def main(pasta: str = "site/midia"):
             continue
         if p:
             out[n] = p
+            with open(arq, "w", encoding="utf-8") as f:  # grava a cada nome: se parar no meio, o que já veio fica
+                json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     with open(arq, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     log.info("perfis de indicados: %d de %d", len(out), len(json.load(open(NOMES, encoding="utf-8"))))
