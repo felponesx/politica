@@ -30,7 +30,7 @@ def _arg(v):
 LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "cnpj-fornecedores": 25,
            "receita-recuperacao-judicial": 170, "siconfi-tributos": 150,
            # base inteira do CNPJ (10 arquivos de estabelecimentos e 10 de empresas) + PGFN: a coleta para sozinha em 200 min
-           "receita-empresas-porte": 215}
+           "receita-empresas-porte": 215, "obrasgov-obras": 130}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
 ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, "apenas_eleitos": "true"}),
             ("tse-resultados", {"ano": 2024}), ("tse-candidatos", {"ano": 2026}), ("tse-resultados", {"ano": 2026}),

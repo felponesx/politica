@@ -1544,15 +1544,15 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .esc-aviso{font-size:13px}
 .esc-org{display:grid;gap:8px}.esc-org div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}.esc-org span{color:var(--muted);font-size:13px;text-align:right}
 .esc-tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:12px}
-.esc-tl li{position:relative;display:grid;grid-template-columns:96px 1fr;gap:10px;font-size:14px}.esc-tl li::before{content:"";position:absolute;left:-20px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--c1)}
+.esc-tl li{position:relative;display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;font-size:14px;overflow-wrap:anywhere}.esc-tl li::before{content:"";position:absolute;left:-20px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--c1)}
 .esc-dt{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
-.esc-fontes{margin:0;padding-left:18px;font-size:13px;display:grid;gap:4px}
+.esc-fontes{margin:0;padding-left:18px;font-size:13px;display:grid;gap:4px;overflow-wrap:anywhere}.esc-fontes li{min-width:0}
 .tag.esc-con{background:#FDE2E1;color:#B42318}.tag.esc-den{background:#FEF0C7;color:#93370D}.tag.esc-inv{background:#E0EAFF;color:#2F4EA8}
 .tag.esc-abs{background:#D1FADF;color:#05603A}.tag.esc-neu{background:#EAECF0;color:#344054}
 .tag.lib-pre{background:#B42318;color:#fff}.tag.lib-dom{background:#F79009;color:#fff}.tag.lib-for{background:#1D2939;color:#fff}.tag.lib-liv{background:#EAECF0;color:#344054}
 [data-theme="dark"] .tag.esc-con{background:#55160C;color:#FDA29B}[data-theme="dark"] .tag.esc-den{background:#4E1D09;color:#FEC84B}[data-theme="dark"] .tag.esc-inv{background:#1C2B5A;color:#A4BCFD}
 [data-theme="dark"] .tag.esc-abs{background:#053321;color:#75E0A7}[data-theme="dark"] .tag.esc-neu,[data-theme="dark"] .tag.lib-liv{background:#344054;color:#EAECF0}[data-theme="dark"] .tag.lib-for{background:#F2F4F7;color:#1D2939}
-@media (max-width:700px){.esc-grid{grid-template-columns:1fr}.esc-tl li{grid-template-columns:1fr;gap:2px}}
+@media (max-width:700px){.esc-grid{grid-template-columns:1fr}.esc-tl li{grid-template-columns:minmax(0,1fr);gap:2px}}
 .arv-band{padding-top:0}.arv-band .arv-no{opacity:.92}
 /* árvore do esquema */
 .arv{position:relative;display:grid;gap:30px;padding:6px 0 4px 30px}
@@ -1593,27 +1593,41 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 [data-theme="dark"] .lc-grade.base{stroke:#3A4660}[data-theme="dark"] .lc-eixo{fill:#98A2B3}
 .navvolta{margin:-6px 0 12px}.navvolta .btn{font-size:13.5px;padding:7px 12px}
 /* barras de porcentagem em blocos (v1.3, só nas barras de porcentagem; as de comparação .hb-b continuam lisas): 10 quadradinhos arredondados, cada um = 10%; o do meio fica parcialmente cheio */
-.bar:not(.hb-b){height:12px!important;width:min(100%,150px);flex:none;border-radius:0!important;background:#E4E8EE!important;overflow:hidden;
+.bar,.rk-b,.dreg>div{height:12px!important;width:min(100%,150px);flex:none;border-radius:0!important;background:#E4E8EE!important;overflow:hidden;
  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2212%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%223.2%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 0/10% 100% repeat-x;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2212%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%223.2%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 0/10% 100% repeat-x}
-.bar:not(.hb-b) i{display:block;height:100%;border-radius:0!important}
+.bar i,.rk-b i,.dreg>div i{display:block;height:100%;border-radius:0!important}
+.hb-l{grid-template-columns:minmax(90px,1fr) 150px 92px!important}.hb-v{text-align:right;white-space:nowrap}.hb-b{width:150px!important}.rk-b{grid-column:2}
+[data-theme="dark"] .rk-b,[data-theme="dark"] .dreg>div{background:#2B3445!important}
+@media (max-width:640px){.hb-l{grid-template-columns:minmax(70px,1fr) 110px 84px!important}.hb-b{width:110px!important}}
 [data-theme="dark"] .bar,[data-theme="dark"] .meter .bar{background:#2B3445!important}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar{background:#2B3445!important}}
 .pct-b .bar{width:150px}
 /* animação dos gráficos e botões de período (v1.4) */
 .lc-per{margin:0 0 8px;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
 @media (prefers-reduced-motion:no-preference){
-:is(.an-pre,.an-go):is(.lc,.an-w){position:relative;clip-path:inset(-40px 0 -40px -90px)}
-:is(.an-pre,.an-go):is(.lc,.an-w)::after{content:"";position:absolute;top:-2px;bottom:-2px;left:calc(var(--an-x,0px) - 10px);width:calc(100% + 48px);pointer-events:none;
- background:linear-gradient(90deg,transparent,var(--an-bg,var(--surface)) 26px);will-change:transform;animation:anCortina 2.6s cubic-bezier(.45,0,.25,1) both}
+:is(.an-pre,.an-go):is(.lc,.an-w){position:relative}
+:is(.an-pre,.an-go):is(.lc,.an-w)::after{content:"";position:absolute;top:-2px;bottom:-2px;left:calc(var(--an-x,0px) - 10px);right:0;pointer-events:none;transform-origin:right center;
+ background:linear-gradient(90deg,transparent,var(--an-bg,var(--surface)) 22px);will-change:transform;animation:anCortina 2.6s cubic-bezier(.45,0,.25,1) both}
 :is(.an-pre,.an-go) .an-l{stroke-dasharray:1 2;animation:anLinha 2.6s cubic-bezier(.45,0,.25,1) var(--d,0s) both}
 :is(.an-pre,.an-go) .an-s{animation-duration:.6s}
 :is(.an-pre,.an-go) .hb-b i,.bar:is(.an-pre,.an-go) i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) both}
+.rk-duplo:is(.an-pre,.an-go) .rk-b i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) both}
 .an-pre,.an-pre *,.an-pre::after{animation-play-state:paused!important}}
 @keyframes anLinha{from{stroke-dashoffset:1.001}to{stroke-dashoffset:0}}
-@keyframes anCortina{to{transform:translateX(100%)}}
+@keyframes anCortina{to{transform:scaleX(0)}}
 @keyframes anBarra{from{transform:scaleX(0)}}
 @media (prefers-reduced-motion:no-preference){:is(.tw,.pb):is(.an-pre,.an-go) .bar:not(.hb-b) i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) var(--d,0s) both}
 :is(tr,.pb-l):nth-child(2) .bar i{--d:0.07s}:is(tr,.pb-l):nth-child(3) .bar i{--d:0.14s}:is(tr,.pb-l):nth-child(4) .bar i{--d:0.21s}:is(tr,.pb-l):nth-child(5) .bar i{--d:0.28s}:is(tr,.pb-l):nth-child(6) .bar i{--d:0.35s}:is(tr,.pb-l):nth-child(7) .bar i{--d:0.42s}:is(tr,.pb-l):nth-child(8) .bar i{--d:0.49s}:is(tr,.pb-l):nth-child(9) .bar i{--d:0.56s}:is(tr,.pb-l):nth-child(10) .bar i{--d:0.63s}}
+/* barra de rolagem do sistema (v1.10): fina, arredondada, na cor da linha; vale para listas, tabelas, janelas e o menu */
+*{scrollbar-width:thin;scrollbar-color:#C9D1DC transparent}
+[data-theme="dark"] *{scrollbar-color:#3A4558 transparent}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#C9D1DC;border-radius:999px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:#9AA7B8;background-clip:content-box}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#3A4558;background-clip:content-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) *{scrollbar-color:#3A4558 transparent}}
+/* nunca rolar para os lados (celular e telas largas): o que passar da tela é cortado, não vira barra de rolagem (v1.10) */
+html,body{overflow-x:clip;max-width:100%}
 /* troca suave entre abas (trocaSuave/surgeSuave, v1.9) */
 .xf{position:relative}.xf-velho{position:absolute;top:0;left:0;right:0;pointer-events:none;z-index:2}
 @media (prefers-reduced-motion:no-preference){.xf-in>.xf-velho{animation:xfSai .4s ease both}.xf-in>:not(.xf-velho){animation:xfEntra .5s ease .2s both}.xf-surge{animation:xfEntra .5s ease both}
@@ -1897,7 +1911,7 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
 // esquerda para a direita por uma "cortina" da cor do fundo que corre por cima (.lc/.an-w ::after, só transform: não trava
 // quando a página ainda está montando); barras crescendo. Sem IntersectionObserver ou com "reduzir movimento", nada anima.
 // as barras de uma tabela ou de uma lista de porcentagens (.pb) crescem juntas, em cascata, quando o grupo aparece
-const AN_SEL=".lc,.lr-w,.hb,.bar:not(.hb-b),.pz,.pb,.tw",AN_GRUPO=".tw,.pb";
+const AN_SEL=".lc,.lr-w,.hb,.bar:not(.hb-b),.pz,.pb,.tw,.rk-duplo:not(.lr)",AN_GRUPO=".tw,.pb";
 const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.35,rootMargin:"0px 0px -40px 0px"}):null;
 // cor da "cortina" que revela as linhas: o fundo do quadro onde o gráfico está; começa depois dos números do eixo
 function anFundo(el){if(!el.classList.contains("an-w")&&!el.classList.contains("lc"))return;const ax=el.querySelector("svg[data-ax]");if(ax)el.style.setProperty("--an-x",ax.dataset.ax+"px");
@@ -2037,12 +2051,12 @@ return{html,mount(){
    $("#impP").textContent="R$ "+nf(Math.round(IMP/Y*el/POP));$("#gasP").textContent="R$ "+nf(Math.round(GAS/Y*el/POP));
    setTimeout(()=>requestAnimationFrame(run),90)};run()})();
  const dm=()=>{document.querySelectorAll("#hregb button").forEach(b=>b.classList.toggle("on",b.dataset.r===(reg||"")));HOMEZ.sec={vio:"seguranca",gasto:"gastos",pc:"gastos",pop:null,contratos:"contratos",obras:"obras",projetos:"projetos",arr:"arrecadacao",ret:"arrecadacao",dclr:"dividas",inad:"dividas",reg:null}[met];const regMode=met==="reg";const m=regMode?null:met;
-  $("#hmap").innerHTML=brMap(m,null,reg,regMode?{byRegion:true}:{legend:false});bindMap($("#hmap"),null,null,(u,el)=>showStateInline(u,el));
-  if(regMode){$("#hside").innerHTML=Object.keys(REG).map(k=>`<div class="rl" data-reg="${k}" style="cursor:pointer;opacity:${!reg||reg===k?1:.4}"><i style="background:${REGCOL[k]}"></i><span>${REG[k]}</span><b>${brl(REGV[k])}</b><span>${(REGV[k]/Object.values(REGV).reduce((x,y)=>x+y,0)*100).toFixed(1).replace(".",",")}%</span></div>`).join("");
+  XF("#hmap").innerHTML=brMap(m,null,reg,regMode?{byRegion:true}:{legend:false});bindMap($("#hmap"),null,null,(u,el)=>showStateInline(u,el));
+  if(regMode){XF("#hside").innerHTML=Object.keys(REG).map(k=>`<div class="rl" data-reg="${k}" style="cursor:pointer;opacity:${!reg||reg===k?1:.4}"><i style="background:${REGCOL[k]}"></i><span>${REG[k]}</span><b>${brl(REGV[k])}</b><span>${(REGV[k]/Object.values(REGV).reduce((x,y)=>x+y,0)*100).toFixed(1).replace(".",",")}%</span></div>`).join("");
    document.querySelectorAll("#hside .rl").forEach(r=>r.onclick=()=>{reg=reg===r.dataset.reg?"":r.dataset.reg;$("#hreg").value=reg;dm()});
    $("#hmsub").textContent=(window.REG_TXT||"Gastos públicos por região (2025)")+". Toque em um estado para abrir a ficha completa.";$("#hmleg").textContent="";$("#hmlink").setAttribute("href","#/gastos")}
   else{const[n,f,fm]=METRICS[m];const rows=UFS.filter(u=>!reg||u.reg===reg).sort((a,b)=>f(b)-f(a)).slice(0,8);
-   $("#hside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?REG[reg]:"Brasil"}: maiores valores</div>`+hbars(rows.map(u=>[u.nome,f(u),"#/uf/"+u.uf]),{fmt:fm});
+   XF("#hside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?REG[reg]:"Brasil"}: maiores valores</div>`+hbars(rows.map(u=>[u.nome,f(u),"#/uf/"+u.uf]),{fmt:fm});
    $("#hmsub").textContent=n+" por estado. Toque em um estado para abrir a ficha completa.";
    $("#hmleg").innerHTML=legFaixas(faixasDe(UFS.map(f)),fm);
    $("#hmlink").setAttribute("href",m==="vio"?"#/seguranca":m==="dclr"?"#/dividas/estados":m==="inad"?"#/dividas/pessoas":["arr","ret"].includes(m)?"#/arrecadacao":m==="contratos"?"#/contratos":m==="obras"?"#/obras":m==="projetos"?"#/projetos":"#/gastos")}};dm();
@@ -2113,7 +2127,7 @@ return{html:`<div class="ph"><div><h1>Arrecadação e repasses</h1><p>Quanto cad
 <p style="margin:0"><b style="color:var(--ink)">Redistribuído ao país</b> é a diferença. Fica com a União e financia despesas nacionais e as transferências a estados que recebem mais do que arrecadam.</p>
 <p style="margin:0"><b style="color:var(--ink)">Limitações.</b> Empresas com sede em um estado pagam tributos por operações feitas em outros, o que eleva a arrecadação de estados como São Paulo e o Distrito Federal. Gastos diretos da União no estado, como benefícios do INSS e salários federais, não entram neste cálculo e terão uma visão própria.</p></div>${SRC}</div>`,
 mount(){const ds=()=>{const u=UF[sel];$("#aside").innerHTML=`<div class="crumb">Brasil / ${REG[u.reg]}</div><h3 style="font-size:22px">${u.nome}</h3><p style="margin:8px 0 14px">${arrSentence(u)}</p>${arrSplit(u,true)}<div class="facts" style="margin-top:16px"><div><span>Retorno por R$ 1 arrecadado</span>R$ ${(u.ret/u.arr).toFixed(2).replace(".",",")}</div><div><span>Arrecadação própria</span>${brl(u.prop)}</div></div><div style="margin-top:14px"><a class="btn pri" href="#/uf/${u.uf}/arrecadacao">Abrir ${u.nome}</a></div>`;
-$("#amap").innerHTML=brMap(null,sel,reg,{fillFn:fillS,legend:false});bindMap($("#amap"),null,null,x=>{sel=x;ds()})};
+XF("#amap").innerHTML=brMap(null,sel,reg,{fillFn:fillS,legend:false});bindMap($("#amap"),null,null,x=>{sel=x;ds()})};
 const dt=()=>{const key={saldo:u=>u.arr-u.ret,arr:u=>u.arr,ret:u=>u.ret,ratio:u=>u.ret/u.arr}[ord];const rows=UFS.filter(u=>!reg||u.reg===reg).sort((a,b)=>key(b)-key(a));
 $("#atab").innerHTML=table([["Estado",u=>`<a href="#/uf/${u.uf}">${u.nome}</a>`],["Pagou de impostos",u=>brl(u.arr),"n"],["Voltou ao estado",u=>`${brl(u.ret)}<div class="small muted">R$ ${(u.ret/u.arr).toFixed(2).replace(".",",")} por R$ 1</div>`,"n"],["Divisão",u=>`<div style="min-width:120px;padding-top:5px">${arrSplit(u).split('<div class="small"')[0]}</div>`]],rows,u=>"#/uf/"+u.uf+"/arrecadacao");rowLinks()};
 ds();dt();$("#aord").onchange=e=>{ord=e.target.value;dt()};$("#areg").onchange=e=>{reg=e.target.value;ds();dt()}}}};
@@ -2281,22 +2295,22 @@ mount(){const draw=()=>{const e=ELEI[eid];$("#esub").textContent=e.nome+". Perce
  if(cmpOn){const A=modo,B=cmp,na=e.partes[A],nb=e.partes[B],ra=rampaPartido(A),rb=rampaPartido(B);
   const cor=u=>{const v=elec(eid,u),d=v[A]-v[B],k=Math.abs(d)<3?1:Math.abs(d)<8?2:Math.abs(d)<15?3:4;return(d>=0?ra:rb)[k]};
   $("#emtit").textContent=`Comparação: ${na} × ${nb}`;
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:cor,legend:false});
+  XF("#emap").innerHTML=brMap(null,null,reg,{fillFn:cor,legend:false});
   const us=UFS.filter(u=>!reg||u.reg===reg),ga=us.filter(u=>{const v=elec(eid,u);return v[A]>=v[B]}).length;
   const marg=us.map(u=>{const v=elec(eid,u);return[u,v[A]-v[B]]}).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]));
-  $("#eside").innerHTML=painelDuelo(na,nb,bv[A],bv[B],PCOL[A],PCOL[B],reg?"na região "+REG[reg]:"no Brasil")+
+  XF("#eside").innerHTML=painelDuelo(na,nb,bv[A],bv[B],PCOL[A],PCOL[B],reg?"na região "+REG[reg]:"no Brasil")+
   `<div class="duelo-c"><div><b>${ga}</b><span>${ga===1?"estado":"estados"} com ${na} à frente</span></div><div><b>${us.length-ga}</b><span>${us.length-ga===1?"estado":"estados"} com ${nb} à frente</span></div></div>
   <div class="small muted" style="margin:12px 0 4px">Por região</div>${Object.entries(REG).map(([k,v])=>{const r=elecRegion(eid,k);return`<div class="dreg"><span>${v}</span><div><i style="width:${r[A]}%;background:${PCOL[A]}"></i></div><b>${pct(r[A])}</b><div><i style="width:${r[B]}%;background:${PCOL[B]}"></i></div><b>${pct(r[B])}</b></div>`}).join("")}
   <div class="small muted" style="margin:12px 0 4px">Maiores diferenças</div>${marg.slice(0,4).map(([u,d])=>`<div class="ptop"><span>${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</span><b>${d>=0?na:nb} +${Math.abs(d).toFixed(1).replace(".",",")}</b></div>`).join("")}
   <div class="legend" style="justify-content:flex-start;flex-wrap:wrap;margin-top:12px">${na} à frente ${ra.slice(1).map(c=>`<i style="background:${c}"></i>`).join("")}&nbsp;&nbsp;${nb} à frente ${rb.slice(1).map(c=>`<i style="background:${c}"></i>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor mais forte, maior a vantagem.</p>`}
  else if(modo<0){$("#emtit").textContent="Partido mais votado em cada estado";
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>{const v=elec(eid,u);return PCOL[v.indexOf(Math.max(...v))]},legend:false});
-  $("#eside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?"Região "+REG[reg]:"Brasil"}: votos válidos</div>${partyBars(eid,bv)}<p class="small muted" style="margin:10px 0 0">A cor de cada estado indica o partido mais votado.</p>`}
+  XF("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>{const v=elec(eid,u);return PCOL[v.indexOf(Math.max(...v))]},legend:false});
+  XF("#eside").innerHTML=`<div class="small muted" style="margin-bottom:6px">${reg?"Região "+REG[reg]:"Brasil"}: votos válidos</div>${partyBars(eid,bv)}<p class="small muted" style="margin:10px 0 0">A cor de cada estado indica o partido mais votado.</p>`}
  else{const nome=e.partes[modo],rp=rampaPartido(modo);const vals=UFS.map(u=>elec(eid,u)[modo]);const mn=Math.min(...vals),mx=Math.max(...vals);const cor=x=>rp[Math.min(4,Math.floor((x-mn)/(mx-mn+1e-9)*5))];
   $("#emtit").textContent="Área de votação: "+nome;
-  $("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false});
+  XF("#emap").innerHTML=brMap(null,null,reg,{fillFn:u=>cor(elec(eid,u)[modo]),legend:false});
   const top=UFS.filter(u=>!reg||u.reg===reg).map(u=>[u,elec(eid,u)[modo]]).sort((a,b)=>b[1]-a[1]);
-  $("#eside").innerHTML=`<div class="pdest"><i style="background:${PCOL[modo]}"></i><div><span>${nome} ${reg?"na região "+REG[reg]:"no Brasil"}</span><b>${pct(bv[modo])}</b><small>dos votos válidos</small></div></div>
+  XF("#eside").innerHTML=`<div class="pdest"><i style="background:${PCOL[modo]}"></i><div><span>${nome} ${reg?"na região "+REG[reg]:"no Brasil"}</span><b>${pct(bv[modo])}</b><small>dos votos válidos</small></div></div>
   <div class="small muted" style="margin:12px 0 4px">Por região</div>${pbars(Object.entries(REG).map(([k,v])=>[v,elecRegion(eid,k)[modo]]),{fmt:pct,color:rp[3]})}
   <div class="small muted" style="margin:12px 0 4px">Estados onde foi mais votado</div>${top.slice(0,5).map(([u,x])=>`<div class="ptop"><span>${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</span><b>${pct(x)}</b></div>`).join("")}
   <div class="legend" style="justify-content:flex-start;margin-top:12px">${pct(mn)} ${rp.map(c=>`<i style="background:${c}"></i>`).join("")} ${pct(mx)}</div>`}
@@ -3444,8 +3458,8 @@ mount(){let f={uf:"",tipo:"",situacao:""};
    $("#obsits").innerHTML=ABAS.filter(([k])=>!k||tot[k]).map(([k,t])=>`<button data-s="${esc(k)}" class="${k===f.situacao?"on":""}">${t} <small>${nf(tot[k])}</small></button>`).join("");
    document.querySelectorAll("#obsits button").forEach(b=>b.onclick=()=>{f.situacao=b.dataset.s;document.querySelectorAll("#obsits button").forEach(x=>x.classList.toggle("on",x===b));pg(true)});
    $("#obsit").innerHTML=hbars(ABAS.filter(([k])=>k&&tot[k]).map(([k,t])=>[k,tot[k]]).sort((x,y)=>y[1]-x[1]),{fmt:nf})+`<p class="small muted">Todas as ${nf(r.total)} obras coletadas.</p>`});
-  $("#obmap").innerHTML=mapaValores(cnt,nf);$("#obsit").innerHTML=hbars(Object.entries(sit).sort((x,y)=>y[1]-x[1]).slice(0,8),{fmt:nf})+(r.total>500?`<p class="small muted">Contagem das 500 obras de maior valor de ${nf(r.total)}.</p>`:"");
-  bindMap($("#obmap"),null,null,u=>{f.uf=u;$("#obuf").value=u;pg(true);$("#obl").scrollIntoView({behavior:semMov()?"auto":"smooth",block:"start"})})}).catch(e=>{$("#obmap").innerHTML=rerro(e);$("#obsit").innerHTML=""});
+  XF("#obmap").innerHTML=mapaValores(cnt,nf);$("#obsit").innerHTML=hbars(Object.entries(sit).sort((x,y)=>y[1]-x[1]).slice(0,8),{fmt:nf})+(r.total>500?`<p class="small muted">Contagem das 500 obras de maior valor de ${nf(r.total)}.</p>`:"");
+  bindMap($("#obmap"),null,null,u=>{f.uf=u;$("#obuf").value=u;pg(true);$("#obl").scrollIntoView({behavior:semMov()?"auto":"smooth",block:"start"})})}).catch(e=>{XF("#obmap").innerHTML=rerro(e);$("#obsit").innerHTML=""});
  const pg=listaPaginada({url:()=>"/obras"+qs(f),alvo:"#obl",mais:"#obm",vazio:"Nenhuma obra com esses filtros.",
   render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} obras</p><div class="obcards">${it.map(o=>`<a class="obc" href="#/obra/r${o.id}"><div class="obc-t"><b class="rclamp">${esc(o.nome||"Obra")}</b><span class="tag ob-${obSitK(o.situacao)}">${esc(o.situacao||"—")}</span></div><div class="small muted">${esc(o.executor||"")}${o.uf?" · "+esc(o.uf):""}${o.tipo?" · "+esc(o.tipo):""} · previsto ${brlR(o.valor_previsto)}</div>${etapasObra(o)}</a>`).join("")}</div>`});
  pg(true);$("#obuf").onchange=e=>{f.uf=e.target.value;pg(true)};$("#obtipo").oninput=debounce(e=>{f.tipo=e.target.value.trim();pg(true)})}}:_obras(...a);
@@ -3483,7 +3497,7 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
  bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks();
- histUF().then(H=>{const r=H&&H.retorno;if(!r||r.anos.length<2||!$("#flLados"))return;$("#flLados").innerHTML=linhasDuplo(r.estados,r.anos,val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO,nota:"Quanto voltou para cada R$ 1 pago, ano a ano. Valores nominais."})})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
+ histUF().then(H=>{const r=H&&H.retorno;if(!r||r.anos.length<2||!$("#flLados"))return;XF("#flLados").innerHTML=linhasDuplo(r.estados,r.anos,val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO,nota:"Quanto voltou para cada R$ 1 pago, ano a ano. Valores nominais."})})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
 
 /* ---------- eleições reais (TSE) ---------- */
 const _eleicoes=P.eleicoes;
@@ -3618,9 +3632,9 @@ mount(){r.mount&&r.mount();Promise.all([apiGet("/indicadores-sociais/nomes").cat
  $("#insel").innerHTML=ufNomes.map(n=>`<option value="uf:${n}">${INDUF[n][0]} (por estado)</option>`).join("")+soc.map(s=>`<option value="mun:${esc(s.nome)}">${esc(s.descricao||s.nome)} (por município)</option>`).join("");
  const des=async v=>{const[t,n]=v.split(/:(.+)/);$("#inBody").innerHTML=rload();
   try{if(t==="uf"){const it=ibge.filter(i=>i.nome===n);const ano=Math.max(...it.map(i=>i.ano));const val={};it.filter(i=>i.ano===ano).forEach(i=>val[i.uf]=i.valor*(n==="pib"?1e3:1));const f=n==="populacao"?nf:brl;
-    $("#inBody").innerHTML=`<p class="small muted" style="margin:0 0 6px">${INDUF[n][0]}, ${ano} (IBGE). Toque em um estado para abrir a ficha.</p><div style="max-width:640px;margin:0 auto">${mapaValores(val,x=>f(Math.round(x)))}</div><h3 class="seg-h">Estados <small>do maior para o menor</small></h3>${table([["Estado",x=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(x[0],"flag flag-sm")}${esc(UF[x[0]]?UF[x[0]].nome:x[0])}</span>`],[INDUF[n][0],x=>f(Math.round(x[1])),"n"]],Object.entries(val).sort((x,y)=>y[1]-x[1]),x=>"#/uf/"+x[0])}`;bindMap($("#inBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks()}
+    XF("#inBody").innerHTML=`<p class="small muted" style="margin:0 0 6px">${INDUF[n][0]}, ${ano} (IBGE). Toque em um estado para abrir a ficha.</p><div style="max-width:640px;margin:0 auto">${mapaValores(val,x=>f(Math.round(x)))}</div><h3 class="seg-h">Estados <small>do maior para o menor</small></h3>${table([["Estado",x=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(x[0],"flag flag-sm")}${esc(UF[x[0]]?UF[x[0]].nome:x[0])}</span>`],[INDUF[n][0],x=>f(Math.round(x[1])),"n"]],Object.entries(val).sort((x,y)=>y[1]-x[1]),x=>"#/uf/"+x[0])}`;bindMap($("#inBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks()}
    else{const d=await apiGet("/indicadores-sociais"+qs({nome:n}));const ms=d.municipios.filter(m=>m.valor!=null);
-    $("#inBody").innerHTML=`<div><div><p class="small muted" style="margin:0 0 6px">${esc(d.descricao||n)}, ${d.ano}. Média por estado ponderada pela população.</p><div style="max-width:640px;margin:0 auto">${mapaValores(d.media_por_uf,x=>fmtVal(x,d.unidade))}</div></div><div class="grid g2 mt"><div><h3 class="rh3">Maiores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(0,8),m=>"#/municipio/"+m.codigo_ibge)}</div><div><h3 class="rh3">Menores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(-8).reverse(),m=>"#/municipio/"+m.codigo_ibge)}</div></div></div><p class="small muted">Fonte: ${esc(d.fonte||"")}</p>`;rowLinks()}
+    XF("#inBody").innerHTML=`<div><div><p class="small muted" style="margin:0 0 6px">${esc(d.descricao||n)}, ${d.ano}. Média por estado ponderada pela população.</p><div style="max-width:640px;margin:0 auto">${mapaValores(d.media_por_uf,x=>fmtVal(x,d.unidade))}</div></div><div class="grid g2 mt"><div><h3 class="rh3">Maiores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(0,8),m=>"#/municipio/"+m.codigo_ibge)}</div><div><h3 class="rh3">Menores valores</h3>${table([["Município",m=>`<a href="#/municipio/${m.codigo_ibge}">${esc(m.nome||m.codigo_ibge)}</a> <span class="small muted">${esc(m.uf||"")}</span>`],["Valor",m=>fmtVal(m.valor,d.unidade),"n"]],ms.slice(-8).reverse(),m=>"#/municipio/"+m.codigo_ibge)}</div></div></div><p class="small muted">Fonte: ${esc(d.fonte||"")}</p>`;rowLinks()}
    bindMap($("#inBody"),null,null,u=>{location.hash="#/uf/"+u})}catch(e){$("#inBody").innerHTML=rerro(e)}};
  des($("#insel").value);$("#insel").onchange=e=>des(e.target.value)})}}};
 
@@ -3764,7 +3778,7 @@ mount(){
  if(aba==="leis"){let t="";const d=()=>{$("#cfll").innerHTML=LEIS_FED.filter(l=>!t||l[0]===t).map(l=>`<a class="panel cflei" href="${lexBusca(l[2])}" target="_blank" rel="noopener"><span class="tag">${l[0]}</span><b>${l[1]}</b><span class="small">${l[2]}</span><span class="small muted">${l[3]}</span></a>`).join("")};d();
   document.querySelectorAll("#cflt button").forEach(b=>b.onclick=()=>{t=b.dataset.t;document.querySelectorAll("#cflt button").forEach(x=>x.classList.toggle("on",x===b));d()});
   if(temReal())apiGet("/legislacao?esfera=federal&limit=8").then(r=>{if(!r.itens.length)return;$("#cfRec").hidden=false;$("#cfRecL").innerHTML=r.itens.map(n=>`<a class="list-row rrow" href="#/norma/r${n.id}"><span class="tag">${esc(n.tipo)}</span><div style="flex:1;min-width:0"><b>${esc(rotNorma(n))}</b><div class="small muted rclamp">${esc(n.ementa||"")}</div></div><span class="small muted">${fdr(n.data)}</span></a>`).join("")}).catch(()=>{})}
- if(aba==="estados"){const mostra=uf=>{const u=UF[uf];$("#cfuf").value=uf;$("#cfmap").innerHTML=brMap(null,uf,null,{byRegion:true,legend:false});liga();
+ if(aba==="estados"){const mostra=uf=>{const u=UF[uf];$("#cfuf").value=uf;XF("#cfmap").innerHTML=brMap(null,uf,null,{byRegion:true,legend:false});liga();
    $("#cfufc").innerHTML=`<div class="panel"><div class="small muted">${REG[u.reg]}</div><h2 class="h1flag" style="font-size:22px">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h2>
    <div class="facts"><div><span>Lei maior do estado</span>${nomeConstUF(u)}</div><div><span>Promulgada em</span>${CONST_UF[uf]||1989}</div><div><span>Quem aprova as leis</span>${casaUF(u)}</div><div><span>${uf==="DF"?"Deputados distritais":"Deputados estaduais"}</span>${CASAS.assembleia.tot(u)}</div><div><span>Quem sanciona</span>Governador(a)</div>${NMUN[uf]?`<div><span>Municípios com Lei Orgânica própria</span>${nf(NMUN[uf])}</div>`:""}</div>
    <p class="small muted" style="margin:12px 0 0">${uf==="DF"?"O Distrito Federal não tem constituição: é regido por uma Lei Orgânica e não se divide em municípios.":uf==="AP"||uf==="RR"?"Ex-território, virou estado com a Constituição de 1988 e promulgou sua constituição em 1991.":"As constituições estaduais foram feitas em 1989, como manda o art. 11 do ADCT, e seguem os princípios da Constituição Federal."}</p></div>
@@ -3881,7 +3895,7 @@ const MAPA_REAL={gasto:["Gasto do governo estadual","gasto",brl],pc:["Gasto esta
 const _ini4=P.inicio;
 P.inicio=(...a)=>{const r=_ini4(...a);if(!API.on)return r;
 return{html:r.html,mount(){r.mount&&r.mount();apiGet("/mapa/estados").then(d=>{const E=d.estados,usados=[];
- Object.entries(MAPA_REAL).forEach(([k,[nome,campo,fmt]])=>{const n=UFS.filter(u=>E[u.uf]&&E[u.uf][campo]!=null).length;if(n>=20){METRICS[k]=[nome,u=>(E[u.uf]&&E[u.uf][campo])||0,fmt];usados.push(k)}});
+ Object.entries(MAPA_REAL).forEach(([k,[nome,campo,fmt]])=>{const vs=UFS.map(u=>E[u.uf]&&E[u.uf][campo]).filter(v=>v!=null),n=vs.length;if(n>=20&&new Set(vs).size>1){METRICS[k]=[nome,u=>(E[u.uf]&&E[u.uf][campo])||0,fmt];usados.push(k)}});
  if(!usados.length)return;
  if(usados.includes("gasto")){window.REG_TXT=`Gasto dos governos estaduais por região (${d.anos.gasto})`}if(usados.includes("gasto"))Object.keys(REGV).forEach(rg=>{REGV[rg]=UFS.filter(u=>u.reg===rg).reduce((s,u)=>s+((E[u.uf]&&E[u.uf].gasto)||0),0)});
  document.querySelectorAll("#hmet button").forEach(b=>{const m=b.dataset.m;if(m!=="reg"&&m!=="vio"&&!usados.includes(m))b.remove();if(m==="reg"&&!usados.includes("gasto"))b.remove()});
@@ -4129,7 +4143,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    const nA=esc(tit(A.nome)),nB=esc(tit(B.nome)),sw=(c,t)=>`<span><i style="background:${c}"></i>${t}</span>`;
    legEl=`<div class="legend leg-faixas">${sw(cB,nB+": 20 pontos ou mais")}${sw(misturaBranco(cB,.25),"10 a 20")}${sw(misturaBranco(cB,.48),"2 a 10")}${sw(NEU,"empate (menos de 2)")}${sw(misturaBranco(cA,.48),"2 a 10")}${sw(misturaBranco(cA,.25),"10 a 20")}${sw(cA,nA+": 20 pontos ou mais")}</div>`}
   else fillEl=u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"};
-  $("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
+  XF("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
   bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
   // dica ao passar o mouse em cada estado
   const tip=dicaFlutuante();$("#elmap").querySelectorAll("path[data-uf]").forEach(p=>{const t=p.querySelector("title");if(t)t.remove();
@@ -4138,8 +4152,8 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    p.addEventListener("mousemove",e=>{if(tip.classList.contains("on"))posDica(tip,e.clientX,e.clientY)});p.addEventListener("mouseleave",()=>tip.classList.remove("on"))});
   // lado: resultado do país
   if(!chave()&&MAJ.includes(f.cargo)){const linhas=UFS.filter(u=>d.estados[u.uf]&&(d.estados[u.uf].candidatos||[])[0]).map(u=>({uf:u.uf,c:d.estados[u.uf].candidatos[0]})).sort((a,b)=>UF[a.uf].nome.localeCompare(UF[b.uf].nome));
-   $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">${f.cargo==="PREFEITO"?"Mais votado em cada estado (soma das cidades)":"Mais votado em cada estado"}</div><div class="el-venc">${linhas.map(r=>`<div class="elrow"><i style="background:${forte(corDe(r.c.partido),r.c.percentual)}"></i><span><small class="muted">${r.uf}</small> ${lcand({...r.c,uf:r.uf},f.ano,f.cargo)} <small>${bandPart(r.c.partido,10)} ${esc(r.c.partido||"")}</small>${/^ELEITO/.test(r.c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(r.c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(r.c.percentual)}</b></div>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos.</p>`}
-  else $("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">Brasil${chave()?"":" · votos por partido"}</div>${lista.slice(0,8).map(x=>{const k=chave()?x.sq_candidato:x.partido;return`<div class="elrow"><i style="background:${corDe(k)}"></i><span>${nomeK(x)}${x.eleito||/^ELEITO/.test(x.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(x.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(x.percentual)}</b><div class="bar"><i style="width:${Math.min(100,x.percentual)}%;background:${corDe(k)}"></i></div></div>`}).join("")}
+   XF("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">${f.cargo==="PREFEITO"?"Mais votado em cada estado (soma das cidades)":"Mais votado em cada estado"}</div><div class="el-venc">${linhas.map(r=>`<div class="elrow"><i style="background:${forte(corDe(r.c.partido),r.c.percentual)}"></i><span><small class="muted">${r.uf}</small> ${lcand({...r.c,uf:r.uf},f.ano,f.cargo)} <small>${bandPart(r.c.partido,10)} ${esc(r.c.partido||"")}</small>${/^ELEITO/.test(r.c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(r.c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(r.c.percentual)}</b></div>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos.</p>`}
+  else XF("#elside").innerHTML=`<div class="small muted" style="margin-bottom:8px">Brasil${chave()?"":" · votos por partido"}</div>${lista.slice(0,8).map(x=>{const k=chave()?x.sq_candidato:x.partido;return`<div class="elrow"><i style="background:${corDe(k)}"></i><span>${nomeK(x)}${x.eleito||/^ELEITO/.test(x.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(x.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(x.percentual)}</b><div class="bar"><i style="width:${Math.min(100,x.percentual)}%;background:${corDe(k)}"></i></div></div>`}).join("")}
    <p class="small muted" style="margin:10px 0 0">${f.mapa==="pct"?"Quanto mais forte a cor, maior o percentual do candidato no estado.":f.mapa==="dif"?"Cada estado na cor de quem ficou na frente entre os dois primeiros; quanto mais forte, maior a diferença em pontos percentuais.":"Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos."}${!chave()&&!MAJ.includes(f.cargo)?" Toque em um estado para ver os nomes dos candidatos eleitos.":""}</p>`;
   // regiões
   const regs=Object.keys(REG).map(r=>{const us=UFS.filter(u=>u.reg===r&&d.estados[u.uf]);const soma={};let T=0;us.forEach(u=>{const s=d.estados[u.uf];T+=s.votos_validos_nominais;(chave()?s.candidatos:s.partidos).forEach(x=>{const k=chave()?x.sq_candidato:x.partido;const a=soma[k]=soma[k]||{x,votos:0};a.votos+=x.votos})});
@@ -4150,8 +4164,8 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    :(MAJ.includes(f.cargo)&&f.cargo!=="PREFEITO"?`<h2>${f.cargo==="SENADOR"?"Senadores mais votados":"Governadores mais votados"} em cada estado <small>${f.turno}º turno ${f.ano}</small></h2>${table([["Estado",r=>`<a href="#/uf/${r.uf}">${esc(UF[r.uf].nome)}</a>`],["Candidato",r=>`<b style="font-weight:600">${lcand({...r.c,uf:r.uf},f.ano,f.cargo)}</b>`],["Partido",r=>sigla(r.c.partido)],["Votos",r=>`${nf(r.c.votos)} <span class="small muted">${pctN(r.c.percentual)}</span>`,"n"]],UFS.filter(u=>d.estados[u.uf]&&d.estados[u.uf].candidatos&&d.estados[u.uf].candidatos[0]).map(u=>({uf:u.uf,c:d.estados[u.uf].candidatos[0]})))}<p class="small muted">Toque no nome para abrir o perfil. Em cada estado, os nomes de todos os candidatos aparecem ao tocar no mapa.</p><div style="height:22px"></div>`:"")+`<h2>Votos por partido no país <small>${ELN[f.cargo]} · ${f.ano}</small></h2>${table([["Partido",x=>`${sigla(x.partido)} <span class="small muted">${esc(PARTIDO_NOME[x.partido]||"")}</span>`],["Votos",x=>`${nf(x.votos)} <span class="small muted">${pctN(x.percentual)}</span>`,"n"],["Eleitos",x=>nf(x.eleitos||0),"n"]],br.partidos)}<p class="small muted">Votos nominais nos candidatos de cada partido, somados nos estados.</p>`};
  const carregar=async()=>{$("#elmap").innerHTML=rload();$("#elside").innerHTML="";$("#elreg").innerHTML="";$("#elbr").innerHTML="";
   try{dados=await estadosEleicao(f.ano,f.cargo,f.turno);f.modo=f.cargo==="PRESIDENTE"&&dados.brasil.candidatos.length?"cand":"part";desenhar()}
-  catch(e){dados=null;$("#elT").textContent=`${ELN[f.cargo]||f.cargo} · ${f.turno}º turno de ${f.ano}`;$("#elSub").textContent="";$("#elmap").innerHTML=rvazio(e.status===404?(f.turno===2?"Não houve 2º turno para este cargo, ou o resultado ainda não foi publicado pelo TSE.":"Resultado ainda não coletado."):esc(e.message||e))}};
- const segs=async()=>{const cs=(await cargosEleicao(f.ano)).filter(c=>c!=="VEREADOR");if(!cs.length){$("#elmap").innerHTML=rvazio("Sem resultados coletados para "+f.ano+".");return}
+  catch(e){dados=null;$("#elT").textContent=`${ELN[f.cargo]||f.cargo} · ${f.turno}º turno de ${f.ano}`;$("#elSub").textContent="";XF("#elmap").innerHTML=rvazio(e.status===404?(f.turno===2?"Não houve 2º turno para este cargo, ou o resultado ainda não foi publicado pelo TSE.":"Resultado ainda não coletado."):esc(e.message||e))}};
+ const segs=async()=>{const cs=(await cargosEleicao(f.ano)).filter(c=>c!=="VEREADOR");if(!cs.length){XF("#elmap").innerHTML=rvazio("Sem resultados coletados para "+f.ano+".");return}
   if(!cs.includes(f.cargo))f.cargo=cs[0];$("#elcargos").innerHTML=cs.map(c=>`<button data-c="${esc(c)}" class="${c===f.cargo?"on":""}">${esc(ELN[c]||tit(c))}</button>`).join("");
   document.querySelectorAll("#elcargos button").forEach(b=>b.onclick=()=>{f.cargo=b.dataset.c;document.querySelectorAll("#elcargos button").forEach(x=>x.classList.toggle("on",x===b));carregar()});carregar()};
  /* estado aberto: só os candidatos e o mapa das cidades daquele estado */
@@ -4225,7 +4239,7 @@ const TELA_DIV={
   const r=ufs.map(u=>[u,boa(u)]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
   return resumoBox(`<p>Das ${nf(n)} prefeituras com nota, <b>${pct(capagBoa(t)/n*100)}</b> têm capacidade de pagamento <b>A ou B</b> — podem pegar empréstimos com garantia da União. ${nf(Object.entries(t).filter(([k])=>/^[CD]/.test(k)).reduce((a,x)=>a+x[1],0))} têm nota C ou D. Melhor situação: ${r.slice(0,3).map(([u,v])=>`${UF[u].nome} (${pct(v)})`).join(", ")}. Pior: ${r.slice(-3).reverse().map(([u,v])=>`${UF[u].nome} (${pct(v)})`).join(", ")}.</p><p class="small muted" style="margin:0">A CAPAG, do Tesouro Nacional, avalia o endividamento, a poupança corrente e a liquidez de cada prefeitura. "N.D.": dados não disponíveis; "N.E.": não enviou os dados.</p>`)+
   `<div class="kpis kpis-c mt">${Object.entries(t).sort().map(([k,v])=>`<div class="kpi"><span>CAPAG ${esc(k)}</span><strong>${nf(v)}</strong></div>`).join("")}</div>
-  <div class="panel mt"><h2>Ranking dos estados</h2>${pbars(r.slice(0,27).map(([u,v])=>[UF[u].nome,v,"#/uf/"+u]),{fmt:pct})}</div>${RSRC("Tesouro Nacional, Capacidade de Pagamento (CAPAG) dos municípios")}`},
+  <div class="panel mt"><h2>Todos os estados</h2>${table([["Estado",x=>`<a href="#/uf/${x[0]}">${esc(UF[x[0]].nome)}</a>`],["Cidades com nota A ou B",x=>pct(x[1]),"n"],["",x=>`<div class="bar"><i style="width:${Math.min(100,x[1]).toFixed(1)}%"></i></div>`]],r)}</div>${RSRC("Tesouro Nacional, Capacidade de Pagamento (CAPAG) dos municípios")}`},
  familias:D=>{const s=D.s,e=s.endividamento_familias,i=s.inadimplencia_pf;if(!e&&!i)return rvazio("Séries do Banco Central ainda não coletadas.");
   return resumoBox(`<p>${e?`As dívidas das famílias com bancos e financeiras equivalem a <b>${pctF(e.ultimo.valor)} da renda</b> de um ano (${mesAno(e.ultimo.data)}), ${txtVar(varPP(e))}.`:""}${i?` A <b>inadimplência</b> das pessoas — empréstimos com atraso de mais de 90 dias — está em <b>${pctF(i.ultimo.valor)}</b> da carteira de crédito, ${txtVar(varPP(i))}.`:""}</p><p class="small muted" style="margin:0">Endividamento: saldo das dívidas no sistema financeiro dividido pela renda das famílias nos 12 meses anteriores. Inadimplência: parcela do crédito às pessoas com parcelas atrasadas há mais de 90 dias.</p>`)+
   `<div class="kpis kpis-c mt">${kpiS("Endividamento das famílias (% da renda)",e)}${kpiS("Inadimplência das pessoas",i)}</div><div class="grid g2 mt">${e?`<div class="panel"><h2>Endividamento das famílias, % da renda</h2>${serieChart(e.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${i?`<div class="panel"><h2>Inadimplência das pessoas, % da carteira</h2>${serieChart(i.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 29037 e 21084 do SGS")}`},
@@ -4479,13 +4493,24 @@ function segPorDia(e,d,uf){const o=e.ocorrencias||{},p=e.prisional||{},R=d.refer
  if(p.abandonos&&sem)it.push(`<div class="kpi"><span>Não voltaram para a prisão</span><strong>${fd(p.abandonos/sem)}</strong><em>por dia · ${ref.prisional}</em></div>`);
  return it.length?`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="kpis kpis-c kpis-dia">${it.join("")}</div>`:""}
 function _dias(ref){if(!ref)return 182;const[a,sm]=String(ref).split("/");return sm==="2"?184:((+a%4===0&&+a%100!==0)||+a%400===0?182:181)}
+// tabela ano a ano com uma barra para escolher o indicador (homicídios dolosos, feminicídios, presos, mortes…); cada estado e o país têm a sua
+const SA_REG=new Map();let SA_N=0;
 function segAnoAno(d,uf){const H=d.historico||{},O=H.ocorrencias||{},V=H.violencia||{},Pr=H.prisional||{};const anos=[...new Set([...Object.keys(O),...Object.keys(V)])].sort().reverse();if(!anos.length)return"";
  const pick=(a,k)=>{const x=O[a];if(!x)return null;const b=uf?x.estados[uf]:x.brasil;return b?b[k]:null};
  const mvi=a=>{const x=V[a];if(!x)return null;const b=uf?x.estados[uf]:x.brasil;return b?b.mvi:null};
  const pres=a=>{const k=Object.keys(Pr).filter(r=>r.startsWith(a)).sort().pop();if(!k)return null;const b=uf?Pr[k].estados[uf]:Pr[k].brasil;return b?b.populacao:null};
  const rows=anos.map(a=>({a,m:O[a]?O[a].meses:null}));
- return`<h3 class="seg-h">Ano a ano <small>${uf?esc(UF[uf].nome):"Brasil"}</small></h3><div class="panel seg-anos">${table([["Ano",r=>`<b>${r.a}</b>${r.m&&r.m<12?` <small class="muted">(${r.m} meses)</small>`:""}`],
-  ["Homicídios",r=>n0(pick(r.a,"homicidio_doloso")??mvi(r.a)),"n"],["Feminicídios",r=>n0(pick(r.a,"feminicidio")),"n"],["Presos",r=>n0(pres(r.a)),"n"]],rows)}</div>`}
+ const IND=[];SEG_DIA.forEach(([k,t])=>{const f=k==="homicidio_doloso"?a=>pick(a,k)??mvi(a):a=>pick(a,k);if(anos.some(a=>f(a)!=null))IND.push([k,k==="mandados_cumpridos"?"Presos por mandado":t,f])});
+ if(anos.some(a=>mvi(a)!=null))IND.splice(Math.min(IND.length,4),0,["mvi","Mortes violentas (todas)",mvi]);
+ if(anos.some(a=>pres(a)!=null))IND.splice(Math.min(IND.length,4),0,["pres","Presos no sistema prisional",pres]);
+ if(!IND.length)return"";
+ const tab=k=>{const[,t,f]=IND.find(x=>x[0]===k)||IND[0];const rs=rows.filter(r=>f(r.a)!=null);
+  return table([["Ano",r=>`<b>${r.a}</b>${r.m&&r.m<12?` <small class="muted">(${r.m} meses)</small>`:""}`],[t,r=>n0(f(r.a)),"n"],
+   ["Mudança no ano",r=>{const i=rs.indexOf(r),ant=rs[i+1];if(!ant||(r.m&&r.m<12)||(ant.m&&ant.m<12)||!f(ant.a))return"—";const v=(f(r.a)/f(ant.a)-1)*100;return`<span class="${v>0.05?"var-up":v<-0.05?"var-dn":""}">${v>0?"+":""}${v.toFixed(1).replace(".",",")}%</span>`},"n"]],rs)};
+ const id="sa"+(++SA_N);SA_REG.set(id,tab);if(SA_REG.size>40)SA_REG.delete(SA_REG.keys().next().value);
+ return`<h3 class="seg-h">Ano a ano <small>${uf?esc(UF[uf].nome):"Brasil"}</small></h3><div class="panel seg-anos"><div class="seg seg-grupo" data-pill="Indicador" data-ayp="${id}">${IND.map(([k,t],n)=>`<button type="button" data-k="${k}" class="${n?"":"on"}">${esc(t)}</button>`).join("")}</div><div id="${id}">${tab(IND[0][0])}</div></div>`}
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-ayp] button[data-k]");if(!b)return;const w=b.closest("[data-ayp]"),f=SA_REG.get(w.dataset.ayp),el=document.getElementById(w.dataset.ayp);if(!f||!el)return;
+ w.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));trocaSuave(el,f(b.dataset.k));const tb=el.querySelector(":scope>.tw");if(tb&&AN_IO)anJoga(tb)},true); // captura: o menu da pílula não deixa o clique subir
 function segCompleto(e,d,uf){return segPorDia(e,d,uf)+`<div class="seg-ano">${segBlocos(e,null,segRefs(d),!!uf)}</div>`+segAnoAno(d,uf)}
 
 P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"#segstate",map:"#segmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>segEstado(uf)};
@@ -4511,10 +4536,10 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    if(k&&o[k]!=null){const taxa=B.populacao?o[k]/B.populacao*1e5:null;return kp("Por dia no Brasil",dias?(o[k]/dias<10?n1(o[k]/dias):n0(o[k]/dias)):"—",`média dos últimos 12 meses`)+kp("Em 12 meses",n0(o[k]),ref.ocorr)+(taxa!=null?kp("Por 100 mil habitantes",n1(taxa),"no país"):"")}
    return f(B)!=null?kp("Brasil",fmt(f(B)),sub):""};
   const desenha=()=>{const[nome,f,fmt,sub]=SEG_MET[met];const vals={};UFS.forEach(u=>{vals[u.uf]=f(d.estados[u.uf])});
-   $("#segsub").textContent=`${nome}: ${sub}`;$("#segmap").innerHTML=mapaValores(vals,fmt,{escala:met==="policia"?SCALE:SCALE_VERM});$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
+   $("#segsub").textContent=`${nome}: ${sub}`;XF("#segmap").innerHTML=mapaValores(vals,fmt,{escala:met==="policia"?SCALE:SCALE_VERM});$("#segkpi").innerHTML=kpisBr(met,nome,f,fmt,sub);
    const pol=met==="policia";
    const hs=segHist(d,met),opS={alto:pol?"Mais policiais":"Mais violentos",baixo:pol?"Menos policiais":"Menos violentos",attr:"data-segz",href:()=>"#/seguranca",rot:hs&&hs.rot,nota:hs&&hs.nota,...(pol?{coresAlto:["#2F6FED","#0284C7","#7C3AED","#64748B","#94A3B8"],coresBaixo:["#6798F9","#58C4F8","#A58FFA","#A8BFDB","#E2E8F0"]}:{})};
-   $("#segside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,vals,fmt,opS);
+   XF("#segside").innerHTML=linhasDuplo(hs&&hs.serie,hs&&hs.anos,vals,fmt,opS);
    bindMap($("#segmap"),null,null,(u,el)=>inlineZoomIn(SZ,u,el));ligaZ();graf()};
   const ligaZ=()=>document.querySelectorAll("[data-segz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(SZ,a.dataset.segz)});
   const graf=()=>{const w=$("#segchartw");if(!w)return;const k=SEG_SERIE[met]||(met.startsWith("c_")?met.slice(2):null);const pts=k?sm.filter(x=>x[k]!=null).map(x=>({data:x.mes,valor:x[k]})):[];
@@ -4550,9 +4575,11 @@ const XF_MOV=!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)")
 function trocaSuave(el,html){if(!el)return;const atual=[...el.children].find(c=>c.classList.contains("xf-velho"));
  if(atual){[...el.childNodes].forEach(n=>{if(n!==atual)n.remove()});atual.insertAdjacentHTML("beforebegin",html);return}
  if(!XF_MOV||!el.firstElementChild||!el.offsetParent){el.innerHTML=html;return}
- const velho=document.createElement("div");velho.className="xf-velho";velho.setAttribute("aria-hidden","true");velho.append(...el.childNodes);
+ el.classList.toggle("xf-mapa",/map$/i.test(el.id));const velho=document.createElement("div");velho.className="xf-velho";velho.setAttribute("aria-hidden","true");velho.append(...el.childNodes);
  el.innerHTML=html;el.classList.add("xf");el.appendChild(velho);el.classList.remove("xf-in");void el.offsetWidth;el.classList.add("xf-in");
  clearTimeout(el._xf);el._xf=setTimeout(()=>{velho.remove();el.classList.remove("xf-in")},850)}
+// atalho: XF("#id").innerHTML = html  →  troca com fade (mapas e painéis ao lado)
+const XF=q=>{const el=$(q);return{set innerHTML(h){trocaSuave(el,h)},get innerHTML(){return el?el.innerHTML:""}}};
 function surgeSuave(el){if(!el||!XF_MOV)return;el.classList.remove("xf-surge");void el.offsetWidth;el.classList.add("xf-surge");clearTimeout(el._xs);el._xs=setTimeout(()=>el.classList.remove("xf-surge"),600)}
 
 /* ===================== v0.6: Dívidas numa tela só — seletor de tipo, mapa que muda e zoom no estado ===================== */
@@ -4672,7 +4699,7 @@ function escArvore(c){const o=c.organograma;if(!o)return"";const pes=Object.from
   <span class="arv-top"><span class="arv-foto" data-foto="esc:${esc(x.nome)}" data-nome="${esc(x.nome)}" style="width:46px;height:46px">${esc(iniciais(x.nome.replace(/\s*\(.*\)$/,"")))}</span><span class="arv-nm"><span class="arv-n">${esc(x.nome.replace(/\s*\(.*\)$/,""))}</span>${p.partido_na_epoca?`<span class="esc-p small">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:""}</span></span>
   <span class="arv-c">${esc(p.cargo_na_epoca||"")}</span>${x.nucleo?`<span class="arv-nuc">${esc(x.nucleo)}</span>`:""}
   ${x.acima?`<span class="arv-ac">Responde a: <b>${esc(x.acima.replace(/\s*\(.*\)$/,""))}</b></span>`:""}<span class="arv-p">${esc(x.papel)}</span><span class="arv-tags">${escSit(p.situacao)}${escPrisaoTag(p)}</span>
-  <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a>${p.liberdade_detalhe?`<br><b>Prisão:</b> ${esc(p.liberdade_detalhe)}${p.liberdade_data?` (${escData(p.liberdade_data)})`:""}${p.liberdade_fonte?` <a href="${esc(p.liberdade_fonte)}" target="_blank" rel="noopener">fonte</a>`:""}`:""}</span></button>`};
+  <span class="arv-cit" hidden>“${esc(x.citacao)}” <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a>${p.valor_recebido?`<br><b>Valor citado:</b> ${escVal(p.valor_recebido)}`:""}${p.devolveu?`<br><b>Devolveu:</b> ${escVal(p.devolveu)}`:""}${p.liberdade_detalhe?`<br><b>Prisão:</b> ${esc(p.liberdade_detalhe)}${p.liberdade_data?` (${escData(p.liberdade_data)})`:""}${p.liberdade_fonte?` <a href="${esc(p.liberdade_fonte)}" target="_blank" rel="noopener">fonte</a>`:""}`:""}</span></button>`};
  // quem a Justiça absolveu, teve a condenação anulada ou o processo arquivado não fica nos andares: vai para a faixa de baixo
  const naoConf=x=>["absolvido","condenação anulada","processo arquivado"].includes((pes[x.nome]||{}).situacao);
  const ord=l=>l.sort((a,b)=>a.nivel-b.nivel||String(a.nucleo||"").localeCompare(String(b.nucleo||"")));
@@ -4710,16 +4737,12 @@ P.escandalo=slug=>({html:`<div id="escD">${rload()}</div>`,
   ${escAviso(c.aviso)}
   <div class="kpis kpis-c mt">${kp("Valor apontado",dv&&dv.valor!=null?brl(dv.valor):"—",dv?esc(dv.texto):"")}${kp("Recuperado / devolvido",rc&&rc.valor!=null?brl(rc.valor):"—",rc?esc(rc.texto):"")}${kp("Pessoas listadas",nf(P_.length))}${kp("Condenados",nf(cond))}${kp("Presos agora",nf(pres),"na data de cada fonte")}${forag?kp("Foragidos",nf(forag)):""}</div>
   ${c.valores.observacao?`<p class="small muted">${esc(c.valores.observacao)}</p>`:""}
-  <div class="grid g2 mt"><div class="panel"><h2>O que foi</h2><p>${esc(c.resumo)}</p>${c.situacao_atual?`<h3 class="seg-h">Situação hoje</h3><p>${esc(c.situacao_atual.texto)} <a class="small" href="${esc(c.situacao_atual.fonte)}" target="_blank" rel="noopener">fonte, ${escData(c.situacao_atual.data)}</a></p>`:""}</div>
-   <div class="panel"><h2>Órgãos responsáveis</h2><div class="esc-org">${c.orgaos.map(o=>`<div><b>${esc(o.nome)}</b><span>${esc(o.papel||"")}</span></div>`).join("")||rvazio("—")}</div></div></div>
-  <div class="panel mt"><h2>Andamento</h2><ol class="esc-tl">${c.andamento.map(a=>`<li><span class="esc-dt">${escData(a.data)}</span><span>${esc(a.fato)} <a class="small" href="${esc(a.fonte)}" target="_blank" rel="noopener">fonte</a></span></li>`).join("")}</ol></div>
+  <div class="panel mt"><h2>O que foi</h2><p>${esc(c.resumo)}</p>${c.situacao_atual?`<h3 class="seg-h">Situação hoje</h3><p>${esc(c.situacao_atual.texto)} <a class="small" href="${esc(c.situacao_atual.fonte)}" target="_blank" rel="noopener">fonte, ${escData(c.situacao_atual.data)}</a></p>`:""}</div>
   ${escArvore(c)}
-  <div class="panel mt"><h2>Pessoas envolvidas</h2><p class="small muted" style="margin-top:0">Cargo e partido da época do caso. Situação na Justiça e prisão na data da fonte de cada linha.</p><div id="escP"></div></div>
+  <div class="panel mt"><h2>Andamento</h2><ol class="esc-tl">${c.andamento.map(a=>`<li><span class="esc-dt">${escData(a.data)}</span><span>${esc(a.fato)} <a class="small" href="${esc(a.fonte)}" target="_blank" rel="noopener">fonte</a></span></li>`).join("")}</ol></div>
+  <div class="panel mt"><h2>Órgãos responsáveis</h2><div class="esc-org">${c.orgaos.map(o=>`<div><b>${esc(o.nome)}</b><span>${esc(o.papel||"")}</span></div>`).join("")||rvazio("—")}</div></div>
   <div class="panel mt" id="escN" hidden><h2>Notícias recentes sobre o caso</h2><div id="escNl"></div></div>
   <div class="panel mt"><h2>Fontes</h2><ul class="esc-fontes">${c.fontes.map(u=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,"").slice(0,90))}</a></li>`).join("")}</ul><p class="small muted">Conferido em ${escData(c.verificado_em)}.</p></div>`;
-  $("#escP").innerHTML=table([["Nome",p=>`<b style="font-weight:600">${esc(p.nome)}</b>${p.detalhe?`<div class="small muted esc-det" title="Toque para ler tudo">${esc(p.detalhe)}</div>`:""}`],["Cargo na época",p=>esc(p.cargo_na_epoca||"—")],
-   ["Partido",p=>p.partido_na_epoca?`<span class="esc-p">${bandPart(p.partido_na_epoca)}${esc(p.partido_na_epoca)}</span>`:"—"],["Situação na Justiça",p=>escSit(p.situacao)],["Prisão",p=>`${escPrisaoTag(p)}${p.liberdade_detalhe?`<div class="small muted esc-vt">${esc(p.liberdade_detalhe)}${p.liberdade_data?` (${escData(p.liberdade_data)})`:""} ${p.liberdade_fonte?`<a href="${esc(p.liberdade_fonte)}" target="_blank" rel="noopener">fonte</a>`:""}</div>`:""}`],
-   ["Valor citado",p=>escVal(p.valor_recebido)],["Devolveu",p=>escVal(p.devolveu)],["Fonte",p=>`<a href="${esc(p.fonte)}" target="_blank" rel="noopener">${escData(p.data_situacao)||"ver"}</a>`]],P_);
   const termos=[c.nome,...c.outros_nomes].map(t=>snapNorm(t).replace(/^(operacao|caso|escandalo d[oa]s?|fraude n[oa]s?)\s+/,"")).filter(t=>t.length>3);
   apiGet("/noticias?limit=1500").then(n=>{const l=(n.itens||[]).filter(x=>(x.casos||[]).includes(slug)||termos.some(t=>snapNorm(x.titulo+" "+(x.resumo||"")).includes(t))).slice(0,8);const el=$("#escN");if(!el||!l.length)return;el.hidden=false;
    $("#escNl").innerHTML=l.map(x=>`<div class="list-row"><div style="flex:1;min-width:0"><a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.titulo)}</a><div class="small muted">${esc(x.veiculo||"")} · ${esc((x.data||"").slice(0,10))}</div></div></div>`).join("")}).catch(()=>{});

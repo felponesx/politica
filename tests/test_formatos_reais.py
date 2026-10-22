@@ -633,3 +633,17 @@ def test_situacao_proposicoes_arquivo_anual(monkeypatch):
     assert p["880002"].situacao == "Arquivamento"
     lista = cliente.get("/proposicoes", params={"ano": 2025, "tipo": "PEC", "limit": 500}).json()
     assert any(i.get("situacao") == "Aguardando Deliberação" for i in lista["itens"])
+
+
+def test_obrasgov_pagina_mesmo_com_last_true(monkeypatch):
+    """A API real devolve `last: true` em toda página; só uma página curta encerra (22/10/2026)."""
+    paginas = {0: 3, 1: 3, 2: 1}  # tamanho 3: duas páginas cheias e uma curta
+
+    def pagina(url, params=None, headers=None):
+        p = params["pagina"]
+        n = paginas.get(p, 0)
+        return {"content": [{"idUnico": f"x{p}-{i}", "nome": "Obra"} for i in range(n)], "last": True,
+                "totalElements": n, "totalPages": 1}
+
+    monkeypatch.setattr(http, "get_json", pagina)
+    assert obrasgov.coletar_obras(ufs=["AC"], tamanho=3) == 7
