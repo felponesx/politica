@@ -3414,8 +3414,12 @@ mount(){apiGet("/legislacao/"+String(id).slice(1)).then(d=>{const n=d.norma,o=d.
 
 /* ---------- contratos e fornecedores reais ---------- */
 const _empresas=P.empresas,_contrato=P.contrato;
-P.empresas=(v,...a)=>{if(!API.on)return _empresas(v,...a);const view=v==="contratos"?"contratos":"empresas";
-const abas=`<div class="tabs" style="margin-top:0">${[["empresas","Fornecedores"],["contratos","Contratos"]].map(t=>`<a class="tabl ${t[0]===view?"on":""}" href="#/empresas${t[0]==="contratos"?"/contratos":""}">${t[1]}</a>`).join("")}</div>`;
+const ABAS_EMP=view=>`<div class="tabs" style="margin-top:0">${[["empresas","Fornecedores"],["contratos","Contratos"],["dividas","Dívidas das empresas"]].map(t=>`<a class="tabl ${t[0]===view?"on":""}" href="#/empresas${t[0]==="empresas"?"":"/"+t[0]}">${t[1]}</a>`).join("")}</div>`;
+P.empresas=(v,...a)=>{if(!API.on)return _empresas(v,...a);
+if(v==="dividas"){const sub=a[0];return{html:`<div class="ph"><div><h1>Empresas e Contratos</h1><p>Quem vende para o poder público, para quais órgãos e por quanto, e quantas empresas do país devem à União, estão em recuperação judicial ou faliram.</p></div></div>`+ABAS_EMP("dividas")+`<div id="dvEmp">${rload()}</div>`,
+ mount(){dadosDividas().then(D=>{const box=$("#dvEmp");if(!box)return;box.innerHTML=TELA_DIV.empresas(D,sub);TELA_DIV.empresas.mount&&TELA_DIV.empresas.mount(D,sub);rowLinks()}).catch(e=>{const b=$("#dvEmp");if(b)b.innerHTML=rerro(e)})}}}
+const view=v==="contratos"?"contratos":"empresas";
+const abas=ABAS_EMP(view);
 const topo=`<div class="ph"><div><h1>Empresas e Contratos</h1><p>Quem vende para o poder público, para quais órgãos e por quanto, em todas as esferas.</p></div></div>`+abas;
 if(view==="contratos")return{html:topo+`<div class="panel"><div class="filters">${UFSel("ctuf")}<select id="ctes" data-titulo="Esfera"><option value="">Todas as esferas</option><option value="F">Federal</option><option value="E">Estadual</option><option value="M">Municipal</option></select><input id="ctmun" placeholder="Município" style="width:160px" autocomplete="off"><select id="ctord" data-titulo="Ordenar"><option value="valor">Maior valor</option><option value="data">Mais recentes</option></select></div><div id="ctl">${rload()}</div>${maisBtn("ctm")}${RSRC("Portal Nacional de Contratações Públicas (PNCP) e Portal da Transparência")}</div>`,
 mount(){let f={uf:"",esfera:"",municipio:"",ordenar:"valor"};
@@ -4199,7 +4203,7 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
   apiGet("/eleicoes/candidato/"+encodeURIComponent(id)).then(d=>desenha(d,false)).catch(e=>{if(ELCAND[id])desenha({},true);else $("#rcd").innerHTML=rerro(e)})}});
 
 /* ---------- Dívidas: um quadro por tipo; cada um abre a tela daquela dívida ---------- */
-const DIV_TIPOS=[["publica","Dívida pública","Governo federal, estados e municípios somados (dívida bruta do governo geral)."],["estados","Dívida dos estados","O que cada governo estadual deve, segundo o próprio estado ao Tesouro."],["municipios","Saúde fiscal das cidades","Nota de capacidade de pagamento (CAPAG) de cada prefeitura."],["familias","Dívida das famílias","Quanto da renda das famílias está comprometida com dívidas e a inadimplência."],["empresas","Dívida das empresas","Inadimplência das empresas e empresas em recuperação judicial ou falência."]];
+const DIV_TIPOS=[["publica","Dívida pública","Governo federal, estados e municípios somados (dívida bruta do governo geral)."],["estados","Dívida dos estados","O que cada governo estadual deve, segundo o próprio estado ao Tesouro."],["municipios","Saúde fiscal das cidades","Nota de capacidade de pagamento (CAPAG) de cada prefeitura."],["familias","Dívida das famílias","Quanto da renda das famílias está comprometida com dívidas e a inadimplência."]];
 const ECO_DIV="/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj";
 const mesAno=d=>{const m=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return d?m[+d.slice(5,7)-1]+"/"+d.slice(0,4):""};
 const varPP=(s)=>s&&s.doze_meses_antes?(s.ultimo.valor-s.doze_meses_antes.valor):null;
@@ -4244,7 +4248,7 @@ const TELA_DIV={
   return resumoBox(`<p>${e?`As dívidas das famílias com bancos e financeiras equivalem a <b>${pctF(e.ultimo.valor)} da renda</b> de um ano (${mesAno(e.ultimo.data)}), ${txtVar(varPP(e))}.`:""}${i?` A <b>inadimplência</b> das pessoas — empréstimos com atraso de mais de 90 dias — está em <b>${pctF(i.ultimo.valor)}</b> da carteira de crédito, ${txtVar(varPP(i))}.`:""}</p><p class="small muted" style="margin:0">Endividamento: saldo das dívidas no sistema financeiro dividido pela renda das famílias nos 12 meses anteriores. Inadimplência: parcela do crédito às pessoas com parcelas atrasadas há mais de 90 dias.</p>`)+
   `<div class="kpis kpis-c mt">${kpiS("Endividamento das famílias (% da renda)",e)}${kpiS("Inadimplência das pessoas",i)}</div><div class="grid g2 mt">${e?`<div class="panel"><h2>Endividamento das famílias, % da renda</h2>${serieChart(e.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${i?`<div class="panel"><h2>Inadimplência das pessoas, % da carteira</h2>${serieChart(i.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 29037 e 21084 do SGS")}`},
  empresas:(D,sub)=>{const ab=["endividamento","resumo","recuperacao","falencia"].includes(sub)?sub:"endividamento";
-  return`<div class="tabs" style="margin-top:0">${[["endividamento","Endividamento"],["resumo","Resumo"],["recuperacao","Recuperação judicial"],["falencia","Falências"]].map(([k,v])=>`<a class="tabl ${k===ab?"on":""}" href="#/dividas/empresas/${k}">${v}</a>`).join("")}</div><div id="dvE">${ab==="endividamento"?rload():ab==="resumo"?telaEmpresasResumo(D):telaRJ(D,ab)}</div>`},
+  return`<div class="tabs" style="margin-top:0">${[["endividamento","Endividamento"],["resumo","Resumo"],["recuperacao","Recuperação judicial"],["falencia","Falências"]].map(([k,v])=>`<a class="tabl ${k===ab?"on":""}" href="#/empresas/dividas/${k}">${v}</a>`).join("")}</div><div id="dvE">${ab==="endividamento"?rload():ab==="resumo"?telaEmpresasResumo(D):telaRJ(D,ab)}</div>`},
 };
 TELA_DIV.empresas.mount=(D,sub)=>{if(sub==="recuperacao"||sub==="falencia")ligarRJ(sub);else if(sub!=="resumo")telaEmpresasDiv()};
 /* Dívidas › Empresas › Endividamento (v1.8): empresas ativas por porte × dívida ativa da União (PGFN), recuperação judicial e
@@ -4611,8 +4615,9 @@ function dvEstado(uf,D,M){const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04
  <h3 class="seg-h">Cidades <small>nota de capacidade de pagamento (CAPAG)</small></h3>${nCap?`<div class="kpis kpis-c">${kp("Com nota A ou B",pct(boa/nCap*100),`${nf(boa)} de ${nf(nCap)} cidades`)}${Object.entries(cap).sort().map(([k,v])=>kp("Nota "+esc(k),nf(v))).join("")}</div>`:rvazio("Sem notas CAPAG deste estado.")}
  ${sc?`<h3 class="seg-h">Pessoas e empresas com bancos <small>${esc(D.scr.referencia||"")}</small></h3><div class="kpis kpis-c">${sc.pf?kp("Dívida das pessoas",brl(sc.pf.carteira),`inadimplência: ${pctF(sc.pf.inadimplencia)}`):""}${sc.pj?kp("Dívida das empresas",brl(sc.pj.carteira),`inadimplência: ${pctF(sc.pj.inadimplencia)}`):""}</div>`:""}
  <h3 class="seg-h">Empresas em dificuldade</h3><div class="kpis kpis-c">${kp("Em recuperação judicial",rj!=null?nf(rj):"—")}${kp("Em falência",fa!=null?nf(fa):"—")}</div>
- <p class="small" style="margin:10px 0 0"><a href="#/dividas/empresas/recuperacao">Lista de empresas em recuperação judicial</a> · <a href="#/uf/${uf}">Ficha completa ${esc(deUF(uf))}</a></p></div>`}}
+ <p class="small" style="margin:10px 0 0"><a href="#/empresas/dividas/recuperacao">Lista de empresas em recuperação judicial</a> · <a href="#/uf/${uf}">Ficha completa ${esc(deUF(uf))}</a></p></div>`}}
 P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"];return _divDemo(ok.includes(t)?t:undefined)}
+ if(t==="empresas"){setTimeout(()=>{location.replace("#/empresas/dividas"+(sub?"/"+sub:""))},0);return{html:`<div class="ph"><div><h1>Dívidas</h1><p>A dívida das empresas agora fica em Empresas e Contratos.</p></div></div>`}}
  let tipo=DIV_TIPOS.some(x=>x[0]===t)?t:"publica";
  return{html:`<div class="ph"><div><h1>Dívidas</h1><p>Quanto devem o governo, os estados, as cidades, as famílias e as empresas. Escolha o tipo: o mapa muda; toque em um estado para ver todas as dívidas dele.</p></div></div><div id="dvT">${rload()}</div>`,
  mount(){Promise.all([dadosDividas(),dvPop(),apiGet("/dividas/familias-estados").catch(()=>null)]).then(([D,M,scr])=>{const box=$("#dvT");if(!box)return;D.scr=scr;
