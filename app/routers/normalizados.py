@@ -83,6 +83,30 @@ def obras(uf: str | None = None, situacao: str | None = None, tipo: str | None =
     return _pagina(db, stmt, limit, offset)
 
 
+@router.get("/obras-gestao", tags=["Obras"])
+def obras_gestao(escopo: str = Query("pais", pattern="^(pais|uf|municipios)$"), uf: str | None = None,
+                 db: Session = Depends(get_db)):
+    """Andamento das obras de um governo: `pais` (presidente), `uf` (governador: obras do estado) ou `municipios`
+    (prefeitos: resumo de cada prefeitura do estado, chave = nome sem acento em maiúsculas)."""
+    from app.obras_gestao import eh_estadual, nome_municipio, resumir
+    stmt = select(Obra.id, Obra.nome, Obra.descricao, Obra.situacao, Obra.executor, Obra.valor_previsto, Obra.fim_previsto, Obra.uf)
+    if escopo != "pais":
+        if not uf:
+            raise HTTPException(400, "Informe uf")
+        stmt = stmt.where(Obra.uf == uf.upper())
+    linhas = db.execute(stmt).all()
+    if escopo == "pais":
+        return {"escopo": "pais", **resumir(linhas)}
+    if escopo == "uf":
+        return {"escopo": "uf", "uf": uf.upper(), **resumir([o for o in linhas if eh_estadual(o.executor)])}
+    por = {}
+    for o in linhas:
+        n = nome_municipio(o.executor)
+        if n:
+            por.setdefault(n, []).append(o)
+    return {"escopo": "municipios", "uf": uf.upper(), "municipios": {n: resumir(l, lista=5) for n, l in por.items()}}
+
+
 @router.get("/obras/{oid}", tags=["Obras"])
 def obra(oid: int, db: Session = Depends(get_db)):
     o = db.get(Obra, oid)

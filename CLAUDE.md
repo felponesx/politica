@@ -270,3 +270,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   população (9514); pessoas = % × população (estimativa). API `GET /saneamento`. A ficha do estado (Início) tem a seção "Saneamento, segurança
   e riscos" (`sanHtml`): % e número de pessoas com e sem cada serviço, segurança em 12 meses (total, por 100 mil, % da população) e desastres
   da Defesa Civil (`/riscos`) quando a planilha foi carregada. Alagamento por estado não existe em base aberta própria.
+
+## Andamento das obras no perfil de quem governa (out/2026)
+- `GET /obras-gestao?escopo=pais|uf|municipios&uf=` (`app/obras_gestao.py`): das obras com dinheiro federal do ObrasGov, % concluído (em número e em valor),
+  o que falta, em andamento/paradas/não começaram, atraso (prazo previsto vencido em obra não concluída: quantidade, média e maior atraso, valor), próximo
+  término e as obras atrasadas de maior valor. Presidente = país; governador = obras de executor estadual da UF; prefeito = executor "Prefeitura/Município de X"
+  (chave = nome sem acento em maiúsculas). O robô exporta `pais`, `uf` e `municipios` por estado.
+- Site: perfil do eleito (`#/candidato/<sq>`, só presidente/governador eleitos desde 2022 e prefeito desde 2024): quadro "Andamento das obras" no Resumo e aba
+  "Obras e projetos". Sempre com o aviso: não é o plano de governo (não há base aberta que o acompanhe) e o percentual de execução física de cada obra não é aberto.

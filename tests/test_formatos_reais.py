@@ -694,3 +694,39 @@ def test_saneamento_pessoas_e_pct():
     tot, com = _serie(resp, 72129), _serie(resp, 72144)
     d = montar_saneamento({"agua": (tot, com)}, {"SP": 1000.0}, {"SP": 99.0})
     assert d["SP"]["agua"]["pct"] == 90.0 and d["SP"]["agua"]["pessoas"] == 900 and d["SP"]["luz"]["sem_pessoas"] == 10
+
+
+def test_obras_gestao_porcentagens_e_atraso():
+    from datetime import date
+    from types import SimpleNamespace as N
+    from app.obras_gestao import categoria, eh_estadual, nome_municipio, resumir
+    d = date(2026, 10, 22)
+    o = lambda i, s, f, v: N(id=i, nome="n", descricao="d", situacao=s, executor="X", valor_previsto=v, fim_previsto=f)
+    r = resumir([o(1, "Concluída", date(2020, 1, 1), 100), o(2, "Em execução", date(2026, 1, 1), 300), o(3, "Paralisada", date(2027, 1, 1), 100),
+                 o(4, "Cancelada", None, 999), o(5, "Cadastrada", None, 0)], d)
+    assert r["total"] == 5 and r["pct_concluido"] == 25.0 and r["pct_concluido_valor"] == 20.0
+    assert r["atraso"]["obras"] == 1 and r["atraso"]["dias_maior"] == 294 and r["no_prazo"] == 1 and r["sem_data_prevista"] == 1
+    assert categoria("Inacabada") == "parada" and eh_estadual("ESTADO DO RIO DE JANEIRO") and not eh_estadual("DEPARTAMENTO NACIONAL DE INFRAESTRUTURA DE TRANSPORTES")
+    assert nome_municipio("PREFEITURA MUNICIPAL DE SÃO JOSÉ (SC)") == "SAO JOSE" and nome_municipio("MUNICÍPIO DE JUIZ DE FORA") == "JUIZ DE FORA"
+
+
+def test_rota_obras_gestao():
+    from datetime import date as _d
+    from app.models import Obra
+    db = SessionLocal()
+    base = Registro(fonte="obrasgov", tipo="obra", chave="og1", dados={})
+    db.add(base)
+    db.flush()
+    for i, (s, ex, fim) in enumerate([("Concluída", "ESTADO DO ZZ", _d(2020, 1, 1)), ("Em execução", "ESTADO DO ZZ", _d(2021, 1, 1)),
+                                      ("Paralisada", "PREFEITURA MUNICIPAL DE BELA VISTA", _d(2022, 1, 1))]):
+        r = Registro(fonte="obrasgov", tipo="obra", chave=f"og-zz{i}", dados={}, uf="ZZ")
+        db.add(r)
+        db.flush()
+        db.add(Obra(registro_id=r.id, id_unico=f"zz{i}", nome="n", uf="ZZ", situacao=s, executor=ex, valor_previsto=100.0, fim_previsto=fim))
+    db.commit()
+    uf = cliente.get("/obras-gestao", params={"escopo": "uf", "uf": "ZZ"}).json()
+    assert uf["total"] == 2 and uf["pct_concluido"] == 50.0 and uf["atraso"]["obras"] == 1
+    mun = cliente.get("/obras-gestao", params={"escopo": "municipios", "uf": "ZZ"}).json()["municipios"]
+    assert mun["BELA VISTA"]["total"] == 1 and mun["BELA VISTA"]["atraso"]["obras"] == 1
+    assert cliente.get("/obras-gestao").json()["total"] >= 3
+    db.close()

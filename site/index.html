@@ -4288,6 +4288,26 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
  document.querySelectorAll("#elturnos button").forEach(b=>b.onclick=()=>{f.turno=+b.dataset.t;document.querySelectorAll("#elturnos button").forEach(x=>x.classList.toggle("on",x===b));carregar()})}}};
 
 /* ---------- perfil de candidato (quem disputou a eleição, eleito ou não) ---------- */
+/* andamento das obras de quem governa (presidente, governador, prefeito): % concluído, o que falta, atraso */
+const OBR_CARGOS={PRESIDENTE:"o país",GOVERNADOR:"o estado",PREFEITO:"a cidade"};
+const normNome=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().trim();
+function obrasGestaoDe(cargo,uf,unidade){const c=normNome(cargo);
+ if(c==="PRESIDENTE")return apiGet("/obras-gestao?escopo=pais");
+ if(c==="GOVERNADOR"&&uf&&uf!=="BR")return apiGet("/obras-gestao?escopo=uf&uf="+uf);
+ if(c==="PREFEITO"&&uf&&unidade)return apiGet("/obras-gestao?escopo=municipios&uf="+uf).then(r=>{const m=(r.municipios||{})[normNome(unidade)];if(!m)throw new Error("sem obras federais cadastradas para esta prefeitura");return m});
+ return Promise.reject(new Error("sem dados"))}
+const obrasEleito=(cargo,ano,sit)=>{const c=normNome(cargo);return OBR_CARGOS[c]&&/^eleito/i.test(String(sit||"").trim())&&(c==="PREFEITO"?+ano>=2024:+ano>=2022)};
+function obrasResumoHtml(g){const f=v=>v==null?"—":nf(v);
+ return`<div class="kpis kpis-c"><div class="kpi"><span>Obras acompanhadas</span><strong>${f(g.total)}</strong><em>${brl(g.valor_total)} previstos</em></div>
+ <div class="kpi"><span>Concluído</span><strong>${g.pct_concluido==null?"—":pct(g.pct_concluido)}</strong><em>das obras${g.pct_concluido_valor!=null?` · ${pct(g.pct_concluido_valor)} do valor`:""}</em></div>
+ <div class="kpi"><span>Falta fazer</span><strong>${f(g.falta.obras)} obras</strong><em>${brl(g.falta.valor)}</em></div>
+ <div class="kpi"><span>Em atraso</span><strong>${f(g.atraso.obras)}</strong><em>${g.atraso.dias_medio!=null?`${g.atraso.pct_das_abertas!=null?pct(g.atraso.pct_das_abertas)+" das que faltam · ":""}atraso médio de ${nf(g.atraso.dias_medio)} dias`:"nenhuma com prazo vencido"}</em></div></div>`}
+function obrasGestaoHtml(g,quem){const f=v=>v==null?"—":nf(v);
+ return obrasResumoHtml(g)+`<div class="grid g2 mt"><div><h3 class="seg-h" style="margin-top:0">Em que pé estão <small>porcentagem das obras${g.situacoes.some(x=>x.chave==="cancelada"&&x.quantidade)?" (canceladas ficam de fora)":""}</small></h3>
+  ${pbars(g.situacoes.filter(x=>x.pct_obras!=null&&x.quantidade).map(x=>[`${x.nome} (${nf(x.quantidade)})`,x.pct_obras]))}</div>
+  <div><h3 class="seg-h" style="margin-top:0">Datas e prazos</h3><div class="facts"><div><span>Com prazo ainda no futuro</span>${f(g.no_prazo)} obras</div><div><span>Próximo término previsto</span>${g.proximo_termino?fdr(g.proximo_termino):"—"}</div><div><span>Maior atraso</span>${g.atraso.dias_maior!=null?`${nf(g.atraso.dias_maior)} dias (${(g.atraso.dias_maior/365).toLocaleString("pt-BR",{maximumFractionDigits:1})} anos)`:"—"}</div><div><span>Valor das obras atrasadas</span>${brl(g.atraso.valor)}</div><div><span>Sem data de término informada</span>${f(g.sem_data_prevista)} obras</div></div></div></div>
+ ${g.mais_atrasadas.length?`<h3 class="seg-h">Obras atrasadas de maior valor</h3>${table([["Obra",o=>`<a href="#/obra/${o.id}" class="rclamp">${esc(o.nome)}</a><div class="small muted">${esc(tit(o.executor||""))}</div>`],["Situação",o=>esc(o.situacao||"—")],["Prazo previsto",o=>fdr(o.fim_previsto),"n"],["Atraso",o=>`${nf(o.dias_atraso)} dias`,"n"],["Valor",o=>brl(o.valor),"n"]],g.mais_atrasadas,o=>"#/obra/"+o.id)}`:""}
+ <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. Fonte: ${esc(g.fonte)}. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
 P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a> / Candidato</div><div id="rcd">${rload()}</div>`,
  mount(){const id=decodeURIComponent(sq||"");
   const desenha=(d,parcial)=>{const c=ELCAND[id]||{};const nome=d.nome||c.nome||"Candidato",part=d.partido||c.partido,cargo=d.cargo||c.cargo,ano=d.ano||c.ano,uf=d.uf||c.uf;
@@ -4297,9 +4317,18 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
     "Votos por cidade":()=>`<div class="panel">${mun.length?`<h2>Cidades com mais votos</h2>${hbars(mun.slice(0,15).map(m=>[tit(m.municipio),m.votos]),{fmt:nf})}`:rvazio("Votos por cidade não disponíveis para este candidato.")}</div>`,
     "Patrimônio e campanha":()=>`<div class="panel">${fin?`<div class="kpis kpis-c"><div class="kpi"><span>Patrimônio declarado</span><strong>${brlR(fin.patrimonio)}</strong></div><div class="kpi"><span>Arrecadou na campanha</span><strong>${brlR(fin.receitas)}</strong></div><div class="kpi"><span>Gastou na campanha</span><strong>${brlR(fin.despesas)}</strong></div></div>
       <div class="grid g2 mt">${fin.bens_por_tipo?`<div><h3 class="rh3">Bens declarados</h3>${hbars(Object.entries(fin.bens_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${fin.receitas_por_fonte?`<div><h3 class="rh3">De onde veio o dinheiro</h3>${hbars(Object.entries(fin.receitas_por_fonte).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${fin.despesas_por_tipo?`<div><h3 class="rh3">Em que foi gasto</h3>${hbars(Object.entries(fin.despesas_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}</div>`:rvazio("Bens e contas de campanha não disponíveis para esta candidatura.")}</div>`};
+   const obrasOk=obrasEleito(cargo,ano,turnos.length?turnos[turnos.length-1].situacao:"");
+   if(obrasOk){TABS["Obras e projetos"]=()=>`<div class="panel"><h2>Obras e projetos de ${esc(tit(nome))} <small>${esc(ELN[cargo]||tit(cargo||""))}</small></h2><div id="obrasT">${rload()}</div></div>`;
+    const R=TABS.Resumo;TABS.Resumo=()=>R()+`<div class="panel mt"><div class="hd"><div><h2>Andamento das obras</h2><p>O que já foi concluído, o que falta e o que está atrasado em ${OBR_CARGOS[normNome(cargo)]}.</p></div><a href="#" id="obrasVer">Ver detalhes ›</a></div><div id="obrasR">${rload()}</div></div>`}
    let tab="Resumo";$("#rcd").innerHTML=`<div class="pcard keep">${fotoR("tse:"+id,nome,92)}<div style="flex:1;min-width:0">${sigla(part,1)}<h1>${esc(tit(nome))}</h1><div class="muted pline">${esc(ELN[cargo]||tit(cargo||""))}${ano?" "+esc(ano):""}${uf&&UF[uf]?". "+esc(UF[uf].nome):""}${turnos.length?`. ${esc(tit(turnos[turnos.length-1].situacao||""))}`:""}.</div>${iaBotao(tit(nome))}</div></div>
     <div class="tabs keep" id="tabs">${Object.keys(TABS).map(x=>`<button class="${x===tab?"on":""}">${x}</button>`).join("")}</div><div id="tabc"></div>${parcial?`<p class="small muted">Só os dados da lista estão disponíveis; o perfil completo aparece quando o site estiver ligado ao servidor BRASIL+ ou à cópia completa dos dados.</p>`:""}${RSRC("Tribunal Superior Eleitoral")}`;
-   const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks()};des();document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{tab=b.textContent;document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));des()})};
+   let OBG=null;const obg=()=>OBG||(OBG=obrasGestaoDe(cargo,uf,d.unidade||c.unidade));
+   const troca=t=>{tab=t;document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x.textContent===t));des()};
+   const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks();
+    if(obrasOk&&tab==="Resumo")obg().then(g=>{const e=$("#obrasR");if(e)e.innerHTML=obrasResumoHtml(g)}).catch(x=>{const e=$("#obrasR");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?x.message:"Andamento das obras ainda não coletado.")});
+    if(obrasOk&&tab==="Resumo"){const v=$("#obrasVer");if(v)v.onclick=e=>{e.preventDefault();troca("Obras e projetos")}}
+    if(obrasOk&&tab==="Obras e projetos")obg().then(g=>{const e=$("#obrasT");if(e)e.innerHTML=obrasGestaoHtml(g)}).catch(x=>{const e=$("#obrasT");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?"Nenhuma obra com dinheiro federal cadastrada no ObrasGov para este governo.":"Andamento das obras ainda não coletado.")})};
+   des();document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>troca(b.textContent))};
   apiGet("/eleicoes/candidato/"+encodeURIComponent(id)).then(d=>desenha(d,false)).catch(e=>{if(ELCAND[id])desenha({},true);else $("#rcd").innerHTML=rerro(e)})}});
 
 /* ---------- Dívidas: um quadro por tipo; cada um abre a tela daquela dívida ---------- */

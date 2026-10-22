@@ -63,7 +63,7 @@ LISTAS = {
 FIXAS = [
     "/saude", "/coletas?limit=30", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
     "/mapa/estados", "/agora/eventos", "/partidos/composicao", "/assembleias", "/gastos/entes", "/orgaos",
-    "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/indicadores",
+    "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/obras-gestao?escopo=pais", "/indicadores",
     "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
@@ -203,6 +203,8 @@ class Exportador:
             for c in (f"/estados/{uf}/resumo", f"/estados/{uf}/fluxo", f"/obras-resumo/{uf}", f"/malhas/{uf}"):
                 self.get(c)
             self.get("/riscos", {"uf": uf})
+            for escopo in ("uf", "municipios"):  # perfil de governador e de prefeito: andamento das obras
+                self.get("/obras-gestao", {"escopo": escopo, "uf": uf})
 
         # órgãos federais
         for a in range(2014, date.today().year + 1):  # o site troca de ano na lista
