@@ -649,6 +649,10 @@ def main(pasta: str):
         fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_prefeitos(db), **fotos_wikipedia(nomes_indicados())}
     from scripts.fotos_escandalos import fotos_escandalos
     fotos.update(fotos_escandalos())
+    from scripts.fotos_manuais import creditos as _cred, fotos_manuais  # conferidas à mão: valem sobre as automáticas
+    fotos.update(fotos_manuais())
+    with open(os.path.join(pasta, "creditos_fotos.json"), "w", encoding="utf-8") as f:
+        json.dump(_cred(), f, ensure_ascii=False, separators=(",", ":"))
     gravar_fotos(pasta, fotos)
     try:  # perfis dos indicados (ministros, tribunais, Banco Central): resumo da Wikipédia e data de nascimento
         from scripts.perfis_indicados import main as perfis

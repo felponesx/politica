@@ -327,3 +327,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   (`{sq: {ano, uf, paginas, legivel, temas}}`). Escolha por palavras-chave e verbos de ação; frase que cita quase todos os assuntos é descartada. É um resumo por trechos do
   próprio plano, sem avaliar nem conferir. PDF digitalizado (sem texto) fica `legivel: false`. O SQ varia de 11 a 12 dígitos e, em 2026, o arquivo tem sufixo `_01`.
 - Site: quadro "O que propõe" no Resumo do `#/candidato/<sq>` (`propostasDe`, `propostasHtml`), 2 trechos por tema, com o aviso de que não confirma cumprimento.
+
+## Fotos conferidas à mão (out/2026)
+- Planilha do Felipe (22/10/2026, "pessoas_com_fotos_conferidas.xlsx"): 51 fotos de pessoas dos escândalos. `scripts/fotos_manuais.py importar <xlsx>` tira as 43 de
+  retrato para `app/dados/fotos_manuais/` (WebP, com `fotos_manuais.json`: fonte e licença); 8 de grupo, montagem ou com texto por cima ficam de fora (`PULAR`:
+  Cláudio Vieira, Dario Garcia Júnior, Marcelo Câmara, Marcelo Vieira, Marcos Soeiro, Osmar Crivelatti, Fernando Baiano, Léo Pinheiro) até haver um recorte só do rosto.
+  O nome da chave `esc:<nome>` é o do caso (aba "Pessoas sem foto"), não o nome completo da galeria. `fotos_manuais()` entra no passo de fotos do robô (`midia_site`)
+  e vale sobre a automática; `python -m scripts.fotos_manuais aplicar` coloca nos blocos de uma cópia pronta e grava `site/midia/creditos_fotos.json`, mostrado em
+  "Créditos das fotos" no fim de cada caso. As miniaturas da planilha têm no máximo 155 px: uma versão maior melhoraria o avatar.
