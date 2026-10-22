@@ -1713,6 +1713,12 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .ia-perg{text-align:left;line-height:1.25}.ia-perg svg{margin-right:0;flex:none}
 @media (max-width:520px){.ia-perg .ia-n{display:none}}
 .prop-ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:13.5px;line-height:1.4}.prop-ul li::marker{color:var(--blue)}
+
+/* rodapé em todas as páginas: de onde vêm os dados */
+.rodape{margin-top:8px;border-top:1px solid var(--line);background:var(--surface)}
+.rodape-i{max-width:1240px;margin-inline:auto;padding:18px 28px 22px;font-size:12px;line-height:1.55;color:var(--muted)}
+.rodape-i p{margin:0 0 8px}.rodape-i b{color:var(--ink2)}.rodape-l{margin-top:4px!important}.rodape-l a{color:var(--blue)}
+@media (max-width:760px){.rodape-i{padding:16px 14px calc(78px + env(safe-area-inset-bottom,0px));font-size:11.5px}}
 </style>
 </head>
 <body>
@@ -1741,6 +1747,13 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
       <button class="ibtn" id="btnTheme" aria-label="Ativar o modo escuro" title="Ativar o modo escuro"></button>
     </header>
     <main class="page" id="view"></main>
+    <footer class="rodape" id="rodape">
+      <div class="rodape-i">
+        <p><b>De onde vêm os dados.</b> O BRASIL+ é uma plataforma independente, sem ligação com governo, partido ou candidato. Ele reúne e organiza, num só lugar, dados abertos publicados por sites oficiais — Câmara dos Deputados, Senado Federal, TSE, IBGE, Tesouro Nacional (SICONFI), Receita Federal, Banco Central, Portal da Transparência, PNCP, ObrasGov, Defesa Civil, Ministério da Justiça e outros — e notícias de veículos de imprensa, sempre com o nome da fonte, para facilitar a leitura e a comparação.</p>
+        <p><b>Como ler.</b> Os números são os das fontes, às vezes somados, padronizados ou estimados (quando for estimativa, a tela diz). Podem ter atraso ou usar critérios diferentes dos de outros sites; para decidir algo importante, confira na fonte oficial. Aparecer em duas bases não indica irregularidade, e quem é citado em investigação ou notícia é inocente até condenação definitiva. Fotos e logos vêm de fontes oficiais e do Wikimedia Commons, com crédito. Notícias são de seus veículos, não do BRASIL+. Resumos de propostas são trechos dos planos registrados no TSE, sem avaliação.</p>
+        <p class="rodape-l"><a href="#/fontes">Fontes e metodologia</a> · <a href="#/relatorios">Baixar os dados</a></p>
+      </div>
+    </footer>
   </div>
 </div>
 
