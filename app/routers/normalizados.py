@@ -107,6 +107,16 @@ def obras_gestao(escopo: str = Query("pais", pattern="^(pais|uf|municipios)$"), 
     return {"escopo": "municipios", "uf": uf.upper(), "municipios": {n: resumir(l, lista=5) for n, l in por.items()}}
 
 
+@router.get("/obras-gestao/lista", tags=["Obras"])
+def obras_gestao_lista(uf: str = Query(..., min_length=2, max_length=2), db: Session = Depends(get_db)):
+    """Todas as obras com dinheiro federal de um estado, em linhas curtas (campos em `campos`), para as telas de governador, prefeito
+    e presidente filtrarem: o que começou, o que não começou, no prazo e atrasadas."""
+    from app.obras_gestao import CAMPOS_LISTA, lista_compacta
+    linhas = db.execute(select(Obra.id, Obra.nome, Obra.descricao, Obra.situacao, Obra.executor, Obra.valor_previsto, Obra.fim_previsto)
+                        .where(Obra.uf == uf.upper())).all()
+    return {"uf": uf.upper(), "campos": CAMPOS_LISTA, "itens": lista_compacta(linhas)}
+
+
 @router.get("/obras/{oid}", tags=["Obras"])
 def obra(oid: int, db: Session = Depends(get_db)):
     o = db.get(Obra, oid)

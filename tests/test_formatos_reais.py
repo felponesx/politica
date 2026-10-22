@@ -739,3 +739,23 @@ def test_obras_gestao_ignora_prazo_absurdo():
     o = N(id=1, nome="n", descricao="d", situacao="Em execução", executor="X", valor_previsto=1.0, fim_previsto=date(1900, 1, 1))
     r = resumir([o], date(2026, 10, 22))
     assert r["atraso"]["obras"] == 0 and r["sem_data_prevista"] == 1
+
+
+def test_rota_obras_gestao_lista():
+    from app.models import Obra
+    db = SessionLocal()
+    r = Registro(fonte="obrasgov", tipo="obra", chave="og-yy1", dados={}, uf="YY")
+    db.add(r)
+    db.flush()
+    db.add(Obra(registro_id=r.id, id_unico="yy1", nome="n", descricao="Escola nova", uf="YY", situacao="Cadastrada",
+                executor="PREFEITURA MUNICIPAL DE BELA VISTA", valor_previsto=500.0))
+    db.commit()
+    d = cliente.get("/obras-gestao/lista", params={"uf": "YY"}).json()
+    row = dict(zip(d["campos"], d["itens"][0]))
+    assert row["cat"] == "nao_iniciada" and row["tipo"] == "M" and row["municipio"] == "BELA VISTA" and row["nome"] == "Escola nova" and row["fim"] == ""
+    db.close()
+
+
+def test_obras_categoria_paralisada():
+    from app.obras_gestao import categoria
+    assert categoria("Paralisada") == "parada" and categoria("Em execução") == "execucao" and categoria("Cadastrada") == "nao_iniciada"

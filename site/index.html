@@ -4323,11 +4323,54 @@ function obrasResumoHtml(g){const f=v=>v==null?"—":nf(v);
  <div class="kpi"><span>Falta fazer</span><strong>${f(g.falta.obras)} obras</strong><em>${brl(g.falta.valor)}</em></div>
  <div class="kpi"><span>Em atraso</span><strong>${f(g.atraso.obras)}</strong><em>${g.atraso.dias_medio!=null?`${g.atraso.pct_das_abertas!=null?pct(g.atraso.pct_das_abertas)+" das que faltam · ":""}atraso médio de ${nf(g.atraso.dias_medio)} dias`:"nenhuma com prazo vencido"}</em></div></div>`}
 function obrasGestaoHtml(g,quem){const f=v=>v==null?"—":nf(v);
- return obrasResumoHtml(g)+`<div class="grid g2 mt"><div><h3 class="seg-h" style="margin-top:0">Em que pé estão <small>porcentagem das obras${g.situacoes.some(x=>x.chave==="cancelada"&&x.quantidade)?" (canceladas ficam de fora)":""}</small></h3>
-  ${pbars(g.situacoes.filter(x=>x.pct_obras!=null&&x.quantidade).map(x=>[`${x.nome} (${nf(x.quantidade)})`,x.pct_obras]))}</div>
-  <div><h3 class="seg-h" style="margin-top:0">Datas e prazos</h3><div class="facts"><div><span>Com prazo ainda no futuro</span>${f(g.no_prazo)} obras</div><div><span>Próximo término previsto</span>${g.proximo_termino?fdr(g.proximo_termino):"—"}</div><div><span>Maior atraso</span>${g.atraso.dias_maior!=null&&g.atraso.dias_maior<20000?`${nf(g.atraso.dias_maior)} dias (${(g.atraso.dias_maior/365).toLocaleString("pt-BR",{maximumFractionDigits:1})} anos)`:"—"}</div><div><span>Valor das obras atrasadas</span>${brl(g.atraso.valor)}</div><div><span>Sem data de término informada</span>${f(g.sem_data_prevista)} obras</div></div></div></div>
+ return obrasResumoHtml(g)+`<div class="mt"><div><h3 class="seg-h" style="margin-top:0">Datas e prazos</h3><div class="facts"><div><span>Com prazo ainda no futuro</span>${f(g.no_prazo)} obras</div><div><span>Próximo término previsto</span>${g.proximo_termino?fdr(g.proximo_termino):"—"}</div><div><span>Maior atraso</span>${g.atraso.dias_maior!=null&&g.atraso.dias_maior<20000?`${nf(g.atraso.dias_maior)} dias (${(g.atraso.dias_maior/365).toLocaleString("pt-BR",{maximumFractionDigits:1})} anos)`:"—"}</div><div><span>Valor das obras atrasadas</span>${brl(g.atraso.valor)}</div><div><span>Sem data de término informada</span>${f(g.sem_data_prevista)} obras</div></div></div></div>
  ${g.mais_atrasadas.length?`<h3 class="seg-h">Obras atrasadas de maior valor</h3>${table([["Obra",o=>`<a href="#/obra/${o.id}" class="rclamp">${esc(o.nome)}</a><div class="small muted">${esc(tit(o.executor||""))}</div>`],["Situação",o=>esc(o.situacao||"—")],["Prazo previsto",o=>fdr(o.fim_previsto),"n"],["Atraso",o=>`${nf(o.dias_atraso)} dias`,"n"],["Valor",o=>brl(o.valor),"n"]],g.mais_atrasadas,o=>"#/obra/"+o.id)}`:""}
  <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. Fonte: ${esc(g.fonte)}. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
+/* obras de quem governa: percentuais de entrega + lista de todas as obras (começaram × não começaram, no prazo × atrasadas) */
+const OB_CAT={concluida:["Concluída","ok"],execucao:["Em andamento",""],parada:["Parada","warn"],nao_iniciada:["Não começou",""],sem_situacao:["Sem situação",""],cancelada:["Cancelada",""]};
+const OB_HOJE=()=>new Date().toISOString().slice(0,10);
+function obrasEntregaHtml(g){const S=Object.fromEntries(g.situacoes.map(x=>[x.chave,x]));const q=k=>(S[k]||{}).quantidade||0;
+ const validas=g.total-q("cancelada");if(!validas)return"";const P=n=>100*n/validas;
+ const aberta=g.falta.obras,noprazo=g.no_prazo,atras=g.atraso.obras,sem=g.sem_data_prevista;
+ const comecou=q("concluida")+q("execucao")+q("parada"),naoC=q("nao_iniciada"),semSit=q("sem_situacao");
+ return`<div class="grid g2 mt"><div><h3 class="seg-h" style="margin-top:0">O que já foi entregue e o que falta <small>% das ${nf(validas)} obras (sem as canceladas)</small></h3>
+  ${pbars([[`Entregues (${nf(q("concluida"))})`,P(q("concluida"))],[`Faltam entregar (${nf(aberta)})`,P(aberta)]])}
+  <h3 class="seg-h">Do que falta entregar <small>${nf(aberta)} obras</small></h3>
+  ${pbars([[`No prazo (${nf(noprazo)})`,aberta?100*noprazo/aberta:0],[`Atrasadas (${nf(atras)})`,aberta?100*atras/aberta:0],[`Sem prazo (${nf(sem)})`,aberta?100*sem/aberta:0]])}</div>
+  <div><h3 class="seg-h" style="margin-top:0">O que começou e o que não começou <small>% das ${nf(validas)} obras</small></h3>
+  ${pbars([[`Já começaram (${nf(comecou)})`,P(comecou)],[`Não começaram (${nf(naoC)})`,P(naoC)],...(semSit?[[`Sem situação (${nf(semSit)})`,P(semSit)]]:[])])}
+  <h3 class="seg-h">Das que começaram <small>${nf(comecou)} obras</small></h3>
+  ${pbars([[`Concluídas (${nf(q("concluida"))})`,comecou?100*q("concluida")/comecou:0],[`Em andamento (${nf(q("execucao"))})`,comecou?100*q("execucao")/comecou:0],[`Paradas (${nf(q("parada"))})`,comecou?100*q("parada")/comecou:0]])}</div></div>`}
+function obrasListaHtml(){return`<div class="seg" id="obF1"></div><div class="seg" id="obF2" style="margin-top:-2px"></div><div class="filters" style="margin-bottom:8px">
+ <select id="obF3" data-titulo="Ordenar"><option value="valor">Maior valor</option><option value="atraso">Mais atrasadas</option><option value="prazo">Prazo mais próximo</option></select>
+ <input id="obF4" placeholder="Buscar obra ou órgão" autocomplete="off" style="flex:1;min-width:160px"></div><div id="obUF"></div><div id="obL">${rload()}</div>`}
+function obrasLista(ctx){const hoje=OB_HOJE();let L=[],f={a:"todas",p:"todas",o:"valor",q:""};
+ const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+ const dias=r=>r.fim&&r.fim<hoje&&!["concluida","cancelada"].includes(r.cat)?Math.round((new Date(hoje)-new Date(r.fim))/864e5):0;
+ const aberta=r=>!["concluida","cancelada"].includes(r.cat);
+ const filtro=r=>{if(f.a==="comecou"&&!["concluida","execucao","parada"].includes(r.cat))return false;if(f.a==="nao"&&r.cat!=="nao_iniciada")return false;
+  if(["concluida","execucao","parada","cancelada"].includes(f.a)&&r.cat!==f.a)return false;
+  if(f.p==="prazo"&&!(aberta(r)&&r.fim&&r.fim>=hoje))return false;if(f.p==="atraso"&&!(dias(r)>0))return false;if(f.p==="sem"&&!(aberta(r)&&!r.fim))return false;
+  if(f.q&&!norm(r.nome+" "+r.executor).includes(norm(f.q)))return false;return true};
+ const botoes=(id,ops,k)=>{const el=$(id);if(!el)return;el.innerHTML=ops.map(([v,t,n])=>`<button type="button" data-v="${v}" class="${f[k]===v?"on":""}">${t}${n!=null?` <small>${nf(n)}</small>`:""}</button>`).join("")};
+ const des=()=>{const C=(fn)=>L.filter(fn).length;
+  botoes("#obF1",[["todas","Todas",L.length],["comecou","Já começaram",C(r=>["concluida","execucao","parada"].includes(r.cat))],["nao","Não começaram",C(r=>r.cat==="nao_iniciada")],["execucao","Em andamento",C(r=>r.cat==="execucao")],["parada","Paradas",C(r=>r.cat==="parada")],["concluida","Concluídas",C(r=>r.cat==="concluida")],["cancelada","Canceladas",C(r=>r.cat==="cancelada")]],"a");
+  botoes("#obF2",[["todas","Todos os prazos",null],["prazo","No prazo",C(r=>aberta(r)&&r.fim&&r.fim>=hoje)],["atraso","Atrasadas",C(r=>dias(r)>0)],["sem","Sem prazo informado",C(r=>aberta(r)&&!r.fim)]],"p");
+  document.querySelectorAll("#obF1 button,#obF2 button").forEach(b=>b.onclick=()=>{const k=b.parentElement.id==="obF1"?"a":"p";f[k]=b.dataset.v;des()});
+  let rows=L.filter(filtro);rows=f.o==="atraso"?rows.sort((a,b)=>dias(b)-dias(a)):f.o==="prazo"?rows.filter(r=>r.fim).sort((a,b)=>a.fim<b.fim?-1:1).concat(rows.filter(r=>!r.fim)):rows.sort((a,b)=>b.valor-a.valor);
+  const soma=rows.reduce((s,r)=>s+r.valor,0);
+  $("#obL").innerHTML=`<p class="small muted" style="margin:0 0 8px"><b>${nf(rows.length)}</b> obras · ${brl(soma)} previstos${rows.length>=L.length?"":` · de ${nf(L.length)} no total`}</p>`+(rows.length?table([["Obra",r=>`<a href="#/obra/${r.id}" class="rclamp">${esc(r.nome)}</a><div class="small muted">${esc(tit(r.executor||""))}</div>`],
+   ["Situação",r=>`<span class="tag">${OB_CAT[r.cat][0]}</span>`],["Prazo previsto",r=>r.fim?fdr(r.fim):"—","n"],["Atraso",r=>dias(r)?`${nf(dias(r))} dias`:(aberta(r)&&r.fim?"no prazo":"—"),"n"],["Valor",r=>brl(r.valor),"n"]],rows,r=>"#/obra/"+r.id):rvazio("Nenhuma obra com esses filtros."));};
+ const carrega=uf=>{$("#obL").innerHTML=rload();return apiGet("/obras-gestao/lista?uf="+uf).then(d=>{const c=d.campos;let l=d.itens.map(a=>Object.fromEntries(c.map((k,i)=>[k,a[i]])));
+   const cg=normNome(ctx.cargo);if(cg==="GOVERNADOR")l=l.filter(r=>r.tipo==="E");else if(cg==="PREFEITO")l=l.filter(r=>r.municipio===normNome(ctx.unidade));L=l;des()}).catch(()=>{$("#obL").innerHTML=rvazio("A lista de obras deste estado ainda não foi coletada.")})};
+ $("#obF3").onchange=e=>{f.o=e.target.value;des()};$("#obF4").oninput=debounce(e=>{f.q=e.target.value.trim();des()},200);
+ if(normNome(ctx.cargo)==="PRESIDENTE"){$("#obUF").innerHTML=`<div class="filters" style="margin:0 0 8px"><select id="obUFs" data-titulo="Estado">${UFS.map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("")}</select></div><p class="small muted" style="margin:0 0 8px">O país tem ${nf(ctx.total||0)} obras: escolha o estado para ver as dele.</p>`;
+  $("#obUFs").onchange=e=>carrega(e.target.value);carrega(UFS[0].uf)}
+ else carrega(ctx.uf)}
+function obrasTelaHtml(g,ctx){return`<div class="tabs" id="obTabs" style="margin-top:0"><button class="on" data-t="p">Porcentagens</button><button data-t="l">Todas as obras</button></div>
+ <div id="obP">${obrasGestaoHtml(g).replace(/<h3 class="seg-h" style="margin-top:0">Em que pé estão/,'<h3 class="seg-h" style="margin-top:0">Em que pé estão')}</div><div id="obT2" hidden>${obrasListaHtml()}</div>`}
+function obrasTelaMount(g,ctx){let lista=false;const P=$("#obP");if(P){const k=P.querySelector(".kpis");if(k)k.insertAdjacentHTML("afterend",obrasEntregaHtml(g))}
+ document.querySelectorAll("#obTabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#obTabs button").forEach(x=>x.classList.toggle("on",x===b));const l=b.dataset.t==="l";$("#obP").hidden=l;$("#obT2").hidden=!l;if(l&&!lista){lista=true;obrasLista({...ctx,total:g.total})}})}
 P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a> / Candidato</div><div id="rcd">${rload()}</div>`,
  mount(){const id=decodeURIComponent(sq||"");
   const desenha=(d,parcial)=>{const c=ELCAND[id]||{};const nome=d.nome||c.nome||"Candidato",part=d.partido||c.partido,cargo=d.cargo||c.cargo,ano=d.ano||c.ano,uf=d.uf||c.uf;
@@ -4347,7 +4390,7 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
    const des=()=>{$("#tabc").innerHTML=TABS[tab]();rowLinks();
     if(obrasOk&&tab==="Resumo")obg().then(g=>{const e=$("#obrasR");if(e)e.innerHTML=obrasResumoHtml(g)}).catch(x=>{const e=$("#obrasR");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?x.message:"Andamento das obras ainda não coletado.")});
     if(obrasOk&&tab==="Resumo"){const v=$("#obrasVer");if(v)v.onclick=e=>{e.preventDefault();troca("Obras e projetos")}}
-    if(obrasOk&&tab==="Obras e projetos")obg().then(g=>{const e=$("#obrasT");if(e)e.innerHTML=obrasGestaoHtml(g)}).catch(x=>{const e=$("#obrasT");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?"Nenhuma obra com dinheiro federal cadastrada no ObrasGov para este governo.":"Andamento das obras ainda não coletado.")})};
+    if(obrasOk&&tab==="Obras e projetos")obg().then(g=>{const e=$("#obrasT");if(e){e.innerHTML=obrasTelaHtml(g);obrasTelaMount(g,{cargo,uf,unidade:d.unidade||c.unidade})}}).catch(x=>{const e=$("#obrasT");if(e)e.innerHTML=rvazio(/sem /.test(x.message)?"Nenhuma obra com dinheiro federal cadastrada no ObrasGov para este governo.":"Andamento das obras ainda não coletado.")})};
    des();document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>troca(b.textContent))};
   apiGet("/eleicoes/candidato/"+encodeURIComponent(id)).then(d=>desenha(d,false)).catch(e=>{if(ELCAND[id])desenha({},true);else $("#rcd").innerHTML=rerro(e)})}});
 

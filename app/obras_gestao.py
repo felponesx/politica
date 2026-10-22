@@ -25,7 +25,7 @@ def categoria(situacao: str | None) -> str:
         return "concluida"
     if "execu" in s:
         return "execucao"
-    if s.startswith(("paraliz", "inacab", "inativ")):
+    if s.startswith(("paraliz", "paralis", "inacab", "inativ")):
         return "parada"
     if s.startswith("cancel"):
         return "cancelada"
@@ -82,3 +82,20 @@ def resumir(obras, hoje: date | None = None, lista: int = 8) -> dict:
                                 "fim_previsto": o.fim_previsto, "dias_atraso": d, "valor": o.valor_previsto}
                                for o, d in sorted(atrasos, key=lambda x: -(x[0].valor_previsto or 0))[:lista]],
             "aviso": AVISO, "fonte": "ObrasGov (Ministério da Gestão e Inovação / Ministério da Integração)", "data": hoje}
+
+
+CAMPOS_LISTA = ["id", "nome", "cat", "fim", "valor", "tipo", "municipio", "executor"]
+
+
+def lista_compacta(obras) -> list:
+    """Todas as obras de um estado em linhas curtas (uma lista por UF na cópia do site). cat: concluida, execucao, parada, nao_iniciada,
+    sem_situacao ou cancelada; tipo: E (executor estadual), M (prefeitura) ou F (outro); municipio: nome sem acento da prefeitura."""
+    out = []
+    for o in obras:
+        mun = nome_municipio(o.executor)
+        tipo = "M" if mun else ("E" if eh_estadual(o.executor) else "F")
+        fim = o.fim_previsto.isoformat() if o.fim_previsto and o.fim_previsto.year >= 1990 else ""
+        out.append([o.id, (o.descricao or o.nome or "Obra")[:110], categoria(o.situacao), fim, round(o.valor_previsto or 0), tipo,
+                    mun or "", (o.executor or "")[:70]])
+    out.sort(key=lambda r: -r[4])
+    return out

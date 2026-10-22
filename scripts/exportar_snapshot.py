@@ -205,6 +205,7 @@ class Exportador:
             self.get("/riscos", {"uf": uf})
             for escopo in ("uf", "municipios"):  # perfil de governador e de prefeito: andamento das obras
                 self.get("/obras-gestao", {"escopo": escopo, "uf": uf})
+            self.get("/obras-gestao/lista", {"uf": uf})
 
         # órgãos federais
         for a in range(2014, date.today().year + 1):  # o site troca de ano na lista
