@@ -1500,11 +1500,11 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .rk-duplo{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:4px}
 .rk{background:var(--bg);border-radius:12px;padding:14px 16px}
 .rk-t{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink);margin:0 0 8px}.rk-t i{width:10px;height:10px;border-radius:3px}
-.rk-l{display:grid;grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"p n v" ". b b";gap:3px 8px;align-items:center;padding:6px 0;font-size:13.5px}
+.rk-l{display:grid;grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"p n v" ". s s" ". b b";gap:2px 8px;align-items:center;padding:6px 0;font-size:13.5px}
 .rk-p{grid-area:p;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
 .rk-l a{grid-area:n;color:var(--ink2);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-l a:hover{color:var(--c1)}
 .rk-l b{grid-area:v;font-variant-numeric:tabular-nums;font-weight:500;color:var(--ink2)}
-.rk-b{grid-area:b;height:10px;background:var(--line2);border-radius:999px;overflow:hidden}.rk-b i{display:block;height:100%;border-radius:999px}
+.rk-sub{grid-area:s;color:var(--muted);font-size:12px}.rk-b{grid-area:b;height:10px;background:var(--line2);border-radius:999px;overflow:hidden}.rk-b i{display:block;height:100%;border-radius:999px}
 .rk-top a,.rk-top b{color:var(--ink);font-weight:600}.rk-top .rk-p{color:var(--ink);font-weight:600}
 .zside .rk-duplo{grid-template-columns:1fr}
 
@@ -1612,7 +1612,10 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 :is(.an-pre,.an-go) .an-s{animation-duration:.6s}
 :is(.an-pre,.an-go) .hb-b i,.bar:is(.an-pre,.an-go) i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) both}
 .rk-duplo:is(.an-pre,.an-go) .rk-b i{transform-origin:left center;animation:anBarra 1.8s cubic-bezier(.3,.8,.3,1) both}
+.vb:is(.an-pre,.an-go) .vb-r{transform-box:fill-box;transform-origin:50% 100%;animation:anSobe 1.5s cubic-bezier(.3,.8,.3,1) var(--d,0s) both}
+.vb:is(.an-pre,.an-go) .vb-t{animation:anFade2 .6s ease var(--d,0s) both}
 .an-pre,.an-pre *,.an-pre::after{animation-play-state:paused!important}}
+@keyframes anSobe{from{transform:scaleY(0)}}@keyframes anFade2{from{opacity:0}}
 @keyframes anLinha{from{stroke-dashoffset:1.001}to{stroke-dashoffset:0}}
 @keyframes anCortina{to{transform:scaleX(0)}}
 @keyframes anBarra{from{transform:scaleX(0)}}
@@ -1628,6 +1631,18 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) *{scrollbar-color:#3A4558 transparent}}
 /* nunca rolar para os lados (celular e telas largas): o que passar da tela é cortado, não vira barra de rolagem (v1.10) */
 html,body{overflow-x:clip;max-width:100%}
+.busca-cid input{min-width:260px;max-width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--surface);color:var(--ink)}
+/* segurança: "por dia" em quatro quadros simples (v1.10) */
+.sd-grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
+.sd-g h4{margin:0 0 8px;font-size:15px}.sd-c,.sd-l{display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,150px);gap:10px;align-items:baseline}
+.sd-c{font-size:11.5px;color:var(--muted);padding-bottom:4px;border-bottom:1px solid var(--line)}.sd-c span:nth-child(2){text-align:right}
+.sd-l{padding:8px 0;border-bottom:1px solid var(--line2);font-size:13.5px}.sd-l:last-child{border-bottom:0}.sd-l b{text-align:right;font-size:16px;font-variant-numeric:tabular-nums}.sd-l small{color:var(--muted);font-size:12px}
+.sd-top b{color:var(--c1)}
+@media (max-width:640px){.sd-grade{grid-template-columns:minmax(0,1fr)}.sd-c,.sd-l{grid-template-columns:minmax(0,1fr) 54px minmax(0,110px)}}
+/* relatórios organizados por assunto (v1.10) */
+.rel-l{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line2)}
+.rel-n{display:flex;flex-direction:column;min-width:0}.rel-n small{color:var(--muted);font-size:12.5px}.rel-q{color:var(--muted);font-size:12.5px;text-align:right;white-space:nowrap}
+@media (max-width:640px){.rel-l{grid-template-columns:minmax(0,1fr) auto}.rel-q{grid-column:1;text-align:left}.rel-l .btn{grid-column:2;grid-row:1/3}}
 /* troca suave entre abas (trocaSuave/surgeSuave, v1.9) */
 .xf{position:relative}.xf-velho{position:absolute;top:0;left:0;right:0;pointer-events:none;z-index:2}
 @media (prefers-reduced-motion:no-preference){.xf-in>.xf-velho{animation:xfSai .4s ease both}.xf-in>:not(.xf-velho){animation:xfEntra .5s ease .2s both}.xf-surge{animation:xfEntra .5s ease both}
@@ -1890,7 +1905,7 @@ function lcCut(id){const[s,l,o,dt,k]=LC_REG.get(id);if(!dt||(!k&&!dt.gera))retur
 function lineChart(series,labels,o={}){const id="lc"+(++LC_N);
  const dt=o.datas?{gera:true,anual:o.datas.every(d=>String(d).length===4),m:o.datas.map(d=>{d=String(d);return +d.slice(0,4)*12+(d.length>=7?+d.slice(5,7)-1:11)})}:lcMeses(labels);
  const k=lcCorte(dt,o.per);let chips="";
- if(dt&&o.periodo!==false){const n=dt.m.length,ops=LC_PER.filter(([mm])=>{const c=lcCorte(dt,mm);return c>0&&n-c>=3});
+ if(dt&&o.periodo!==false){const n=dt.m.length,ops=LC_PER.filter(([mm])=>{const c=lcCorte(dt,mm);return c>0&&n-c>=2});
   if(ops.length){const cur=k&&ops.some(x=>x[0]==o.per)?o.per:0;chips=`<div class="seg lc-per" data-lcp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Tudo"]].map(([mm,t])=>`<button type="button" data-m="${mm}" class="${mm==cur?"on":""}">${t}</button>`).join("")}</div>`}}
  LC_REG.set(id,[series,labels||[],o,dt,k]);return`${chips}<div class="lc" data-lc="${id}">${lineSVG(...lcCut(id),600)}</div>`}
 function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.round(W));const H=h,all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);
@@ -1899,7 +1914,7 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  let g="";ticks.forEach((v,t)=>{g+=`<line x1="${p}" x2="${W-dir}" y1="${y(v)}" y2="${y(v)}" class="lc-grade${t?"":" base"}"/><text x="${p-8}" y="${y(v)+4}" font-size="11.5" text-anchor="end" class="lc-eixo">${rot[t]}</text>`});
  let vis=labels.map((l,i)=>[l,i]).filter(([l])=>l!==""&&l!=null);
  {const larg=Math.max(...vis.map(([l])=>String(l).length))*7+14,cabe=Math.max(2,Math.floor((W-p-dir)/larg));
-  if(vis.length>cabe){const pas=Math.ceil(vis.length/cabe),ult=vis[vis.length-1];vis=vis.filter((v,k)=>k%pas===0&&(vis.length-1-k)>=pas);vis.push(ult)}}
+  if(vis.length>cabe){const pas=Math.ceil(vis.length/cabe),ult=vis[vis.length-1];vis=vis.filter((v,k)=>k%pas===0&&(vis.length-1-k)>pas);vis.push(ult)}}
  vis.forEach(([l,i],k)=>{const an=k===0&&x(i)-p<20?"start":i===n-1||x(i)>W-dir-24?"end":"middle";g+=`<text x="${x(i)}" y="${H-6}" font-size="11.5" text-anchor="${an}" class="lc-eixo">${l}</text>`});
  const cs=k=>series[k].c||RANK_VIVO[k%3],gid="lg"+(++LC_N);
  // linha na cor viva, área em degradê embaixo da 1ª série e só o último ponto marcado
@@ -1911,7 +1926,7 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
 // esquerda para a direita por uma "cortina" da cor do fundo que corre por cima (.lc/.an-w ::after, só transform: não trava
 // quando a página ainda está montando); barras crescendo. Sem IntersectionObserver ou com "reduzir movimento", nada anima.
 // as barras de uma tabela ou de uma lista de porcentagens (.pb) crescem juntas, em cascata, quando o grupo aparece
-const AN_SEL=".lc,.lr-w,.hb,.bar:not(.hb-b),.pz,.pb,.tw,.rk-duplo:not(.lr)",AN_GRUPO=".tw,.pb";
+const AN_SEL=".lc,.lr-w,.hb,.bar:not(.hb-b),.pz,.pb,.tw,.rk-duplo:not(.lr),.vb",AN_GRUPO=".tw,.pb";
 const AN_IO=window.IntersectionObserver&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;AN_IO.unobserve(e.target);anJoga(e.target)}),{threshold:.35,rootMargin:"0px 0px -40px 0px"}):null;
 // cor da "cortina" que revela as linhas: o fundo do quadro onde o gráfico está; começa depois dos números do eixo
 function anFundo(el){if(!el.classList.contains("an-w")&&!el.classList.contains("lc"))return;const ax=el.querySelector("svg[data-ax]");if(ax)el.style.setProperty("--an-x",ax.dataset.ax+"px");
@@ -1995,7 +2010,7 @@ const REGV={N:124.8e9,NE:402.6e9,CO:213.4e9,SE:615.2e9,S:149.7e9};
 const CMP={desp:["Despesas",REGV,brl],pc:["Gasto por habitante",{N:712,NE:1042,CO:968,SE:1824,S:1236},v=>"R$ "+nf(v)],contratos:["Contratos",{N:18420,NE:61230,CO:29880,SE:104510,S:47390},nf],obras:["Obras",{N:1210,NE:3480,CO:1650,SE:4120,S:2020},nf]};
 function vbars(obj,fmt){const W=460,H=190,ks=Object.keys(REG);const mx=Math.max(...ks.map(k=>obj[k]));const bw=58,gap=(W-bw*5)/5;
 const pos=rankPos(ks.map(k=>[k,obj[k]]));
-return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Comparativo entre regiões">${ks.map((k,i)=>{const v=obj[k],h=v/mx*120,x=gap/2+i*(bw+gap),y=150-h;return`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${rankCor(pos[i],ks.length)}"><title>${REG[k]}: ${fmt(v)}</title></rect><text x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="var(--ink2)"${pos[i]<3?' font-weight="600"':""}>${fmt(v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${REG[k]}</text>`}).join("")}<line x1="0" x2="${W}" y1="150.5" y2="150.5" stroke="var(--line)"/></svg>`}
+return`<div class="vb"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Comparativo entre regiões">${ks.map((k,i)=>{const v=obj[k],h=v/mx*120,x=gap/2+i*(bw+gap),y=150-h;return`<rect class="vb-r" style="--d:${(i*.12).toFixed(2)}s" x="${x}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${rankCor(pos[i],ks.length)}"><title>${REG[k]}: ${fmt(v)}</title></rect><text class="vb-t" style="--d:${(.9+i*.12).toFixed(2)}s" x="${x+bw/2}" y="${y-7}" text-anchor="middle" font-size="11" fill="var(--ink2)"${pos[i]<3?' font-weight="600"':""}>${fmt(v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle" font-size="11.5" fill="var(--ink)">${REG[k]}</text>`}).join("")}<line x1="0" x2="${W}" y1="150.5" y2="150.5" stroke="var(--line)"/></svg></div>`}
 function ring(items,center,sub){const cp=coresPizza(items);items.forEach((it,k)=>it[2]=cp[k]);const tot=items.reduce((a,b)=>a+b[1],0);const r=50,C=2*Math.PI*r;let off=0;
 const segs=items.map(it=>{const len=it[1]/tot*C;const el=`<circle r="${r}" cx="64" cy="64" fill="none" stroke="${it[2]}" stroke-width="12" stroke-dasharray="${Math.max(0,len-2)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 64 64)"/>`;off+=len;return el}).join("");
 const mid="pzm"+(++LC_N);
@@ -2659,11 +2674,11 @@ mount(){const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
   const ehTrib=()=>casa[0]==="t"||casa==="ministros";
   const mini=()=>{const trib=ehTrib();const realC=typeof COMP_REAL!=="undefined"&&COMP_REAL&&COMP_REAL[casa]&&Object.keys(COMP_REAL[casa].partidos).length?COMP_REAL[casa]:null;
    const semMapa=trib||!!realC&&(!realC.por_uf||casa==="presidente");$("#pmpart").disabled=semMapa;$("#btnMapaP").disabled=semMapa;$("#pmpart").closest(".psel").style.display=semMapa?"none":"";$("#btnMapaP").hidden=semMapa;
-   if(casa==="ministros"||trib){$("#hemiT").textContent=casa==="ministros"?"Ministros de Estado":COLEGIADOS[+casa.slice(1)].n;const h=hemiIndicados(casa);$("#hemiMini").innerHTML=h.html+dicaHemi();ligarHemiciclo($("#hemiMini"),h.lista);$("#pmapcard").hidden=true;return}
+   if(casa==="ministros"||trib){$("#hemiT").textContent=casa==="ministros"?"Ministros de Estado":COLEGIADOS[+casa.slice(1)].n;const h=hemiIndicados(casa);XF("#hemiMini").innerHTML=h.html+dicaHemi();ligarHemiciclo($("#hemiMini"),h.lista);$("#pmapcard").hidden=true;return}
    $("#hemiT").textContent=CASAS[casa].n+(realC?" · dados oficiais":"");
-   if(realC){const g=Object.entries(realC.partidos).map(([p,n])=>[p,n,corSigla(p)]);const T=g.reduce((s,x)=>s+x[1],0);$("#hemiMini").innerHTML=hemiciclo(g,{w:320,h:170,dot:T<=30?9:undefined})+`<div class="hleg">${g.slice(0,12).map(x=>`<span><i style="background:${x[2]}"></i>${esc(x[0])}<b>${x[1]}</b></span>`).join("")}${g.length>12?`<span class="muted">+${g.length-12} partidos</span>`:""}</div>`;$("#pmapcard").hidden=true;foco=-1;
+   if(realC){const g=Object.entries(realC.partidos).map(([p,n])=>[p,n,corSigla(p)]);const T=g.reduce((s,x)=>s+x[1],0);XF("#hemiMini").innerHTML=hemiciclo(g,{w:320,h:170,dot:T<=30?9:undefined})+`<div class="hleg">${g.slice(0,12).map(x=>`<span><i style="background:${x[2]}"></i>${esc(x[0])}<b>${x[1]}</b></span>`).join("")}${g.length>12?`<span class="muted">+${g.length-12} partidos</span>`:""}</div>`;$("#pmapcard").hidden=true;foco=-1;
     if(typeof hemiReal==="function")hemiReal(casa);$("#pmpart").innerHTML='<option value="-1">Todos os partidos</option>'+Object.keys(realC.partidos).map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join("")}
-   else $("#hemiMini").innerHTML=miniCamara(casa)};
+   else XF("#hemiMini").innerHTML=miniCamara(casa)};
   const mapa=()=>{if($("#pmapcard").hidden)return;{const rc=typeof COMP_REAL!=="undefined"&&COMP_REAL&&COMP_REAL[casa]&&COMP_REAL[casa].por_uf?COMP_REAL[casa]:null;if(rc&&typeof mapaReal==="function"){mapaReal(casa,rc,foco,PZ);return}}$("#pmapT").textContent=`Mapa dos partidos: ${CASAS[casa].n}${foco>=0?", "+PNOMES[foco]:""}`;$("#pmap").innerHTML=mapaPartidos(casa,foco);bindMap($("#pmap"),null,null,(u,el)=>inlineZoomIn(PZ,u,el));
    const v=cadeirasBR(casa),T=v.reduce((a,b)=>a+b,0);$("#pmapside").innerHTML=foco<0?`<div class="small muted" style="margin-bottom:6px">${nf(T)} ${CASAS[casa].exec?(casa==="prefeito"?"prefeituras":casa==="presidente"?"presidente":"governadores"):"cadeiras"} no total</div>${legendaPartidos(v,T)}<p class="small muted" style="margin:8px 0 0">${casa==="governador"?"Em cada estado aparece o partido do governador.":casa==="presidente"?"O partido do Presidente aparece em Brasília.":"Em cada estado aparece o partido com mais "+(casa==="prefeito"?"prefeituras":"cadeiras")+"; o número é o total do estado."}</p>`:`<div class="pdest"><i style="background:${PCOL[foco]}"></i><div><span>${logoPartido(PNOMES[foco],16)} ${PNOMES[foco]}</span><b>${v[foco]}</b><small>de ${nf(T)} ${CASAS[casa].un} (${pct(v[foco]/T*100)})</small></div></div><div class="small muted" style="margin:12px 0 4px">Estados com mais cadeiras</div>${UFS.map(u=>[u,cadeiras(u.uf,casa)[foco]]).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([u,n])=>`<div class="ptop"><span>${bandeiraImg(u.uf,"flag flag-sm")}${u.nome}</span><b>${n}</b></div>`).join("")}`};
   $("#pcasa").value=casa;mini();$("#pcasa").onchange=e=>{casa=e.target.value;sit="Todos";uf="";pt="";$("#ppt").value="";$("#puf").value="";$("#pmapcard").hidden=true;mini();lista()};$("#pmpart").onchange=e=>{foco=/^-?\d+$/.test(e.target.value)?+e.target.value:e.target.value;mapa()};
@@ -3245,10 +3260,10 @@ function mapaValores(vals,fmt,{sel,escala=SCALE}={}){const F=faixasDe(Object.val
 /* dois gráficos lado a lado: os 5 maiores e os 5 menores. Os 3 primeiros de cada um em cor forte, os outros 2 na mesma
    cor mais apagada. "Primeiro" no gráfico dos menores é o menor valor. */
 const COR_ALTO="#DC2626",COR_BAIXO="#16A34A";
-function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,corBaixo=COR_BAIXO,attr="",href=u=>"#/uf/"+u,n=5}={}){
+function rankDuplo(vals,fmt,{alto="Maiores",baixo="Menores",corAlto=COR_ALTO,corBaixo=COR_BAIXO,attr="",href=u=>"#/uf/"+u,n=5,sub=null}={}){
  const o=UFS.filter(u=>vals[u.uf]!=null).sort((a,b)=>vals[b.uf]-vals[a.uf]);if(!o.length)return"";
  const graf=(t,lista,cor)=>{const mx=Math.max(...o.map(u=>Math.abs(vals[u.uf])))||1;
-  return`<div class="rk"><h4 class="rk-t"><i style="background:${cor}"></i>${t}</h4>${lista.map((u,i)=>`<div class="rk-l${i<3?" rk-top":""}"><span class="rk-p">${i+1}º</span><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a><div class="rk-b"><i style="width:${Math.max(3,Math.abs(vals[u.uf])/mx*100)}%;background:${cor};opacity:${i<3?1:.38}"></i></div><b>${fmt(vals[u.uf])}</b></div>`).join("")}</div>`};
+  return`<div class="rk"><h4 class="rk-t"><i style="background:${cor}"></i>${t}</h4>${lista.map((u,i)=>`<div class="rk-l${i<3?" rk-top":""}"><span class="rk-p">${i+1}º</span><a href="${href(u.uf)}"${attr?` ${attr}="${u.uf}"`:""}>${esc(u.nome)}</a>${sub&&sub(u.uf)?`<small class="rk-sub">${sub(u.uf)}</small>`:""}<div class="rk-b"><i style="width:${Math.max(3,Math.abs(vals[u.uf])/mx*100)}%;background:${cor};opacity:${i<3?1:.38}"></i></div><b>${fmt(vals[u.uf])}</b></div>`).join("")}</div>`};
  return`<div class="rk-duplo">${graf(alto,o.slice(0,n),corAlto)}${graf(baixo,o.slice(-n).reverse(),corBaixo)}</div>`}
 /* gráficos em linha (evolução por ano): 5 maiores e 5 menores. As 3 primeiras linhas em cores vivas e grossas, as
    outras 2 finas e apagadas; o rótulo de cada linha fica no fim dela. "Primeiro" no gráfico dos menores é o menor valor. */
@@ -3271,10 +3286,10 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
 // serie: {UF:{ano:valor}}; anos em ordem; vals: valor de hoje (escolhe os 5 maiores e os 5 menores). Sem 2 anos ou mais, volta às barras.
 function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menores",coresAlto=LIN_ALTO,coresBaixo=LIN_BAIXO,attr="",href=u=>"#/uf/"+u,rot=a=>a,n=5,nota=""}=o;
  const ok=UFS.filter(u=>vals[u.uf]!=null&&serie&&serie[u.uf]&&Object.keys(serie[u.uf]).length>=2).sort((a,b)=>vals[b.uf]-vals[a.uf]);
- if(!anos||anos.length<2||ok.length<n*2)return rankDuplo(vals,fmt,{alto,baixo,corAlto:coresAlto[0],corBaixo:coresBaixo[0],attr,href,n});
+ if(!anos||anos.length<2||ok.length<n*2)return rankDuplo(vals,fmt,{alto,baixo,corAlto:coresAlto[0],corBaixo:coresBaixo[0],attr,href,n,sub:o.sub});
  const p={attr,href,rot,vals},corpo=an=>`<div class="rk-duplo lr">${linhasGraf(alto,ok.slice(0,n),serie,an,coresAlto,fmt,p)}${linhasGraf(baixo,ok.slice(-n).reverse(),serie,an,coresBaixo,fmt,p)}</div>`;
  // botões de período (10 anos / 5 anos / Tudo) quando a série tem mais anos do que o corte
- const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)?[]:[[10,"10 anos"],[5,"5 anos"]].filter(([m])=>{const c=yr.filter(y=>y>=u-m).length;return c<anos.length&&c>=3});
+ const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)?[]:[[10,"10 anos"],[5,"5 anos"],[1,"1 ano"]].filter(([m])=>{const c=yr.filter(y=>y>=u-m).length;return c<anos.length&&c>=2});
  let chips="";if(ops.length){const id="ld"+(++LC_N);LD_REG.set(id,an=>corpo(an));LD_REG.set(id+"a",anos);
   chips=`<div class="seg lc-per" data-ldp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Tudo"]].map(([m,t])=>`<button type="button" data-m="${m}" class="${m?"":"on"}">${t}</button>`).join("")}</div>`;
   return`${chips}<div data-ld="${id}">${corpo(anos)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
@@ -3301,7 +3316,7 @@ function maisBtn(id){return`<div style="text-align:center;margin-top:12px"><butt
 function listaPaginada({url,alvo,mais,render,vazio,limite=50,aoCarregar}){let off=0,tot=0,itens=[];
  const pg=async(reset)=>{if(!$(alvo))return;if(reset){off=0;itens=[];$(alvo).innerHTML=rload()}
   try{const sep=url().includes("?")?"&":"?";const r=await apiGet(url()+sep+"limit="+limite+"&offset="+off);if(!$(alvo))return;tot=r.total;itens=itens.concat(r.itens);off+=r.itens.length;
-   let h;TBL.todos=true;try{h=itens.length?render(itens,tot):rvazio(vazio)}finally{TBL.todos=false}$(alvo).innerHTML=h;rowLinks();const b=$(mais);if(b)b.hidden=off>=tot;aoCarregar&&aoCarregar(itens,tot)}
+   let h;TBL.todos=true;try{h=itens.length?render(itens,tot):rvazio(vazio)}finally{TBL.todos=false}$(alvo).innerHTML=h;if(off===r.itens.length)surgeSuave($(alvo));rowLinks();const b=$(mais);if(b)b.hidden=off>=tot;aoCarregar&&aoCarregar(itens,tot)}
   catch(e){const el=$(alvo);if(el)el.innerHTML=rerro(e)}};
  const b=$(mais);if(b)b.onclick=()=>pg(false);return pg}
 const debounce=(f,ms=350)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}};
@@ -3588,11 +3603,11 @@ function anosChart(pts,fmt=curto){return pts.length>=2?lineChart([{n:"Valor",v:p
 /* ---------- Gastos públicos: despesa por função (SICONFI) ---------- */
 const _gastos=P.gastos;
 P.gastos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Gastos públicos</h1><p>Quanto a União, cada governo estadual e cada capital gastaram em saúde, educação, previdência e nas demais funções.</p></div></div>
-<div class="panel"><div class="segj-grupos" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<select id="gsmun" data-pill="Cidade" hidden></select><select id="gsano" data-pill="Ano"></select></div></div>
+<div class="panel"><div class="segj-grupos" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<span id="gsmunw" class="busca-cid" hidden><input id="gsmun" list="gsmunl" placeholder="Pesquise a cidade pelo nome" autocomplete="off" aria-label="Cidade"><datalist id="gsmunl"></datalist></span><select id="gsano" data-pill="Ano"></select></div></div>
 <div id="gsres" class="mt">${rload()}</div>${RSRC("SICONFI (Tesouro Nacional), RREO Anexo 02: despesa liquidada por função")}`,
-mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[];$("#gsuf").hidden=true;
+mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={};$("#gsuf").hidden=true;
  const anosDo=()=>{if(f.esfera==="M")return anosMun;const e=entes.find(x=>x.esfera===f.esfera&&(f.esfera==="U"||x.uf===f.uf));return e?e.anos:[]};
- const cidades=async()=>{$("#gsmun").innerHTML="<option value=''>Carregando cidades…</option>";try{const r=await apiGet("/municipios?uf="+f.uf+"&limit=1000");$("#gsmun").innerHTML="<option value=''>Escolha a cidade</option>"+r.itens.map(m=>`<option value="${m.codigo_ibge}">${esc(m.nome)}</option>`).join("")}catch(e){$("#gsmun").innerHTML="<option value=''>Sem cidades coletadas</option>"}};
+ const cidades=async()=>{$("#gsmun").placeholder="Carregando cidades…";try{const r=await apiGet("/municipios?uf="+f.uf+"&limit=1000");CIDS=Object.fromEntries(r.itens.map(m=>[snapNorm(m.nome),m.codigo_ibge]));$("#gsmunl").innerHTML=r.itens.map(m=>`<option value="${esc(m.nome)}"></option>`).join("");$("#gsmun").placeholder=`Pesquise entre ${nf(r.itens.length)} cidades`}catch(e){$("#gsmun").placeholder="Sem cidades coletadas"}};
  const anosCidade=async()=>{anosMun=[];if(!f.municipio)return;try{anosMun=(await apiGet("/gastos/evolucao?esfera=M&municipio="+f.municipio)).map(x=>x.ano).reverse()}catch(e){}};
  const carregar=async()=>{const anos=anosDo();$("#gsano").innerHTML=anos.map(x=>`<option>${x}</option>`).join("")||"<option value=''>Sem dados</option>";if(!anos.includes(+f.ano))f.ano=anos[0]||"";$("#gsano").value=f.ano;
   if(f.esfera!=="U"&&!f.uf){$("#gsres").innerHTML=`<div class="panel">${rvazio("Escolha o estado.")}</div>`;return}
@@ -3607,7 +3622,7 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[];$("#gsu
    <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${p>=10?"var(--c1)":"#71A2F9"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
   catch(e){$("#gsres").innerHTML=rerro(e)}};
  apiGet("/gastos/entes").then(es=>{entes=es;if(!es.length){demoComAviso(_gastos,a,"Nenhum gasto por função coletado ainda (coleta siconfi-despesas-funcao).");return}carregar()}).catch(e=>{$("#gsres").innerHTML=rerro(e)});
- $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmun").hidden=f.esfera!=="M";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").onchange=async e=>{f.municipio=e.target.value;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);
+ $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmunw").hidden=f.esfera!=="M";$("#gsmun").value="";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").oninput=async e=>{const cod=CIDS[snapNorm(e.target.value.trim())];if(!cod||cod===f.municipio)return;f.municipio=cod;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);
 
 /* ---------- Órgãos federais ---------- */
 const _orgaos=P.orgaos,_orgao=P.orgao;
@@ -3871,7 +3886,7 @@ const ECO=[["ipca_12m","Inflação (IPCA 12 meses)",pctF],["selic","Selic",pctF]
 P.indicadores=(...a)=>{const r=_ind3(...a);if(!API.on)return r;
 return{html:`<div id="ecoReal"></div>`+r.html,mount(){r.mount&&r.mount();apiGet("/economia?nomes="+ECO.map(x=>x[0]).join(",")).then(e=>{const s=e.series,b=$("#ecoReal");if(!b)return;const tem=ECO.filter(x=>s[x[0]]);if(!tem.length)return;
  b.innerHTML=`<div class="panel" style="margin-bottom:18px"><h2>Economia: dados oficiais</h2><div class="kpis kpis-c" id="ecoK">${tem.map((x,i)=>`<button class="kpi ecok ${i?"":"on"}" data-n="${x[0]}" type="button"><span>${x[1]}</span><strong>${x[2](s[x[0]].ultimo.valor)}</strong><em>${s[x[0]].ultimo.data.slice(5,7)}/${s[x[0]].ultimo.data.slice(0,4)}</em></button>`).join("")}</div><div id="ecoG" class="mt"></div>${RSRC(e.fonte)}</div>`;
- let cur=tem[0][0],per=9999;const PERS=[[9999,"Tudo desde 1985"],[360,"30 anos"],[120,"10 anos"],[60,"5 anos"],[12,"1 ano"],[6,"6 meses"]];
+ let cur=tem[0][0],per=9999;const PERS=[[120,"10 anos"],[60,"5 anos"],[12,"1 ano"],[6,"6 meses"],[9999,"Tudo desde 1985"]];
  const mesN=d=>+d.slice(0,4)*12+(+d.slice(5,7)-1);
  const des=n=>{cur=n;const x=ECO.find(z=>z[0]===n),h=s[n].historico,u=h.length?mesN(h[h.length-1].data):0,pts=h.filter(p=>mesN(p.data)>=u-per),ini=pts[0]?pts[0].data.slice(0,4):"";$("#ecoG").innerHTML=`<div class="segj-w" style="margin-bottom:8px"><span class="segj-l">Período</span><div class="seg segj" id="ecoP">${PERS.map(([k,t])=>`<button data-p="${k}" class="${k===per?"on":""}">${t}</button>`).join("")}</div></div><h3 class="rh3">${x[1]}: ${ini?`de ${ini} até hoje`:"últimos anos"}</h3>`+serieChart(h,{fmt:x[2],n:per,periodo:false});
   document.querySelectorAll("#ecoP button").forEach(b=>b.onclick=()=>{per=+b.dataset.p;des(cur)});document.querySelectorAll(".ecok").forEach(k=>k.classList.toggle("on",k.dataset.n===n))};
@@ -4192,11 +4207,11 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   // regiões
   const regs=Object.keys(REG).map(r=>{const us=UFS.filter(u=>u.reg===r&&d.estados[u.uf]);const soma={};let T=0;us.forEach(u=>{const s=d.estados[u.uf];T+=s.votos_validos_nominais;(chave()?s.candidatos:s.partidos).forEach(x=>{const k=chave()?x.sq_candidato:x.partido;const a=soma[k]=soma[k]||{x,votos:0};a.votos+=x.votos})});
    const top=Object.entries(soma).sort((a,b)=>b[1].votos-a[1].votos).slice(0,3);return{r,T,top,ganhou:us.filter(u=>{const v=venc(d.estados[u.uf]);return v&&top[0]&&v[0]===top[0][0]}).length,n:us.length}}).filter(x=>x.T);
-  $("#elreg").innerHTML=`<h3 class="rh3" style="margin-top:16px">Por região</h3><div class="grid g5 elregs">${regs.map(g=>`<div class="elregc"><b>${REG[g.r]}</b>${g.top.map(([k,o])=>`<div class="elrow sm"><i style="background:${corDe(k)}"></i><span>${nomeK(o.x)}</span><b>${pctN(o.votos/g.T*100)}</b></div>`).join("")}<small class="muted">${chave()?`venceu em ${g.ganhou} de ${g.n} estados`:`mais votado em ${g.ganhou} de ${g.n} estados`}</small></div>`).join("")}</div>`;
+  XF("#elreg").innerHTML=`<h3 class="rh3" style="margin-top:16px">Por região</h3><div class="grid g5 elregs">${regs.map(g=>`<div class="elregc"><b>${REG[g.r]}</b>${g.top.map(([k,o])=>`<div class="elrow sm"><i style="background:${corDe(k)}"></i><span>${nomeK(o.x)}</span><b>${pctN(o.votos/g.T*100)}</b></div>`).join("")}<small class="muted">${chave()?`venceu em ${g.ganhou} de ${g.n} estados`:`mais votado em ${g.ganhou} de ${g.n} estados`}</small></div>`).join("")}</div>`;
   // abaixo do mapa: tabela do país
-  $("#elbr").innerHTML=chave()?`<h2>Resultado no país <small>${ELN[f.cargo]} · ${f.turno}º turno ${f.ano}</small></h2>${table([["Candidato",c=>`<b style="font-weight:600">${lcand(c,f.ano,f.cargo)}</b>${c.numero?` <span class="small muted">${esc(c.numero)}</span>`:""}`],["Partido",c=>sigla(c.partido)],["Votos",c=>`${nf(c.votos)} <span class="small muted">${pctN(c.percentual)}</span>`,"n"],["Resultado",c=>esc(tit(c.situacao||""))]],br.candidatos)}`
+  XF("#elbr").innerHTML=chave()?`<h2>Resultado no país <small>${ELN[f.cargo]} · ${f.turno}º turno ${f.ano}</small></h2>${table([["Candidato",c=>`<b style="font-weight:600">${lcand(c,f.ano,f.cargo)}</b>${c.numero?` <span class="small muted">${esc(c.numero)}</span>`:""}`],["Partido",c=>sigla(c.partido)],["Votos",c=>`${nf(c.votos)} <span class="small muted">${pctN(c.percentual)}</span>`,"n"],["Resultado",c=>esc(tit(c.situacao||""))]],br.candidatos)}`
    :(MAJ.includes(f.cargo)&&f.cargo!=="PREFEITO"?`<h2>${f.cargo==="SENADOR"?"Senadores mais votados":"Governadores mais votados"} em cada estado <small>${f.turno}º turno ${f.ano}</small></h2>${table([["Estado",r=>`<a href="#/uf/${r.uf}">${esc(UF[r.uf].nome)}</a>`],["Candidato",r=>`<b style="font-weight:600">${lcand({...r.c,uf:r.uf},f.ano,f.cargo)}</b>`],["Partido",r=>sigla(r.c.partido)],["Votos",r=>`${nf(r.c.votos)} <span class="small muted">${pctN(r.c.percentual)}</span>`,"n"]],UFS.filter(u=>d.estados[u.uf]&&d.estados[u.uf].candidatos&&d.estados[u.uf].candidatos[0]).map(u=>({uf:u.uf,c:d.estados[u.uf].candidatos[0]})))}<p class="small muted">Toque no nome para abrir o perfil. Em cada estado, os nomes de todos os candidatos aparecem ao tocar no mapa.</p><div style="height:22px"></div>`:"")+`<h2>Votos por partido no país <small>${ELN[f.cargo]} · ${f.ano}</small></h2>${table([["Partido",x=>`${sigla(x.partido)} <span class="small muted">${esc(PARTIDO_NOME[x.partido]||"")}</span>`],["Votos",x=>`${nf(x.votos)} <span class="small muted">${pctN(x.percentual)}</span>`,"n"],["Eleitos",x=>nf(x.eleitos||0),"n"]],br.partidos)}<p class="small muted">Votos nominais nos candidatos de cada partido, somados nos estados.</p>`};
- const carregar=async()=>{$("#elmap").innerHTML=rload();$("#elside").innerHTML="";$("#elreg").innerHTML="";$("#elbr").innerHTML="";
+ const carregar=async()=>{if(!$("#elmap svg")){$("#elmap").innerHTML=rload();$("#elside").innerHTML="";$("#elreg").innerHTML="";$("#elbr").innerHTML=""}
   try{dados=await estadosEleicao(f.ano,f.cargo,f.turno);f.modo=f.cargo==="PRESIDENTE"&&dados.brasil.candidatos.length?"cand":"part";desenhar()}
   catch(e){dados=null;$("#elT").textContent=`${ELN[f.cargo]||f.cargo} · ${f.turno}º turno de ${f.ano}`;$("#elSub").textContent="";XF("#elmap").innerHTML=rvazio(e.status===404?(f.turno===2?"Não houve 2º turno para este cargo, ou o resultado ainda não foi publicado pelo TSE.":"Resultado ainda não coletado."):esc(e.message||e))}};
  const segs=async()=>{const cs=(await cargosEleicao(f.ano)).filter(c=>c!=="VEREADOR");if(!cs.length){XF("#elmap").innerHTML=rvazio("Sem resultados coletados para "+f.ano+".");return}
@@ -4361,15 +4376,40 @@ demoComAviso=function(fn,args,msg){if(!API.on){const r=fn(...args);$("#view").in
  $("#view").innerHTML=`<div class="ph"><div><h1>${t}</h1>${s?`<p>${s}</p>`:""}</div></div><div class="panel"><p style="margin:0">${msg}</p><p class="small muted" style="margin:8px 0 0">Esta tela não mostra números de exemplo: aparece quando a fonte oficial for coletada. Veja o que já tem dados em <a href="#/fontes">Fontes e metodologia</a> e os gastos por área em <a href="#/gastos">Gastos públicos</a>.</p></div>`};
 /* Relatórios na cópia dos dados: cada lista vira CSV no próprio navegador */
 const REL_NOMES={"/parlamentares":"Parlamentares (Câmara, Senado e Assembleias)","/votacoes":"Votações do Congresso","/proposicoes":"Proposições apresentadas","/legislacao":"Leis e normas federais","/contratos":"Contratos publicados no PNCP","/obras":"Obras com recursos federais","/candidatos":"Candidatos eleitos (TSE)","/municipios":"Municípios: população, PIB e CAPAG","/empresas":"Fornecedores com cadastro na Receita","/dividas/devedores":"Maiores devedores da União (PGFN)","/recuperacao-judicial":"Empresas em recuperação judicial e falências"};
-function csvDe(itens){const cols=[...new Set(itens.flatMap(o=>Object.keys(o).filter(k=>o[k]==null||typeof o[k]!=="object")))];const c=v=>v==null?"":/[;"\n]/.test(String(v))?`"${String(v).replace(/"/g,'""')}"`:String(v);
- return"﻿"+cols.join(";")+"\n"+itens.map(o=>cols.map(k=>c(o[k])).join(";")).join("\n")}
+// colunas de cada arquivo: só as que interessam, em ordem de leitura e com nome em português (o resto, como id interno, fica de fora)
+const REL_COLS={"/parlamentares":[["nome","Nome"],["partido","Partido"],["uf","UF"],["casa","Casa"],["em_exercicio","Em exercício"],["email","E-mail"]],
+ "/votacoes":[["data","Data"],["casa","Casa"],["orgao","Órgão"],["descricao","Descrição"],["resultado","Resultado"],["secreta","Votação secreta"]],
+ "/proposicoes":[["sigla_tipo","Tipo"],["numero","Número"],["ano","Ano"],["casa","Casa"],["ementa","Ementa"],["situacao","Situação"],["data_apresentacao","Data de apresentação"]],
+ "/legislacao":[["tipo","Tipo"],["numero","Número"],["ano","Ano"],["data","Data"],["ementa","Ementa"],["esfera","Esfera"],["uf","UF"],["url_texto","Link do texto"]],
+ "/contratos":[["data_assinatura","Data de assinatura"],["orgao","Órgão"],["esfera","Esfera"],["uf","UF"],["municipio","Município"],["fornecedor","Fornecedor"],["cnpj_fornecedor","CNPJ do fornecedor"],["objeto","Objeto"],["valor","Valor (R$)"],["vigencia_fim","Fim da vigência"],["numero_controle","Número de controle"],["cnpj_orgao","CNPJ do órgão"]],
+ "/obras":[["nome","Obra"],["uf","UF"],["situacao","Situação"],["tipo","Tipo"],["executor","Executor"],["valor_previsto","Valor previsto (R$)"],["valor_federal","Valor federal (R$)"],["inicio_previsto","Início previsto"],["fim_previsto","Fim previsto"],["natureza","Natureza"],["especie","Espécie"],["descricao","Descrição"]],
+ "/candidatos":[["ano","Ano"],["nome","Nome"],["nome_urna","Nome de urna"],["partido","Partido"],["cargo","Cargo"],["uf","UF"],["unidade","Unidade"],["resultado","Resultado"],["situacao_candidatura","Situação da candidatura"],["numero","Número"],["genero","Gênero"],["instrucao","Instrução"],["ocupacao","Ocupação"]],
+ "/municipios":[["nome","Cidade"],["uf","UF"],["codigo_ibge","Código IBGE"],["populacao","População"],["populacao_ano","Ano da população"],["pib","PIB (R$)"],["pib_ano","Ano do PIB"],["capag","Nota CAPAG"],["microrregiao","Microrregião"]],
+ "/empresas":[["razao_social","Razão social"],["nome_fantasia","Nome fantasia"],["documento","CNPJ"],["uf","UF"],["municipio","Município"],["setor","Setor"],["cnae_descricao","Atividade"],["situacao","Situação"],["socios","Sócios"],["total_contratos","Total em contratos públicos (R$)"]],
+ "/recuperacao-judicial":[["razao_social","Razão social"],["nome_fantasia","Nome fantasia"],["documento","CNPJ"],["tipo","Situação"],["uf","UF"],["municipio","Município"],["porte","Porte"],["capital_social","Capital social (R$)"],["cnae_descricao","Atividade"],["data_situacao_especial","Data da situação"],["situacao_cadastral","Situação no CNPJ"]]};
+const REL_GRUPOS=[["Congresso e leis","Quem são os parlamentares, o que votaram, os projetos e as leis.",["/parlamentares","/votacoes","/proposicoes","/legislacao"]],["Eleições","Quem foi eleito (TSE).",["/candidatos"]],
+ ["Contratos, obras e empresas","Para quem o governo paga e o que ele constrói.",["/contratos","/obras","/empresas"]],["Dívidas e empresas em crise","Quem deve à União e quem está em recuperação judicial ou faliu.",["/dividas/devedores","/recuperacao-judicial"]],["Cidades","População, PIB e saúde fiscal de cada município.",["/municipios"]]];
+const REL_TXT={F:"Federal",E:"Estadual",M:"Municipal",camara:"Câmara dos Deputados",senado:"Senado Federal"};
+function csvDe(itens,cam){const bonito=k=>k.replace(/_/g," ").replace(/^./,x=>x.toUpperCase());
+ let cols=(REL_COLS[cam]||[]).filter(([k])=>itens.some(o=>o[k]!=null));
+ if(!cols.length){const ks=[...new Set(itens.flatMap(o=>Object.keys(o).filter(k=>(o[k]==null||typeof o[k]!=="object")&&!/^(id|registro_id|id_externo|atualizado_em|normalizado_em)$/.test(k))))];cols=ks.map(k=>[k,bonito(k)])}
+ const v=x=>{if(x==null)return"";if(typeof x==="boolean")return x?"Sim":"Não";if(typeof x==="number")return Number.isInteger(x)?String(x):x.toFixed(2).replace(".",",");
+  x=String(x);if(/^\d{4}-\d{2}-\d{2}/.test(x))return x.slice(8,10)+"/"+x.slice(5,7)+"/"+x.slice(0,4);return REL_TXT[x]||x},
+  c=x=>{x=v(x).replace(/\s+/g," ").trim();return/[;"]/.test(x)?`"${x.replace(/"/g,'""')}"`:x};
+ return"\ufeff"+cols.map(([,t])=>t).join(";")+"\n"+itens.map(o=>cols.map(([k])=>c(o[k])).join(";")).join("\n")}
+const REL_FILTRO={ordenar:{valor:"maiores valores",data:"mais recentes"},eleitos:{true:"só eleitos"},tipo:null};
+const relRotulo=b=>{const l=Object.entries(b).map(([k,v])=>k==="ordenar"?(REL_FILTRO.ordenar[v]||v):k==="eleitos"?(v==="true"||v===true?"só eleitos":""):k==="tipo"?({recuperacao_judicial:"Recuperação judicial",falencia:"Falências"}[v]||v):k==="cargo"?String(v).split(",").map(c=>tit(c.trim())).join(" e ").replace("Deputado Estadual e Deputado Distrital","Deputados estaduais e distritais"):k==="casa"?(REL_TXT[v]||v):k==="situacao"?v:`${k}: ${v}`).filter(Boolean);return l.join(" · ")||"Todas (as mais recentes da cópia)"};
+const relArquivo=(cam,b)=>"brasilplus_"+(REL_NOMES[cam]||cam).split("(")[0].normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/-$/,"")+(Object.keys(b).length?"_"+relRotulo(b).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/-$/,""):"")+".csv";
 {const _r5=P.relatorios;P.relatorios=(...a)=>{if(!(API.on&&API.snap))return _r5(...a);const m=SNAP.m||{},bases=[];
- Object.entries(m.bases||{}).forEach(([cam,bs])=>{if(!REL_NOMES[cam])return;bs.forEach(b=>{const k=snapChave(cam,b),t=(m.totais||{})[k];bases.push({cam,b,k,n:t?t.na_copia:null,tot:t?t.no_banco:null})})});
- return{html:`<div class="ph"><div><h1>Relatórios e Dados</h1><p>Baixe as listas da cópia dos dados oficiais em CSV (abre no Excel ou no Google Planilhas).</p></div></div>
- <div class="panel">${table([["Conjunto de dados",x=>`<b style="font-weight:600">${esc(REL_NOMES[x.cam])}</b><div class="small muted">${esc(Object.values(x.b).join(" · "))}</div>`],["Linhas",x=>x.n==null?"—":nf(x.n)+(x.tot&&x.tot>x.n?` <span class="small muted">de ${nf(x.tot)}</span>`:""),"n"],["Arquivo",x=>`<button class="btn" type="button" data-csv="${esc(x.k)}">Baixar CSV</button>`]],bases)}
- <p class="small muted" style="margin:10px 0 0">Cópia gerada em ${esc(dataCopia())}. Separador ponto e vírgula, acentos em UTF-8. Listas grandes têm na cópia uma parte das linhas; pelo servidor BRASIL+ saem completas.</p></div>`,
- mount(){document.querySelectorAll("#view [data-csv]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{const v=await snapLer(b.dataset.csv);const it=(v&&v.itens)||[];
-   const nome="brasilplus"+b.dataset.csv.replace(/[^a-z0-9]+/gi,"_").replace(/_+$/,"")+".csv",blob=new Blob([csvDe(it)],{type:"text/csv;charset=utf-8"});
+ Object.entries(m.bases||{}).forEach(([cam,bs])=>{if(!REL_NOMES[cam])return;bs.forEach(b=>{const k=snapChave(cam,b),t=(m.totais||{})[k];bases.push({cam,b,k,n:t?t.na_copia:null,tot:t?t.no_banco:null,rot:relRotulo(b)})})});
+ const grupos=REL_GRUPOS.map(([t,d,cs])=>[t,d,bases.filter(x=>cs.includes(x.cam)&&x.n!==0).sort((x,y)=>cs.indexOf(x.cam)-cs.indexOf(y.cam))]).filter(g=>g[2].length);
+ return{html:`<div class="ph"><div><h1>Relatórios e Dados</h1><p>Baixe as listas da cópia dos dados oficiais. Os arquivos são CSV, abrem direto no Excel ou no Google Planilhas: colunas com nome em português, datas como dd/mm/aaaa e valores em reais.</p></div></div>
+ <div class="panel"><div class="filters" style="margin:0"><input id="relq" placeholder="Procurar um arquivo (ex.: contratos, obras, eleitos)" style="flex:1;min-width:200px" autocomplete="off"></div></div>
+ ${grupos.map(([t,d,l])=>`<div class="panel mt rel-g"><h2>${esc(t)}</h2><p class="small muted" style="margin:0 0 6px">${esc(d)}</p>${l.map(x=>`<div class="rel-l" data-t="${esc(snapNorm(REL_NOMES[x.cam]+" "+x.rot))}"><div class="rel-n"><b>${esc(REL_NOMES[x.cam])}</b><small>${esc(x.rot)}</small></div><span class="rel-q">${x.n==null?"":nf(x.n)+(x.n===1?" linha":" linhas")+(x.tot&&x.tot>x.n?` (de ${nf(x.tot)})`:"")}</span><button class="btn" type="button" data-csv="${esc(x.k)}" data-cam="${esc(x.cam)}" data-b='${esc(JSON.stringify(x.b))}'>Baixar</button></div>`).join("")}</div>`).join("")}
+ <p class="small muted" style="margin:10px 0 0">Cópia gerada em ${esc(dataCopia())}. Separador ponto e vírgula, acentos em UTF-8. Listas grandes têm na cópia uma parte das linhas; pelo servidor BRASIL+ saem completas.</p>`,
+ mount(){$("#relq").oninput=e=>{const q=snapNorm(e.target.value.trim());document.querySelectorAll(".rel-l").forEach(l=>l.hidden=!!q&&!l.dataset.t.includes(q));document.querySelectorAll(".rel-g").forEach(g=>g.hidden=![...g.querySelectorAll(".rel-l")].some(l=>!l.hidden))};
+  document.querySelectorAll("#view [data-csv]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{const v=await snapLer(b.dataset.csv);const it=(v&&v.itens)||[];
+   const nome=relArquivo(b.dataset.cam,JSON.parse(b.dataset.b||"{}")),blob=new Blob([csvDe(it,b.dataset.cam)],{type:"text/csv;charset=utf-8"});
    // dentro do visualizador do claude.ai o download passa pela confirmação dele; fora dele, link comum
    const dl=window.claude&&window.claude.use?await window.claude.use("downloads").catch(()=>null):null;
    if(dl){try{await dl.save({filename:nome,data:blob})}catch(e){if(e&&e.code!=="declined")toast(e.code==="rate_limited"?"Já há um download esperando confirmação.":"Download indisponível aqui.")}}
@@ -4520,12 +4560,16 @@ function diasPeriodo(oc){if(!oc)return null;if(oc.dias)return oc.dias;if(!oc.de|
  while(a<a2||(a===a2&&m<=m2)){n+=new Date(a,m,0).getDate();m++;if(m>12){m=1;a++}}return n||null}
 function segPorDia(e,d,uf){const o=e.ocorrencias||{},p=e.prisional||{},R=d.referencias||{},dias=diasPeriodo(R.ocorrencias),ref=segRefs(d);
  const fd=v=>v==null?"—":uf?(v<1?"menos de 1":nf(Math.round(v))):v>=10?nf(Math.round(v)):v.toLocaleString("pt-BR",{maximumFractionDigits:1});
- const it=SEG_DIA.filter(([k])=>dias&&o[k]).map(([k,t])=>`<div class="kpi"><span>${t}</span><strong>${fd(o[k]/dias)}</strong><em>por dia · ${nf(o[k])} em 12 meses</em></div>`);
  const sem=p.populacao?_dias(R.prisional):null;
- if(p.entradas&&sem)it.splice(2,0,`<div class="kpi"><span>Entram nas prisões</span><strong>${fd(p.entradas/sem)}</strong><em>por dia · ${ref.prisional}</em></div>`);
- if(p.saidas_temporarias&&sem)it.push(`<div class="kpi"><span>Saídas temporárias</span><strong>${fd(p.saidas_temporarias/sem)}</strong><em>por dia · ${nf(p.abandonos||0)} não voltaram no semestre</em></div>`);
- if(p.abandonos&&sem)it.push(`<div class="kpi"><span>Não voltaram para a prisão</span><strong>${fd(p.abandonos/sem)}</strong><em>por dia · ${ref.prisional}</em></div>`);
- return it.length?`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="kpis kpis-c kpis-dia">${it.join("")}</div>`:""}
+ // cada linha: nome, por dia, total no período
+ const oc=k=>{const t=(SEG_DIA.find(x=>x[0]===k)||[k,k])[1];return dias&&o[k]?[k==="mandados_cumpridos"?"Presos por mandado de prisão":t,o[k]/dias,`${nf(o[k])} em 12 meses`]:null};
+ const pr=(t,v,txt)=>sem&&v?[t,v/sem,txt]:null;
+ const GR=[["Mortes e violência",["homicidio_doloso","feminicidio","latrocinio","mortes_intervencao","tentativa_homicidio","estupro","estupro_vulneravel"].map(oc)],
+  ["Roubos, furtos e drogas",["roubo_veiculo","furto_veiculo","roubo_carga","trafico_drogas","armas_apreendidas"].map(oc)],
+  ["Prisões",[oc("mandados_cumpridos"),pr("Entram nas prisões",p.entradas,ref.prisional),pr("Saídas temporárias",p.saidas_temporarias,`${nf(p.abandonos||0)} não voltaram no semestre`),pr("Não voltaram para a prisão",p.abandonos,ref.prisional)]],
+  ["Pessoas desaparecidas",["desaparecidos","localizados"].map(oc)]].map(([t,l])=>[t,l.filter(Boolean)]).filter(([,l])=>l.length);
+ if(!GR.length)return"";
+ return`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="sd-grade">${GR.map(([t,l])=>`<div class="panel sd-g"><h4>${t}</h4><div class="sd-c"><span></span><span>Por dia</span><span>Total</span></div>${l.map(([n,v,x],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span>${esc(n)}</span><b>${fd(v)}</b><small>${esc(x)}</small></div>`).join("")}</div>`).join("")}</div>`}
 function _dias(ref){if(!ref)return 182;const[a,sm]=String(ref).split("/");return sm==="2"?184:((+a%4===0&&+a%100!==0)||+a%400===0?182:181)}
 // gráfico do indicador escolhido (homicídios dolosos, feminicídios, presos, mortes…): por mês (país, Sinesp) ou por ano; estados só por ano
 const SA_REG=new Map();let SA_N=0;
@@ -4629,7 +4673,7 @@ let DV_MAPA_EST=null;
 async function dvPop(){if(DV_MAPA_EST)return DV_MAPA_EST;try{DV_MAPA_EST=(await apiGet("/mapa/estados")).estados||{}}catch(e){DV_MAPA_EST={}}return DV_MAPA_EST}
 // títulos dos gráficos de cada tipo de dívida (maiores × menores)
 const DIV_ROT={familias:{alto:"Mais inadimplentes",baixo:"Menos inadimplentes"},empresas:{alto:"Mais empresas em recuperação",baixo:"Menos empresas em recuperação"},
- municipios:{alto:"Mais cidades com nota boa",baixo:"Menos cidades com nota boa"}};
+ municipios:{alto:"Estados com mais cidades em boa situação",baixo:"Estados com menos cidades em boa situação"}};
 const DIV_MAPA={
  publica:(D,M)=>{const g=govEstados(D.es),v={};Object.keys(g).forEach(u=>{const p=M[u]&&M[u].pop;if(p)v[u]=g[u].c/p});return Object.keys(v).length?{t:"Dívida do governo do estado por habitante",s:"Dívida consolidada estadual dividida pela população (IBGE). A dívida federal não se divide por estado.",v,f:x=>"R$ "+nf(Math.round(x))}:null},
  estados:D=>{const g=govEstados(D.es),v={};Object.keys(g).forEach(u=>v[u]=g[u].c);return Object.keys(v).length?{t:"Dívida consolidada de cada governo estadual",s:"Relatório de Gestão Fiscal (Tesouro, SICONFI).",v,f:brl}:null},
@@ -4661,6 +4705,7 @@ P.dividas=(t,sub)=>{if(!API.on){const ok=["pais","estados","pessoas","empresas"]
    if(m){const volta=card.hidden;card.hidden=false;$("#dvmT").textContent=m.t;$("#dvmS").textContent=m.s;surgeSuave($("#dvmain .hd"));
     if(volta){$("#dvmap").innerHTML="";$("#dvside").innerHTML=""}trocaSuave($("#dvmap"),mapaValores(m.v,m.f,{escala:SCALE}));
     const opD={alto:"Mais endividados",baixo:"Menos endividados",coresAlto:LIN_AZUL,attr:"data-dvz",href:()=>"#/dividas",...(DIV_ROT[tipo]||{})};
+    if(tipo==="municipios"){const mu=D.mu&&D.mu.por_uf||{};opD.sub=uf=>{const o=mu[uf]||{},n=Object.entries(o).filter(([k])=>/^[ABCD]/.test(k)).reduce((a,x)=>a+x[1],0),b=Object.entries(o).filter(([k])=>/^[AB]/.test(k)).reduce((a,x)=>a+x[1],0);return n?`${nf(b)} de ${nf(n)} cidades com nota A ou B`:""}}
     const ligaDv=()=>document.querySelectorAll("[data-dvz]").forEach(a=>a.onclick=ev=>{ev.preventDefault();inlineZoomIn(DZ,a.dataset.dvz)});
     // famílias: inadimplência no fim de cada ano (SCR.data); empresas: em recuperação judicial acumuladas até cada ano
     let hs=null;if(tipo==="familias"){const h=D.scr&&D.scr.historico;if(h&&h.anos.length>=2)hs={serie:h.estados,anos:h.anos,nota:"Inadimplência das pessoas (atraso acima de 90 dias) no último mês de cada ano, SCR.data do Banco Central."}}
