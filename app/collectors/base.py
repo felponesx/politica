@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from datetime import datetime
 
 from app.db import SessionLocal
-from app.models import Coleta
+from app.models import Coleta, Parlamentar
 
 log = logging.getLogger("brasilplus.coleta")
 
@@ -46,3 +46,17 @@ def registrar_coleta(fonte: str, tarefa: str, **parametros):
         db.commit()
         db.close()
         log.info("Fim %s.%s: %s itens (%s)", fonte, tarefa, cont.itens, coleta.status)
+
+
+def marcar_em_exercicio(db, casa: str, ids_atuais: set[str], minimo: int) -> int:
+    """Quem não está mais na lista atual da casa (titular que voltou, suplente que saiu) deixa de constar como em exercício.
+    Só mexe quando a lista veio com pelo menos `minimo` nomes: uma resposta cortada não pode apagar a casa inteira."""
+    if len(ids_atuais) < minimo:
+        log.warning("Lista atual de %s veio com %s nomes (mínimo %s): em_exercicio não foi atualizado", casa, len(ids_atuais), minimo)
+        return 0
+    saidas = db.query(Parlamentar).filter(Parlamentar.casa == casa, Parlamentar.em_exercicio.is_(True),
+                                          Parlamentar.id_externo.notin_(ids_atuais)).all()
+    for p in saidas:
+        p.em_exercicio = False
+    db.flush()
+    return len(saidas)

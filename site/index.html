@@ -2086,8 +2086,8 @@ return{html,mount(){
   const full=v=>"R$ "+Math.floor(v).toLocaleString("pt-BR");
   $("#impS").textContent=brl(IMP/Y);$("#gasS").textContent=brl(GAS/Y);
   const run=()=>{const iv=$("#impV");if(!iv)return;real();$("#impS").textContent=brl(IMP/Y);$("#gasS").textContent=brl(GAS/Y);const t=Date.now(),el=(t-y0)/1000,d0=new Date();d0.setHours(0,0,0,0);const td=(t-d0)/1000;
-   iv.textContent=full(IMP/Y*el);$("#gasV").textContent=full(GAS/Y*el);$("#impD").textContent=brl(IMP/Y*td);$("#gasD").textContent=brl(GAS/Y*td);
-   $("#impP").textContent="R$ "+nf(Math.round(IMP/Y*el/POP));$("#gasP").textContent="R$ "+nf(Math.round(GAS/Y*el/POP));
+   const C=window.CONT_REAL||{},vi=C.impB?C.impB.base+C.impB.taxa*(t-C.impB.quando)/1000:IMP/Y*el,vg=C.gasB?C.gasB.base+C.gasB.taxa*(t-C.gasB.quando)/1000:GAS/Y*el;iv.textContent=full(vi);$("#gasV").textContent=full(vg);$("#impD").textContent=brl(IMP/Y*td);$("#gasD").textContent=brl(GAS/Y*td);
+   $("#impP").textContent="R$ "+nf(Math.round(vi/POP));$("#gasP").textContent="R$ "+nf(Math.round(vg/POP));
    setTimeout(()=>requestAnimationFrame(run),90)};run()})();
  const dm=()=>{document.querySelectorAll("#hregb button").forEach(b=>b.classList.toggle("on",b.dataset.r===(reg||"")));HOMEZ.sec={vio:"seguranca",gasto:"gastos",pc:"gastos",pop:null,contratos:"contratos",obras:"obras",projetos:"projetos",arr:"arrecadacao",ret:"arrecadacao",dclr:"dividas",inad:"dividas",reg:null}[met];const regMode=met==="reg";const m=regMode?null:met;
   XF("#hmap").innerHTML=brMap(m,null,reg,regMode?{byRegion:true}:{legend:false});bindMap($("#hmap"),null,null,(u,el)=>showStateInline(u,el));
@@ -3195,7 +3195,13 @@ const snapChave=(cam,ps)=>{const k=Object.keys(ps).filter(x=>ps[x]!=="").sort();
 function snapHash(s){let h=0x811c9dc5;for(const ch of s){h^=ch.codePointAt(0);h=Math.imul(h,0x01000193)>>>0}return h}
 /* notícias: o robô rápido (noticias.yml) grava dados/noticias.json a cada 15 min; quando o arquivo existe, ele vale no lugar da cópia completa */
 async function snapNoticias(){if(!SNAP.nw)SNAP.nw=fetch("dados/noticias.json?t="+Math.floor(Date.now()/60000)).then(r=>r.ok?r.json():null).then(d=>d&&Array.isArray(d.itens)?d:null).catch(()=>null);return SNAP.nw}
-async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)return x}const n=snapHash(k)%SNAP.m.shards;
+/* contadores: o robô rápido grava dados/contadores_externos.json (Impostômetro e Gasto Brasil); com leitura de menos de 12 h, vale sobre a conta própria */
+async function snapContadores(base){try{const e=await fetch("dados/contadores_externos.json?t="+Math.floor(Date.now()/60000)).then(r=>r.ok?r.json():null);
+ if(!e||!e.atualizado_em||Date.now()-new Date(e.atualizado_em)>12*3600e3)return base;
+ return{...base,...(e.impostometro?{impostometro:{...(base&&base.impostometro||{}),...e.impostometro}}:{}),...(e.gastometro?{gastometro:{...(base&&base.gastometro||{}),...e.gastometro}}:{})}}catch(_){return base}}
+async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)return x}
+ if(k==="/contadores"){return snapContadores(await snapLer0(k))}return snapLer0(k)}
+async function snapLer0(k){const n=snapHash(k)%SNAP.m.shards;
  if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
  const v=(await SNAP.cache[n])[k];
  // respostas grandes ficam num arquivo só delas (dados/g/…): só são baixadas quando a página pede
@@ -3911,14 +3917,15 @@ const valSerie=(s,k)=>{const v=s&&s[k];return v?v.valor:null};
 const _inicio=P.inicio;
 P.inicio=(...a)=>{const r=_inicio(...a);if(!API.on)return r;
 return{html:r.html,mount(){r.mount&&r.mount();apiGet("/contadores").then(c=>{const i=c.impostometro,g=c.gastometro;if(!i&&!g)return;
- CONT_REAL={imp:i&&i.por_segundo,gas:g&&g.por_segundo};
+ const vivo=o=>o&&o.ao_vivo?{base:o.ao_vivo.base,taxa:o.ao_vivo.taxa,quando:new Date(o.ao_vivo.quando).getTime()}:null;
+ CONT_REAL={imp:i&&i.por_segundo,gas:g&&g.por_segundo,impB:vivo(i),gasB:vivo(g)};
  const imp=document.querySelector(".meter2.imp"),gas=document.querySelector(".meter2.gas");
- if(i&&imp){imp.querySelector(".m-sub").textContent=`ritmo calculado com os ${i.base}`;const P=i.partes_pct;
-  if(P){const nomes=[["federal","Federal (Receita)"],["estadual","Estados (ICMS, IPVA…)"],["municipal","Municípios (ISS, IPTU…)"]],cores=["#2F6FED","#1BAF7A","#F5A524"];
+ if(i&&imp){imp.querySelector(".m-sub").textContent=i.ao_vivo?i.base:`ritmo calculado com os ${i.base}`;const P=i.partes_pct;
+  if(P){const nomes=P.estados_municipios!==undefined?[["federal","Federal"],["estados_municipios","Estados e municípios"]]:[["federal","Federal (Receita)"],["estadual","Estados (ICMS, IPVA…)"],["municipal","Municípios (ISS, IPTU…)"]],cores=["#2F6FED","#1BAF7A","#F5A524"];
    let b=imp.querySelector(".m-bar"),l=imp.querySelector(".m-leg");if(!b){imp.insertAdjacentHTML("beforeend",`<div class="m-bar"></div><div class="m-leg"></div>`);b=imp.querySelector(".m-bar");l=imp.querySelector(".m-leg")}
    b.innerHTML=stack(nomes.map(([k])=>P[k]||0),nomes.map(x=>x[1]),cores,8);l.innerHTML=nomes.map(([k,n],j)=>`<span><i style="background:${cores[j]}"></i>${n} ${(P[k]||0).toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
   else imp.querySelectorAll(".m-bar,.m-leg").forEach(e=>e.remove())}
- if(g&&gas){gas.querySelector(".m-sub").textContent=`ritmo calculado com a ${g.base}`;const b=gas.querySelector(".m-bar"),l=gas.querySelector(".m-leg");
+ if(g&&gas){gas.querySelector(".m-sub").textContent=g.ao_vivo?g.base:`ritmo calculado com a ${g.base}`;const b=gas.querySelector(".m-bar"),l=gas.querySelector(".m-leg");
   const cores=["#EB6834","#F5A524","#2F6FED","#8B5CF6","#C3CBD6"];let fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
   if(g.referencia_url&&g.por_esfera){const NE={U:"União",E:"Estados",M:"Municípios",C:"Capitais"},T=Object.values(g.por_esfera).reduce((a,x)=>a+x,0);fs=Object.entries(g.por_esfera).sort((x,y)=>y[1]-x[1]).map(([k,v])=>({funcao:NE[k]||k,percentual:100*v/T}));outros=0}
   if(b)b.innerHTML=stack([...fs.map(x=>x.percentual),outros],[...fs.map(x=>x.funcao),"Outras"],cores,8);if(l)l.innerHTML=[...fs,{funcao:"Outras",percentual:outros}].filter(x=>x.percentual>0.05).map((x,k)=>`<span><i style="background:${cores[k]}"></i>${esc(x.funcao)} ${x.percentual.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}

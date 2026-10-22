@@ -1,7 +1,8 @@
-name: Notícias (rápido)
+name: Notícias e contadores (rápido)
 
-# Lê os feeds dos veículos a cada 15 minutos e grava site/dados/noticias.json (scripts/noticias_rapido.py).
-# Não usa banco: leva cerca de 1 minuto e só faz commit quando chega matéria nova. O robô pesado
+# Lê os feeds dos veículos a cada 15 minutos e grava site/dados/noticias.json (scripts/noticias_rapido.py) e, junto,
+# os contadores do Impostômetro e do Gasto Brasil em site/dados/contadores_externos.json (scripts/contadores_rapido.py).
+# Um não derruba o outro. Não usa banco: leva cerca de 1 minuto e só faz commit quando chega matéria nova. O robô pesado
 # (coletar-dados.yml) fica livre para a carga completa. O GitHub pode atrasar o agendamento em horários de pico.
 
 on:
@@ -14,6 +15,8 @@ on:
       - scripts/noticias_rapido.py
       - app/collectors/noticias.py
       - app/escandalos.py
+      - scripts/contadores_rapido.py
+      - app/collectors/contadores_externos.py
 
 permissions:
   contents: write
@@ -34,12 +37,18 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - name: Ler os feeds
+        id: feeds
+        continue-on-error: true
         run: python -m scripts.noticias_rapido site/dados
+      - name: Ler os contadores (Impostômetro e Gasto Brasil)
+        id: contadores
+        continue-on-error: true
+        run: python -m scripts.contadores_rapido site/dados
       - name: Gravar no repositório
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/dados/noticias.json
+          git add site/dados/noticias.json site/dados/contadores_externos.json
           git commit -q -m "Notícias: atualização de $(date -u +%H:%M) UTC [skip ci]" || { echo "Nada novo."; exit 0; }
           for i in 1 2 3; do
             # o robô pesado pode ter gravado no meio do caminho: vale o arquivo mais novo deste robô
@@ -48,3 +57,8 @@ jobs:
             sleep 10
           done
           exit 1
+      # só falha o robô se os dois leitores falharam: um feed ou um contador fora do ar não derruba o outro
+      - name: Conferir
+        if: steps.feeds.outcome == 'failure' && steps.contadores.outcome == 'failure'
+        run: |
+          echo "::error::Nem os feeds nem os contadores responderam nesta rodada."; exit 1

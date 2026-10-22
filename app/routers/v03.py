@@ -95,6 +95,21 @@ def _referencia():
         return {}
 
 
+def _externos(agora=None, horas=12):
+    """Leitura recente dos contadores do Impostômetro e do Gasto Brasil (scripts/contadores_rapido.py grava em site/dados), ou None."""
+    import json
+    import os
+    from datetime import timezone
+    try:
+        caminho = os.environ.get("CONTADORES_EXTERNOS") or os.path.join(os.path.dirname(__file__), "..", "..", "site", "dados", "contadores_externos.json")
+        with open(caminho, encoding="utf-8") as f:
+            d = json.load(f)
+        idade = (agora or datetime.now(timezone.utc)) - datetime.fromisoformat(d["atualizado_em"])
+        return d if idade.total_seconds() < horas * 3600 else None
+    except (OSError, ValueError, KeyError):
+        return None
+
+
 def _marco(ref, ano):
     """Último marco publicado do ano: (data, valor, dicionário do marco) ou None."""
     ms = [m for m in (ref or {}).get("marcos", []) if m["data"][:4] == str(ano)]
@@ -207,7 +222,13 @@ def contadores(db: Session = Depends(get_db)):
                        + (", capitais" if "C" in por_esfera else "") + (" e municípios" if "M" in por_esfera else "") + ")",
                "fonte": "SICONFI (RREO Anexo 02)"}
         break
-    return {"impostometro": _ancorar_imp(imp, hoje), "gastometro": _ancorar_gas(gas, hoje)}
+    imp, gas = _ancorar_imp(imp, hoje), _ancorar_gas(gas, hoje)
+    ext = _externos()  # o número publicado agora pelo Impostômetro e pelo Gasto Brasil vale sobre a conta própria e os marcos
+    if ext and ext.get("impostometro"):
+        imp = {**(imp or {}), **ext["impostometro"]}
+    if ext and ext.get("gastometro"):
+        gas = {**(gas or {}), **ext["gastometro"]}
+    return {"impostometro": imp, "gastometro": gas}
 
 
 @router.get("/agora/eventos", tags=["Legislativo"])

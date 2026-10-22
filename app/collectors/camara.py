@@ -4,7 +4,7 @@ from datetime import date
 import httpx
 
 from app import http
-from app.collectors.base import registrar_coleta
+from app.collectors.base import marcar_em_exercicio, registrar_coleta
 from app.models import Despesa, Parlamentar, Proposicao, Registro, Votacao, Voto
 from app.utils import so_digitos, extrair_materia, extrair_placar, hash_curto, meses, para_data, para_float, upsert
 
@@ -34,9 +34,12 @@ def _deputado(db, d: dict) -> Parlamentar:
 
 def coletar_deputados():
     with registrar_coleta("camara", "deputados") as (db, n):
+        vistos = set()
         for d in paginar("/deputados", {"itens": 100, "ordem": "ASC", "ordenarPor": "nome"}):
             _deputado(db, d)
+            vistos.add(str(d["id"]))
             n += 1
+        marcar_em_exercicio(db, CASA, vistos, minimo=400)  # a Câmara tem 513 cadeiras
     return n.itens
 
 

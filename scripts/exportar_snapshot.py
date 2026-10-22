@@ -40,7 +40,7 @@ log = logging.getLogger("snapshot")
 # {"__arquivo": "g/<hash>.json"}): assim uma página comum não baixa os 5 MB do índice de busca ou de uma eleição inteira
 SHARDS = 256
 GRANDE = 150_000
-ARQUIVOS_DE_OUTROS_ROBOS = ("noticias.json",)
+ARQUIVOS_DE_OUTROS_ROBOS = ("noticias.json", "contadores_externos.json", "revisao.json")
 VERSAO = 1
 
 # listas guardadas completas (até o teto): caminho -> (bases com parâmetros fixos, teto de itens)

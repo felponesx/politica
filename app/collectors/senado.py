@@ -6,7 +6,7 @@ por isso o uso defensivo de `como_lista`, `cavar` e `primeiro`.
 from datetime import date
 
 from app import http
-from app.collectors.base import registrar_coleta
+from app.collectors.base import marcar_em_exercicio, registrar_coleta
 from app.models import Parlamentar, Proposicao, Votacao, Voto
 import logging
 
@@ -38,12 +38,15 @@ def _senador(db, codigo, nome, partido=None, uf=None, foto=None, email=None) -> 
 def coletar_senadores():
     with registrar_coleta("senado", "senadores") as (db, n):
         dados = get("/senador/lista/atual")
+        vistos = set()
         for p in como_lista(cavar(dados, "ListaParlamentarEmExercicio", "Parlamentares", "Parlamentar")):
             i = p.get("IdentificacaoParlamentar", p)
             _senador(db, i.get("CodigoParlamentar"), i.get("NomeParlamentar"),
                      i.get("SiglaPartidoParlamentar"), i.get("UfParlamentar"),
                      i.get("UrlFotoParlamentar"), i.get("EmailParlamentar"))
+            vistos.add(str(i.get("CodigoParlamentar")))
             n += 1
+        marcar_em_exercicio(db, CASA, vistos, minimo=70)  # o Senado tem 81 cadeiras
     return n.itens
 
 

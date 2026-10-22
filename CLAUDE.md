@@ -103,6 +103,21 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   com o `indice.json` de `site/midia` mais velho que 7 dias (`midia-atrasada`, `MIDIA_DIAS`); pedindo `midia` nas tarefas, sempre refaz.
 - Pelos horários do Actions (13/10): cidades do SICONFI 77 min, gerar a cópia do site de 22 min a 1h40 (ainda sem explicação) e fotos/logos 1 a 2 h.
 
+## Contadores ao vivo e agente de revisão (out/2026)
+- `app/collectors/contadores_externos.py` + `scripts/contadores_rapido.py` (no mesmo robô de 15 min, `noticias.yml`): leem os números do
+  Impostômetro (ACSP) e do Gasto Brasil (CACB/ACSP) em gastobrasil.com.br (`/api/impostometro/brasil|uniao`, `/api/trpc/counters.spending`;
+  a API do impostometro.com.br exige token e NÃO é usada — nunca guardar nem usar tokens que apareçam em respostas de terceiros) e gravam
+  `site/dados/contadores_externos.json` já no formato de `/contadores` (total na hora publicada + ritmo por segundo em `ao_vivo`). `conferir` barra
+  leitura com hora velha, União maior que o Brasil ou esferas que não somam o total. Com leitura de menos de 12 h ela vale sobre a conta
+  própria e os marcos: no site (`snapContadores`; o medidor soma `ao_vivo.taxa` desde a leitura) e na API (`_externos` em `v03.py`; variável
+  `CONTADORES_EXTERNOS` troca o arquivo, usada nos testes). Divisão do impostômetro: federal × estados+municípios (a do Impostômetro).
+- `scripts/revisar_dados.py` + `.github/workflows/revisao.yml` (diário 09:23 UTC; aos domingos e com "urls" confere os links dos escândalos): agente de
+  revisão determinístico sobre `site/dados` — frescor, somas que precisam fechar (população, arrecadação, presos, cadeiras, órgãos, dívida), contadores
+  contra a fonte ao vivo e os marcos da imprensa, IBGE ao vivo, escândalos sem fonte, notícias quebradas. Grava `site/dados/revisao.json`, resumo na
+  página da execução e falha com "erro". Não corrige nem prova que um número está certo. `exportar_snapshot` preserva `revisao.json`.
+- `marcar_em_exercicio` (`base.py`): as listas atuais da Câmara (mín. 400) e do Senado (mín. 70) tiram `em_exercicio` de quem saiu; o revisor achou 526 deputados
+  e 86 senadores "em exercício". Quem só aparece em votações entra como em exercício até a próxima coleta semanal de deputados.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.
