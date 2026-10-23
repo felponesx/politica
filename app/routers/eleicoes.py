@@ -66,7 +66,8 @@ def candidato(sq: str, db: Session = Depends(get_db)):
             "turnos": [{"turno": r.turno, "votos": r.votos, "situacao": r.situacao, "eleito": r.eleito} for r in rows],
             "financas": (lambda f: {"patrimonio": f.patrimonio, "bens_por_tipo": f.bens_por_tipo, "bens": f.bens,
                                     "receitas": f.receitas, "receitas_por_fonte": f.receitas_por_fonte,
-                                    "despesas": f.despesas, "despesas_por_tipo": f.despesas_por_tipo} if f else None)(
+                                    "despesas": f.despesas, "despesas_por_tipo": f.despesas_por_tipo,
+                                    "despesas_fornecedores": f.despesas_fornecedores} if f else None)(
                 db.scalar(select(CandidatoFinancas).where(CandidatoFinancas.ano == r0.ano, CandidatoFinancas.sq_candidato == sq))),
             "municipios_top": [{"municipio": m.municipio, "votos": m.votos} for m in db.scalars(
                 select(VM).where(VM.sq_candidato == sq).order_by(VM.votos.desc()).limit(20))]}

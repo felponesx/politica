@@ -29,7 +29,7 @@ def _arg(v):
 
 
 # limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
-LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "tse-contas": 60, "cnpj-fornecedores": 25,
+LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "tse-contas": 90, "cnpj-fornecedores": 25,
            "receita-recuperacao-judicial": 170, "siconfi-tributos": 150,
            # base inteira do CNPJ (10 arquivos de estabelecimentos e 10 de empresas) + PGFN: a coleta para sozinha em 200 min
            "receita-empresas-porte": 215, "obrasgov-obras": 130, "siconfi-despesas-funcao": 170}
@@ -37,8 +37,8 @@ LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "t
 ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, "apenas_eleitos": "true"}),
             ("tse-resultados", {"ano": 2024}), ("tse-candidatos", {"ano": 2026}), ("tse-resultados", {"ano": 2026}),
             ("tse-candidatos", {"ano": 2018}), ("tse-resultados", {"ano": 2018}),
-            # gastos de campanha (prestação de contas) dos parlamentares eleitos em 2022 e dos senadores eleitos em 2018: zip de ~470 MB cada
-            ("tse-contas", {"ano": 2022}), ("tse-contas", {"ano": 2018}),
+            # gastos de campanha (prestação de contas) de 2002 a 2026 (2004 não traz o código do candidato); só das candidaturas já coletadas; zips de 14 MB a 1,4 GB
+            *[("tse-contas", {"ano": a}) for a in (2022, 2018, 2026, 2024, 2020, 2016, 2014, 2012, 2010, 2008, 2006, 2002)],
             ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política

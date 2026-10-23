@@ -132,7 +132,7 @@ def test_tse_financas(tmp_path):
         z.writestr("receitas_candidatos_2022_SP.csv", rec.encode("latin-1"))
         z.writestr("receitas_candidatos_doador_originario_2022_SP.csv", rec_orig.encode("latin-1"))
         z.writestr("despesas_contratadas_candidatos_2022_SP.csv", desp.encode("latin-1"))
-    assert tse_financas.coletar_contas(2022, arquivo_local=str(zc)) == 1
+    assert tse_financas.coletar_contas(2022, arquivo_local=str(zc), todas=True) == 1
     db = SessionLocal()
     f = db.query(CandidatoFinancas).filter_by(sq_candidato="250001").one()
     assert f.patrimonio == 580000 and f.receitas == 120000 and f.despesas == 90000
@@ -217,3 +217,55 @@ def test_contadores_ancorados_nos_marcos_publicados():
     gas = _ancorar_gas({"por_segundo": 194189, "base": "z", "fonte": "w", "bimestre": 4}, date(2026, 10, 22))
     assert 177000 < gas["por_segundo"] < 178500 and set(gas["por_esfera"]) == {"U", "M", "E"} and "bimestre" not in gas
     assert _ancorar_imp(None, date(2025, 6, 1)) is None  # sem marco do ano: fica o cálculo próprio
+
+
+def _zip_contas(tmp_path, nome_zip, arquivos):
+    caminho = tmp_path / nome_zip
+    with zipfile.ZipFile(caminho, "w") as z:
+        for nome, texto in arquivos.items():
+            z.writestr(nome, texto.encode("latin-1"))
+    return str(caminho)
+
+
+def test_contas_leiautes_antigos(tmp_path):
+    """Leiautes reais (resumidos) de 2002, 2006 e 2014: colunas e nomes de arquivo diferentes dos de 2018 em diante."""
+    db = SessionLocal()
+    # 2014: um arquivo por UF, cabeçalhos com acento e espaço
+    c14 = _zip_contas(tmp_path, "c14.zip", {
+        "receitas_candidatos_2014_AC.txt": '"Sequencial Candidato";"UF";"Valor receita";"Tipo receita"\n"10000000120";"AC";"1000,50";"Recursos de pessoas físicas"\n',
+        "despesas_candidatos_2014_AC.txt": '"Sequencial Candidato";"UF";"CPF/CNPJ do fornecedor";"Nome do fornecedor (Receita Federal)";"Valor despesa";"Tipo despesa"\n'
+                                           '"10000000120";"AC";"11222333000181";"GRAFICA Y LTDA";"700";"Publicidade"\n',
+        "receitas_comites_2014_AC.txt": '"Sequencial Candidato";"Valor receita"\n"10000000120";"999999"\n',  # comitê: ignorado
+    })
+    assert tse_financas.coletar_contas(2014, arquivo_local=c14, todas=True) == 1
+    f = db.query(CandidatoFinancas).filter_by(ano=2014, sq_candidato="10000000120").one()
+    assert f.receitas == 1000.5 and f.despesas == 700 and f.despesas_fornecedores[0]["nome"] == "GRAFICA Y LTDA"
+    # 2006: arquivos nacionais em pastas, tudo em maiúsculas, chave composta "<UE>-<SQ>" (como na tabela de candidatos)
+    c06 = _zip_contas(tmp_path, "c06.zip", {
+        "prestacao_contas_2006/2006/Candidato/Receita/ReceitaCandidato.csv":
+            '"SEQUENCIAL_CANDIDATO";"UNIDADE_ELEITORAL_CANDIDATO";"VALOR_RECEITA";"TIPO_RECEITA"\n"29";"BR";"96";"RECURSOS DE PARTIDO POLÍTICO"\n',
+        "prestacao_contas_2006/2006/Candidato/Despesa/DespesaCandidato.csv":
+            '"SEQUENCIAL_CANDIDATO";"UNIDADE_ELEITORAL_CANDIDATO";"VALOR_DESPESA";"TIPO_DESPESA";"NUMERO_CPF_CGC_FORNECEDOR"\n"29";"BR";"2,4";"ENCARGOS FINANCEIROS";"12345678901"\n',
+    })
+    assert tse_financas.coletar_contas(2006, arquivo_local=c06, todas=True) == 1
+    f = db.query(CandidatoFinancas).filter_by(ano=2006, sq_candidato="29").one()
+    assert f.receitas_por_fonte == {"Recursos de partido político": 96.0} and f.despesas_por_tipo == {"Encargos financeiros": 2.4}
+    # 2002: UF no lugar da unidade eleitoral; sem tipo de receita
+    c02 = _zip_contas(tmp_path, "c02.zip", {
+        "prestacao_contas_2002/2002/Candidato/Receita/ReceitaCandidato.csv": '"SEQUENCIAL_CANDIDATO";"SG_UF";"VR_RECEITA"\n"426";"AC";"10"\n',
+        "prestacao_contas_2002/2002/Candidato/Despesa/DespesaCandidato.csv": '"SEQUENCIAL_CANDIDATO";"SG_UF";"VR_DESPESA";"DS_TITULO";"CD_CPF_CGC"\n"426";"AC";"643,5";"   Manutenção e Reparo";"04116398000187"\n',
+    })
+    assert tse_financas.coletar_contas(2002, arquivo_local=c02, todas=True) == 1
+    f = db.query(CandidatoFinancas).filter_by(ano=2002, sq_candidato="AC-426").one()
+    assert f.receitas_por_fonte == {"Origem não informada": 10.0} and f.despesas_por_tipo == {"Manutenção e Reparo": 643.5}
+    db.close()
+
+
+def test_contas_so_candidaturas_ja_coletadas_e_2004(tmp_path):
+    import pytest
+    from app.collectors.base import Contador  # noqa: F401
+    z = _zip_contas(tmp_path, "c.zip", {"receitas_candidatos_2016_AC.txt": '"Sequencial Candidato";"Valor receita"\n"1";"5"\n'})
+    assert tse_financas.coletar_contas(2016, arquivo_local=z) == 0  # sem candidaturas de 2016 na tabela: não guarda tudo
+    with pytest.raises(ValueError):
+        tse_financas.coletar_contas(2004, arquivo_local=z)
+    assert tse_financas.url_contas(2014).endswith("prestacao_final_2014.zip") and tse_financas.url_contas(2022).endswith("candidatos_2022.zip")

@@ -7,17 +7,18 @@ Os arquivos são grandes: use `uf=SP` para importar um estado por vez.
 import csv
 import io
 import os
+import re
 import tempfile
 import zipfile
 
 
 from app import http
 from app.collectors.base import registrar_coleta
+from app.collectors.tse import sq_unico
 from app.models import CandidatoFinancas
-from app.utils import para_float, upsert
+from app.utils import para_float, sem_acento, upsert
 
 URL_BENS = "https://cdn.tse.jus.br/estatistica/sead/odsele/bem_candidato/bem_candidato_{ano}.zip"
-URL_CONTAS = "https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/prestacao_de_contas_eleitorais_candidatos_{ano}.zip"
 
 
 def _csvs(caminho, filtro, uf=None):
@@ -67,38 +68,128 @@ def _doc_cnpj(v):
     return d if len(d) == 14 else None  # CPF de pessoa física não é guardado
 
 
-def coletar_contas(ano: int, uf: str | None = None, arquivo_local: str | None = None):
-    """Receitas por origem e despesas contratadas por tipo e por fornecedor de cada candidatura (formato conferido com o arquivo real de 2022).
-    Cuidados que o arquivo real exige: o zip traz também `receitas_candidatos_doador_originario_*` (mesmo dinheiro visto pela origem: somar
-    os dois contaria em dobro) e linhas vazias de despesa ("#NULO", valor 0)."""
-    with registrar_coleta("tse", "contas_campanha", ano=ano, uf=uf or "todas") as (db, n):
-        caminho = _baixar(URL_CONTAS.format(ano=ano), f"contas_{ano}.zip", arquivo_local)
+def url_contas(ano: int) -> str:
+    """O nome do zip mudou ao longo dos anos (conferido com o servidor do TSE em 23/10/2026)."""
+    base = "https://cdn.tse.jus.br/estatistica/sead/odsele/prestacao_contas/"
+    if ano >= 2018:
+        return f"{base}prestacao_de_contas_eleitorais_candidatos_{ano}.zip"
+    if ano in (2012, 2014):
+        return f"{base}prestacao_final_{ano}.zip"
+    return f"{base}prestacao_contas_{ano}.zip"
+
+
+def _norm(h) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", sem_acento(str(h or "")).lower()).strip("_")
+
+
+def _rotulo(t: str) -> str:
+    """Padroniza o texto de origem/tipo: em 2006 e 2008 vem tudo em maiúsculas."""
+    t = " ".join(str(t or "").split())
+    return t.capitalize() if t.isupper() and len(t) > 3 else t
+
+
+def _pega(l, *chaves):
+    for k in chaves:
+        v = (l.get(k) or "").strip()
+        if v and not v.startswith("#NULO"):
+            return v
+    return ""
+
+
+# nomes de coluna por época (já normalizados por _norm): 2018 em diante · 2010-2016 · 2002-2008
+SQ = ("sq_candidato", "sequencial_candidato")
+UE = ("sg_ue", "unidade_eleitoral_candidato", "sg_uf")
+R_VALOR = ("vr_receita", "valor_receita")
+R_ORIGEM = ("ds_origem_receita", "tipo_receita", "ds_titulo", "rtrim_ltrim_dr_ds_titulo", "ds_fonte_receita", "fonte_recurso")
+D_VALOR = ("vr_despesa_contratada", "vr_despesa", "valor_despesa")
+D_TIPO = ("ds_origem_despesa", "tipo_despesa", "ds_titulo", "rtrim_ltrim_dr_ds_titulo")
+F_DOC = ("nr_cpf_cnpj_fornecedor", "cpf_cnpj_do_fornecedor", "numero_cpf_cgc_fornecedor", "cd_cpf_cnpj_fornecedor", "cd_cpf_cgc")
+F_NOME = ("nm_fornecedor_rfb", "nome_do_fornecedor_receita_federal", "nm_fornecedor", "nome_fornecedor", "nome_do_fornecedor", "no_for")
+
+
+def _arquivos(nomes, ano, uf=None):
+    """(receitas, despesas): só os arquivos de CANDIDATO (não comitê nem partido), sem o duplicado "doador originário"
+    e sem o consolidado "brasil" (em 2008 ele é o único arquivo dos candidatos)."""
+    rec, desp = [], []
+    for n in nomes:
+        b = n.lower().replace("\x88", "e").replace("ê", "e")
+        if n.endswith("/") or not b.endswith((".csv", ".txt")) or "leio" in b or "leia" in b:
+            continue
+        if any(x in b for x in ("comit", "partido", "diretorio", "originario", "orgao_partidario")) or "candidat" not in b:
+            continue
+        if "brasil" in b and ano != 2008:
+            continue
+        if uf:  # só os arquivos separados por estado têm UF no nome (2002, 2006 e 2008 são nacionais: o filtro vira do candidato)
+            m = re.search(r"_([a-z]{2})\.(?:csv|txt)$", b) or re.search(r"/([a-z]{2})/[^/]*$", b)
+            if m and m.group(1) != uf.lower():
+                continue
+        if "receita" in b:
+            rec.append(n)
+        elif "despesa" in b:
+            desp.append(n)
+    return rec, desp
+
+
+def _linhas(z, nome):
+    with z.open(nome) as bruto:
+        leitor = csv.reader(io.TextIOWrapper(bruto, encoding="latin-1", newline=""), delimiter=";")
+        cab = None
+        for linha in leitor:
+            if cab is None:
+                cab = [_norm(h) for h in linha]
+                continue
+            if len(linha) >= 3:
+                yield dict(zip(cab, linha))
+
+
+def coletar_contas(ano: int, uf: str | None = None, arquivo_local: str | None = None, todas: bool = False):
+    """Receitas por origem e despesas por tipo e por fornecedor de cada candidatura, de 2002 a 2026 (os leiautes mudam: ver `_arquivos`
+    e as tuplas de colunas acima). Conferido com os arquivos reais do TSE (2022/SP, 2014, 2010, 2006, 2002, 2008).
+    Cuidados que os arquivos reais exigem: o zip de 2018+ traz também `receitas_candidatos_doador_originario_*` (mesmo dinheiro visto
+    pela origem: somar contaria em dobro) e linhas vazias de despesa ("#NULO", valor 0). Se já há candidaturas do ano na tabela de
+    candidatos, só elas são guardadas (`todas=true` guarda tudo) (os zips de 2020 e 2024 têm ~450 mil candidaturas). 2004 não traz o código do candidato: não dá para ligar."""
+    from sqlalchemy import select
+
+    from app.models import Candidato
+    with registrar_coleta("tse", "contas_campanha", ano=ano, uf=uf or "todas", todas=todas) as (db, n):
+        if ano == 2004:
+            raise ValueError("2004: o arquivo do TSE não tem o código do candidato (só nome e número); não dá para ligar às candidaturas.")
+        so_estes = set() if todas else set(db.scalars(select(Candidato.sq_candidato).where(Candidato.ano == ano)))
+        if not todas and not so_estes:
+            n.avisos.append(f"{ano}: nenhuma candidatura na tabela de candidatos; rode tse-candidatos ano={ano} antes (ou use todas=true)")
+            return 0
+        caminho = _baixar(url_contas(ano), f"contas_{ano}.zip", arquivo_local)
         rec, desp = {}, {}
-        for l in _csvs(caminho, lambda b: "receitas_candidatos" in b and "doador_originario" not in b, uf):
-            sq, v = l.get("SQ_CANDIDATO"), para_float(l.get("VR_RECEITA")) or 0
-            if sq:
-                r = rec.setdefault(sq, {"uf": (l.get("SG_UF") or "")[:2] or None, "total": 0.0, "fontes": {}})
-                r["total"] += v
-                origem = (l.get("DS_ORIGEM_RECEITA") or "").strip()
-                if not origem or origem.startswith("#NULO"):
-                    origem = (l.get("DS_FONTE_RECEITA") or "Outras").strip()
-                _soma(r["fontes"], origem, v)
-        for l in _csvs(caminho, lambda b: "despesas_contratadas_candidatos" in b, uf):
-            sq, v = l.get("SQ_CANDIDATO"), para_float(l.get("VR_DESPESA_CONTRATADA")) or 0
-            tipo = (l.get("DS_ORIGEM_DESPESA") or "").strip()
-            if not sq or (v == 0 and (not tipo or tipo.startswith("#NULO"))):
-                continue  # linha vazia do arquivo (candidato sem despesa)
-            d = desp.setdefault(sq, {"uf": (l.get("SG_UF") or "")[:2] or None, "total": 0.0, "tipos": {}, "forn": {}})
-            d["total"] += v
-            _soma(d["tipos"], tipo if tipo and not tipo.startswith("#NULO") else "Outras", v)
-            cnpj = _doc_cnpj(l.get("NR_CPF_CNPJ_FORNECEDOR"))
-            nome = (l.get("NM_FORNECEDOR_RFB") or l.get("NM_FORNECEDOR") or "").strip()
-            if cnpj:
-                f = d["forn"].setdefault(cnpj, {"cnpj": cnpj, "nome": nome if not nome.startswith("#NULO") else None, "valor": 0.0})
-                f["valor"] = round(f["valor"] + v, 2)
-            else:
-                f = d["forn"].setdefault("pf", {"cnpj": None, "nome": "Pessoas físicas (várias)", "valor": 0.0})
-                f["valor"] = round(f["valor"] + v, 2)
+        with zipfile.ZipFile(caminho) as z:
+            f_rec, f_desp = _arquivos(z.namelist(), ano, uf)
+            if not f_rec and not f_desp:
+                raise RuntimeError(f"{ano}: nenhum arquivo de candidato no zip do TSE (o leiaute pode ter mudado)")
+            for nome in f_rec:
+                for l in _linhas(z, nome):
+                    sq = sq_unico(_pega(l, *SQ), _pega(l, *UE), ano)
+                    if not sq or (so_estes and sq not in so_estes):
+                        continue
+                    v = para_float(_pega(l, *R_VALOR)) or 0
+                    r = rec.setdefault(sq, {"uf": _pega(l, "sg_uf", "uf")[:2] or None, "total": 0.0, "fontes": {}})
+                    r["total"] += v
+                    _soma(r["fontes"], _rotulo(_pega(l, *R_ORIGEM)) or "Origem não informada", v)
+            for nome in f_desp:
+                for l in _linhas(z, nome):
+                    sq = sq_unico(_pega(l, *SQ), _pega(l, *UE), ano)
+                    if not sq or (so_estes and sq not in so_estes):
+                        continue
+                    v = para_float(_pega(l, *D_VALOR)) or 0
+                    tipo = _rotulo(_pega(l, *D_TIPO))
+                    if v == 0 and not tipo:
+                        continue  # linha vazia do arquivo (candidato sem despesa)
+                    d = desp.setdefault(sq, {"uf": _pega(l, "sg_uf", "uf")[:2] or None, "total": 0.0, "tipos": {}, "forn": {}})
+                    d["total"] += v
+                    _soma(d["tipos"], tipo or "Outras", v)
+                    cnpj = _doc_cnpj(_pega(l, *F_DOC))
+                    nome_f = _pega(l, *F_NOME)
+                    chave = cnpj or "pf"
+                    f = d["forn"].setdefault(chave, {"cnpj": cnpj, "nome": (nome_f or None) if cnpj else "Pessoas físicas (várias)", "valor": 0.0})
+                    f["valor"] = round(f["valor"] + v, 2)
         for sq in set(rec) | set(desp):
             r, d = rec.get(sq, {}), desp.get(sq, {})
             forn = sorted(d.get("forn", {}).values(), key=lambda f: -f["valor"])[:12]
