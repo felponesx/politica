@@ -38,7 +38,7 @@ def _sem_curinga(q: str) -> str:
 
 
 def buscar(db, q: str, tipos: list[str] | None = None, limite: int = 10) -> dict:
-    q = q.strip()[:120]
+    q = q.replace("\x00", "").strip()[:120]  # NUL derruba o Postgres (erro 500)
     postgres = db.bind.dialect.name == "postgresql"
     resultado = {}
     for tabela in tipos or ENTIDADES:
@@ -48,8 +48,10 @@ def buscar(db, q: str, tipos: list[str] | None = None, limite: int = 10) -> dict
                    f"FROM {tabela}, websearch_to_tsquery('portuguese'::regconfig, f_unaccent(:q)) consulta "
                    f"WHERE {tsvector(expr)} @@ consulta ORDER BY relevancia DESC LIMIT :lim")
         elif postgres:
+            # parte do nome (ILIKE) OU parecido (trigramas, usa o índice gin): "Zulmira" acha "Zulmíra" e "Zulmra"
+            parecido = f" OR f_unaccent({expr}) % f_unaccent(:q)" if len(q) >= 4 else ""
             sql = (f"SELECT id, {titulo} AS titulo, {sub} AS subtitulo, similarity(f_unaccent({expr}), f_unaccent(:q)) AS relevancia "
-                   f"FROM {tabela} WHERE f_unaccent({expr}) ILIKE '%' || f_unaccent(:qlike) || '%' ESCAPE '\\' "
+                   f"FROM {tabela} WHERE f_unaccent({expr}) ILIKE '%' || f_unaccent(:qlike) || '%' ESCAPE '\\'{parecido} "
                    f"ORDER BY relevancia DESC LIMIT :lim")
         else:
             sql = (f"SELECT id, {titulo} AS titulo, {sub} AS subtitulo, 1.0 AS relevancia "

@@ -61,3 +61,24 @@ def test_busca_portugues_postgres():
     assert r["normas"][0]["subtitulo"] == "Educação ambiental nas escolas"
     r = cliente.get("/busca", params={"q": "zulmíra"}).json()["resultados"]
     assert r["parlamentares"][0]["titulo"] == "Zulmira Teste"
+
+
+def test_busca_unificada_robusta():
+    """Acentos, parte do nome, termo inexistente, curingas e textos maliciosos: nunca erro e nunca varrer a tabela."""
+    from app.db import engine
+    pg = engine.dialect.name == "postgresql"
+    assert cliente.get("/busca", params={"q": "Zulmira"}).json()["resultados"]["parlamentares"][0]["titulo"] == "Zulmira Teste"
+    assert cliente.get("/busca", params={"q": "zulm"}).status_code == 200  # parte do nome
+    assert cliente.get("/busca", params={"q": "termoqueNaoExiste123"}).json()["resultados"] == {}
+    for q in ("%%", "_____", "' OR 1=1 --", "'; DROP TABLE parlamentares; --", "<script>alert(1)</script>", "\\\\", "a\x00b", "😀😀"):
+        r = cliente.get("/busca", params={"q": q})
+        assert r.status_code == 200, q
+        assert r.json()["resultados"] == {} or q in ("a\x00b",), q  # curinga/injeção não casam com tudo
+    assert cliente.get("/busca", params={"q": "a"}).status_code == 422  # curta demais
+    assert cliente.get("/busca", params={"q": "x" * 121}).status_code == 422  # longa demais
+    assert cliente.get("/busca", params={"q": "Zulmira", "limite": 500}).status_code == 422
+    assert cliente.get("/parlamentares?limit=1").status_code == 200  # a tabela continua lá depois dos ataques
+    if pg:
+        assert cliente.get("/busca", params={"q": "Zulmra Teste"}).json()["resultados"]["parlamentares"][0]["titulo"] == "Zulmira Teste"  # erro de digitação
+        r = cliente.get("/busca", params={"q": "escolas educação"}).json()["resultados"]  # plural/radical
+        assert r["normas"]
