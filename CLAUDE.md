@@ -335,3 +335,13 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   O nome da chave `esc:<nome>` é o do caso (aba "Pessoas sem foto"), não o nome completo da galeria. `fotos_manuais()` entra no passo de fotos do robô (`midia_site`)
   e vale sobre a automática; `python -m scripts.fotos_manuais aplicar` coloca nos blocos de uma cópia pronta e grava `site/midia/creditos_fotos.json`, mostrado em
   "Créditos das fotos" no fim de cada caso. As miniaturas da planilha têm no máximo 155 px: uma versão maior melhoraria o avatar.
+
+
+## Auditoria (out/2026) — leia `docs/RELATORIO_AUDITORIA.md` e `docs/FONTES.md`
+- Limites compartilhados entre processos no banco (`app/limites.py`, tabelas `uso_limites`/`uso_ia`/`cache_ia`, migração 0007): requisições por IP
+  (`Protecao` em `app/seguranca.py`), rotas pesadas e **todas as chamadas pagas da IA** (`app/ia_controle.py`: por IP, global, total do dia, orçamento
+  em US$, concorrência, cache, registro sem conteúdo). Falha do contador: a IA bloqueia (503); o limite geral cai para balde local.
+- IP do cliente só de `X-Forwarded-For` se a conexão vier de `PROXIES_CONFIAVEIS` (uvicorn roda com `--no-proxy-headers`). Corpo HTTP limitado no que chega (`LimiteCorpo`).
+- Coletas: trava por tarefa no Postgres (`ColetaEmAndamento`), `abortada` após 12 h, retentativas com jitter e `Retry-After`. `GET /fontes/status`, `GET /pronto`, `GET /ia/uso`.
+- Testes no Postgres: `sh scripts/testar_postgres.sh` (banco descartável; um banco sujo quebra testes). Dependências auditadas com `pip-audit` (fastapi 0.161, starlette 1.9).
+- Site: faixa "Modo de demonstração" quando não há dados oficiais; painéis "Situação das fontes" e "Uso da IA" em Relatórios e Dados.

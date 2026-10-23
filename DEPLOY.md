@@ -56,3 +56,10 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod pull && \
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build            # atualizar
 gunzip -c backups/brasilplus-AAAAMMDD.sql.gz | docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T db psql -U brasil brasilplus   # restaurar
 ```
+
+## Limites e custos da IA (auditoria de out/2026)
+- Os limites ficam no banco (tabela `uso_limites`), então valem para todos os processos e sobrevivem a reinício. A migração `0007` precisa estar aplicada
+  (`/pronto` responde 503 enquanto não estiver).
+- `PROXIES_CONFIAVEIS`: redes onde está o Caddy (no compose já vem com as faixas privadas do Docker). Sem isso todos os visitantes dividem o IP do proxy.
+- `IA_ORCAMENTO_DIA_USD`, `LIMITE_IA_*`: tetos da pesquisa na internet. Configure **também** o teto de gasto no painel da Perplexity.
+- Acompanhe em *Relatórios e Dados* (uso da IA e situação das fontes) ou em `GET /ia/uso` e `GET /fontes/status`.
