@@ -44,13 +44,12 @@ def test_ia_web_sem_chave(monkeypatch):
 def test_ia_web_responde_com_fontes(monkeypatch):
     chamadas = []
 
-    def falso(url, headers=None, json=None, timeout=None):
+    def falso(url, headers=None, json=None, timeout=None, **_):
         chamadas.append((url, headers, json))
         return _Resp(RESPOSTA)
 
     monkeypatch.setattr(settings, "perplexity_api_key", "chave-de-teste")
     monkeypatch.setattr(ia_web.httpx, "post", falso)
-    ia_web._CACHE.clear()
     r = cliente.post("/ia/web", json={"pergunta": "O que o Senado aprovou?"})
     assert r.status_code == 200
     d = r.json()
@@ -68,8 +67,6 @@ def test_ia_web_limite_diario(monkeypatch):
     monkeypatch.setattr(settings, "perplexity_api_key", "chave-de-teste")
     monkeypatch.setattr(settings, "perplexity_limite_dia", 1)
     monkeypatch.setattr(ia_web.httpx, "post", lambda *a, **k: _Resp(RESPOSTA))
-    ia_web._CACHE.clear()
-    ia_web._USO.update(dia=None, n=0)
     assert cliente.post("/ia/web", json={"pergunta": "pergunta um"}).status_code == 200
     assert cliente.post("/ia/web", json={"pergunta": "pergunta dois"}).status_code == 429
 

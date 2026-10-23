@@ -39,6 +39,19 @@ class Settings(BaseSettings):
     limite_req_por_minuto: int = 120     # por IP; 0 desliga
     corpo_max_bytes: int = 262144        # maior corpo aceito em POST/PUT (256 KB); 0 desliga
     consulta_timeout_ms: int = 30000     # Postgres + somente_leitura: tempo máximo de cada consulta (0 desliga)
+    # Limites compartilhados entre os processos (tabela uso_limites no mesmo banco; sem Redis)
+    proxies_confiaveis: str = ""         # CSV de redes (CIDR) dos proxies que podem informar o IP real em X-Forwarded-For; vazio = ignora o cabeçalho
+    limite_pesado_por_minuto: int = 20   # por IP, rotas pesadas (busca, exportação, relatórios); 0 desliga
+    limite_ia_ip_minuto: int = 4         # por IP, chamadas pagas à IA (/ia/web e /busca/web)
+    limite_ia_ip_dia: int = 40
+    limite_ia_global_minuto: int = 30    # todas as chamadas pagas juntas
+    ia_orcamento_dia_usd: float = 5.0    # teto de gasto estimado por dia (0 = sem teto)
+    ia_custo_chamada_usd: float = 0.02   # custo estimado de uma pergunta (/ia/web); a busca usa ia_custo_busca_usd
+    ia_custo_busca_usd: float = 0.005
+    ia_concorrencia: int = 4             # chamadas pagas ao mesmo tempo por processo
+    ia_max_saida_tokens: int = 1200      # teto de tokens da resposta (Agent API)
+    ia_cache_segundos: int = 3600
+    ia_log_dias: int = 90
     alerta_telegram_token: str = ""
     alerta_telegram_chat: str = ""
     alerta_webhook_url: str = ""         # alternativa: POST JSON {"texto": ...} para qualquer webhook

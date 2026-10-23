@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
 from app.db import criar_tabelas
-from app.seguranca import Protecao
+from app.seguranca import LimiteCorpo, Protecao
 from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -27,6 +27,7 @@ app = FastAPI(title="BRASIL+ API", description="Transparência em um só lugar",
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
 app.add_middleware(GZipMiddleware, minimum_size=1024, compresslevel=5)  # respostas grandes (listas, cópias) viajam bem menores
 app.add_middleware(Protecao)
+app.add_middleware(LimiteCorpo)  # o mais externo: barra corpo grande antes de qualquer outra coisa
 
 
 @app.exception_handler(Exception)

@@ -4,7 +4,7 @@ import csv
 import io
 from datetime import date, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import distinct, func, select
@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.collectors.bcb import SERIES
 from app.db import get_db
+from app.seguranca import ip_cliente
 from app.utils import memo
 from app.models import (Candidato, Contrato, Despesa, DevedorPGFN, Municipio, Norma, Obra, Parlamentar, Proposicao,
                         Registro, Votacao)
@@ -576,23 +577,30 @@ def escandalo(slug: str):
     return c
 
 
+@router.get("/ia/uso", tags=["IA"])
+def ia_uso(dias: int = Query(30, ge=1, le=90)):
+    """Uso e custo estimado da pesquisa na internet da IA (agregado por dia, sem perguntas nem IPs) e os limites em vigor."""
+    from app import limites
+    return limites.resumo_uso(dias)
+
+
 class PerguntaWeb(BaseModel):
     pergunta: str = Field(..., min_length=2, max_length=600)
 
 
 @router.post("/ia/web", tags=["IA"])
-def ia_web(corpo: PerguntaWeb):
+def ia_web(corpo: PerguntaWeb, request: Request):
     """Pesquisa na internet (Perplexity) para a IA do site, quando os dados oficiais não têm a resposta.
     A chave fica só no servidor (PERPLEXITY_API_KEY)."""
     import httpx
 
     from app import ia_web as web
     try:
-        return web.pesquisar(corpo.pergunta)
+        return web.pesquisar(corpo.pergunta, ip_cliente(request))
     except web.SemChave as e:
         raise HTTPException(503, str(e))
     except web.LimiteDiario as e:
-        raise HTTPException(429, str(e))
+        raise HTTPException(e.status, e.args[0], headers={"Retry-After": str(e.espera)})
     except (httpx.HTTPError, RuntimeError, ValueError):
         raise HTTPException(502, "A pesquisa na internet falhou agora. Tente de novo daqui a pouco.")
 
@@ -609,7 +617,7 @@ class BuscaWeb(BaseModel):
 
 
 @router.post("/busca/web", tags=["IA"])
-def busca_web(corpo: BuscaWeb):
+def busca_web(corpo: BuscaWeb, request: Request):
     """Busca na internet (Perplexity Search API): resultados ordenados com título, link, trecho e datas, sem
     resposta escrita por IA. A chave fica só no servidor (PERPLEXITY_API_KEY)."""
     import httpx
@@ -617,11 +625,11 @@ def busca_web(corpo: BuscaWeb):
     from app import busca_web as bw
     try:
         return bw.buscar(corpo.query, corpo.max_resultados, corpo.pais, corpo.idiomas, corpo.dominios, corpo.recencia,
-                         corpo.depois_de, corpo.antes_de)
+                         corpo.depois_de, corpo.antes_de, cliente=ip_cliente(request))
     except bw.SemChave as e:
         raise HTTPException(503, str(e))
     except bw.LimiteDiario as e:
-        raise HTTPException(429, str(e))
+        raise HTTPException(e.status, e.args[0], headers={"Retry-After": str(e.espera)})
     except ValueError as e:
         raise HTTPException(422, str(e))
     except httpx.HTTPStatusError as e:

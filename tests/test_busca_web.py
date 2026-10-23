@@ -36,8 +36,6 @@ class _Resp:
 @pytest.fixture
 def com_chave(monkeypatch):
     monkeypatch.setattr(settings, "perplexity_api_key", "chave-de-teste")
-    busca_web._CACHE.clear()
-    busca_web._USO.update(dia=None, n=0)
 
 
 def test_sem_chave(monkeypatch):
@@ -49,7 +47,7 @@ def test_sem_chave(monkeypatch):
 def test_busca_simples_monta_corpo_da_referencia(monkeypatch, com_chave):
     enviados = []
 
-    def falso(url, json=None, timeout=None, headers=None):
+    def falso(url, json=None, timeout=None, headers=None, **_):
         enviados.append((url, json, headers))
         return _Resp(RESPOSTA)
 

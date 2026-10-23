@@ -3,16 +3,15 @@
 Só roda no servidor: a chave fica em PERPLEXITY_API_KEY (.env) e nunca vai para o site. A IA do site chama
 POST /ia/web quando os dados oficiais do BRASIL+ não têm a resposta (fatos recentes, contexto, perguntas gerais).
 
-Proteções de custo: limite de perguntas por dia (perplexity_limite_dia), pergunta com no máximo 600 caracteres e
-a mesma pergunta respondida da memória por 1 hora.
+Proteções de custo (app/ia_controle.py): limites por IP, globais e do dia guardados no banco (valem entre processos e
+sobrevivem a reinício), orçamento diário estimado, teto de tokens da resposta, pergunta com no máximo 600 caracteres
+e a mesma pergunta respondida do cache compartilhado.
 """
 from __future__ import annotations
 
-import time
-from datetime import date
-
 import httpx
 
+from app import ia_controle
 from app.config import settings
 
 URL = "https://api.perplexity.ai/v1/responses"
@@ -21,16 +20,21 @@ INSTRUCOES = ("Responda em português do Brasil, de forma simples, curta e neutr
               "investigação. Cite as fontes.")
 AVISO = ("Resposta da internet (Perplexity), não dos dados oficiais do BRASIL+. Confira sempre as fontes; "
          "aparecer numa notícia não indica irregularidade.")
-_CACHE: dict[str, tuple[float, dict]] = {}
-_USO = {"dia": None, "n": 0}
-
 
 class SemChave(RuntimeError):
     pass
 
 
 class LimiteDiario(RuntimeError):
-    pass
+    """Pedido barrado pelos limites (429) ou pelo controle indisponível (503): args = (mensagem, status, espera em segundos)."""
+
+    @property
+    def status(self) -> int:
+        return self.args[1] if len(self.args) > 1 else 429
+
+    @property
+    def espera(self) -> int:
+        return self.args[2] if len(self.args) > 2 else 30
 
 
 def _texto(resp: dict) -> str:
@@ -71,31 +75,32 @@ def _fontes(resp) -> list[dict]:
     return out[:10]
 
 
-def pesquisar(pergunta: str) -> dict:
+def _chamar(pergunta: str) -> dict:
+    corpo = {"preset": settings.perplexity_preset, "input": pergunta, "instructions": INSTRUCOES}
+    if settings.ia_max_saida_tokens > 0:
+        corpo["max_output_tokens"] = settings.ia_max_saida_tokens  # teto de custo da resposta
+    r = httpx.post(URL, timeout=settings.http_timeout, follow_redirects=False,
+                   headers={"Authorization": f"Bearer {settings.perplexity_api_key}", "Content-Type": "application/json"},
+                   json=corpo)
+    r.raise_for_status()
+    dados = r.json()
+    if not isinstance(dados, dict):
+        raise RuntimeError("Resposta inválida do Perplexity.")
+    texto = _texto(dados)
+    if not texto:
+        raise RuntimeError("O Perplexity não devolveu resposta.")
+    return {"pergunta": pergunta, "resposta": texto, "fontes": _fontes(dados), "modelo": dados.get("model"),
+            "fonte": "Perplexity (pesquisa na internet)", "aviso": AVISO}
+
+
+def pesquisar(pergunta: str, cliente: str = "?") -> dict:
     pergunta = " ".join(str(pergunta or "").split())[:600]
     if not pergunta:
         raise ValueError("Pergunta vazia.")
     if not settings.perplexity_api_key:
         raise SemChave("Pesquisa na internet desligada: defina PERPLEXITY_API_KEY no .env do servidor.")
-    chave = pergunta.lower()
-    agora = time.time()
-    if chave in _CACHE and agora - _CACHE[chave][0] < 3600:
-        return _CACHE[chave][1]
-    hoje = date.today()
-    if _USO["dia"] != hoje:
-        _USO.update(dia=hoje, n=0)
-    if settings.perplexity_limite_dia and _USO["n"] >= settings.perplexity_limite_dia:
-        raise LimiteDiario("Limite diário de pesquisas na internet atingido. Tente amanhã.")
-    _USO["n"] += 1
-    r = httpx.post(URL, timeout=settings.http_timeout,
-                   headers={"Authorization": f"Bearer {settings.perplexity_api_key}", "Content-Type": "application/json"},
-                   json={"preset": settings.perplexity_preset, "input": pergunta, "instructions": INSTRUCOES})
-    r.raise_for_status()
-    dados = r.json()
-    texto = _texto(dados)
-    if not texto:
-        raise RuntimeError("O Perplexity não devolveu resposta.")
-    out = {"pergunta": pergunta, "resposta": texto, "fontes": _fontes(dados), "modelo": dados.get("model"),
-           "fonte": "Perplexity (pesquisa na internet)", "aviso": AVISO}
-    _CACHE[chave] = (agora, out)
-    return out
+    try:
+        return ia_controle.executar("ia_web", cliente, pergunta.lower(), settings.ia_custo_chamada_usd,
+                                    settings.perplexity_limite_dia, lambda: _chamar(pergunta))
+    except ia_controle.Bloqueio as b:
+        raise LimiteDiario(b.mensagem, b.status, b.espera) from b

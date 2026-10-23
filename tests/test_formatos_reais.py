@@ -774,7 +774,7 @@ def test_propostas_resumo_por_tema():
 def test_protecoes_da_api():
     r = cliente.get("/saude")
     assert r.headers["X-Content-Type-Options"] == "nosniff" and "geolocation=()" in r.headers["Permissions-Policy"]
-    assert cliente.get("/", headers={"x-forwarded-proto": "https"}).headers["Strict-Transport-Security"].startswith("max-age=")
+    assert cliente.get("https://testserver/").headers["Strict-Transport-Security"].startswith("max-age=")
     assert "object-src 'none'" in cliente.get("/").headers.get("Content-Security-Policy", "object-src 'none'")
     assert cliente.request("DELETE", "/coletas").status_code == 405
     assert cliente.post("/coletas/x", content=b"x" * 300000, headers={"x-admin-token": "a" * 30}).status_code == 413

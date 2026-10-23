@@ -14,10 +14,9 @@ import json
 import logging
 import random
 import time
-from datetime import date
-
 import httpx
 
+from app import ia_controle
 from app.config import settings
 
 log = logging.getLogger("brasilplus.busca_web")
@@ -26,16 +25,21 @@ URL = "https://api.perplexity.ai/search"
 RECENCIAS = ("hour", "day", "week", "month", "year")
 AVISO = ("Resultados da internet (Perplexity Search), não dos dados oficiais do BRASIL+. Confira cada fonte; "
          "aparecer num resultado não indica irregularidade.")
-_CACHE: dict[str, tuple[float, dict]] = {}
-_USO = {"dia": None, "n": 0}
-
 
 class SemChave(RuntimeError):
     pass
 
 
 class LimiteDiario(RuntimeError):
-    pass
+    """Pedido barrado pelos limites (429) ou pelo controle indisponível (503): args = (mensagem, status, espera em segundos)."""
+
+    @property
+    def status(self) -> int:
+        return self.args[1] if len(self.args) > 1 else 429
+
+    @property
+    def espera(self) -> int:
+        return self.args[2] if len(self.args) > 2 else 30
 
 
 def _consultas(query) -> str | list[str]:
@@ -70,7 +74,7 @@ def _post(corpo: dict) -> dict:
     """POST com até 3 tentativas para 429/5xx; respeita Retry-After e senão espera exponencial com variação."""
     espera = 1.0
     for tentativa in range(1, 4):
-        r = httpx.post(URL, json=corpo, timeout=settings.http_timeout,
+        r = httpx.post(URL, json=corpo, timeout=settings.http_timeout, follow_redirects=False,
                        headers={"Authorization": f"Bearer {settings.perplexity_api_key}",
                                 "Content-Type": "application/json"})
         if r.status_code in (429, 500, 502, 503, 504) and tentativa < 3:
@@ -87,7 +91,7 @@ def _post(corpo: dict) -> dict:
 
 def buscar(query: str | list[str], max_resultados: int = 10, pais: str | None = "BR", idiomas: list[str] | None = None,
            dominios: list[str] | None = None, recencia: str | None = None, depois_de: str | None = None,
-           antes_de: str | None = None, max_tokens_por_pagina: int | None = None) -> dict:
+           antes_de: str | None = None, max_tokens_por_pagina: int | None = None, cliente: str = "?") -> dict:
     """Busca na internet. `query`: texto ou até 5 textos (cobrados como uma busca).
 
     dominios: só estes sites ("gov.br") ou, com "-" na frente, todos menos estes (não misture os dois);
@@ -114,21 +118,20 @@ def buscar(query: str | list[str], max_resultados: int = 10, pais: str | None = 
     if antes_de:
         corpo["search_before_date_filter"] = antes_de
     if max_tokens_por_pagina:
-        corpo["max_tokens_per_page"] = int(max_tokens_por_pagina)
+        corpo["max_tokens_per_page"] = max(256, min(4096, int(max_tokens_por_pagina)))
 
     chave = json.dumps(corpo, sort_keys=True, ensure_ascii=False)
-    agora = time.time()
-    if chave in _CACHE and agora - _CACHE[chave][0] < 3600:
-        return _CACHE[chave][1]
-    hoje = date.today()
-    if _USO["dia"] != hoje:
-        _USO.update(dia=hoje, n=0)
-    if settings.perplexity_busca_limite_dia and _USO["n"] >= settings.perplexity_busca_limite_dia:
-        raise LimiteDiario("Limite diário de buscas na internet atingido. Tente amanhã.")
-    _USO["n"] += 1
-    dados = _post(corpo)
-    out = {"consultas": [consultas] if isinstance(consultas, str) else consultas,
-           "resultados": _paginas(dados.get("results")), "id": dados.get("id"),
-           "fonte": "Perplexity Search API", "aviso": AVISO}
-    _CACHE[chave] = (agora, out)
-    return out
+
+    def chamar() -> dict:
+        dados = _post(corpo)
+        if not isinstance(dados, dict):
+            raise RuntimeError("Resposta inválida do Perplexity.")
+        return {"consultas": [consultas] if isinstance(consultas, str) else consultas,
+                "resultados": _paginas(dados.get("results")), "id": dados.get("id"),
+                "fonte": "Perplexity Search API", "aviso": AVISO}
+
+    try:
+        return ia_controle.executar("busca_web", cliente, chave, settings.ia_custo_busca_usd,
+                                    settings.perplexity_busca_limite_dia, chamar)
+    except ia_controle.Bloqueio as b:
+        raise LimiteDiario(b.mensagem, b.status, b.espera) from b

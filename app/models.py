@@ -395,3 +395,35 @@ class CandidatoFinancas(Base):
     receitas_por_fonte: Mapped[dict | None] = mapped_column(JsonType, nullable=True)
     despesas: Mapped[float | None] = mapped_column(Float)
     despesas_por_tipo: Mapped[dict | None] = mapped_column(JsonType, nullable=True)
+
+
+class UsoLimite(Base):
+    """Contadores compartilhados entre os processos (limite de requisições e da IA). Uma linha por (chave, janela de tempo)."""
+    __tablename__ = "uso_limites"
+
+    chave: Mapped[str] = mapped_column(String(160), primary_key=True)
+    janela: Mapped[int] = mapped_column(Integer, primary_key=True)  # início da janela (época em segundos ÷ tamanho da janela)
+    n: Mapped[int] = mapped_column(Integer, default=0)              # unidades gastas (chamadas ou micro-dólares)
+    atualizado: Mapped[int] = mapped_column(Integer, index=True)    # época em segundos (para a limpeza)
+
+
+class UsoIa(Base):
+    """Uma linha por chamada paga à IA: sem pergunta nem resposta, só quem (hash do IP), quando, quanto e como terminou."""
+    __tablename__ = "uso_ia"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    quando: Mapped[int] = mapped_column(Integer, index=True)        # época em segundos
+    rota: Mapped[str] = mapped_column(String(20))                   # ia_web | busca_web
+    cliente: Mapped[str] = mapped_column(String(16))                # hash curto do IP (não é o IP)
+    resultado: Mapped[str] = mapped_column(String(20))              # ok | erro | limite | bloqueado
+    custo_micro_usd: Mapped[int] = mapped_column(Integer, default=0)
+    ms: Mapped[int | None] = mapped_column(Integer)
+
+
+class CacheIa(Base):
+    """Respostas da IA guardadas para todos os processos (a mesma pergunta não é cobrada duas vezes na janela)."""
+    __tablename__ = "cache_ia"
+
+    chave: Mapped[str] = mapped_column(String(64), primary_key=True)  # sha256 da pergunta
+    valor: Mapped[str] = mapped_column(Text)                          # JSON da resposta
+    expira: Mapped[int] = mapped_column(Integer, index=True)
