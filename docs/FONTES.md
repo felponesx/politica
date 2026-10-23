@@ -37,3 +37,14 @@ Regras comuns a todos os coletores (`app/http.py`, `app/collectors/base.py`): ti
 aleatória para 429/5xx respeitando `Retry-After`, barreira de rede interna (SSRF) em cada requisição e redirecionamento, upsert
 idempotente com chave única (fonte, tipo, chave original) e `atualizado_em`, trava por tarefa no Postgres (a mesma coleta não roda
 duas vezes ao mesmo tempo), coletas "rodando" há mais de 12 h viram `abortada`, e dados antigos nunca são apagados quando a fonte falha.
+
+## Processos e casos de parlamentares (verificado em 23/10/2026, pelos servidores do GitHub)
+| Fonte | O que foi confirmado | Uso no BRASIL+ |
+|---|---|---|
+| Câmara — representações por quebra de decoro (tipo `REP` em `/proposicoes`) | API aberta; a ementa nomeia o deputado ("em desfavor do Senhor Deputado …") | **Usada** (aba Processos; liga só por nome parlamentar único) |
+| TSE — situação do registro de candidatura (`consulta_cand`) | já coletada (`DS_SITUACAO_CANDIDATURA`) | **Usada** (candidaturas não deferidas) |
+| Casos curados do BRASIL+ (`app/dados/escandalos`) | fonte e data em cada situação | **Usada** (só nome completo igual ao da candidatura, sem homônimo) |
+| STF — portal e Corte Aberta | o portal abre, mas a pesquisa por parte é página dinâmica (não é base aberta) e os painéis (`transparencia.stf.jus.br`) respondem 403 para robôs | **Não usada**: não há base aberta confirmada de inquéritos/ações penais de parlamentares |
+| DataJud (CNJ) — API pública | a própria wiki diz: metadados de processos **públicos**, "resguardo de processos sigilosos e dados de partes"; consulta por número do processo, chave pública do CNJ | **Não usada**: não busca por nome e não traz partes; só serviria para enriquecer um número de processo já conhecido |
+| TSE dados abertos (CKAN) | busca "processo": 8 conjuntos (resultados e afins, nenhum de processos contra candidatos); "inelegibilidade": 0 | **Não usada** |
+| JusBrasil e similares | agregadores privados, sem API aberta, termos de uso restritivos | **Descartados** |

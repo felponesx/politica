@@ -101,6 +101,16 @@ def proposicao(pid: int, db: Session = Depends(get_db)):
     }
 
 
+@router.get("/parlamentares/{pid}/processos", tags=["Ligações"])
+def processos_parlamentar(pid: int, db: Session = Depends(get_db)):
+    """Casos curados, representações por quebra de decoro (Câmara) e situação do registro de candidatura (TSE); sempre com aviso de presunção de inocência."""
+    from app import processos
+    p = db.get(Parlamentar, pid)
+    if not p:
+        raise HTTPException(404, "Parlamentar não encontrado")
+    return processos.do_parlamentar(db, p)
+
+
 @router.get("/parlamentares/{pid}/ligacoes")
 def ligacoes_parlamentar(pid: int, db: Session = Depends(get_db)):
     """Complemento do popout de pessoa: candidaturas no TSE e fornecedores da cota que também têm contratos públicos."""

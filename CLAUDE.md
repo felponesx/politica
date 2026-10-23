@@ -351,3 +351,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   por fornecedor (só CNPJ; CPF não é guardado). O zip traz também `receitas_candidatos_doador_originario_*` (não somar: contaria em dobro) e linhas vazias `#NULO` nas despesas.
   Migração 0008 (`despesas_fornecedores`). `GET /parlamentares/{id}/ligacoes` devolve `despesas_por_tipo` e `despesas_fornecedores` em cada candidatura.
 - Site: aba Gastos do parlamentar tem "Gastos de campanha" (`campanhaHtml`) abaixo da cota. O robô roda `tse-contas` de 2002 a 2026 (menos 2004, sem código de candidato; `ELEICOES` em `scripts/coleta_ci.py`). O coletor lê os 3 leiautes do TSE (2018+, 2010–2016, 2002–2008: `_arquivos`, tuplas de colunas, chave composta `<UE>-<SQ>` de 2000 a 2008 igual à de `tse.py`) e só guarda candidaturas que já estão em `candidatos` (`todas=true` guarda tudo). Perfil do candidato (`#/candidato/<sq>`) também mostra os maiores fornecedores.
+
+## Processos do parlamentar (out/2026)
+- Aba "Processos" no perfil (`processosHtml`, `GET /parlamentares/{id}/processos`, `app/processos.py`): representações por quebra de decoro da Câmara (`REP` em `proposicoes`; o
+  robô coleta `REP` no `HISTORICO`; liga só se o nome parlamentar for único na Câmara), candidaturas com registro não deferido (TSE) e casos curados (só nome completo igual ao da
+  candidatura e sem outro parlamentar com o mesmo nome). Sempre com aviso de presunção de inocência. NÃO há processos por nome (STF/DataJud/TSE não têm base aberta que sirva; JusBrasil
+  descartado): ver `docs/FONTES.md`. Processo em sigilo nunca aparece nem é inferido.

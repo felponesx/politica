@@ -58,7 +58,7 @@ EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.to
           ("siconfi-tributos", {"ano": date.today().year - 1, "esferas": "M"})]
 # histórico desde 1985 (volta das eleições diretas) dos tipos de proposição de maior peso; os PLs ordinários são volume demais
 HISTORICO = [("camara-proposicoes", {"inicio": date(a, 1, 1), "fim": min(date(a + 4, 12, 31), date.today()),
-                                       "tipos": ["PEC", "PLP", "MPV", "PDL", "PDC", "PLN"]})
+                                       "tipos": ["PEC", "PLP", "MPV", "PDL", "PDC", "PLN", "REP"]})  # REP: representações por quebra de decoro (aba Processos do parlamentar)
              for a in range(1985, date.today().year + 1, 5)] + (
     # anos antigos mudam pouco: a situação desde 1985 é atualizada só aos domingos (um arquivo grande por ano)
     [("camara-proposicoes-situacao", {"desde": 1985})] if date.today().weekday() == 6 else [])

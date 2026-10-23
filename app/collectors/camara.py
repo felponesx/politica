@@ -58,6 +58,7 @@ def coletar_proposicoes(inicio: date, fim: date, tipos: list[str] | None = None)
                     "numero": str(p.get("numero") or ""),
                     "ano": p.get("ano"),
                     "ementa": p.get("ementa"),
+                    "data_apresentacao": para_data(p.get("dataApresentacao")),
                 })
                 n += 1
             db.commit()

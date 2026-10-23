@@ -167,7 +167,7 @@ class Exportador:
         # parlamentares: perfil, ligações, atuação e todas as notas da cota
         for p in listas["/parlamentares"][0]:
             pid = p["id"]
-            for sufixo in ("", "/ligacoes", "/atuacao"):
+            for sufixo in ("", "/ligacoes", "/atuacao", "/processos"):
                 self.get(f"/parlamentares/{pid}{sufixo}")
             if p["casa"] in ("camara", "senado"):
                 # só as notas mais recentes (o resumo por tipo, no perfil, soma todas)
