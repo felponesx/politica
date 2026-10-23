@@ -119,7 +119,9 @@ def ligacoes_parlamentar(pid: int, db: Session = Depends(get_db)):
                              "patrimonio": fin.patrimonio if fin else None, "bens_por_tipo": fin.bens_por_tipo if fin else None,
                              "receitas_campanha": fin.receitas if fin else None,
                              "despesas_campanha": fin.despesas if fin else None,
-                             "receitas_por_fonte": fin.receitas_por_fonte if fin else None})
+                             "receitas_por_fonte": fin.receitas_por_fonte if fin else None,
+                             "despesas_por_tipo": fin.despesas_por_tipo if fin else None,
+                             "despesas_fornecedores": fin.despesas_fornecedores if fin else None})
     forn = db.execute(select(Despesa.cnpj_cpf, func.max(Despesa.fornecedor), func.sum(Despesa.valor))
                       .where(Despesa.parlamentar_id == pid, Despesa.cnpj_cpf.isnot(None))
                       .group_by(Despesa.cnpj_cpf).order_by(func.sum(Despesa.valor).desc()).limit(30)).all()

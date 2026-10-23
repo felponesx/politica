@@ -18,7 +18,8 @@ e na tela **Relatórios e Dados › Situação das fontes**.
 | transparencia-orgaos/-contratos/-gastos(-todos) | Portal da Transparência (CGU) | órgãos, contratos, gastos | **sim** | Configurada, não testada | ~90 req/min; sem a chave, as telas usam `transparencia-orcamento` |
 | transparencia-orcamento | Portal da Transparência (arquivo anual) | orçamento por órgão | não | Validada | — |
 | obrasgov-obras | ObrasGov (Ministério da Gestão) | obras com dinheiro federal | não | Validada | % de execução física por obra não é aberto |
-| tse-candidatos, -resultados, -bens, -contas | TSE (dadosabertos.tse.jus.br, cdn.tse.jus.br) | candidatos, resultados, patrimônio, contas | não | Validada (2018–2026) | dados abertos só de 1994 em diante; TSE 2002 marca todos como eleitos |
+| tse-contas (gastos de campanha) | TSE (prestacao_de_contas_eleitorais_candidatos_AAAA.zip) | receitas por origem, despesas contratadas por tipo e por fornecedor (CNPJ) | não | Validada em 2022/SP com o arquivo real (3.583 candidaturas); 2018 não rodada | zip de ~470 MB; CPF de pessoa física não é guardado; despesas "contratadas" podem diferir do pago |
+| tse-candidatos, -resultados, -bens | TSE (dadosabertos.tse.jus.br, cdn.tse.jus.br) | candidatos, resultados, patrimônio, contas | não | Validada (2018–2026) | dados abertos só de 1994 em diante; TSE 2002 marca todos como eleitos |
 | legislacao-normas | Senado (base de normas) | leis e decretos federais | não | Validada | LexML bloqueado fora do Brasil |
 | lexml-estaduais | LexML | normas estaduais | não | Bloqueada fora do Brasil/para robôs | — |
 | assembleias, assembleia-arquivo | ALESP, ALMG e outras | deputados estaduais | não | Parcial (ALMG bloqueada para robôs) | — |

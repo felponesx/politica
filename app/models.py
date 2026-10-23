@@ -395,6 +395,7 @@ class CandidatoFinancas(Base):
     receitas_por_fonte: Mapped[dict | None] = mapped_column(JsonType, nullable=True)
     despesas: Mapped[float | None] = mapped_column(Float)
     despesas_por_tipo: Mapped[dict | None] = mapped_column(JsonType, nullable=True)
+    despesas_fornecedores: Mapped[list | None] = mapped_column(JsonType, nullable=True)  # até 12 maiores: [{nome, cnpj, valor}]
 
 
 class UsoLimite(Base):

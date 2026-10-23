@@ -345,3 +345,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Coletas: trava por tarefa no Postgres (`ColetaEmAndamento`), `abortada` após 12 h, retentativas com jitter e `Retry-After`. `GET /fontes/status`, `GET /pronto`, `GET /ia/uso`.
 - Testes no Postgres: `sh scripts/testar_postgres.sh` (banco descartável; um banco sujo quebra testes). Dependências auditadas com `pip-audit` (fastapi 0.161, starlette 1.9).
 - Site: faixa "Modo de demonstração" quando não há dados oficiais; painéis "Situação das fontes" e "Uso da IA" em Relatórios e Dados.
+
+## Gastos de campanha no perfil do parlamentar (out/2026)
+- `tse-contas` (`app/collectors/tse_financas.py`) conferida com o arquivo real do TSE (2022/SP): receitas por `DS_ORIGEM_RECEITA`, despesas contratadas por tipo e as 12 maiores
+  por fornecedor (só CNPJ; CPF não é guardado). O zip traz também `receitas_candidatos_doador_originario_*` (não somar: contaria em dobro) e linhas vazias `#NULO` nas despesas.
+  Migração 0008 (`despesas_fornecedores`). `GET /parlamentares/{id}/ligacoes` devolve `despesas_por_tipo` e `despesas_fornecedores` em cada candidatura.
+- Site: aba Gastos do parlamentar tem "Gastos de campanha" (`campanhaHtml`) abaixo da cota. O robô roda `tse-contas` de 2022 e 2018 (`ELEICOES` em `scripts/coleta_ci.py`).

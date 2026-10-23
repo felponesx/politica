@@ -62,28 +62,50 @@ def coletar_bens(ano: int, uf: str | None = None, arquivo_local: str | None = No
     return n.itens
 
 
+def _doc_cnpj(v):
+    d = "".join(c for c in str(v or "") if c.isdigit())
+    return d if len(d) == 14 else None  # CPF de pessoa física não é guardado
+
+
 def coletar_contas(ano: int, uf: str | None = None, arquivo_local: str | None = None):
+    """Receitas por origem e despesas contratadas por tipo e por fornecedor de cada candidatura (formato conferido com o arquivo real de 2022).
+    Cuidados que o arquivo real exige: o zip traz também `receitas_candidatos_doador_originario_*` (mesmo dinheiro visto pela origem: somar
+    os dois contaria em dobro) e linhas vazias de despesa ("#NULO", valor 0)."""
     with registrar_coleta("tse", "contas_campanha", ano=ano, uf=uf or "todas") as (db, n):
         caminho = _baixar(URL_CONTAS.format(ano=ano), f"contas_{ano}.zip", arquivo_local)
         rec, desp = {}, {}
-        for l in _csvs(caminho, lambda b: b.startswith("receitas_candidatos") or "/receitas_candidatos" in b, uf):
+        for l in _csvs(caminho, lambda b: "receitas_candidatos" in b and "doador_originario" not in b, uf):
             sq, v = l.get("SQ_CANDIDATO"), para_float(l.get("VR_RECEITA")) or 0
             if sq:
                 r = rec.setdefault(sq, {"uf": (l.get("SG_UF") or "")[:2] or None, "total": 0.0, "fontes": {}})
                 r["total"] += v
-                _soma(r["fontes"], (l.get("DS_FONTE_RECEITA") or l.get("DS_ORIGEM_RECEITA") or "Outras").strip(), v)
+                origem = (l.get("DS_ORIGEM_RECEITA") or "").strip()
+                if not origem or origem.startswith("#NULO"):
+                    origem = (l.get("DS_FONTE_RECEITA") or "Outras").strip()
+                _soma(r["fontes"], origem, v)
         for l in _csvs(caminho, lambda b: "despesas_contratadas_candidatos" in b, uf):
             sq, v = l.get("SQ_CANDIDATO"), para_float(l.get("VR_DESPESA_CONTRATADA")) or 0
-            if sq:
-                d = desp.setdefault(sq, {"uf": (l.get("SG_UF") or "")[:2] or None, "total": 0.0, "tipos": {}})
-                d["total"] += v
-                _soma(d["tipos"], (l.get("DS_ORIGEM_DESPESA") or "Outras").strip(), v)
+            tipo = (l.get("DS_ORIGEM_DESPESA") or "").strip()
+            if not sq or (v == 0 and (not tipo or tipo.startswith("#NULO"))):
+                continue  # linha vazia do arquivo (candidato sem despesa)
+            d = desp.setdefault(sq, {"uf": (l.get("SG_UF") or "")[:2] or None, "total": 0.0, "tipos": {}, "forn": {}})
+            d["total"] += v
+            _soma(d["tipos"], tipo if tipo and not tipo.startswith("#NULO") else "Outras", v)
+            cnpj = _doc_cnpj(l.get("NR_CPF_CNPJ_FORNECEDOR"))
+            nome = (l.get("NM_FORNECEDOR_RFB") or l.get("NM_FORNECEDOR") or "").strip()
+            if cnpj:
+                f = d["forn"].setdefault(cnpj, {"cnpj": cnpj, "nome": nome if not nome.startswith("#NULO") else None, "valor": 0.0})
+                f["valor"] = round(f["valor"] + v, 2)
+            else:
+                f = d["forn"].setdefault("pf", {"cnpj": None, "nome": "Pessoas físicas (várias)", "valor": 0.0})
+                f["valor"] = round(f["valor"] + v, 2)
         for sq in set(rec) | set(desp):
             r, d = rec.get(sq, {}), desp.get(sq, {})
+            forn = sorted(d.get("forn", {}).values(), key=lambda f: -f["valor"])[:12]
             upsert(db, CandidatoFinancas, {"ano": ano, "sq_candidato": sq},
                    {"uf": r.get("uf") or d.get("uf"), "receitas": round(r.get("total", 0), 2) if r else None,
                     "receitas_por_fonte": r.get("fontes"), "despesas": round(d.get("total", 0), 2) if d else None,
-                    "despesas_por_tipo": d.get("tipos")})
+                    "despesas_por_tipo": d.get("tipos"), "despesas_fornecedores": forn or None})
             n += 1
             if n.itens % 2000 == 0:
                 db.commit()

@@ -117,17 +117,30 @@ def test_tse_financas(tmp_path):
     with zipfile.ZipFile(zb, "w") as z:
         z.writestr("bem_candidato_2022_SP.csv", bens.encode("latin-1"))
     assert tse_financas.coletar_bens(2022, arquivo_local=str(zb)) == 1
-    rec = "SQ_CANDIDATO;SG_UF;DS_FONTE_RECEITA;VR_RECEITA\n250001;SP;Fundo Especial;100000,00\n250001;SP;Outros Recursos;20000,00\n"
-    desp = "SQ_CANDIDATO;SG_UF;DS_ORIGEM_DESPESA;VR_DESPESA_CONTRATADA\n250001;SP;Publicidade;90000,00\n"
+    # formato conferido no arquivo real do TSE (2022, SP): cabeçalhos completos resumidos às colunas usadas
+    rec = ("SQ_CANDIDATO;SG_UF;DS_FONTE_RECEITA;DS_ORIGEM_RECEITA;VR_RECEITA\n"
+           "250001;SP;Fundo Especial de Financiamento de Campanha;Fundo especial de financiamento de campanha;100000,00\n"
+           "250001;SP;OUTROS RECURSOS;Recursos de pessoas físicas;20000,00\n")
+    # o mesmo dinheiro visto pela origem: NÃO pode entrar na soma
+    rec_orig = "SQ_CANDIDATO;SG_UF;DS_FONTE_RECEITA;DS_ORIGEM_RECEITA;VR_RECEITA\n250001;SP;OUTROS RECURSOS;Recursos de pessoas físicas;20000,00\n"
+    desp = ("SQ_CANDIDATO;SG_UF;DS_ORIGEM_DESPESA;NR_CPF_CNPJ_FORNECEDOR;NM_FORNECEDOR;NM_FORNECEDOR_RFB;VR_DESPESA_CONTRATADA\n"
+            "250001;SP;Publicidade por materiais impressos;11222333000181;GRAFICA X;GRAFICA X LTDA;60000,00\n"
+            "250001;SP;Despesas com pessoal;12345678901;JOAO;JOAO DA SILVA;30000,00\n"
+            "250002;SP;#NULO;-1;#NULO;#NULO;0,00\n")  # candidato sem despesa: linha vazia
     zc = tmp_path / "contas.zip"
     with zipfile.ZipFile(zc, "w") as z:
         z.writestr("receitas_candidatos_2022_SP.csv", rec.encode("latin-1"))
+        z.writestr("receitas_candidatos_doador_originario_2022_SP.csv", rec_orig.encode("latin-1"))
         z.writestr("despesas_contratadas_candidatos_2022_SP.csv", desp.encode("latin-1"))
     assert tse_financas.coletar_contas(2022, arquivo_local=str(zc)) == 1
     db = SessionLocal()
     f = db.query(CandidatoFinancas).filter_by(sq_candidato="250001").one()
     assert f.patrimonio == 580000 and f.receitas == 120000 and f.despesas == 90000
-    assert f.bens[0]["tipo"] == "Apartamento" and f.receitas_por_fonte["Fundo Especial"] == 100000
+    assert f.bens[0]["tipo"] == "Apartamento" and f.receitas_por_fonte["Fundo especial de financiamento de campanha"] == 100000
+    assert f.despesas_por_tipo == {"Publicidade por materiais impressos": 60000.0, "Despesas com pessoal": 30000.0}
+    assert f.despesas_fornecedores[0] == {"cnpj": "11222333000181", "nome": "GRAFICA X LTDA", "valor": 60000.0}
+    assert f.despesas_fornecedores[1]["cnpj"] is None and "12345678901" not in str(f.despesas_fornecedores)  # CPF não é guardado
+    assert db.query(CandidatoFinancas).filter_by(sq_candidato="250002").first() is None
     db.close()
 
 

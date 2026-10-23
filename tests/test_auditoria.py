@@ -80,13 +80,14 @@ def test_pronto_e_saude_sem_detalhes():
 def test_pronto_indisponivel_nao_vaza_detalhe(monkeypatch):
     from sqlalchemy import text
     with engine.begin() as c:
+        cabeca = c.execute(text("select version_num from alembic_version")).scalar()
         c.execute(text("update alembic_version set version_num='0001'"))
     try:
         r = cliente.get("/pronto")
         assert r.status_code == 503 and r.json() == {"status": "indisponivel"}
     finally:
         with engine.begin() as c:
-            c.execute(text("update alembic_version set version_num='0007'"))
+            c.execute(text("update alembic_version set version_num=:v"), {"v": cabeca})
 
 
 def test_status_das_fontes():
