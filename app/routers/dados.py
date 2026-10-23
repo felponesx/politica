@@ -1,5 +1,5 @@
 import re
-from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query, Request
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -159,23 +159,73 @@ def listar_coletas(limit: int = Query(50, ge=1, le=200), db: Session = Depends(g
     return db.scalars(select(Coleta).order_by(Coleta.id.desc()).limit(limit)).all()
 
 
+@router.get("/fontes/status", tags=["Coletas"])
+def status_das_fontes(db: Session = Depends(get_db)):
+    """Saúde de cada fonte: última coleta boa, idade dos dados, última situação e erro recente (resumido, sem detalhes internos).
+    Fonte que nunca rodou aparece como "nunca_coletada" (configurada, mas não verificada)."""
+    from datetime import datetime
+    agora = datetime.now()
+    linhas = db.execute(select(Coleta.tarefa, Coleta.status, Coleta.fim, Coleta.inicio, Coleta.itens, Coleta.erro)
+                        .order_by(Coleta.id.desc()).limit(5000)).all()
+    por: dict[str, dict] = {}
+    for tarefa, status, fim, inicio, itens, erro in linhas:  # da mais nova para a mais velha
+        d = por.setdefault(tarefa, {"tarefa": tarefa, "ultima_ok": None, "ultimo_status": status, "ultimo_erro": None, "falhas_recentes": 0})
+        if d["ultimo_erro"] is None and erro and status in ("erro", "parcial", "abortada"):
+            d["ultimo_erro"] = " ".join(erro.split())[:160]
+        if status in ("erro", "abortada") and d["ultima_ok"] is None:
+            d["falhas_recentes"] += 1
+        if status in ("ok", "parcial") and d["ultima_ok"] is None:
+            d["ultima_ok"] = (fim or inicio).isoformat(timespec="minutes") if (fim or inicio) else None
+            d["itens_ultima_ok"] = itens
+            d["horas_desde_ok"] = round((agora - (fim or inicio)).total_seconds() / 3600, 1) if (fim or inicio) else None
+    out = []
+    for t in sorted(TAREFAS):
+        d = por.get(t) or {"tarefa": t, "ultima_ok": None, "ultimo_status": "nunca_coletada", "ultimo_erro": None, "falhas_recentes": 0}
+        d["situacao"] = ("nunca_coletada" if d["ultimo_status"] == "nunca_coletada" else "sem_coleta_boa" if d["ultima_ok"] is None
+                         else "falhando" if d["ultimo_status"] in ("erro", "abortada") else "ok")
+        out.append(d)
+    return {"fontes": out, "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
+            "aviso": "Mostra se a coleta rodou, não se o número publicado está certo. Dados históricos são mantidos quando uma fonte falha."}
+
+
 @router.get("/coletas/tarefas", tags=["Coletas"])
 def listar_tarefas():
     return sorted(TAREFAS)
 
 
+def _arquivo_permitido(caminho: str) -> bool:
+    from pathlib import Path
+    base = Path(settings.pasta_arquivos_coleta).resolve()
+    try:
+        return Path(caminho).resolve().is_relative_to(base)
+    except (OSError, ValueError):
+        return False
+
+
 @router.post("/coletas/{tarefa}", status_code=202, tags=["Coletas"])
-def disparar_coleta(tarefa: str, background: BackgroundTasks, params: dict | None = None,
+def disparar_coleta(tarefa: str, request: Request, background: BackgroundTasks, params: dict | None = None,
                     x_admin_token: str = Header(...)):
     import secrets
+
+    from app import limites
+    from app.seguranca import ip_cliente
     if settings.somente_leitura:
         raise HTTPException(403, "Esta API é só de leitura. As coletas rodam no agendador.")
     if settings.admin_token in ("", "troque-este-token") or len(settings.admin_token) < 24:
         raise HTTPException(403, "Defina um ADMIN_TOKEN forte (24+ caracteres) no .env para disparar coletas pela API.")
+    try:  # tentativas de adivinhar o token: no máximo 10 por minuto por IP (compartilhado entre processos)
+        if not limites.consumir(f"admin:{ip_cliente(request)}", 10, 60).ok:
+            raise HTTPException(429, "Muitas tentativas. Espere um minuto.", headers={"Retry-After": "60"})
+    except limites.LimiteIndisponivel:
+        raise HTTPException(503, "Controle de acesso indisponível.")
     if not secrets.compare_digest(x_admin_token.encode(), settings.admin_token.encode()):
         raise HTTPException(401, "Token inválido")
     if tarefa not in TAREFAS:
         raise HTTPException(404, f"Tarefa desconhecida. Use uma de: {sorted(TAREFAS)}")
     from scripts.coletar import converter_params
-    background.add_task(TAREFAS[tarefa], **converter_params(params or {}))
+    params = dict(params or {})
+    for k in ("arquivo_local", "pasta_local", "arquivo"):  # arquivos só de dentro da pasta de coleta (nada de /etc/passwd)
+        if params.get(k) is not None and not _arquivo_permitido(str(params[k])):
+            raise HTTPException(422, f"'{k}' fora da pasta permitida ({settings.pasta_arquivos_coleta}).")
+    background.add_task(TAREFAS[tarefa], **converter_params(params))
     return {"status": "agendada", "tarefa": tarefa}

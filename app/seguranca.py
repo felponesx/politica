@@ -19,7 +19,7 @@ CSP_SITE = ("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 's
             "base-uri 'self'; form-action 'self'; object-src 'none'")
 METODOS = {"GET", "HEAD", "OPTIONS", "POST"}  # a API só lê; POST é das coletas (com token) e das rotas de IA
 PESADAS = ("/busca", "/exportar", "/ia/", "/obras-gestao/lista")  # consultas caras: limite próprio, mais baixo
-SEM_LIMITE = ("/saude",)
+SEM_LIMITE = ("/saude", "/pronto")
 
 
 # ---------- IP real do cliente ----------

@@ -1,5 +1,6 @@
 import ipaddress
 import logging
+import random
 import socket
 import time
 from functools import lru_cache
@@ -73,8 +74,12 @@ def get(url: str, params: dict | None = None, headers: dict | None = None) -> ht
                 raise
             if tentativa == settings.http_retries:
                 raise
-            log.warning("Falha em %s (%s). Tentando de novo em %.0fs", url, e, espera)
-            time.sleep(espera)
+            pausa = espera * (0.5 + random.random())  # variação aleatória: vários coletores não voltam todos no mesmo instante
+            depois = (resp.headers.get("Retry-After", "") if resp is not None else "").strip()
+            if depois.isdigit():
+                pausa = min(max(pausa, float(depois)), 120.0)  # respeita o pedido da fonte (HTTP 429/503)
+            log.warning("Falha em %s (%s). Tentando de novo em %.0fs", url.split("?")[0], type(e).__name__, pausa)
+            time.sleep(pausa)
             espera *= 2
     raise RuntimeError("inalcançável")
 
@@ -89,7 +94,7 @@ def get_json(url: str, params: dict | None = None, headers: dict | None = None):
 def baixar(url: str, destino: str):
     """Download em streaming (arquivos grandes do TSE)."""
     # Accept */*: o portal gov.br (Plone) trata "Accept: application/json" como chamada à API dele e responde 401
-    with _cliente.stream("GET", url, timeout=None, headers={"Accept": "*/*"}) as r:
+    with _cliente.stream("GET", url, timeout=httpx.Timeout(60.0, read=300.0), headers={"Accept": "*/*"}) as r:
         r.raise_for_status()
         with open(destino, "wb") as f:
             for bloco in r.iter_bytes(1 << 20):

@@ -2,6 +2,7 @@
 e exportação de dados em CSV."""
 import csv
 import io
+import threading
 from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -327,6 +328,18 @@ CONJUNTOS = {
 }
 
 
+_EXPORTACOES = threading.BoundedSemaphore(3)
+
+
+def _celula(v):
+    """Valor de célula do CSV; texto que o Excel leria como fórmula (= + - @, tab, CR) ganha um apóstrofo (injeção de fórmula)."""
+    if v is None:
+        return ""
+    if isinstance(v, str) and v[:1] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + v
+    return v
+
+
 @router.get("/exportar", tags=["Exportação"])
 def conjuntos(db: Session = Depends(get_db)):
     return [{"conjunto": k, "descricao": d, "linhas": db.scalar(select(func.count()).select_from(m)),
@@ -334,9 +347,10 @@ def conjuntos(db: Session = Depends(get_db)):
 
 
 @router.get("/exportar/{conjunto}.csv", tags=["Exportação"])
-def exportar(conjunto: str, uf: str | None = None, ano: int | None = None, limite: int = Query(200_000, le=1_000_000),
-             db: Session = Depends(get_db)):
-    """CSV (separado por ponto e vírgula, UTF-8 com BOM, abre direto no Excel)."""
+def exportar(conjunto: str, uf: str | None = Query(None, max_length=2), ano: int | None = Query(None, ge=1900, le=2100),
+             limite: int = Query(200_000, ge=1, le=1_000_000), db: Session = Depends(get_db)):
+    """CSV (separado por ponto e vírgula, UTF-8 com BOM, abre direto no Excel). Textos que começariam com = + - @ levam
+    um apóstrofo na frente (o Excel não os executa como fórmula). Até 3 exportações ao mesmo tempo no servidor."""
     if conjunto not in CONJUNTOS:
         raise HTTPException(404, f"Conjunto desconhecido. Use: {', '.join(CONJUNTOS)}")
     modelo = CONJUNTOS[conjunto][0]
@@ -347,6 +361,8 @@ def exportar(conjunto: str, uf: str | None = None, ano: int | None = None, limit
     if ano and "ano" in cols:
         stmt = stmt.where(modelo.ano == ano)
     stmt = stmt.order_by(modelo.id).limit(limite)
+    if not _EXPORTACOES.acquire(blocking=False):
+        raise HTTPException(503, "Há exportações demais em andamento. Tente de novo em instantes.", headers={"Retry-After": "15"})
 
     def gerar():
         from app.db import SessionLocal
@@ -359,13 +375,14 @@ def exportar(conjunto: str, uf: str | None = None, ano: int | None = None, limit
         buf.seek(0), buf.truncate(0)
         try:
             for i, obj in enumerate(sessao.execute(stmt.execution_options(yield_per=2000)).scalars()):
-                w.writerow(["" if getattr(obj, c) is None else getattr(obj, c) for c in cols])
+                w.writerow([_celula(getattr(obj, c)) for c in cols])
                 if i % 1000 == 999:
                     yield buf.getvalue()
                     buf.seek(0), buf.truncate(0)
             yield buf.getvalue()
         finally:
             sessao.close()
+            _EXPORTACOES.release()
 
     nome = f"brasilplus-{conjunto}{'-' + uf.upper() if uf else ''}{'-' + str(ano) if ano else ''}.csv"
     return StreamingResponse(gerar(), media_type="text/csv; charset=utf-8",

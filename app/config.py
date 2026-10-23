@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     # Produção
     migrar_ao_iniciar: bool = True       # a API aplica as migrações ao subir (desligue se o usuário do banco for só leitura)
     somente_leitura: bool = False        # desliga POST /coletas na API (as coletas rodam no agendador)
+    pasta_arquivos_coleta: str = "./dados_locais"  # único lugar de onde POST /coletas aceita arquivo_local/pasta_local
     bloquear_rede_interna: bool = True   # coletores não acessam localhost, rede privada nem metadados de nuvem (SSRF)
     cache_segundos: int = 600            # respostas pesadas (contadores, obras, economia) ficam em memória por este tempo; 0 desliga
     limite_req_por_minuto: int = 120     # por IP; 0 desliga

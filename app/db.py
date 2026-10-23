@@ -36,4 +36,7 @@ def criar_tabelas():
     cfg.attributes["sem_logging"] = True
     with engine.begin() as conexao:
         cfg.attributes["connection"] = conexao
+        if engine.dialect.name == "postgresql":
+            # vários processos subindo juntos: só um migra por vez (os outros esperam e já encontram tudo aplicado)
+            conexao.exec_driver_sql("SELECT pg_advisory_xact_lock(727274001)")
         command.upgrade(cfg, "head")

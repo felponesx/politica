@@ -39,6 +39,33 @@ async def erro_inesperado(request, exc):
 
 @app.get("/saude", tags=["Sistema"])
 def saude():
+    """Vivo? Não consulta nada (é o que o Docker chama a cada 30 s)."""
+    return {"status": "ok"}
+
+
+@app.get("/pronto", tags=["Sistema"])
+def pronto():
+    """Pronto para atender? Confere o banco e se as migrações estão em dia. Só diz ok ou não (sem detalhes internos); o motivo vai para o log."""
+    from pathlib import Path
+
+    from alembic.config import Config
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import text
+
+    from app.db import engine
+    try:
+        raiz = Path(__file__).resolve().parent.parent
+        cfg = Config(str(raiz / "alembic.ini"))
+        cfg.set_main_option("script_location", str(raiz / "migrations"))
+        esperado = ScriptDirectory.from_config(cfg).get_current_head()
+        with engine.connect() as c:
+            atual = c.execute(text("SELECT version_num FROM alembic_version")).scalar()
+        if atual != esperado:
+            logging.getLogger("brasilplus.api").error("migrações atrasadas: banco em %s, código em %s", atual, esperado)
+            return JSONResponse({"status": "indisponivel"}, status_code=503)
+    except Exception as e:
+        logging.getLogger("brasilplus.api").error("banco indisponível: %s", type(e).__name__)
+        return JSONResponse({"status": "indisponivel"}, status_code=503)
     return {"status": "ok"}
 
 

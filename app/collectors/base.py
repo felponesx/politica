@@ -2,10 +2,52 @@ import logging
 from contextlib import contextmanager
 from datetime import datetime
 
-from app.db import SessionLocal
+from app.db import SessionLocal, engine
 from app.models import Coleta, Parlamentar
 
 log = logging.getLogger("brasilplus.coleta")
+
+
+class ColetaEmAndamento(RuntimeError):
+    """A mesma tarefa, com os mesmos parâmetros, já está rodando (duas coletas iguais ao mesmo tempo duplicariam trabalho e disputariam linhas)."""
+
+
+def _travar(fonte, tarefa, parametros):
+    """Trava de aviso do Postgres por (fonte, tarefa, parâmetros): é solta sozinha se o processo morrer. Devolve a conexão que a segura."""
+    if engine.dialect.name != "postgresql":
+        return None
+    import hashlib
+    chave = int.from_bytes(hashlib.sha256(f"{fonte}|{tarefa}|{sorted(parametros.items())}".encode()).digest()[:8], "big", signed=True)
+    con = engine.connect()
+    try:
+        if con.exec_driver_sql("SELECT pg_try_advisory_lock(%s)", (chave,)).scalar():
+            return con, chave
+    except Exception:
+        con.close()
+        raise
+    con.close()
+    return False
+
+
+def _soltar(trava):
+    if trava:
+        con, chave = trava
+        try:
+            con.exec_driver_sql("SELECT pg_advisory_unlock(%s)", (chave,))
+        finally:
+            con.close()
+
+
+def _fechar_abortadas(db, horas: int = 12):
+    """Coleta que ficou "rodando" há muito tempo (processo morreu) passa a "abortada", para não parecer em andamento para sempre."""
+    from datetime import timedelta
+    try:
+        db.query(Coleta).filter(Coleta.status == "rodando", Coleta.inicio < datetime.now() - timedelta(hours=horas)) \
+            .update({"status": "abortada", "fim": datetime.now(), "erro": "processo encerrado antes de terminar"}, synchronize_session=False)
+        db.commit()
+    except Exception as e:
+        log.warning("não consegui fechar coletas abortadas: %s", type(e).__name__)
+        db.rollback()
 
 
 class Contador:
@@ -22,6 +64,11 @@ class Contador:
 def registrar_coleta(fonte: str, tarefa: str, **parametros):
     """Abre sessão, registra a execução em `coletas` e grava status/erro ao final."""
     db = SessionLocal()
+    trava = _travar(fonte, tarefa, parametros)  # None = sem trava (SQLite); False = outra coleta igual em andamento
+    if trava is False:
+        db.close()
+        raise ColetaEmAndamento(f"{fonte}.{tarefa} já está rodando em outro processo")
+    _fechar_abortadas(db)
     coleta = Coleta(fonte=fonte, tarefa=tarefa, parametros={k: str(v) for k, v in parametros.items()})
     db.add(coleta)
     db.commit()
@@ -45,6 +92,7 @@ def registrar_coleta(fonte: str, tarefa: str, **parametros):
         db.add(coleta)
         db.commit()
         db.close()
+        _soltar(trava)
         log.info("Fim %s.%s: %s itens (%s)", fonte, tarefa, cont.itens, coleta.status)
 
 
