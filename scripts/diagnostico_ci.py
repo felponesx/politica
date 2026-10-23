@@ -260,23 +260,21 @@ def entrada_zip(url, nome_parte):
 
 
 def main():
-    # ObrasGov: por que só 100 obras por estado? formato da resposta, paginação e totais
-    base = "https://api.obrasgov.gestao.gov.br/obrasgov/api/projeto-investimento"
-    for params in ({"uf": "AC", "pagina": 0, "tamanhoDaPagina": 100}, {"uf": "AC", "pagina": 1, "tamanhoDaPagina": 100},
-                   {"uf": "AC", "pagina": 0, "tamanhoDaPagina": 10}, {"uf": "AC", "pagina": 1, "tamanhoDaPagina": 10},
-                   {"uf": "AC", "pagina": 0, "tamanhoDaPagina": 1000}, {"uf": "AC", "page": 1, "size": 10}):
-        r = ver(f"obrasgov {params}", base, params=params, headers={"Accept": "application/json"}, n=0)
-        try:
-            j = r.json()
-            if isinstance(j, dict):
-                print({k: (v if not isinstance(v, (list, dict)) else f"{type(v).__name__}[{len(v)}]") for k, v in j.items()}, flush=True)
-                ids = [str(o.get("idUnico") or o.get("id")) for o in (j.get("content") or j.get("data") or [])]
-                print("primeiros ids:", ids[:3], "últimos:", ids[-2:], "únicos:", len(set(ids)), flush=True)
-            else:
-                print("lista de", len(j), "primeiro id:", (j[0].get("idUnico") if j else None), flush=True)
-        except Exception as e:
-            print("sem JSON:", e, flush=True)
-    ver("obrasgov sem filtro", base, params={"pagina": 0, "tamanhoDaPagina": 1}, headers={"Accept": "application/json"}, n=600)
+    """Fontes de processos (STF, TSE, DataJud): o que abre a partir dos servidores do GitHub (o ambiente de desenvolvimento é bloqueado)."""
+    ua = {"User-Agent": UA_NAV, "Accept": "text/html,application/json,*/*"}
+    for nome, url in (("STF portal", "https://portal.stf.jus.br/"), ("STF Corte Aberta", "https://portal.stf.jus.br/hotsites/corteaberta/"),
+                      ("STF transparência", "https://transparencia.stf.jus.br/"), ("STF dados abertos", "https://dadosabertos.stf.jus.br/"),
+                      ("STF processos por parte", "https://portal.stf.jus.br/processos/"),
+                      ("STF Corte Aberta painéis", "https://portal.stf.jus.br/hotsites/corteaberta/paineis.asp"),
+                      ("TSE dados abertos", "https://dadosabertos.tse.jus.br/dataset/"),
+                      ("TSE conjuntos processos", "https://dadosabertos.tse.jus.br/api/3/action/package_search?q=processo&rows=10"),
+                      ("TSE conjuntos inelegib", "https://dadosabertos.tse.jus.br/api/3/action/package_search?q=inelegibilidade&rows=10"),
+                      ("DataJud wiki", "https://datajud-wiki.cnj.jus.br/api-publica/endpoints"),
+                      ("Câmara REP", "https://dadosabertos.camara.leg.br/api/v2/proposicoes?siglaTipo=REP&ano=2025&itens=3")):
+        ver(nome, url, headers=ua, n=900)
+    for nome, url in (("STF Corte Aberta links", "https://portal.stf.jus.br/hotsites/corteaberta/"),
+                      ("STF Corte Aberta links 2", "https://portal.stf.jus.br/hotsites/corteaberta/paineis.asp")):
+        links(nome, url, padrao=r'href="([^"]+)"', n=80, headers=ua)
 
 
 if __name__ == "__main__":
