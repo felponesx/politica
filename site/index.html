@@ -1665,6 +1665,15 @@ html,body{overflow-x:clip;max-width:100%}
 .pb-l{display:grid;grid-template-columns:minmax(90px,1fr) 150px 62px;gap:12px;align-items:center;font-size:13.5px;padding:6px 0}
 .pb-l .bar{width:150px}.pb-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pb-v{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}.pb-l.hb-top .pb-v{font-weight:700}
 @media (max-width:640px){.pb-l{grid-template-columns:minmax(70px,1fr) 110px 54px;gap:8px;font-size:13px}.pb-l .bar{width:110px}}
+/* celular: o nome de cada item aparece inteiro numa linha própria (antes ficava cortado com "…") e a barra e o valor vêm embaixo */
+@media (max-width:640px){
+ .hb-l{grid-template-columns:minmax(0,1fr) auto!important;column-gap:10px;row-gap:3px;padding:7px 0}
+ .hb-l .hb-n{grid-column:1/-1;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
+ .hb-l .hb-b{width:auto!important;min-width:0}.hb-l .hb-v{text-align:right}
+ .pb-l{grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:3px;padding:7px 0}
+ .pb-l .pb-n{grid-column:1/-1;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
+ .pb-l .bar{width:110px}
+}
 /* fichas das polícias (v1.5) */
 .pol-link{cursor:pointer;border-radius:10px;transition:background .15s}.pol-link:hover,.pol-link:focus-visible{background:var(--soft);outline:none}
 .pol-ver{font-size:12.5px;color:var(--blue);font-weight:600;margin-top:4px}
