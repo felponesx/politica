@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-22T16:51+00:00",
+ "gerado_em": "2026-10-24T02:31+00:00",
  "shards": 256,
  "bases": {
   "/parlamentares": [
@@ -1927,7 +1927,7 @@
   },
   "/proposicoes": {
    "na_copia": 4000,
-   "no_banco": 38673
+   "no_banco": 39178
   },
   "/proposicoes?tipo=PEC": {
    "na_copia": 3746,
@@ -1935,7 +1935,7 @@
   },
   "/proposicoes?tipo=PLP": {
    "na_copia": 4000,
-   "no_banco": 4886
+   "no_banco": 4887
   },
   "/proposicoes?tipo=MPV": {
    "na_copia": 1398,
@@ -1943,27 +1943,27 @@
   },
   "/proposicoes?tipo=PDL": {
    "na_copia": 4000,
-   "no_banco": 5864
+   "no_banco": 5865
   },
   "/proposicoes?tipo=PDC": {
    "na_copia": 4000,
    "no_banco": 13525
   },
   "/legislacao": {
-   "na_copia": 1047,
-   "no_banco": 1047
+   "na_copia": 1063,
+   "no_banco": 1063
   },
   "/contratos?ordenar=valor": {
    "na_copia": 3000,
-   "no_banco": 86937
+   "no_banco": 103715
   },
   "/contratos?ordenar=data": {
    "na_copia": 3000,
-   "no_banco": 86937
+   "no_banco": 103715
   },
   "/obras": {
    "na_copia": 3000,
-   "no_banco": 74441
+   "no_banco": 81401
   },
   "/candidatos?cargo=DEPUTADO ESTADUAL,DEPUTADO DISTRITAL&eleitos=true": {
    "na_copia": 1059,
@@ -2015,7 +2015,7 @@
   },
   "/parlamentares/3/despesas": {
    "na_copia": 50,
-   "no_banco": 294
+   "no_banco": 298
   },
   "/parlamentares/4/despesas": {
    "na_copia": 50,
@@ -2023,11 +2023,11 @@
   },
   "/parlamentares/5/despesas": {
    "na_copia": 50,
-   "no_banco": 139
+   "no_banco": 143
   },
   "/parlamentares/6/despesas": {
    "na_copia": 50,
-   "no_banco": 272
+   "no_banco": 273
   },
   "/parlamentares/7/despesas": {
    "na_copia": 50,
@@ -2035,19 +2035,19 @@
   },
   "/parlamentares/8/despesas": {
    "na_copia": 50,
-   "no_banco": 253
+   "no_banco": 261
   },
   "/parlamentares/9/despesas": {
    "na_copia": 50,
-   "no_banco": 668
+   "no_banco": 669
   },
   "/parlamentares/10/despesas": {
    "na_copia": 50,
-   "no_banco": 463
+   "no_banco": 464
   },
   "/parlamentares/11/despesas": {
    "na_copia": 50,
-   "no_banco": 149
+   "no_banco": 151
   },
   "/parlamentares/12/despesas": {
    "na_copia": 50,
@@ -2059,7 +2059,7 @@
   },
   "/parlamentares/514/despesas": {
    "na_copia": 50,
-   "no_banco": 126
+   "no_banco": 128
   },
   "/parlamentares/14/despesas": {
    "na_copia": 19,
@@ -2071,7 +2071,7 @@
   },
   "/parlamentares/16/despesas": {
    "na_copia": 50,
-   "no_banco": 856
+   "no_banco": 859
   },
   "/parlamentares/17/despesas": {
    "na_copia": 50,
@@ -2079,7 +2079,7 @@
   },
   "/parlamentares/515/despesas": {
    "na_copia": 50,
-   "no_banco": 135
+   "no_banco": 153
   },
   "/parlamentares/19/despesas": {
    "na_copia": 50,
@@ -2091,7 +2091,7 @@
   },
   "/parlamentares/21/despesas": {
    "na_copia": 50,
-   "no_banco": 1065
+   "no_banco": 1067
   },
   "/parlamentares/18/despesas": {
    "na_copia": 50,
@@ -2099,7 +2099,7 @@
   },
   "/parlamentares/22/despesas": {
    "na_copia": 50,
-   "no_banco": 93
+   "no_banco": 102
   },
   "/parlamentares/23/despesas": {
    "na_copia": 50,
@@ -2126,12 +2126,12 @@
    "no_banco": 263
   },
   "/parlamentares/29/despesas": {
-   "na_copia": 11,
-   "no_banco": 11
+   "na_copia": 12,
+   "no_banco": 12
   },
   "/parlamentares/30/despesas": {
    "na_copia": 50,
-   "no_banco": 181
+   "no_banco": 190
   },
   "/parlamentares/31/despesas": {
    "na_copia": 0,
@@ -2139,7 +2139,7 @@
   },
   "/parlamentares/32/despesas": {
    "na_copia": 50,
-   "no_banco": 410
+   "no_banco": 411
   },
   "/parlamentares/33/despesas": {
    "na_copia": 50,
@@ -2147,15 +2147,15 @@
   },
   "/parlamentares/516/despesas": {
    "na_copia": 50,
-   "no_banco": 77
+   "no_banco": 88
   },
   "/parlamentares/34/despesas": {
    "na_copia": 50,
-   "no_banco": 507
+   "no_banco": 508
   },
   "/parlamentares/35/despesas": {
    "na_copia": 50,
-   "no_banco": 205
+   "no_banco": 208
   },
   "/parlamentares/36/despesas": {
    "na_copia": 50,
@@ -2167,7 +2167,7 @@
   },
   "/parlamentares/38/despesas": {
    "na_copia": 50,
-   "no_banco": 131
+   "no_banco": 132
   },
   "/parlamentares/39/despesas": {
    "na_copia": 19,
@@ -2179,11 +2179,11 @@
   },
   "/parlamentares/40/despesas": {
    "na_copia": 50,
-   "no_banco": 135
+   "no_banco": 136
   },
   "/parlamentares/517/despesas": {
    "na_copia": 50,
-   "no_banco": 56
+   "no_banco": 60
   },
   "/parlamentares/42/despesas": {
    "na_copia": 50,
@@ -2195,11 +2195,11 @@
   },
   "/parlamentares/44/despesas": {
    "na_copia": 50,
-   "no_banco": 273
+   "no_banco": 281
   },
   "/parlamentares/45/despesas": {
    "na_copia": 50,
-   "no_banco": 144
+   "no_banco": 146
   },
   "/parlamentares/46/despesas": {
    "na_copia": 50,
@@ -2211,11 +2211,11 @@
   },
   "/parlamentares/48/despesas": {
    "na_copia": 50,
-   "no_banco": 349
+   "no_banco": 351
   },
   "/parlamentares/49/despesas": {
    "na_copia": 50,
-   "no_banco": 231
+   "no_banco": 241
   },
   "/parlamentares/50/despesas": {
    "na_copia": 50,
@@ -2223,11 +2223,11 @@
   },
   "/parlamentares/51/despesas": {
    "na_copia": 50,
-   "no_banco": 399
+   "no_banco": 402
   },
   "/parlamentares/518/despesas": {
    "na_copia": 50,
-   "no_banco": 235
+   "no_banco": 263
   },
   "/parlamentares/52/despesas": {
    "na_copia": 50,
@@ -2239,7 +2239,7 @@
   },
   "/parlamentares/54/despesas": {
    "na_copia": 50,
-   "no_banco": 366
+   "no_banco": 375
   },
   "/parlamentares/55/despesas": {
    "na_copia": 42,
@@ -2255,7 +2255,7 @@
   },
   "/parlamentares/58/despesas": {
    "na_copia": 50,
-   "no_banco": 569
+   "no_banco": 581
   },
   "/parlamentares/59/despesas": {
    "na_copia": 50,
@@ -2263,7 +2263,7 @@
   },
   "/parlamentares/60/despesas": {
    "na_copia": 50,
-   "no_banco": 163
+   "no_banco": 164
   },
   "/parlamentares/61/despesas": {
    "na_copia": 50,
@@ -2271,7 +2271,7 @@
   },
   "/parlamentares/519/despesas": {
    "na_copia": 50,
-   "no_banco": 55
+   "no_banco": 61
   },
   "/parlamentares/62/despesas": {
    "na_copia": 50,
@@ -2279,19 +2279,19 @@
   },
   "/parlamentares/63/despesas": {
    "na_copia": 50,
-   "no_banco": 335
+   "no_banco": 336
   },
   "/parlamentares/64/despesas": {
    "na_copia": 50,
-   "no_banco": 452
+   "no_banco": 453
   },
   "/parlamentares/65/despesas": {
    "na_copia": 50,
-   "no_banco": 263
+   "no_banco": 267
   },
   "/parlamentares/66/despesas": {
    "na_copia": 50,
-   "no_banco": 611
+   "no_banco": 613
   },
   "/parlamentares/67/despesas": {
    "na_copia": 50,
@@ -2299,7 +2299,7 @@
   },
   "/parlamentares/68/despesas": {
    "na_copia": 50,
-   "no_banco": 393
+   "no_banco": 395
   },
   "/parlamentares/69/despesas": {
    "na_copia": 50,
@@ -2311,11 +2311,11 @@
   },
   "/parlamentares/71/despesas": {
    "na_copia": 50,
-   "no_banco": 321
+   "no_banco": 323
   },
   "/parlamentares/520/despesas": {
    "na_copia": 50,
-   "no_banco": 120
+   "no_banco": 139
   },
   "/parlamentares/72/despesas": {
    "na_copia": 50,
@@ -2323,15 +2323,15 @@
   },
   "/parlamentares/73/despesas": {
    "na_copia": 50,
-   "no_banco": 82
+   "no_banco": 89
   },
   "/parlamentares/74/despesas": {
    "na_copia": 50,
-   "no_banco": 375
+   "no_banco": 376
   },
   "/parlamentares/75/despesas": {
    "na_copia": 50,
-   "no_banco": 238
+   "no_banco": 247
   },
   "/parlamentares/76/despesas": {
    "na_copia": 50,
@@ -2339,15 +2339,15 @@
   },
   "/parlamentares/521/despesas": {
    "na_copia": 50,
-   "no_banco": 103
+   "no_banco": 123
   },
   "/parlamentares/77/despesas": {
    "na_copia": 50,
-   "no_banco": 413
+   "no_banco": 416
   },
   "/parlamentares/78/despesas": {
    "na_copia": 50,
-   "no_banco": 276
+   "no_banco": 277
   },
   "/parlamentares/79/despesas": {
    "na_copia": 50,
@@ -2355,27 +2355,27 @@
   },
   "/parlamentares/522/despesas": {
    "na_copia": 50,
-   "no_banco": 482
+   "no_banco": 507
   },
   "/parlamentares/80/despesas": {
    "na_copia": 50,
-   "no_banco": 79
+   "no_banco": 82
   },
   "/parlamentares/81/despesas": {
    "na_copia": 50,
-   "no_banco": 606
+   "no_banco": 611
   },
   "/parlamentares/523/despesas": {
    "na_copia": 50,
-   "no_banco": 394
+   "no_banco": 413
   },
   "/parlamentares/82/despesas": {
    "na_copia": 50,
-   "no_banco": 387
+   "no_banco": 390
   },
   "/parlamentares/83/despesas": {
    "na_copia": 50,
-   "no_banco": 481
+   "no_banco": 482
   },
   "/parlamentares/84/despesas": {
    "na_copia": 50,
@@ -2387,27 +2387,27 @@
   },
   "/parlamentares/86/despesas": {
    "na_copia": 50,
-   "no_banco": 842
+   "no_banco": 859
   },
   "/parlamentares/87/despesas": {
    "na_copia": 50,
-   "no_banco": 224
+   "no_banco": 225
   },
   "/parlamentares/88/despesas": {
-   "na_copia": 44,
-   "no_banco": 44
+   "na_copia": 46,
+   "no_banco": 46
   },
   "/parlamentares/89/despesas": {
    "na_copia": 50,
-   "no_banco": 213
+   "no_banco": 215
   },
   "/parlamentares/90/despesas": {
-   "na_copia": 18,
-   "no_banco": 18
+   "na_copia": 19,
+   "no_banco": 19
   },
   "/parlamentares/91/despesas": {
    "na_copia": 50,
-   "no_banco": 146
+   "no_banco": 147
   },
   "/parlamentares/92/despesas": {
    "na_copia": 50,
@@ -2418,8 +2418,8 @@
    "no_banco": 275
   },
   "/parlamentares/524/despesas": {
-   "na_copia": 43,
-   "no_banco": 43
+   "na_copia": 48,
+   "no_banco": 48
   },
   "/parlamentares/94/despesas": {
    "na_copia": 50,
@@ -2427,11 +2427,11 @@
   },
   "/parlamentares/525/despesas": {
    "na_copia": 50,
-   "no_banco": 160
+   "no_banco": 170
   },
   "/parlamentares/526/despesas": {
    "na_copia": 50,
-   "no_banco": 68
+   "no_banco": 73
   },
   "/parlamentares/95/despesas": {
    "na_copia": 50,
@@ -2447,23 +2447,23 @@
   },
   "/parlamentares/527/despesas": {
    "na_copia": 50,
-   "no_banco": 98
+   "no_banco": 111
   },
   "/parlamentares/98/despesas": {
    "na_copia": 50,
-   "no_banco": 220
+   "no_banco": 222
   },
   "/parlamentares/99/despesas": {
    "na_copia": 50,
-   "no_banco": 414
+   "no_banco": 417
   },
   "/parlamentares/528/despesas": {
    "na_copia": 50,
-   "no_banco": 296
+   "no_banco": 305
   },
   "/parlamentares/100/despesas": {
    "na_copia": 50,
-   "no_banco": 276
+   "no_banco": 277
   },
   "/parlamentares/101/despesas": {
    "na_copia": 50,
@@ -2475,7 +2475,7 @@
   },
   "/parlamentares/103/despesas": {
    "na_copia": 50,
-   "no_banco": 212
+   "no_banco": 215
   },
   "/parlamentares/104/despesas": {
    "na_copia": 50,
@@ -2503,7 +2503,7 @@
   },
   "/parlamentares/529/despesas": {
    "na_copia": 50,
-   "no_banco": 363
+   "no_banco": 409
   },
   "/parlamentares/111/despesas": {
    "na_copia": 23,
@@ -2523,7 +2523,7 @@
   },
   "/parlamentares/114/despesas": {
    "na_copia": 50,
-   "no_banco": 117
+   "no_banco": 118
   },
   "/parlamentares/115/despesas": {
    "na_copia": 50,
@@ -2539,23 +2539,23 @@
   },
   "/parlamentares/117/despesas": {
    "na_copia": 50,
-   "no_banco": 359
+   "no_banco": 360
   },
   "/parlamentares/530/despesas": {
    "na_copia": 50,
-   "no_banco": 162
+   "no_banco": 183
   },
   "/parlamentares/118/despesas": {
    "na_copia": 50,
-   "no_banco": 577
+   "no_banco": 579
   },
   "/parlamentares/121/despesas": {
    "na_copia": 50,
-   "no_banco": 214
+   "no_banco": 219
   },
   "/parlamentares/122/despesas": {
    "na_copia": 50,
-   "no_banco": 465
+   "no_banco": 466
   },
   "/parlamentares/531/despesas": {
    "na_copia": 21,
@@ -2575,11 +2575,11 @@
   },
   "/parlamentares/125/despesas": {
    "na_copia": 50,
-   "no_banco": 252
+   "no_banco": 253
   },
   "/parlamentares/126/despesas": {
    "na_copia": 50,
-   "no_banco": 499
+   "no_banco": 506
   },
   "/parlamentares/127/despesas": {
    "na_copia": 50,
@@ -2607,23 +2607,23 @@
   },
   "/parlamentares/133/despesas": {
    "na_copia": 50,
-   "no_banco": 383
+   "no_banco": 384
   },
   "/parlamentares/134/despesas": {
    "na_copia": 50,
-   "no_banco": 262
+   "no_banco": 272
   },
   "/parlamentares/135/despesas": {
    "na_copia": 50,
-   "no_banco": 241
+   "no_banco": 251
   },
   "/parlamentares/136/despesas": {
    "na_copia": 50,
-   "no_banco": 375
+   "no_banco": 385
   },
   "/parlamentares/137/despesas": {
    "na_copia": 50,
-   "no_banco": 740
+   "no_banco": 743
   },
   "/parlamentares/138/despesas": {
    "na_copia": 10,
@@ -2631,7 +2631,7 @@
   },
   "/parlamentares/139/despesas": {
    "na_copia": 50,
-   "no_banco": 117
+   "no_banco": 119
   },
   "/parlamentares/140/despesas": {
    "na_copia": 50,
@@ -2639,11 +2639,11 @@
   },
   "/parlamentares/141/despesas": {
    "na_copia": 50,
-   "no_banco": 832
+   "no_banco": 833
   },
   "/parlamentares/142/despesas": {
    "na_copia": 50,
-   "no_banco": 299
+   "no_banco": 300
   },
   "/parlamentares/143/despesas": {
    "na_copia": 28,
@@ -2654,24 +2654,24 @@
    "no_banco": 877
   },
   "/parlamentares/145/despesas": {
-   "na_copia": 32,
-   "no_banco": 32
+   "na_copia": 42,
+   "no_banco": 42
   },
   "/parlamentares/146/despesas": {
-   "na_copia": 39,
-   "no_banco": 39
+   "na_copia": 40,
+   "no_banco": 40
   },
   "/parlamentares/147/despesas": {
    "na_copia": 50,
-   "no_banco": 606
+   "no_banco": 611
   },
   "/parlamentares/148/despesas": {
-   "na_copia": 49,
-   "no_banco": 49
+   "na_copia": 50,
+   "no_banco": 51
   },
   "/parlamentares/149/despesas": {
    "na_copia": 50,
-   "no_banco": 150
+   "no_banco": 151
   },
   "/parlamentares/160/despesas": {
    "na_copia": 38,
@@ -2679,7 +2679,7 @@
   },
   "/parlamentares/533/despesas": {
    "na_copia": 50,
-   "no_banco": 129
+   "no_banco": 132
   },
   "/parlamentares/151/despesas": {
    "na_copia": 50,
@@ -2703,11 +2703,11 @@
   },
   "/parlamentares/532/despesas": {
    "na_copia": 50,
-   "no_banco": 164
+   "no_banco": 186
   },
   "/parlamentares/155/despesas": {
    "na_copia": 50,
-   "no_banco": 101
+   "no_banco": 104
   },
   "/parlamentares/156/despesas": {
    "na_copia": 50,
@@ -2715,23 +2715,23 @@
   },
   "/parlamentares/157/despesas": {
    "na_copia": 50,
-   "no_banco": 281
+   "no_banco": 309
   },
   "/parlamentares/158/despesas": {
    "na_copia": 50,
-   "no_banco": 65
+   "no_banco": 73
   },
   "/parlamentares/159/despesas": {
    "na_copia": 50,
-   "no_banco": 318
+   "no_banco": 322
   },
   "/parlamentares/161/despesas": {
-   "na_copia": 44,
-   "no_banco": 44
+   "na_copia": 50,
+   "no_banco": 52
   },
   "/parlamentares/162/despesas": {
    "na_copia": 50,
-   "no_banco": 55
+   "no_banco": 62
   },
   "/parlamentares/163/despesas": {
    "na_copia": 50,
@@ -2739,11 +2739,11 @@
   },
   "/parlamentares/164/despesas": {
    "na_copia": 50,
-   "no_banco": 176
+   "no_banco": 180
   },
   "/parlamentares/534/despesas": {
    "na_copia": 50,
-   "no_banco": 57
+   "no_banco": 59
   },
   "/parlamentares/165/despesas": {
    "na_copia": 50,
@@ -2755,7 +2755,7 @@
   },
   "/parlamentares/535/despesas": {
    "na_copia": 50,
-   "no_banco": 78
+   "no_banco": 89
   },
   "/parlamentares/166/despesas": {
    "na_copia": 50,
@@ -2775,7 +2775,7 @@
   },
   "/parlamentares/537/despesas": {
    "na_copia": 50,
-   "no_banco": 149
+   "no_banco": 184
   },
   "/parlamentares/169/despesas": {
    "na_copia": 50,
@@ -2787,11 +2787,11 @@
   },
   "/parlamentares/171/despesas": {
    "na_copia": 50,
-   "no_banco": 219
+   "no_banco": 228
   },
   "/parlamentares/172/despesas": {
    "na_copia": 50,
-   "no_banco": 76
+   "no_banco": 85
   },
   "/parlamentares/173/despesas": {
    "na_copia": 50,
@@ -2799,19 +2799,19 @@
   },
   "/parlamentares/174/despesas": {
    "na_copia": 50,
-   "no_banco": 155
+   "no_banco": 164
   },
   "/parlamentares/175/despesas": {
    "na_copia": 50,
-   "no_banco": 616
+   "no_banco": 620
   },
   "/parlamentares/176/despesas": {
    "na_copia": 50,
-   "no_banco": 334
+   "no_banco": 349
   },
   "/parlamentares/538/despesas": {
    "na_copia": 50,
-   "no_banco": 395
+   "no_banco": 411
   },
   "/parlamentares/177/despesas": {
    "na_copia": 16,
@@ -2823,11 +2823,11 @@
   },
   "/parlamentares/179/despesas": {
    "na_copia": 50,
-   "no_banco": 237
+   "no_banco": 246
   },
   "/parlamentares/539/despesas": {
    "na_copia": 50,
-   "no_banco": 568
+   "no_banco": 608
   },
   "/parlamentares/180/despesas": {
    "na_copia": 50,
@@ -2847,7 +2847,7 @@
   },
   "/parlamentares/184/despesas": {
    "na_copia": 50,
-   "no_banco": 193
+   "no_banco": 202
   },
   "/parlamentares/185/despesas": {
    "na_copia": 50,
@@ -2859,7 +2859,7 @@
   },
   "/parlamentares/187/despesas": {
    "na_copia": 50,
-   "no_banco": 390
+   "no_banco": 400
   },
   "/parlamentares/188/despesas": {
    "na_copia": 50,
@@ -2867,11 +2867,11 @@
   },
   "/parlamentares/189/despesas": {
    "na_copia": 50,
-   "no_banco": 307
+   "no_banco": 310
   },
   "/parlamentares/190/despesas": {
    "na_copia": 50,
-   "no_banco": 236
+   "no_banco": 237
   },
   "/parlamentares/191/despesas": {
    "na_copia": 50,
@@ -2879,7 +2879,7 @@
   },
   "/parlamentares/192/despesas": {
    "na_copia": 50,
-   "no_banco": 283
+   "no_banco": 295
   },
   "/parlamentares/193/despesas": {
    "na_copia": 50,
@@ -2887,7 +2887,7 @@
   },
   "/parlamentares/540/despesas": {
    "na_copia": 50,
-   "no_banco": 314
+   "no_banco": 339
   },
   "/parlamentares/194/despesas": {
    "na_copia": 50,
@@ -2895,11 +2895,11 @@
   },
   "/parlamentares/195/despesas": {
    "na_copia": 50,
-   "no_banco": 160
+   "no_banco": 164
   },
   "/parlamentares/196/despesas": {
    "na_copia": 50,
-   "no_banco": 208
+   "no_banco": 209
   },
   "/parlamentares/197/despesas": {
    "na_copia": 50,
@@ -2907,7 +2907,7 @@
   },
   "/parlamentares/198/despesas": {
    "na_copia": 50,
-   "no_banco": 178
+   "no_banco": 179
   },
   "/parlamentares/199/despesas": {
    "na_copia": 50,
@@ -2915,11 +2915,11 @@
   },
   "/parlamentares/541/despesas": {
    "na_copia": 50,
-   "no_banco": 299
+   "no_banco": 326
   },
   "/parlamentares/542/despesas": {
    "na_copia": 50,
-   "no_banco": 85
+   "no_banco": 92
   },
   "/parlamentares/200/despesas": {
    "na_copia": 50,
@@ -2931,11 +2931,11 @@
   },
   "/parlamentares/202/despesas": {
    "na_copia": 50,
-   "no_banco": 661
+   "no_banco": 666
   },
   "/parlamentares/203/despesas": {
    "na_copia": 50,
-   "no_banco": 365
+   "no_banco": 366
   },
   "/parlamentares/204/despesas": {
    "na_copia": 50,
@@ -2951,19 +2951,19 @@
   },
   "/parlamentares/207/despesas": {
    "na_copia": 50,
-   "no_banco": 330
+   "no_banco": 332
   },
   "/parlamentares/208/despesas": {
    "na_copia": 50,
-   "no_banco": 243
+   "no_banco": 252
   },
   "/parlamentares/209/despesas": {
    "na_copia": 50,
-   "no_banco": 405
+   "no_banco": 414
   },
   "/parlamentares/210/despesas": {
    "na_copia": 50,
-   "no_banco": 188
+   "no_banco": 190
   },
   "/parlamentares/211/despesas": {
    "na_copia": 50,
@@ -2979,7 +2979,7 @@
   },
   "/parlamentares/214/despesas": {
    "na_copia": 50,
-   "no_banco": 77
+   "no_banco": 78
   },
   "/parlamentares/215/despesas": {
    "na_copia": 7,
@@ -2987,7 +2987,7 @@
   },
   "/parlamentares/216/despesas": {
    "na_copia": 50,
-   "no_banco": 246
+   "no_banco": 248
   },
   "/parlamentares/217/despesas": {
    "na_copia": 50,
@@ -2995,11 +2995,11 @@
   },
   "/parlamentares/218/despesas": {
    "na_copia": 50,
-   "no_banco": 250
+   "no_banco": 259
   },
   "/parlamentares/543/despesas": {
    "na_copia": 50,
-   "no_banco": 604
+   "no_banco": 608
   },
   "/parlamentares/219/despesas": {
    "na_copia": 50,
@@ -3015,7 +3015,7 @@
   },
   "/parlamentares/601/despesas": {
    "na_copia": 50,
-   "no_banco": 89
+   "no_banco": 92
   },
   "/parlamentares/222/despesas": {
    "na_copia": 50,
@@ -3027,7 +3027,7 @@
   },
   "/parlamentares/224/despesas": {
    "na_copia": 50,
-   "no_banco": 157
+   "no_banco": 161
   },
   "/parlamentares/225/despesas": {
    "na_copia": 50,
@@ -3035,7 +3035,7 @@
   },
   "/parlamentares/226/despesas": {
    "na_copia": 50,
-   "no_banco": 67
+   "no_banco": 70
   },
   "/parlamentares/227/despesas": {
    "na_copia": 15,
@@ -3047,7 +3047,7 @@
   },
   "/parlamentares/544/despesas": {
    "na_copia": 50,
-   "no_banco": 386
+   "no_banco": 434
   },
   "/parlamentares/229/despesas": {
    "na_copia": 50,
@@ -3055,15 +3055,15 @@
   },
   "/parlamentares/230/despesas": {
    "na_copia": 50,
-   "no_banco": 446
+   "no_banco": 455
   },
   "/parlamentares/231/despesas": {
    "na_copia": 50,
-   "no_banco": 272
+   "no_banco": 274
   },
   "/parlamentares/232/despesas": {
    "na_copia": 50,
-   "no_banco": 208
+   "no_banco": 209
   },
   "/parlamentares/233/despesas": {
    "na_copia": 50,
@@ -3087,15 +3087,15 @@
   },
   "/parlamentares/237/despesas": {
    "na_copia": 50,
-   "no_banco": 139
+   "no_banco": 140
   },
   "/parlamentares/545/despesas": {
    "na_copia": 50,
-   "no_banco": 649
+   "no_banco": 685
   },
   "/parlamentares/238/despesas": {
    "na_copia": 50,
-   "no_banco": 137
+   "no_banco": 142
   },
   "/parlamentares/239/despesas": {
    "na_copia": 49,
@@ -3115,11 +3115,11 @@
   },
   "/parlamentares/546/despesas": {
    "na_copia": 50,
-   "no_banco": 215
+   "no_banco": 223
   },
   "/parlamentares/242/despesas": {
    "na_copia": 50,
-   "no_banco": 286
+   "no_banco": 295
   },
   "/parlamentares/243/despesas": {
    "na_copia": 50,
@@ -3131,23 +3131,23 @@
   },
   "/parlamentares/547/despesas": {
    "na_copia": 50,
-   "no_banco": 344
+   "no_banco": 369
   },
   "/parlamentares/245/despesas": {
    "na_copia": 50,
-   "no_banco": 137
+   "no_banco": 139
   },
   "/parlamentares/246/despesas": {
    "na_copia": 50,
    "no_banco": 57
   },
   "/parlamentares/548/despesas": {
-   "na_copia": 20,
-   "no_banco": 20
+   "na_copia": 22,
+   "no_banco": 22
   },
   "/parlamentares/247/despesas": {
    "na_copia": 50,
-   "no_banco": 219
+   "no_banco": 228
   },
   "/parlamentares/549/despesas": {
    "na_copia": 12,
@@ -3155,23 +3155,23 @@
   },
   "/parlamentares/248/despesas": {
    "na_copia": 50,
-   "no_banco": 95
+   "no_banco": 97
   },
   "/parlamentares/550/despesas": {
    "na_copia": 50,
-   "no_banco": 315
+   "no_banco": 357
   },
   "/parlamentares/249/despesas": {
    "na_copia": 50,
-   "no_banco": 141
+   "no_banco": 143
   },
   "/parlamentares/551/despesas": {
    "na_copia": 50,
-   "no_banco": 290
+   "no_banco": 302
   },
   "/parlamentares/552/despesas": {
    "na_copia": 50,
-   "no_banco": 175
+   "no_banco": 185
   },
   "/parlamentares/250/despesas": {
    "na_copia": 45,
@@ -3183,7 +3183,7 @@
   },
   "/parlamentares/252/despesas": {
    "na_copia": 50,
-   "no_banco": 122
+   "no_banco": 125
   },
   "/parlamentares/600/despesas": {
    "na_copia": 0,
@@ -3191,15 +3191,15 @@
   },
   "/parlamentares/253/despesas": {
    "na_copia": 50,
-   "no_banco": 120
+   "no_banco": 121
   },
   "/parlamentares/254/despesas": {
    "na_copia": 50,
-   "no_banco": 519
+   "no_banco": 521
   },
   "/parlamentares/255/despesas": {
    "na_copia": 50,
-   "no_banco": 149
+   "no_banco": 151
   },
   "/parlamentares/779/despesas": {
    "na_copia": 50,
@@ -3227,7 +3227,7 @@
   },
   "/parlamentares/261/despesas": {
    "na_copia": 50,
-   "no_banco": 370
+   "no_banco": 373
   },
   "/parlamentares/553/despesas": {
    "na_copia": 0,
@@ -3235,19 +3235,19 @@
   },
   "/parlamentares/554/despesas": {
    "na_copia": 50,
-   "no_banco": 110
+   "no_banco": 149
   },
   "/parlamentares/262/despesas": {
    "na_copia": 50,
-   "no_banco": 719
+   "no_banco": 728
   },
   "/parlamentares/263/despesas": {
-   "na_copia": 38,
-   "no_banco": 38
+   "na_copia": 47,
+   "no_banco": 47
   },
   "/parlamentares/264/despesas": {
    "na_copia": 50,
-   "no_banco": 63
+   "no_banco": 71
   },
   "/parlamentares/269/despesas": {
    "na_copia": 50,
@@ -3283,7 +3283,7 @@
   },
   "/parlamentares/273/despesas": {
    "na_copia": 50,
-   "no_banco": 207
+   "no_banco": 213
   },
   "/parlamentares/275/despesas": {
    "na_copia": 50,
@@ -3291,7 +3291,7 @@
   },
   "/parlamentares/274/despesas": {
    "na_copia": 50,
-   "no_banco": 333
+   "no_banco": 334
   },
   "/parlamentares/276/despesas": {
    "na_copia": 50,
@@ -3335,7 +3335,7 @@
   },
   "/parlamentares/555/despesas": {
    "na_copia": 50,
-   "no_banco": 81
+   "no_banco": 84
   },
   "/parlamentares/286/despesas": {
    "na_copia": 50,
@@ -3343,15 +3343,15 @@
   },
   "/parlamentares/287/despesas": {
    "na_copia": 50,
-   "no_banco": 184
+   "no_banco": 185
   },
   "/parlamentares/288/despesas": {
-   "na_copia": 34,
-   "no_banco": 34
+   "na_copia": 38,
+   "no_banco": 38
   },
   "/parlamentares/556/despesas": {
    "na_copia": 50,
-   "no_banco": 192
+   "no_banco": 213
   },
   "/parlamentares/289/despesas": {
    "na_copia": 50,
@@ -3359,11 +3359,11 @@
   },
   "/parlamentares/290/despesas": {
    "na_copia": 50,
-   "no_banco": 399
+   "no_banco": 402
   },
   "/parlamentares/291/despesas": {
    "na_copia": 50,
-   "no_banco": 475
+   "no_banco": 480
   },
   "/parlamentares/557/despesas": {
    "na_copia": 0,
@@ -3375,7 +3375,7 @@
   },
   "/parlamentares/605/despesas": {
    "na_copia": 50,
-   "no_banco": 192
+   "no_banco": 194
   },
   "/parlamentares/293/despesas": {
    "na_copia": 50,
@@ -3391,23 +3391,23 @@
   },
   "/parlamentares/296/despesas": {
    "na_copia": 50,
-   "no_banco": 715
+   "no_banco": 716
   },
   "/parlamentares/297/despesas": {
    "na_copia": 50,
-   "no_banco": 318
+   "no_banco": 361
   },
   "/parlamentares/298/despesas": {
    "na_copia": 50,
    "no_banco": 76
   },
   "/parlamentares/607/despesas": {
-   "na_copia": 6,
-   "no_banco": 6
+   "na_copia": 15,
+   "no_banco": 15
   },
   "/parlamentares/558/despesas": {
    "na_copia": 50,
-   "no_banco": 181
+   "no_banco": 201
   },
   "/parlamentares/299/despesas": {
    "na_copia": 22,
@@ -3427,11 +3427,11 @@
   },
   "/parlamentares/303/despesas": {
    "na_copia": 50,
-   "no_banco": 475
+   "no_banco": 477
   },
   "/parlamentares/780/despesas": {
    "na_copia": 50,
-   "no_banco": 66
+   "no_banco": 71
   },
   "/parlamentares/304/despesas": {
    "na_copia": 50,
@@ -3443,7 +3443,7 @@
   },
   "/parlamentares/559/despesas": {
    "na_copia": 50,
-   "no_banco": 253
+   "no_banco": 264
   },
   "/parlamentares/305/despesas": {
    "na_copia": 50,
@@ -3451,15 +3451,15 @@
   },
   "/parlamentares/316/despesas": {
    "na_copia": 50,
-   "no_banco": 248
+   "no_banco": 261
   },
   "/parlamentares/307/despesas": {
    "na_copia": 50,
-   "no_banco": 898
+   "no_banco": 904
   },
   "/parlamentares/308/despesas": {
    "na_copia": 50,
-   "no_banco": 193
+   "no_banco": 199
   },
   "/parlamentares/309/despesas": {
    "na_copia": 50,
@@ -3467,11 +3467,11 @@
   },
   "/parlamentares/310/despesas": {
    "na_copia": 50,
-   "no_banco": 246
+   "no_banco": 248
   },
   "/parlamentares/311/despesas": {
    "na_copia": 50,
-   "no_banco": 161
+   "no_banco": 171
   },
   "/parlamentares/312/despesas": {
    "na_copia": 50,
@@ -3479,7 +3479,7 @@
   },
   "/parlamentares/317/despesas": {
    "na_copia": 50,
-   "no_banco": 196
+   "no_banco": 198
   },
   "/parlamentares/313/despesas": {
    "na_copia": 50,
@@ -3503,23 +3503,23 @@
   },
   "/parlamentares/560/despesas": {
    "na_copia": 50,
-   "no_banco": 140
+   "no_banco": 163
   },
   "/parlamentares/561/despesas": {
    "na_copia": 50,
-   "no_banco": 161
+   "no_banco": 176
   },
   "/parlamentares/320/despesas": {
    "na_copia": 50,
-   "no_banco": 129
+   "no_banco": 132
   },
   "/parlamentares/322/despesas": {
    "na_copia": 50,
-   "no_banco": 289
+   "no_banco": 294
   },
   "/parlamentares/562/despesas": {
    "na_copia": 50,
-   "no_banco": 71
+   "no_banco": 78
   },
   "/parlamentares/323/despesas": {
    "na_copia": 50,
@@ -3531,7 +3531,7 @@
   },
   "/parlamentares/325/despesas": {
    "na_copia": 50,
-   "no_banco": 172
+   "no_banco": 178
   },
   "/parlamentares/326/despesas": {
    "na_copia": 50,
@@ -3547,11 +3547,11 @@
   },
   "/parlamentares/328/despesas": {
    "na_copia": 50,
-   "no_banco": 469
+   "no_banco": 478
   },
   "/parlamentares/563/despesas": {
-   "na_copia": 49,
-   "no_banco": 49
+   "na_copia": 50,
+   "no_banco": 50
   },
   "/parlamentares/329/despesas": {
    "na_copia": 50,
@@ -3570,20 +3570,20 @@
    "no_banco": 690
   },
   "/parlamentares/333/despesas": {
-   "na_copia": 24,
-   "no_banco": 24
+   "na_copia": 33,
+   "no_banco": 33
   },
   "/parlamentares/334/despesas": {
    "na_copia": 50,
-   "no_banco": 142
+   "no_banco": 146
   },
   "/parlamentares/565/despesas": {
    "na_copia": 50,
-   "no_banco": 114
+   "no_banco": 129
   },
   "/parlamentares/335/despesas": {
    "na_copia": 50,
-   "no_banco": 71
+   "no_banco": 72
   },
   "/parlamentares/336/despesas": {
    "na_copia": 50,
@@ -3599,11 +3599,11 @@
   },
   "/parlamentares/338/despesas": {
    "na_copia": 50,
-   "no_banco": 116
+   "no_banco": 120
   },
   "/parlamentares/339/despesas": {
    "na_copia": 50,
-   "no_banco": 313
+   "no_banco": 315
   },
   "/parlamentares/340/despesas": {
    "na_copia": 50,
@@ -3611,23 +3611,23 @@
   },
   "/parlamentares/341/despesas": {
    "na_copia": 50,
-   "no_banco": 386
+   "no_banco": 387
   },
   "/parlamentares/342/despesas": {
    "na_copia": 50,
-   "no_banco": 126
+   "no_banco": 132
   },
   "/parlamentares/343/despesas": {
    "na_copia": 50,
-   "no_banco": 123
+   "no_banco": 133
   },
   "/parlamentares/344/despesas": {
-   "na_copia": 28,
-   "no_banco": 28
+   "na_copia": 30,
+   "no_banco": 30
   },
   "/parlamentares/345/despesas": {
    "na_copia": 50,
-   "no_banco": 115
+   "no_banco": 116
   },
   "/parlamentares/346/despesas": {
    "na_copia": 50,
@@ -3638,8 +3638,8 @@
    "no_banco": 250
   },
   "/parlamentares/348/despesas": {
-   "na_copia": 46,
-   "no_banco": 46
+   "na_copia": 50,
+   "no_banco": 71
   },
   "/parlamentares/349/despesas": {
    "na_copia": 47,
@@ -3655,7 +3655,7 @@
   },
   "/parlamentares/352/despesas": {
    "na_copia": 50,
-   "no_banco": 139
+   "no_banco": 149
   },
   "/parlamentares/353/despesas": {
    "na_copia": 23,
@@ -3663,7 +3663,7 @@
   },
   "/parlamentares/354/despesas": {
    "na_copia": 50,
-   "no_banco": 73
+   "no_banco": 82
   },
   "/parlamentares/355/despesas": {
    "na_copia": 50,
@@ -3687,15 +3687,15 @@
   },
   "/parlamentares/360/despesas": {
    "na_copia": 50,
-   "no_banco": 221
+   "no_banco": 222
   },
   "/parlamentares/361/despesas": {
    "na_copia": 50,
-   "no_banco": 221
+   "no_banco": 230
   },
   "/parlamentares/362/despesas": {
    "na_copia": 50,
-   "no_banco": 262
+   "no_banco": 271
   },
   "/parlamentares/363/despesas": {
    "na_copia": 50,
@@ -3703,19 +3703,19 @@
   },
   "/parlamentares/364/despesas": {
    "na_copia": 50,
-   "no_banco": 90
+   "no_banco": 91
   },
   "/parlamentares/365/despesas": {
    "na_copia": 50,
-   "no_banco": 361
+   "no_banco": 362
   },
   "/parlamentares/366/despesas": {
-   "na_copia": 27,
-   "no_banco": 27
+   "na_copia": 28,
+   "no_banco": 28
   },
   "/parlamentares/367/despesas": {
    "na_copia": 50,
-   "no_banco": 310
+   "no_banco": 311
   },
   "/parlamentares/368/despesas": {
    "na_copia": 50,
@@ -3727,15 +3727,15 @@
   },
   "/parlamentares/566/despesas": {
    "na_copia": 50,
-   "no_banco": 86
+   "no_banco": 95
   },
   "/parlamentares/370/despesas": {
    "na_copia": 50,
-   "no_banco": 174
+   "no_banco": 175
   },
   "/parlamentares/371/despesas": {
    "na_copia": 50,
-   "no_banco": 178
+   "no_banco": 179
   },
   "/parlamentares/372/despesas": {
    "na_copia": 50,
@@ -3747,7 +3747,7 @@
   },
   "/parlamentares/374/despesas": {
    "na_copia": 50,
-   "no_banco": 243
+   "no_banco": 254
   },
   "/parlamentares/375/despesas": {
    "na_copia": 50,
@@ -3755,7 +3755,7 @@
   },
   "/parlamentares/376/despesas": {
    "na_copia": 50,
-   "no_banco": 412
+   "no_banco": 422
   },
   "/parlamentares/377/despesas": {
    "na_copia": 0,
@@ -3767,7 +3767,7 @@
   },
   "/parlamentares/567/despesas": {
    "na_copia": 50,
-   "no_banco": 52
+   "no_banco": 65
   },
   "/parlamentares/568/despesas": {
    "na_copia": 17,
@@ -3783,31 +3783,31 @@
   },
   "/parlamentares/381/despesas": {
    "na_copia": 50,
-   "no_banco": 99
+   "no_banco": 108
   },
   "/parlamentares/569/despesas": {
    "na_copia": 50,
-   "no_banco": 65
+   "no_banco": 72
   },
   "/parlamentares/781/despesas": {
    "na_copia": 50,
-   "no_banco": 126
+   "no_banco": 131
   },
   "/parlamentares/382/despesas": {
    "na_copia": 50,
-   "no_banco": 473
+   "no_banco": 474
   },
   "/parlamentares/383/despesas": {
-   "na_copia": 46,
-   "no_banco": 46
+   "na_copia": 50,
+   "no_banco": 55
   },
   "/parlamentares/384/despesas": {
    "na_copia": 50,
-   "no_banco": 359
+   "no_banco": 363
   },
   "/parlamentares/385/despesas": {
    "na_copia": 50,
-   "no_banco": 54
+   "no_banco": 73
   },
   "/parlamentares/386/despesas": {
    "na_copia": 50,
@@ -3819,7 +3819,7 @@
   },
   "/parlamentares/388/despesas": {
    "na_copia": 50,
-   "no_banco": 910
+   "no_banco": 919
   },
   "/parlamentares/782/despesas": {
    "na_copia": 50,
@@ -3827,15 +3827,15 @@
   },
   "/parlamentares/389/despesas": {
    "na_copia": 50,
-   "no_banco": 61
+   "no_banco": 62
   },
   "/parlamentares/390/despesas": {
    "na_copia": 50,
    "no_banco": 379
   },
   "/parlamentares/391/despesas": {
-   "na_copia": 41,
-   "no_banco": 41
+   "na_copia": 45,
+   "no_banco": 45
   },
   "/parlamentares/392/despesas": {
    "na_copia": 50,
@@ -3867,7 +3867,7 @@
   },
   "/parlamentares/570/despesas": {
    "na_copia": 50,
-   "no_banco": 546
+   "no_banco": 584
   },
   "/parlamentares/399/despesas": {
    "na_copia": 50,
@@ -3887,7 +3887,7 @@
   },
   "/parlamentares/403/despesas": {
    "na_copia": 50,
-   "no_banco": 346
+   "no_banco": 355
   },
   "/parlamentares/404/despesas": {
    "na_copia": 50,
@@ -3907,19 +3907,19 @@
   },
   "/parlamentares/408/despesas": {
    "na_copia": 50,
-   "no_banco": 613
+   "no_banco": 617
   },
   "/parlamentares/409/despesas": {
    "na_copia": 50,
-   "no_banco": 249
+   "no_banco": 250
   },
   "/parlamentares/410/despesas": {
    "na_copia": 50,
-   "no_banco": 312
+   "no_banco": 321
   },
   "/parlamentares/571/despesas": {
    "na_copia": 50,
-   "no_banco": 52
+   "no_banco": 69
   },
   "/parlamentares/411/despesas": {
    "na_copia": 50,
@@ -3935,7 +3935,7 @@
   },
   "/parlamentares/572/despesas": {
    "na_copia": 50,
-   "no_banco": 114
+   "no_banco": 119
   },
   "/parlamentares/415/despesas": {
    "na_copia": 39,
@@ -3959,7 +3959,7 @@
   },
   "/parlamentares/419/despesas": {
    "na_copia": 50,
-   "no_banco": 491
+   "no_banco": 492
   },
   "/parlamentares/420/despesas": {
    "na_copia": 50,
@@ -3971,15 +3971,15 @@
   },
   "/parlamentares/422/despesas": {
    "na_copia": 50,
-   "no_banco": 484
+   "no_banco": 492
   },
   "/parlamentares/423/despesas": {
    "na_copia": 50,
-   "no_banco": 102
+   "no_banco": 103
   },
   "/parlamentares/573/despesas": {
    "na_copia": 50,
-   "no_banco": 125
+   "no_banco": 130
   },
   "/parlamentares/595/despesas": {
    "na_copia": 50,
@@ -3995,11 +3995,11 @@
   },
   "/parlamentares/574/despesas": {
    "na_copia": 50,
-   "no_banco": 88
+   "no_banco": 96
   },
   "/parlamentares/575/despesas": {
    "na_copia": 50,
-   "no_banco": 86
+   "no_banco": 93
   },
   "/parlamentares/783/despesas": {
    "na_copia": 50,
@@ -4039,19 +4039,19 @@
   },
   "/parlamentares/433/despesas": {
    "na_copia": 50,
-   "no_banco": 126
+   "no_banco": 127
   },
   "/parlamentares/434/despesas": {
    "na_copia": 50,
-   "no_banco": 302
+   "no_banco": 309
   },
   "/parlamentares/435/despesas": {
    "na_copia": 44,
    "no_banco": 44
   },
   "/parlamentares/577/despesas": {
-   "na_copia": 36,
-   "no_banco": 36
+   "na_copia": 38,
+   "no_banco": 38
   },
   "/parlamentares/436/despesas": {
    "na_copia": 50,
@@ -4063,7 +4063,7 @@
   },
   "/parlamentares/438/despesas": {
    "na_copia": 50,
-   "no_banco": 410
+   "no_banco": 419
   },
   "/parlamentares/439/despesas": {
    "na_copia": 50,
@@ -4075,7 +4075,7 @@
   },
   "/parlamentares/441/despesas": {
    "na_copia": 50,
-   "no_banco": 482
+   "no_banco": 485
   },
   "/parlamentares/442/despesas": {
    "na_copia": 50,
@@ -4087,11 +4087,11 @@
   },
   "/parlamentares/606/despesas": {
    "na_copia": 50,
-   "no_banco": 263
+   "no_banco": 265
   },
   "/parlamentares/444/despesas": {
    "na_copia": 50,
-   "no_banco": 180
+   "no_banco": 182
   },
   "/parlamentares/445/despesas": {
    "na_copia": 42,
@@ -4103,27 +4103,27 @@
   },
   "/parlamentares/579/despesas": {
    "na_copia": 50,
-   "no_banco": 123
+   "no_banco": 135
   },
   "/parlamentares/447/despesas": {
    "na_copia": 50,
-   "no_banco": 502
+   "no_banco": 504
   },
   "/parlamentares/578/despesas": {
    "na_copia": 50,
-   "no_banco": 133
+   "no_banco": 148
   },
   "/parlamentares/580/despesas": {
    "na_copia": 50,
-   "no_banco": 66
+   "no_banco": 79
   },
   "/parlamentares/448/despesas": {
    "na_copia": 50,
-   "no_banco": 389
+   "no_banco": 392
   },
   "/parlamentares/449/despesas": {
    "na_copia": 50,
-   "no_banco": 129
+   "no_banco": 130
   },
   "/parlamentares/450/despesas": {
    "na_copia": 50,
@@ -4131,7 +4131,7 @@
   },
   "/parlamentares/451/despesas": {
    "na_copia": 50,
-   "no_banco": 335
+   "no_banco": 337
   },
   "/parlamentares/602/despesas": {
    "na_copia": 2,
@@ -4147,15 +4147,15 @@
   },
   "/parlamentares/454/despesas": {
    "na_copia": 50,
-   "no_banco": 212
+   "no_banco": 221
   },
   "/parlamentares/455/despesas": {
    "na_copia": 50,
-   "no_banco": 182
+   "no_banco": 184
   },
   "/parlamentares/456/despesas": {
    "na_copia": 50,
-   "no_banco": 85
+   "no_banco": 88
   },
   "/parlamentares/457/despesas": {
    "na_copia": 50,
@@ -4171,7 +4171,7 @@
   },
   "/parlamentares/460/despesas": {
    "na_copia": 50,
-   "no_banco": 121
+   "no_banco": 124
   },
   "/parlamentares/461/despesas": {
    "na_copia": 50,
@@ -4183,15 +4183,15 @@
   },
   "/parlamentares/463/despesas": {
    "na_copia": 50,
-   "no_banco": 195
+   "no_banco": 196
   },
   "/parlamentares/581/despesas": {
-   "na_copia": 16,
-   "no_banco": 16
+   "na_copia": 30,
+   "no_banco": 30
   },
   "/parlamentares/464/despesas": {
    "na_copia": 50,
-   "no_banco": 72
+   "no_banco": 74
   },
   "/parlamentares/465/despesas": {
    "na_copia": 50,
@@ -4199,19 +4199,19 @@
   },
   "/parlamentares/466/despesas": {
    "na_copia": 50,
-   "no_banco": 241
+   "no_banco": 243
   },
   "/parlamentares/582/despesas": {
    "na_copia": 50,
-   "no_banco": 498
+   "no_banco": 514
   },
   "/parlamentares/585/despesas": {
    "na_copia": 50,
-   "no_banco": 97
+   "no_banco": 115
   },
   "/parlamentares/467/despesas": {
    "na_copia": 50,
-   "no_banco": 285
+   "no_banco": 293
   },
   "/parlamentares/599/despesas": {
    "na_copia": 50,
@@ -4222,8 +4222,8 @@
    "no_banco": 54
   },
   "/parlamentares/469/despesas": {
-   "na_copia": 5,
-   "no_banco": 5
+   "na_copia": 6,
+   "no_banco": 6
   },
   "/parlamentares/470/despesas": {
    "na_copia": 50,
@@ -4235,19 +4235,19 @@
   },
   "/parlamentares/472/despesas": {
    "na_copia": 50,
-   "no_banco": 133
+   "no_banco": 142
   },
   "/parlamentares/473/despesas": {
    "na_copia": 50,
-   "no_banco": 286
+   "no_banco": 287
   },
   "/parlamentares/474/despesas": {
    "na_copia": 50,
-   "no_banco": 62
+   "no_banco": 72
   },
   "/parlamentares/475/despesas": {
    "na_copia": 50,
-   "no_banco": 60
+   "no_banco": 67
   },
   "/parlamentares/476/despesas": {
    "na_copia": 37,
@@ -4255,7 +4255,7 @@
   },
   "/parlamentares/583/despesas": {
    "na_copia": 50,
-   "no_banco": 214
+   "no_banco": 232
   },
   "/parlamentares/477/despesas": {
    "na_copia": 50,
@@ -4267,11 +4267,11 @@
   },
   "/parlamentares/584/despesas": {
    "na_copia": 50,
-   "no_banco": 96
+   "no_banco": 104
   },
   "/parlamentares/479/despesas": {
    "na_copia": 50,
-   "no_banco": 276
+   "no_banco": 278
   },
   "/parlamentares/480/despesas": {
    "na_copia": 50,
@@ -4283,15 +4283,15 @@
   },
   "/parlamentares/482/despesas": {
    "na_copia": 50,
-   "no_banco": 335
+   "no_banco": 344
   },
   "/parlamentares/586/despesas": {
    "na_copia": 50,
-   "no_banco": 320
+   "no_banco": 352
   },
   "/parlamentares/587/despesas": {
    "na_copia": 50,
-   "no_banco": 150
+   "no_banco": 162
   },
   "/parlamentares/483/despesas": {
    "na_copia": 50,
@@ -4299,11 +4299,11 @@
   },
   "/parlamentares/484/despesas": {
    "na_copia": 50,
-   "no_banco": 259
+   "no_banco": 267
   },
   "/parlamentares/485/despesas": {
    "na_copia": 50,
-   "no_banco": 251
+   "no_banco": 253
   },
   "/parlamentares/486/despesas": {
    "na_copia": 50,
@@ -4315,11 +4315,11 @@
   },
   "/parlamentares/488/despesas": {
    "na_copia": 50,
-   "no_banco": 165
+   "no_banco": 167
   },
   "/parlamentares/489/despesas": {
    "na_copia": 50,
-   "no_banco": 353
+   "no_banco": 365
   },
   "/parlamentares/597/despesas": {
    "na_copia": 50,
@@ -4335,7 +4335,7 @@
   },
   "/parlamentares/491/despesas": {
    "na_copia": 50,
-   "no_banco": 227
+   "no_banco": 229
   },
   "/parlamentares/596/despesas": {
    "na_copia": 50,
@@ -4343,7 +4343,7 @@
   },
   "/parlamentares/589/despesas": {
    "na_copia": 50,
-   "no_banco": 85
+   "no_banco": 92
   },
   "/parlamentares/492/despesas": {
    "na_copia": 50,
@@ -4363,7 +4363,7 @@
   },
   "/parlamentares/496/despesas": {
    "na_copia": 50,
-   "no_banco": 475
+   "no_banco": 484
   },
   "/parlamentares/497/despesas": {
    "na_copia": 50,
@@ -4375,11 +4375,11 @@
   },
   "/parlamentares/499/despesas": {
    "na_copia": 50,
-   "no_banco": 113
+   "no_banco": 116
   },
   "/parlamentares/590/despesas": {
    "na_copia": 50,
-   "no_banco": 202
+   "no_banco": 211
   },
   "/parlamentares/500/despesas": {
    "na_copia": 50,
@@ -4387,7 +4387,7 @@
   },
   "/parlamentares/501/despesas": {
    "na_copia": 50,
-   "no_banco": 564
+   "no_banco": 568
   },
   "/parlamentares/591/despesas": {
    "na_copia": 50,
@@ -4395,7 +4395,7 @@
   },
   "/parlamentares/592/despesas": {
    "na_copia": 50,
-   "no_banco": 75
+   "no_banco": 81
   },
   "/parlamentares/502/despesas": {
    "na_copia": 50,
@@ -4423,7 +4423,7 @@
   },
   "/parlamentares/593/despesas": {
    "na_copia": 50,
-   "no_banco": 208
+   "no_banco": 213
   },
   "/parlamentares/507/despesas": {
    "na_copia": 50,
@@ -4431,15 +4431,15 @@
   },
   "/parlamentares/594/despesas": {
    "na_copia": 50,
-   "no_banco": 278
+   "no_banco": 289
   },
   "/parlamentares/508/despesas": {
    "na_copia": 50,
-   "no_banco": 161
+   "no_banco": 164
   },
   "/parlamentares/509/despesas": {
    "na_copia": 50,
-   "no_banco": 325
+   "no_banco": 327
   },
   "/parlamentares/510/despesas": {
    "na_copia": 50,
@@ -4447,19 +4447,19 @@
   },
   "/parlamentares/512/despesas": {
    "na_copia": 50,
-   "no_banco": 111
+   "no_banco": 122
   },
   "/parlamentares/513/despesas": {
    "na_copia": 50,
-   "no_banco": 228
+   "no_banco": 230
   }
  },
  "contagem": {
   "parlamentares": 783,
   "votacoes": 1167,
-  "proposicoes": 38673,
-  "normas": 1047
+  "proposicoes": 39178,
+  "normas": 1063
  },
- "consultas": 28688,
- "bytes": 185806956
+ "consultas": 29488,
+ "bytes": 192105122
 }
