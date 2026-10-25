@@ -14,6 +14,8 @@ from sqlalchemy import func, or_, select
 from app.models import Parlamentar, Proposicao, Registro, Votacao, Voto
 
 FASES = ("a_votar", "em_votacao", "votado")
+# tipos que são projetos/propostas de lei (o resto, como requerimentos e indicações, não entra na lista de projetos)
+LEGISLATIVAS = ("PL", "PLP", "PEC", "MPV", "PDL", "PDC", "PLN", "PRC", "PLS", "PLC", "PDS", "PLV")
 # situações em que o projeto está pronto/aguardando ir a voto (texto da Câmara e do Senado)
 _A_VOTAR = ("pronta para pauta", "pronto para pauta", "aguardando delibera", "aguardando vota", "aguardando apreciação", "aguardando apreciacao",
             "aguardando discuss", "em pauta", "aguardando inclusão na ordem do dia", "aguardando inclusao na ordem do dia")

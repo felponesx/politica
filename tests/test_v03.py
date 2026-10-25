@@ -97,7 +97,7 @@ def test_tramitacao_atuacao_ceaps(monkeypatch):
                      "cpfCnpj": "11.222.333/0001-81", "valorReembolsado": 1500.5, "id": 1}]
         raise AssertionError(url)
     monkeypatch.setattr(http, "get_json", falso)
-    assert congresso_extra.coletar_tramitacoes(limite=10) >= 1
+    assert congresso_extra.coletar_tramitacoes(ano=2026, limite=10) >= 1
     p = cliente.get(f"/proposicoes/{pid}").json()
     assert [t["orgao"] for t in p["tramitacao"]] == ["PLEN", "CCJC"] and p["autores"][0]["parlamentar_id"] == dep_id
     assert p["proposicao"]["situacao"] == "Aguardando Plenário"

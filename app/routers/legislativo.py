@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from app import projetos
 from app.busca import _sem_curinga
 from app.db import get_db
 from app.models import Despesa, Parlamentar, Proposicao, Votacao, Voto
@@ -104,7 +105,6 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
                        db: Session = Depends(get_db)):
     """Projetos com autor, relator, placar da última votação e fase (a_votar = pronto para ir a voto; em_votacao = na pauta de uma sessão em
     andamento hoje; votado = tem votação registrada). Só o que foi coletado: o que falta vem vazio."""
-    from app import projetos
     stmt = select(Proposicao).order_by(Proposicao.ano.desc(), Proposicao.id.desc())
     if casa:
         stmt = stmt.where(Proposicao.casa == casa)
@@ -112,8 +112,8 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
         stmt = stmt.where(Proposicao.ano == ano)
     if tipo:
         stmt = stmt.where(Proposicao.sigla_tipo == tipo.upper())
-    else:  # representações por quebra de decoro não são projetos de lei: aparecem na aba Processos do parlamentar
-        stmt = stmt.where(or_(Proposicao.sigla_tipo.is_(None), Proposicao.sigla_tipo != "REP"))
+    else:  # só proposições legislativas: requerimentos, indicações e representações (REP, na aba Processos do parlamentar) ficam fora
+        stmt = stmt.where(Proposicao.sigla_tipo.in_(projetos.LEGISLATIVAS))
     if q:
         stmt = stmt.where(or_(Proposicao.ementa.ilike(f"%{_sem_curinga(q)}%", escape="\\"), Proposicao.numero == q.strip().lstrip("0")))
     stmt = projetos.filtrar_por_fase(db, stmt, fase)

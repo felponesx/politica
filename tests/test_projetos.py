@@ -76,12 +76,13 @@ def test_fases_placar_e_autor():
     db.close()
 
 
-def test_representacao_nao_entra_na_lista_de_projetos():
+def test_representacao_e_requerimento_nao_entram_na_lista_de_projetos():
     db = SessionLocal()
     r = _prop(db, 9100, tipo="REP")
+    rq = _prop(db, 9101, tipo="REQ")
     db.commit()
     ids = [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "limit": 100}).json()["itens"]]
-    assert r.id not in ids
+    assert r.id not in ids and rq.id not in ids
     assert r.id in [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "tipo": "REP", "limit": 100}).json()["itens"]]
     db.close()
 
