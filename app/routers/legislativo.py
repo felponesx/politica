@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from app.busca import _sem_curinga
 from app.db import get_db
 from app.models import Despesa, Parlamentar, Proposicao, Votacao, Voto
 from app.schemas import DespesaOut, Pagina, ParlamentarOut, ProposicaoOut, VotacaoOut
@@ -98,8 +99,12 @@ def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
 
 @router.get("/proposicoes", response_model=Pagina)
 def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: str | None = None,
-                       q: str | None = None, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
+                       q: str | None = Query(None, max_length=120), fase: str | None = Query(None, pattern="^(a_votar|em_votacao|votado)$"),
+                       limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
                        db: Session = Depends(get_db)):
+    """Projetos com autor, relator, placar da última votação e fase (a_votar = pronto para ir a voto; em_votacao = na pauta de uma sessão em
+    andamento hoje; votado = tem votação registrada). Só o que foi coletado: o que falta vem vazio."""
+    from app import projetos
     stmt = select(Proposicao).order_by(Proposicao.ano.desc(), Proposicao.id.desc())
     if casa:
         stmt = stmt.where(Proposicao.casa == casa)
@@ -107,9 +112,14 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
         stmt = stmt.where(Proposicao.ano == ano)
     if tipo:
         stmt = stmt.where(Proposicao.sigla_tipo == tipo.upper())
+    else:  # representações por quebra de decoro não são projetos de lei: aparecem na aba Processos do parlamentar
+        stmt = stmt.where(or_(Proposicao.sigla_tipo.is_(None), Proposicao.sigla_tipo != "REP"))
     if q:
-        stmt = stmt.where(Proposicao.ementa.ilike(f"%{q}%"))
-    return _paginar(db, stmt, ProposicaoOut, limit, offset)
+        stmt = stmt.where(Proposicao.ementa.ilike(f"%{_sem_curinga(q)}%", escape="\\"))
+    stmt = projetos.filtrar_por_fase(db, stmt, fase)
+    total = db.scalar(select(func.count()).select_from(stmt.subquery()))
+    rows = db.scalars(stmt.limit(limit).offset(offset)).all()
+    return {"total": total, "itens": projetos.enriquecer(db, rows)}
 
 
 @router.get("/parlamentares/{pid}/despesas", response_model=Pagina)

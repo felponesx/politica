@@ -1737,6 +1737,19 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 /* leveza: painéis fora da tela só desenham quando chegam perto (menos layout e pintura ao abrir telas longas) */
 .page>.panel:nth-child(n+4),.page>.grid>.panel:nth-child(n+3),.page .ufsec:nth-of-type(n+3){content-visibility:auto;contain-intrinsic-size:auto 520px}
 .page>.panel:has(.pill-w.open),.page>.grid>.panel:has(.pill-w.open),.page .ufsec:has(.pill-w.open){content-visibility:visible}
+
+/* Leis e Projetos: cartão de projeto */
+.pj{display:grid;gap:10px}.pj-c{display:block;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:14px 16px;color:inherit;text-decoration:none}
+.pj-c:hover{border-color:#CDD7EA;box-shadow:0 2px 10px rgba(20,30,50,.06)}.pj-h{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.pj-n{font-size:21px;font-weight:700;color:var(--navy);letter-spacing:-.01em;line-height:1.15}.pj-s{font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px}
+.pj-d{text-align:right;font-size:12px;color:var(--muted);line-height:1.5;flex:none;max-width:48%}.pj-t{margin-top:4px}
+.pj-r{margin:9px 0 0;font-size:14px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pj-p{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}.pj-bar{display:flex;height:9px;border-radius:99px;overflow:hidden;background:var(--line2);margin:7px 0 6px}
+.pj-bar i{display:block;height:100%}.pj-bar .s,.pj-pt em.s{background:#1BAF7A}.pj-bar .n,.pj-pt em.n{background:#EB6834}.pj-bar .a,.pj-pt em.a{background:#98A2B3}
+.pj-pt{display:flex;flex-wrap:wrap;gap:3px 16px;font-size:12.5px;color:var(--ink2)}.pj-pt em{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.pj-fases{margin-bottom:0}.pj-fases button small{margin-left:6px;color:var(--muted)}
+.sit-p.sit-vote{background:#FFF1E8;color:#B54708;border-color:#F8D1B5}
+@media (max-width:640px){.pj-h{flex-direction:column;gap:6px}.pj-d{text-align:left;max-width:none;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:center}.pj-t{margin-top:0}.pj-n{font-size:20px}}
 </style>
 </head>
 <body>
@@ -1820,13 +1833,14 @@ contratos:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
 obras:'<path d="M3 20h18M6 20V10l6-6 6 6v10"/><path d="M10 20v-5h4v5"/>',
 projetos:'<path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/>',
 constituicao:'<path d="M4 20h16M5 20V10M9.5 20V10M14.5 20V10M19 20V10M3 10h18L12 4z"/>',
+leis:'<path d="M4 20h16M5 20V10M9.5 20V10M14.5 20V10M19 20V10M3 10h18L12 4z"/>',
 legislacao:'<path d="M12 4v16M5 8h14M7 8l-3 7a3 3 0 0 0 6 0zM17 8l-3 7a3 3 0 0 0 6 0z"/>',
 indicadores:'<path d="M5 20v-6M10 20V9M15 20v-9M20 20V5"/>',
 comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["projetos","Projetos e Proposições"],["legislacao","Legislação e Normas"],["constituicao","Constituição e Leis"],["escandalos","Escândalos"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -2104,7 +2118,7 @@ const html=`<div class="home"><div class="hl">
 
 <div class="r1"><div class="panel"><div class="hd"><div><h2>Comparativo entre regiões</h2><p id="cmpsub">Despesas (2025)</p></div><a href="#/comparar">Comparar</a></div>
 <div class="seg" id="cmpseg">${Object.entries(CMP).map(([k,v])=>`<button data-c="${k}" class="${k===cm?"on":""}">${v[0]}</button>`).join("")}</div><div id="cmpc"></div></div>
-<div class="panel"><div class="hd"><div><h2>Projetos em tramitação</h2><p>Câmara dos Deputados e Senado Federal</p></div><a href="#/projetos">Ver todos</a></div>
+<div class="panel"><div class="hd"><div><h2>Projetos em tramitação</h2><p>Câmara dos Deputados e Senado Federal</p></div><a href="#/leis/projetos">Ver todos</a></div>
 <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(PROJ,nf(pAt),"projetos ativos")}<div style="flex:1;min-width:190px">${[...PROJ,...PFIM].map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${x[0]}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/pAll*100)}%</span></div>`).join("")}</div></div></div></div>
 
 <div class="quick"><div class="panel"><h2 style="margin-bottom:12px">Acesso rápido</h2><div class="qt">${[["pessoas","Consultar candidato","Eleitos, não eleitos e aposentados","#/pessoas"],["empresas","Consultar por empresa","Fornecedores e contratados","#/empresas"],["contratos","Consultar por contrato","Todos os níveis de governo","#/empresas/contratos"],["obras","Consultar por obra","Em andamento e concluídas","#/obras"],["projetos","Consultar por projeto","Proposições e votações","#/projetos"]].map(q=>`<a href="${q[3]}">${hi(q[0])}<span>${q[1]}<small>${q[2]}</small></span></a>`).join("")}</div></div>
@@ -2160,7 +2174,7 @@ function projRow(p){const done=p.etapa+1,pct=Math.round(done/ETAPAS.length*100);
 P.agora=()=>{let f="Brasil";const F=["Brasil","Estado","Município","Câmara Municipal","Assembleia","Senado","Câmara dos Deputados"];
 return{html:`<div class="ph"><div><h1>Agora</h1><p>O que está acontecendo nas instituições públicas hoje, em ordem de horário.</p></div><span class="live">Atualizando</span></div>
 <div class="chips" id="fch" style="margin-bottom:14px">${F.map(x=>`<button class="chip ${x===f?"on":""}">${x}</button>`).join("")}</div>
-<div class="panel aproj"><div class="hd"><div><h2>Andamento dos projetos</h2><p>Percentual de etapas concluídas na tramitação</p></div><a href="#/projetos">Ver todos</a></div>
+<div class="panel aproj"><div class="hd"><div><h2>Andamento dos projetos</h2><p>Percentual de etapas concluídas na tramitação</p></div><a href="#/leis/projetos">Ver todos</a></div>
 <div class="aproj-top"><div class="aproj-big"><b>${Math.round(PROJETOS.reduce((a,p)=>a+projPct(p),0)/PROJETOS.length)}%</b><span>andamento médio dos projetos acompanhados</span></div>
 <div style="flex:1;min-width:240px"><div class="small muted" style="margin-bottom:6px">Onde estão os 5.378 projetos ativos</div>${stack([22,34,18,11,9,4,2],["Apresentado","Comissão","Relatoria","Parecer","Plenário","Outra Casa","Sanção ou veto"],["#DCE8F6","#7DB2F0","#8CDBB6","#C3E17E","#F9CE75","#F69981","#BC9AE9"],12)}<div class="m-leg">${[["Apresentado",22,"#DCE8F6"],["Comissão",34,"#7DB2F0"],["Relatoria",18,"#8CDBB6"],["Parecer",11,"#C3E17E"],["Plenário",9,"#F9CE75"],["Outra Casa",4,"#F69981"],["Sanção ou veto",2,"#BC9AE9"]].map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} ${x[1]}%</span>`).join("")}</div></div></div>
 <div class="aproj-list">${PROJETOS.map(p=>{const v=projPct(p);return`<a class="aproj-row" href="#/projeto/${p.id}"><div><b>${p.num}</b><span>${esc(p.tit)}</span></div><div class="aproj-bar"><div class="bar"><i style="width:${v}%;background:${v===100?"#64CD9C":v>=60?"#71AAEC":"#F8C260"}"></i></div><small>${ETAPAS[Math.min(p.etapa,ETAPAS.length-1)]}</small></div><strong>${v}%</strong></a>`}).join("")}</div></div>
@@ -2867,7 +2881,7 @@ mount(){const d=()=>{$("#pl").innerHTML=PROJETOS.filter(p=>!c||p.casa===c).map(p
 P.projeto=(id)=>{const p=PROJETOS.find(x=>x.id==id)||PROJETOS[0];const a=pessoa(p.autor);const done=p.etapa+1;const fim=p.etapa===ETAPAS.length-1;const total=fim?dias(p.ap,p.datas[p.datas.length-1]):dias(p.ap);const pe=Math.round(done/ETAPAS.length*100);const pt=Math.min(100,Math.round(total/p.ref*100));
 const steps=ETAPAS.map((e,i)=>{const dt=p.datas[i];const nx=p.datas[i+1];const dur=dt?(nx?dias(dt,nx):(fim?0:dias(dt))):null;return`<div class="st ${i<=p.etapa?"done":""} ${i===p.etapa&&!fim?"cur":""}"><i class="c"></i><b>${e}</b><span>${dt?fd(dt):"Pendente"}</span>${dur!=null&&dt?`<br><span>${dur} dias</span>`:""}</div>`}).join("");
 const v=VOTACOES.find(x=>x.prop===p.id);
-return{html:`<div class="crumb"><a href="#/projetos">Projetos</a> / ${p.num}</div><div class="ph"><div><h1>${p.num}</h1><p style="font-size:17px;color:var(--ink)">${p.tit}</p></div><span class="tag" style="font-size:13px">${p.sit}</span></div>
+return{html:`<div class="crumb"><a href="#/leis/projetos">Projetos</a> / ${p.num}</div><div class="ph"><div><h1>${p.num}</h1><p style="font-size:17px;color:var(--ink)">${p.tit}</p></div><span class="tag" style="font-size:13px">${p.sit}</span></div>
 <div class="panel"><p style="margin:0 0 14px;max-width:72ch">${p.ementa}</p><div class="facts"><div><span>Autoria</span><a href="#/pessoa/${a.id}">${a.nome}</a></div><div><span>Partido</span>${a.partido}</div><div><span>Casa</span>${p.casa}</div><div><span>Apresentação</span>${fd(p.ap)}</div><div><span>Última movimentação</span>${fd(p.datas[p.datas.length-1])}</div><div><span>Próxima etapa</span>${p.prox||"Tramitação encerrada"}</div></div></div>
 <div class="panel mt"><h2>Linha do tempo da tramitação</h2><div class="tl">${steps}</div>
 <div style="max-width:620px;margin-top:18px"><div class="meter"><span>Etapas concluídas</span><div class="bar"><i style="width:${pe}%;background:var(--accent)"></i></div><b>${pe}%</b></div>
@@ -2938,7 +2952,7 @@ mount(){const norm=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerC
  document.querySelectorAll("#ntema button").forEach(b=>b.onclick=()=>{tm=b.dataset.t;document.querySelectorAll("#ntema button").forEach(x=>x.classList.toggle("on",x===b));d()})}}};
 P.norma=(id)=>{const n=NORMAS.find(x=>x.id==id)||NORMAS[0];const pj=n.proj?PROJETOS.find(p=>p.id===n.proj):null;
 const tl=[pj?["Projeto apresentado",pj.ap]:null,pj?["Aprovado",pj.datas[Math.min(5,pj.datas.length-1)]]:null,["Publicada",n.data],["Em vigor",n.vig],n.status==="Revogada"?["Revogada","2026-02-01"]:null].filter(Boolean);
-return{html:`<div class="crumb"><a href="#/legislacao">Legislação</a> / ${n.num}</div><div class="ph"><div><div class="ncard-t" style="margin-bottom:8px"><span class="tag">${n.tipo}</span><span class="tag ${NSTAT(n.status)}">${n.status}</span><span class="tag">${n.tema}</span>${n.real?"":'<span class="tag">Exemplo fictício</span>'}</div><h1>${n.num}</h1><p style="font-size:17px;color:var(--ink)">${n.ementa}</p></div></div>
+return{html:`<div class="crumb"><a href="#/leis/leis">Legislação</a> / ${n.num}</div><div class="ph"><div><div class="ncard-t" style="margin-bottom:8px"><span class="tag">${n.tipo}</span><span class="tag ${NSTAT(n.status)}">${n.status}</span><span class="tag">${n.tema}</span>${n.real?"":'<span class="tag">Exemplo fictício</span>'}</div><h1>${n.num}</h1><p style="font-size:17px;color:var(--ink)">${n.ementa}</p></div></div>
 <div class="panel"><h2>Em poucas palavras</h2><p style="margin:0;max-width:72ch">${n.resumo}</p></div>
 <div class="grid g2 mt"><div class="panel"><h2>O que muda</h2><ul class="nlist">${n.muda.map(m=>`<li>${m}</li>`).join("")}</ul></div>
 <div class="panel"><h2>Quem é afetado</h2><p style="margin:0 0 14px">${n.afetados}</p><div class="facts"><div><span>Esfera</span>${n.esfera}</div><div><span>Origem</span>${n.org}</div><div><span>Publicação</span>${fd(n.data)}</div><div><span>Vigência</span>${fd(n.vig)}</div></div></div></div>
@@ -3249,7 +3263,7 @@ async function snapLer0(k){const n=snapHash(k)%SNAP.m.shards;
 const snapNorm=t=>String(t??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* filtros das listas: "=campo" compara sem diferenciar maiúsculas; "~campo1,campo2" procura o texto em qualquer um */
 const SNAP_FILTROS={"/parlamentares":{casa:"=casa",uf:"=uf",partido:"=partido",q:"~nome"},"/votacoes":{casa:"=casa",q:"~descricao,materia"},
- "/proposicoes":{casa:"=casa",ano:"=ano",tipo:"=sigla_tipo",q:"~ementa"},"/legislacao":{tipo:"=tipo",ano:"=ano",esfera:"=esfera",uf:"=uf",q:"~ementa,numero"},
+ "/proposicoes":{casa:"=casa",ano:"=ano",tipo:"=sigla_tipo",q:"~ementa,sigla_tipo,numero",fase:"=fase"},"/legislacao":{tipo:"=tipo",ano:"=ano",esfera:"=esfera",uf:"=uf",q:"~ementa,numero"},
  "/contratos":{uf:"=uf",ano:"=ano",esfera:"=esfera",municipio:"=municipio"},"/obras":{uf:"=uf",situacao:"=situacao",tipo:"~tipo"},
  "/candidatos":{uf:"=uf",partido:"=partido",q:"~nome,nome_urna"},"/municipios":{uf:"=uf",q:"~nome",capag:"=capag"},
  "/empresas":{setor:"=setor",uf:"=uf",q:"~razao_social"},"/dividas/devedores":{uf:"=uf",q:"~nome,cnpj"},"/recuperacao-judicial":{uf:"=uf",situacao:"=situacao_cadastral",q:"~nome,nome_fantasia,documento"},"/noticias":{veiculo:"=veiculo",q:"~titulo,resumo"},despesas:{ano:"=ano"}};
@@ -3529,7 +3543,7 @@ const SIT_PROJ=[[/norma jur|transformad[oa] em (lei|norma)|promulgad|sancionad/i
 function sitProj(t){t=String(t||"").trim();if(!t)return null;for(const[r,n,c]of SIT_PROJ)if(r.test(t))return[n,c,t];return[t.charAt(0).toUpperCase()+t.slice(1).toLowerCase(),"go",t]}
 const sitProjTag=t=>{const x=sitProj(t);return x?`<span class="sit-p sit-${x[1]}" title="${esc(x[2])}">${esc(x[0])}</span>`:'<span class="small muted">—</span>'};
 P.projeto=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _projeto(id,...r);
-return{html:`<div class="crumb"><a href="#/projetos">Projetos</a> / Proposição</div><div id="rpj">${rload()}</div>`,
+return{html:`<div class="crumb"><a href="#/leis/projetos">Projetos</a> / Proposição</div><div id="rpj">${rload()}</div>`,
 mount(){apiGet("/proposicoes/"+String(id).slice(1)).then(d=>{const p=d.proposicao,n=d.norma_gerada;const tr=(d.tramitacao||[]).slice().sort((a,b)=>String(b.data||"").localeCompare(String(a.data||"")));
  const sitTxt=p.situacao||(tr.find(t=>t.situacao)||{}).situacao||(n?"Transformado em Norma Jurídica":"");
  $("#rpj").innerHTML=`<div class="ph"><div><span class="tag">${esc(casaN(p.casa))}</span><h1 style="margin-top:6px">${esc((p.sigla_tipo||"")+" "+(p.numero||"")+"/"+(p.ano||""))}</h1><p>${esc(p.ementa||"")}</p></div></div>
@@ -3553,7 +3567,7 @@ mount(){apiGet("/legislacao-resumo").then(r=>{const por={};r.forEach(x=>{if(x.an
   aoCarregar:(it,tot)=>{if(!tot&&!f.q&&!f.tipo&&!f.ano)demoComAviso(_legislacao,a,"Nenhuma norma coletada ainda (coleta legislacao-normas).")}});
  pg(true);const re=debounce(()=>pg(true));$("#lgq").oninput=e=>{f.q=e.target.value.trim();re()};$("#lgt").onchange=e=>{f.tipo=e.target.value;pg(true)};$("#lga").onchange=e=>{f.ano=e.target.value;pg(true)}}}:_legislacao(...a);
 P.norma=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _norma(id,...r);
-return{html:`<div class="crumb"><a href="#/legislacao">Legislação</a> / Norma</div><div id="rn">${rload()}</div>`,
+return{html:`<div class="crumb"><a href="#/leis/leis">Legislação</a> / Norma</div><div id="rn">${rload()}</div>`,
 mount(){apiGet("/legislacao/"+String(id).slice(1)).then(d=>{const n=d.norma,o=d.proposicao_origem;
  $("#rn").innerHTML=`<div class="ph"><div><span class="tag">${esc(TIPON[n.tipo]||n.tipo)}</span><h1 style="margin-top:6px">${esc((TIPON[n.tipo]||n.tipo)+" nº "+(n.numero||"")+"/"+(n.ano||""))}</h1><p>${esc(n.ementa||"")}</p></div>${n.url_texto?`<a class="btn pri" href="${esu(n.url_texto)}" target="_blank" rel="noopener">Ler o texto oficial</a>`:""}</div>
  <div class="kpis"><div class="kpi"><span>Data</span><strong>${fdr(n.data)}</strong></div><div class="kpi"><span>Projeto de origem</span><strong style="font-size:17px">${o?esc((o.sigla_tipo||"")+" "+(o.numero||"")+"/"+(o.ano||"")):"Não identificado"}</strong></div><div class="kpi"><span>Votações</span><strong>${d.votacoes.length}</strong></div></div>
@@ -3944,7 +3958,7 @@ federal:()=>`<div class="kpis kpis-c"><div class="kpi"><span>Promulgada em</span
 estados:()=>`<div class="grid g2 cfuf"><div class="panel"><h2>Escolha um estado</h2><div class="filters">${UFSelC("cfuf")}</div><div id="cfmap">${brMap(null,null,null,{byRegion:true,legend:false})}</div></div><div id="cfufc"></div></div>
 <div class="panel mt"><h2>O que cada nível pode decidir em lei</h2><div class="grid g3 cfcomp"><div><h3>União (art. 22)</h3><p class="small muted">Só a União faz leis de direito civil, penal, processual, eleitoral, do trabalho, agrário, comercial, trânsito, telecomunicações e outras matérias nacionais.</p></div><div><h3>Estados (arts. 24 e 25)</h3><p class="small muted">Legislam junto com a União sobre tributos, orçamento, educação, saúde, meio ambiente, consumidor e outros temas, além de tudo que a Constituição não reservou à União ou aos municípios.</p></div><div><h3>Municípios (art. 30)</h3><p class="small muted">Assuntos de interesse local: transporte urbano, uso do solo, IPTU e ISS. Cada cidade tem sua Lei Orgânica, aprovada pela Câmara Municipal.</p></div></div></div>`,
 leis:()=>{const temas=[...new Set(LEIS_FED.map(l=>l[0]))];return`<div class="seg" id="cflt"><button class="on" data-t="">Todas <small>${LEIS_FED.length}</small></button>${temas.map(t=>`<button data-t="${t}">${t} <small>${LEIS_FED.filter(l=>l[0]===t).length}</small></button>`).join("")}</div><div class="grid g3 mt" id="cfll"></div>
-<p class="small muted">Os links abrem a busca no LexML, a rede oficial de informação legislativa. O histórico completo de leis, decretos e medidas provisórias está em <a href="#/legislacao">Legislação e Normas</a>.</p>
+<p class="small muted">Os links abrem a busca no LexML, a rede oficial de informação legislativa. O histórico completo de leis, decretos e medidas provisórias está em <a href="#/leis/leis">Legislação e Normas</a>.</p>
 <div class="panel mt" id="cfRec" hidden><h2>Publicadas recentemente</h2><div id="cfRecL"></div></div>`},
 como:()=>`<div class="grid g2"><div class="panel"><h2>Hierarquia das normas</h2><p class="small muted" style="margin:0 0 10px">Uma norma de baixo nunca pode contrariar uma de cima.</p><ol class="cfhier"><li><b>Constituição Federal e emendas constitucionais</b><span>e tratados de direitos humanos aprovados com o mesmo rito das emendas</span></li><li><b>Leis complementares, leis ordinárias, medidas provisórias, leis delegadas, decretos legislativos e resoluções</b><span>feitas pelo Congresso ou com força de lei</span></li><li><b>Decretos regulamentares</b><span>do Presidente, para explicar como cumprir as leis</span></li><li><b>Portarias, instruções normativas e resoluções de órgãos</b><span>regras internas e técnicas da administração</span></li></ol><p class="small muted">Estados seguem a mesma lógica com a Constituição Estadual no topo; municípios, com a Lei Orgânica.</p></div>
 <div class="panel"><h2>Como uma lei federal nasce</h2><ol class="cfpassos"><li><b>Proposta</b><span>Deputados, senadores, comissões, o Presidente, tribunais superiores, o Procurador-Geral da República ou os cidadãos (1% do eleitorado, em pelo menos 5 estados).</span></li><li><b>Comissões</b><span>O projeto é analisado e pode receber emendas e pareceres.</span></li><li><b>Plenário</b><span>Votação na Casa onde começou.</span></li><li><b>Outra Casa</b><span>A Câmara ou o Senado revisa; se mudar o texto, volta para a Casa de origem.</span></li><li><b>Sanção ou veto</b><span>O Presidente tem 15 dias úteis. Se não responder, a lei é sancionada automaticamente. Um veto pode ser derrubado pela maioria absoluta de deputados e senadores.</span></li><li><b>Publicação e vigência</b><span>Sai no Diário Oficial. Sem data definida, passa a valer 45 dias depois.</span></li></ol></div></div>
@@ -4597,7 +4611,7 @@ async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados"
   const cont={};l.forEach(p=>cont[p.sigla_tipo||"?"]=(cont[p.sigla_tipo||"?"]||0)+1);const NT={PL:"Projetos de lei",REQ:"Requerimentos",RIC:"Pedidos de informação",PEC:"Propostas de emenda",PLP:"Projetos de lei complementar",PDL:"Projetos de decreto legislativo",MPV:"Medidas provisórias",INC:"Indicações"};
   const it=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,n],i)=>[NT[k]||k,n,["#609FEC","#F8C260","#AF8CEB","#8CDBB6","#F69981"][i]]);const tot=l.length;
   const d=l.map(p=>p.data_apresentacao).filter(Boolean).sort();
-  box.innerHTML=`<div class="hd"><div><h2>Proposições apresentadas</h2><p>Câmara e Senado${d.length?`, ${fd(d[0].slice(0,10))} a ${fd(d[d.length-1].slice(0,10))}`:""}</p></div><a href="#/projetos">Ver todas</a></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(it,nf(tot),"proposições")}<div style="flex:1;min-width:190px">${it.map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${esc(x[0])}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/tot*100)}%</span></div>`).join("")}</div></div>`}).catch(()=>{});
+  box.innerHTML=`<div class="hd"><div><h2>Proposições apresentadas</h2><p>Câmara e Senado${d.length?`, ${fd(d[0].slice(0,10))} a ${fd(d[d.length-1].slice(0,10))}`:""}</p></div><a href="#/leis/projetos">Ver todas</a></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(it,nf(tot),"proposições")}<div style="flex:1;min-width:190px">${it.map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${esc(x[0])}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/tot*100)}%</span></div>`).join("")}</div></div>`}).catch(()=>{});
  // últimas atualizações: o que entrou por último nas bases
  Promise.all([apiGet("/votacoes?limit=2").catch(()=>({itens:[]})),apiGet("/proposicoes?limit=1").catch(()=>({itens:[]})),apiGet("/legislacao?limit=1").catch(()=>({itens:[]})),apiGet("/contratos?ordenar=data&limit=1").catch(()=>({itens:[]}))]).then(([v,p,n,ct])=>{
   const box=[...document.querySelectorAll(".r1.rup .panel")].find(x=>/Últimas atualizações/.test(x.textContent));if(!box)return;
@@ -5544,16 +5558,63 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
-CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"legislacao",obra:"obras",projeto:"projetos",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",leis:"projetos",pessoas:"pessoas"}[k]||null;
+const sec={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
+/* ---------- Leis e Projetos: Constituição, leis e projetos numa área só (as telas antigas viram abas; o que se repetia saiu) ---------- */
+const LEIS_ABAS=[["projetos","Projetos de lei"],["leis","Leis e normas"],["constituicao","Constituição"],["estados","Leis dos estados"],["como","Como uma lei nasce"]];
+const LEIS_DESC={projetos:"Projetos que estão tramitando na Câmara e no Senado, o que está para ser votado e o que já foi votado, com o resultado.",
+ leis:"Leis, emendas constitucionais, medidas provisórias e decretos federais já publicados, e as principais leis do país por assunto.",
+ constituicao:"A Constituição de 1988 explicada: títulos, artigos mais consultados e emendas.",estados:"As constituições e as leis de cada estado, e o que cada nível de governo pode decidir.",
+ como:"Como um projeto vira lei, da ideia à sanção."};
+const _PROJ_IN=P.projetos,_LEG_IN=P.legislacao,_CONST_IN=P.constituicao;
+const FASES_P=[["","Todos"],["a_votar","Para votar"],["em_votacao","Em votação agora"],["votado","Já votados"]];
+function semCabecalho(o,{tabsConst}={}){const t=document.createElement("template");t.innerHTML=o.html;const ph=t.content.querySelector(".ph");if(ph)ph.remove();
+ if(tabsConst){const x=t.content.querySelector("#cftabs");if(x)x.remove()}return{html:t.innerHTML,mount:o.mount}}
+function placarProj(pl){if(!pl)return"";const quando=pl.data?` em ${fdr(pl.data)}`:"";const res=pl.resultado?`<b>${esc(pl.resultado)}</b>${quando}`:(quando?`Votado${quando}`:"Votado");
+ if(pl.sim==null)return`<div class="pj-p"><div class="pj-pt"><span>${res}</span><span class="muted">${pl.secreta?"votação secreta: só o resultado oficial":"placar não disponível"}</span></div></div>`;
+ const t=(pl.sim||0)+(pl.nao||0)+(pl.abstencao||0)+(pl.obstrucao||0)||1,w=n=>(n/t*100).toFixed(1);
+ return`<div class="pj-p"><div class="pj-pt"><span>${res}</span></div><div class="pj-bar" role="img" aria-label="A favor ${pl.sim}, contra ${pl.nao}, abstenções ${pl.abstencao}"><i class="s" style="width:${w(pl.sim)}%"></i><i class="n" style="width:${w(pl.nao)}%"></i><i class="a" style="width:${w((pl.abstencao||0)+(pl.obstrucao||0))}%"></i></div>
+  <div class="pj-pt"><span><em class="s"></em>A favor <b>${nf(pl.sim)}</b></span><span><em class="n"></em>Contra <b>${nf(pl.nao)}</b></span><span><em class="a"></em>Abstenções <b>${nf((pl.abstencao||0)+(pl.obstrucao||0))}</b></span></div></div>`}
+function cartaoProjeto(p){const num=`${p.sigla_tipo||""} ${p.numero||""}`.trim()+(p.ano?`/${p.ano}`:"");const au=p.autor;
+ const autor=au?`${esc(au.nome||"")}${au.partido?` (${esc(au.partido)}${au.uf?"-"+esc(au.uf):""})`:""}${au.outros?` +${au.outros}`:""}`:"";
+ const hoje=p.na_pauta==="em_andamento"?'<span class="sit-p sit-vote">Em votação agora</span>':p.na_pauta==="convocada"?'<span class="sit-p sit-wait">Na pauta de hoje</span>':"";
+ return`<a class="pj-c" href="#/projeto/r${p.id}"><div class="pj-h"><div style="min-width:0"><div class="pj-n">${esc(num)}</div>
+  <div class="pj-s">${autor?`Autor: ${autor}`:"Autor não coletado"}${p.relator?`<br>Relator: ${esc(p.relator)}`:""}</div></div>
+  <div class="pj-d"><div>${esc(casaN(p.casa)||"")}</div><div>${p.data_apresentacao?fdr(p.data_apresentacao):""}</div><div class="pj-t">${hoje||sitProjTag(p.situacao)}</div></div></div>
+  <p class="pj-r">${esc(p.ementa||"Sem resumo.")}</p>${placarProj(p.placar)}</a>`}
+function telaProjetos(){return{html:`<div class="seg pj-fases" id="pjf">${FASES_P.map((f,i)=>`<button type="button" data-f="${f[0]}" class="${i?"":"on"}">${f[1]}<small></small></button>`).join("")}</div>
+ <div class="panel mt"><div class="filters"><input id="prq" placeholder="Palavra do resumo ou número (ex.: educação, 2630)" style="flex:1;min-width:180px" autocomplete="off"><select id="prc" data-titulo="Casa"><option value="">Câmara e Senado</option><option value="camara">Câmara dos Deputados</option><option value="senado">Senado Federal</option></select><select id="prt" data-titulo="Tipo"><option value="">Todos os tipos</option>${[["PL","Projeto de lei (PL)"],["PLP","Lei complementar (PLP)"],["PEC","Emenda à Constituição (PEC)"],["MPV","Medida provisória (MPV)"],["PDL","Decreto legislativo (PDL)"],["PDC","Decreto legislativo da Câmara (PDC)"],["PLN","Crédito no orçamento (PLN)"],["PRC","Resolução da Câmara (PRC)"]].map(x=>`<option value="${x[0]}">${x[1]}</option>`).join("")}</select><select id="pra" data-titulo="Ano"><option value="">Todos os anos</option>${Array.from({length:new Date().getFullYear()-1984},(_,i)=>new Date().getFullYear()-i).map(x=>`<option>${x}</option>`).join("")}</select></div>
+ <div id="prl" class="pj">${rload()}</div>${maisBtn("prm")}${RSRC("Câmara dos Deputados e Senado Federal")}</div>`,
+ mount(){let f={q:"",casa:"",tipo:"",ano:"",fase:""};
+  const pg=listaPaginada({url:()=>"/proposicoes"+qs(f),alvo:"#prl",mais:"#prm",vazio:f.fase?"Nenhum projeto nesta fase com esses filtros (ou ainda não coletado).":"Nenhum projeto com esses filtros.",
+   render:(it,tot)=>`<p class="small muted" style="margin:0 0 10px">${nf(tot)} ${tot===1?"projeto":"projetos"}</p><div class="pj">${it.map(cartaoProjeto).join("")}</div>`,
+   aoCarregar:(it,tot)=>{if(!tot&&!f.q&&!f.casa&&!f.tipo&&!f.ano&&!f.fase)demoComAviso(_PROJ_IN,[],"Nenhum projeto coletado ainda (coleta camara-proposicoes).")}});
+  const contar=()=>FASES_P.forEach(([k])=>{const b=document.querySelector(`#pjf button[data-f="${k}"] small`);if(!b)return;
+   apiGet("/proposicoes"+qs({...f,fase:k})+(qs({...f,fase:k})?"&":"?")+"limit=1").then(r=>{b.textContent=nf(r.total)}).catch(()=>{b.textContent=""})});
+  pg(true);contar();const re=debounce(()=>{pg(true);contar()});$("#prq").oninput=e=>{f.q=e.target.value.trim();re()};
+  [["#prc","casa"],["#prt","tipo"],["#pra","ano"]].forEach(([sl,k])=>$(sl).onchange=e=>{f[k]=e.target.value;pg(true);contar()});
+  document.querySelectorAll("#pjf button").forEach(b=>b.onclick=()=>{f.fase=b.dataset.f;document.querySelectorAll("#pjf button").forEach(x=>x.classList.toggle("on",x===b));pg(true)})}}}
+P.leis=(aba,...r)=>{aba=LEIS_ABAS.some(a=>a[0]===aba)?aba:"projetos";let o;
+ if(aba==="projetos")o=API.on?telaProjetos():semCabecalho(_PROJ_IN());
+ else if(aba==="leis"){const leg=semCabecalho(_LEG_IN());o={html:`<div class="seg" id="lgsub"><button type="button" data-s="todas" class="on">Todas as normas</button><button type="button" data-s="principais">Principais leis por assunto</button></div><div id="lgsb" class="mt">${leg.html}</div>`,
+  mount(){leg.mount&&leg.mount();const caixa=$("#lgsb");const guarda=caixa.innerHTML;
+   document.querySelectorAll("#lgsub button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#lgsub button").forEach(x=>x.classList.toggle("on",x===b));
+    if(b.dataset.s==="todas"){caixa.innerHTML=guarda;leg.mount&&leg.mount()}else{const pr=semCabecalho(_CONST_IN("leis"),{tabsConst:true});caixa.innerHTML=pr.html;pr.mount&&pr.mount()}})}}}
+ else o=semCabecalho(_CONST_IN(aba==="constituicao"?"federal":aba),{tabsConst:true});
+ return{html:`<div class="ph"><div><h1>Leis e Projetos</h1><p>${esc(LEIS_DESC[aba])}</p></div></div><div class="tabs" id="lstabs" style="margin-top:0">${LEIS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/leis/${a[0]}">${a[1]}</a>`).join("")}</div><div id="lsv">${o.html}</div>`,mount:o.mount}};
+/* endereços antigos continuam funcionando e levam para a aba certa */
+const irLeis=(a)=>({html:"",mount(){history.replaceState(null,"","#/leis/"+a);route()}});
+P.projetos=()=>irLeis("projetos");P.legislacao=()=>irLeis("leis");
+P.constituicao=(t)=>irLeis({federal:"constituicao",estados:"estados",leis:"leis",como:"como"}[t]||"constituicao");
+
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
 addEventListener("hashchange",route);detectarAPI().finally(route);
 </script>
