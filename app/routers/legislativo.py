@@ -115,7 +115,7 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
     else:  # representações por quebra de decoro não são projetos de lei: aparecem na aba Processos do parlamentar
         stmt = stmt.where(or_(Proposicao.sigla_tipo.is_(None), Proposicao.sigla_tipo != "REP"))
     if q:
-        stmt = stmt.where(Proposicao.ementa.ilike(f"%{_sem_curinga(q)}%", escape="\\"))
+        stmt = stmt.where(or_(Proposicao.ementa.ilike(f"%{_sem_curinga(q)}%", escape="\\"), Proposicao.numero == q.strip().lstrip("0")))
     stmt = projetos.filtrar_por_fase(db, stmt, fase)
     total = db.scalar(select(func.count()).select_from(stmt.subquery()))
     rows = db.scalars(stmt.limit(limit).offset(offset)).all()

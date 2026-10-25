@@ -357,3 +357,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   robô coleta `REP` no `HISTORICO`; liga só se o nome parlamentar for único na Câmara), candidaturas com registro não deferido (TSE) e casos curados (só nome completo igual ao da
   candidatura e sem outro parlamentar com o mesmo nome). Sempre com aviso de presunção de inocência. NÃO há processos por nome (STF/DataJud/TSE não têm base aberta que sirva; JusBrasil
   descartado): ver `docs/FONTES.md`. Processo em sigilo nunca aparece nem é inferido.
+
+## Leis e Projetos (out/2026)
+- Uma área só no menu (`#/leis/<aba>`, `P.leis`): Projetos de lei · Leis e normas (todas as normas / principais leis por assunto) · Constituição · Leis dos estados · Como uma lei nasce. Os endereços antigos
+  (`#/projetos`, `#/legislacao`, `#/constituicao/...`) redirecionam. A aba "Leis federais" da Constituição virou "Principais leis por assunto" dentro de Leis e normas (não repete mais a lista).
+- Projetos em cartões (`cartaoProjeto`): número grande; autor, relator, casa, data e situação pequenos; resumo (ementa); placar da última votação (A favor / Contra / Abstenções, placar oficial da casa ou
+  contagem dos votos nominais; votação secreta só com o resultado). Filtro Para votar / Em votação agora / Já votados (`fase`). `GET /proposicoes` (`app/projetos.py`) devolve `autor`, `relator`
+  (do texto da tramitação, só quando é uma designação), `placar`, `fase` e `na_pauta` (pauta dos eventos de hoje: `congresso-agenda`); REP (representações) fica fora da lista (aparece na aba Processos).
+  Autor e relator só existem para quem teve a tramitação coletada (`camara-tramitacoes limite=…`; votadas primeiro). A pauta do dia só vale no dia da cópia (`pautaVale`).

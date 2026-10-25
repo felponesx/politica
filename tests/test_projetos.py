@@ -13,9 +13,10 @@ from app.main import app  # noqa: E402
 from app.models import Parlamentar, Proposicao, Registro, Votacao, Voto  # noqa: E402
 
 cliente = TestClient(app)
+ANO = 3000 + uuid.uuid4().int % 6000  # ano só deste teste: a base de testes guarda o que os testes gravam
 
 
-def _prop(db, numero, situacao=None, tipo="PL", casa="camara", ano=2987):
+def _prop(db, numero, situacao=None, tipo="PL", casa="camara", ano=ANO):
     p = Proposicao(casa=casa, id_externo=uuid.uuid4().hex[:9], sigla_tipo=tipo, numero=str(numero), ano=ano, ementa=f"Dispõe sobre o tema {numero}.",
                    situacao=situacao, data_apresentacao=date(2987, 2, 10))
     db.add(p)
@@ -58,7 +59,7 @@ def test_fases_placar_e_autor():
                     dados={"dia": date.today().isoformat(), "situacao": "Em Andamento", "pauta": [{"proposicao": f"PL 9005/{em_vot.ano} - Dispõe sobre", "titulo": None}]}))
     db.commit()
     ids = {x: p.id for x, p in (("votado", votado), ("nominal", nominal), ("pronto", pronto), ("parado", parado), ("em_vot", em_vot))}
-    r = cliente.get("/proposicoes", params={"ano": 2987, "limit": 50}).json()["itens"]
+    r = cliente.get("/proposicoes", params={"ano": ANO, "limit": 50}).json()["itens"]
     por = {i["id"]: i for i in r}
     a = por[ids["votado"]]
     assert a["fase"] == "votado" and a["placar"]["sim"] == 37 and a["placar"]["nao"] == 7 and a["placar"]["abstencao"] == 6 and a["placar"]["resultado"] == "Aprovada"
@@ -68,10 +69,10 @@ def test_fases_placar_e_autor():
     assert por[ids["pronto"]]["fase"] == "a_votar" and por[ids["parado"]]["fase"] is None and por[ids["em_vot"]]["fase"] == "em_votacao"
     assert por[ids["parado"]]["autor"] is None and por[ids["parado"]]["placar"] is None  # nada inventado
     for fase, esperado in (("votado", {"votado", "nominal"}), ("a_votar", {"pronto"}), ("em_votacao", {"em_vot"})):
-        got = {i["id"] for i in cliente.get("/proposicoes", params={"ano": 2987, "fase": fase, "limit": 50}).json()["itens"]}
+        got = {i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "fase": fase, "limit": 50}).json()["itens"]}
         assert got == {ids[x] for x in esperado}, fase
     assert cliente.get("/proposicoes", params={"fase": "xx"}).status_code == 422
-    assert cliente.get("/proposicoes", params={"q": "%%", "ano": 2987}).json()["total"] == 0  # curinga não casa tudo
+    assert cliente.get("/proposicoes", params={"q": "%%", "ano": ANO}).json()["total"] == 0  # curinga não casa tudo
     db.close()
 
 
@@ -79,7 +80,15 @@ def test_representacao_nao_entra_na_lista_de_projetos():
     db = SessionLocal()
     r = _prop(db, 9100, tipo="REP")
     db.commit()
-    ids = [i["id"] for i in cliente.get("/proposicoes", params={"ano": 2987, "limit": 100}).json()["itens"]]
+    ids = [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "limit": 100}).json()["itens"]]
     assert r.id not in ids
-    assert r.id in [i["id"] for i in cliente.get("/proposicoes", params={"ano": 2987, "tipo": "REP", "limit": 100}).json()["itens"]]
+    assert r.id in [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "tipo": "REP", "limit": 100}).json()["itens"]]
+    db.close()
+
+
+def test_busca_por_numero():
+    db = SessionLocal()
+    p = _prop(db, 77123)
+    db.commit()
+    assert p.id in [i["id"] for i in cliente.get("/proposicoes", params={"q": "77123", "ano": ANO}).json()["itens"]]
     db.close()
