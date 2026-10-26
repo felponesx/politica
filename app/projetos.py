@@ -13,6 +13,7 @@ from sqlalchemy import func, or_, select
 
 from app.models import Parlamentar, Proposicao, Registro, Votacao, Voto
 
+CONGRESSO = ("PLN", "MPV", "PLV")  # tramitam no Congresso Nacional (sessão conjunta e comissão mista)
 FASES = ("a_votar", "em_votacao", "votado")
 # tipos que são projetos/propostas de lei (o resto, como requerimentos e indicações, não entra na lista de projetos)
 LEGISLATIVAS = ("PL", "PLP", "PEC", "MPV", "PDL", "PDC", "PLN", "PRC", "PLS", "PLC", "PDS", "PLV")

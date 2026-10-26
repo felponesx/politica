@@ -106,7 +106,9 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
     """Projetos com autor, relator, placar da última votação e fase (a_votar = pronto para ir a voto; em_votacao = na pauta de uma sessão em
     andamento hoje; votado = tem votação registrada). Só o que foi coletado: o que falta vem vazio."""
     stmt = select(Proposicao).order_by(Proposicao.ano.desc(), Proposicao.id.desc())
-    if casa:
+    if casa == "congresso":  # matérias votadas em sessão conjunta (não têm casa própria no banco)
+        stmt = stmt.where(Proposicao.sigla_tipo.in_(projetos.CONGRESSO))
+    elif casa:
         stmt = stmt.where(Proposicao.casa == casa)
     if ano:
         stmt = stmt.where(Proposicao.ano == ano)

@@ -117,3 +117,13 @@ def test_leis_em_vigor_so_leis_e_com_origem():
     assert [i["tipo"] for i in r] == ["LEI"] and r[0]["origem"]["numero"] == "88001" and "placar" in r[0]
     assert {i["tipo"] for i in cliente.get("/legislacao", params={"ano": ANO}).json()["itens"]} == {"LEI", "DEC"}
     db.close()
+
+
+def test_casa_congresso_traz_so_materias_de_sessao_conjunta():
+    db = SessionLocal()
+    a = _prop(db, 88101, tipo="MPV")
+    b = _prop(db, 88102, tipo="PL")
+    db.commit()
+    ids = [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "casa": "congresso", "limit": 100}).json()["itens"]]
+    assert a.id in ids and b.id not in ids
+    db.close()
