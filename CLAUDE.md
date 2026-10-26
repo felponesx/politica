@@ -130,6 +130,15 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   regras de sempre). Quem não foi parlamentar (empresários, servidores, assessores) continua só pela Wikipédia; fotos enviadas à mão seriam o caminho.
 - `revisar_dados` (grupo `midia`): tamanho do site e cobertura de fotos (prefeitos ≥ 90%, governadores, presidente, Congresso, escândalos).
 
+## PC local e mudanças pelo celular (out/2026)
+- Uso privado no PC do Felipe: `docker-compose.local.yml` (+ `.env.local`, ver `.env.local.example`): banco, agendador, API+site em `127.0.0.1:8000` e backup; o celular acessa
+  pelo Tailscale (`tailscale serve --bg 8000`), nada exposto na internet. Guia em `docs/PC_LOCAL.md`. Repositório volta a ser privado; os robôs do GitHub deixam de ser necessários.
+- `scripts/atualizar_local.py` (roda no PC, fora do Docker): confere o ramo principal a cada 5 min; se houver versão nova: `git merge --ff-only`, `docker compose build`, `pytest`
+  dentro do Docker e só então `up -d --build`; se os testes reprovarem ou `/pronto` não responder, `git reset --hard` para o último bom (`.atualizador/ultimo_bom`), alerta
+  (Telegram) e não repete a versão rejeitada (`.atualizador/rejeitado`). Recusa-se a mexer se houver arquivo alterado à mão. `.github/workflows/testes.yml` roda `pytest`
+  em pull requests (aprovação pelo celular só com verde). Falta: passar ao `agendar.py` o que hoje só o robô do GitHub faz (eleições, segurança, notícias a cada 15 min, impostômetro,
+  histórico, fotos) e adaptar `revisar_dados` ao banco local.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.

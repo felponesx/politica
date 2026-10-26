@@ -1,0 +1,71 @@
+# Uso no seu PC (privado): docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
+# Serviços: banco (sem porta aberta), agendador (as coletas), API + site em http://127.0.0.1:8000 e backup diário.
+# O site só abre no próprio PC. Para abrir no celular sem expor nada na internet, use o Tailscale (veja docs/PC_LOCAL.md):
+#   tailscale serve --bg 8000
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: brasil
+      POSTGRES_PASSWORD: ${DB_SENHA:?defina DB_SENHA no .env.local}
+      POSTGRES_DB: brasilplus
+      DB_LEITURA_SENHA: ${DB_LEITURA_SENHA:?defina DB_LEITURA_SENHA no .env.local}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brasil -d brasilplus"]
+      interval: 10s
+      retries: 10
+
+  agendador:
+    build: .
+    restart: unless-stopped
+    command: ["python", "-m", "scripts.agendar"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://brasil:${DB_SENHA}@db:5432/brasilplus
+      TRANSPARENCIA_API_KEY: ${TRANSPARENCIA_API_KEY:-}
+      ALERTA_TELEGRAM_TOKEN: ${ALERTA_TELEGRAM_TOKEN:-}
+      ALERTA_TELEGRAM_CHAT: ${ALERTA_TELEGRAM_CHAT:-}
+      ALERTA_WEBHOOK_URL: ${ALERTA_WEBHOOK_URL:-}
+    volumes: [coletas_tmp:/tmp]
+    depends_on:
+      db: {condition: service_healthy}
+
+  api:
+    build: .
+    restart: unless-stopped
+    # 127.0.0.1: só o próprio PC alcança a porta; o Tailscale (tailscale serve) leva o site ao celular
+    ports: ["${API_BIND:-127.0.0.1}:8000:8000"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://brasil_leitura:${DB_LEITURA_SENHA}@db:5432/brasilplus
+      MIGRAR_AO_INICIAR: "false"
+      SOMENTE_LEITURA: "true"
+      PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY:-}
+      LIMITE_REQ_POR_MINUTO: ${LIMITE_REQ_POR_MINUTO:-600}
+      PROXIES_CONFIAVEIS: ${PROXIES_CONFIAVEIS:-}
+      IA_ORCAMENTO_DIA_USD: ${IA_ORCAMENTO_DIA_USD:-2}
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    depends_on:
+      db: {condition: service_healthy}
+      agendador: {condition: service_started}
+
+  backup:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${DB_SENHA}
+    volumes:
+      - ./backups:/backups
+      - ./infra/backup.sh:/backup.sh:ro
+    entrypoint: ["sh", "/backup.sh"]
+    depends_on:
+      db: {condition: service_healthy}
+
+volumes:
+  pgdata:
+  coletas_tmp:
