@@ -1614,8 +1614,11 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bar{background:#2B3445!important}}
 .pct-b .bar{width:150px}
 /* animação dos gráficos e botões de período (v1.4) */
-.pj-cal{display:none;align-items:center;gap:6px}.pj-cal input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
-@media (max-width:760px){.pj-ano{display:none}.pj-cal{display:flex;flex:1 1 100%}.pj-cal input{flex:1}}
+.ap{position:relative}.ap-b{font:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer;min-width:130px;text-align:left}.ap-b::after{content:"▾";float:right;margin-left:10px;color:var(--ink2)}
+.ap-p{position:absolute;z-index:40;top:100%;left:0;margin-top:6px;width:min(300px,86vw);max-height:300px;overflow:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(20,35,60,.18)}.ap-p[hidden]{display:none}
+.ap-p button{font:inherit;font-size:13px;padding:8px 0;border:0;border-radius:8px;background:transparent;color:var(--ink);cursor:pointer}.ap-p button:hover{background:var(--bg)}.ap-p button.on{background:var(--accent);color:#fff}.ap-p .ap-t{grid-column:1/-1;border:1px solid var(--line)}
+.pj-fases button[hidden]{display:none}.pj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.lg-anos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;max-height:210px;overflow:auto}.lg-a{font:inherit;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;color:var(--ink)}.lg-a b{font-size:16px}.lg-a span{font-size:11.5px;color:var(--ink2)}.lg-a.on{background:var(--accent);border-color:var(--blue);color:#fff}.lg-a.on span{color:#fff}
 .lc-per,.page>.seg.lc-per{margin:16px 0 10px;padding:0;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
 @media (prefers-reduced-motion:no-preference){
 :is(.an-pre,.an-go):is(.lc,.an-w){position:relative}
@@ -1749,7 +1752,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .pj-p{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}.pj-bar{display:flex;height:9px;border-radius:99px;overflow:hidden;background:var(--line2);margin:7px 0 6px}
 .pj-bar i{display:block;height:100%}.pj-bar .s,.pj-pt em.s{background:#1BAF7A}.pj-bar .n,.pj-pt em.n{background:#EB6834}.pj-bar .a,.pj-pt em.a{background:#98A2B3}
 .pj-pt{display:flex;flex-wrap:wrap;gap:3px 16px;font-size:12.5px;color:var(--ink2)}.pj-pt em{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
-.pj-fases{margin-bottom:0}.pj-fases button small{margin-left:6px;color:var(--muted)}
+.pj-fases,.page>.seg.pj-fases{margin-bottom:0;flex-wrap:wrap;overflow:visible;padding:0;margin-left:0;margin-right:0}.pj-fases button small{margin-left:6px;color:var(--muted)}
 .sit-p.sit-vote{background:#FFF1E8;color:#B54708;border-color:#F8D1B5}
 @media (max-width:640px){.pj-h{flex-direction:column;gap:6px}.pj-d{text-align:left;max-width:none;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:center}.pj-t{margin-top:0}.pj-n{font-size:20px}}
 </style>
@@ -3964,7 +3967,13 @@ estados:()=>`<div class="grid g2 cfuf"><div class="panel"><h2>Escolha um estado<
 leis:()=>{const temas=[...new Set(LEIS_FED.map(l=>l[0]))];return`<div class="seg" id="cflt"><button class="on" data-t="">Todas <small>${LEIS_FED.length}</small></button>${temas.map(t=>`<button data-t="${t}">${t} <small>${LEIS_FED.filter(l=>l[0]===t).length}</small></button>`).join("")}</div><div class="grid g3 mt" id="cfll"></div>
 <p class="small muted">Os links abrem a busca no LexML, a rede oficial de informação legislativa. O histórico completo de leis, decretos e medidas provisórias está em <a href="#/leis/projetos">Legislação e Normas</a>.</p>
 <div class="panel mt" id="cfRec" hidden><h2>Publicadas recentemente</h2><div id="cfRecL"></div></div>`},
-como:()=>`<div class="grid g2"><div class="panel"><h2>Hierarquia das normas</h2><p class="small muted" style="margin:0 0 10px">Uma norma de baixo nunca pode contrariar uma de cima.</p><ol class="cfhier"><li><b>Constituição Federal e emendas constitucionais</b><span>e tratados de direitos humanos aprovados com o mesmo rito das emendas</span></li><li><b>Leis complementares, leis ordinárias, medidas provisórias, leis delegadas, decretos legislativos e resoluções</b><span>feitas pelo Congresso ou com força de lei</span></li><li><b>Decretos regulamentares</b><span>do Presidente, para explicar como cumprir as leis</span></li><li><b>Portarias, instruções normativas e resoluções de órgãos</b><span>regras internas e técnicas da administração</span></li></ol><p class="small muted">Estados seguem a mesma lógica com a Constituição Estadual no topo; municípios, com a Lei Orgânica.</p></div>
+como:()=>`<div class="panel"><h2>Quem comanda cada casa, o que vota e para onde vai</h2><p class="small muted" style="margin:0 0 10px">Os números das votações mostradas em "Já votados" e "Leis em vigor" (a favor, contra, abstenções) vêm das votações do plenário de cada casa.</p>${table([["Quem",r=>`<b style="font-weight:600">${r[0]}</b>`],["Quem comanda",r=>r[1]],["O que vota",r=>r[2]],["Votos necessários",r=>r[3]],["Para onde vai depois",r=>r[4]]],[
+["Câmara dos Deputados (513 deputados)","A Mesa Diretora, presidida pelo presidente da Câmara, que define a pauta junto com os líderes dos partidos. As comissões (como a de Constituição e Justiça) analisam antes do plenário.","Começa por ela os projetos do Presidente, do STF, dos tribunais superiores, da Procuradoria-Geral e de iniciativa popular. Vota também os projetos de deputados.","Maioria simples dos presentes (com pelo menos 257 deputados na sala); lei complementar: 257 votos a favor; PEC: 308 votos (3/5) em dois turnos.","Aprovado: vai ao Senado. Rejeitado: é arquivado. Se o Senado mudar o texto, volta à Câmara, que dá a palavra final sobre as mudanças."],
+["Senado Federal (81 senadores)","A Mesa do Senado, presidida pelo presidente do Senado (que também preside o Congresso). As comissões analisam antes do plenário.","Projetos de senadores e, como casa revisora, os que vieram da Câmara. Vota sozinho autoridades, como ministros do STF, e resoluções do próprio Senado.","Maioria simples dos presentes (com pelo menos 41 senadores na sala); lei complementar: 41 votos a favor; PEC: 49 votos (3/5) em dois turnos.","Aprovado sem mudança: vai à sanção do Presidente. Com mudanças: volta à Câmara. Rejeitado: é arquivado."],
+["Congresso (sessão conjunta)","O presidente do Senado.","Vetos do Presidente, o Orçamento da União e medidas provisórias (por uma comissão mista, depois Câmara e Senado).","Para derrubar um veto: 257 deputados e 41 senadores (maioria absoluta de cada casa).","Veto derrubado: o trecho vira lei. Veto mantido: vale a decisão do Presidente."],
+["Presidente da República","Não vota: sanciona ou veta.","Tem 15 dias úteis para sancionar (vira lei) ou vetar, no todo ou em parte.","—","Sancionado: a lei sai no Diário Oficial. Vetado: volta ao Congresso. PEC não passa por ele: é promulgada pelas mesas da Câmara e do Senado."]])}
+<p class="small muted" style="margin:12px 0 0">Se um projeto é rejeitado, só pode voltar na sessão legislativa seguinte, a não ser que a maioria absoluta de uma das casas peça a nova votação.</p></div>
+<div class="grid g2 mt"><div class="panel"><h2>Hierarquia das normas</h2><p class="small muted" style="margin:0 0 10px">Uma norma de baixo nunca pode contrariar uma de cima.</p><ol class="cfhier"><li><b>Constituição Federal e emendas constitucionais</b><span>e tratados de direitos humanos aprovados com o mesmo rito das emendas</span></li><li><b>Leis complementares, leis ordinárias, medidas provisórias, leis delegadas, decretos legislativos e resoluções</b><span>feitas pelo Congresso ou com força de lei</span></li><li><b>Decretos regulamentares</b><span>do Presidente, para explicar como cumprir as leis</span></li><li><b>Portarias, instruções normativas e resoluções de órgãos</b><span>regras internas e técnicas da administração</span></li></ol><p class="small muted">Estados seguem a mesma lógica com a Constituição Estadual no topo; municípios, com a Lei Orgânica.</p></div>
 <div class="panel"><h2>Como uma lei federal nasce</h2><ol class="cfpassos"><li><b>Proposta</b><span>Deputados, senadores, comissões, o Presidente, tribunais superiores, o Procurador-Geral da República ou os cidadãos (1% do eleitorado, em pelo menos 5 estados).</span></li><li><b>Comissões</b><span>O projeto é analisado e pode receber emendas e pareceres.</span></li><li><b>Plenário</b><span>Votação na Casa onde começou.</span></li><li><b>Outra Casa</b><span>A Câmara ou o Senado revisa; se mudar o texto, volta para a Casa de origem.</span></li><li><b>Sanção ou veto</b><span>O Presidente tem 15 dias úteis. Se não responder, a lei é sancionada automaticamente. Um veto pode ser derrubado pela maioria absoluta de deputados e senadores.</span></li><li><b>Publicação e vigência</b><span>Sai no Diário Oficial. Sem data definida, passa a valer 45 dias depois.</span></li></ol></div></div>
 <div class="panel mt"><h2>Tipos de proposta</h2>${table([["Tipo",r=>`<b style="font-weight:600">${r[0]}</b>`],["Para que serve",r=>r[1]],["Aprovação",r=>r[2]],["Passa pelo Presidente?",r=>r[3]]],[["Emenda à Constituição (PEC)","Mudar a Constituição","3/5 dos votos em dois turnos, na Câmara e no Senado","Não; é promulgada pelo Congresso"],["Lei complementar (PLP)","Temas que a Constituição exige, como regras de finanças públicas","Maioria absoluta","Sim"],["Lei ordinária (PL)","A maior parte das leis","Maioria simples, com a maioria dos membros presente","Sim"],["Medida provisória (MPV)","Casos urgentes; vale desde a publicação","Precisa ser aprovada pelo Congresso em até 120 dias","É editada por ele"],["Decreto legislativo (PDL)","Assuntos exclusivos do Congresso, como tratados e sustar atos do Executivo","Maioria simples","Não"]])}</div>
 <div class="panel mt"><h2>Quando uma lei contraria a Constituição</h2><p class="small muted" style="margin:0 0 10px">O Supremo Tribunal Federal pode retirar a lei do sistema por meio de ações de controle de constitucionalidade:</p><div class="facts"><div><span>ADI</span>Ação Direta de Inconstitucionalidade: pede que uma lei seja declarada contrária à Constituição</div><div><span>ADC</span>Ação Declaratória de Constitucionalidade: pede a confirmação de que uma lei federal é válida</div><div><span>ADPF</span>Arguição de Descumprimento de Preceito Fundamental: protege preceitos fundamentais, inclusive contra leis anteriores a 1988 e municipais</div><div><span>ADO</span>Ação Direta de Inconstitucionalidade por Omissão: quando falta uma lei que a Constituição exige</div></div>
@@ -5577,7 +5586,7 @@ const LEIS_ABAS=[["projetos","Projetos e leis"],["constituicao","Constituição"
 const LEIS_DESC={projetos:"O que o Congresso vai votar, o que já votou (com o placar) e as leis que já estão em vigor.",
  constituicao:"A Constituição de 1988 explicada: títulos, artigos mais consultados e emendas.",como:"Como um projeto vira lei, da ideia à sanção."};
 const _PROJ_IN=P.projetos,_LEG_IN=P.legislacao,_CONST_IN=P.constituicao;
-const FASES_P=[["a_votar","Para votar"],["em_votacao","Em votação agora"],["votado","Já votados"],["todos","Todos"],["leis","Leis em vigor"]];
+const FASES_P=[["a_votar","Para votar"],["em_votacao","Em votação agora"],["votado","Já votados"],["leis","Leis em vigor"]];
 function semCabecalho(o,{tabsConst}={}){const t=document.createElement("template");t.innerHTML=o.html;const ph=t.content.querySelector(".ph");if(ph)ph.remove();
  if(tabsConst){const x=t.content.querySelector("#cftabs");if(x)x.remove()}return{html:t.innerHTML,mount:o.mount}}
 function placarProj(pl){if(!pl)return"";const quando=pl.data?` em ${fdr(pl.data)}`:"";const res=pl.resultado?`<b>${esc(pl.resultado)}</b>${quando}`:(quando?`Votado${quando}`:"Votado");
@@ -5586,33 +5595,57 @@ function placarProj(pl){if(!pl)return"";const quando=pl.data?` em ${fdr(pl.data)
  return`<div class="pj-p"><div class="pj-pt"><span>${res}</span></div><div class="pj-bar" role="img" aria-label="A favor ${pl.sim}, contra ${pl.nao}, abstenções ${pl.abstencao}"><i class="s" style="width:${w(pl.sim)}%"></i><i class="n" style="width:${w(pl.nao)}%"></i><i class="a" style="width:${w((pl.abstencao||0)+(pl.obstrucao||0))}%"></i></div>
   <div class="pj-pt"><span><em class="s"></em>A favor <b>${nf(pl.sim)}</b></span><span><em class="n"></em>Contra <b>${nf(pl.nao)}</b></span><span><em class="a"></em>Abstenções <b>${nf((pl.abstencao||0)+(pl.obstrucao||0))}</b></span></div></div>`}
 const pautaVale=()=>!API.snap||(SNAP.m&&String(SNAP.m.gerado_em||"").slice(0,10)===new Date().toISOString().slice(0,10));
+function votadoInfo(p){const pl=p.placar,t=[];if(p.virou_lei)t.push('<span class="sit-p sit-ok">Virou lei</span>');
+ if(pl){const ap=/aprov/i.test(pl.resultado||"");t.push(`<span class="sit-p ${ap?"sit-go":"sit-off"}">${ap?"Aprovado":esc(pl.resultado||"Votado")}${pl.data?" em "+fdr(pl.data):""}</span>`)}
+ return t.length?`<div class="pj-tags">${t.join("")}</div>`:""}
 function cartaoProjeto(p){const num=`${p.sigla_tipo||""} ${p.numero||""}`.trim()+(p.ano?`/${p.ano}`:"");const au=p.autor;
  const autor=au?`${esc(au.nome||"")}${au.partido?` (${esc(au.partido)}${au.uf?"-"+esc(au.uf):""})`:""}${au.outros?` +${au.outros}`:""}`:"";
  const hoje=!pautaVale()?"":p.na_pauta==="em_andamento"?'<span class="sit-p sit-vote">Em votação agora</span>':p.na_pauta==="convocada"?'<span class="sit-p sit-wait">Na pauta de hoje</span>':"";
  return`<a class="pj-c" href="#/projeto/r${p.id}"><div class="pj-h"><div style="min-width:0"><div class="pj-n">${esc(num)}</div>
   <div class="pj-s">${autor?`Autor: ${autor}`:"Autor não coletado"}${p.relator?`<br>Relator: ${esc(p.relator)}`:""}</div></div>
   <div class="pj-d"><div>${esc(casaN(p.casa)||"")}</div><div>${p.data_apresentacao?fdr(p.data_apresentacao):""}</div><div class="pj-t">${hoje||sitProjTag(p.situacao)}</div></div></div>
-  <p class="pj-r">${esc(p.ementa||"Sem resumo.")}</p>${placarProj(p.placar)}</a>`}
+  <p class="pj-r">${esc(p.ementa||"Sem resumo.")}</p>${votadoInfo(p)}</a>`}
+/* seletor de ano em calendário de anos (sem data) */
+function anoPickHtml(id,rot="Todos os anos",de=1985){const ate=new Date().getFullYear();
+ return`<div class="ap" id="${id}"><button type="button" class="ap-b" aria-haspopup="true" aria-expanded="false"><span>${rot}</span></button><div class="ap-p" hidden><button type="button" class="ap-t on" data-y="">${rot}</button>${Array.from({length:ate-de+1},(_,i)=>ate-i).map(y=>`<button type="button" data-y="${y}">${y}</button>`).join("")}</div></div>`}
+function anoPickMount(id,cb,rot="Todos os anos"){const w=$("#"+id);if(!w)return;const b=w.querySelector(".ap-b"),p=w.querySelector(".ap-p");
+ w.pick=y=>{y=y==null?"":String(y);b.firstElementChild.textContent=y||rot;p.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.y===y))};
+ b.onclick=e=>{e.stopPropagation();const abre=p.hidden;document.querySelectorAll(".ap-p").forEach(x=>x.hidden=true);p.hidden=!abre;b.setAttribute("aria-expanded",String(abre));if(abre){const on=p.querySelector(".on");if(on&&on.dataset.y)p.scrollTop=on.offsetTop-60}};
+ p.onclick=e=>{const t=e.target.closest("button[data-y]");if(!t)return;w.pick(t.dataset.y);p.hidden=true;b.setAttribute("aria-expanded","false");cb(t.dataset.y)}}
+document.addEventListener("click",e=>{if(!e.target.closest(".ap"))document.querySelectorAll(".ap-p").forEach(x=>x.hidden=true)});
+const TIPOL={LEI:"Lei",LCP:"Lei Complementar",EMC:"Emenda Constitucional"};
+function cartaoLei(n){const num=`${TIPOL[n.tipo]||n.tipo} ${n.numero||""}${n.ano?"/"+n.ano:""}`.trim();const o=n.origem;
+ return`<a class="pj-c" href="#/norma/r${n.id}"><div class="pj-h"><div style="min-width:0"><div class="pj-n">${esc(num)}</div>
+  <div class="pj-s">${n.data?`${n.tipo==="EMC"?"Promulgada":"Sancionada"} em ${fdr(n.data)}`:"Data não informada"}${o?`<br>Veio do projeto ${esc(`${o.sigla_tipo} ${o.numero}/${o.ano}`)} (${esc(casaN(o.casa)||"")})`:""}</div></div></div>
+  <p class="pj-r">${esc(n.ementa||"Sem resumo.")}</p>${n.placar?placarProj(n.placar):'<div class="pj-p"><div class="pj-pt"><span class="muted">Placar da votação não disponível nos dados coletados.</span></div></div>'}</a>`}
+function telaLeis(){return{html:`<div class="panel"><h2>Leis aprovadas por ano</h2><div id="lgano" class="lg-anos">${rload()}</div></div>
+ <div class="panel mt"><div class="filters"><input id="lgq" placeholder="Pesquisar lei por assunto, palavra-chave ou número" style="flex:1;min-width:180px" autocomplete="off">${anoPickHtml("lga")}<select id="lgt" data-titulo="Tipo"><option value="">Todos os tipos</option><option value="LEI">Leis</option><option value="LCP">Leis complementares</option><option value="EMC">Emendas constitucionais</option></select></div>
+ <div id="lgl" class="pj">${rload()}</div>${maisBtn("lgm")}${RSRC("Senado Federal (base de normas federais) e Câmara dos Deputados")}</div>`,
+ mount(){const f={q:"",tipo:"",ano:"",leis:"true"};
+  const pg=listaPaginada({url:()=>"/legislacao"+qs(f),alvo:"#lgl",mais:"#lgm",vazio:"Nenhuma lei com esses filtros (ou ainda não coletada).",
+   render:(it,tot)=>`<p class="small muted" style="margin:0 0 10px">${nf(tot)} ${tot===1?"lei":"leis"}</p><div class="pj">${it.map(cartaoLei).join("")}</div>`});
+  apiGet("/legislacao-resumo").then(r=>{const por={};r.forEach(x=>{if(x.ano&&["LEI","LCP","EMC"].includes(x.tipo))por[x.ano]=(por[x.ano]||0)+x.quantidade});const anos=Object.keys(por).sort().reverse();
+   $("#lgano").innerHTML=anos.length?anos.map(y=>`<button type="button" class="lg-a" data-y="${y}"><b>${y}</b><span>${nf(por[y])} ${por[y]===1?"lei":"leis"}</span></button>`).join(""):rvazio("Sem leis coletadas.");
+   $("#lgano").onclick=e=>{const b=e.target.closest("button[data-y]");if(!b)return;f.ano=f.ano===b.dataset.y?"":b.dataset.y;$("#lga").pick(f.ano);marca();pg(true)}}).catch(e=>{$("#lgano").innerHTML=rerro(e)});
+  const marca=()=>document.querySelectorAll("#lgano .lg-a").forEach(x=>x.classList.toggle("on",x.dataset.y===f.ano));
+  anoPickMount("lga",y=>{f.ano=y;marca();pg(true)});
+  const re=debounce(()=>pg(true));$("#lgq").oninput=e=>{f.q=e.target.value.trim();re()};$("#lgt").onchange=e=>{f.tipo=e.target.value;pg(true)};pg(true)}}}
 function telaProjetos(){const ativas=()=>FASES_P.filter(f=>f[0]!=="em_votacao"||pautaVale());
  return{html:`<div class="seg pj-fases" id="pjf">${ativas().map(f=>`<button type="button" data-f="${f[0]}" class="${f[0]==="a_votar"?"on":""}">${f[1]}<small></small></button>`).join("")}</div><div id="pjbox" class="mt"></div>`,
- mount(){const leg=semCabecalho(_LEG_IN());let f={q:"",casa:"",ano:"",desde:"",fase:"a_votar"},pg=null;
-  const lista=()=>{$("#pjbox").innerHTML=`<div class="panel"><div class="filters"><input id="prq" placeholder="Palavra do resumo ou número" style="flex:1;min-width:180px" autocomplete="off" value="${esu(f.q)}"><select id="prc" data-titulo="Casa"><option value="">Câmara e Senado</option><option value="camara">Câmara dos Deputados</option><option value="senado">Senado Federal</option></select>
-    <select id="pra" class="pj-ano" data-titulo="Ano"><option value="">Todos os anos</option>${Array.from({length:new Date().getFullYear()-1984},(_,i)=>new Date().getFullYear()-i).map(x=>`<option>${x}</option>`).join("")}</select>
-    <label class="pj-cal small muted">Apresentado desde <input type="date" id="prd" min="1985-01-01" max="${new Date().toISOString().slice(0,10)}"></label></div>
+ mount(){const leis=telaLeis();let f={q:"",casa:"",ano:"",fase:"a_votar"},pg=null;
+  const lista=()=>{$("#pjbox").innerHTML=`<div class="panel"><div class="filters"><input id="prq" placeholder="Palavra do resumo ou número" style="flex:1;min-width:180px" autocomplete="off" value="${esu(f.q)}"><select id="prc" data-titulo="Casa"><option value="">Todas as casas</option><option value="camara">Câmara dos Deputados</option><option value="senado">Senado Federal</option></select>${anoPickHtml("pra")}</div>
     <div id="prl" class="pj">${rload()}</div>${maisBtn("prm")}${RSRC("Câmara dos Deputados e Senado Federal")}</div>`;
-   $("#prc").value=f.casa;$("#pra").value=f.ano;$("#prd").value=f.desde;
+   $("#prc").value=f.casa;anoPickMount("pra",y=>{f.ano=y;pg(true)});$("#pra").pick(f.ano);
    pg=listaPaginada({url:()=>"/proposicoes"+qs(f),alvo:"#prl",mais:"#prm",vazio:"Nenhum projeto nesta lista com esses filtros (ou ainda não coletado).",
     render:(it,tot)=>`<p class="small muted" style="margin:0 0 10px">${nf(tot)} ${tot===1?"projeto":"projetos"}</p><div class="pj">${it.map(cartaoProjeto).join("")}</div>`});
    const re=debounce(()=>pg(true));$("#prq").oninput=e=>{f.q=e.target.value.trim();re()};
    $("#prc").onchange=e=>{f.casa=e.target.value;pg(true)};
-   $("#pra").onchange=e=>{f.ano=e.target.value;f.desde="";$("#prd").value="";pg(true)};
-   $("#prd").onchange=e=>{f.desde=e.target.value;f.ano="";$("#pra").value="";pg(true)};
    pg(true)};
-  const contar=()=>ativas().forEach(([k])=>{if(k==="leis")return;const b=document.querySelector(`#pjf button[data-f="${k}"] small`);if(!b)return;const q={...f,fase:k==="todos"?"":k};
-   apiGet("/proposicoes"+qs(q)+(qs(q)?"&":"?")+"limit=1").then(r=>{b.textContent=nf(r.total)}).catch(()=>{b.textContent=""})});
+  const contar=()=>ativas().forEach(([k])=>{if(k==="leis")return;const b=document.querySelector(`#pjf button[data-f="${k}"] small`);if(!b)return;const q={...f,fase:k};
+   apiGet("/proposicoes"+qs(q)+(qs(q)?"&":"?")+"limit=1").then(r=>{b.textContent=nf(r.total);if(k==="em_votacao"&&!r.total&&f.fase!==k)b.parentElement.hidden=true}).catch(()=>{b.textContent=""})});
   const abrir=k=>{document.querySelectorAll("#pjf button").forEach(x=>x.classList.toggle("on",x.dataset.f===k));
-   if(k==="leis"){$("#pjbox").innerHTML=leg.html;leg.mount&&leg.mount();return}
-   f.fase=k==="todos"?"":k;lista()};
+   if(k==="leis"){$("#pjbox").innerHTML=leis.html;leis.mount();return}
+   f.fase=k;lista()};
   document.querySelectorAll("#pjf button").forEach(b=>b.onclick=()=>abrir(b.dataset.f));
   abrir("a_votar");contar()}}}
 P.leis=(aba,...r)=>{aba=LEIS_ABAS.some(a=>a[0]===aba)?aba:"projetos";let o;

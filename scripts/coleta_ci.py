@@ -59,7 +59,9 @@ EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.to
 # histórico desde 1985 (volta das eleições diretas) dos tipos de proposição de maior peso; os PLs ordinários são volume demais
 HISTORICO = [("camara-proposicoes", {"inicio": date(a, 1, 1), "fim": min(date(a + 4, 12, 31), date.today()),
                                        "tipos": ["PEC", "PLP", "MPV", "PDL", "PDC", "PLN", "REP"]})  # REP: representações por quebra de decoro (aba Processos do parlamentar)
-             for a in range(1985, date.today().year + 1, 5)] + (
+             for a in range(1985, date.today().year + 1, 5)] + [
+    # leis ordinárias, complementares e emendas desde 1988 (aba "Leis em vigor"): uma consulta curta por ano; anos fechados só uma vez por ano
+    ("legislacao-normas", {"ano": a, "tipos": ["LEI", "LCP", "EMC"]}) for a in range(1988, date.today().year)] + (
     # anos antigos mudam pouco: a situação desde 1985 é atualizada só aos domingos (um arquivo grande por ano)
     [("camara-proposicoes-situacao", {"desde": 1985})] if date.today().weekday() == 6 else [])
 SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {"todas": "true"}), ("seguranca-efetivo", {}), ("isp-rj-batalhoes", {}),
@@ -73,6 +75,7 @@ VALIDADE = {
     "siconfi-despesas-funcao": ("siconfi", "despesas_funcao", ("ano",),
                                 lambda p: (365 if int(p.get("ano", 0)) < date.today().year - 1 else 30 if int(p.get("ano", 0)) == date.today().year - 1 else None)),
 }
+VALIDADE["legislacao-normas"] = ("senado", "legislacao", ("ano",), lambda p: 365 if int(p.get("ano", 0)) < date.today().year else None)
 MIDIA_DIAS = int(os.environ.get("MIDIA_DIAS", "7"))
 
 

@@ -140,5 +140,6 @@ def enriquecer(db, props: list[Proposicao]) -> list[dict]:
             fase = None
         out.append({"id": p.id, "casa": p.casa, "sigla_tipo": p.sigla_tipo, "numero": p.numero, "ano": p.ano, "ementa": p.ementa,
                     "data_apresentacao": p.data_apresentacao.isoformat() if p.data_apresentacao else None, "situacao": p.situacao,
-                    "autor": autor, "relator": _relator(t.get("passos") or []), "placar": pl, "fase": fase, "na_pauta": na_pauta})
+                    "autor": autor, "relator": _relator(t.get("passos") or []), "placar": pl, "fase": fase, "na_pauta": na_pauta,
+                    "virou_lei": bool(p.urn_final) or bool(re.search(r"norma jur|transformad[oa] em (lei|norma)", sit))})
     return out

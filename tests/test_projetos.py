@@ -102,3 +102,18 @@ def test_filtro_desde_a_data():
     ids = lambda d: [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "desde": d}).json()["itens"]]  # noqa: E731
     assert p.id in ids("2987-02-10") and p.id not in ids("2987-02-11")
     db.close()
+
+
+def test_leis_em_vigor_so_leis_e_com_origem():
+    from app.models import Norma
+    db = SessionLocal()
+    p = _prop(db, 88001)
+    uid = uuid.uuid4().hex[:8]
+    lei = Norma(fonte="teste", id_externo="l" + uid, tipo="LEI", numero="9" + uid[:3], ano=ANO, data=date(2987, 3, 1), ementa="Lei de teste de origem.", proposicao_id=p.id)
+    dec = Norma(fonte="teste", id_externo="d" + uid, tipo="DEC", numero="8" + uid[:3], ano=ANO, data=date(2987, 3, 2), ementa="Decreto de teste.")
+    db.add_all([lei, dec])
+    db.commit()
+    r = cliente.get("/legislacao", params={"ano": ANO, "leis": "true"}).json()["itens"]
+    assert [i["tipo"] for i in r] == ["LEI"] and r[0]["origem"]["numero"] == "88001" and "placar" in r[0]
+    assert {i["tipo"] for i in cliente.get("/legislacao", params={"ano": ANO}).json()["itens"]} == {"LEI", "DEC"}
+    db.close()

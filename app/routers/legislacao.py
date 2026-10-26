@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from app import projetos
 from app.db import get_db
 from app.models import Norma, Proposicao, Votacao
 
 router = APIRouter(tags=["Legislação"])
+TIPOS_LEI = ("LEI", "LCP", "EMC")
 
 
 def _norma(n: Norma) -> dict:
@@ -16,7 +18,7 @@ def _norma(n: Norma) -> dict:
 
 @router.get("/legislacao")
 def listar_normas(q: str | None = None, tipo: str | None = None, ano: int | None = None,
-                  esfera: str | None = None, uf: str | None = None, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
+                  esfera: str | None = None, uf: str | None = None, leis: bool = False, limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Norma).order_by(Norma.data.desc().nullslast(), Norma.id.desc())
     if tipo:
         stmt = stmt.where(Norma.tipo == tipo.upper())
@@ -26,11 +28,23 @@ def listar_normas(q: str | None = None, tipo: str | None = None, ano: int | None
         stmt = stmt.where(Norma.esfera == esfera.lower())
     if uf:
         stmt = stmt.where(Norma.uf == uf.upper())
+    if leis and not tipo:  # "leis em vigor": leis ordinárias, complementares e emendas (sem decretos, MPs e decretos legislativos)
+        stmt = stmt.where(Norma.tipo.in_(TIPOS_LEI))
     if q:
-        termo = f"%{q}%"
-        stmt = stmt.where(or_(Norma.ementa.ilike(termo), Norma.numero == q))
+        termo = "%" + q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%"
+        stmt = stmt.where(or_(Norma.ementa.ilike(termo, escape="\\"), Norma.numero == q.strip().lstrip("0")))
     total = db.scalar(select(func.count()).select_from(stmt.subquery()))
-    return {"total": total, "itens": [_norma(n) for n in db.scalars(stmt.limit(limit).offset(offset))]}
+    itens = [_norma(n) for n in db.scalars(stmt.limit(limit).offset(offset))]
+    # projeto de origem e placar da votação, quando a norma foi ligada a um projeto coletado
+    pids = {i["proposicao_id"] for i in itens if i["proposicao_id"]}
+    if pids:
+        props = db.scalars(select(Proposicao).where(Proposicao.id.in_(pids))).all()
+        por_id = {e["id"]: e for e in projetos.enriquecer(db, props)}
+        for i in itens:
+            e = por_id.get(i["proposicao_id"])
+            i["origem"] = {k: e[k] for k in ("id", "casa", "sigla_tipo", "numero", "ano")} if e else None
+            i["placar"] = e["placar"] if e else None
+    return {"total": total, "itens": itens}
 
 
 @router.get("/legislacao/{nid}")

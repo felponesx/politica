@@ -48,7 +48,7 @@ LISTAS = {
     "/parlamentares": ([{}], 3000),
     "/votacoes": ([{}], 3000),
     "/proposicoes": ([{}, *[{"tipo": t} for t in ("PEC", "PLP", "MPV", "PDL", "PDC")], *[{"fase": f} for f in ("votado", "a_votar", "em_votacao")]], 4000),
-    "/legislacao": ([{}], 6000),
+    "/legislacao": ([{"leis": "true"}], 6000),
     "/contratos": ([{"ordenar": "valor"}, {"ordenar": "data"}], 3000),
     "/obras": ([{}], 3000),
     "/candidatos": ([{"cargo": c, "eleitos": "true"} for c in
