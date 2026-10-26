@@ -3550,7 +3550,7 @@ mount(){let f={q:"",casa:"",tipo:"",ano:""};
 const SIT_PROJ=[[/norma jur|transformad[oa] em (lei|norma)|promulgad|sancionad/i,"Virou lei","ok"],[/vetad/i,"Vetado","stop"],
  [/arquivad|retirad|prejudicad|devolvid|rejeitad|perdeu a efic|caducou/i,"Arquivado","off"],[/sanç|sancao/i,"Aguardando sanção do Presidente","wait"],
  [/assinatur/i,"Recolhendo assinaturas","wait"],[/aprecia.{0,8}senado|remetid[ao] ao senado|enviad[ao] ao senado/i,"No Senado","go"],
- [/aprecia.{0,8}c[aâ]mara|remetid[ao] à c[aâ]mara/i,"Na Câmara","go"],[/pronta para pauta|pronto para pauta|em pauta|ordem do dia|delibera/i,"Aguardando votação","vote"],
+ [/aprecia.{0,8}c[aâ]mara|remetid[ao] à c[aâ]mara/i,"Na Câmara","go"],[/pront[oa] para (a )?pauta|na pauta|em pauta|ordem do dia|delibera|turno suplementar/i,"Aguardando votação","vote"],
  [/parecer|relator|comiss/i,"Em análise na comissão","go"],[/despacho|providências internas|recebimento|apresenta|leitura/i,"Em análise inicial","go"],
  [/tramitando em conjunto|apensad/i,"Tramita junto com outro projeto","go"]];
 function sitProj(t){t=String(t||"").trim();if(!t)return null;for(const[r,n,c]of SIT_PROJ)if(r.test(t))return[n,c,t];return[t.charAt(0).toUpperCase()+t.slice(1).toLowerCase(),"go",t]}

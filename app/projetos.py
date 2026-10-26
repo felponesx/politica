@@ -19,7 +19,9 @@ FASES = ("a_votar", "em_votacao", "votado")
 LEGISLATIVAS = ("PL", "PLP", "PEC", "MPV", "PDL", "PDC", "PLN", "PRC", "PLS", "PLC", "PDS", "PLV")
 # situações em que o projeto está pronto/aguardando ir a voto (texto da Câmara e do Senado)
 _A_VOTAR = ("pronta para pauta", "pronto para pauta", "aguardando delibera", "aguardando vota", "aguardando apreciação", "aguardando apreciacao",
-            "aguardando discuss", "em pauta", "aguardando inclusão na ordem do dia", "aguardando inclusao na ordem do dia")
+            "aguardando discuss", "em pauta", "aguardando inclusão na ordem do dia", "aguardando inclusao na ordem do dia",
+            "pronta para a pauta", "pronto para delibera", "incluída na pauta", "incluida na pauta", "aguardando turno suplementar",
+            "aguardando inclusão ordem do dia", "aguardando inclusao ordem do dia")
 _ID = re.compile(r"\b(PL|PLP|PEC|MPV|PDL|PDC|PLN|PRC|PLS|PLC|PDS|PLV)\s*n?[ºo°.]?\s*(\d{1,5})\s*/\s*(\d{4})", re.I)
 _RELATOR = re.compile(r"relator(?:a)?\b[\s,:\-–]*(?:dep(?:utad[oa])?\.?\s*|sen(?:ador[a]?)?\.?\s*)?([A-ZÁÉÍÓÚÂÊÔÃÕÇ][^(,.;\n]{3,60})", re.I)
 

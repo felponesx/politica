@@ -50,6 +50,8 @@ EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.to
           *[("siconfi-divida", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
           # situação de cada proposição (arquivo anual da Câmara): anos recentes; o histórico desde 1985 vai no HISTORICO
           ("camara-proposicoes-situacao", {"desde": date.today().year - 3}),
+          # situação e autoria das matérias do Senado (lista /processo): ano corrente inteiro e, dos 3 anteriores, o que ainda tramita
+          ("senado-situacao", {"desde": date.today().year - 3}),
           # gastos por função (SICONFI RREO, desde 2015): anos fechados e o ano atual até o último bimestre publicado
           *[("siconfi-despesas-funcao", {"ano": a}) for a in range(2015, date.today().year)],
           ("siconfi-despesas-funcao", {"ano": date.today().year, "bimestre": max(1, (date.today().month - 2) // 2)}),

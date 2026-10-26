@@ -3,11 +3,14 @@
 A API do Senado devolve JSON aninhado e às vezes troca lista por objeto único,
 por isso o uso defensivo de `como_lista`, `cavar` e `primeiro`.
 """
+import re
 from datetime import date
+
+from sqlalchemy import select
 
 from app import http
 from app.collectors.base import marcar_em_exercicio, registrar_coleta
-from app.models import Parlamentar, Proposicao, Votacao, Voto
+from app.models import Parlamentar, Proposicao, Registro, Votacao, Voto
 import logging
 
 from app.utils import achar_lista, cavar, como_lista, meses, para_data, pegar, primeiro, upsert
@@ -134,4 +137,43 @@ def coletar_materias(ano: int, sigla: str = "PL"):
                 "data_apresentacao": para_data(primeiro(dados_basicos, "DataApresentacao", "Data")),
             })
             n += 1
+    return n.itens
+
+
+SIGLAS_SITUACAO = ("PL", "PLP", "PEC", "PDL", "PRS")
+_IDENT = re.compile(r"^([A-Z]+)\s+(\d+)\s*/\s*(\d{4})")
+
+
+def situacao_materias(desde: int | None = None, siglas: list[str] | None = None):
+    """Situação atual de cada matéria do Senado (lista /processo, uma consulta por sigla e ano), com o texto de autoria.
+    O ano corrente vem inteiro; os anos anteriores só com o que ainda tramita. Cria a matéria se ainda não estava no banco."""
+    hoje = date.today().year
+    with registrar_coleta("senado", "situacao", desde=desde or hoje) as (db, n):
+        for ano in range(int(desde or hoje), hoje + 1):
+            for sigla in siglas or SIGLAS_SITUACAO:
+                params = {"sigla": sigla, "ano": ano}
+                if ano < hoje:
+                    params["tramitando"] = "S"
+                try:
+                    lista = http.get_json(f"{BASE}/processo", params=params, headers={"Accept": "application/json"}) or []
+                except Exception as e:  # uma sigla/ano sem resposta não derruba o resto
+                    log.warning("processos %s %s: %s", sigla, ano, e)
+                    n.avisos.append(f"{sigla} {ano}: {e}")
+                    continue
+                for d in lista if isinstance(lista, list) else []:
+                    codigo = d.get("codigoMateria")
+                    m = _IDENT.match(str(d.get("identificacao") or ""))
+                    if not codigo or not m:
+                        continue
+                    p = upsert(db, Proposicao, {"casa": CASA, "id_externo": str(codigo)}, {
+                        "sigla_tipo": m.group(1), "numero": m.group(2), "ano": int(m.group(3)), "ementa": d.get("ementa"),
+                        "data_apresentacao": para_data(d.get("dataApresentacao")),
+                        "situacao": (d.get("situacaoAtual") or "")[:300] or None})
+                    db.flush()
+                    chave = {"fonte": "senado", "tipo": "tramitacao", "chave": str(p.id)}
+                    if d.get("autoria") and not db.execute(select(Registro).filter_by(**chave)).scalar_one_or_none():
+                        db.add(Registro(**chave, ano=p.ano, titulo=f"{p.sigla_tipo} {p.numero}/{p.ano}",
+                                        dados={"passos": [], "autores": [{"nome": d["autoria"], "tipo": None}]}))
+                    n += 1
+                db.commit()
     return n.itens

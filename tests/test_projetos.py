@@ -127,3 +127,16 @@ def test_casa_congresso_traz_so_materias_de_sessao_conjunta():
     ids = [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "casa": "congresso", "limit": 100}).json()["itens"]]
     assert a.id in ids and b.id not in ids
     db.close()
+
+
+def test_situacao_do_senado_e_para_votar(monkeypatch):
+    """Lista /processo do Senado (resposta real de 26/10/2026): situação atual, autoria e fase 'para votar' das matérias do Senado."""
+    from app import http
+    from app.collectors import senado
+    cod = 900000 + uuid.uuid4().int % 90000
+    item = {"autoria": "Senador Fulano (PT/AP)", "codigoMateria": cod, "dataApresentacao": "2026-01-06", "situacaoAtual": "PRONTA PARA A PAUTA NA COMISSÃO",
+            "ementa": "Teste do Senado.", "id": 1, "identificacao": f"PL {cod % 9000}/2026", "tramitando": "Sim"}
+    monkeypatch.setattr(http, "get_json", lambda url, params=None, headers=None: [item] if params and params.get("sigla") == "PL" else [])
+    assert senado.situacao_materias(desde=date.today().year, siglas=["PL", "PEC"]) == 1
+    r = cliente.get("/proposicoes", params={"casa": "senado", "fase": "a_votar", "q": "Teste do Senado", "limit": 20}).json()["itens"]
+    assert r and r[0]["situacao"] == "PRONTA PARA A PAUTA NA COMISSÃO" and r[0]["autor"]["nome"].startswith("Senador Fulano")

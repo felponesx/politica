@@ -14,6 +14,7 @@ _TAREFAS_BRUTAS = {
     "senado-senadores": senado.coletar_senadores,
     "senado-votacoes": senado.coletar_votacoes,            # inicio, fim
     "senado-materias": senado.coletar_materias,            # ano, sigla
+    "senado-situacao": senado.situacao_materias,           # desde (ano), siglas
     "ibge-indicadores": ibge.coletar_indicadores,          # periodos
     "siconfi-receitas": siconfi.coletar_receitas_estados,  # ano, bimestre
     "siconfi-divida": siconfi.coletar_divida_estados,      # ano, quadrimestre
