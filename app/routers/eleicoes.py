@@ -204,14 +204,21 @@ def mapa(ano: int, uf: str, cargo: str, turno: int = 1, db: Session = Depends(ge
              db.scalars(select(R).where(R.ano == ano, R.uf.in_([uf, "BR"]), R.cargo == cargo, R.turno == turno))}
     por_mun = {}
     for cd, nm, sq, v in linhas:
-        m = por_mun.setdefault(cd, {"cd_municipio": cd, "municipio": nm, "total": 0, "vencedor": None, "votos_vencedor": -1})
+        m = por_mun.setdefault(cd, {"cd_municipio": cd, "municipio": nm, "total": 0, "vencedor": None, "votos_vencedor": -1,
+                                    "_segundo": None, "_votos_segundo": -1})
         m["total"] += v
         if v > m["votos_vencedor"]:
+            m["_segundo"], m["_votos_segundo"] = m["vencedor"], m["votos_vencedor"]
             m["vencedor"], m["votos_vencedor"] = sq, v
+        elif v > m["_votos_segundo"]:
+            m["_segundo"], m["_votos_segundo"] = sq, v
     for m in por_mun.values():
         nome, partido = nomes.get(m["vencedor"], ("?", "?"))
+        seg, vseg = m.pop("_segundo"), m.pop("_votos_segundo")
         m["vencedor"] = {"sq_candidato": m["vencedor"], "nome": nome, "partido": partido,
                          "percentual": round(100 * m.pop("votos_vencedor") / (m["total"] or 1), 2)}
+        if cargo == "PRESIDENTE" and seg:  # presidente: também o segundo colocado (o mapa mostra quanto cada um teve em cada cidade)
+            m["segundo"] = {"sq_candidato": seg, "percentual": round(100 * vseg / (m["total"] or 1), 2)}
     from app.models import Municipio
     ibge = {sem_acento(m.nome): m.codigo_ibge for m in db.scalars(select(Municipio).where(Municipio.uf == uf))}
     for m in por_mun.values():

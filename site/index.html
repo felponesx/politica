@@ -1617,6 +1617,9 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .ap{position:relative}.ap-b{font:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer;min-width:130px;text-align:left}.ap-b::after{content:"▾";float:right;margin-left:10px;color:var(--ink2)}
 .ap-p{position:absolute;z-index:40;top:100%;left:0;margin-top:6px;width:min(300px,86vw);max-height:300px;overflow:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(20,35,60,.18)}.ap-p[hidden]{display:none}
 .ap-p button{font:inherit;font-size:13px;padding:8px 0;border:0;border-radius:8px;background:transparent;color:var(--ink);cursor:pointer}.ap-p button:hover{background:var(--bg)}.ap-p button.on{background:var(--accent);color:#fff}.ap-p .ap-t{grid-column:1/-1;border:1px solid var(--line)}
+svg.geo.com-mun path.st{pointer-events:none}svg.geo.mun-venc path.st{fill:transparent!important;stroke:#fff;stroke-width:1}
+.mun-info{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:13px}.mun-info .ht-bar{margin-top:6px}
+.mun-layer path{stroke:rgba(255,255,255,.75);stroke-width:.22;cursor:pointer}.mun-layer.fino path{stroke:rgba(29,41,57,.22);stroke-width:.2}.mun-layer path:hover{stroke:#1D2939;stroke-width:.7}
 .pj-fases button[hidden]{display:none}.pj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .lg-anos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;max-height:210px;overflow:auto}.lg-a{font:inherit;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;color:var(--ink)}.lg-a b{font-size:16px}.lg-a span{font-size:11.5px;color:var(--ink2)}.lg-a.on{background:var(--accent);border-color:var(--blue);color:#fff}.lg-a.on span{color:#fff}
 .lc-per,.page>.seg.lc-per{margin:16px 0 10px;padding:0;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
@@ -2561,7 +2564,7 @@ rowLinks()}}};
 /* ---------- efeito de zoom no estado (na mesma área) ---------- */
 // celular: modo leve — só o estado voa (sem desfoque, sem sombra, sem os outros estados), mais curto, e a ficha monta depois
 const zLeve=()=>matchMedia("(max-width:760px),(pointer:coarse)").matches;
-function zClone(svg,uf,leve){const cl=svg.cloneNode(true);cl.classList.remove("heat");cl.style.filter="none";cl.querySelectorAll("g.hm,g.br-borda").forEach(g=>g.remove());cl.style.width="100%";cl.style.height="100%";
+function zClone(svg,uf,leve){const cl=svg.cloneNode(true);cl.classList.remove("heat","com-mun","mun-venc");cl.style.filter="none";cl.querySelectorAll("g.hm,g.br-borda,g.mun-layer").forEach(g=>g.remove());cl.style.width="100%";cl.style.height="100%";
  if(leve){cl.querySelectorAll("path,text").forEach(p=>{if(p.getAttribute("data-uf")!==uf)p.remove()})}
  else cl.querySelectorAll("path").forEach(p=>p.setAttribute("vector-effect","non-scaling-stroke"));
  cl.querySelectorAll("path").forEach(p=>p.classList.add("zf-other"));return cl}
@@ -4123,13 +4126,45 @@ return{html:r.html,mount(){r.mount&&r.mount();(async()=>{try{const anos=await ap
   sec.innerHTML=`<h2 class="ufsec-h">Eleições ${ano}</h2><div class="grid g2">${res.filter(Boolean).map(d=>{const pp=Object.entries(d.por_partido).slice(0,6);return`<div class="panel"><h2>${esc(CARGON(d.cargo))}</h2>${pbars(pp.map(([p,o])=>[p,o.percentual]),{fmt:x=>x.toLocaleString("pt-BR")+"%"})}${d.eleitos.length?`<p class="small muted" style="margin:8px 0 0">${d.eleitos.length===1?"Eleito":"Eleitos"}: ${d.eleitos.slice(0,6).map(e=>esc(e.nome)+" ("+esc(e.partido||"")+")").join(", ")}${d.eleitos.length>6?` e mais ${d.eleitos.length-6}`:""}</p>`:""}</div>`}).join("")}</div><p class="small muted">Fonte: TSE. Mapa por município e comparação com a eleição anterior em <a href="#/eleicoes">Eleições</a>.</p>`;return}}catch(e){}})()}}};
 
 /* Eleições: mapa por município (cargos majoritários) */
+/* ---------- presidente: todos os municípios no mapa do país ---------- */
+const MALHA_C={},MM_ABRE=n=>n.match(/-?\d+\.?\d*/g)||[];
+function bboxD(ds){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;ds.forEach(d=>{const n=MM_ABRE(d);for(let i=0;i+1<n.length;i+=2){const x=+n[i],y=+n[i+1];if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}});return[x0,y0,x1,y1]}
+// a malha de cada estado vem num quadro próprio; leva-se ao quadro do mapa do país ajustando as caixas (Fernando de Noronha fica de fora, como no mapa)
+async function malhaUF(uf){if(MALHA_C[uf])return MALHA_C[uf];const m=await apiGet("/malhas/"+uf);
+ const ms=m.municipios.filter(c=>!(uf==="PE"&&c.codigo==="2605459")),[x0,y0,x1,y1]=bboxD(ms.map(c=>c.d)),[gx0,gy0,gx1,gy1]=bboxD([GEO.p[uf]]);
+ const sx=(gx1-gx0)/(x1-x0||1),sy=(gy1-gy0)/(y1-y0||1);
+ return MALHA_C[uf]={ms,t:`matrix(${sx.toFixed(5)} 0 0 ${sy.toFixed(5)} ${(gx0-x0*sx).toFixed(3)} ${(gy0-y0*sy).toFixed(3)})`}}
+function infoMunicipio(x,uf,nomeDe,corDe,partDe){const w=x.vencedor,sg=x.segundo,T=x.total||0;
+ const lin=(c,pct)=>`<div class="ht-bar"><span>${esc(tit(nomeDe(c.sq_candidato,c.nome)))} <small>${esc(c.partido||partDe(c.sq_candidato)||"")}</small></span><b>${nf(Math.round(T*pct/100))} · ${pctN(pct)}</b><i style="width:${Math.min(100,pct)}%;background:${corDe(c.sq_candidato)}"></i></div>`;
+ return`<div class="ht-top"><div><b>${esc(x.municipio)} · ${uf}</b><span>${nf(T)} votos válidos</span></div></div>${lin(w,w.percentual)}${sg?lin({sq_candidato:sg.sq_candidato},sg.percentual):""}`}
+async function camadaMunPais(o){const{f,corDe,forte,cands,modo,onZoom}=o;const tok=f._mk=(f._mk||0)+1;const svg=$("#elmap svg.geo");if(!svg)return;
+ const nomeDe=(sq,n)=>{const c=cands.find(x=>x.sq_candidato===sq);return c?c.nome:(n||"")},partDe=sq=>{const c=cands.find(x=>x.sq_candidato===sq);return c?c.partido:""};
+ const res={};let i=0;const ufs=UFS.map(u=>u.uf);
+ await Promise.all(Array.from({length:5},async()=>{while(i<ufs.length){const uf=ufs[i++];try{const[m,v]=await Promise.all([malhaUF(uf),apiGet(`/eleicoes/${f.ano}/${uf}/mapa`+qs({cargo:"PRESIDENTE",turno:f.turno}))]);res[uf]={m,v}}catch(e){}}}));
+ if(f._mk!==tok||$("#elmap svg.geo")!==svg||!Object.keys(res).length)return;
+ const venc=modo==="venc",info={};let h="";
+ UFS.forEach(u=>{const r=res[u.uf];if(!r)return;const por={};r.v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});
+  h+=`<g transform="${r.m.t}">`+r.m.ms.map(c=>{const x=por[c.codigo];if(x)info[c.codigo]=x;const fl=venc?(x&&x.vencedor?forte(corDe(x.vencedor.sq_candidato),x.vencedor.percentual):"var(--mapa-vazio)"):"transparent";
+   return`<path d="${c.d}" fill="${fl}" data-uf="${u.uf}" data-c="${c.codigo}"/>`}).join("")+"</g>"});
+ const g=document.createElementNS("http://www.w3.org/2000/svg","g");g.setAttribute("class","mun-layer"+(venc?"":" fino"));g.innerHTML=h;
+ const st=svg.querySelector("path.st");
+ if(venc&&st){svg.insertBefore(g,st);svg.classList.add("com-mun","mun-venc")}else{const lt=svg.querySelector("text");svg.insertBefore(g,lt);svg.classList.add("com-mun")}
+ const tip=dicaFlutuante();
+ g.addEventListener("click",e=>{const p=e.target.closest("path[data-uf]");if(!p)return;tip.classList.remove("on");onZoom(p.dataset.uf,svg.querySelector(`path.st[data-uf="${p.dataset.uf}"]`))});
+ g.addEventListener("mouseover",e=>{if(!ehMouse())return;const p=e.target.closest("path[data-c]"),x=p&&info[p.dataset.c];if(!x){tip.classList.remove("on");return}
+  fecharDica();tip.innerHTML=infoMunicipio(x,p.dataset.uf,nomeDe,corDe,partDe)+`<em>Clique para ver o estado inteiro</em>`;tip.classList.add("on");posDica(tip,e.clientX,e.clientY)});
+ g.addEventListener("mousemove",e=>{if(tip.classList.contains("on"))posDica(tip,e.clientX,e.clientY)});g.addEventListener("mouseleave",()=>tip.classList.remove("on"))}
 async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=["GOVERNADOR","PRESIDENTE","SENADOR","PREFEITO"];if(!maj.includes(String(f.cargo).toUpperCase()))return;
  box.innerHTML=`<div class="panel mt"><h2>Quem venceu em cada município</h2><div id="elmapaC">${rload()}</div></div>`;
  try{const[m,v]=await Promise.all([apiGet("/malhas/"+f.uf),apiGet(`/eleicoes/${f.ano}/${f.uf}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]);
   const por={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x});const cont={};v.forEach(x=>{const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
   const hid="mm"+(++HEATN);
-  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?corVoto(corPart(p),x.vencedor.percentual):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="var(--surface)" stroke-width=".35"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%":"Sem dados")}</title></path>`}).join("");
-  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Passe o dedo ou o mouse sobre uma cidade para ver o vencedor. Fonte: TSE e malhas do IBGE.</p>`}
+  const cds=f.nomes||[],nomeDe=sq=>{const c=cds.find(x=>x.sq_candidato===sq);return c?tit(c.nome):""};
+  const paths=m.municipios.map((c,i)=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?corVoto(corPart(p),x.vencedor.percentual):"#E3E7ED";return`<path id="${hid}-${i}" d="${c.d}" fill="${cr}" stroke="var(--surface)" stroke-width=".35" data-c="${c.codigo}"><title>${esc(x?x.municipio+": "+x.vencedor.nome+" ("+p+") "+x.vencedor.percentual.toLocaleString("pt-BR")+"%"+(x.segundo?" · 2º "+nomeDe(x.segundo.sq_candidato)+" "+x.segundo.percentual.toLocaleString("pt-BR")+"%":"")+" · "+nf(x.total)+" votos válidos":"Sem dados")}</title></path>`}).join("");
+  $("#elmapaC").innerHTML=`<div class="tw"><svg class="mmun" viewBox="0 0 ${m.largura} ${m.altura}" width="100%" role="img" aria-label="Vencedor por município">${paths}</svg></div><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Toque ou passe o mouse sobre uma cidade para ver quanto cada candidato teve. Fonte: TSE e malhas do IBGE.</p><div class="mun-info" id="elmunInfo">Toque em uma cidade para ver os votos.</div>`;
+  const dv=$("#elmunInfo");if(dv)$("#elmapaC svg.mmun").addEventListener("click",e=>{const p=e.target.closest("path[data-c]"),x=p&&por[p.dataset.c];if(!x)return;
+   const lin=(sq,pct,nome,part)=>`<div class="ht-bar"><span>${esc(nome||nomeDe(sq))} <small>${esc(part||"")}</small></span><b>${nf(Math.round(x.total*pct/100))} · ${pct.toLocaleString("pt-BR")}%</b><i style="width:${Math.min(100,pct)}%;background:${corPart(part||(cds.find(c=>c.sq_candidato===sq)||{}).partido||"")}"></i></div>`;
+   dv.innerHTML=`<b>${esc(x.municipio)}</b> <span class="muted">${nf(x.total)} votos válidos</span>${lin(x.vencedor.sq_candidato,x.vencedor.percentual,tit(x.vencedor.nome),x.vencedor.partido)}${x.segundo?lin(x.segundo.sq_candidato,x.segundo.percentual):""}`})}
  catch(e){$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2018 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
 
 
@@ -4362,6 +4397,7 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    legEl=`<div class="legend leg-faixas">${sw(cB,nB+": 20 pontos ou mais")}${sw(misturaBranco(cB,.25),"10 a 20")}${sw(misturaBranco(cB,.48),"2 a 10")}${sw(NEU,"empate (menos de 2)")}${sw(misturaBranco(cA,.48),"2 a 10")}${sw(misturaBranco(cA,.25),"10 a 20")}${sw(cA,nA+": 20 pontos ou mais")}</div>`}
   else fillEl=u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"};
   XF("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
+  if(chave()&&f.cargo==="PRESIDENTE"&&f.ano>=2018)camadaMunPais({f,corDe,forte,cands,modo:f.mapa==="venc"?"venc":"outro",onZoom:(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)}});
   bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
   // dica ao passar o mouse em cada estado
   const tip=dicaFlutuante();$("#elmap").querySelectorAll("path[data-uf]").forEach(p=>{const t=p.querySelector("title");if(t)t.remove();
@@ -4389,12 +4425,12 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
  /* estado aberto: só os candidatos e o mapa das cidades daquele estado */
  const estadoEleicao=uf=>{const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;const s=dados&&dados.estados[uf];const v=venc(s);const c0=s&&MAJ.includes(f.cargo)?s.candidatos[0]:null;
   return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${v?forte(corDe(v[0]),v[1]):REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">${ELN[f.cargo]||f.cargo} · ${f.turno}º turno de ${f.ano}</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${s?`${nf(s.votos_validos_nominais)} votos válidos nominais.${c0?` Mais votado: <b>${esc(tit(c0.nome))}</b> (${esc(c0.partido||"")}), ${pctN(c0.percentual)}.`:v?` Partido mais votado: <b>${esc(v[0])}</b> (${pctN(v[1])}).`:""}`:"Sem resultados."}</p></div></div>
-  <div class="ufrest"><div id="elufres">${rload()}</div><div id="elmapa"></div></div>`,
+  <div class="ufrest"><div id="elmapa"></div><div id="elufres">${rload()}</div></div>`,
   mount(){apiGet(`/eleicoes/${f.ano}/${uf}`+qs({cargo:f.cargo,turno:f.turno})).then(d=>{const box=$("#elufres");if(!box)return;const pp=Object.entries(d.por_partido);const L=d.eleitos.length&&!MAJ.includes(f.cargo)?d.eleitos:d.mais_votados;
     box.innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Votos válidos nominais</span><strong>${nf(d.votos_validos_nominais)}</strong></div><div class="kpi"><span>${MAJ.includes(f.cargo)?"Candidatos":"Eleitos"}</span><strong>${MAJ.includes(f.cargo)?nf(d.mais_votados.length):nf(d.eleitos.length)}</strong></div><div class="kpi"><span>Partidos com votos</span><strong>${pp.length}</strong></div></div>
     <div class="grid g2 mt"><div class="panel"><h2>${MAJ.includes(f.cargo)?"Candidatos neste estado":d.eleitos.length?"Eleitos neste estado":"Mais votados neste estado"}</h2>${L.slice(0,MAJ.includes(f.cargo)?20:80).map(c=>`<div class="elrow"><i style="background:${chave()?corDe(c.sq_candidato):corSigla(c.partido)}"></i><span><b style="font-weight:600">${lcand({...c,uf},f.ano,f.cargo)}</b> ${sigla(c.partido)}${f.cargo==="PREFEITO"&&c.unidade?` <small>${esc(tit(c.unidade))}</small>`:""}${/^ELEITO/.test(c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(c.percentual)}</b><div class="bar"><i style="width:${Math.min(100,c.percentual*(MAJ.includes(f.cargo)?1:4))}%;background:${chave()?corDe(c.sq_candidato):corSigla(c.partido)}"></i></div><small class="muted">${nf(c.votos)} votos</small></div>`).join("")}</div>
     <div class="panel"><h2>Votos por partido neste estado</h2>${pbars(pp.slice(0,12).map(([p,o])=>[p,o.percentual]),{fmt:pctN})}${d.comparativo_eleicao_anterior?`<p class="small muted" style="margin:10px 0 0">Comparação com ${d.comparativo_eleicao_anterior.ano}: ${Object.entries(d.comparativo_eleicao_anterior.partidos).sort((a,b)=>b[1].percentual_atual-a[1].percentual_atual).slice(0,5).map(([p,o])=>`${esc(p)} ${o.variacao_pp>0?"+":""}${o.variacao_pp.toLocaleString("pt-BR")} p.p.`).join(" · ")}</p>`:""}</div></div>`;
-    if(MAJ.includes(f.cargo))mapaMunicipal({ano:f.ano,uf,cargo:f.cargo,turno:f.turno})}).catch(e=>{const box=$("#elufres");if(box)box.innerHTML=e.status===404?rvazio("Sem resultados deste cargo neste estado."):rerro(e)})}}};
+    if(MAJ.includes(f.cargo))mapaMunicipal({ano:f.ano,uf,cargo:f.cargo,turno:f.turno,nomes:(dados&&dados.brasil&&dados.brasil.candidatos)||[]})}).catch(e=>{const box=$("#elufres");if(box)box.innerHTML=e.status===404?rvazio("Sem resultados deste cargo neste estado."):rerro(e)})}}};
  apiGet("/eleicoes/anos").then(l=>{anos=l||[];if(!anos.length){demoComAviso(_eleicoes,a,"Nenhum resultado do TSE coletado ainda.");return}f.ano=anos[0];
   $("#elanos").innerHTML=anos.map(x=>`<button data-a="${x}" class="${x===f.ano?"on":""}">${x}</button>`).join("");
   document.querySelectorAll("#elanos button").forEach(b=>b.onclick=()=>{f.ano=+b.dataset.a;f.turno=1;document.querySelectorAll("#elanos button").forEach(x=>x.classList.toggle("on",x===b));document.querySelectorAll("#elturnos button").forEach(x=>x.classList.toggle("on",x.dataset.t==="1"));segs()});

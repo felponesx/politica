@@ -87,6 +87,7 @@ def test_presidente_arquivo_br_nao_apaga_os_estados(tmp_path):
     assert rj["mais_votados"][0]["nome"] == "CANDIDATO B" and rj["mais_votados"][0]["percentual"] == 60.0
     mapa = cliente.get("/eleicoes/2018/SP/mapa", params={"cargo": "PRESIDENTE"}).json()
     assert mapa[0]["vencedor"]["nome"] == "CANDIDATO A"
+    assert mapa[0]["segundo"]["percentual"] <= mapa[0]["vencedor"]["percentual"]  # presidente: segundo colocado na cidade
 
     est = cliente.get("/eleicoes/2018/estados", params={"cargo": "PRESIDENTE"}).json()
     assert est["estados"]["SP"]["candidatos"][0]["nome"] == "CANDIDATO A"
