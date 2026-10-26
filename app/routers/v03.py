@@ -8,7 +8,7 @@ from datetime import date, datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import distinct, func, select
+from sqlalchemy import or_, distinct, func, select
 from sqlalchemy.orm import Session
 
 from app.collectors.bcb import SERIES
@@ -501,7 +501,9 @@ def _rj_filtro(tipo, uf, q, situacao):
     if uf:
         filtro.append(Registro.uf == uf.upper())
     if q:
-        filtro.append(Registro.titulo.ilike(f"%{q}%"))
+        dig = "".join(c for c in q if c.isdigit())
+        nome = Registro.titulo.ilike("%" + q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%", escape="\\")
+        filtro.append(or_(nome, Registro.chave.like(dig + "%")) if len(dig) >= 4 else nome)  # nome ou CNPJ (inteiro ou o começo dele)
     return filtro, (situacao or "").strip().lower()
 
 

@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -15,6 +15,7 @@ _TAREFAS_BRUTAS = {
     "senado-votacoes": senado.coletar_votacoes,            # inicio, fim
     "senado-materias": senado.coletar_materias,            # ano, sigla
     "senado-situacao": senado.situacao_materias,           # desde (ano), siglas
+    "bcb-financeiro": bcb_financeiro.coletar_sistema_financeiro,  # ano (opcional): bancos e crédito (IF.data + SGS)
     "ibge-indicadores": ibge.coletar_indicadores,          # periodos
     "siconfi-receitas": siconfi.coletar_receitas_estados,  # ano, bimestre
     "siconfi-divida": siconfi.coletar_divida_estados,      # ano, quadrimestre

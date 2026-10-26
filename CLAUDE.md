@@ -365,3 +365,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   contagem dos votos nominais; votação secreta só com o resultado). Filtro Para votar / Em votação agora / Já votados (`fase`). `GET /proposicoes` (`app/projetos.py`) devolve `autor`, `relator`
   (do texto da tramitação, só quando é uma designação), `placar`, `fase` e `na_pauta` (pauta dos eventos de hoje: `congresso-agenda`); REP (representações) fica fora da lista (aparece na aba Processos).
   Autor e relator só existem para quem teve a tramitação coletada (`camara-tramitacoes limite=…`; votadas primeiro). A pauta do dia só vale no dia da cópia (`pautaVale`).
+
+## Dívidas numa seção só, setor financeiro e buscas (out/2026)
+- Dívidas (`#/dividas/<tipo>`): pública, estados, cidades, famílias e **empresas** na mesma seção. Empresas tem 3 abas (`TELA_DIV.empresas`): Endividamento (números, ranking e pesquisa por nome/CNPJ/atividade/cidade, mais a inadimplência das empresas), Recuperação judicial e Falência
+  (resumo por estado/porte/ano e pesquisa por nome ou CNPJ, `/recuperacao-judicial?q=`). A antiga aba Dívidas de Empresas e Contratos redireciona para cá.
+- `bcb-financeiro` (`app/collectors/bcb_financeiro.py`): IF.data (balanço de dezembro e resultado = junho + dezembro, valores já em reais) + SGS do crédito (20539, 20540, 20541, 20631, 20622, 20714, 20783, 21082; o SGS só aceita
+  "ultimos/N" até 20, por isso pede por datas). `GET /economia-empresas` traz `financeiro` (mesmas contas dos outros setores + `fatias` + maiores instituições + séries); o site mostra "Financeiro (bancos e crédito)" em Comparando setores.
+- Maiores empresas: pesquisa (nome, CNPJ, atividade, cidade, UF, porte) sobre as 300 maiores. Contratos públicos: `GET /contratos?q=` (objeto, fornecedor, órgão, cidade, número ou CNPJ inteiro/começo).

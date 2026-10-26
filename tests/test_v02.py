@@ -113,6 +113,10 @@ def test_capag_e_empresa(tmp_path, monkeypatch):
     e = cliente.get("/empresas/11.222.333/0001-81").json()
     assert e["cadastro"]["razao_social"] == "EMPRESA GRANDE LTDA" and e["cadastro"]["socios"][0]["nome"] == "SÓCIA EXEMPLO"
     assert e["divida_ativa"][0]["valor"] == 2100000.5 and e["contratos_publicos"]["quantidade"] >= 1
+    # pesquisa livre nos contratos: nome da empresa, CNPJ (com pontuação) ou cidade
+    ids = lambda **p: [c["cnpj_fornecedor"] for c in cliente.get("/contratos", params=p).json()["itens"]]  # noqa: E731
+    assert "11222333000181" in ids(q="empresa grande") and "11222333000181" in ids(q="11.222.333/0001-81") and "11222333000181" in ids(q="1122233")
+    assert "11222333000181" not in ids(q="zzzz inexistente")
     assert cliente.get("/empresas/99999999000199").status_code == 404
     assert cnpj.converter({"qsa": []})["socios"] == []
 

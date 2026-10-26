@@ -52,6 +52,8 @@ EXTRAS = [*[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.to
           ("camara-proposicoes-situacao", {"desde": date.today().year - 3}),
           # situação e autoria das matérias do Senado (lista /processo): ano corrente inteiro e, dos 3 anteriores, o que ainda tramita
           ("senado-situacao", {"desde": date.today().year - 3}),
+          # bancos e crédito (IF.data do Banco Central; os dados de um ano fechado só mudam quando o BC republica)
+          ("bcb-financeiro", {}),
           # gastos por função (SICONFI RREO, desde 2015): anos fechados e o ano atual até o último bimestre publicado
           *[("siconfi-despesas-funcao", {"ano": a}) for a in range(2015, date.today().year)],
           ("siconfi-despesas-funcao", {"ano": date.today().year, "bimestre": max(1, (date.today().month - 2) // 2)}),
@@ -77,6 +79,7 @@ VALIDADE = {
     "siconfi-despesas-funcao": ("siconfi", "despesas_funcao", ("ano",),
                                 lambda p: (365 if int(p.get("ano", 0)) < date.today().year - 1 else 30 if int(p.get("ano", 0)) == date.today().year - 1 else None)),
 }
+VALIDADE["bcb-financeiro"] = ("bcb", "financeiro", ("ano",), lambda p: 30)
 VALIDADE["legislacao-normas"] = ("senado", "legislacao", ("ano",), lambda p: 365 if int(p.get("ano", 0)) < date.today().year else None)
 MIDIA_DIAS = int(os.environ.get("MIDIA_DIAS", "7"))
 

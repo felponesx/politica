@@ -352,6 +352,11 @@ def test_cnpj_base_recuperacao_judicial(tmp_path):
     assert fal["itens"][0]["nome"] == "CONSTRUTORA EXEMPLO LTDA" and fal["itens"][0]["situacao_cadastral"] == "Baixada"
     res = cliente.get("/recuperacao-judicial/resumo").json()
     assert res["por_uf"] == {"SP": 1} and res["ativas"] == 1 and res["por_ano"] == {"2023": 1}
+    # pesquisa por nome ou por CNPJ (com ou sem pontuação, inteiro ou o começo dele)
+    assert cliente.get("/recuperacao-judicial", params={"q": "lojas exemplo"}).json()["total"] == 1
+    assert cliente.get("/recuperacao-judicial", params={"q": "11.222.333/0001-81"}).json()["total"] == 1
+    assert cliente.get("/recuperacao-judicial", params={"q": "112223"}).json()["total"] == 1
+    assert cliente.get("/recuperacao-judicial", params={"q": "99.999.999"}).json()["total"] == 0
 
 
 # Sisdepen (Senappen), base semestral por estabelecimento: CSV UTF-8, ';', ~1.700 colunas; trecho com as que usamos

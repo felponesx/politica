@@ -479,6 +479,27 @@ def empresas_economia(db: Session = Depends(get_db)):
     return memo(("econ",), lambda: _empresas_economia(db=db))
 
 
+def _setor_financeiro(d: dict) -> dict | None:
+    """Setor financeiro (IF.data do Banco Central): mesmas contas do quadro dos outros setores, por instituição, mais os grandes números do crédito."""
+    t, n = d.get("totais") or {}, d.get("instituicoes") or 0
+    rec = t.get("receita") or 0
+    if not n or rec <= 0:
+        return None
+    lucro, cap, per, pes, adm = (t.get(k) or 0 for k in ("lucro", "captacao", "perdas", "pessoal", "administracao"))
+    outras = rec - lucro - cap - per - pes - adm  # o que sobra da receita depois das despesas listadas (inclui outras despesas)
+    pc = lambda v: round(v / rec * 100, 1)  # noqa: E731
+    fatias = [("Juros pagos a quem deposita e empresta", pc(cap)), ("Calotes e provisões (perdas com crédito)", pc(per)), ("Pessoal", pc(pes)),
+              ("Administração e impostos", pc(adm)), ("Outras despesas", pc(outras)), ("Sobra (lucro)", pc(lucro))]
+    return {"chave": "financeiro", "nome": "Financeiro (bancos e crédito)", "empresas": n, "pessoal": None, "receita": rec,
+            "receita_media": rec / n, "pessoal_medio": None, "gasto_medio": (rec - lucro) / n, "custo_por_pessoa": None,
+            "partes": {"insumos": pc(cap + per + adm + outras), "pessoal": pc(pes), "sobra": pc(lucro)}, "margem": pc(lucro), "fatias": fatias,
+            "referencia": d.get("referencia"), "totais": t, "maiores": d.get("maiores") or [], "series": d.get("series") or {},
+            "fonte": "Banco Central do Brasil — IF.data (balanços e resultados) e SGS (crédito)",
+            "nota": ("Soma dos conglomerados prudenciais e instituições independentes (bancos, cooperativas de crédito, financeiras e outras). A receita junta o que "
+                     "ganham com crédito, títulos, serviços, tarifas e pagamentos; \"juros pagos\" é o custo do dinheiro captado de clientes e investidores. "
+                     "Resultado do ano somando os dois semestres; valores em reais.")}
+
+
 def _empresas_economia(db: Session):
     """Como é a economia das empresas: faturamento médio, para onde vai a receita e quanto sobra, por setor (IBGE)."""
     r = db.scalar(select(Registro).where(Registro.fonte == "ibge", Registro.tipo == "empresas_economia")
@@ -505,10 +526,12 @@ def _empresas_economia(db: Session):
     soma = {c: sum(x[c] for x in setores.values()) for c in ("empresas", "pessoal", "receita", "valor_adicionado", "gastos_pessoal")}
     total = derivar({"empresas": soma["empresas"], "pessoal": soma["pessoal"], "receita": soma["receita"],
                      "valor_adicionado": soma["valor_adicionado"], "gastos_pessoal": soma["gastos_pessoal"]}) if setores else None
+    fin = db.scalar(select(Registro).where(Registro.fonte == "bcb", Registro.tipo == "financeiro", Registro.chave == "sistema"))
     return {"ano": (r.dados or {}).get("ano"), "setores": [{"chave": k, "nome": SETORES_ECO.get(k, k), **v} for k, v in setores.items()],
+            "financeiro": _setor_financeiro(fin.dados) if fin and fin.dados else None,
             "total": total, "fonte": "IBGE — Pesquisa Industrial Anual, Pesquisa Anual da Indústria da Construção, Pesquisa Anual de Comércio e Pesquisa Anual de Serviços",
             "nota": ("Totais do país por setor, não por empresa (o faturamento de cada empresa não é público). Cobre indústria, construção, comércio e serviços "
-                     "não financeiros; fora ficam agropecuária e bancos. \"Sobra\" = valor adicionado menos gastos com pessoal, em % da receita: é a margem "
+                     "não financeiros; fora fica a agropecuária; o setor financeiro (bancos e crédito) vem do Banco Central e aparece em linha separada. \"Sobra\" = valor adicionado menos gastos com pessoal, em % da receita: é a margem "
                      "operacional bruta, antes de impostos sobre o lucro, juros e depreciação; não é o lucro líquido. \"Gasto\" = compras de insumos e "
                      "mercadorias mais gastos com pessoal. No comércio a conta de pessoal considera só salários e retiradas.")}
 

@@ -33,7 +33,7 @@ def busca(q: str = Query(..., min_length=2, max_length=120), tipos: str | None =
 @router.get("/contratos", tags=["Contratos"])
 def contratos(uf: str | None = None, ano: int | None = None, esfera: str | None = None,
               cnpj_fornecedor: str | None = None, cnpj_orgao: str | None = None, municipio: str | None = None,
-              valor_min: float | None = None, ordenar: str = Query("valor", pattern="^(valor|data)$"),
+              valor_min: float | None = None, q: str | None = Query(None, max_length=120), ordenar: str = Query("valor", pattern="^(valor|data)$"),
               limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000), db: Session = Depends(get_db)):
     stmt = select(Contrato)
     for col, val in ((Contrato.ano, ano), (Contrato.esfera, esfera and esfera.upper()),
@@ -46,6 +46,13 @@ def contratos(uf: str | None = None, ano: int | None = None, esfera: str | None 
         stmt = stmt.where(Contrato.municipio.ilike(municipio))
     if valor_min is not None:
         stmt = stmt.where(Contrato.valor >= valor_min)
+    if q:  # pesquisa livre: assunto, nome da empresa ou do órgão, cidade, número do contrato ou CNPJ (inteiro ou o começo dele)
+        termo = "%" + q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%"
+        dig = "".join(c for c in q if c.isdigit())
+        cond = [c.ilike(termo, escape="\\") for c in (Contrato.objeto, Contrato.fornecedor, Contrato.orgao, Contrato.municipio, Contrato.numero_controle)]
+        if len(dig) >= 4:
+            cond += [Contrato.cnpj_fornecedor.like(dig + "%"), Contrato.cnpj_orgao.like(dig + "%")]
+        stmt = stmt.where(or_(*cond))
     ordem = Contrato.valor.desc().nullslast() if ordenar == "valor" else Contrato.data_assinatura.desc().nullslast()
     return _pagina(db, stmt.order_by(ordem), limit, offset)
 

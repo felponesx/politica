@@ -24,6 +24,7 @@ e na tela **Relatórios e Dados › Situação das fontes**.
 | lexml-estaduais | LexML | normas estaduais | não | Bloqueada fora do Brasil/para robôs | — |
 | assembleias, assembleia-arquivo | ALESP, ALMG e outras | deputados estaduais | não | Parcial (ALMG bloqueada para robôs) | — |
 | bcb-series, bcb-scr-estados | Banco Central (SGS, SCR.data) | séries econômicas desde 1985, crédito por UF | não | Validada | página HTML de erro tratada |
+| bcb-financeiro | Banco Central — IF.data (Olinda) e SGS | balanço e resultado de bancos, cooperativas e financeiras; crédito, juros, spread e inadimplência | não | Validada contra a fonte real (26/10/2026, uma carga de teste) | o resultado do IF.data é semestral (soma de junho e dezembro); sem número de funcionários; a "receita" é a soma das rendas de crédito, títulos, serviços e tarifas (não é a contabilidade de uma empresa comum) |
 | cnpj-fornecedores | BrasilAPI / minhareceita | cadastro e sócios | não | Validada (reserva incluída) | 1 consulta/s |
 | pgfn-divida-ativa | PGFN | dívida ativa da União | não | **Não rodada** | arquivos grandes, trimestrais |
 | desastres | Defesa Civil (planilhas) | desastres | não | **Não rodada** | carga manual por planilha |
