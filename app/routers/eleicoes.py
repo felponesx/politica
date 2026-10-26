@@ -144,6 +144,9 @@ def estados(ano: int, cargo: str, turno: int = 1, db: Session = Depends(get_db))
             "estados": {uf: resumo(ls) for uf, ls in sorted(por_uf.items())}}
 
 
+TETO_ELEITOS = 700  # o TSE de 2002 marca todos os candidatos como eleitos: a lista não passa disso (o total vai em eleitos_total)
+
+
 @router.get("/{ano}/{uf}")
 def resultado(ano: int, uf: str, cargo: str, turno: int = 1, unidade: str | None = None,
               db: Session = Depends(get_db)):
@@ -185,7 +188,7 @@ def resultado(ano: int, uf: str, cargo: str, turno: int = 1, unidade: str | None
     return {
         "ano": ano, "uf": uf, "cargo": cargo, "turno": turno, "unidade": unidade,
         "votos_validos_nominais": total,
-        "eleitos": [cand(r) for r in eleitos],
+        "eleitos": [cand(r) for r in eleitos[:TETO_ELEITOS]], "eleitos_total": len(eleitos),
         "mais_votados": [cand(r) for r in mais_votados],
         "por_partido": dict(sorted(atual.items(), key=lambda x: -x[1]["votos"])),
         "comparativo_eleicao_anterior": {"ano": ano - 4, "partidos": comparativo} if comparativo else None,
