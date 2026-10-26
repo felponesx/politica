@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-26T15:09+00:00",
+ "gerado_em": "2026-10-26T16:37+00:00",
  "shards": 256,
  "bases": {
   "/parlamentares": [
@@ -37,7 +37,9 @@
    }
   ],
   "/legislacao": [
-   {}
+   {
+    "leis": "true"
+   }
   ],
   "/contratos": [
    {
@@ -1963,16 +1965,16 @@
    "no_banco": 31
   },
   "/proposicoes?fase=a_votar": {
-   "na_copia": 736,
-   "no_banco": 736
+   "na_copia": 1435,
+   "no_banco": 1435
   },
   "/proposicoes?fase=em_votacao": {
    "na_copia": 0,
    "no_banco": 0
   },
-  "/legislacao": {
-   "na_copia": 1063,
-   "no_banco": 1063
+  "/legislacao?leis=true": {
+   "na_copia": 6000,
+   "no_banco": 8201
   },
   "/contratos?ordenar=valor": {
    "na_copia": 3000,
@@ -4479,8 +4481,8 @@
   "parlamentares": 783,
   "votacoes": 1167,
   "proposicoes": 39178,
-  "normas": 1063
+  "normas": 9043
  },
- "consultas": 29496,
- "bytes": 200677461
+ "consultas": 30933,
+ "bytes": 201918185
 }
