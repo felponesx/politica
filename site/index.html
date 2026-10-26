@@ -1620,7 +1620,8 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 svg.geo.com-mun path.st{pointer-events:none}svg.geo.mun-venc path.st{fill:transparent!important;stroke:#fff;stroke-width:1}
 .mun-info{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:13px}.mun-info .ht-bar{margin-top:6px}
 .mun-layer path{stroke:rgba(255,255,255,.75);stroke-width:.22;cursor:pointer}.mun-layer.fino path{stroke:rgba(29,41,57,.22);stroke-width:.2}.mun-layer path:hover{stroke:#1D2939;stroke-width:.7}
-.pj-fases button[hidden]{display:none}.pj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pj-fases button[hidden]{display:none}.ap-p.ap-c{grid-template-columns:repeat(2,1fr)}.ap-p.ap-c button{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px}.ap-p.ap-c small{color:var(--ink2);font-size:11.5px}.ap-p.ap-c .on small{color:#fff}.ap-p.ap-c .ap-t{display:block;text-align:center}
+.pj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .lg-anos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;max-height:210px;overflow:auto}.lg-a{font:inherit;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;color:var(--ink)}.lg-a b{font-size:16px}.lg-a span{font-size:11.5px;color:var(--ink2)}.lg-a.on{background:var(--accent);border-color:var(--blue);color:#fff}.lg-a.on span{color:#fff}
 .lc-per,.page>.seg.lc-per{margin:16px 0 10px;padding:0;gap:4px}.lc-per button{padding:4px 10px;font-size:12px;border-radius:999px}
 @media (prefers-reduced-motion:no-preference){
@@ -5646,7 +5647,7 @@ function anoPickHtml(id,rot="Todos os anos",de=1985){const ate=new Date().getFul
  return`<div class="ap" id="${id}"><button type="button" class="ap-b" aria-haspopup="true" aria-expanded="false"><span>${rot}</span></button><div class="ap-p" hidden><button type="button" class="ap-t on" data-y="">${rot}</button>${Array.from({length:ate-de+1},(_,i)=>ate-i).map(y=>`<button type="button" data-y="${y}">${y}</button>`).join("")}</div></div>`}
 function anoPickMount(id,cb,rot="Todos os anos"){const w=$("#"+id);if(!w)return;const b=w.querySelector(".ap-b"),p=w.querySelector(".ap-p");
  w.pick=y=>{y=y==null?"":String(y);b.firstElementChild.textContent=y||rot;p.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x.dataset.y===y))};
- b.onclick=e=>{e.stopPropagation();const abre=p.hidden;document.querySelectorAll(".ap-p").forEach(x=>x.hidden=true);p.hidden=!abre;b.setAttribute("aria-expanded",String(abre));if(abre){const on=p.querySelector(".on");if(on&&on.dataset.y)p.scrollTop=on.offsetTop-60}};
+ b.onclick=e=>{e.stopPropagation();const abre=p.hidden;document.querySelectorAll(".ap-p").forEach(x=>x.hidden=true);p.hidden=!abre;b.setAttribute("aria-expanded",String(abre));if(abre){p.style.left="0";p.style.right="auto";const r=p.getBoundingClientRect();if(r.right>innerWidth-8){p.style.left="auto";p.style.right="0"}const r2=p.getBoundingClientRect();if(r2.left<8){p.style.right="auto";p.style.left=(8-r2.left+(parseFloat(getComputedStyle(p).left)||0))+"px"}const on=p.querySelector(".on");if(on&&on.dataset.y)p.scrollTop=on.offsetTop-60}};
  p.onclick=e=>{const t=e.target.closest("button[data-y]");if(!t)return;w.pick(t.dataset.y);p.hidden=true;b.setAttribute("aria-expanded","false");cb(t.dataset.y)}}
 document.addEventListener("click",e=>{if(!e.target.closest(".ap"))document.querySelectorAll(".ap-p").forEach(x=>x.hidden=true)});
 const TIPOL={LEI:"Lei",LCP:"Lei Complementar",EMC:"Emenda Constitucional"};
@@ -5654,17 +5655,15 @@ function cartaoLei(n){const num=`${TIPOL[n.tipo]||n.tipo} ${n.numero||""}${n.ano
  return`<a class="pj-c" href="#/norma/r${n.id}"><div class="pj-h"><div style="min-width:0"><div class="pj-n">${esc(num)}</div>
   <div class="pj-s">${n.data?`${n.tipo==="EMC"?"Promulgada":"Sancionada"} em ${fdr(n.data)}`:"Data não informada"}${o?`<br>Veio do projeto ${esc(`${o.sigla_tipo} ${o.numero}/${o.ano}`)} (${esc(casaN(o.casa)||"")})`:""}</div></div></div>
   <p class="pj-r">${esc(n.ementa||"Sem resumo.")}</p>${n.placar?placarProj(n.placar):'<div class="pj-p"><div class="pj-pt"><span class="muted">Placar da votação não disponível nos dados coletados.</span></div></div>'}</a>`}
-function telaLeis(){return{html:`<div class="panel"><h2>Leis aprovadas por ano</h2><div id="lgano" class="lg-anos">${rload()}</div></div>
- <div class="panel mt"><div class="filters"><input id="lgq" placeholder="Pesquisar lei por assunto, palavra-chave ou número" style="flex:1;min-width:180px" autocomplete="off">${anoPickHtml("lga")}<select id="lgt" data-titulo="Tipo"><option value="">Todos os tipos</option><option value="LEI">Leis</option><option value="LCP">Leis complementares</option><option value="EMC">Emendas constitucionais</option></select></div>
+function telaLeis(){return{html:`<div class="panel"><div class="filters"><input id="lgq" placeholder="Pesquisar lei por assunto, palavra-chave ou número" style="flex:1;min-width:180px" autocomplete="off">${anoPickHtml("lga")}<select id="lgt" data-titulo="Tipo"><option value="">Todos os tipos</option><option value="LEI">Leis</option><option value="LCP">Leis complementares</option><option value="EMC">Emendas constitucionais</option></select></div>
  <div id="lgl" class="pj">${rload()}</div>${maisBtn("lgm")}${RSRC("Senado Federal (base de normas federais) e Câmara dos Deputados")}</div>`,
  mount(){const f={q:"",tipo:"",ano:"",leis:"true"};
   const pg=listaPaginada({url:()=>"/legislacao"+qs(f),alvo:"#lgl",mais:"#lgm",vazio:"Nenhuma lei com esses filtros (ou ainda não coletada).",
    render:(it,tot)=>`<p class="small muted" style="margin:0 0 10px">${nf(tot)} ${tot===1?"lei":"leis"}</p><div class="pj">${it.map(cartaoLei).join("")}</div>`});
-  apiGet("/legislacao-resumo").then(r=>{const por={};r.forEach(x=>{if(x.ano&&["LEI","LCP","EMC"].includes(x.tipo))por[x.ano]=(por[x.ano]||0)+x.quantidade});const anos=Object.keys(por).sort().reverse();
-   $("#lgano").innerHTML=anos.length?anos.map(y=>`<button type="button" class="lg-a" data-y="${y}"><b>${y}</b><span>${nf(por[y])} ${por[y]===1?"lei":"leis"}</span></button>`).join(""):rvazio("Sem leis coletadas.");
-   $("#lgano").onclick=e=>{const b=e.target.closest("button[data-y]");if(!b)return;f.ano=f.ano===b.dataset.y?"":b.dataset.y;$("#lga").pick(f.ano);marca();pg(true)}}).catch(e=>{$("#lgano").innerHTML=rerro(e)});
-  const marca=()=>document.querySelectorAll("#lgano .lg-a").forEach(x=>x.classList.toggle("on",x.dataset.y===f.ano));
-  anoPickMount("lga",y=>{f.ano=y;marca();pg(true)});
+  anoPickMount("lga",y=>{f.ano=y;pg(true)});
+  // o seletor de ano mostra quantas leis foram aprovadas em cada ano
+  apiGet("/legislacao-resumo").then(r=>{const por={};r.forEach(x=>{if(x.ano&&["LEI","LCP","EMC"].includes(x.tipo))por[x.ano]=(por[x.ano]||0)+x.quantidade});const anos=Object.keys(por).sort().reverse(),w=$("#lga");if(!w||!anos.length)return;
+   const pp=w.querySelector(".ap-p");pp.classList.add("ap-c");pp.innerHTML=`<button type="button" class="ap-t" data-y="">Todos os anos</button>`+anos.map(y=>`<button type="button" data-y="${y}"><b>${y}</b><small>${nf(por[y])} ${por[y]===1?"lei":"leis"}</small></button>`).join("");w.pick(f.ano)}).catch(()=>{});
   const re=debounce(()=>pg(true));$("#lgq").oninput=e=>{f.q=e.target.value.trim();re()};$("#lgt").onchange=e=>{f.tipo=e.target.value;pg(true)};pg(true)}}}
 function telaProjetos(){const ativas=()=>FASES_P.filter(f=>f[0]!=="em_votacao"||pautaVale());
  return{html:`<div class="seg pj-fases" id="pjf">${ativas().map(f=>`<button type="button" data-f="${f[0]}" class="${f[0]==="a_votar"?"on":""}">${f[1]}<small></small></button>`).join("")}</div><div id="pjbox" class="mt"></div>`,
