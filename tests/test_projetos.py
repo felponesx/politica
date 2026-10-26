@@ -93,3 +93,12 @@ def test_busca_por_numero():
     db.commit()
     assert p.id in [i["id"] for i in cliente.get("/proposicoes", params={"q": "77123", "ano": ANO}).json()["itens"]]
     db.close()
+
+
+def test_filtro_desde_a_data():
+    db = SessionLocal()
+    p = _prop(db, 77124)
+    db.commit()
+    ids = lambda d: [i["id"] for i in cliente.get("/proposicoes", params={"ano": ANO, "desde": d}).json()["itens"]]  # noqa: E731
+    assert p.id in ids("2987-02-10") and p.id not in ids("2987-02-11")
+    db.close()

@@ -100,7 +100,7 @@ def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
 
 @router.get("/proposicoes", response_model=Pagina)
 def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: str | None = None,
-                       q: str | None = Query(None, max_length=120), fase: str | None = Query(None, pattern="^(a_votar|em_votacao|votado)$"),
+                       desde: date | None = None, q: str | None = Query(None, max_length=120), fase: str | None = Query(None, pattern="^(a_votar|em_votacao|votado)$"),
                        limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
                        db: Session = Depends(get_db)):
     """Projetos com autor, relator, placar da última votação e fase (a_votar = pronto para ir a voto; em_votacao = na pauta de uma sessão em
@@ -110,6 +110,8 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
         stmt = stmt.where(Proposicao.casa == casa)
     if ano:
         stmt = stmt.where(Proposicao.ano == ano)
+    if desde:
+        stmt = stmt.where(Proposicao.data_apresentacao >= desde)
     if tipo:
         stmt = stmt.where(Proposicao.sigla_tipo == tipo.upper())
     else:  # só proposições legislativas: requerimentos, indicações e representações (REP, na aba Processos do parlamentar) ficam fora
