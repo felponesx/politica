@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-26T17:33+00:00",
+ "gerado_em": "2026-10-26T19:06+00:00",
  "shards": 256,
  "bases": {
   "/parlamentares": [
@@ -1938,15 +1938,15 @@
   },
   "/proposicoes": {
    "na_copia": 4000,
-   "no_banco": 32442
+   "no_banco": 35821
   },
   "/proposicoes?tipo=PEC": {
-   "na_copia": 3746,
-   "no_banco": 3746
+   "na_copia": 3870,
+   "no_banco": 3870
   },
   "/proposicoes?tipo=PLP": {
    "na_copia": 4000,
-   "no_banco": 4887
+   "no_banco": 5073
   },
   "/proposicoes?tipo=MPV": {
    "na_copia": 1398,
@@ -1954,7 +1954,7 @@
   },
   "/proposicoes?tipo=PDL": {
    "na_copia": 4000,
-   "no_banco": 5865
+   "no_banco": 6656
   },
   "/proposicoes?tipo=PDC": {
    "na_copia": 4000,
@@ -1965,8 +1965,8 @@
    "no_banco": 31
   },
   "/proposicoes?fase=a_votar": {
-   "na_copia": 1435,
-   "no_banco": 1435
+   "na_copia": 1833,
+   "no_banco": 1833
   },
   "/proposicoes?fase=em_votacao": {
    "na_copia": 0,
@@ -4480,9 +4480,9 @@
  "contagem": {
   "parlamentares": 783,
   "votacoes": 1167,
-  "proposicoes": 39178,
+  "proposicoes": 42726,
   "normas": 9043
  },
  "consultas": 30933,
- "bytes": 203711253
+ "bytes": 166299545
 }
