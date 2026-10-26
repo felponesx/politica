@@ -5,3 +5,7 @@ __pycache__/
 .pytest_cache/
 .env.prod
 backups/
+
+# PC local (docs/PC_LOCAL.md)
+.env.local
+.atualizador/
