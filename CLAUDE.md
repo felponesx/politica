@@ -384,6 +384,6 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 
 ## Arrecadação, Cortes e Dívidas simples (out/2026)
 - Arrecadação e repasses: mapa com botões Arrecadação | Repasses (`/historico-estados` traz `arrecadacao` e `repasses`); lista "Todos os estados" compacta com ordem maior→menor (`listaUF`, também usada em Dívidas).
-- Aba "Cortes de gastos" (`#/arrecadacao/cortes`, `telaCortes`, `GET /cortes`): corte = orçamento atualizado menor que o inicial por órgão (`transparencia-orcamento` de cada ano), não é contingenciamento. O robô exporta `/cortes` (FIXAS).
+- Aba "Cortes de gastos" dentro de Órgãos (`#/orgaos/cortes`; `#/arrecadacao/cortes` redireciona; `telaCortes`, `GET /cortes`): corte = orçamento atualizado menor que o inicial por órgão (`transparencia-orcamento` de cada ano), não é contingenciamento. O robô exporta `/cortes` (FIXAS).
 - Dívidas: quadro acima do mapa enxuto; Saúde fiscal mostra a CAPAG em palavras e cores (Forte/Boa/Fraca/Ruim = A/B/C/D) com tabela por ano (`/dividas/municipios` → `historico`, guardado em `capag_resumo`; rode `tesouro-capag url=…` com arquivos de outros anos para completar; arquivo antigo não sobrescreve a nota atual); Empresas tem aba Resumo (junta endividamento, recuperação e falência).
 - As seções "Leis e Projetos" e "Empresas e Contratos" acima estão parcialmente desatualizadas (abas mudaram): vale a descrição no código (`ABAS_*`, `FASES_P`).

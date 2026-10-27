@@ -1787,6 +1787,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .ct-tab small{display:block;color:var(--muted);font-size:11px}.ct-tab th:first-child{text-align:left}
 .fl-box .fl-ord{margin-bottom:8px}.fl-box .btn{margin-top:10px}
 .dvq-linha .dvq{min-height:0;padding:9px 14px;gap:0;max-width:none;flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:10px}.dvq-linha .dvq-t,.dvq-linha .dvq small{display:none}.dvq-linha .dvq strong{font-size:20px}.dvq-linha .dvq em{font-size:12.5px}
+.fl-n{min-width:0;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -3847,7 +3848,7 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={}
 /* ---------- Órgãos federais ---------- */
 const _orgaos=P.orgaos,_orgao=P.orgao;
 P.orgaos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios, tribunais, Congresso e demais órgãos federais: o orçamento autorizado, quanto já foi empenhado e quanto foi pago no ano.</p></div></div>
-<div class="panel"><div class="segj-grupos"><div class="segj-w"><span class="segj-l">Ano</span><div class="seg segj" id="oranos"></div></div><div class="segj-w"><span class="segj-l">Tipo de órgão</span><div class="seg segj" id="ortipos"></div></div></div><div class="filters"><input id="orq" placeholder="Nome do órgão" style="flex:1;min-width:180px" autocomplete="off"></div><div id="orl">${rload()}</div>${RSRC("Portal da Transparência (CGU), arquivo de dados abertos do orçamento da despesa (não precisa de chave)")}</div>`,
+<div class="panel"><div class="segj-grupos" id="gsfil"><div class="segj-w"><span class="segj-l">Ano</span><div class="seg segj" id="oranos"></div></div><div class="segj-w"><span class="segj-l">Tipo de órgão</span><div class="seg segj" id="ortipos"></div></div></div><div class="filters"><input id="orq" placeholder="Nome do órgão" style="flex:1;min-width:180px" autocomplete="off"></div><div id="orl">${rload()}</div>${RSRC("Portal da Transparência (CGU), arquivo de dados abertos do orçamento da despesa (não precisa de chave)")}</div>`,
 mount(){const hoje=new Date().getFullYear();let ano=null,q="",tipo="";const cache={};
  const TIPOS=[["","Todos"],["min","Ministérios"],["exe","Presidência e outros do Executivo"],["jud","Judiciário"],["leg","Legislativo"],["mp","Ministério Público e Defensoria"]];
  const tipoDe=n=>{n=n||"";return/Minist[eé]rio P[uú]blico|Defensoria/i.test(n)?"mp":/^Minist[eé]rio/i.test(n)?"min":/C[aâ]mara dos Deputados|Senado|Congresso|Tribunal de Contas da Uni/i.test(n)?"leg":/Justi[cç]a|Tribunal|Conselho Nacional de Justi/i.test(n)?"jud":"exe"};
@@ -3855,9 +3856,8 @@ mount(){const hoje=new Date().getFullYear();let ano=null,q="",tipo="";const cach
  document.querySelectorAll("#ortipos button").forEach(b=>b.onclick=()=>{tipo=b.dataset.t;document.querySelectorAll("#ortipos button").forEach(x=>x.classList.toggle("on",x===b));pedir(ano).then(d=>d&&des(d))});
  const pedir=a=>cache[a]||(cache[a]=apiGet("/orgaos"+(a?qs({ano:a}):"")).catch(()=>null));
  const des=d=>{const it=d.itens.filter(o=>(!q||(o.nome||"").toLowerCase().includes(q.toLowerCase()))&&(!tipo||tipoDe(o.nome)===tipo));const tot=d.total_orcamento||0;
-  $("#orl").innerHTML=`<div class="kpis kpis-c" style="margin:6px 0 12px"><div class="kpi"><span>Orçamento autorizado em ${d.ano}</span><strong>${brlR(tot||null)}</strong></div><div class="kpi"><span>Pago até agora</span><strong>${brlR(d.total_pago)}</strong>${tot?`<em>${pct(d.total_pago/tot*100)} do autorizado</em>`:""}</div><div class="kpi"><span>Órgãos</span><strong>${nf(it.length)}</strong></div></div>`+
-  table([["Órgão",o=>`<a href="#/orgao/r${o.codigo}">${esc(o.nome||o.codigo)}</a>${o.vinculados?`<div class="small muted">${o.vinculados} unidades</div>`:""}`],["Orçamento",o=>brlR(o.orcamento_atualizado),"n"],["Já pago",o=>brlR(o.pago),"n"],
-   ["Usado",o=>o.orcamento_atualizado?`<div class="bar" style="min-width:70px"><i style="width:${Math.min(100,o.pago/o.orcamento_atualizado*100).toFixed(0)}%"></i></div><div class="small muted">${pct(o.pago/o.orcamento_atualizado*100)}</div>`:"—"]],it,o=>"#/orgao/r"+o.codigo);rowLinks()};
+  $("#orl").innerHTML=`<div class="kpis3" style="margin:12px 0"><div class="kpi"><span>Autorizado em ${d.ano}</span><strong>${brlR(tot||null)}</strong></div><div class="kpi"><span>Pago até agora</span><strong>${brlR(d.total_pago)}</strong>${tot?`<em>${pct(d.total_pago/tot*100)} do total</em>`:""}</div><div class="kpi"><span>Órgãos</span><strong>${nf(it.length)}</strong></div></div>`+
+  `<div class="fl-box"><div class="fl-lista">${it.map((o,i)=>`<a class="fl-l${i>=10?" fl-x":""}"${i>=10?" hidden":""} href="#/orgao/r${o.codigo}"><span class="fl-n">${esc(o.nome||o.codigo)}</span><span class="fl-r">${brlR(o.pago)}</span><span class="fl-s">orçamento ${brlR(o.orcamento_atualizado)}${o.orcamento_atualizado?` · ${pct(o.pago/o.orcamento_atualizado*100)} usado`:""}${o.vinculados?` · ${o.vinculados} unidades`:""}</span></a>`).join("")}</div>${it.length>10?`<button type="button" class="btn fl-mais">Ver todos (${it.length})</button>`:""}</div>`;rowLinks()};
  const ir=async a=>{$("#orl").innerHTML=rload();const d=await pedir(a);if(!d||!d.itens||!d.itens.length){$("#orl").innerHTML=rvazio("Sem dados de órgãos para este ano.");return}ano=d.ano;des(d);
   document.querySelectorAll("#oranos button").forEach(b=>b.classList.toggle("on",+b.dataset.a===ano))};
  Promise.all(Array.from({length:hoje-2013},(_,i)=>hoje-i).map(a=>pedir(a).then(d=>d&&d.itens&&d.itens.length?a:null))).then(as=>{const ok=as.filter(Boolean);
@@ -5792,7 +5792,7 @@ P.projetos=()=>irLeis("projetos");P.legislacao=()=>irLeis("projetos");
 P.constituicao=(t)=>irLeis({federal:"constituicao",estados:"constituicao",leis:"projetos",como:"como"}[t]||"constituicao");
 
 /* ---------- Arrecadação e repasses › Cortes de gastos ---------- */
-const ABAS_ARR=a=>`<div class="tabs" id="abasArr" style="margin-top:0">${[["arr","","Arrecadação e repasses"],["cortes","cortes","Cortes de gastos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/arrecadacao${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
+const ABAS_ORG=a=>`<div class="tabs" id="abasOrg" style="margin-top:0">${[["org","","Órgãos"],["cortes","cortes","Cortes de gastos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/orgaos${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
 function telaCortes(){return{html:`<div id="ctrRes">${rload()}</div>`,
  mount(){apiGet("/cortes").then(D=>{const box=$("#ctrRes");if(!box)return;const anos=D.anos||[];if(!anos.length){box.innerHTML=rvazio("Os cortes ainda não foram coletados (coleta transparencia-orcamento).");return}
   const atual=anos[anos.length-1],kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
@@ -5807,9 +5807,10 @@ function telaCortes(){return{html:`<div id="ctrRes">${rload()}</div>`,
    $("#ctrTab").innerHTML=`<div class="kpis kpis-c">${kp("Orçamento aprovado",brl(a.inicial),"lei orçamentária")}${kp("Orçamento atualizado",brl(a.atualizado))}${kp("Cortado",brl(a.cortado),a.percentual==null?"":pct(a.percentual)+" do aprovado")}</div>
     ${l.length?table([["Órgão",x=>`<b style="font-weight:600">${esc(x.nome)}</b>`],["Valor cortado",x=>brl(x.cortado),"n"],["% do total cortado",x=>pct(x.percentual_do_corte),"n"],["% do orçamento do órgão",x=>x.percentual_do_orcamento==null?"—":pct(x.percentual_do_orcamento),"n"]],l):rvazio("Nenhum órgão teve o orçamento reduzido neste ano.")}`};
   tabela(atual.ano);$("#ctrAno").onchange=e=>tabela(e.target.value)}).catch(e=>{const b=$("#ctrRes");if(b)b.innerHTML=e.status===404?rvazio("Os cortes ainda não foram coletados."):rerro(e)})}}}
-{const _arr5=P.arrecadacao;P.arrecadacao=(t,...a)=>{if(!API.on)return _arr5(t,...a);
- if(t==="cortes"){const c=telaCortes();return{html:`<div class="ph"><div><h1>Arrecadação e repasses</h1><p>Quanto cada estado arrecada, quanto volta em repasses e onde o orçamento federal foi cortado.</p></div></div>${ABAS_ARR("cortes")}${c.html}`,mount:c.mount}}
- const r=_arr5(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasArr"))ph.insertAdjacentHTML("afterend",ABAS_ARR("arr"))}}}}
+{const _arr5=P.arrecadacao;P.arrecadacao=(t,...a)=>{if(t==="cortes"&&API.on){setTimeout(()=>location.replace("#/orgaos/cortes"),0);return{html:rload(),mount(){}}}return _arr5(t,...a)}}
+{const _org5=P.orgaos;P.orgaos=(t,...a)=>{if(!API.on)return _org5(t,...a);
+ if(t==="cortes"){const c=telaCortes();return{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios, tribunais, Congresso e demais órgãos federais: o que foi autorizado, pago e cortado.</p></div></div>${ABAS_ORG("cortes")}${c.html}`,mount:c.mount}}
+ const r=_org5(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasOrg"))ph.insertAdjacentHTML("afterend",ABAS_ORG("org"))}}}}
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
 addEventListener("hashchange",route);detectarAPI().finally(route);
 </script>
