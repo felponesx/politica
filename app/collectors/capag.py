@@ -10,8 +10,9 @@ from app import http
 from app.collectors.arquivos import achar_coluna, baixar_temp, ler_tabela
 from app.collectors.base import registrar_coleta
 from app.config import settings
-from app.models import Municipio
-from app.utils import sem_acento
+from app.models import Municipio, Registro
+from app.utils import sem_acento, upsert
+from sqlalchemy import func
 
 
 def _arquivo_mais_recente() -> str:
@@ -44,17 +45,30 @@ def coletar_capag(arquivo_local: str | None = None, url: str | None = None, ano:
         extras = [c for c in cab if any(p in sem_acento(c) for p in ("INDICADOR", "NOTA"))]
         por_cod = {m.codigo_ibge: m for m in db.scalars(select(Municipio))}
         por_cod6 = {k[:6]: v for k, v in por_cod.items()}
+        atual = db.scalar(select(func.max(Municipio.capag_ano))) or 0
+        dist: dict[str, dict[str, int]] = {}
+        anos_arq: dict[int, int] = {}
+        grav = []
         for linha in [primeira, *linhas]:
             cod = "".join(ch for ch in str(linha.get(c_cod) or "") if ch.isdigit())
             m = por_cod.get(cod) or por_cod6.get(cod[:6])
             nota = str(linha.get(c_capag) or "").strip().upper()
             if not m or not nota or nota in ("-", "NAN"):
                 continue
-            m.capag = nota[:10]
             try:
-                m.capag_ano = ano or (int(float(linha[c_ano])) if c_ano and linha.get(c_ano) else None)
+                a = ano or (int(float(linha[c_ano])) if c_ano and linha.get(c_ano) else None)
             except ValueError:
-                m.capag_ano = ano
-            m.capag_detalhe = {c: str(linha.get(c)) for c in extras if linha.get(c) not in (None, "")}
-            n += 1
+                a = ano
+            if a:
+                anos_arq[a] = anos_arq.get(a, 0) + 1
+            dist.setdefault(m.uf, {})[nota[:10]] = dist.get(m.uf, {}).get(nota[:10], 0) + 1
+            grav.append((m, nota[:10], a, {c: str(linha.get(c)) for c in extras if linha.get(c) not in (None, "")}))
+        ano_arq = max(anos_arq, key=anos_arq.get) if anos_arq else None
+        if ano_arq:  # guarda o resumo de cada ano para a tabela de linhas por ano (arquivos antigos não sobrescrevem a nota atual)
+            upsert(db, Registro, {"fonte": "tesouro", "tipo": "capag_resumo", "chave": str(ano_arq)},
+                   {"ano": ano_arq, "titulo": f"CAPAG dos municípios em {ano_arq}", "valor": sum(sum(v.values()) for v in dist.values()), "dados": {"por_uf": dist}})
+        if not ano_arq or ano_arq >= atual:
+            for m, nota, a, det in grav:
+                m.capag, m.capag_ano, m.capag_detalhe = nota, a, det
+                n += 1
     return n.itens

@@ -384,7 +384,13 @@ def dividas_municipios(uf: str | None = None, db: Session = Depends(get_db)):
     for u, c, n in db.execute(stmt.group_by(Municipio.uf, Municipio.capag)):
         dist.setdefault(u, {})[c] = n
     ano = db.scalar(select(func.max(Municipio.capag_ano)))
-    return {"ano": ano, "por_uf": dist, "fonte": "Tesouro Nacional — CAPAG dos municípios",
+    hist = {r.ano: (r.dados or {}).get("por_uf") or {} for r in db.scalars(
+        select(Registro).where(Registro.fonte == "tesouro", Registro.tipo == "capag_resumo")) if r.ano}
+    if ano and not uf:
+        hist[ano] = dist
+    if uf:
+        hist = {a: {u: d for u, d in v.items() if u == _uf(uf)} for a, v in hist.items()}
+    return {"ano": ano, "por_uf": dist, "historico": {str(a): hist[a] for a in sorted(hist)}, "fonte": "Tesouro Nacional — CAPAG dos municípios",
             "legenda": {"A": "boa capacidade de pagamento", "B": "boa", "C": "fraca", "D": "muito fraca",
                         "n.d.": "não avaliado (dados incompletos)"}}
 

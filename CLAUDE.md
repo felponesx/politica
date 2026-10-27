@@ -381,3 +381,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - `bcb-financeiro` (`app/collectors/bcb_financeiro.py`): IF.data (balanço de dezembro e resultado = junho + dezembro, valores já em reais) + SGS do crédito (20539, 20540, 20541, 20631, 20622, 20714, 20783, 21082; o SGS só aceita
   "ultimos/N" até 20, por isso pede por datas). `GET /economia-empresas` traz `financeiro` (mesmas contas dos outros setores + `fatias` + maiores instituições + séries); o site mostra "Financeiro (bancos e crédito)" em Comparando setores.
 - Maiores empresas: pesquisa (nome, CNPJ, atividade, cidade, UF, porte) sobre as 300 maiores. Contratos públicos: `GET /contratos?q=` (objeto, fornecedor, órgão, cidade, número ou CNPJ inteiro/começo).
+
+## Arrecadação, Cortes e Dívidas simples (out/2026)
+- Arrecadação e repasses: mapa com botões Arrecadação | Repasses (`/historico-estados` traz `arrecadacao` e `repasses`); lista "Todos os estados" compacta com ordem maior→menor (`listaUF`, também usada em Dívidas).
+- Aba "Cortes de gastos" (`#/arrecadacao/cortes`, `telaCortes`, `GET /cortes`): corte = orçamento atualizado menor que o inicial por órgão (`transparencia-orcamento` de cada ano), não é contingenciamento. O robô exporta `/cortes` (FIXAS).
+- Dívidas: quadro acima do mapa enxuto; Saúde fiscal mostra a CAPAG em palavras e cores (Forte/Boa/Fraca/Ruim = A/B/C/D) com tabela por ano (`/dividas/municipios` → `historico`, guardado em `capag_resumo`; rode `tesouro-capag url=…` com arquivos de outros anos para completar; arquivo antigo não sobrescreve a nota atual); Empresas tem aba Resumo (junta endividamento, recuperação e falência).
+- As seções "Leis e Projetos" e "Empresas e Contratos" acima estão parcialmente desatualizadas (abas mudaram): vale a descrição no código (`ABAS_*`, `FASES_P`).
