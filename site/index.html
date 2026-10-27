@@ -1788,6 +1788,13 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .fl-box .fl-ord{margin-bottom:8px}.fl-box .btn{margin-top:10px}
 .dvq-linha .dvq{min-height:0;padding:9px 14px;gap:0;max-width:none;flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:10px}.dvq-linha .dvq-t,.dvq-linha .dvq small{display:none}.dvq-linha .dvq strong{font-size:20px}.dvq-linha .dvq em{font-size:12.5px}
 .fl-n{min-width:0;overflow-wrap:anywhere}
+
+/* ajustes 28/10: quadro de "Quem gastou" sem moldura dupla; tabela de cortes com a coluna fixa opaca */
+.panel:has(>#gsfil[style]:first-child){padding:0;border:0;background:transparent;box-shadow:none}
+#view .ct-tab tbody th,#view .ct-tab thead th:first-child{position:sticky;left:0;z-index:1;background:var(--surface);border-bottom:0;border-top:1px solid var(--line2);color:var(--ink2);font-weight:500;font-size:13px;padding:8px 12px 8px 0;text-align:left;box-shadow:6px 0 6px -6px rgba(15,25,45,.18)}
+#view .ct-tab thead th:first-child{border-top:0;border-radius:0}
+#view .ct-tab thead th{position:static;cursor:default;background:var(--surface);border-bottom:1px solid var(--line);text-align:right}
+#view .ct-tab thead th:first-child{position:sticky}
 </style>
 </head>
 <body>
@@ -3814,7 +3821,7 @@ DETAIL.parlamentar="Parlamentar";DETAIL.fornecedor="Fornecedor";
 
 /* ---------- v0.2: gastos, órgãos, dívidas, indicadores, municípios, empresas e partidos ---------- */
 const ESFN2={U:"União",E:"Governo do estado",C:"Prefeitura da capital"};
-const pctR=(v,t)=>t?(100*v/t).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%":"—";
+const pctR=(v,t)=>{if(!t)return"—";const p=100*v/t;if(p>0&&p<0.01)return"<0,01%";return p.toLocaleString("pt-BR",{maximumFractionDigits:p>=10?1:2})+"%"};
 const CAPAGC={A:"var(--p2)",B:"var(--p5)",C:"var(--p3)",D:"var(--p6)"};
 const capagTag=c=>c?`<span class="tag" style="background:${CAPAGC[String(c)[0]]||"var(--line2)"}">CAPAG ${esc(c)}</span>`:"";
 const fmtVal=(v,u)=>v==null?"—":(u&&/R\$|reais/i.test(u)?brl(v):(Math.abs(v)>=1000?nf(Math.round(v)):v.toLocaleString("pt-BR",{maximumFractionDigits:3})))+(u&&!/R\$|reais|pessoas/i.test(u)?" "+esc(u):"");
