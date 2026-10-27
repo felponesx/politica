@@ -1621,6 +1621,13 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 svg.geo.com-mun path.st{pointer-events:none}svg.geo.mun-venc path.st{fill:transparent!important;stroke:#fff;stroke-width:1}
 .mun-info{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:13px}.mun-info .ht-bar{margin-top:6px}
 .mun-layer path{stroke:rgba(255,255,255,.75);stroke-width:.22;cursor:pointer}.mun-layer.fino path{stroke:rgba(29,41,57,.22);stroke-width:.2}.mun-layer path:hover{stroke:#1D2939;stroke-width:.7}
+@media (max-width:760px){#hmapcard .pbar{display:inline-flex!important;width:auto!important;max-width:100%}#hmapcard .pbar>.pill-w{flex:none;width:auto}#hmapcard .pbar>.pill-w>.pill{padding:6px 11px!important;font-size:12.5px;width:auto!important;border-radius:10px!important;gap:6px}#hmapcard .pbar .pill .pill-l{font-size:11.5px}#hmapcard .pbar .pill .pill-v{max-width:130px}}
+.ct-x{overflow-x:auto;margin:0 -4px;padding:0 4px}.ct-tab{border-collapse:collapse;font-size:13px;min-width:100%;font-variant-numeric:tabular-nums}.ct-tab th,.ct-tab td{padding:8px 10px;text-align:right;white-space:nowrap;border-top:1px solid var(--line2)}.ct-tab thead th{border-top:0;color:var(--muted);font-weight:600}.ct-tab tbody th{text-align:left;position:sticky;left:0;background:var(--surface);font-weight:500;color:var(--ink2);padding-left:0}
+.gf-r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:7px 0;border-top:1px solid var(--line2)}.gf-r[hidden]{display:none}.gf-n b{display:block;font-weight:600;font-size:14px;line-height:1.25}.gf-n span{font-size:12.5px;color:var(--muted)}.gf-p{display:flex;align-items:center;gap:8px;justify-content:flex-end}.gf-p .bar{width:96px;flex:none}.gf-p b{min-width:44px;text-align:right;font-size:13.5px;font-variant-numeric:tabular-nums}
+/* Gastos públicos: "Quem gastou" e "Ano" lado a lado, menores */
+@media (max-width:760px){#gsfil.pbar{display:flex!important;flex-direction:row;flex-wrap:nowrap;width:100%}#gsfil.pbar>.pill-w{flex:1 1 0;min-width:0}#gsfil.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)!important;border-top:0!important}
+#gsfil.pbar>.pill-w>.pill{padding:7px 10px!important;border-radius:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:6px;row-gap:0;align-items:center;text-align:left;width:100%}#gsfil .pill .pill-l{grid-column:1;font-size:11px}#gsfil .pill .pill-v{grid-column:1;font-size:13px;max-width:none}#gsfil .pill svg{grid-column:2;grid-row:1/3}
+#gsfil.pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px!important}#gsfil.pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0!important}#gsfil.pbar>.pill-w:only-child>.pill{border-radius:12px!important}}
 /* o seletor (pílula) não pode colar nos quadros de números que vêm logo abaixo */
 .pill-w+.kpis,.pill-w+.kpis-c,#segkpi{margin-top:14px}
 /* menus de opções (pílulas): o texto quebra dentro do próprio quadro, sem ser cortado pelo vizinho */
@@ -1799,8 +1806,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
     <main class="page" id="view"></main>
     <footer class="rodape" id="rodape">
       <div class="rodape-i">
-        <p><b>De onde vêm os dados.</b> O BRASIL+ é uma plataforma independente, sem ligação com governo, partido ou candidato. Ele reúne e organiza, num só lugar, dados abertos publicados por sites oficiais — Câmara dos Deputados, Senado Federal, TSE, IBGE, Tesouro Nacional (SICONFI), Receita Federal, Banco Central, Portal da Transparência, PNCP, ObrasGov, Defesa Civil, Ministério da Justiça e outros — e notícias de veículos de imprensa, sempre com o nome da fonte, para facilitar a leitura e a comparação.</p>
-        <p><b>Como ler.</b> Os números são os das fontes, às vezes somados, padronizados ou estimados (quando for estimativa, a tela diz). Podem ter atraso ou usar critérios diferentes dos de outros sites; para decidir algo importante, confira na fonte oficial. Aparecer em duas bases não indica irregularidade, e quem é citado em investigação ou notícia é inocente até condenação definitiva. Fotos e logos vêm de fontes oficiais e do Wikimedia Commons, com crédito. Notícias são de seus veículos, não do BRASIL+. Resumos de propostas são trechos dos planos registrados no TSE, sem avaliação.</p>
+        <p><b>Dados informativos.</b> O BRASIL+ é independente, sem ligação com governo, partido ou candidato. Reúne dados abertos de sites oficiais (Câmara, Senado, TSE, IBGE, Tesouro, Receita, Banco Central, PNCP, ObrasGov e outros) e notícias de veículos de imprensa, sempre com a fonte. Os números podem ser somados, padronizados, estimados ou ter atraso: para decidir algo importante, confira na fonte oficial. Aparecer em duas bases não indica irregularidade, e quem é citado em investigação ou notícia é inocente até condenação definitiva.</p>
         <p class="rodape-l"><a href="#/fontes">Fontes e metodologia</a> · <a href="#/relatorios">Baixar os dados</a></p>
       </div>
     </footer>
@@ -1876,7 +1882,7 @@ const esu=u=>esc(urlOk(u));
 document.addEventListener("click",e=>{const a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a)return;const h=(a.getAttribute("href")||"").trim();
  if(/^\s*(javascript|vbscript|data):/i.test(h)){e.preventDefault();e.stopImmediatePropagation()}},true);
 const PAL=["var(--p1)","var(--p2)","var(--p3)","var(--p4)","var(--p5)","var(--p6)"];
-const SRC='<div class="src">Fonte: dados demonstrativos para fins de protótipo. <a href="#/fontes">Ver metodologia</a></div>';
+const SRC='<div class="src"><a href="#/fontes">Fontes</a></div>';
 function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2600)}
 const fd=d=>new Date(d+"T12:00:00").toLocaleDateString("pt-BR");
 
@@ -2038,7 +2044,8 @@ document.addEventListener("click",ev=>{const b=ev.target.closest("[data-lcp] but
   if(LC_REG.size>200)for(const id of LC_REG.keys())if(!document.querySelector(`[data-lc="${id}"]`))LC_REG.delete(id)};
  new MutationObserver(()=>{if(!q)q=requestAnimationFrame(liga)}).observe(document.body,{childList:true,subtree:true})}
 // pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
-const PIZZA_SUAVE=["#5688EF","#F0844E","#52CE9B","#EAB646","#9370E5","#E770A9","#58BBDD","#ABCD58","#DA7676","#7696CF"];
+// as 3 maiores usam as cores fortes (azul, laranja, verde); as demais, tons pastéis de outras cores, uma cor para cada item
+const PIZZA_SUAVE=["#F3D277","#B9A4EC","#F2A6C8","#8ED6E8","#C5DE8A","#F4A9A1","#A7BFE8","#9AD8C3","#E9C39B","#C9B6D9"];
 function coresPizza(items){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));
  return items.map((it,k)=>/^outr/i.test(it[0])?"#AEB8CA":pos[k]<3?RANK_VIVO[pos[k]]:PIZZA_SUAVE[(pos[k]-3)%PIZZA_SUAVE.length])}
 const DONUT_PASTEL=PIZZA_SUAVE;
@@ -2130,7 +2137,7 @@ const html=`<div class="home"><div class="hl">
 <div class="panel meter2 gas"><div class="m-h"><span class="m-dot"></span><h2>Gastômetro</h2><span class="small muted">desde 1º de janeiro</span></div><div class="m-v" id="gasV">R$ 0</div><div class="m-sub">gastos pelos governos federal, estaduais e municipais em <span class="yr"></span></div>
 <div class="m-grid"><div><span>Por segundo</span><b id="gasS"></b></div><div><span>Hoje</span><b id="gasD"></b></div><div><span>Por habitante no ano</span><b id="gasP"></b></div></div>
 <div class="m-bar">${stack([28,22,19,16,15],["Previdência","Juros da dívida","Saúde e educação","Pessoal","Outros"],["#F69981","#F9CE75","#7DB2F0","#BC9AE9","#E3E6EB"],8)}</div><div class="m-leg"><span><i style="background:#F69981"></i>Previdência 28%</span><span><i style="background:#F9CE75"></i>Juros da dívida 22%</span><span><i style="background:#7DB2F0"></i>Saúde e educação 19%</span><span><i style="background:#BC9AE9"></i>Pessoal 16%</span><span><i style="background:#E3E6EB"></i>Outros 15%</span></div></div></div>
-<p class="small muted m-note">Contadores estimados a partir da projeção anual (demonstrativa). Fontes previstas: Receita Federal, Tesouro Nacional, Confaz e Siconfi.</p>
+<p class="small muted m-note"><a href="#/fontes">Fontes</a></p>
 <div class="kgrid kgrid4">${kcard("gastos","Total de despesas públicas","R$ 1,4 trilhão","em 2025","6,8%")}${kcard("contratos","Contratos firmados","R$ 412 bilhões","em 2025","11,3%")}${kcard("obras","Obras em andamento","12.480","em todo o país","4,2%")}${kcard("empresas","Empresas contratadas","186.532","fornecedores únicos","7,9%")}</div>
 
 <div class="r1"><div class="panel"><div class="hd"><div><h2>Comparativo entre regiões</h2><p id="cmpsub">Despesas (2025)</p></div><a href="#/comparar">Comparar</a></div>
@@ -2138,8 +2145,7 @@ const html=`<div class="home"><div class="hl">
 <div class="panel"><div class="hd"><div><h2>Projetos em tramitação</h2><p>Câmara dos Deputados e Senado Federal</p></div><a href="#/leis/projetos">Ver todos</a></div>
 <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(PROJ,nf(pAt),"projetos ativos")}<div style="flex:1;min-width:190px">${[...PROJ,...PFIM].map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${x[0]}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/pAll*100)}%</span></div>`).join("")}</div></div></div></div>
 
-<div class="quick"><div class="panel"><h2 style="margin-bottom:12px">Acesso rápido</h2><div class="qt">${[["pessoas","Consultar candidato","Eleitos, não eleitos e aposentados","#/pessoas"],["empresas","Consultar por empresa","Fornecedores e contratados","#/empresas"],["contratos","Consultar por contrato","Todos os níveis de governo","#/empresas/contratos"],["obras","Consultar por obra","Em andamento e concluídas","#/obras"],["projetos","Consultar por projeto","Proposições e votações","#/projetos"]].map(q=>`<a href="${q[3]}">${hi(q[0])}<span>${q[1]}<small>${q[2]}</small></span></a>`).join("")}</div></div>
-<div class="panel learn"><b>Entenda como funcionam os dados do Brasil+</b><p>Saiba como coletamos, integramos e organizamos as informações, e de onde vem cada número.</p><a class="small" href="#/fontes">Saiba mais</a></div></div>
+<div class="quick"><div class="panel learn"><b>Entenda como funcionam os dados do Brasil+</b><p>Saiba como coletamos, integramos e organizamos as informações, e de onde vem cada número.</p><a class="small" href="#/fontes">Saiba mais</a></div></div>
 <div class="panel recent"><div class="hd"><div><h2>Vistos recentemente</h2><p id="rsub">Deputados e candidatos que você abriu por último</p></div><a href="#/pessoas">Ver todos</a></div><div class="rgrid" id="rgrid"></div></div>
 <div class="r1 rup"><div class="panel"><div class="hd"><h2>Últimas atualizações</h2><a href="#/agora">Ver todas</a></div>
 ${[["doc","Novo contrato publicado","Prefeitura de São Paulo","há 12 min","#/contratos"],["projetos","Projeto de lei em tramitação","Câmara dos Deputados","há 34 min","#/projeto/1"],["obras","Obra com avanço físico","Ministério da Educação","há 1 h","#/obras"],["gastos","Novo gasto registrado","Governo do Estado de São Paulo","há 2 h","#/gastos"],["contratos","Contrato aditivado","Prefeitura de Belo Horizonte","há 3 h","#/contrato/1"]].map(u=>`<a class="up" href="${u[4]}"><span class="q">${hi(u[0])}</span><div><b>${u[1]}</b><span>${u[2]}</span><span>${u[3]}</span></div><svg class="ch" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="1.8">${HI.chev}</svg></a>`).join("")}</div>
@@ -2762,7 +2768,7 @@ mount(){const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
  const lista=()=>{$("#plistT").textContent=casa[0]==="t"?COLEGIADOS[+casa.slice(1)].n:CASA_LISTA[casa];$("#pinfo").innerHTML=comoCasa(casa);$("#plistMais").innerHTML="";
   const el=eleita(),on=typeof API!=="undefined"&&API.on;$("#pfil").style.display=el?"":"none";$("#ppt").style.display=el?"":"none";$("#puf").style.display=el&&casa!=="presidente"?"":"none";$("#psit").style.display=el&&!on?"":"none";
   if(!el){const c=pessoasDaCasa(casa);const r=c?c.filter(h=>!q||norm(h.replace(/<[^>]+>/g," ")).includes(norm(q))):null;
-   $("#plistN").textContent=c?`${r.length} ${r.length===1?"pessoa":"pessoas"}`:"";$("#plistSrc").innerHTML=casa==="ministros"?'<div class="src">Fonte: levantamento de notícias e do Diário Oficial (out/2026). "A confirmar": último dado público anterior a 2026.</div>':c?`<div class="src">Fonte: ${esc(NO_CARGO.find(x=>x.n===COLEGIADOS[+casa.slice(1)].n).fonte)}.</div>`:"";
+   $("#plistN").textContent=c?`${r.length} ${r.length===1?"pessoa":"pessoas"}`:"";$("#plistSrc").innerHTML=casa==="ministros"?'<div class="src"><a href="#/fontes">Fontes</a></div>':c?`<div class="src"><a href="#/fontes">Fontes</a></div>`:"";
    $("#plist").innerHTML=c?(r.join("")||vazio("Ninguém com esse nome.")):vazio("Os nomes de quem ocupa estas cadeiras entram com a fonte oficial (Diário Oficial e portais do órgão). A composição está no quadro acima e as regras, logo abaixo.");return}
   if(on)return real();segSit();demo()};
  lista();
@@ -2865,7 +2871,7 @@ function financeiroHtml(x){const S=x.series||{},kp=(t,v,e="")=>`<div class="kpi"
  return`<h3 class="seg-h">Operações de crédito no país <small>${esc(ref)}</small></h3><div class="kpis kpis-c">${kp("Crédito total concedido",mi(u("credito_total")),dz("credito_total"))}${kp("Para pessoas",mi(u("credito_pf")),dz("credito_pf"))}${kp("Para empresas",mi(u("credito_pj")),dz("credito_pj"))}${kp("Crédito novo no mês",mi(u("concessoes")),"empréstimos e financiamentos liberados")}${kp("Juros médios",pc(u("juros_medio")),"ao ano, média de todas as operações")}${kp("Spread",pc(u("spread")),"pontos: o que o banco cobra acima do que paga")}${kp("Inadimplência",pc(u("inadimplencia"),2),"parcelas atrasadas há mais de 90 dias")}${kp("Crédito em relação ao PIB",pc(u("credito_pib")))}</div>
  <div class="grid g2 mt">${S.credito_total?`<div class="panel"><h2>Crédito total no país, em R$ trilhões</h2>${serieChart(S.credito_total.historico,{fmt:v=>(v/1e6).toLocaleString("pt-BR",{maximumFractionDigits:1}),n:60})}</div>`:""}${S.inadimplencia?`<div class="panel"><h2>Inadimplência, % do crédito</h2>${serieChart(S.inadimplencia.historico,{fmt:v=>v.toFixed(1)+"%",n:60})}</div>`:""}</div>
  ${m.length?`<h3 class="seg-h">Maiores bancos e instituições <small>pelo ativo, ${esc(String(x.referencia||"").slice(0,4))}</small></h3>${table([["Instituição",r=>`<b style="font-weight:600">${esc(tit(String(r.nome||"").replace(/\s*-?\s*PRUDENCIAL\s*$/i,"")))}</b>${r.uf?`<div class="small muted">${esc(r.uf)}</div>`:""}`],["Ativo total",r=>brl(r.ativo),"n"],["Crédito concedido",r=>brl(r.carteira),"n"],["Lucro no ano",r=>brl(r.lucro),"n"],["Solidez (Basileia)",r=>r.basileia!=null?pct(r.basileia*100):"—","n"]],m)}`:""}
- <p class="small muted" style="margin:8px 0 0">${esc(x.nota||"")} Fonte: ${esc(x.fonte||"Banco Central do Brasil")}. Solidez (índice de Basileia): quanto do que a instituição tem é capital próprio para cobrir perdas; o mínimo exigido é 10,5%.</p>`}
+ <p class="small muted" style="margin:8px 0 0">${esc(x.nota||"")} <a href="#/fontes">Fontes</a>. Solidez (índice de Basileia): quanto do que a instituição tem é capital próprio para cobrir perdas; o mínimo exigido é 10,5%.</p>`}
 P.contratos=()=>P.empresas("contratos");
 
 P.empresa=(id)=>{const e=empresa(id)||EMPRESAS[0];const cs=CONTRATOS.filter(c=>c.emp===e.id);const c0=cs[0];const ob=c0&&c0.obra?OBRAS.find(o=>o.id===c0.obra):null;
@@ -3331,7 +3337,7 @@ async function detectarAPI(){API.on=false;API.snap=false;API.erro="";const cand=
  const df=$("#demoFaixa");if(df)df.hidden=API.on}
 
 /* utilidades */
-const RSRC=(f)=>`<div class="src">Fonte: ${f}. Dados coletados pelo servidor BRASIL+. <a href="#/fontes">Ver coletas e metodologia</a></div>`;
+const RSRC=()=>`<div class="src"><a href="#/fontes">Fontes</a></div>`;
 const rload=(t="Carregando dados oficiais…")=>`<div class="rload" role="status"><i></i>${t}</div>`;
 const rvazio=t=>`<p class="muted small" style="margin:0">${t}</p>`;
 const rerro=e=>`<div class="rbanner warn">Não foi possível carregar: ${esc(e.message||e)}.</div>`;
@@ -3659,7 +3665,7 @@ mount(){const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</st
    const F=$("#ecoF");if(F)F.innerHTML=fin?financeiroHtml(x):""};
   b.innerHTML=`<div class="seg seg-grupo" data-pill="Setor" id="ecoS">${L.map((x,k)=>`<button type="button" data-k="${k}" class="${k?"":"on"}">${esc(x.nome)}</button>`).join("")}</div><div id="ecoK" class="mt"></div><div id="ecoP" class="mt xf-mapa-no"></div><div id="ecoF"></div>
    <h3 class="seg-h">Comparando os setores</h3>${table([["Setor",x=>`<b>${esc(x.nome)}</b>`],["Empresas",x=>nf(x.empresas),"n"],["Faturamento médio",x=>brl(x.receita_media),"n"],["Gasto médio",x=>brl(x.gasto_medio),"n"],["Margem",x=>pct(x.margem),"n"],["Custo por pessoa/ano",x=>x.custo_por_pessoa?brl(x.custo_por_pessoa):"—","n"]],L)}
-   <p class="small muted" style="margin:8px 0 0">${esc(D.nota)} Ano: ${D.ano}. Fonte: ${esc(D.fonte)}.</p>`;
+   <p class="small muted" style="margin:8px 0 0">${esc(D.nota)} Ano: ${D.ano}. <a href="#/fontes">Fontes</a>.</p>`;
   corpo();document.querySelectorAll("#ecoS button").forEach(bt=>{bt.addEventListener("click",()=>{sel=+bt.dataset.k;document.querySelectorAll("#ecoS button").forEach(x=>x.classList.toggle("on",x===bt));corpo()},true)})}).catch(()=>vazio("#empEco"))}}};
 P.contratos=()=>P.empresas("contratos");
 P.contrato=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _contrato(id,...r);
@@ -3726,12 +3732,22 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
  $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
  <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
- <div class="mapwrap mapbig mt"><div id="flMapa">${mapaValores(val,rs)}</div><div class="zside" id="flLados">${linhasDuplo(null,null,val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO})}</div></div>
+ <div class="seg" id="flModo" style="margin-top:14px"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:8px 0 0"></p>
+ <div class="mapwrap mapbig mt"><div id="flMapa"></div><div class="zside" id="flLados"></div></div>
  <h3 class="seg-h">Todos os estados <small>do que mais recebe de volta ao que menos recebe · toque no título da coluna para ordenar</small></h3>${table([["Estado",e=>`<span style="display:inline-flex;align-items:center;gap:8px">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span>`],["Pagou de impostos",e=>`${brl(e.arrecadado)}<div class="small muted">${pct(e.participacao_arrecadacao_nacional*100)} do país</div>`,"n"],["Voltou ao estado",e=>`${brl(e.retornado)}<div class="small muted">${pct(e.participacao_nas_transferencias*100)} dos repasses</div>`,"n"],["Saldo",saldo,"n"],["Para cada R$ 1",e=>`<b>${rs(e.retorno_por_real_arrecadado)}</b><div class="bar" style="height:6px;margin-top:5px;min-width:80px"><i style="width:${Math.max(2,e.retorno_por_real_arrecadado/mxR*100)}%;background:${e.retorno_por_real_arrecadado>=1?"#1BAF7A":"#EB6834"}"></i></div>`,"n"]],es,e=>"#/uf/"+e.uf)}
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
- bindMap($("#flBody"),null,null,u=>{location.hash="#/uf/"+u});rowLinks();
- histUF().then(H=>{const r=H&&H.retorno;if(!r||r.anos.length<2||!$("#flLados"))return;XF("#flLados").innerHTML=linhasDuplo(r.estados,r.anos,val,rs,{alto:"Mais recebem de volta",baixo:"Menos recebem de volta",coresAlto:LIN_BAIXO,coresBaixo:LIN_ALTO,nota:"Quanto voltou para cada R$ 1 pago, ano a ano. Valores nominais."})})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
+ rowLinks();
+ // dois modos no mapa do país: o que cada estado arrecada e o que recebe de repasses (mapa e quadros de mais e menos mudam juntos)
+ const arrV={},retV={};es.forEach(e=>{arrV[e.uf]=e.arrecadado;retV[e.uf]=e.retornado});let H0=null,modo="arr";
+ const MD={arr:{v:arrV,alto:"Mais arrecadam",baixo:"Menos arrecadam",ch:"arrecadacao",t:`Tributos federais pagos em cada estado em ${d.ano}.`,nota:"Tributos federais arrecadados em cada estado, ano a ano. Valores nominais."},
+  ret:{v:retV,alto:"Mais recebem",baixo:"Menos recebem",ch:"repasses",t:`Transferências da União ao governo do estado e às prefeituras em ${d.ano}.`,nota:"Repasses da União a cada estado, ano a ano. Valores nominais."}};
+ const pinta=troca=>{const m=MD[modo],h=H0&&H0[m.ch],ok=h&&h.anos&&h.anos.length>=2;$("#flModoT").textContent=m.t;
+  const mapa=mapaValores(m.v,brl),lados=linhasDuplo(ok?h.estados:null,ok?h.anos:null,m.v,brl,{alto:m.alto,baixo:m.baixo,coresAlto:LIN_AZUL,coresBaixo:LIN_BAIXO,nota:ok?m.nota:""});
+  if(troca){trocaSuave($("#flMapa"),mapa);trocaSuave($("#flLados"),lados)}else{$("#flMapa").innerHTML=mapa;$("#flLados").innerHTML=lados}
+  bindMap($("#flMapa"),null,null,u=>{location.hash="#/uf/"+u})};
+ pinta(false);document.querySelectorAll("#flModo button").forEach(b=>b.onclick=()=>{modo=b.dataset.m;document.querySelectorAll("#flModo button").forEach(x=>x.classList.toggle("on",x===b));pinta(true)});
+ histUF().then(H=>{H0=H;if($("#flLados"))pinta(false)})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
 
 /* ---------- eleições reais (TSE) ---------- */
 const _eleicoes=P.eleicoes;
@@ -3788,7 +3804,7 @@ function anosChart(pts,fmt=curto){return pts.length>=2?lineChart([{n:"Valor",v:p
 /* ---------- Gastos públicos: despesa por função (SICONFI) ---------- */
 const _gastos=P.gastos;
 P.gastos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Gastos públicos</h1><p>Quanto a União, cada governo estadual e cada capital gastaram em saúde, educação, previdência e nas demais funções.</p></div></div>
-<div class="panel"><div class="segj-grupos" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<select id="gsmun" data-pill="Cidade" hidden></select><select id="gsano" data-pill="Ano"></select></div></div>
+<div class="panel"><div class="segj-grupos" id="gsfil" style="margin:0"><select id="gsesf" data-pill="Quem gastou"><option value="U">União</option><option value="E">Governo do estado</option><option value="C">Prefeitura da capital</option><option value="M">Prefeitura de outra cidade</option></select>${UFSel("gsuf","Escolha o estado").replace('data-titulo="Estado"','data-pill="Estado"')}<select id="gsmun" data-pill="Cidade" hidden></select><select id="gsano" data-pill="Ano"></select></div></div>
 <div id="gsres" class="mt">${rload()}</div>${RSRC("SICONFI (Tesouro Nacional), RREO Anexo 02: despesa liquidada por função")}`,
 mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={};$("#gsuf").hidden=true;
  const anosDo=()=>{if(f.esfera==="M")return anosMun;const e=entes.find(x=>x.esfera===f.esfera&&(f.esfera==="U"||x.uf===f.uf));return e?e.anos:[]};
@@ -3804,7 +3820,7 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={}
    const emp=d.funcoes.reduce((s,x)=>s+(x.empenhado||0),0),dot=d.funcoes.reduce((s,x)=>s+(x.dotacao||0),0);
    $("#gsres").innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Quem gastou</span><strong style="font-size:17px">${esc(d.ente||ESFN2[f.esfera])}</strong></div>${dot?`<div class="kpi"><span>Orçamento atualizado</span><strong>${brl(dot)}</strong></div>`:""}${emp?`<div class="kpi"><span>Empenhado</span><strong>${brl(emp)}</strong></div>`:""}<div class="kpi"><span>Liquidado em ${d.ano}</span><strong>${brl(T)}</strong>${d.bimestre&&d.bimestre<6?`<em>até o ${d.bimestre}º bimestre</em>`:""}</div></div>
    <div class="grid g2 mt"><div class="panel"><h2>Para onde foi o dinheiro</h2>${donut(top)}</div><div class="panel"><h2>Evolução do total liquidado</h2>${anosChart(ev.map(x=>[x.ano,x.liquidado]))}</div></div>
-   <div class="panel mt"><h2>Todas as funções</h2>${table([["Área",x=>esc(x.funcao)],["Gasto",x=>brlR(x.liquidado),"n"],["% do total",x=>{const p=T?(x.liquidado||0)/T*100:0;return`<span class="pct-b"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${p>=10?"var(--c1)":"#71A2F9"}"></i></span><span class="pct-v">${pctR(x.liquidado||0,T)}</span></span>`},"n"]],d.funcoes)}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`}
+   <div class="panel mt"><h2>Gastos por área</h2><p class="small muted" style="margin:0 0 6px">Em que cada área do governo gastou (saúde, educação, previdência…) e quanto isso é do total.</p><div class="gf-l">${d.funcoes.map((x,k)=>{const p=T?(x.liquidado||0)/T*100:0;return`<div class="gf-r"${k>=10?" hidden":""}><div class="gf-n"><b>${esc(x.funcao)}</b><span>${brlR(x.liquidado)}</span></div><div class="gf-p"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${rankCor(k,d.funcoes.length)}"></i></span><b>${pctR(x.liquidado||0,T)}</b></div></div>`}).join("")}</div>${d.funcoes.length>10?`<div style="text-align:center;margin-top:10px"><button class="btn" id="gfmais" type="button">Ver todos (${d.funcoes.length})</button></div>`:""}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`;const bt=$("#gfmais");if(bt)bt.onclick=()=>{document.querySelectorAll("#gsres .gf-r[hidden]").forEach(r=>r.hidden=false);bt.remove()}}
   catch(e){$("#gsres").innerHTML=rerro(e)}};
  apiGet("/gastos/entes").then(es=>{entes=es;if(!es.length){demoComAviso(_gastos,a,"Nenhum gasto por função coletado ainda (coleta siconfi-despesas-funcao).");return}carregar()}).catch(e=>{$("#gsres").innerHTML=rerro(e)});
  $("#gsesf").onchange=async e=>{f.esfera=e.target.value;$("#gsuf").hidden=f.esfera==="U";$("#gsmun").hidden=f.esfera!=="M";f.municipio="";if(f.esfera==="U")f.uf="";if(f.esfera==="M"&&f.uf)await cidades();carregar()};$("#gsuf").onchange=async e=>{f.uf=e.target.value;f.municipio="";if(f.esfera==="M")await cidades();carregar()};$("#gsmun").onchange=async e=>{f.municipio=e.target.value;await anosCidade();f.ano="";carregar()};$("#gsano").onchange=e=>{f.ano=e.target.value;carregar()}}}:_gastos(...a);
@@ -4053,7 +4069,7 @@ return{html:r.html,mount(){r.mount&&r.mount();apiGet("/contadores").then(c=>{con
   const cores=["#EB6834","#F5A524","#2F6FED","#8B5CF6","#C3CBD6"];let fs=g.maiores_funcoes,outros=Math.max(0,100-fs.reduce((s,x)=>s+x.percentual,0));
   if(g.referencia_url&&g.por_esfera){const NE={U:"União",E:"Estados",M:"Municípios",C:"Capitais"},T=Object.values(g.por_esfera).reduce((a,x)=>a+x,0);fs=Object.entries(g.por_esfera).sort((x,y)=>y[1]-x[1]).map(([k,v])=>({funcao:NE[k]||k,percentual:100*v/T}));outros=0}
   if(b)b.innerHTML=stack([...fs.map(x=>x.percentual),outros],[...fs.map(x=>x.funcao),"Outras"],cores,8);if(l)l.innerHTML=[...fs,{funcao:"Outras",percentual:outros}].filter(x=>x.percentual>0.05).map((x,k)=>`<span><i style="background:${cores[k]}"></i>${esc(x.funcao)} ${x.percentual.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</span>`).join("")}
- const nota=document.querySelector(".m-note");if(nota)nota.textContent=[i&&`Impostômetro: ${i.fonte}. ${i.nota}`,g&&`Gastômetro: ${g.fonte}.`].filter(Boolean).join(" ")}).catch(()=>{})}}};
+ const nota=document.querySelector(".m-note");if(nota){nota.innerHTML='<a href="#/fontes">Fontes</a>';nota.title=[i&&`Impostômetro: ${i.fonte}. ${i.nota}`,g&&`Gastômetro: ${g.fonte}.`].filter(Boolean).join(" ")}}).catch(()=>{})}}};
 
 /* Agora: o que acontece hoje no Congresso */
 const _agora3=P.agora;
@@ -4142,7 +4158,7 @@ return{html:r.html,mount(){r.mount&&r.mount();apiGet("/mapa/estados").then(d=>{c
  if(usados.includes("gasto")){window.REG_TXT=`Gasto dos governos estaduais por região (${d.anos.gasto})`}if(usados.includes("gasto"))Object.keys(REGV).forEach(rg=>{REGV[rg]=UFS.filter(u=>u.reg===rg).reduce((s,u)=>s+((E[u.uf]&&E[u.uf].gasto)||0),0)});
  document.querySelectorAll("#hmet button").forEach(b=>{const m=b.dataset.m;if(m!=="reg"&&m!=="vio"&&!usados.includes(m))b.remove();if(m==="reg"&&!usados.includes("gasto"))b.remove()});
  const on=document.querySelector("#hmet button.on")||document.querySelector("#hmet button");if(on)on.click();
- const pe=document.querySelector("#hmapcard .cardfoot");if(pe&&!document.querySelector("#hmapReal"))pe.insertAdjacentHTML("afterend",`<p class="small muted" id="hmapReal" style="margin:8px 0 0">Mapa com dados oficiais${d.anos.gasto?` (gastos de ${d.anos.gasto})`:""}. Fonte: ${esc(d.fonte)}.</p>`)}).catch(()=>{})}}};
+ const pe=document.querySelector("#hmapcard .cardfoot");if(pe&&!document.querySelector("#hmapReal"))pe.insertAdjacentHTML("afterend",`<p class="small muted" id="hmapReal" style="margin:8px 0 0" title="${esc(d.fonte)}"><a href="#/fontes">Fontes</a></p>`)}).catch(()=>{})}}};
 
 /* Estado: eleições reais no lugar da demonstração */
 const _uf4=P.uf;
@@ -4483,7 +4499,7 @@ function obrasResumoHtml(g){const f=v=>v==null?"—":nf(v);
  <div class="kpi"><span>Em atraso</span><strong>${f(g.atraso.obras)}</strong><em>${g.atraso.dias_medio!=null?`${g.atraso.pct_das_abertas!=null?pct(g.atraso.pct_das_abertas)+" das que faltam · ":""}atraso médio de ${nf(g.atraso.dias_medio)} dias`:"nenhuma com prazo vencido"}</em></div></div>`}
 function obrasGestaoHtml(g,quem){const f=v=>v==null?"—":nf(v);
  return obrasResumoHtml(g)+`<div class="mt"><div><h3 class="seg-h" style="margin-top:0">Datas e prazos</h3><div class="facts"><div><span>Com prazo ainda no futuro</span>${f(g.no_prazo)} obras</div><div><span>Próximo término previsto</span>${g.proximo_termino?fdr(g.proximo_termino):"—"}</div><div><span>Maior atraso</span>${g.atraso.dias_maior!=null&&g.atraso.dias_maior<20000?`${nf(g.atraso.dias_maior)} dias (${(g.atraso.dias_maior/365).toLocaleString("pt-BR",{maximumFractionDigits:1})} anos)`:"—"}</div><div><span>Valor das obras atrasadas</span>${brl(g.atraso.valor)}</div><div><span>Sem data de término informada</span>${f(g.sem_data_prevista)} obras</div></div></div></div>
-  <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. Fonte: ${esc(g.fonte)}. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
+  <p class="small muted" style="margin:10px 0 0">${esc(g.aviso)} Dados de ${fdr(g.data)}. <a href="#/fontes">Fontes</a>. Não existe base aberta que acompanhe o plano de governo promessa por promessa.</p>`}
 /* o que o candidato propõe: trechos do plano de governo registrado no TSE (site/midia/propostas.json, scripts/propostas_resumo.py) */
 let PROP=null;const propostasDe=sq=>(PROP||(PROP=midiaJSON("propostas.json").then(x=>x||{}))).then(P=>P[String(sq)]||null);
 const PROP_ROT={seguranca:"Segurança",transporte:"Transporte e mobilidade",economia:"Economia e emprego",saude:"Saúde",educacao:"Educação",social:"Assistência e moradia",ambiente:"Meio ambiente"};
@@ -4985,11 +5001,11 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
   alvo.insertAdjacentHTML("afterend",`<div class="panel" id="hsegcard"><div id="hsegmain" class="zmain"><div class="hd"><div><h2>Segurança pública no Brasil</h2><p>${ref.ocorr?`Sinesp, ${ref.ocorr}`:""}${ref.prisional?`${ref.ocorr?"; ":""}presos: ${ref.prisional}`:""}</p></div><a href="#/seguranca">Ver tudo</a></div>
    <div class="kpis kpis-c">${o.homicidios_por_dia!=null?kp("Homicídios por dia",n1(o.homicidios_por_dia),`${n1(o.taxa_homicidio)} por 100 mil hab.`):""}${o.detidos_por_dia!=null?kp("Presos por mandado, por dia",n1(o.detidos_por_dia)):""}${p.populacao!=null?kp("Presos no país",n0(p.populacao),`${n1(p.taxa_aprisionamento)} por 100 mil hab.`):""}${p.presos_por_dia!=null?kp("Entram nas prisões por dia",n1(p.presos_por_dia)):""}${p.saidas_temporarias?kp("Saídas temporárias",n0(p.saidas_temporarias),`${n0(p.abandonos)} não voltaram`):""}${gv(B,"efetivo","policiais_por_mil")!=null?kp("Policiais por mil hab.",n1(B.efetivo.policiais_por_mil)):""}</div>
    ${temMapa?`${(h=>linhasDuplo(h&&h.serie,h&&h.anos,vals,n1,{alto:"Mais violentos",baixo:"Menos violentos",attr:"data-hsegz",rot:h&&h.rot,nota:h&&h.nota}))(segHist(d,"hom"))}
-   <p class="small muted" style="margin:10px 0 0">Homicídios por 100 mil habitantes nos últimos 12 meses. Escolha um estado para ver as taxas dele: presos, homicídios, prisões por dia, saídas temporárias e policiais.</p>
-   <label class="small muted" style="display:block;margin-top:8px">Ver um estado <select id="hsegsel" style="margin-left:6px"><option value="">Escolha...</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></label>`:""}
+   <p class="small muted" style="margin:10px 0 0">Homicídios por 100 mil habitantes nos últimos 12 meses. Toque em um estado (nos gráficos) para ver as taxas dele: presos, homicídios, prisões por dia, saídas temporárias e policiais.</p>
+   `:""}
    </div><div id="hsegstate" style="display:none"></div></div>`);
-  if(temMapa){const abre=uf=>{if(!uf)return;const h=$("#hsegstate"),r=segEstado(uf);h.innerHTML=`<div class="ufback"><button class="btn zback">${HZ.back}</button></div>`+r.html;$("#hsegmain").style.display="none";h.style.display="block";r.mount&&r.mount();h.querySelector(".zback").onclick=()=>{h.style.display="none";h.innerHTML="";$("#hsegmain").style.display="";$("#hsegsel").value=""}};
-   $("#hsegsel").onchange=e=>abre(e.target.value);document.querySelectorAll("[data-hsegz]").forEach(x=>x.onclick=ev=>{ev.preventDefault();abre(x.dataset.hsegz)})}}).catch(()=>{})}}}}
+  if(temMapa){const abre=uf=>{if(!uf)return;const h=$("#hsegstate"),r=segEstado(uf);h.innerHTML=`<div class="ufback"><button class="btn zback">${HZ.back}</button></div>`+r.html;$("#hsegmain").style.display="none";h.style.display="block";r.mount&&r.mount();h.querySelector(".zback").onclick=()=>{h.style.display="none";h.innerHTML="";$("#hsegmain").style.display="";const sl2=$("#hsegsel");if(sl2)sl2.value=""}};
+   const sl=$("#hsegsel");if(sl)sl.onchange=e=>abre(e.target.value);document.querySelectorAll("[data-hsegz]").forEach(x=>x.onclick=ev=>{ev.preventDefault();abre(x.dataset.hsegz)})}}).catch(()=>{})}}}}
 
 /* Estado: seção de segurança na ficha */
 {const _u6=P.uf;P.uf=(id,gs)=>{const r=_u6(id,gs);if(!API.on)return r;const uf=(UF[id]||UF.SP).uf;
@@ -5728,6 +5744,25 @@ const irLeis=(a)=>({html:"",mount(){history.replaceState(null,"","#/leis/"+a);ro
 P.projetos=()=>irLeis("projetos");P.legislacao=()=>irLeis("projetos");
 P.constituicao=(t)=>irLeis({federal:"constituicao",estados:"constituicao",leis:"projetos",como:"como"}[t]||"constituicao");
 
+/* ---------- Arrecadação e repasses › Cortes de gastos ---------- */
+const ABAS_ARR=a=>`<div class="tabs" id="abasArr" style="margin-top:0">${[["arr","","Arrecadação e repasses"],["cortes","cortes","Cortes de gastos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/arrecadacao${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
+function telaCortes(){return{html:`<div id="ctrRes">${rload()}</div>`,
+ mount(){apiGet("/cortes").then(D=>{const box=$("#ctrRes");if(!box)return;const anos=D.anos||[];if(!anos.length){box.innerHTML=rvazio("Os cortes ainda não foram coletados (coleta transparencia-orcamento).");return}
+  const atual=anos[anos.length-1],kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
+  const it=D.itens[String(atual.ano)]||[],top=it.slice(0,6).map(x=>[esc(x.nome),x.cortado]),resto=it.slice(6).reduce((a,x)=>a+x.cortado,0);if(resto>0)top.push(["Outros órgãos",resto]);
+  const linha=(rot,fn)=>`<tr><th scope="row">${rot}</th>${anos.map(a=>`<td>${fn(a)}</td>`).join("")}</tr>`;
+  box.innerHTML=`<div class="panel"><h2>Quanto foi cortado em cada ano</h2><p class="small muted" style="margin:0 0 10px">Do orçamento federal aprovado, quanto ficou de fora quando o orçamento foi atualizado. Deslize para ver todos os anos.</p>
+   <div class="ct-x"><table class="ct-tab"><thead><tr><th></th>${anos.map(a=>`<th>${a.ano}</th>`).join("")}</tr></thead><tbody>${linha("Orçamento aprovado",a=>brl(a.inicial))}${linha("Orçamento atualizado",a=>brl(a.atualizado))}${linha("Cortado",a=>`<b>${brl(a.cortado)}</b>`)}${linha("% cortado",a=>a.percentual==null?"—":pct(a.percentual))}</tbody></table></div></div>
+   <div class="panel mt"><h2>De quem foi cortado em ${atual.ano}</h2><p class="small muted" style="margin:0 0 8px">Parte de cada órgão no total cortado no ano (${brl(atual.cortado)}).</p>${top.length?donut(top):rvazio("Nenhum órgão teve o orçamento reduzido neste ano.")}</div>
+   <div class="panel mt"><h2>Cortes por órgão</h2><div class="filters"><select id="ctrAno" data-pill="Ano">${anos.slice().reverse().map(a=>`<option>${a.ano}</option>`).join("")}</select></div><div id="ctrTab"></div>
+    <p class="small muted" style="margin:10px 0 0">${esc(D.nota)}</p></div>${RSRC()}`;
+  const tabela=ano=>{const a=anos.find(x=>x.ano===+ano),l=D.itens[String(ano)]||[];if(!a)return;
+   $("#ctrTab").innerHTML=`<div class="kpis kpis-c">${kp("Orçamento aprovado",brl(a.inicial),"lei orçamentária")}${kp("Orçamento atualizado",brl(a.atualizado))}${kp("Cortado",brl(a.cortado),a.percentual==null?"":pct(a.percentual)+" do aprovado")}</div>
+    ${l.length?table([["Órgão",x=>`<b style="font-weight:600">${esc(x.nome)}</b>`],["Valor cortado",x=>brl(x.cortado),"n"],["% do total cortado",x=>pct(x.percentual_do_corte),"n"],["% do orçamento do órgão",x=>x.percentual_do_orcamento==null?"—":pct(x.percentual_do_orcamento),"n"]],l):rvazio("Nenhum órgão teve o orçamento reduzido neste ano.")}`};
+  tabela(atual.ano);$("#ctrAno").onchange=e=>tabela(e.target.value)}).catch(e=>{const b=$("#ctrRes");if(b)b.innerHTML=e.status===404?rvazio("Os cortes ainda não foram coletados."):rerro(e)})}}}
+{const _arr5=P.arrecadacao;P.arrecadacao=(t,...a)=>{if(!API.on)return _arr5(t,...a);
+ if(t==="cortes"){const c=telaCortes();return{html:`<div class="ph"><div><h1>Arrecadação e repasses</h1><p>Quanto cada estado arrecada, quanto volta em repasses e onde o orçamento federal foi cortado.</p></div></div>${ABAS_ARR("cortes")}${c.html}`,mount:c.mount}}
+ const r=_arr5(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasArr"))ph.insertAdjacentHTML("afterend",ABAS_ARR("arr"))}}}}
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
 addEventListener("hashchange",route);detectarAPI().finally(route);
 </script>

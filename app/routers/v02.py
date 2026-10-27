@@ -218,6 +218,47 @@ def orgaos(q: str | None = None, ano: int | None = None, db: Session = Depends(g
             "fonte": "Portal da Transparência (CGU) — orçamento e execução por órgão (arquivo de dados abertos)"}
 
 
+@router.get("/cortes", tags=["Órgãos"])
+def cortes(db: Session = Depends(get_db)):
+    return memo(("cortes",), lambda: _cortes(db=db))
+
+
+def _cortes(db: Session):
+    """Cortes no orçamento federal: quanto o orçamento atualizado de cada órgão ficou abaixo do aprovado na lei orçamentária (inicial),
+    por ano, e a parte de cada órgão superior (ministério, tribunal…) no total cortado."""
+    por_ano: dict[int, dict] = {}
+    for r in _gastos_orgaos(db):
+        d = r.dados or {}
+        ini, atu = _num(d, "orcamento_inicial"), _num(d, "orcamento_atualizado")
+        if r.ano is None or ini <= 0:
+            continue
+        a = por_ano.setdefault(r.ano, {"inicial": 0.0, "atualizado": 0.0, "cortado": 0.0, "ampliado": 0.0, "sup": {}})
+        a["inicial"] += ini
+        a["atualizado"] += atu
+        dif = ini - atu
+        a["cortado" if dif > 0 else "ampliado"] += abs(dif)
+        cod = str(d.get("codigoOrgaoSuperior") or "")
+        sp = a["sup"].setdefault(cod, {"codigo": cod, "nome": d.get("orgaoSuperior") or "Sem órgão superior", "inicial": 0.0, "atualizado": 0.0, "cortado": 0.0})
+        sp["inicial"] += ini
+        sp["atualizado"] += atu
+        if dif > 0:
+            sp["cortado"] += dif
+    if not por_ano:
+        raise HTTPException(404, "Sem dados. Rode a coleta transparencia-orcamento.")
+    anos, itens = [], {}
+    for ano, a in sorted(por_ano.items()):
+        anos.append({"ano": ano, "inicial": round(a["inicial"], 2), "atualizado": round(a["atualizado"], 2), "cortado": round(a["cortado"], 2),
+                     "ampliado": round(a["ampliado"], 2), "percentual": round(a["cortado"] / a["inicial"] * 100, 2) if a["inicial"] else None})
+        lista = sorted((x for x in a["sup"].values() if x["cortado"] > 0), key=lambda x: -x["cortado"])
+        itens[str(ano)] = [{"codigo": x["codigo"], "nome": x["nome"], "inicial": round(x["inicial"], 2), "atualizado": round(x["atualizado"], 2),
+                            "cortado": round(x["cortado"], 2), "percentual_do_corte": round(x["cortado"] / a["cortado"] * 100, 2),
+                            "percentual_do_orcamento": round(x["cortado"] / x["inicial"] * 100, 2) if x["inicial"] else None} for x in lista]
+    return {"anos": anos, "itens": itens, "fonte": "Portal da Transparência (CGU) — orçamento da despesa por órgão",
+            "nota": ("Corte = quando o orçamento atualizado de um órgão ficou menor do que o aprovado na lei orçamentária (orçamento inicial). Vale para o órgão como um todo "
+                     "e some os órgãos que perderam verba; os que ganharam (crédito extra) ficam em \"ampliado\". Não separa bloqueio temporário (contingenciamento) "
+                     "de cancelamento definitivo. O ano em andamento ainda pode mudar.")}
+
+
 @router.get("/orgaos/{codigo}", tags=["Órgãos"])
 def orgao(codigo: str, db: Session = Depends(get_db)):
     linhas = [r for r in _gastos_orgaos(db) if str((r.dados or {}).get("codigoOrgaoSuperior")) == codigo

@@ -58,7 +58,7 @@ def test_historico_estados_responde():
     from fastapi.testclient import TestClient
     from app.main import app
     d = TestClient(app).get("/historico-estados").json()
-    assert set(d) >= {"retorno", "divida", "fonte", "nota"}
+    assert set(d) >= {"retorno", "arrecadacao", "repasses", "divida", "fonte", "nota"}
     assert set(d["retorno"]) == {"anos", "estados"} and isinstance(d["divida"]["anos"], list)
 
 

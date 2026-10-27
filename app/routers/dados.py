@@ -124,12 +124,17 @@ def historico_estados(db: Session = Depends(get_db)):
     dívida consolidada do governo estadual (SICONFI, RGF Anexo 2, último quadrimestre de cada ano)."""
     anos = [a for (a,) in db.execute(select(Registro.ano).where(Registro.tipo == "arrecadacao_uf").distinct()
                                      .order_by(Registro.ano)).all() if a]
-    retorno = {}
+    retorno, arrecadado, repassado = {}, {}, {}
     for ano in anos:
         for uf in UFS:
-            r = fluxo_estado(db, uf, ano).get("retorno_por_real_arrecadado")
+            f = fluxo_estado(db, uf, ano)
+            r = f.get("retorno_por_real_arrecadado")
             if r is not None:
                 retorno.setdefault(uf, {})[str(ano)] = r
+            if f.get("arrecadado") is not None:
+                arrecadado.setdefault(uf, {})[str(ano)] = f["arrecadado"]
+            if f.get("retornado") is not None:
+                repassado.setdefault(uf, {})[str(ano)] = f["retornado"]
     # dívida: cada RGF traz o saldo do fim do ano anterior e o de cada quadrimestre; um só relatório já dá 4 pontos.
     # Chaves "ano.quadrimestre": "2024.3" = dezembro de 2024, "2025.1" = abril de 2025 (ordenam certo como texto).
     divida = {}
@@ -147,7 +152,7 @@ def historico_estados(db: Session = Depends(get_db)):
             continue
         divida.setdefault(r.uf, {}).setdefault(chave, r.valor)
     serie = lambda v: {"anos": sorted({a for x in v.values() for a in x}), "estados": v}
-    return {"retorno": serie(retorno), "divida": serie(divida),
+    return {"retorno": serie(retorno), "arrecadacao": serie(arrecadado), "repasses": serie(repassado), "divida": serie(divida),
             "fonte": "Receita Federal, Tesouro Nacional e SICONFI (Tesouro Nacional)",
             "nota": "Valores nominais, sem correção pela inflação. Um ano só aparece depois de coletado."}
 

@@ -219,3 +219,22 @@ def test_lexml_estaduais(monkeypatch):
     assert r["itens"][0]["esfera"] == "estadual"
     assert cliente.get("/legislacao-estados").json()["SP"]["normas"] == 2
     assert cliente.get("/legislacao?esfera=federal&uf=SP").json()["total"] == 0
+
+
+def test_cortes_no_orcamento_por_ano_e_orgao():
+    """Corte = orçamento atualizado menor que o inicial; órgãos que ganharam verba ficam em "ampliado"."""
+    from app.models import Registro
+    import uuid
+    ano = 2900 + uuid.uuid4().int % 90
+    db = SessionLocal()
+    db.query(Registro).filter(Registro.tipo == "gasto_orgao", Registro.chave.like("corte-%")).delete(synchronize_session=False)
+    for cod, sup, ini, atu in (("1", "MIN A", 100.0, 60.0), ("2", "MIN A", 50.0, 50.0), ("3", "MIN B", 200.0, 180.0), ("4", "MIN C", 10.0, 30.0)):
+        db.add(Registro(fonte="transparencia", tipo="gasto_orgao", chave=f"corte-{ano}-{cod}", ano=ano, titulo=f"ORG {cod}", valor=1.0,
+                        dados={"codigoOrgaoSuperior": sup[-1], "orgaoSuperior": sup, "codigoOrgao": cod, "orcamento_inicial": ini, "orcamento_atualizado": atu}))
+    db.commit()
+    db.close()
+    r = cliente.get("/cortes").json()
+    a = next(x for x in r["anos"] if x["ano"] == ano)
+    assert (a["inicial"], a["atualizado"], a["cortado"], a["ampliado"]) == (360.0, 320.0, 60.0, 20.0) and a["percentual"] == round(60 / 360 * 100, 2)
+    itens = r["itens"][str(ano)]
+    assert [i["nome"] for i in itens] == ["MIN A", "MIN B"] and itens[0]["cortado"] == 40.0 and itens[0]["percentual_do_corte"] == round(40 / 60 * 100, 2)
