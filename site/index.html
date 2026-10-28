@@ -1808,9 +1808,9 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .ord-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink2);font:500 13px/1 inherit;cursor:pointer}.ord-btn:hover{border-color:#8FB5EB;color:var(--blue)}.ord-btn svg{color:var(--blue)}
 /* 28/10: sem mapa dos partidos em Candidatos */
 #btnMapaP,#pmapcard,label.psel:has(#pmpart){display:none!important}
-/* 28/10: no computador tudo um pouco menor (celular não muda) */
-@media (min-width:1100px){html{zoom:.84}.app{min-height:calc(100vh / .84)}.side,.side{height:calc(100vh / .84)!important;height:calc(100dvh / .84)!important}.ia-dock{height:min(680px,calc(100vh / .84 - 32px))}}
-@media (min-width:1900px){html{zoom:.8}.app{min-height:calc(100vh / .8)}.side{height:calc(100vh / .8)!important;height:calc(100dvh / .8)!important}}
+/* 28/10: no computador o conteúdo fica menor; o menu lateral mantém o tamanho original */
+@media (min-width:1100px){.main{zoom:.8}}
+@media (min-width:1900px){.main{zoom:.76}}
 </style>
 </head>
 <body>
