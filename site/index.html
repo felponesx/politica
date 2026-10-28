@@ -1685,6 +1685,13 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 #elmap{position:relative}#elmap svg.geo{transition:opacity .45s ease}#elmap.mun-espera svg.geo{opacity:0;transition:none}
 #elmap.mun-espera::after{content:"Carregando o mapa por cidade…";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
 #hloc:empty{display:none}
+/* segurança: tabelas mais limpas (nome com detalhe embaixo, valor à direita) */
+.sd-g{padding:16px 18px}.sd-g h4{margin:0 0 6px;font-size:15px;font-weight:650}.sd-g h4 small{font-weight:500}
+.sd-l{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line2);font-size:14px}
+.sd-l:last-child{border-bottom:0;padding-bottom:2px}
+.sd-n{display:flex;flex-direction:column;gap:2px;min-width:0;color:var(--ink2)}.sd-n small{color:var(--muted);font-size:12px;line-height:1.3}
+.sd-l b{font-size:17px;text-align:right;white-space:nowrap}.sd-l b em{font-style:normal;font-weight:500;font-size:11.5px;color:var(--muted);margin-left:3px}
+@media (max-width:640px){.sd-l{grid-template-columns:minmax(0,1fr) auto}}
 </style>
 </head>
 <body>
@@ -4056,8 +4063,7 @@ return{html:r.html,mount(){r.mount&&r.mount();(async()=>{try{const anos=await ap
   if(D.SENADOR&&D.SENADOR.eleitos.length)lin.push([D.SENADOR.eleitos.length>1?"Senadores eleitos":"Senador eleito",D.SENADOR.eleitos.map(nm).join("<br>")]);
   const banc=c=>{const d=D[c];if(!d)return null;const it=Object.entries(d.por_partido).filter(([p,o])=>o.eleitos>0).map(([p,o])=>[p,o.eleitos]).sort((x,y)=>y[1]-x[1]);return it.length?it:null};
   const bf=banc("DEPUTADO FEDERAL"),be=banc(D["DEPUTADO ESTADUAL"]?"DEPUTADO ESTADUAL":"DEPUTADO DISTRITAL"),tot=l=>l.reduce((t,x)=>t+x[1],0),top=l=>{const t=l.slice(0,6),r=tot(l.slice(6));return r?[...t,["Outros",r]]:t};
-  sec.innerHTML=`<h2 class="ufsec-h">Eleições ${ano}</h2><div class="panel"><h2>Quem ganhou</h2><div class="facts">${lin.map(([t,v])=>`<div><span>${t}</span>${v}</div>`).join("")}</div></div>
-  ${bf||be?`<div class="grid g2 mt">${bf?`<div class="panel"><h2>Deputados federais eleitos <small>${nf(tot(bf))} vagas</small></h2>${hbars(top(bf),{fmt:nf})}</div>`:""}${be?`<div class="panel"><h2>${D["DEPUTADO ESTADUAL"]?"Deputados estaduais":"Deputados distritais"} eleitos <small>${nf(tot(be))} vagas</small></h2>${hbars(top(be),{fmt:nf})}</div>`:""}</div>`:""}
+  sec.innerHTML=`<h2 class="ufsec-h">Eleições ${ano}</h2>${bf||be?`<div class="grid g2">${bf?`<div class="panel"><h2>Deputados federais eleitos <small>${nf(tot(bf))} vagas</small></h2>${hbars(top(bf),{fmt:nf})}</div>`:""}${be?`<div class="panel"><h2>${D["DEPUTADO ESTADUAL"]?"Deputados estaduais":"Deputados distritais"} eleitos <small>${nf(tot(be))} vagas</small></h2>${hbars(top(be),{fmt:nf})}</div>`:""}</div>`:""}
   <p class="small muted">Fonte: TSE, 1º turno. Mapa por município e comparação com a eleição anterior em <a href="#/eleicoes">Eleições</a>.</p>`;return}}catch(e){}})()}}};
 
 /* Eleições: mapa por município (cargos majoritários) */
@@ -4769,7 +4775,7 @@ const _n1=n1;
 // quadros simples (nome · valor · detalhe), o mesmo desenho do "Por dia": crimes e prisões, sistema prisional e mortes violentas
 function segBlocos(e,br,ref,arr){const n1=arr?n0:_n1,o=e.ocorrencias||{},p=e.prisional||{},v=e.violencia||{},B=br||{};
  const cmp=(val,bv,fmt=n1)=>br&&bv!=null&&val!=null?`Brasil: ${fmt(bv)}`:"";
- const quadro=(t,sub,l)=>{l=l.filter(x=>x&&x[1]!=null&&x[1]!=="—");return l.length?`<div class="panel sd-g"><h4>${t} <small class="muted" style="font-weight:500">${sub||""}</small></h4><div class="sd-c"><span></span><span>Valor</span><span>Detalhe</span></div>${l.map(([n,val,d],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span>${esc(n)}</span><b>${val}</b><small>${d||""}</small></div>`).join("")}</div>`:""};
+ const quadro=(t,sub,l)=>{l=l.filter(x=>x&&x[1]!=null&&x[1]!=="—");return l.length?`<div class="panel sd-g"><h4>${t} <small class="muted" style="font-weight:500">${sub||""}</small></h4>${l.map(([n,val,d],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span class="sd-n">${esc(n)}${d?`<small>${d}</small>`:""}</span><b>${val}</b></div>`).join("")}</div>`:""};
  const L=(n,val,d)=>val==null||val==="—"?null:[n,val,d];
  const out=[];
  if(e.ocorrencias)out.push(quadro("Crimes e prisões",ref.ocorr,[L("Homicídios dolosos",n0(o.homicidio_doloso),`${n1(o.homicidios_por_dia)} por dia`),L("Taxa de homicídio",n1(o.taxa_homicidio),cmp(o.taxa_homicidio,gv(B,"ocorrencias","taxa_homicidio"))||"por 100 mil habitantes"),
@@ -4824,7 +4830,7 @@ function segPorDia(e,d,uf){const o=e.ocorrencias||{},p=e.prisional||{},R=d.refer
   ["Prisões",[oc("mandados_cumpridos"),pr("Entram nas prisões",p.entradas,ref.prisional),pr("Saídas temporárias",p.saidas_temporarias,`${nf(p.abandonos||0)} não voltaram no semestre`),pr("Não voltaram para a prisão",p.abandonos,ref.prisional)]],
   ["Pessoas desaparecidas",["desaparecidos","localizados"].map(oc)]].map(([t,l])=>[t,l.filter(Boolean)]).filter(([,l])=>l.length);
  if(!GR.length)return"";
- return`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="sd-grade">${GR.map(([t,l])=>`<div class="panel sd-g"><h4>${t}</h4><div class="sd-c"><span></span><span>Por dia</span><span>Total</span></div>${l.map(([n,v,x],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span>${esc(n)}</span><b>${fd(v)}</b><small>${esc(x)}</small></div>`).join("")}</div>`).join("")}</div>`}
+ return`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="sd-grade">${GR.map(([t,l])=>`<div class="panel sd-g"><h4>${t}</h4>${l.map(([n,v,x],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span class="sd-n">${esc(n)}<small>${esc(x)}</small></span><b>${fd(v)}<em>/dia</em></b></div>`).join("")}</div>`).join("")}</div>`}
 function _dias(ref){if(!ref)return 182;const[a,sm]=String(ref).split("/");return sm==="2"?184:((+a%4===0&&+a%100!==0)||+a%400===0?182:181)}
 // gráfico do indicador escolhido (homicídios dolosos, feminicídios, presos, mortes…): por mês (país, Sinesp) ou por ano; estados só por ano
 const SA_REG=new Map();let SA_N=0;
