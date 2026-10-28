@@ -387,3 +387,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Aba "Cortes de gastos" dentro de Órgãos (`#/orgaos/cortes`; `#/arrecadacao/cortes` redireciona; `telaCortes`, `GET /cortes`): corte = orçamento atualizado menor que o inicial por órgão (`transparencia-orcamento` de cada ano), não é contingenciamento. O robô exporta `/cortes` (FIXAS).
 - Dívidas: quadro acima do mapa enxuto; Saúde fiscal mostra a CAPAG em palavras e cores (Forte/Boa/Fraca/Ruim = A/B/C/D) com tabela por ano (`/dividas/municipios` → `historico`, guardado em `capag_resumo`; rode `tesouro-capag url=…` com arquivos de outros anos para completar; arquivo antigo não sobrescreve a nota atual); Empresas tem aba Resumo (junta endividamento, recuperação e falência).
 - As seções "Leis e Projetos" e "Empresas e Contratos" acima estão parcialmente desatualizadas (abas mudaram): vale a descrição no código (`ABAS_*`, `FASES_P`).
+
+## Lista de 28/10 (out/2026)
+- Órgãos: cada linha mostra o pago, o orçamento, a % usada em quadradinhos (`pct0`) e, quando há, o corte do ano (`/cortes` por código ou nome). Cortes de gastos: gráficos de linha (valor e % por ano), seletor de ano com pizza e lista órgão a órgão.
+- `listaUF` (botão único de ordem `.ord-btn`) é a lista padrão por estado (Arrecadação, Dívidas, Indicadores). Dívidas › Empresas é uma página só (resumo, porte, recuperação/falência, maiores, pesquisas). Saúde fiscal: "CAPAG, ano a ano" e mais/menos em linhas.
+- Indicadores: `IND_NOVOS` (bolsa, IPCA, Selic, salário mínimo, balança, PIB, dólar, desemprego), séries novas em `app/collectors/bcb.py` (`salario_minimo` 1619, `balanca_*` 22707–22709, `pib_var_anual` 7326; Ibovespa do Yahoo Finance `^BVSP`, porque o SGS parou em 2019). Sem mapa do país.
+- Notícias › Fake news: feeds `tema="fake"` (Google Notícias filtrado por site .gov.br/.jus.br/.leg.br; só passa matéria de host oficial com termos de boato/desmentido). Escândalos e crimes: aba Crimes de políticos (`GET /crimes-politicos`, só condenações dos casos curados).
+- PC: `html{zoom:.84}` acima de 1100 px (e .8 acima de 1900 px), com a altura do menu lateral compensada. Candidatos: sem o mapa dos partidos.

@@ -48,3 +48,12 @@ def test_economia_empresas_traz_o_setor_financeiro():
             db.query(Registro).filter_by(fonte="bcb", tipo="financeiro").delete()
             db.query(Registro).filter_by(fonte="ibge", tipo="empresas_economia", chave="9999").delete()
             db.commit()
+
+
+def test_ibovespa_mensal_do_yahoo(monkeypatch):
+    from app.collectors import bcb
+    ts = [1700000000 + i * 2_600_000 for i in range(30)]
+    resp = {"chart": {"result": [{"timestamp": ts, "indicators": {"quote": [{"close": [100000.0 + i if i != 5 else None for i in range(30)]}]}}]}}
+    monkeypatch.setattr(bcb.http, "get_json", lambda *a, **k: resp)
+    pts = bcb._ibovespa()
+    assert len(pts) == 29 and pts[0][1] == 100000.0

@@ -586,6 +586,13 @@ def escandalos_lista():
     return escandalos.listar()
 
 
+@router.get("/crimes-politicos", tags=["Escândalos"])
+def crimes_politicos():
+    """Agentes públicos condenados nos casos curados (com a situação, o caso e a fonte de cada um)."""
+    from app import escandalos
+    return escandalos.crimes()
+
+
 @router.get("/escandalos/{slug}", tags=["Escândalos"])
 def escandalo(slug: str):
     """Um escândalo completo: andamento, pessoas (cargo, partido, situação, prisão, valores) e fontes."""

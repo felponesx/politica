@@ -47,7 +47,19 @@ FEEDS = [
     ("Consultor Jurídico (Conjur)", "https://www.conjur.com.br/rss.xml", True, "juridico"),
     ("Migalhas", "https://www.migalhas.com.br/rss/quentes", True, "juridico"),
     ("Conselho Nacional de Justiça", "https://www.cnj.jus.br/feed/", True, "juridico"),
+    # fake news: matérias de sites oficiais que desmentem boatos (Google Notícias filtrado por domínio; o veículo vira o nome do site)
+    *[(f"Oficial {i}", "https://news.google.com/rss/search?q=" + q + "+when:90d&hl=pt-BR&gl=BR&ceid=BR:pt-419", True, "fake") for i, q in enumerate([
+        "site:tse.jus.br+(fake+OR+boato+OR+desinformação+OR+%22é+falso%22)",
+        "site:gov.br+(%22fake+news%22+OR+%22é+falso%22+OR+boato+OR+desinformação+OR+%22não+é+verdade%22)",
+        "site:camara.leg.br+(%22fake+news%22+OR+%22é+falso%22+OR+desinformação)",
+        "site:senado.leg.br+(%22fake+news%22+OR+%22é+falso%22+OR+desinformação)",
+        "site:jus.br+(%22fake+news%22+OR+%22é+falso%22+OR+desinformação)",
+        "site:agenciabrasil.ebc.com.br+(%22fake+news%22+OR+%22é+falso%22+OR+desinformação)"])],
 ]
+# matéria de fake news só vale se vier de site oficial e falar de boato/desmentido
+HOSTS_OFICIAIS = re.compile(r"(\.gov\.br|\.jus\.br|\.leg\.br|\.mp\.br|(^|\.)ebc\.com\.br)$", re.I)
+FAKE_RE = re.compile(r"\b(fake|falso|falsa|falsos|falsas|boato|boatos|desmente|desmentid|nao e verdade|golpe|desinformac)", re.I)
+NAO_FAKE_RE = re.compile(r"(combat|enfrent|desafio|regulac|formac|curso|oficina|palestra|inscric|hackaton|seminario|campanha contra|critica|dificulta)", re.I)
 QUEBRADA = re.compile(r"\ufffd|[^\W\d_]\?{1,2}[^\W\d_]")
 PALAVRAS = re.compile(r"\b(congresso|camara|senado|deputad|senador|governo|presiden|ministr|stf|supremo|tse|eleic|"
                       r"eleitor|partido|planalto|lula|bolsonaro|governador|prefeit|lei\b|projeto de lei|pec\b|cpi\b|"
@@ -85,6 +97,13 @@ def ler_feed(xml: str, veiculo: str, so_politica: bool, tema: str = "geral") -> 
         if not titulo or not link.startswith("http"):
             continue
         resumo = re.sub(r"\s+", " ", _tag(item, "description") or _tag(item, "atom:subtitle"))[:400]
+        if tema == "fake":
+            mfonte = re.search(r'<source[^>]*url="https?://([^/"]+)', item)
+            if not mfonte or not HOSTS_OFICIAIS.search(mfonte.group(1)) or not FAKE_RE.search(sem_acento(titulo)) or NAO_FAKE_RE.search(sem_acento(titulo)):
+                continue
+            veiculo = _tag(item, "source") or mfonte.group(1)
+            titulo = re.sub(r"\s+-\s+" + re.escape(veiculo) + r"$", "", titulo).strip() or titulo
+            resumo = ""
         cat = " ".join(_tag(c, "category") for c in re.findall(r"<category.*?</category>", item, re.S))
         if not so_politica and not PALAVRAS.search(sem_acento(f"{titulo} {resumo} {cat}")):
             continue

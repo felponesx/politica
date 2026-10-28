@@ -120,6 +120,28 @@ def listar() -> dict:
             "fonte": "Curadoria do BRASIL+ com base em decisões e notícias públicas (link em cada informação)."}
 
 
+CONDENADOS = ("condenado", "condenado (recorre)", "indultado", "pena cumprida")
+
+
+def crimes() -> dict:
+    """Agentes públicos (ex-deputados, ministros, governadores...) condenados nos casos curados. Só entra quem tem condenação
+    registrada com fonte; "condenado (recorre)" ainda cabe recurso. Quem foi apenas investigado, réu ou absolvido não entra."""
+    itens = []
+    for c in casos().values():
+        for p in c["pessoas"]:
+            if p["tipo"] == "agente público" and p["situacao"] in CONDENADOS:
+                itens.append({"nome": p["nome"], "cargo": p["cargo_na_epoca"], "partido": p["partido_na_epoca"], "situacao": p["situacao"],
+                              "detalhe": p["detalhe"], "liberdade": p["liberdade"], "liberdade_data": p["liberdade_data"],
+                              "data_situacao": p["data_situacao"], "caso": c["nome"], "slug": c["slug"], "ano_revelado": c["ano_revelado"],
+                              "valor_recebido": p["valor_recebido"], "fonte": p["fonte"]})
+    itens.sort(key=lambda x: (str(x["data_situacao"] or ""), x["nome"]), reverse=True)
+    por_caso: dict[str, int] = {}
+    for i in itens:
+        por_caso[i["caso"]] = por_caso.get(i["caso"], 0) + 1
+    return {"total": len(itens), "itens": itens, "por_caso": por_caso, "aviso": AVISO + " \"Condenado (recorre)\": ainda cabe recurso.",
+            "fonte": "Curadoria do BRASIL+ com base em decisões e notícias públicas (link em cada informação)."}
+
+
 @lru_cache(maxsize=1)
 def _padroes() -> dict[str, re.Pattern]:
     """Um padrão por caso, com o nome e os outros nomes (sem acento e sem o "Caso"/"Operação" do começo), por palavra inteira."""

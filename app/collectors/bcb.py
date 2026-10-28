@@ -29,6 +29,13 @@ SERIES = {
     "endividamento_familias": (29037, "Endividamento das famílias com o sistema financeiro", "% da renda", "mensal"),
     "inadimplencia_pf": (21084, "Inadimplência das pessoas físicas", "% da carteira", "mensal"),
     "inadimplencia_pj": (21083, "Inadimplência das empresas", "% da carteira", "mensal"),
+    "salario_minimo": (1619, "Salário mínimo", "R$", "mensal"),
+    "balanca_saldo": (22707, "Balança comercial — saldo do mês", "US$ milhões", "mensal"),
+    "balanca_export": (22708, "Balança comercial — exportações do mês", "US$ milhões", "mensal"),
+    "balanca_import": (22709, "Balança comercial — importações do mês", "US$ milhões", "mensal"),
+    "pib_var_anual": (7326, "Crescimento do PIB (variação real no ano)", "%", "mensal"),
+    # o SGS parou de publicar o Ibovespa em 2019: o fechamento de cada mês vem do Yahoo Finance (^BVSP), código 0 = fora do SGS
+    "ibovespa": (0, "Ibovespa (fechamento do mês)", "pontos", "mensal"),
 }
 
 
@@ -46,6 +53,24 @@ def _baixar(codigo: int, ini: date, fim: date, tentativas: int = 4):
             time.sleep(5 * t)
 
 
+def _ibovespa() -> list[tuple[date, float]]:
+    """Fechamento mensal do Ibovespa desde 1993 (Yahoo Finance, ^BVSP). Falha com erro claro se a resposta mudar."""
+    r = http.get_json("https://query1.finance.yahoo.com/v8/finance/chart/%5EBVSP", params={"range": "max", "interval": "1mo"},
+                      headers={"User-Agent": "Mozilla/5.0 (BRASIL+ coletor de dados publicos)"}) or {}
+    res = ((r.get("chart") or {}).get("result") or [None])[0]
+    if not res:
+        raise RuntimeError("Yahoo Finance sem dados do Ibovespa")
+    ts = res.get("timestamp") or []
+    fech = (((res.get("indicators") or {}).get("quote") or [{}])[0]).get("close") or []
+    out = []
+    for t, v in zip(ts, fech):
+        if v is not None:
+            out.append((date.fromtimestamp(t + 12 * 3600), float(v)))
+    if len(out) < 24:
+        raise RuntimeError("Yahoo Finance devolveu poucos pontos do Ibovespa")
+    return out
+
+
 def coletar_series(anos: int = 42, nomes: list[str] | None = None):
     """Séries do SGS desde 1985 (volta das eleições diretas); as que começam depois vêm do ano em que existem."""
     fim = date.today()
@@ -55,6 +80,14 @@ def coletar_series(anos: int = 42, nomes: list[str] | None = None):
             if nomes and nome not in nomes:
                 continue
             try:
+                if nome == "ibovespa":
+                    for dt, v in _ibovespa():
+                        upsert(db, Registro, {"fonte": "bcb", "tipo": "serie:ibovespa", "chave": f"{dt:%Y-%m-%d}"},
+                               {"ano": dt.year, "titulo": desc, "valor": v,
+                                "dados": {"data": dt.isoformat(), "unidade": unidade, "codigo": codigo}})
+                        n += 1
+                    db.commit()
+                    continue
                 ini = date(1985, 1, 1) if anos >= 40 else fim - timedelta(days=365 * anos)
                 janela = timedelta(days=365 * 3)  # consultas curtas falham bem menos
                 while ini <= fim:
