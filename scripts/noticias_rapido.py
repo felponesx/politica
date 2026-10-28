@@ -42,16 +42,19 @@ def ler_anterior(pasta: Path) -> dict:
 def montar(anterior: list[dict], novas: list[dict], agora: datetime, dias: int = DIAS, teto: int = TETO) -> list[dict]:
     """Junta, tira repetidas (pelo link), matérias com letras quebradas e as mais velhas que `dias`; mais novas primeiro."""
     limite = (agora - timedelta(days=dias)).isoformat()
+    limite_fake = (agora - timedelta(days=90)).isoformat()  # desmentidos de sites oficiais saem poucas vezes: valem 90 dias
     por_link = {}
     for it in [*anterior, *novas]:  # a versão nova de um link vale mais que a antiga
         if it.get("link") and it.get("titulo"):
             por_link[it["link"]] = it
     itens = [it for it in por_link.values() if not QUEBRADA.search(f"{it['titulo']} {it.get('resumo') or ''}")
-             and (it.get("data") or "") >= limite]
+             and (it.get("data") or "") >= (limite_fake if it.get("tema") == "fake" else limite)]
     for it in itens:
         it["casos"] = casos_da_materia(it["titulo"], it.get("resumo") or "")
     itens.sort(key=lambda i: i.get("data") or "", reverse=True)
-    return itens[:teto]
+    fake = [i for i in itens if i.get("tema") == "fake"][:300]
+    resto = [i for i in itens if i.get("tema") != "fake"][:teto]
+    return sorted([*resto, *fake], key=lambda i: i.get("data") or "", reverse=True)
 
 
 def main(argv):
