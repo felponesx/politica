@@ -1664,6 +1664,23 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 @media (max-width:520px){.kpis>.kpi:last-child:nth-child(odd),.kpis-c>.kpi:last-child:nth-child(odd){grid-column:1/-1}.filters .ap,.filters .ap-b{width:100%}}
 /* celular: o espaço da barra de baixo fica depois do rodapé (antes ficava entre a última fonte e o rodapé) */
 @media (max-width:760px){.page{padding-bottom:12px!important}.rodape{margin-top:0;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
+
+/* botões de seleção (Ano, Cargo, Turno, Casa, Tipo...) todos no mesmo padrão: rótulo pequeno em cima, valor embaixo à esquerda, seta à direita */
+.pbar .pill{text-align:left!important}
+.pbar .pill .pill-l,.pbar .pill .pill-v{text-align:left!important;justify-self:start!important;margin:0!important}
+.pbar>.pill-w>.pill{min-height:0!important;height:auto!important}
+@media (max-width:760px){#view .pbar{display:flex!important;flex-direction:row;flex-wrap:nowrap;width:100%}#view .pbar>.pill-w{flex:1 1 0;min-width:0}#view .pbar>.pill-w+.pill-w{border-left:1px solid var(--line)!important;border-top:0!important}
+#view .pbar>.pill-w>.pill{padding:5px 9px!important;border-radius:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:6px;row-gap:0;align-items:center;text-align:left;width:100%}#view .pbar .pill .pill-l{grid-column:1;font-size:10.5px;line-height:1.2}#view .pbar .pill .pill-v{grid-column:1;font-size:12.5px;line-height:1.2;max-width:none}#view .pbar .pill svg{grid-column:2;grid-row:1/3}
+#view .pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px!important}#view .pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0!important}#view .pbar>.pill-w:only-child>.pill{border-radius:12px!important}}
+@media (max-width:760px){#view .pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden])){flex-wrap:wrap!important;overflow:hidden;border-radius:12px}
+#view .pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w{flex:1 1 45%!important;min-width:0;border-top:1px solid var(--line)!important;border-left:1px solid var(--line)!important}
+#view .pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w:first-child{flex:1 1 100%!important;border-top:0!important;border-left:0!important}
+#view .pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w:nth-child(2){border-left:0!important}
+#view .pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w>.pill{border-radius:0!important}
+.kpis3 .kpi strong{font-size:15px;white-space:nowrap}.kpis3 .kpi{padding:9px 10px}}
+@media (max-width:760px){#hmapcard .pbar>.pill-w>.pill{display:inline-flex!important}#hmapcard .pbar .pill .pill-l,#hmapcard .pbar .pill .pill-v{font-size:12.5px}}
+.psel select{height:40px;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background-color:var(--surface);color:var(--ink);font-size:14px;padding:0 34px 0 12px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A94A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:15px}
+.ap-b::after{content:"";float:none;width:15px;height:15px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A94A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;margin:0}.ap-b{display:inline-flex;align-items:center;justify-content:space-between;gap:8px}
 </style>
 </head>
 <body>
