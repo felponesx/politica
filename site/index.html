@@ -1681,6 +1681,9 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 @media (max-width:760px){#hmapcard .pbar>.pill-w>.pill{display:inline-flex!important}#hmapcard .pbar .pill .pill-l,#hmapcard .pbar .pill .pill-v{font-size:12.5px}}
 .psel select{height:40px;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background-color:var(--surface);color:var(--ink);font-size:14px;padding:0 34px 0 12px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A94A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:15px}
 .ap-b::after{content:"";float:none;width:15px;height:15px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A94A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;margin:0}.ap-b{display:inline-flex;align-items:center;justify-content:space-between;gap:8px}
+/* Eleições (presidente): o mapa por estado fica escondido até o mapa por cidade ficar pronto; aparece de uma vez, sem trocar na frente do usuário */
+#elmap{position:relative}#elmap svg.geo{transition:opacity .45s ease}#elmap.mun-espera svg.geo{opacity:0;transition:none}
+#elmap.mun-espera::after{content:"Carregando o mapa por cidade…";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
@@ -4320,7 +4323,8 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
    legEl=`<div class="legend leg-faixas">${sw(cB,nB+": 20 pontos ou mais")}${sw(misturaBranco(cB,.25),"10 a 20")}${sw(misturaBranco(cB,.48),"2 a 10")}${sw(NEU,"empate (menos de 2)")}${sw(misturaBranco(cA,.48),"2 a 10")}${sw(misturaBranco(cA,.25),"10 a 20")}${sw(cA,nA+": 20 pontos ou mais")}</div>`}
   else fillEl=u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"};
   XF("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
-  if(chave()&&f.cargo==="PRESIDENTE"&&f.ano>=2018)camadaMunPais({f,corDe,forte,cands,modo:f.mapa==="venc"?"venc":"outro",onZoom:(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)}});
+  if(chave()&&f.cargo==="PRESIDENTE"&&f.ano>=2018){const em=$("#elmap");if(em){em.classList.add("mun-espera");clearTimeout(em._me);em._me=setTimeout(()=>em.classList.remove("mun-espera"),15000)}
+   camadaMunPais({f,corDe,forte,cands,modo:f.mapa==="venc"?"venc":"outro",onZoom:(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)}}).catch(()=>{}).finally(()=>{const e2=$("#elmap");if(e2)e2.classList.remove("mun-espera")})}
   bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
   // dica ao passar o mouse em cada estado
   const tip=dicaFlutuante();$("#elmap").querySelectorAll("path[data-uf]").forEach(p=>{const t=p.querySelector("title");if(t)t.remove();
