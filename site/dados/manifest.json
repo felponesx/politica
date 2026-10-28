@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-27T18:32+00:00",
+ "gerado_em": "2026-10-28T04:39+00:00",
  "shards": 256,
  "bases": {
   "/parlamentares": [
@@ -1961,8 +1961,8 @@
    "no_banco": 13525
   },
   "/proposicoes?fase=votado": {
-   "na_copia": 31,
-   "no_banco": 31
+   "na_copia": 41,
+   "no_banco": 41
   },
   "/proposicoes?fase=a_votar": {
    "na_copia": 1833,
@@ -4484,5 +4484,5 @@
   "normas": 9043
  },
  "consultas": 30934,
- "bytes": 164059362
+ "bytes": 165479190
 }
