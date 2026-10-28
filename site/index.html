@@ -1656,6 +1656,12 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 /* lista dos seletores nunca cobre a barra de atalhos do celular; a barra fica numa camada própria e acima de tudo */
 .pill-m.up{top:auto;bottom:calc(100% + 6px)}
 @media (max-width:760px){.bnav{z-index:70;transform:translateZ(0);will-change:transform}}
+@keyframes munIn{from{opacity:0}to{opacity:1}}.mun-layer{animation:munIn .7s ease both}@media (prefers-reduced-motion:reduce){.mun-layer{animation:none}}
+/* 28/10: controles de filtro no mesmo padrão (campo, lista e ano com a mesma altura, borda e seta) e quadros sem sobra sozinha */
+.filters select,.filters input,.filters .ap-b{height:40px;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background-color:var(--surface);color:var(--ink);font-size:14px;padding:0 12px}
+.filters select{-webkit-appearance:none;appearance:none;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A94A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:15px}
+.filters .ap{display:flex}.filters .ap-b{display:inline-flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer}
+@media (max-width:520px){.kpis>.kpi:last-child:nth-child(odd),.kpis-c>.kpi:last-child:nth-child(odd){grid-column:1/-1}.filters .ap,.filters .ap-b{width:100%}}
 </style>
 </head>
 <body>
@@ -4576,8 +4582,8 @@ async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados"
  // arrecadação e retorno do estado escolhido
  const sel=$("#harr");if(sel){const da=()=>{const uf=sel.value;$("#harrv").innerHTML=rload();apiGet(`/estados/${uf}/fluxo`).then(f=>{if(sel.value!==uf||!$("#harrv"))return;if(!f||f.status!=="ok"){$("#harrv").innerHTML=rvazio("Sem dados de arrecadação deste estado.");return}
    const ret=f.retornado||0,arr=f.arrecadado||0,p=arr?Math.min(100,ret/arr*100):0;
-   $("#harrv").innerHTML=`<div class="facts" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px"><div><span>Arrecadou</span>${brl(arr)}</div><div><span>Recebeu da União</span>${brl(ret)}</div><div><span>Para cada R$ 1</span>R$ ${(f.retorno_por_real_arrecadado||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} voltou</div></div>
-   <div class="bar" style="height:10px"><i style="width:${p.toFixed(1)}%;background:#508EDE"></i></div><p class="small muted" style="margin:8px 0 0">Tributos federais recolhidos no estado em ${f.ano} e transferências obrigatórias recebidas. A Receita registra o tributo na sede da empresa, por isso estados com grandes sedes arrecadam mais. <a href="#/arrecadacao">Ver detalhes</a></p>`}).catch(e=>{if($("#harrv"))$("#harrv").innerHTML=rerro(e)})};
+   $("#harrv").innerHTML=`<div class="kpis3" style="margin-bottom:10px"><div class="kpi"><span>Arrecadou</span><strong>${brl(arr)}</strong></div><div class="kpi"><span>Recebeu</span><strong>${brl(ret)}</strong></div><div class="kpi"><span>Volta por R$ 1</span><strong>R$ ${(f.retorno_por_real_arrecadado||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></div></div>
+   <div class="fl-b" style="margin-bottom:6px"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:#508EDE"></i></span><b>${pct0(p)} do que pagou voltou</b></div><p class="small muted" style="margin:8px 0 0">Tributos federais recolhidos no estado em ${f.ano} e transferências obrigatórias recebidas. A Receita registra o tributo na sede da empresa, por isso estados com grandes sedes arrecadam mais. <a href="#/arrecadacao">Ver detalhes</a></p>`}).catch(e=>{if($("#harrv"))$("#harrv").innerHTML=rerro(e)})};
   sel.onchange=da;da();const h=[...document.querySelectorAll(".r1.rup .panel p")].find(x=>/Tributos federais e transferências/.test(x.textContent));if(h&&m)h.textContent=`Tributos federais e transferências da União (${m.anos.fluxo||""})`}
  document.querySelectorAll("#view .src").forEach(e=>{if(/demonstrativ/i.test(e.textContent))e.hidden=true})}
 
