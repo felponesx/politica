@@ -1626,7 +1626,7 @@ svg.geo.com-mun path.st{pointer-events:none}svg.geo.mun-venc path.st{fill:transp
 .gf-r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:7px 0;border-top:1px solid var(--line2)}.gf-r[hidden]{display:none}.gf-n b{display:block;font-weight:600;font-size:14px;line-height:1.25}.gf-n span{font-size:12.5px;color:var(--muted)}.gf-p{display:flex;align-items:center;gap:8px;justify-content:flex-end}.gf-p .bar{width:96px;flex:none}.gf-p b{min-width:44px;text-align:right;font-size:13.5px;font-variant-numeric:tabular-nums}
 /* Gastos públicos: "Quem gastou" e "Ano" lado a lado, menores */
 @media (max-width:760px){#gsfil.pbar{display:flex!important;flex-direction:row;flex-wrap:nowrap;width:100%}#gsfil.pbar>.pill-w{flex:1 1 0;min-width:0}#gsfil.pbar>.pill-w+.pill-w{border-left:1px solid var(--line)!important;border-top:0!important}
-#gsfil.pbar>.pill-w>.pill{padding:7px 10px!important;border-radius:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:6px;row-gap:0;align-items:center;text-align:left;width:100%}#gsfil .pill .pill-l{grid-column:1;font-size:11px}#gsfil .pill .pill-v{grid-column:1;font-size:13px;max-width:none}#gsfil .pill svg{grid-column:2;grid-row:1/3}
+#gsfil.pbar>.pill-w>.pill{padding:5px 9px!important;border-radius:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:6px;row-gap:0;align-items:center;text-align:left;width:100%}#gsfil .pill .pill-l{grid-column:1;font-size:10.5px;line-height:1.2}#gsfil .pill .pill-v{grid-column:1;font-size:12.5px;line-height:1.2;max-width:none}#gsfil .pill svg{grid-column:2;grid-row:1/3}
 #gsfil.pbar>.pill-w:first-child>.pill{border-radius:12px 0 0 12px!important}#gsfil.pbar>.pill-w:last-child>.pill{border-radius:0 12px 12px 0!important}#gsfil.pbar>.pill-w:only-child>.pill{border-radius:12px!important}}
 /* o seletor (pílula) não pode colar nos quadros de números que vêm logo abaixo */
 .pill-w+.kpis,.pill-w+.kpis-c,#segkpi{margin-top:14px}
@@ -1797,11 +1797,11 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 #view .ct-tab thead th:first-child{position:sticky}
 
 /* 28/10: filtros com 3 ou mais botões quebram em linhas; quadrados menores; % em quadradinhos nas listas */
-@media (max-width:760px){#gsfil.pbar:has(>.pill-w:nth-child(3)){flex-wrap:wrap!important;overflow:hidden;border-radius:12px}
-#gsfil.pbar:has(>.pill-w:nth-child(3))>.pill-w{flex:1 1 45%!important;min-width:0;border-top:1px solid var(--line)!important;border-left:1px solid var(--line)!important}
-#gsfil.pbar:has(>.pill-w:nth-child(3))>.pill-w:first-child{flex:1 1 100%!important;border-top:0!important;border-left:0!important}
-#gsfil.pbar:has(>.pill-w:nth-child(3))>.pill-w:nth-child(2){border-left:0!important}
-#gsfil.pbar:has(>.pill-w:nth-child(3))>.pill-w>.pill{border-radius:0!important}
+@media (max-width:760px){#gsfil.pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden])){flex-wrap:wrap!important;overflow:hidden;border-radius:12px}
+#gsfil.pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w{flex:1 1 45%!important;min-width:0;border-top:1px solid var(--line)!important;border-left:1px solid var(--line)!important}
+#gsfil.pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w:first-child{flex:1 1 100%!important;border-top:0!important;border-left:0!important}
+#gsfil.pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w:nth-child(2){border-left:0!important}
+#gsfil.pbar:has(>.pill-w:not([hidden]) ~ .pill-w:not([hidden]) ~ .pill-w:not([hidden]))>.pill-w>.pill{border-radius:0!important}
 .kpis3 .kpi strong{font-size:15px;white-space:nowrap}.kpis3 .kpi{padding:9px 10px}}
 .fl-l{grid-template-columns:1fr auto}.fl-b{display:flex;align-items:center;gap:8px;grid-column:1}.fl-b .bar{flex:none}.fl-b b{font-size:12.5px;font-weight:600}
 .fl-c{grid-column:2;font-size:12px;color:var(--muted);text-align:right;align-self:center}
