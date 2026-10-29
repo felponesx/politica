@@ -1,9 +1,146 @@
-{"aviso":"Informações de fontes jornalísticas e acadêmicas; não há base oficial consolidada de onde cada facção atua (Ministério Público, Polícia Federal e Senappen publicam só partes). Onde a fonte não traz o ano de origem, ele não aparece. A lista não é completa: o número de facções varia muito conforme a fonte.",
-"itens":[
- {"sigla":"PCC","nome":"Primeiro Comando da Capital","origem":"Presídio do interior de São Paulo (Taubaté), 1993","forte":["SP"],"presenca":"Maior do país, presente em quase todos os estados e em outros países, como Paraguai e Bolívia (o MP-SP fala em 28 países).","fonte":"https://www.band.com.br/noticias/jornal-da-noite/ultimas/pcc-e-cv-conheca-a-origem-e-o-poder-das-maiores-faccoes-do-brasil-202605282320","fonte_nome":"Band"},
- {"sigla":"CV","nome":"Comando Vermelho","origem":"Presídio da Ilha Grande (RJ), fim dos anos 1970","forte":["RJ"],"presenca":"Em pelo menos 19 estados; nos últimos anos ampliou a influência no Norte e no Nordeste.","fonte":"https://www.band.com.br/noticias/jornal-da-noite/ultimas/pcc-e-cv-conheca-a-origem-e-o-poder-das-maiores-faccoes-do-brasil-202605282320","fonte_nome":"Band"},
- {"sigla":"TCP","nome":"Terceiro Comando Puro","origem":"Rio de Janeiro","forte":["RJ"],"presenca":"Baixada Fluminense e região de Bangu, na Zona Oeste do Rio.","fonte":"https://ndmais.com.br/seguranca/quais-as-principais-faccoes-criminosas-no-brasil-onde-atuam-e-como-surgiram/","fonte_nome":"ND Mais"},
- {"sigla":"FDN","nome":"Família do Norte","origem":"Amazonas","forte":["AM"],"presenca":"Facção do Amazonas, também chamada de Cartel do Norte; disputa o estado com PCC, CV, TCP e Crias da Tríplice.","fonte":"https://ndmais.com.br/seguranca/quais-as-principais-faccoes-criminosas-no-brasil-onde-atuam-e-como-surgiram/","fonte_nome":"ND Mais"},
- {"sigla":"GDE","nome":"Guardiões do Estado","origem":"Ceará","forte":["CE"],"presenca":"Facção cearense; em 2018 PCC, CV e FDN fizeram um pacto contra ela no Ceará.","fonte":"https://en.wikipedia.org/wiki/Guardi%C3%B5es_do_Estado","fonte_nome":"Wikipédia"},
- {"sigla":"PGC","nome":"Primeiro Grupo Catarinense","origem":"Santa Catarina","forte":["SC"],"presenca":"Atua em Santa Catarina.","fonte":"https://ndmais.com.br/seguranca/quais-as-principais-faccoes-criminosas-no-brasil-onde-atuam-e-como-surgiram/","fonte_nome":"ND Mais"},
- {"sigla":"BDM","nome":"Bonde do Maluco","origem":"Bahia","forte":["BA","SE"],"presenca":"Citada na Bahia e em Sergipe.","fonte":"https://www.brasilparalelo.com.br/noticias/mapa-das-faccoes-veja-todos-os-grupos-que-atuam-no-brasil","fonte_nome":"Brasil Paralelo"}]}
+{
+ "aviso": "Informações de fontes jornalísticas e acadêmicas; não há base oficial consolidada de onde cada facção atua (Ministério Público, Polícia Federal e Senappen publicam só partes). Onde a fonte não traz o ano de origem, ele não aparece. A lista não é completa: o número de facções varia muito conforme a fonte.",
+ "itens": [
+  {
+   "sigla": "PCC",
+   "nome": "Primeiro Comando da Capital",
+   "origem": "Presídio do interior de São Paulo (Taubaté), 1993",
+   "forte": [
+    "SP"
+   ],
+   "presenca": "Maior do país, presente em quase todos os estados e em outros países, como Paraguai e Bolívia (o MP-SP fala em 28 países).",
+   "fonte": "https://www.band.com.br/noticias/jornal-da-noite/ultimas/pcc-e-cv-conheca-a-origem-e-o-poder-das-maiores-faccoes-do-brasil-202605282320",
+   "fonte_nome": "Band"
+  },
+  {
+   "sigla": "CV",
+   "nome": "Comando Vermelho",
+   "origem": "Presídio da Ilha Grande (RJ), fim dos anos 1970",
+   "forte": [
+    "RJ"
+   ],
+   "presenca": "Em pelo menos 19 estados; nos últimos anos ampliou a influência no Norte e no Nordeste.",
+   "fonte": "https://www.band.com.br/noticias/jornal-da-noite/ultimas/pcc-e-cv-conheca-a-origem-e-o-poder-das-maiores-faccoes-do-brasil-202605282320",
+   "fonte_nome": "Band"
+  },
+  {
+   "sigla": "TCP",
+   "nome": "Terceiro Comando Puro",
+   "origem": "Rio de Janeiro",
+   "forte": [
+    "RJ"
+   ],
+   "presenca": "Baixada Fluminense e região de Bangu, na Zona Oeste do Rio.",
+   "fonte": "https://ndmais.com.br/seguranca/quais-as-principais-faccoes-criminosas-no-brasil-onde-atuam-e-como-surgiram/",
+   "fonte_nome": "ND Mais"
+  },
+  {
+   "sigla": "FDN",
+   "nome": "Família do Norte",
+   "origem": "Amazonas",
+   "forte": [
+    "AM"
+   ],
+   "presenca": "Facção do Amazonas, também chamada de Cartel do Norte; disputa o estado com PCC, CV, TCP e Crias da Tríplice.",
+   "fonte": "https://ndmais.com.br/seguranca/quais-as-principais-faccoes-criminosas-no-brasil-onde-atuam-e-como-surgiram/",
+   "fonte_nome": "ND Mais"
+  },
+  {
+   "sigla": "GDE",
+   "nome": "Guardiões do Estado",
+   "origem": "Ceará",
+   "forte": [
+    "CE"
+   ],
+   "presenca": "Facção cearense; em 2018 PCC, CV e FDN fizeram um pacto contra ela no Ceará.",
+   "fonte": "https://en.wikipedia.org/wiki/Guardi%C3%B5es_do_Estado",
+   "fonte_nome": "Wikipédia"
+  },
+  {
+   "sigla": "PGC",
+   "nome": "Primeiro Grupo Catarinense",
+   "origem": "Santa Catarina",
+   "forte": [
+    "SC"
+   ],
+   "presenca": "Atua em Santa Catarina.",
+   "fonte": "https://ndmais.com.br/seguranca/quais-as-principais-faccoes-criminosas-no-brasil-onde-atuam-e-como-surgiram/",
+   "fonte_nome": "ND Mais"
+  },
+  {
+   "sigla": "BDM",
+   "nome": "Bonde do Maluco",
+   "origem": "Bahia",
+   "forte": [
+    "BA",
+    "SE"
+   ],
+   "presenca": "Citada na Bahia e em Sergipe.",
+   "fonte": "https://www.brasilparalelo.com.br/noticias/mapa-das-faccoes-veja-todos-os-grupos-que-atuam-no-brasil",
+   "fonte_nome": "Brasil Paralelo"
+  }
+ ],
+ "controle": {
+  "titulo": "Quanto do país o crime comanda",
+  "aviso": "Não existe número oficial. Cada estudo mede de um jeito (percepção de quem mora na área, mapeamento de território, modelo acadêmico), por isso os valores variam muito. Leia como ordem de grandeza.",
+  "brasil": [
+   {
+    "rotulo": "Datafolha para o Fórum Brasileiro de Segurança Pública (2025)",
+    "pessoas_mi": 23,
+    "pct": null,
+    "pct_calculado": true,
+    "detalhe": "Cerca de 23 milhões de pessoas convivem, direta ou indiretamente, com áreas sob controle de organizações criminosas e milicianos (2.508 entrevistados, margem de 2 pontos).",
+    "fonte": "https://www.gazetadopovo.com.br/republica/crime-organizado-23-milhoes-de-pessoas-estao-em-areas-dominadas-por-72-faccoes-e-milicias/",
+    "fonte_nome": "Gazeta do Povo"
+   },
+   {
+    "rotulo": "CPI do Crime Organizado (relatório final)",
+    "pessoas_mi": 28.5,
+    "pct": null,
+    "pct_calculado": true,
+    "detalhe": "Ao menos 28,5 milhões de brasileiros vivem em áreas dominadas pelo crime organizado.",
+    "fonte": "https://claudiodantas.com.br/ao-menos-285-mi-vivem-sob-influencia-crime/",
+    "fonte_nome": "Cláudio Dantas"
+   },
+   {
+    "rotulo": "Estudo da Cambridge University Press (Latinobarómetro 2020)",
+    "pessoas_mi": 56,
+    "pct": 26,
+    "pct_calculado": false,
+    "detalhe": "Entre 50,6 e 61,6 milhões de pessoas (26% da população) sob influência de \"governança criminal\". Dados de 2020.",
+    "fonte": "https://revistaoeste.com/brasil/um-quarto-dos-brasileiros-vive-sob-controle-de-faccoes-criminosas-mostra-estudo/",
+    "fonte_nome": "Revista Oeste"
+   },
+   {
+    "rotulo": "Fórum Brasileiro de Segurança Pública: \"Medo do crime e eleições 2026\"",
+    "pessoas_mi": 68.7,
+    "pct": 41.2,
+    "pct_calculado": false,
+    "detalhe": "41,2% dos brasileiros com 16 anos ou mais dizem morar em bairros com presença de facções ou milícias (cerca de 68,7 milhões). É a percepção de quem respondeu, não uma medição de território.",
+    "fonte": "https://paulofigueiredoshow.com/68-milhoes-moram-em-areas-dominadas-por-faccoes-ou-milicias/",
+    "fonte_nome": "Paulo Figueiredo (resumo do estudo)"
+   }
+  ],
+  "rio": {
+   "titulo": "Grande Rio: o mapa mais detalhado que existe",
+   "itens": [
+    {
+     "texto": "4 milhões de pessoas vivem sob poder de facções ou milícias: 35% da população da região metropolitana.",
+     "pct": 35
+    },
+    {
+     "texto": "Quase 20% do território das 22 cidades do Grande Rio tem presença de grupos armados; na capital, 31%.",
+     "pct": 20
+    },
+    {
+     "texto": "Das áreas com grupos armados, as milícias dominam 49% e o Comando Vermelho 47%.",
+     "pct": null
+    }
+   ],
+   "fonte": "https://vermelho.org.br/2025/12/04/grupos-criminosos-dominam-35-da-regiao-metropolitana-do-rio/",
+   "fonte_nome": "Mapa dos Grupos Armados (GENI/UFF e Fogo Cruzado), edição 2025, via Vermelho",
+   "fonte2": "https://geni.uff.br/2022/09/13/mapa-historico-dos-grupos-armados-no-rio-de-janeiro/",
+   "fonte2_nome": "GENI/UFF (edição 2022)"
+  }
+ }
+}
