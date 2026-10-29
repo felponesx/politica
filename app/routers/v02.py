@@ -592,7 +592,7 @@ def _setor_financeiro(d: dict) -> dict | None:
     pc = lambda v: round(v / rec * 100, 1)  # noqa: E731
     fatias = [("Juros pagos a quem deposita e empresta", pc(cap)), ("Calotes e provisões (perdas com crédito)", pc(per)), ("Pessoal", pc(pes)),
               ("Administração e impostos", pc(adm)), ("Outras despesas", pc(outras)), ("Sobra (lucro)", pc(lucro))]
-    return {"chave": "financeiro", "nome": "Financeiro (bancos e crédito)", "empresas": n, "pessoal": None, "receita": rec,
+    return {"chave": "financeiro", "nome": "Financeiro", "empresas": n, "pessoal": None, "receita": rec,
             "receita_media": rec / n, "pessoal_medio": None, "gasto_medio": (rec - lucro) / n, "custo_por_pessoa": None,
             "partes": {"insumos": pc(cap + per + adm + outras), "pessoal": pc(pes), "sobra": pc(lucro)}, "margem": pc(lucro), "fatias": fatias,
             "referencia": d.get("referencia"), "totais": t, "maiores": d.get("maiores") or [], "series": d.get("series") or {},
