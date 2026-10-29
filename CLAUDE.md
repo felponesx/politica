@@ -411,4 +411,15 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   (`app/dados/premios_wiki.json` + `site/midia/premios/*.webp`, texto CC BY-SA com link). `python -m scripts.premios_copia` grava `/premios` na cópia estática.
 - Projetos: `prioridade` alta/média/baixa vem do regime de tramitação da Câmara (`Proposicao.regime`, migração 0009; Urgência = alta, Prioridade = média, Ordinária = baixa; MPV = alta) preenchido por
   `camara-proposicoes-situacao`; filtro `?prioridade=` em `GET /proposicoes`. Sem regime coletado, o cartão não mostra a etiqueta.
-- Pendente: aba de votações dos tribunais (STF/STJ/TSE; não há base aberta: só casos curados com placar e fonte).
+- Votações dos tribunais: aba "Julgamentos dos tribunais" em Leis e Projetos (`app/dados/julgamentos.json`, 6 casos do STF curados com placar e fonte; não há base aberta com os votos de cada ministro; STJ/TSE ainda não entraram).
+
+## Pendências (30/10/2026)
+- **Ensino** (menu acima de Prêmios; `P.ensino`, `GET /ensino`, `app/ensino.py`): a tela está pronta (Visão geral, Por estado, Faculdades, Escolas), mas SEM dados. Falta o coletor do INEP: IDEB do Brasil/UFs e por escola
+  (anos iniciais, finais e médio) e IGC das instituições de ensino superior. O servidor `download.inep.gov.br` não envia o certificado intermediário (falha no `curl` e no Python, também no GitHub Actions) e a página do
+  IDEB (`ideb.inep.gov.br`) é Power BI; os nomes dos arquivos não aparecem em links. Saída combinada: baixar os arquivos pelo navegador e colocar no projeto, ou embutir o certificado intermediário no robô. NÃO desligar a
+  verificação de TLS. O gráfico de linha usa `lineChart`/`linhasDuplo`; formato esperado em `ensGeral`/`ensEstados`/`ensFaculdades`/`ensEscolas`.
+- **Trânsito em km por estado/capital** (pedido do Felipe, ainda não feito): hoje só o índice anual de congestionamento do TomTom para 9 capitais (`app/dados/transito.json`, `GET /transito`, quadro "Trânsito" na ficha do estado).
+  Duas partes sugeridas: (1) km totais de vias por capital pelo OpenStreetMap/Overpass (grátis, sem chave, robô mensal); (2) km por nível de trânsito (livre, intermediário, médio, severo) com chave gratuita do TomTom ou HERE
+  (conferir os termos de uso sobre guardar e publicar os números). Waze for Cities só para órgãos públicos; CET-SP publica lentidão em km só de São Paulo.
+- **Robô**: rodar `camara-proposicoes-situacao` (preenche o regime de tramitação e liga a prioridade alta/média/baixa dos projetos) e `premios` (história e imagens da Wikipédia dos Prêmios) quando o GitHub Actions estiver livre.
+  A chave `transparencia-emendas` já rodou; cartão corporativo falta o ano de 2023.
