@@ -69,7 +69,7 @@ FIXAS = [
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
     "/economia?nomes=ibovespa,ipca_mes,ipca_12m,selic,salario_minimo,balanca_saldo,balanca_export,balanca_import,pib_var_anual,dolar,desemprego",
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
-    "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos",
+    "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos", "/premios",
 ]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
 FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))

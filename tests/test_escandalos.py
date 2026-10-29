@@ -77,3 +77,12 @@ def test_crimes_traz_investigados_com_foro_sem_condenados_nem_ex():
     assert all(x["situacao"] in {"investigado", "indiciado", "denunciado", "réu"} and x["foro"] in {"STF", "STJ"} for x in r["foro"])
     assert not any(x["nome"] in cond for x in r["foro"])
     assert not any(x["cargo"].lower().startswith("ex-") or "candidato" in x["cargo"].lower() for x in r["foro"])
+
+
+def test_premios_com_fonte():
+    from app import premios
+    d = premios.dados()
+    assert {"futebol", "olimpiadas", "jogos-eletronicos"} <= {c["slug"] for c in d["categorias"]}
+    for c in d["categorias"]:
+        for g in c["grupos"]:
+            assert g["fonte"].startswith("https://")

@@ -1757,6 +1757,12 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 #ufReal .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 #ufReal .kpi{min-width:0;width:auto;margin:0;min-height:88px;display:flex;flex-direction:column;justify-content:center}
 @media (max-width:640px){#ufReal .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.prm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.prm-c{display:flex;flex-direction:column;gap:2px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);text-decoration:none}
+.prm-c:hover,.prm-c.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
+.prm-i{font-size:26px;line-height:1.1}.prm-c b{font-weight:600;font-size:14.5px}.prm-c small{color:var(--muted);font-size:12px}
+.prm-r{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
 </style>
 </head>
 <body>
@@ -1830,6 +1836,7 @@ dividas:'<path d="M3 7h18v12H3z"/><path d="M3 11h18"/><path d="M7 15h4"/><path d
 indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4l2 2 4-4"/><path d="M17 11h4M19 9v4"/>',
 seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
 escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6 4-4"/><path d="m9 13-5 5"/><path d="M4 21h8"/>',
+premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
 orgaos:'<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>',
@@ -1846,7 +1853,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -5182,6 +5189,13 @@ const escVal=v=>!v?"—":`<a href="${esu(v.fonte)}" target="_blank" rel="noopene
 const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
 const escPer=p=>p&&p.inicio?(p.fim&&p.fim!==p.inicio?`${p.inicio}–${p.fim}`:p.fim?p.inicio:`desde ${p.inicio}`):"";
 const escAviso=a=>`<div class="rbanner esc-aviso">${esc(a)}</div>`;
+P.premios=slug=>{let D=null;
+ return{html:`<div class="ph"><div><h1>Prêmios</h1><p>Títulos e medalhas do Brasil nos principais campeonatos mundiais e nos Jogos Olímpicos. Escolha o esporte para ver cada campeonato.</p></div></div><div id="prmBox">${API.on?rload():`<div class="rbanner">Os prêmios aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ mount(){if(!API.on)return;apiGet("/premios").then(d=>{D=d;const box=$("#prmBox");if(!box)return;const cats=d.categorias,cur=cats.find(c=>c.slug===slug);
+  const resCor=r=>/^(campe|ouro)/i.test(r)?"#F5A524":/^(vice|prata)/i.test(r)?"#8A94A6":/^bronze/i.test(r)?"#C47A3A":"#2F6FED";
+  const cards=`<div class="prm-grid">${cats.map(c=>`<a class="prm-c${cur&&cur.slug===c.slug?" on":""}" href="#/premios/${c.slug}"><span class="prm-i">${c.icone}</span><b>${esc(c.nome)}</b><small>${c.total?nf(c.total)+(c.total===1?" resultado":" resultados"):"sem título confirmado"}</small></a>`).join("")}</div>`;
+  const det=c=>`<div class="panel mt"><h2>${c.icone} ${esc(c.nome)}</h2><p class="small muted" style="margin:0 0 6px">${esc(c.resumo)}</p></div>`+c.grupos.map(g=>`<div class="panel mt"><h3 class="seg-h" style="margin-top:0">${esc(g.nome)}</h3>${g.descricao?`<p class="small muted" style="margin:0 0 8px">${esc(g.descricao)}</p>`:""}${g.brasil.length?table([["Ano",x=>x.ano],["Resultado",x=>`<span class="prm-r" style="--c:${resCor(x.resultado)}">${esc(x.resultado)}</span>`],["Quem / onde",x=>esc(x.detalhe||"—")]],g.brasil.slice().sort((a,b)=>b.ano-a.ano)):`<p class="small muted" style="margin:0">Sem resultados listados.</p>`}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esc(g.fonte)}" target="_blank" rel="noopener">${esc(g.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p></div>`).join("");
+  box.innerHTML=cards+(cur?det(cur):`<p class="small muted" style="margin-top:12px">Toque em um esporte acima.</p>`)+`<p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`}).catch(e=>{const b=$("#prmBox");if(b)b.innerHTML=rerro(e)})}}};
 P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
   const cards=d.itens.map(c=>{const dv=c.valores.desviado,rc=c.valores.recuperado;return`<a class="panel esc-card" href="#/escandalo/${c.slug}">

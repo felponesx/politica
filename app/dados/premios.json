@@ -1,0 +1,751 @@
+{
+ "aviso": "Lista curada a partir de fontes públicas (Wikipédia e federações). Não é completa: mostra os principais títulos e medalhas do Brasil. Se achar algo errado ou faltando, avise.",
+ "categorias": [
+  {
+   "slug": "futebol",
+   "nome": "Futebol",
+   "icone": "⚽",
+   "resumo": "Seleções brasileiras nos principais campeonatos mundiais e continentais.",
+   "grupos": [
+    {
+     "nome": "Copa do Mundo masculina",
+     "descricao": "Maior campeonato do futebol. O Brasil é o único país que jogou todas as edições.",
+     "fonte": "https://pt.wikipedia.org/wiki/Copa_do_Mundo_FIFA",
+     "brasil": [
+      {
+       "ano": 1958,
+       "resultado": "Campeão",
+       "detalhe": "Suécia"
+      },
+      {
+       "ano": 1962,
+       "resultado": "Campeão",
+       "detalhe": "Chile"
+      },
+      {
+       "ano": 1970,
+       "resultado": "Campeão",
+       "detalhe": "México"
+      },
+      {
+       "ano": 1994,
+       "resultado": "Campeão",
+       "detalhe": "Estados Unidos"
+      },
+      {
+       "ano": 2002,
+       "resultado": "Campeão",
+       "detalhe": "Coreia do Sul e Japão"
+      },
+      {
+       "ano": 1950,
+       "resultado": "Vice-campeão",
+       "detalhe": "Brasil (sede)"
+      },
+      {
+       "ano": 1998,
+       "resultado": "Vice-campeão",
+       "detalhe": "França"
+      }
+     ]
+    },
+    {
+     "nome": "Copa do Mundo feminina",
+     "descricao": "Maior campeonato do futebol feminino.",
+     "fonte": "https://pt.wikipedia.org/wiki/Copa_do_Mundo_FIFA_de_Futebol_Feminino",
+     "brasil": [
+      {
+       "ano": 2007,
+       "resultado": "Vice-campeão",
+       "detalhe": "China"
+      }
+     ]
+    },
+    {
+     "nome": "Copa América",
+     "descricao": "Campeonato das seleções da América do Sul.",
+     "fonte": "https://pt.wikipedia.org/wiki/Copa_Am%C3%A9rica",
+     "brasil": [
+      {
+       "ano": 1919,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1922,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1949,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1989,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1997,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1999,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2004,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2007,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2019,
+       "resultado": "Campeão",
+       "detalhe": ""
+      }
+     ]
+    },
+    {
+     "nome": "Copa das Confederações",
+     "descricao": "Torneio da FIFA entre os campeões de cada continente (encerrado em 2017).",
+     "fonte": "https://pt.wikipedia.org/wiki/Copa_das_Confedera%C3%A7%C3%B5es_FIFA",
+     "brasil": [
+      {
+       "ano": 1997,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2005,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2009,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2013,
+       "resultado": "Campeão",
+       "detalhe": ""
+      }
+     ]
+    },
+    {
+     "nome": "Jogos Olímpicos",
+     "descricao": "Futebol masculino e feminino.",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 2016,
+       "resultado": "Ouro",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Masculino (Tóquio, disputado em 2021)"
+      },
+      {
+       "ano": 2004,
+       "resultado": "Prata",
+       "detalhe": "Feminino"
+      },
+      {
+       "ano": 2008,
+       "resultado": "Prata",
+       "detalhe": "Feminino"
+      }
+     ]
+    },
+    {
+     "nome": "Copa do Mundo de Futsal (FIFA)",
+     "descricao": "Futebol de salão.",
+     "fonte": "https://pt.wikipedia.org/wiki/Copa_do_Mundo_de_Futsal_da_FIFA",
+     "brasil": [
+      {
+       "ano": 1989,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1992,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1996,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2008,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2012,
+       "resultado": "Campeão",
+       "detalhe": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "volei",
+   "nome": "Vôlei",
+   "icone": "🏐",
+   "resumo": "Quadra e praia: ouros olímpicos e campeonatos mundiais.",
+   "grupos": [
+    {
+     "nome": "Jogos Olímpicos (quadra)",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 1992,
+       "resultado": "Ouro",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 2004,
+       "resultado": "Ouro",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Ouro",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 2008,
+       "resultado": "Ouro",
+       "detalhe": "Feminino"
+      },
+      {
+       "ano": 2012,
+       "resultado": "Ouro",
+       "detalhe": "Feminino"
+      }
+     ]
+    },
+    {
+     "nome": "Campeonato Mundial masculino",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Campeonato_Mundial_de_Voleibol_Masculino",
+     "brasil": [
+      {
+       "ano": 1960,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 1962,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2002,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2006,
+       "resultado": "Campeão",
+       "detalhe": ""
+      },
+      {
+       "ano": 2010,
+       "resultado": "Campeão",
+       "detalhe": ""
+      }
+     ]
+    },
+    {
+     "nome": "Jogos Olímpicos (vôlei de praia)",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 1996,
+       "resultado": "Ouro",
+       "detalhe": "Jackie Silva e Sandra Pires"
+      },
+      {
+       "ano": 2004,
+       "resultado": "Ouro",
+       "detalhe": "Ricardo Santos e Emanuel Rego"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Ouro",
+       "detalhe": "Ana Patrícia e Duda"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "basquete",
+   "nome": "Basquete",
+   "icone": "🏀",
+   "resumo": "Mundiais e medalhas olímpicas do basquete brasileiro.",
+   "grupos": [
+    {
+     "nome": "Campeonato Mundial masculino",
+     "descricao": "",
+     "fonte": "https://www.fiba.basketball/",
+     "brasil": [
+      {
+       "ano": 1959,
+       "resultado": "Campeão",
+       "detalhe": "Chile"
+      },
+      {
+       "ano": 1963,
+       "resultado": "Campeão",
+       "detalhe": "Brasil (sede)"
+      }
+     ]
+    },
+    {
+     "nome": "Campeonato Mundial feminino",
+     "descricao": "",
+     "fonte": "https://www.fiba.basketball/",
+     "brasil": [
+      {
+       "ano": 1994,
+       "resultado": "Campeão",
+       "detalhe": "Austrália"
+      }
+     ]
+    },
+    {
+     "nome": "Jogos Olímpicos",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 1948,
+       "resultado": "Bronze",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 1960,
+       "resultado": "Bronze",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 1964,
+       "resultado": "Bronze",
+       "detalhe": "Masculino"
+      },
+      {
+       "ano": 1996,
+       "resultado": "Prata",
+       "detalhe": "Feminino"
+      },
+      {
+       "ano": 2000,
+       "resultado": "Bronze",
+       "detalhe": "Feminino"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "beisebol",
+   "nome": "Beisebol e softbol",
+   "icone": "⚾",
+   "resumo": "O Brasil joga as competições internacionais, mas ainda não há título mundial brasileiro confirmado.",
+   "grupos": [
+    {
+     "nome": "Campeonatos mundiais",
+     "descricao": "O Brasil participa de torneios classificatórios e continentais. Ainda não há uma lista de resultados com fonte verificada nesta base; consulte a federação mundial.",
+     "fonte": "https://www.wbsc.org/",
+     "brasil": []
+    }
+   ]
+  },
+  {
+   "slug": "olimpiadas",
+   "nome": "Olimpíadas",
+   "icone": "🥇",
+   "resumo": "Ouros brasileiros por modalidade e modalidades sem medalha.",
+   "grupos": [
+    {
+     "nome": "Judô",
+     "descricao": "Modalidade com mais ouros do Brasil.",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 1988,
+       "resultado": "Ouro",
+       "detalhe": "Aurélio Miguel"
+      },
+      {
+       "ano": 1992,
+       "resultado": "Ouro",
+       "detalhe": "Rogério Sampaio"
+      },
+      {
+       "ano": 2012,
+       "resultado": "Ouro",
+       "detalhe": "Sarah Menezes"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Ouro",
+       "detalhe": "Rafaela Silva"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Ouro",
+       "detalhe": "Beatriz Souza"
+      }
+     ]
+    },
+    {
+     "nome": "Atletismo",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 1952,
+       "resultado": "Ouro",
+       "detalhe": "Adhemar Ferreira da Silva (salto triplo)"
+      },
+      {
+       "ano": 1956,
+       "resultado": "Ouro",
+       "detalhe": "Adhemar Ferreira da Silva (salto triplo)"
+      },
+      {
+       "ano": 1984,
+       "resultado": "Ouro",
+       "detalhe": "Joaquim Cruz (800 m)"
+      },
+      {
+       "ano": 2008,
+       "resultado": "Ouro",
+       "detalhe": "Maurren Maggi (salto em distância)"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Ouro",
+       "detalhe": "Thiago Braz (salto com vara)"
+      }
+     ]
+    },
+    {
+     "nome": "Natação e maratona aquática",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 2008,
+       "resultado": "Ouro",
+       "detalhe": "César Cielo (50 m livre)"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Ana Marcela Cunha (maratona aquática 10 km, Tóquio)"
+      }
+     ]
+    },
+    {
+     "nome": "Ginástica artística",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 2012,
+       "resultado": "Ouro",
+       "detalhe": "Arthur Zanetti (argolas)"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Rebeca Andrade (salto, Tóquio)"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Ouro",
+       "detalhe": "Rebeca Andrade (solo)"
+      }
+     ]
+    },
+    {
+     "nome": "Vela",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 1996,
+       "resultado": "Ouro",
+       "detalhe": "Robert Scheidt (Laser)"
+      },
+      {
+       "ano": 1996,
+       "resultado": "Ouro",
+       "detalhe": "Torben Grael e Marcelo Ferreira (Star)"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Ouro",
+       "detalhe": "Martine Grael e Kahena Kunze (49er FX)"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Martine Grael e Kahena Kunze (49er FX, Tóquio)"
+      }
+     ]
+    },
+    {
+     "nome": "Canoagem, boxe, surfe e skate",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Brasil_nos_Jogos_Ol%C3%ADmpicos",
+     "brasil": [
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Isaquias Queiroz (canoagem C-1 1000 m, Tóquio)"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Robson Conceição (boxe, Tóquio)"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Ouro",
+       "detalhe": "Ítalo Ferreira (surfe, Tóquio)"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Prata",
+       "detalhe": "Rayssa Leal (skate street, Tóquio)"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Bronze",
+       "detalhe": "Rayssa Leal (skate street, Paris)"
+      }
+     ]
+    },
+    {
+     "nome": "Levantamento de peso",
+     "descricao": "O Brasil não tem medalha olímpica nesta modalidade.",
+     "fonte": "https://olympics.com/pt/",
+     "brasil": []
+    },
+    {
+     "nome": "Patinação no gelo e demais esportes de inverno",
+     "descricao": "O Brasil nunca ganhou medalha nos Jogos de Inverno.",
+     "fonte": "https://olympics.com/pt/",
+     "brasil": []
+    }
+   ]
+  },
+  {
+   "slug": "automobilismo",
+   "nome": "Automobilismo",
+   "icone": "🏎️",
+   "resumo": "Campeões mundiais brasileiros da Fórmula 1.",
+   "grupos": [
+    {
+     "nome": "Fórmula 1 (campeão mundial de pilotos)",
+     "descricao": "",
+     "fonte": "https://www.formula1.com/",
+     "brasil": [
+      {
+       "ano": 1972,
+       "resultado": "Campeão",
+       "detalhe": "Emerson Fittipaldi"
+      },
+      {
+       "ano": 1974,
+       "resultado": "Campeão",
+       "detalhe": "Emerson Fittipaldi"
+      },
+      {
+       "ano": 1981,
+       "resultado": "Campeão",
+       "detalhe": "Nelson Piquet"
+      },
+      {
+       "ano": 1983,
+       "resultado": "Campeão",
+       "detalhe": "Nelson Piquet"
+      },
+      {
+       "ano": 1987,
+       "resultado": "Campeão",
+       "detalhe": "Nelson Piquet"
+      },
+      {
+       "ano": 1988,
+       "resultado": "Campeão",
+       "detalhe": "Ayrton Senna"
+      },
+      {
+       "ano": 1990,
+       "resultado": "Campeão",
+       "detalhe": "Ayrton Senna"
+      },
+      {
+       "ano": 1991,
+       "resultado": "Campeão",
+       "detalhe": "Ayrton Senna"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "tenis",
+   "nome": "Tênis",
+   "icone": "🎾",
+   "resumo": "Títulos de Grand Slam do Brasil.",
+   "grupos": [
+    {
+     "nome": "Roland Garros (Grand Slam)",
+     "descricao": "",
+     "fonte": "https://www.atptour.com/",
+     "brasil": [
+      {
+       "ano": 1997,
+       "resultado": "Campeão",
+       "detalhe": "Gustavo Kuerten"
+      },
+      {
+       "ano": 2000,
+       "resultado": "Campeão",
+       "detalhe": "Gustavo Kuerten"
+      },
+      {
+       "ano": 2001,
+       "resultado": "Campeão",
+       "detalhe": "Gustavo Kuerten"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "surfe",
+   "nome": "Surfe",
+   "icone": "🏄",
+   "resumo": "Campeões mundiais da liga mundial de surfe (WSL).",
+   "grupos": [
+    {
+     "nome": "Campeão mundial (WSL)",
+     "descricao": "",
+     "fonte": "https://www.worldsurfleague.com/",
+     "brasil": [
+      {
+       "ano": 2014,
+       "resultado": "Campeão",
+       "detalhe": "Gabriel Medina"
+      },
+      {
+       "ano": 2015,
+       "resultado": "Campeão",
+       "detalhe": "Adriano de Souza"
+      },
+      {
+       "ano": 2018,
+       "resultado": "Campeão",
+       "detalhe": "Gabriel Medina"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Campeão",
+       "detalhe": "Gabriel Medina"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Campeão",
+       "detalhe": "Filipe Toledo"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Campeão",
+       "detalhe": "Filipe Toledo"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "handebol",
+   "nome": "Handebol",
+   "icone": "🤾",
+   "resumo": "Título mundial do handebol feminino.",
+   "grupos": [
+    {
+     "nome": "Campeonato Mundial feminino",
+     "descricao": "",
+     "fonte": "https://pt.wikipedia.org/wiki/Campeonato_Mundial_de_Handebol_Feminino",
+     "brasil": [
+      {
+       "ano": 2013,
+       "resultado": "Campeão",
+       "detalhe": "Sérvia"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "jogos-eletronicos",
+   "nome": "Jogos eletrônicos",
+   "icone": "🎮",
+   "resumo": "Títulos mundiais de equipes brasileiras nos esports.",
+   "grupos": [
+    {
+     "nome": "Valorant Champions",
+     "descricao": "Mundial de Valorant.",
+     "fonte": "https://valorantesports.com/",
+     "brasil": [
+      {
+       "ano": 2022,
+       "resultado": "Campeão",
+       "detalhe": "LOUD (Istambul)"
+      }
+     ]
+    },
+    {
+     "nome": "Counter-Strike (Majors)",
+     "descricao": "Torneios principais do CS:GO com equipes de jogadores brasileiros.",
+     "fonte": "https://www.hltv.org/",
+     "brasil": [
+      {
+       "ano": 2016,
+       "resultado": "Campeão",
+       "detalhe": "Luminosity Gaming (MLG Columbus)"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Campeão",
+       "detalhe": "SK Gaming (ESL One Cologne)"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

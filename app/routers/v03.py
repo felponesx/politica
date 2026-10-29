@@ -711,3 +711,10 @@ def policia(slug: str, db: Session = Depends(get_db)):
     if not f:
         raise HTTPException(404, "Polícia não encontrada.")
     return f
+
+
+@router.get("/premios", tags=["Prêmios"])
+def premios():
+    """Títulos e medalhas do Brasil por esporte (lista curada, com fonte em cada campeonato)."""
+    from app import premios as _p
+    return _p.dados()
