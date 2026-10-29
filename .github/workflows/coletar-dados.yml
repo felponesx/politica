@@ -83,7 +83,8 @@ jobs:
       # história e imagem de cada título de Prêmios (Wikipédia): só o que falta; pedindo "premios" nas tarefas ou na carga completa
       - name: Prêmios (história e imagens)
         if: env.TAREFAS == '' || contains(env.TAREFAS, 'premios')
-        run: python -m scripts.premios_wiki site/midia || echo "Prêmios: história e imagens não atualizados nesta coleta."
+        run: |
+          python -m scripts.premios_wiki site/midia || echo "Premios nao atualizados nesta coleta."
       - name: Gerar a cópia estática da API
         run: python -m scripts.exportar_snapshot site/dados
       # fotos oficiais e logos (o site publicado não carrega imagens de fora): na carga completa ou se pedido
