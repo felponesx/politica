@@ -1700,6 +1700,12 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .sw.lc-per button{padding:6px 11px!important;font-size:12px!important}.sw.lc-per{margin:14px 0 8px!important}
 .fl-ord{margin-bottom:10px}
 [data-theme="dark"] .seg.sw{background:#1F2A3D}[data-theme="dark"] .sw button.on{background:#2D3F63!important;color:#CFE0FF!important;box-shadow:none}
+/* v2.2: período do gráfico na largura do quadro; título dos números sempre em 2 linhas; nomes longos de órgão em até 2 linhas */
+.seg.sw.lc-per{display:flex!important;width:100%}.sw.lc-per button{flex:1 1 0;padding:7px 4px!important}
+#flModo.seg.sw{margin-top:16px!important;margin-bottom:10px!important}
+@media (max-width:760px){#view .kpi>span:first-child{min-height:2.6em;line-height:1.3}}
+a.fl-l[href^="#/orgao/"] .fl-n{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3}
+.fl-c{grid-column:1/-1;text-align:left}
 </style>
 </head>
 <body>
@@ -1939,8 +1945,10 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  const n=labels.length,x=i=>p+(n<2?0:i*(W-p-dir)/(n-1)),y=v=>H-26-(v-mn)/(mx-mn||1)*(H-40);
  let g="";ticks.forEach((v,t)=>{g+=`<line x1="${p}" x2="${W-dir}" y1="${y(v)}" y2="${y(v)}" class="lc-grade${t?"":" base"}"/><text x="${p-8}" y="${y(v)+4}" font-size="11.5" text-anchor="end" class="lc-eixo">${rot[t]}</text>`});
  let vis=labels.map((l,i)=>[l,i]).filter(([l])=>l!==""&&l!=null);
- {const larg=Math.max(...vis.map(([l])=>String(l).length))*7+14,cabe=Math.max(2,Math.floor((W-p-dir)/larg));
-  if(vis.length>cabe){const pas=Math.ceil(vis.length/cabe),ult=vis[vis.length-1];vis=vis.filter((v,k)=>k%pas===0&&(vis.length-1-k)>pas);vis.push(ult)}}
+ {const lw=len=>len*6.3+7;let len=Math.max(...vis.map(([l])=>String(l).length));const gmin=()=>Math.min(...vis.slice(1).map((v,k)=>x(v[1])-x(vis[k][1])),1e9);
+  // anos: se os 4 dígitos não cabem, usa '24; depois só pula, contando do último para trás, e nunca deixa dois rótulos encostados
+  if(gmin()<lw(len)&&vis.every(([l])=>/^\d{4}$/.test(l))){vis=vis.map(([l,i])=>["'"+String(l).slice(2),i]);len=3}
+  {let ult=1e9;const keep=[];for(let k=vis.length-1;k>=0;k--){const px=x(vis[k][1]);if(ult-px<lw(len))continue;keep.unshift(vis[k]);ult=px}vis=keep}}
  vis.forEach(([l,i],k)=>{const an=k===0&&x(i)-p<20?"start":i===n-1||x(i)>W-dir-24?"end":"middle";g+=`<text x="${x(i)}" y="${H-6}" font-size="11.5" text-anchor="${an}" class="lc-eixo">${l}</text>`});
  const cs=k=>series[k].c||RANK_VIVO[k%3],gid="lg"+(++LC_N);
  // linha na cor viva, área em degradê embaixo da 1ª série e só o último ponto marcado
@@ -3292,8 +3300,12 @@ function linhasGraf(t,lista,serie,anos,cores,fmt,{attr,href,rot,vals}){
  const tod=pts.flat().filter(v=>v!=null);if(!tod.length)return"";const mx=Math.max(...tod)*1.06||1,mn=Math.min(0,...tod);
  const x=i=>L+(anos.length<2?0:i*(W-L-Rp)/(anos.length-1)),y=v=>T+(1-(v-mn)/(mx-mn||1))*(H-T-B);
  let g="";for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3;g+=`<line x1="${L}" x2="${W-Rp}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" class="lc-grade"/><text x="${L-6}" y="${(y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11.5" class="lc-eixo">${fmt(v)}</text>`}
- {const rs=anos.map(a=>String(rot(a))),ini=anos.map((_,i)=>i).filter(i=>i===0||rs[i]!==rs[i-1]),passo=Math.max(1,Math.ceil(ini.length/6));  // um rótulo por ano (o primeiro ponto de cada ano), nunca dois iguais
- ini.forEach((i,k)=>{if(k%passo===0&&(ini.length-1-k>=Math.max(1,passo/2+.5)||k===ini.length-1))g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="11.5" class="lc-eixo">${rs[i]}</text>`})}
+ {let rs=anos.map(a=>String(rot(a)));const ini=anos.map((_,i)=>i).filter(i=>i===0||rs[i]!==rs[i-1]),area=W-L-Rp,cab=n=>Math.max(2,Math.floor(area/(n*5.9+7)));  // um rótulo por ano (o primeiro ponto de cada ano), nunca dois iguais
+  // todos os anos quando cabem; se não, '15 (2 dígitos) e só então pula, contando do último ano para trás
+  if(ini.length>cab(4)&&ini.every(i=>/^\d{4}$/.test(rs[i])))rs=rs.map(t=>/^\d{4}$/.test(t)?"'"+t.slice(2):t);
+  const n=Math.max(...ini.map(i=>rs[i].length)),passo=Math.max(1,Math.ceil(ini.length/cab(n)));
+  {let ult=1e9;const gap=n*5.9+6,keep=[];for(let k=ini.length-1;k>=0;k--){if((ini.length-1-k)%passo)continue;const px=x(ini[k]);if(ult-px<gap)continue;keep.push(k);ult=px}  // do último para trás; nunca dois rótulos encostados
+   keep.forEach(k=>{const i=ini[k];g+=`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="${k===ini.length-1?"end":"middle"}" font-size="${rs[i][0]==="'"?10.5:11.5}" class="lc-eixo">${rs[i]}</text>`})}}
  const ordem=[...lista.keys()].reverse(),fim=[];
  ordem.forEach(k=>{const vs=pts[k],forte=k<3,c=cores[k];const d=vs.map((v,i)=>v==null?null:[x(i),y(v)]);let path="",ab=false;d.forEach(p=>{if(!p){ab=false;return}path+=(ab?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);ab=true});
   g+=`<path d="${path}" fill="none" stroke="${c}" stroke-width="${forte?2.8:1.6}" stroke-linejoin="round" stroke-linecap="round" opacity="${forte?1:.55}"/>`;
