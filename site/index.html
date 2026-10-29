@@ -1727,6 +1727,7 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .cmpsel{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.cmpsel span{display:flex;flex-direction:column;min-width:0;flex:1}.cmpsel small{color:var(--muted)}.cmpx{border:0;background:var(--soft);border-radius:8px;width:28px;height:28px;font-size:18px;cursor:pointer;color:var(--ink2)}
 .cmph{display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none;font-weight:650}
 .pk-l button .pk-t{flex:1;text-align:left}.pk-l button .pk-m{display:inline-flex;align-items:center;justify-content:center;width:30px;flex:none;margin-right:10px}.pk-l button .pk-m .flag{margin:0}.pk .pk-lg{display:inline-flex;align-items:center;justify-content:center;width:46px;min-height:24px;font-style:normal}.pk .pk-lg img{max-width:46px!important;max-height:24px!important;width:auto!important;height:auto!important;object-fit:contain}.pk-l button .pk-m:has(.pk-lg){width:46px}
+.pill-v .flag,.pill-m .seg .flag{vertical-align:-3px;margin-right:6px}
 </style>
 </head>
 <body>
@@ -4048,7 +4049,7 @@ return{html:`<div id="ecoReal"></div>`+r.html,mount(){r.mount&&r.mount();apiGet(
 const _comparar=P.comparar;
 P.comparar=(pre,...a)=>{if(!API.on)return _comparar(pre,...a);let A=pre&&UF[pre]?pre:"SP",B=A==="RJ"?"MG":"RJ";
 return{html:`<div class="ph"><div><h1>Comparar estados</h1><p>Dois estados lado a lado com os dados oficiais coletados.</p></div></div>
-<div class="panel"><div class="filters" style="margin:0">${UFSel("cpA","Estado 1")}<span class="muted" style="align-self:center">com</span>${UFSel("cpB","Estado 2")}</div></div><div id="cpR" class="mt">${rload()}</div>`,
+<div class="panel"><div class="filters" style="margin:0">${UFSel("cpA","Estado 1").replace('data-titulo="Estado"','data-pill="Estado 1"')}<span class="muted" style="align-self:center">com</span>${UFSel("cpB","Estado 2").replace('data-titulo="Estado"','data-pill="Estado 2"')}</div></div><div id="cpR" class="mt">${rload()}</div>`,
 mount(){$("#cpA").value=A;$("#cpB").value=B;
  let MP=null;const mapa=async()=>MP||(MP=await apiGet("/mapa/estados").catch(()=>({estados:{},anos:{}})));
  const gf=async(esf,uf)=>{const m=await mapa();const a=m.anos&&m.anos.gasto;for(const q of [a?{ano:a,esfera:esf,uf}:null,{esfera:esf,uf}].filter(Boolean)){try{return await apiGet("/gastos/funcao"+qs(q))}catch(e){}}return null};
@@ -4078,32 +4079,42 @@ mount(){$("#cpA").value=A;$("#cpB").value=B;
 {const _cmpR=P.comparar;
  const ABAS_CMP=a=>`<div class="tabs" id="abasCmp" style="margin-top:0">${[["reg","","Regiões"],["cand","candidatos","Candidatos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/comparar${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
  const nrmC=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
- function telaCandidatos(){let L=[],A=null,B=null;
-  const pick=(n)=>`<div class="cmpc" id="cmpc${n}"><input class="cmpq" id="cmpq${n}" placeholder="Candidato ${n} (nome de deputado ou senador)" autocomplete="off"><div class="cmpl" id="cmpl${n}" hidden></div><div class="cmps" id="cmps${n}"></div></div>`;
-  return{html:`<div class="panel"><div class="cmpbar">${pick(1)}<span class="muted" style="align-self:center">com</span>${pick(2)}</div></div><div id="cmpR" class="mt">${rvazio("Escolha dois candidatos para comparar.")}</div>`,
+ function telaCandidatos(){let L=[],A=null,B=null,IDX=null;
+  const CAR_EX=[["PRESIDENTE","presidente",0],["GOVERNADOR","governador",1],["SENADOR","senador",2]];
+  const pick=(n)=>`<div class="cmpc" id="cmpc${n}"><input class="cmpq" id="cmpq${n}" placeholder="Candidato ${n}: nome de presidente, governador, senador ou deputado" autocomplete="off"><div class="cmpl" id="cmpl${n}" hidden></div><div class="cmps" id="cmps${n}"></div></div>`;
+  return{html:`<div class="panel"><div class="cmpbar">${pick(1)}<span class="muted" style="align-self:center">com</span>${pick(2)}</div><p class="small muted" style="margin:10px 0 0">Vale para deputados, senadores, governadores e presidentes, atuais e ex (eleitos desde 1994).</p></div><div id="cmpR" class="mt">${rvazio("Escolha dois candidatos para comparar.")}</div>`,
   mount(){
-   Promise.all([pessoasCasa("camara").catch(()=>[]),pessoasCasa("senado").catch(()=>[])]).then(([c,s])=>{L=[...c,...s]});
+   const achaIdx=p=>{if(!IDX)return null;const k=nrmC(p.completo||p.nome);return IDX.porNome[k]&&(IDX.porNome[k].find(x=>!p.uf||x[1]===p.uf)||IDX.porNome[k][0])||null};
+   Promise.all([pessoasCasa("camara").catch(()=>[]),pessoasCasa("senado").catch(()=>[]),pessoasCasa("governador").catch(()=>[]),pessoasCasa("presidente").catch(()=>[]),apiGet("/ia/indice").catch(()=>null)]).then(([c,s,g,pr,ix])=>{
+    const atuais=[...pr,...g,...s,...c];if(ix&&ix.mandatos){IDX={cargos:ix.mandatos.cargos,porNome:{}};ix.mandatos.itens.forEach(x=>{(IDX.porNome[nrmC(x[0])]=IDX.porNome[nrmC(x[0])]||[]).push(x)})}
+    const vistos=new Set(atuais.flatMap(p=>[nrmC(p.completo||p.nome),nrmC(p.nome)]));const ex=[];
+    if(IDX)Object.values(IDX.porNome).flat().forEach(x=>{if(vistos.has(nrmC(x[0])))return;const ci=[...new Set(x[5].map(m=>m[1]))];const top=CAR_EX.find(([,,i])=>ci.includes(i));if(!top)return;
+     ex.push({nome:tit(x[0]),partido:x[2]||"",uf:x[1]||"",cargo:"Ex-"+top[1],foto:null,href:null,ex:x})});
+    L=[...atuais,...ex]});
    const card=p=>`<div class="cmpsel">${p.foto?fotoR(p.foto,p.nome,36):iniFoto(p.nome,36)}<span><b>${esc(p.nome)}</b><small>${esc(p.cargo||"")} · ${esc(p.partido||"")} · ${esc(p.uf||"")}</small></span><button type="button" class="cmpx" aria-label="Trocar">×</button></div>`;
-   const dados=async p=>{const id=String(p.href||"").split("/").pop();const[at,per,lig]=await Promise.all([apiGet("/parlamentares/"+id+"/atuacao").catch(()=>null),apiGet("/parlamentares/"+id).catch(()=>null),apiGet("/parlamentares/"+id+"/ligacoes").catch(()=>null)]);return{p,at,per,lig}};
+   const dados=async p=>{const eh=/#\/parlamentar\//.test(p.href||""),id=String(p.href||"").split("/").pop();
+    const[at,per,lig]=eh?await Promise.all([apiGet("/parlamentares/"+id+"/atuacao").catch(()=>null),apiGet("/parlamentares/"+id).catch(()=>null),apiGet("/parlamentares/"+id+"/ligacoes").catch(()=>null)]):[null,null,null];return{p,at,per,lig,ix:p.ex||achaIdx(p)}};
    const mostra=async()=>{const box=$("#cmpR");if(!box)return;if(!A||!B){box.innerHTML=rvazio("Escolha dois candidatos para comparar.");return}
     box.innerHTML=rload();const[x,y]=await Promise.all([dados(A),dados(B)]);if(!$("#cmpR"))return;
     const ult=d=>{const c=(d.lig&&d.lig.candidaturas||[]).slice().sort((a,b)=>b.ano-a.ano)[0];return c||null};
+    const man=d=>d.ix?d.ix[5]:null,cargoN=i=>IDX?tit(IDX.cargos[i]):"";
     const R=[["Partido",d=>esc(d.p.partido||"—")],["Estado",d=>esc(d.p.uf||"—")],["Cargo",d=>esc(d.p.cargo||"—")],["Situação",d=>esc(d.p.sit||"—")],
+     ["Mandatos ganhos desde 1994",d=>d.ix?nf(d.ix[4]):"—"],["Anos no poder",d=>d.ix?nf(d.ix[3]):"—"],
+     ["Cargos que já ganhou",d=>{const m=man(d);if(!m)return"—";const g={};m.forEach(z=>{(g[z[1]]=g[z[1]]||[]).push(z[0])});return Object.entries(g).map(([i,a])=>`${esc(cargoN(+i))} <span class="small muted">(${a.join(", ")})</span>`).join("<br>")}],
+     ["Votos no último mandato",d=>{const m=man(d);const z=m&&m[m.length-1];return z&&z[3]!=null?nf(z[3])+` <span class="small muted">${z[0]}</span>`:"—"}],
      ["Presença nas votações (12 meses)",d=>{const q=d.at&&d.at.presenca;return q?`${nf(q.votou)} de ${nf(q.total)} <span class="small muted">${pct(q.percentual)}</span>`:"—"}],
      ["Gasto com a cota parlamentar",d=>d.per&&d.per.total_gasto!=null?brl(d.per.total_gasto):"—"],
      ["Projetos de autoria",d=>{const a=d.at&&d.at.projetos_autoria;const n=Array.isArray(a)?a.length:a&&a.total;return n!=null?nf(n):"—"}],
      ["Comissões em que participa",d=>{const c=d.at&&d.at.comissoes;return c?nf(c.filter(z=>!z.fim).length):"—"}],
-     ["Última eleição",d=>{const c=ult(d);return c?`${c.ano}, ${esc(c.resultado||"")}`:"—"}],
-     ["Votos na última eleição",d=>{const c=ult(d);return c&&c.votos!=null?nf(c.votos):"—"}],
      ["Dinheiro arrecadado na campanha",d=>{const c=ult(d);return c&&c.receitas_campanha!=null?brl(c.receitas_campanha):"—"}],
      ["Dinheiro gasto na campanha",d=>{const c=ult(d);return c&&c.despesas_campanha!=null?brl(c.despesas_campanha):"—"}],
      ["Patrimônio declarado",d=>{const c=ult(d);return c&&c.patrimonio!=null?brl(c.patrimonio):"—"}]].filter(l=>!(l[1](x)==="—"&&l[1](y)==="—"));
-    const cab=d=>`<th><a href="${esu(d.p.href)}" class="cmph">${d.p.foto?fotoR(d.p.foto,d.p.nome,40):iniFoto(d.p.nome,40)}<span>${esc(d.p.nome)}</span></a></th>`;
-    box.innerHTML=`<div class="panel"><div class="tw"><table class="cpt"><thead><tr><th></th>${cab(x)}${cab(y)}</tr></thead><tbody>${R.map(l=>`<tr><td>${l[0]}</td><td>${l[1](x)}</td><td>${l[1](y)}</td></tr>`).join("")}</tbody></table></div><p class="small muted" style="margin:8px 0 0">Dados oficiais da Câmara, do Senado e do TSE. Aparecer em duas bases não indica irregularidade.</p>${RSRC("Câmara dos Deputados, Senado Federal e TSE")}</div>`;aplicarMidia&&aplicarMidia()};
+    const cab=d=>`<th>${d.p.href?`<a href="${esu(d.p.href)}" class="cmph">`:`<span class="cmph">`}${d.p.foto?fotoR(d.p.foto,d.p.nome,40):iniFoto(d.p.nome,40)}<span>${esc(d.p.nome)}</span>${d.p.href?"</a>":"</span>"}</th>`;
+    box.innerHTML=`<div class="panel"><div class="tw"><table class="cpt"><thead><tr><th></th>${cab(x)}${cab(y)}</tr></thead><tbody>${R.map(l=>`<tr><td>${l[0]}</td><td>${l[1](x)}</td><td>${l[1](y)}</td></tr>`).join("")}</tbody></table></div><p class="small muted" style="margin:8px 0 0">Dados oficiais da Câmara, do Senado e do TSE (eleições de 1994 em diante; faltam as de presidente de 2006 e 2010). Aparecer em duas bases não indica irregularidade; homônimos podem ser confundidos.</p>${RSRC("Câmara dos Deputados, Senado Federal e TSE")}</div>`;aplicarMidia&&aplicarMidia()};
    [1,2].forEach(n=>{const q=$("#cmpq"+n),l=$("#cmpl"+n),sel=$("#cmps"+n);
     const set=p=>{if(n===1)A=p;else B=p;q.hidden=!!p;sel.innerHTML=p?card(p):"";l.hidden=true;if(p){sel.querySelector(".cmpx").onclick=()=>set(null)}mostra()};
-    q.oninput=debounce(()=>{const t=nrmC(q.value.trim());if(t.length<2){l.hidden=true;return}const r=L.filter(p=>nrmC(p.nome).includes(t)).slice(0,8);
-     l.innerHTML=r.length?r.map((p,i)=>`<button type="button" data-i="${i}">${p.foto?fotoR(p.foto,p.nome,28):iniFoto(p.nome,28)}<span>${esc(p.nome)} <small class="muted">${esc(p.partido||"")} · ${esc(p.uf||"")}</small></span></button>`).join(""):`<p class="small muted" style="margin:6px 10px">Ninguém com esse nome.</p>`;l.hidden=false;
+    q.oninput=debounce(()=>{const t=nrmC(q.value.trim());if(t.length<2){l.hidden=true;return}const r=L.filter(p=>nrmC(p.nome+" "+(p.completo||"")).includes(t)).sort((a,b)=>(a.ex?1:0)-(b.ex?1:0)).slice(0,10);
+     l.innerHTML=r.length?r.map((p,i)=>`<button type="button" data-i="${i}">${p.foto?fotoR(p.foto,p.nome,28):iniFoto(p.nome,28)}<span>${esc(p.nome)} <small class="muted">${esc(p.cargo||"")} · ${esc(p.partido||"")} · ${esc(p.uf||"")}</small></span></button>`).join(""):`<p class="small muted" style="margin:6px 10px">Ninguém com esse nome.</p>`;l.hidden=false;
      l.querySelectorAll("button").forEach(b=>b.onclick=()=>set(r[+b.dataset.i]))},150)})}}}
  P.comparar=(pre,...a)=>{const aba=pre==="candidatos"?"cand":"reg";
   if(aba==="cand")return{html:`<div class="ph"><div><h1>Comparar</h1><p>Compare regiões e candidatos lado a lado, com os dados oficiais.</p></div></div>${ABAS_CMP("cand")}<div id="cmpT"></div>`,mount(){const t=telaCandidatos();$("#cmpT").innerHTML=t.html;t.mount()}};
@@ -5318,11 +5329,11 @@ function fazPilula(w,src,rotulo){w.dataset.pok=1;src.dataset.pok=1;w.classList.a
 function fazPilulaSelect(sel){sel.dataset.pok=1;const w=document.createElement("div");w.className="pill-w pill-sel";sel.parentNode.insertBefore(w,sel);w.appendChild(sel);
  const b=document.createElement("button");b.type="button";b.className="pill";b.innerHTML=`<span class="pill-l">${esc(sel.dataset.pill)}</span><b class="pill-v"></b><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>`;
  const m=document.createElement("div");m.className="pill-m";m.hidden=true;const g=document.createElement("div");g.className="seg";m.appendChild(g);w.insertBefore(b,sel);w.insertBefore(m,sel);sel.style.display="none";
- const monta=()=>{const ops=[...sel.options];g.innerHTML=ops.map(o=>`<button type="button" data-v="${esc(o.value)}" class="${o.value===sel.value?"on":""}"${o.disabled?" disabled":""}>${esc(o.textContent)}</button>`).join("");m.classList.toggle("larga",ops.length>8);
+ const monta=()=>{const ops=[...sel.options];const fl=o=>UF[o.value]&&o.value.length===2?bandeiraImg(o.value,"flag flag-sm")+" ":"";g.innerHTML=ops.map(o=>`<button type="button" data-v="${esc(o.value)}" class="${o.value===sel.value?"on":""}"${o.disabled?" disabled":""}>${fl(o)}${esc(o.textContent)}</button>`).join("");m.classList.toggle("larga",ops.length>8);
   if(ops.length>12&&!sel.hasAttribute("data-sembusca")){if(!m.querySelector(".pill-q")){const q=document.createElement("input");q.className="pill-q";q.type="search";q.placeholder="Pesquisar…";q.autocomplete="off";q.setAttribute("aria-label","Pesquisar na lista");m.insertBefore(q,g);
     q.addEventListener("input",()=>{const t=snapNorm(q.value.trim());g.querySelectorAll("button").forEach(b=>b.hidden=!!t&&!snapNorm(b.textContent).includes(t))});q.addEventListener("click",e=>e.stopPropagation())}}
   else{const q=m.querySelector(".pill-q");if(q)q.remove()}
-  const o=sel.options[sel.selectedIndex];b.querySelector(".pill-v").textContent=o?o.textContent:"—";w.hidden=sel.hidden||!ops.length};
+  const o=sel.options[sel.selectedIndex];b.querySelector(".pill-v").innerHTML=o?fl(o)+esc(o.textContent):"—";w.hidden=sel.hidden||!ops.length};
  monta();new MutationObserver(monta).observe(sel,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]});sel.addEventListener("change",monta);
  b.onclick=e=>{e.stopPropagation();const abrir=m.hidden;fecharPilulas();if(!abrir)return;monta();m.hidden=false;w.classList.add("open");m.style.left="0px";const r=m.getBoundingClientRect();if(r.right>innerWidth-12)m.style.left=Math.min(0,innerWidth-12-r.right)+"px";posMenu(m,w)};
  g.addEventListener("click",e=>{e.stopPropagation();const x=e.target.closest("button[data-v]");if(!x)return;sel.value=x.dataset.v;sel.dispatchEvent(new Event("change",{bubbles:true}));setTimeout(fecharPilulas,0)})}
