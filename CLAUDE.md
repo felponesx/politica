@@ -396,3 +396,19 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - PC: `html{zoom:.8}` acima de 1100 px (.76 acima de 1900 px) com `.side{zoom:1.25}` contrário (o menu mantém o tamanho original). Não pôr zoom num elemento interno: a lista nativa dos `<select>` abre no lugar errado. Candidatos: sem o mapa dos partidos.
 - Limpeza (28/10): CSS e funções sem uso removidos (conferido por telas antes/depois, sem diferença). Ao procurar função sem uso, lembre que `...nome` (spread) conta como uso. A lista dos seletores (`posMenu`) abre para cima quando passaria da barra de atalhos do celular, e a barra (`.bnav`) fica em camada própria acima de tudo.
 - Botões de seleção (`.pill`, `.pbar`): rótulo pequeno em cima, valor à esquerda embaixo, seta à direita, em todas as telas (bloco "botões de seleção" no fim do CSS, escopo `#view .pbar`; o "Mostrar" do mapa do Início fica em linha). Ao trocar um trecho do CSS por `s[:a]+novo+s[b:]`, confira que não apaga o que vem depois (isso já perdeu esse bloco uma vez).
+
+## Lista de 29/10 (out/2026)
+- Gastos › União: cartão corporativo (`transparencia-cartao`, `app/collectors/cartao.py`, `GET /cartao-corporativo`, 2015 em diante; o Portal devolve 405 em rajadas: espera entre downloads, meses
+  antigos não são baixados de novo). Dívidas › Emendas parlamentares (`transparencia-emendas`, `GET /emendas`; sem dados a rota devolve 404). Indicadores › Impostos (`impostosHtml`, alíquotas).
+- Comparar (antigo "Comparar" do menu): abas Regiões e Candidatos (presidentes, governadores, senadores e deputados, atuais e ex). Seletores de estado (`UFSel`, `data-pill="Estado"`) viram pílula com bandeira.
+- Padrões novos: chave segmentada `.seg.sw` (Arrecadação/Repasses, Maiores/Menores); CAPAG em pílula colorida (`capagChip`); `.g3w` (3 colunas iguais no PC); `.cota-l`/`.nf-t` (gastos do parlamentar);
+  `.mun-lado` (municípios do estado: cartões à esquerda, tabela à direita); `#ufReal .kpis` (4 por linha).
+- Crimes de políticos: três visões — Condenados, Investigados com foro privilegiado (`_com_foro` em `app/escandalos.py`: só cargo ATUAL de senador/deputado federal → STF, governador → STJ; "ex-" e "candidato" ficam de
+  fora) e Foragidos (`app/dados/foragidos.json`, `escandalos.foragidos()`: só com decisão judicial e fonte; quem saiu do país sem ordem de prisão não entra). Cópia: `python -m scripts.escandalos_copia` não cobre
+  `/crimes-politicos`; regrave o shard com `escandalos.crimes()`.
+- Prêmios (menu abaixo de Notícias; `P.premios`, `#/premios/<esporte>`; `P.premio` = janela com a história de um título, `#/premio/<chave>`): lista curada em `app/dados/premios.json` (títulos e medalhas do Brasil, com fonte
+  por campeonato; ícones SVG em `PRM_IC`), `GET /premios` (`app/premios.py`); `python -m scripts.premios_wiki` busca na Wikipédia o resumo e a imagem de cada título
+  (`app/dados/premios_wiki.json` + `site/midia/premios/*.webp`, texto CC BY-SA com link). `python -m scripts.premios_copia` grava `/premios` na cópia estática.
+- Projetos: `prioridade` alta/média/baixa vem do regime de tramitação da Câmara (`Proposicao.regime`, migração 0009; Urgência = alta, Prioridade = média, Ordinária = baixa; MPV = alta) preenchido por
+  `camara-proposicoes-situacao`; filtro `?prioridade=` em `GET /proposicoes`. Sem regime coletado, o cartão não mostra a etiqueta.
+- Pendente: aba de votações dos tribunais (STF/STJ/TSE; não há base aberta: só casos curados com placar e fonte).

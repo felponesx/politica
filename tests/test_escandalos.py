@@ -103,3 +103,9 @@ def test_prioridade_do_regime():
     assert prioridade(N(sigla_tipo="PL", regime="Ordinária (Art. 151, III, RICD)")) == "baixa"
     assert prioridade(N(sigla_tipo="MPV", regime=None)) == "alta"
     assert prioridade(N(sigla_tipo="PL", regime=None)) is None
+
+
+def test_julgamentos_com_fonte():
+    from app import julgamentos
+    d = julgamentos.dados()
+    assert d["itens"] and all(i["fonte"].startswith("https://") for i in d["itens"])

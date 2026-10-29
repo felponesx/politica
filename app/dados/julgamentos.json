@@ -1,0 +1,85 @@
+{
+ "aviso": "Lista curada de julgamentos de grande repercussão, com o placar informado pela fonte. Não há base aberta com todos os votos dos ministros: esta aba não é completa. A data é a do fim do julgamento (ou do mês, quando a fonte só informa isso).",
+ "itens": [
+  {
+   "tribunal": "STF",
+   "orgao": "Plenário",
+   "nome": "Criminalização da homofobia e da transfobia",
+   "processo": "ADO 26 e MI 4733",
+   "data": "2019-06-13",
+   "resultado": "Maioria reconheceu a omissão do Congresso e enquadrou a homofobia e a transfobia na Lei do Racismo (Lei 7.716/1989) até que haja lei específica.",
+   "favor": 8,
+   "contra": 3,
+   "vencidos": "Ricardo Lewandowski, Dias Toffoli e Marco Aurélio",
+   "fonte": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=414010",
+   "fonte_nome": "STF"
+  },
+  {
+   "tribunal": "STF",
+   "orgao": "Plenário",
+   "nome": "Marco temporal das terras indígenas",
+   "processo": "RE 1017365 (Tema 1031)",
+   "data": "2023-09-21",
+   "resultado": "O Plenário rejeitou a tese de que só têm direito à terra os povos que a ocupavam em 5/10/1988. A decisão vale para todo o Judiciário (repercussão geral).",
+   "favor": 9,
+   "contra": 2,
+   "vencidos": "",
+   "fonte": "https://www.camara.leg.br/noticias/1000636-DECISAO-DO-STF-QUE-DERRUBOU-MARCO-TEMPORAL-DAS-TERRAS-INDIGENAS-GERA-REPERCUSSAO-NA-CAMARA",
+   "fonte_nome": "Agência Câmara"
+  },
+  {
+   "tribunal": "STF",
+   "orgao": "Primeira Turma",
+   "nome": "Trama golpista: condenação de Jair Bolsonaro e outros réus",
+   "processo": "Ação penal da trama golpista",
+   "data": "2025-09-11",
+   "resultado": "Condenação de Jair Bolsonaro a 27 anos e 3 meses por organização criminosa armada, tentativa de golpe de Estado, tentativa de abolição violenta do Estado Democrático de Direito, dano qualificado e deterioração de patrimônio tombado. O julgamento incluiu outros sete réus.",
+   "favor": 4,
+   "contra": 1,
+   "vencidos": "Luiz Fux",
+   "fonte": "https://www.dgabc.com.br/Noticia/4256799/stf-condena-bolsonaro-a-27-anos-e-3-meses-pela-trama-golpista",
+   "fonte_nome": "DGABC"
+  },
+  {
+   "tribunal": "STF",
+   "orgao": "Plenário",
+   "nome": "Prisão só após o trânsito em julgado (fim da prisão em 2ª instância)",
+   "processo": "ADCs 43, 44 e 54",
+   "data": "2019-11-07",
+   "resultado": "O STF decidiu que a pena não pode ser executada logo após a condenação confirmada em segunda instância, mudando o entendimento de 2016. Só cabe prisão cautelar antes do trânsito em julgado.",
+   "favor": 6,
+   "contra": 5,
+   "vencidos": "",
+   "fonte": "https://www.migalhas.com.br/quentes/314723/stf-volta-a-proibir-prisao-em-2--instancia--placar-foi-6-a-5",
+   "fonte_nome": "Migalhas"
+  },
+  {
+   "tribunal": "STF",
+   "orgao": "Plenário",
+   "nome": "União estável entre pessoas do mesmo sexo",
+   "processo": "ADI 4277 e ADPF 132",
+   "data": "2011-05-05",
+   "resultado": "O Plenário reconheceu, por unanimidade, a união homoafetiva como entidade familiar, com as mesmas regras e consequências da união estável entre homem e mulher.",
+   "favor": null,
+   "contra": null,
+   "unanime": true,
+   "vencidos": "",
+   "fonte": "https://portal.stf.jus.br/noticias/verNoticiaDetalhe.asp?idConteudo=178931&ori=1",
+   "fonte_nome": "STF"
+  },
+  {
+   "tribunal": "STF",
+   "orgao": "Primeira Turma",
+   "nome": "Eduardo Bolsonaro: coação no curso do processo",
+   "processo": "Ação penal por coação",
+   "data": "2026-06",
+   "resultado": "A Primeira Turma o condenou a 4 anos e 2 meses, em regime semiaberto, por usar o mandato de deputado federal para pressionar autoridades estrangeiras a sancionar integrantes do Judiciário e o Procurador-Geral da República. Em outubro de 2026, sem mais recursos, Alexandre de Moraes mandou iniciar a pena.",
+   "favor": null,
+   "contra": null,
+   "unanime": true,
+   "vencidos": "",
+   "fonte": "https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/moraes-determina-emissao-de-mandado-de-prisao-contra-eduardo-bolsonaro",
+   "fonte_nome": "Agência Brasil"
+  }
+ ]
+}

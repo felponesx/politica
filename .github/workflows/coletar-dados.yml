@@ -80,6 +80,10 @@ jobs:
       - name: Resumo das coletas
         if: always()
         run: python -m scripts.coleta_ci resumo | tee -a "$GITHUB_STEP_SUMMARY"
+      # história e imagem de cada título de Prêmios (Wikipédia): só o que falta; pedindo "premios" nas tarefas ou na carga completa
+      - name: Prêmios (história e imagens)
+        if: env.TAREFAS == '' || contains(env.TAREFAS, 'premios')
+        run: python -m scripts.premios_wiki site/midia || echo "Prêmios: história e imagens não atualizados nesta coleta."
       - name: Gerar a cópia estática da API
         run: python -m scripts.exportar_snapshot site/dados
       # fotos oficiais e logos (o site publicado não carrega imagens de fora): na carga completa ou se pedido
@@ -113,7 +117,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site/dados site/midia
+          git add -A site/dados site/midia app/dados/premios_wiki.json
           git commit -q -m "Dados oficiais: cópia de $(date -u +%d/%m/%Y)" || { echo "Nada mudou."; exit 0; }
           for i in 1 2 3; do
             # outra coleta pode ter gravado a cópia no meio do caminho: vale a desta (gerada do banco mais recente)

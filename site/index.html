@@ -1769,6 +1769,14 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .prm-r{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
 
 .pj-prio{color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 32%,transparent)}
+
+.prm-ver{color:var(--blue);font-size:12px;white-space:nowrap;margin-left:6px}
+.prm-dh{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.prm-img{display:block;width:100%;max-height:340px;object-fit:contain;background:var(--bg2,#F1F4F9);border-radius:14px;margin:6px 0 4px}
+.prm-trilha{display:flex;flex-wrap:wrap;gap:8px}
+.prm-trilha a{display:flex;flex-direction:column;gap:1px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;min-width:84px}
+.prm-trilha a b{font-weight:600;font-size:14px}.prm-trilha a span{font-size:11.5px;color:var(--muted)}
+.prm-trilha a.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
 </style>
 </head>
 <body>
@@ -3035,7 +3043,7 @@ $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEven
 
 
 /* ---------- janelas flutuantes ---------- */
-const DETAIL={indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma"};
+const DETAIL={indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma",premio:"Título"};
 let popStack=[];
 function popTitle(path,k){const h=$("#popB h1");return`${DETAIL[k]}: <b>${h?esc(h.textContent):""}</b>`}
 function openPop(path,push=true){const[k,...args]=path.split("/");if(!DETAIL[k]||!P[k])return false;
@@ -5208,12 +5216,23 @@ handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M
 "jogos-eletronicos":["#D6409F",'<path d="M7 8h10a4 4 0 0 1 4 4.2l-.6 3.6a2.5 2.5 0 0 1-4.2 1.3L14.5 15h-5l-1.700 2.1a2.5 2.5 0 0 1-4.2-1.3L3 12.2A4 4 0 0 1 7 8z"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="15.5" cy="11.5" r=".6"/><circle cx="17.5" cy="13" r=".6"/>']};
 const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
 const prmRes=c=>{const r=c.grupos.flatMap(g=>g.brasil),t=r.filter(x=>/^(campe|ouro)/i.test(x.resultado)).length,o=r.length-t;return r.length?(t?`<b class="prm-n" style="--c:#F5A524">${nf(t)}</b> ${t===1?"título":"títulos"}`:"")+(t&&o?" · ":"")+(o?`${nf(o)} ${o===1?"pódio":"pódios"}`:""):"sem título confirmado"};
+P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premios").then(d=>{const box=$("#prmD");if(!box)return;let C,G,E;
+  for(const c of d.categorias)for(const g of c.grupos){const e=g.brasil.find(x=>x.chave===chave);if(e){C=c;G=g;E=e}}
+  if(!E){box.innerHTML=rvazio("Título não encontrado.");return}
+  const cor=/^(campe|ouro)/i.test(E.resultado)?"#F5A524":/^(vice|prata)/i.test(E.resultado)?"#8A94A6":/^bronze/i.test(E.resultado)?"#C47A3A":"#2F6FED",h=E.historia;
+  const trilha=G.brasil.slice().sort((a,b)=>a.ano-b.ano);
+  box.innerHTML=`<div class="prm-dh">${prmIco(C.slug,30)}<div><h1 style="margin:0">${esc(G.nome)} ${esc(E.ano)}</h1><div class="small muted">${esc(C.nome)}</div></div><span class="prm-r" style="--c:${cor};margin-left:auto">${esc(E.resultado)}</span></div>
+  ${h&&h.imagem?`<img class="prm-img" src="midia/${esc(h.imagem)}" alt="${esc(h.titulo)}" loading="lazy" onerror="this.remove()">`:""}
+  <div class="kpis3 mt"><div class="kpi"><span>Ano</span><strong>${esc(E.ano)}</strong></div><div class="kpi"><span>Resultado</span><strong style="font-size:17px">${esc(E.resultado)}</strong></div><div class="kpi"><span>Quem / onde</span><strong style="font-size:15px">${esc(E.detalhe||"—")}</strong></div></div>
+  <h3 class="seg-h">A história</h3>${h?`<p style="line-height:1.55;margin:0 0 8px">${esc(h.texto)}</p><p class="small muted" style="margin:0">Texto: Wikipédia, verbete <a href="${esu(h.pagina)}" target="_blank" rel="noopener">${esc(h.titulo)}</a> (CC BY-SA).</p>`:`<p class="small muted" style="margin:0">Ainda não há texto de história coletado para este título.</p>`}
+  <h3 class="seg-h">Trajetória do Brasil: ${esc(G.nome)}</h3><div class="prm-trilha">${trilha.map(x=>`<a href="#/premio/${x.chave}" class="${x.chave===chave?"on":""}"><b>${esc(x.ano)}</b><span>${esc(x.resultado)}</span></a>`).join("")}</div>
+  <p class="small muted" style="margin:12px 0 0">Fonte da lista: <a href="${esu(G.fonte)}" target="_blank" rel="noopener">${esc(G.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p>`}).catch(e=>{const b=$("#prmD");if(b)b.innerHTML=rerro(e)})}});
 P.premios=slug=>{let D=null;
  return{html:`<div class="ph"><div><h1>Prêmios</h1><p>Títulos e medalhas do Brasil nos principais campeonatos mundiais e nos Jogos Olímpicos. Escolha o esporte para ver cada campeonato.</p></div></div><div id="prmBox">${API.on?rload():`<div class="rbanner">Os prêmios aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/premios").then(d=>{D=d;const box=$("#prmBox");if(!box)return;const cats=d.categorias,cur=cats.find(c=>c.slug===slug);
   const resCor=r=>/^(campe|ouro)/i.test(r)?"#F5A524":/^(vice|prata)/i.test(r)?"#8A94A6":/^bronze/i.test(r)?"#C47A3A":"#2F6FED";
   const cards=`<div class="prm-grid">${cats.map(c=>`<a class="prm-c${cur&&cur.slug===c.slug?" on":""}" href="#/premios/${c.slug}">${prmIco(c.slug)}<span class="prm-t"><b>${esc(c.nome)}</b><small>${prmRes(c)}</small></span></a>`).join("")}</div>`;
-  const det=c=>`<div class="panel mt prm-h">${prmIco(c.slug,34)}<div><h2 style="margin:0">${esc(c.nome)}</h2><p class="small muted" style="margin:2px 0 0">${esc(c.resumo)}</p></div></div>`+c.grupos.map(g=>`<div class="panel mt"><h3 class="seg-h" style="margin-top:0">${esc(g.nome)}</h3>${g.descricao?`<p class="small muted" style="margin:0 0 8px">${esc(g.descricao)}</p>`:""}${g.brasil.length?table([["Ano",x=>x.ano],["Resultado",x=>`<span class="prm-r" style="--c:${resCor(x.resultado)}">${esc(x.resultado)}</span>`],["Quem / onde",x=>esc(x.detalhe||"—")]],g.brasil.slice().sort((a,b)=>b.ano-a.ano)):`<p class="small muted" style="margin:0">Sem resultados listados.</p>`}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esc(g.fonte)}" target="_blank" rel="noopener">${esc(g.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p></div>`).join("");
+  const det=c=>`<div class="panel mt prm-h">${prmIco(c.slug,34)}<div><h2 style="margin:0">${esc(c.nome)}</h2><p class="small muted" style="margin:2px 0 0">${esc(c.resumo)}</p></div></div>`+c.grupos.map(g=>`<div class="panel mt"><h3 class="seg-h" style="margin-top:0">${esc(g.nome)}</h3>${g.descricao?`<p class="small muted" style="margin:0 0 8px">${esc(g.descricao)}</p>`:""}${g.brasil.length?table([["Ano",x=>x.ano],["Resultado",x=>`<span class="prm-r" style="--c:${resCor(x.resultado)}">${esc(x.resultado)}</span>`],["Quem / onde",x=>esc(x.detalhe||"—")+(x.historia?' <span class="prm-ver">ver história ›</span>':' <span class="prm-ver">ver ›</span>')]],g.brasil.slice().sort((a,b)=>b.ano-a.ano),x=>"#/premio/"+x.chave):`<p class="small muted" style="margin:0">Sem resultados listados.</p>`}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esc(g.fonte)}" target="_blank" rel="noopener">${esc(g.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p></div>`).join("");
   box.innerHTML=cards+(cur?det(cur):`<p class="small muted" style="margin-top:12px">Toque em um esporte acima.</p>`)+`<p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`}).catch(e=>{const b=$("#prmBox");if(b)b.innerHTML=rerro(e)})}}};
 P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
@@ -5734,20 +5753,20 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",leis:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={indicado:"pessoas",escandalo:"escandalos",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
 /* ---------- Leis e Projetos: Constituição, leis e projetos numa área só (as telas antigas viram abas; o que se repetia saiu) ---------- */
-const LEIS_ABAS=[["projetos","Projetos e leis"],["constituicao","Constituição"],["como","Como uma lei nasce"]];
+const LEIS_ABAS=[["projetos","Projetos e leis"],["tribunais","Julgamentos dos tribunais"],["constituicao","Constituição"],["como","Como uma lei nasce"]];
 const LEIS_DESC={projetos:"O que o Congresso vai votar, o que já votou (com o placar) e as leis que já estão em vigor.",
- constituicao:"A Constituição de 1988 explicada: títulos, artigos mais consultados e emendas.",como:"Como um projeto vira lei, da ideia à sanção."};
+ tribunais:"Julgamentos de grande repercussão do STF, com o placar dos ministros e a fonte de cada um.",constituicao:"A Constituição de 1988 explicada: títulos, artigos mais consultados e emendas.",como:"Como um projeto vira lei, da ideia à sanção."};
 const _PROJ_IN=P.projetos,_LEG_IN=P.legislacao,_CONST_IN=P.constituicao;
 const FASES_P=[["a_votar","Para votar"],["em_votacao","Em votação agora"],["votado","Já votados"],["leis","Leis em vigor"]];
 function semCabecalho(o,{tabsConst}={}){const t=document.createElement("template");t.innerHTML=o.html;const ph=t.content.querySelector(".ph");if(ph)ph.remove();
@@ -5811,8 +5830,15 @@ function telaProjetos(){const ativas=()=>FASES_P.filter(f=>f[0]!=="em_votacao"||
    f.fase=k;lista()};
   document.querySelectorAll("#pjf button").forEach(b=>b.onclick=()=>abrir(b.dataset.f));
   abrir("a_votar");contar()}}}
+function telaTribunais(){return{html:`<div id="trbL">${API.on?rload():`<div class="rbanner">Os julgamentos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ mount(){if(!API.on)return;apiGet("/julgamentos").then(d=>{const b=$("#trbL");if(!b)return;
+  const barra=x=>{if(x.unanime)return`<div class="pj-p"><div class="pj-pt"><span><b>Decisão unânime</b></span><span class="muted">sem contagem de votos na fonte</span></div></div>`;
+   const t=(x.favor||0)+(x.contra||0)||1;return`<div class="pj-p"><div class="pj-bar" role="img" aria-label="${x.favor} a ${x.contra}"><i class="s" style="width:${x.favor/t*100}%"></i><i class="n" style="width:${x.contra/t*100}%"></i></div><div class="pj-pt"><span><em class="s"></em>Maioria <b>${x.favor}</b></span><span><em class="n"></em>Vencidos <b>${x.contra}</b></span>${x.vencidos?`<span class="muted">Contra: ${esc(x.vencidos)}</span>`:""}</div></div>`};
+  const qd=v=>/^\d{4}-\d{2}-\d{2}$/.test(v)?fdr(v):/^\d{4}-\d{2}$/.test(v)?new Date(v+"-15T12:00:00").toLocaleDateString("pt-BR",{month:"long",year:"numeric"}):v;
+  b.innerHTML=`<div class="pj">${d.itens.map(x=>`<div class="pj-c" style="cursor:default"><div class="pj-h"><div style="min-width:0"><div class="pj-n" style="font-size:18px">${esc(x.nome)}</div><div class="pj-s">${esc(x.processo)}</div></div><div class="pj-d"><div>${esc(x.tribunal)} · ${esc(x.orgao)}</div><div>${esc(qd(x.data))}</div></div></div><p class="pj-r">${esc(x.resultado)}</p>${barra(x)}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esu(x.fonte)}" target="_blank" rel="noopener">${esc(x.fonte_nome)}</a></p></div>`).join("")}</div><p class="small muted" style="margin:12px 0 0">${esc(d.aviso)}</p>`}).catch(e=>{const b=$("#trbL");if(b)b.innerHTML=rerro(e)})}}}
 P.leis=(aba,...r)=>{aba=LEIS_ABAS.some(a=>a[0]===aba)?aba:"projetos";let o;
  if(aba==="projetos")o=API.on?telaProjetos():semCabecalho(_PROJ_IN());
+ else if(aba==="tribunais")o=telaTribunais();
  else o=semCabecalho(_CONST_IN(aba==="constituicao"?"federal":aba),{tabsConst:true});
  return{html:`<div class="ph"><div><h1>Leis e Projetos</h1><p>${esc(LEIS_DESC[aba])}</p></div></div><div class="tabs" id="lstabs" style="margin-top:0">${LEIS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/leis/${a[0]}">${a[1]}</a>`).join("")}</div><div id="lsv">${o.html}</div>`,mount:o.mount}};
 /* endereços antigos continuam funcionando e levam para a aba certa */

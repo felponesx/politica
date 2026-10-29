@@ -718,3 +718,10 @@ def premios():
     """Títulos e medalhas do Brasil por esporte (lista curada, com fonte em cada campeonato)."""
     from app import premios as _p
     return _p.dados()
+
+
+@router.get("/julgamentos", tags=["Tribunais"])
+def julgamentos():
+    """Julgamentos de grande repercussão do STF (lista curada, com placar e fonte)."""
+    from app import julgamentos as _j
+    return _j.dados()
