@@ -81,66 +81,72 @@
   }
  ],
  "controle": {
-  "titulo": "Quanto do país o crime comanda",
-  "aviso": "Não existe número oficial. Cada estudo mede de um jeito (percepção de quem mora na área, mapeamento de território, modelo acadêmico), por isso os valores variam muito. Leia como ordem de grandeza.",
-  "brasil": [
+  "titulo": "Quanto do Brasil vive sob facções",
+  "intro": "Não existe número oficial. Cada pesquisa pergunta de um jeito, por isso os resultados variam. O número central usa a pesquisa mais recente do Datafolha para o Fórum Brasileiro de Segurança Pública; os outros mostram a faixa possível.",
+  "central": {
+   "pct": 19,
+   "pessoas_mi": 28.5,
+   "pessoas_por_domicilio": 2.8,
+   "rotulo": "Datafolha / Fórum Brasileiro de Segurança Pública, 2025",
+   "detalhe": "2.007 pessoas de 16 anos ou mais, em 130 municípios, disseram conviver com facções ou milícias no bairro onde moram.",
+   "fonte": "https://www.cnnbrasil.com.br/nacional/brasil/datafolha-presenca-de-faccoes-e-milicias-atinge-19-da-populacao-do-pais/",
+   "fonte_nome": "CNN Brasil"
+  },
+  "estudos": [
    {
-    "rotulo": "Datafolha para o Fórum Brasileiro de Segurança Pública (2025)",
-    "pessoas_mi": 23,
-    "pct": null,
-    "pct_calculado": true,
-    "detalhe": "Cerca de 23 milhões de pessoas convivem, direta ou indiretamente, com áreas sob controle de organizações criminosas e milicianos (2.508 entrevistados, margem de 2 pontos).",
-    "fonte": "https://www.gazetadopovo.com.br/republica/crime-organizado-23-milhoes-de-pessoas-estao-em-areas-dominadas-por-72-faccoes-e-milicias/",
-    "fonte_nome": "Gazeta do Povo"
-   },
-   {
-    "rotulo": "CPI do Crime Organizado (relatório final)",
+    "rotulo": "Datafolha / FBSP 2025",
+    "o_que": "Moradores que dizem conviver com facção ou milícia no bairro",
+    "pct": 19,
     "pessoas_mi": 28.5,
-    "pct": null,
-    "pct_calculado": true,
-    "detalhe": "Ao menos 28,5 milhões de brasileiros vivem em áreas dominadas pelo crime organizado.",
-    "fonte": "https://claudiodantas.com.br/ao-menos-285-mi-vivem-sob-influencia-crime/",
-    "fonte_nome": "Cláudio Dantas"
+    "fonte": "https://www.cnnbrasil.com.br/nacional/brasil/datafolha-presenca-de-faccoes-e-milicias-atinge-19-da-populacao-do-pais/",
+    "fonte_nome": "CNN Brasil"
    },
    {
-    "rotulo": "Estudo da Cambridge University Press (Latinobarómetro 2020)",
-    "pessoas_mi": 56,
+    "rotulo": "Cambridge (dados de 2020)",
+    "o_que": "Modelo acadêmico de governança criminal: quem vive sob regras impostas pelo crime",
     "pct": 26,
-    "pct_calculado": false,
-    "detalhe": "Entre 50,6 e 61,6 milhões de pessoas (26% da população) sob influência de \"governança criminal\". Dados de 2020.",
+    "pessoas_mi": 56,
+    "nota_pessoas": "entre 50,6 e 61,6 mi",
     "fonte": "https://revistaoeste.com/brasil/um-quarto-dos-brasileiros-vive-sob-controle-de-faccoes-criminosas-mostra-estudo/",
     "fonte_nome": "Revista Oeste"
    },
    {
-    "rotulo": "Fórum Brasileiro de Segurança Pública: \"Medo do crime e eleições 2026\"",
-    "pessoas_mi": 68.7,
+    "rotulo": "FBSP, Medo do crime (2026)",
+    "o_que": "Percepção: moradores que dizem ter facção ou milícia no bairro (não mede território)",
     "pct": 41.2,
-    "pct_calculado": false,
-    "detalhe": "41,2% dos brasileiros com 16 anos ou mais dizem morar em bairros com presença de facções ou milícias (cerca de 68,7 milhões). É a percepção de quem respondeu, não uma medição de território.",
+    "pessoas_mi": 68.7,
     "fonte": "https://paulofigueiredoshow.com/68-milhoes-moram-em-areas-dominadas-por-faccoes-ou-milicias/",
     "fonte_nome": "Paulo Figueiredo (resumo do estudo)"
    }
   ],
   "rio": {
-   "titulo": "Grande Rio: o mapa mais detalhado que existe",
-   "itens": [
-    {
-     "texto": "4 milhões de pessoas vivem sob poder de facções ou milícias: 35% da população da região metropolitana.",
-     "pct": 35
-    },
-    {
-     "texto": "Quase 20% do território das 22 cidades do Grande Rio tem presença de grupos armados; na capital, 31%.",
-     "pct": 20
-    },
-    {
-     "texto": "Das áreas com grupos armados, as milícias dominam 49% e o Comando Vermelho 47%.",
-     "pct": null
-    }
+   "titulo": "Região Metropolitana do Rio (capital + 21 cidades): o único recorte com mapa",
+   "pessoas_mi": 4,
+   "pct": 35,
+   "pct_capital_territorio": 31,
+   "quem": [
+    [
+     "Milícias",
+     49,
+     "#F5A524"
+    ],
+    [
+     "Comando Vermelho",
+     47,
+     "#E5484D"
+    ],
+    [
+     "Outros",
+     4,
+     "#8A94A6"
+    ]
    ],
+   "quem_nota": "Divisão das áreas com grupos armados na região. Outros é o que sobra para 100%.",
    "fonte": "https://vermelho.org.br/2025/12/04/grupos-criminosos-dominam-35-da-regiao-metropolitana-do-rio/",
    "fonte_nome": "Mapa dos Grupos Armados (GENI/UFF e Fogo Cruzado), edição 2025, via Vermelho",
    "fonte2": "https://geni.uff.br/2022/09/13/mapa-historico-dos-grupos-armados-no-rio-de-janeiro/",
-   "fonte2_nome": "GENI/UFF (edição 2022)"
-  }
+   "fonte2_nome": "GENI/UFF"
+  },
+  "por_estado": "Não há estimativa de pessoas por estado em fonte aberta, só o recorte do Grande Rio acima. Para saber onde cada facção é mais forte, veja os cartões abaixo."
  }
 }
