@@ -123,6 +123,32 @@ def listar() -> dict:
 CONDENADOS = ("condenado", "condenado (recorre)", "indultado", "pena cumprida")
 
 
+ALVOS_FORO = {"investigado", "indiciado", "denunciado", "réu"}
+_FORO = [(re.compile(r"^(senador|senadora|deputad[oa] federal)\b"), "STF"), (re.compile(r"^governador(a)?\b"), "STJ")]
+
+
+def _com_foro() -> list[dict]:
+    """Agentes públicos que são alvo de investigação, indiciamento, denúncia ou ação penal (e ainda NÃO foram condenados) e que, pelo cargo
+    que ocupavam na data da informação, têm foro privilegiado: senador e deputado federal (STF) e governador (STJ).
+    O foro vem do cargo escrito na fonte; "ex-" fica de fora. Não é condenação."""
+    itens = []
+    for c in casos().values():
+        for p in c["pessoas"]:
+            if p["tipo"] != "agente público" or p["situacao"] not in ALVOS_FORO:
+                continue
+            cargo = sem_acento(p["cargo_na_epoca"] or "").lower()
+            if cargo.startswith("ex-") or "candidato" in cargo:  # só quem aparece na fonte com o cargo (não "ex-" nem de candidato em eleição passada)
+                continue
+            tribunal = next((t for rx, t in _FORO if rx.search(cargo)), None)
+            if not tribunal:
+                continue
+            itens.append({"nome": p["nome"], "cargo": p["cargo_na_epoca"], "partido": p["partido_na_epoca"], "situacao": p["situacao"],
+                          "detalhe": p["detalhe"], "liberdade": p["liberdade"], "data_situacao": p["data_situacao"], "caso": c["nome"],
+                          "slug": c["slug"], "foro": tribunal, "fonte": p["fonte"]})
+    itens.sort(key=lambda x: (str(x["data_situacao"] or ""), x["nome"]), reverse=True)
+    return itens
+
+
 def crimes() -> dict:
     """Agentes públicos (ex-deputados, ministros, governadores...) condenados nos casos curados. Só entra quem tem condenação
     registrada com fonte; "condenado (recorre)" ainda cabe recurso. Quem foi apenas investigado, réu ou absolvido não entra."""
@@ -138,7 +164,9 @@ def crimes() -> dict:
     por_caso: dict[str, int] = {}
     for i in itens:
         por_caso[i["caso"]] = por_caso.get(i["caso"], 0) + 1
-    return {"total": len(itens), "itens": itens, "por_caso": por_caso, "aviso": AVISO + " \"Condenado (recorre)\": ainda cabe recurso.",
+    foro = _com_foro()
+    return {"total": len(itens), "itens": itens, "por_caso": por_caso, "foro": foro, "total_foro": len(foro),
+            "aviso": AVISO + " \"Condenado (recorre)\": ainda cabe recurso.",
             "fonte": "Curadoria do BRASIL+ com base em decisões e notícias públicas (link em cada informação)."}
 
 

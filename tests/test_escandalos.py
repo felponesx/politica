@@ -67,3 +67,13 @@ def test_organograma_so_com_pessoas_do_caso_e_fonte(tmp_path, monkeypatch):
         assert o["explicacao_fonte"] == F
     finally:
         escandalos.casos.cache_clear()
+
+
+def test_crimes_traz_investigados_com_foro_sem_condenados_nem_ex():
+    from app import escandalos
+    r = escandalos.crimes()
+    assert r["total_foro"] == len(r["foro"]) and r["total_foro"] > 0
+    cond = {i["nome"] for i in r["itens"]}
+    assert all(x["situacao"] in {"investigado", "indiciado", "denunciado", "réu"} and x["foro"] in {"STF", "STJ"} for x in r["foro"])
+    assert not any(x["nome"] in cond for x in r["foro"])
+    assert not any(x["cargo"].lower().startswith("ex-") or "candidato" in x["cargo"].lower() for x in r["foro"])
