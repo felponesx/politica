@@ -149,6 +149,14 @@ def _com_foro() -> list[dict]:
     return itens
 
 
+@lru_cache(maxsize=1)
+def foragidos() -> dict:
+    """Políticos fora do país ou com mandado de prisão em aberto (app/dados/foragidos.json). Sem fonte, a pessoa é descartada."""
+    d = json.loads((PASTA.parent / "foragidos.json").read_text(encoding="utf-8"))
+    d["itens"] = [i for i in d["itens"] if i.get("nome") and any(_url(f[1]) for f in i.get("fontes", []))]
+    return d
+
+
 def crimes() -> dict:
     """Agentes públicos (ex-deputados, ministros, governadores...) condenados nos casos curados. Só entra quem tem condenação
     registrada com fonte; "condenado (recorre)" ainda cabe recurso. Quem foi apenas investigado, réu ou absolvido não entra."""
@@ -165,7 +173,10 @@ def crimes() -> dict:
     for i in itens:
         por_caso[i["caso"]] = por_caso.get(i["caso"], 0) + 1
     foro = _com_foro()
+    fora = foragidos()
     return {"total": len(itens), "itens": itens, "por_caso": por_caso, "foro": foro, "total_foro": len(foro),
+            "foragidos": fora["itens"], "total_foragidos": len(fora["itens"]), "foragidos_aviso": fora["aviso"],
+            "foragidos_nota": fora.get("nota_candidatos"),
             "aviso": AVISO + " \"Condenado (recorre)\": ainda cabe recurso.",
             "fonte": "Curadoria do BRASIL+ com base em decisões e notícias públicas (link em cada informação)."}
 

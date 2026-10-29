@@ -86,3 +86,10 @@ def test_premios_com_fonte():
     for c in d["categorias"]:
         for g in c["grupos"]:
             assert g["fonte"].startswith("https://")
+
+
+def test_foragidos_com_fonte():
+    from app import escandalos
+    c = escandalos.crimes()
+    assert c["total_foragidos"] >= 1
+    assert all(i["fontes"] for i in c["foragidos"])

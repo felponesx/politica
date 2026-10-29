@@ -1,0 +1,75 @@
+{
+ "aviso": "Só entram deputados, governadores, prefeitos, presidentes e candidatos (ou ex) com decisão judicial e que estão fora do país ou com mandado de prisão em aberto, sempre com fonte. 'Foragido' aqui é o que a fonte informa na data indicada; a situação pode ter mudado. Quem sai do país sem ordem de prisão ou com restrições (como o senador Flávio Bolsonaro, que deixou o Brasil em outubro de 2026 contra ordem do STF) não é tratado como foragido por juristas e por isso não está na lista.",
+ "nota_candidatos": {
+  "texto": "Levantamento do g1 (agosto/2026): 9 candidatos de 2026 tinham mandado de prisão em aberto no Banco Nacional de Medidas Penais e Prisões; a maioria por dívida de pensão alimentícia, que não é crime comum nem fuga.",
+  "fonte": "https://bpmoney.com.br/politica/9-candidatos-das-eleicoes-de-2026-tem-mandados-de-prisao-em-aberto-diz-g1/"
+ },
+ "itens": [
+  {
+   "nome": "Carla Zambelli",
+   "cargo": "Ex-deputada federal",
+   "partido": "PL",
+   "uf": "SP",
+   "situacao": "condenado",
+   "onde": "Itália",
+   "desde": "2025",
+   "status": "Em liberdade na Itália. Em maio de 2026 a Justiça italiana negou a extradição no caso da invasão de sistemas do CNJ (10 anos); um segundo pedido (5 anos e 3 meses, porte de arma e constrangimento) aguarda julgamento marcado para 24/11/2026.",
+   "detalhe": "Condenada pelo STF; está fora do Brasil desde 2025.",
+   "data": "2026-10-27",
+   "fontes": [
+    [
+     "Agência Brasil — Itália nega extradição (mai/2026)",
+     "https://agenciabrasil.ebc.com.br/justica/noticia/2026-05/justica-da-italia-nega-extradicao-da-carla-zambelli-para-o-brasil"
+    ],
+    [
+     "iMirante — julgamento adiado para 24/11 (27/10/2026)",
+     "https://m.imirante.com/noticias/brasil/2026/10/27/ipolitica-justica-italia-adia-julgamento-extradicao-carla-zambelli-brasil"
+    ]
+   ]
+  },
+  {
+   "nome": "Alexandre Ramagem",
+   "cargo": "Ex-deputado federal",
+   "partido": "PL",
+   "uf": "RJ",
+   "situacao": "condenado",
+   "onde": "Estados Unidos",
+   "desde": "2025-09",
+   "status": "Nos EUA. O STF pediu a extradição em dezembro de 2025, ainda sem decisão. Em abril de 2026 foi detido por agentes de imigração dos EUA e solto dois dias depois.",
+   "detalhe": "Condenado pelo STF na ação da trama golpista (pena de cerca de 16 anos).",
+   "data": "2026-04",
+   "fontes": [
+    [
+     "Agência Brasil — solto após dois dias preso nos EUA (abr/2026)",
+     "https://agenciabrasil.ebc.com.br/justica/noticia/2026-04/ex-deputado-ramagem-e-solto-apos-ficar-dois-dias-preso-nos-eua"
+    ],
+    [
+     "Poder360 — Ramagem detido pelo ICE",
+     "https://www.poder360.com.br/poder-justica/ramagem-e-preso-pelo-ice-nos-estados-unidos/"
+    ]
+   ]
+  },
+  {
+   "nome": "Eduardo Bolsonaro",
+   "cargo": "Ex-deputado federal",
+   "partido": "PL",
+   "uf": "SP",
+   "situacao": "condenado",
+   "onde": "Estados Unidos",
+   "desde": "2025",
+   "status": "Mora nos EUA. Em outubro de 2026, com a condenação sem mais recursos, o ministro Alexandre de Moraes mandou iniciar a pena (4 anos e 2 meses, regime semiaberto) e expedir mandado de prisão e cancelar os passaportes.",
+   "detalhe": "Condenado pela Primeira Turma do STF por coação no curso do processo.",
+   "data": "2026-10-08",
+   "fontes": [
+    [
+     "Agência Brasil — mandado de prisão (out/2026)",
+     "https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/moraes-determina-emissao-de-mandado-de-prisao-contra-eduardo-bolsonaro"
+    ],
+    [
+     "Migalhas — Moraes manda prender e cancelar passaportes",
+     "https://www.migalhas.com.br/quentes/466212/moraes-manda-prender-eduardo-bolsonaro-e-cancelar-passaportes"
+    ]
+   ]
+  }
+ ]
+}
