@@ -34,6 +34,37 @@ def webp(uri: str, qualidade: int = QUALIDADE) -> str:
     return uri
 
 
+def tira_fundo(uri: str) -> str:
+    """Tira o fundo branco ligado às bordas (brasões e logos em JPEG/PNG sem transparência) para a imagem aparecer
+    bem no tema escuro. Só mexe se as bordas são quase todas brancas; o branco do meio do desenho fica. Erro: volta como veio."""
+    if not isinstance(uri, str) or not uri.startswith(("data:image/png;base64,", "data:image/jpeg;base64,", "data:image/webp;base64,")):
+        return uri
+    try:
+        from PIL import Image, ImageDraw
+        im = Image.open(io.BytesIO(base64.b64decode(uri.split(",", 1)[1]))).convert("RGBA")
+        w, h = im.size
+        if w < 8 or h < 8:
+            return uri
+        px = im.load()
+        borda = [(x, 0) for x in range(w)] + [(x, h - 1) for x in range(w)] + [(0, y) for y in range(h)] + [(w - 1, y) for y in range(h)]
+        brancos = sum(1 for xy in borda if px[xy][3] > 200 and min(px[xy][:3]) >= 235)
+        if brancos < 0.8 * len(borda):
+            return uri  # já transparente ou com fundo colorido
+        rgb = im.convert("RGB")
+        marca = (255, 0, 255)
+        for xy in borda:
+            if rgb.getpixel(xy) != marca and min(rgb.getpixel(xy)) >= 235:
+                ImageDraw.floodfill(rgb, xy, marca, thresh=14)
+        mask = rgb.getdata()
+        novo = [(r, g, b, 0) if (r, g, b) == marca else (r, g, b, a) for (r, g, b), (_, _, _, a) in zip(mask, im.getdata())]
+        im.putdata(novo)
+        out = io.BytesIO()
+        im.save(out, "WEBP", quality=QUALIDADE, method=4)
+        return "data:image/webp;base64," + base64.b64encode(out.getvalue()).decode()
+    except Exception:
+        return uri
+
+
 def ler(arquivo: str) -> dict:
     """logos.json (índice novo ou arquivo único antigo) → dicionário completo, com todos os grupos."""
     with open(arquivo, encoding="utf-8") as f:
@@ -59,7 +90,7 @@ def gravar(arquivo: str, L: dict) -> dict:
         itens = {}
         for k, v in (L.get(g) or {}).items():
             if isinstance(v, dict) and v.get("img"):
-                v = {**v, "img": webp(v["img"])}
+                v = {**v, "img": webp(v["img"]) if g == "estados" else tira_fundo(webp(v["img"]))}
             itens[k] = v
         nome = f"logos_{g}.json"
         with open(os.path.join(pasta, nome), "w", encoding="utf-8") as f:
