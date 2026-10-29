@@ -41,8 +41,20 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
             *[("tse-contas", {"ano": a}) for a in (2022, 2018, 2026, 2024, 2020, 2016, 2014, 2012, 2010, 2008, 2006, 2002)],
             ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
+# CAPAG dos municípios de anos anteriores (arquivos do Tesouro, um por ano) para a tabela e as linhas por ano da Saúde fiscal
+CAPAG_ANOS = {
+    2018: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/379e92f3-d8a9-4aa6-a23c-ca82a8f5b026/download/capag-municipios---2018.xlsx",
+    2019: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/444b8cb5-6fea-4907-82d9-018aae1d68b5/download/capag-2019---municipios.xlsx",
+    2020: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/f2149990-1ca4-475d-95c1-512f78079905/download/capag-municipios.xlsx",
+    2021: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/10387f66-f44d-4096-811c-58e68503100a/download/capag-municipios---novembro-2021.xlsx",
+    2022: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/86636c19-b38a-4b9e-8fff-30fc4208dd04/download/capag-municipios-2022.xlsx",
+    2023: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/31ed778a-9115-419c-b18e-c9131a978aef/download/capag-municipios-2023.xlsx",
+    2024: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/30c5fc20-634d-4558-9d45-01645b501deb/download/20241015capag-municipios.xlsx",
+    2025: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/046f7fcf-a742-4787-9768-dbb10747d55d/download/capag-municipios-posicao-2025-nov-09---processamento-2025-nov-10.xlsx",
+}
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
-EXTRAS = [*[("transparencia-cartao", {"ano": a}) for a in range(2015, date.today().year + 1)],
+EXTRAS = [*[("tesouro-capag", {"url": u, "ano": a}) for a, u in CAPAG_ANOS.items()],
+          *[("transparencia-cartao", {"ano": a}) for a in range(2015, date.today().year + 1)],
           *[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
           ("noticias-politica", {}), ("bcb-scr-estados", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
           # anos anteriores para os gráficos em linha dos estados (retorno por R$ 1 e dívida do governo estadual)
