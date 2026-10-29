@@ -1702,7 +1702,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 [data-theme="dark"] .seg.sw{background:#1F2A3D}[data-theme="dark"] .sw button.on{background:#2D3F63!important;color:#CFE0FF!important;box-shadow:none}
 /* v2.2: período do gráfico na largura do quadro; título dos números sempre em 2 linhas; nomes longos de órgão em até 2 linhas */
 .seg.sw.lc-per{display:flex!important;width:100%}.sw.lc-per button{flex:1 1 0;padding:7px 4px!important}
-#flModo.seg.sw{margin-top:16px!important;margin-bottom:10px!important}
+#flModo.seg.sw{margin:0 0 10px!important}.flm{min-width:0}.mapwrap:has(>.flm){align-items:start}.flm+.zside .lc-per{margin-top:0!important}
 @media (max-width:760px){#view .kpi>span:first-child{min-height:2.6em;line-height:1.3}}
 a.fl-l[href^="#/orgao/"] .fl-n{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3}
 .fl-c{grid-column:1/-1;text-align:left}
@@ -3644,8 +3644,7 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
  $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
  <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
- <div class="seg sw" id="flModo" style="margin-top:14px"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:8px 0 0"></p>
- <div class="mapwrap mapbig mt"><div id="flMapa"></div><div class="zside" id="flLados"></div></div>
+ <div class="mapwrap mapbig mt"><div class="flm"><div class="seg sw" id="flModo"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:0 0 6px"></p><div id="flMapa"></div></div><div class="zside" id="flLados"></div></div>
  <h3 class="seg-h">Todos os estados <small>quanto voltou para cada R$ 1 pago de impostos</small></h3><div id="flTab"></div>
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
