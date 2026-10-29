@@ -1738,6 +1738,15 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .cr-foro{flex:none;padding:3px 9px;border-radius:6px;background:var(--soft);border:1px solid var(--line);font-size:11.5px;font-weight:650;color:var(--ink2);white-space:nowrap}
 #crmG{margin:0 0 8px!important;flex-wrap:wrap!important}#crmG button small{opacity:.7;margin-left:4px}
 @media (max-width:640px){.cr-foro{margin-left:60px}}
+
+.cota-l .hb-l{grid-template-columns:minmax(0,1fr) 110px 80px!important;min-height:48px;padding:4px 0}
+.cota-l .hb-n{white-space:normal!important;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:clip!important}
+.cota-l .hb-b{width:110px!important}
+.nf-t td{height:56px;vertical-align:middle}
+.nf-t td:nth-child(2){max-width:0;width:100%}
+.nf-t td:nth-child(2),.nf-t td:nth-child(2) a,.nf-t td:nth-child(2) div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:1.35}
+.nf-t td:nth-child(1),.nf-t td:nth-child(3){white-space:nowrap}
+@media (max-width:640px){.cota-l .hb-l{grid-template-columns:minmax(0,1fr) 84px 70px!important}.cota-l .hb-b{width:84px!important}}
 </style>
 </head>
 <body>
@@ -3482,7 +3491,7 @@ mount(){Promise.all([apiGet("/parlamentares/"+id),apiGet("/parlamentares/"+id+"/
  const TABS={Resumo:()=>`<div class="grid g2"><div class="panel"><h2>Dados do mandato</h2><div class="facts"><div><span>Casa</span>${esc(casaN(p.casa))}</div><div><span>Partido</span>${esc(p.partido||"—")}</div><div><span>Estado</span>${esc(UF[p.uf]?UF[p.uf].nome:(p.uf||"—"))}</div>${p.email?`<div><span>E-mail do gabinete</span><span class="rsel">${esc(p.email)}</span></div>`:""}</div></div>
   <div class="panel"><h2>Atividade registrada</h2><div class="facts"><div><span>Votos nominais coletados</span>${nf(d.ultimos_votos.length)}${d.ultimos_votos.length>=20?"+":""}</div><div><span>Gasto da cota (período coletado)</span>${brl(d.total_gasto)}</div>${lg?`<div><span>Candidaturas no TSE</span>${lg.candidaturas.length}</div>`:""}</div></div></div><div class="grid g2 mt" id="rpRes"><div class="panel"><h2>O que defende</h2>${rload()}</div><div class="panel"><h2>Presença nas votações</h2>${rload()}</div></div>`,
   Votações:()=>`<div class="panel"><p id="rpVot" class="small" style="margin:0 0 10px"></p>${d.ultimos_votos.length?table([["Data",x=>fdr(x.votacao.data)],["Votação",x=>`<a href="#/votacao/r${x.votacao.id}">${esc(x.votacao.materia||x.votacao.descricao||"Votação")}</a>`],["Voto",x=>`<span class="tag" style="background:${vcor(x.voto)}">${esc(x.voto)}</span>`],["Resultado",x=>esc(x.votacao.resultado||"—")]],d.ultimos_votos,x=>"#/votacao/r"+x.votacao.id):rvazio("Nenhum voto nominal coletado para este parlamentar.")}<p class="small muted">Últimos 20 votos nominais registrados pela casa.</p></div>`,
-  Gastos:()=>(d.gastos_por_tipo.length?`<div class="grid g2"><div class="panel"><h2>Cota parlamentar em ${ano}</h2>${hbars(d.gastos_por_tipo.filter(g=>g.ano===ano).slice(0,8).map(g=>[g.tipo||"Outros",g.total]))}</div><div class="panel"><h2>Notas fiscais</h2><div id="rpd">${rload()}</div>${maisBtn("rpdm")}</div></div>`:`<div class="panel">${rvazio("Nenhuma despesa coletada. Rode a coleta camara-despesas.")}</div>`)+campanhaHtml(lg),
+  Gastos:()=>(d.gastos_por_tipo.length?`<div class="grid g2"><div class="panel"><h2>Cota parlamentar em ${ano}</h2><div class="cota-l">${hbars(d.gastos_por_tipo.filter(g=>g.ano===ano).slice(0,8).map(g=>[g.tipo||"Outros",g.total]))}</div></div><div class="panel"><h2>Notas fiscais</h2><div id="rpd" class="nf-t">${rload()}</div>${maisBtn("rpdm")}</div></div>`:`<div class="panel">${rvazio("Nenhuma despesa coletada. Rode a coleta camara-despesas.")}</div>`)+campanhaHtml(lg),
   Eleições:()=>`<div class="panel">${lg&&lg.candidaturas.length?table([["Ano",c=>c.ano],["Cargo",c=>`${esc(tit(c.cargo||""))} ${sigla(c.partido)}`],["Votos",c=>nfR(c.votos),"n"],["Resultado",c=>esc(tit(c.resultado||"—"))],["Patrimônio",c=>brlR(c.patrimonio),"n"]],lg.candidaturas)+((c=>c&&(c.bens_por_tipo||c.receitas_por_fonte)?`<div class="grid g2 mt">${c.bens_por_tipo?`<div><h3 class="rh3">Bens declarados em ${c.ano}</h3>${hbars(Object.entries(c.bens_por_tipo).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}${c.receitas_por_fonte?`<div><h3 class="rh3">De onde veio o dinheiro da campanha</h3>${hbars(Object.entries(c.receitas_por_fonte).sort((x,y)=>y[1]-x[1]).slice(0,6))}</div>`:""}</div>`:"")(lg.candidaturas.find(c=>c.patrimonio!=null||c.receitas_campanha!=null))):rvazio("Nenhuma candidatura ligada no TSE. A ligação é feita por nome de urna, estado e cargo; homônimos ficam sem ligação.")}</div>`,
   Atuação:()=>`<div id="rpat">${rload()}</div>`,
   Processos:()=>`<div id="rppr">${rload()}</div>`,
