@@ -1711,6 +1711,7 @@ a.fl-l[href^="#/orgao/"] .fl-n{display:-webkit-box;-webkit-line-clamp:2;-webkit-
 a.fl-l[href^="#/orgao/"]{position:relative;padding-right:104px}a.fl-l[href^="#/orgao/"] .fl-r{position:absolute;right:2px;top:50%;transform:translateY(-50%);white-space:nowrap}a.fl-l[href^="#/orgao/"] .fl-c{grid-column:1}
 @media (min-width:1100px){.grid.g3w{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .ob-uf{display:inline-flex;align-items:center;gap:5px;vertical-align:middle;color:var(--ink2)}.ob-uf .flag{margin:0}
+.ob-uf-t{font-size:12.5px;font-weight:600;margin-bottom:5px}
 </style>
 </head>
 <body>
@@ -3618,7 +3619,7 @@ mount(){let f={uf:"",tipo:"",situacao:""};
   XF("#obmap").innerHTML=mapaValores(cnt,nf);$("#obsit").innerHTML=hbars(Object.entries(sit).sort((x,y)=>y[1]-x[1]).slice(0,8),{fmt:nf})+(r.total>500?`<p class="small muted">Contagem das 500 obras de maior valor de ${nf(r.total)}.</p>`:"");
   bindMap($("#obmap"),null,null,u=>{f.uf=u;$("#obuf").value=u;pg(true);$("#obl").scrollIntoView({behavior:semMov()?"auto":"smooth",block:"start"})})}).catch(e=>{XF("#obmap").innerHTML=rerro(e);$("#obsit").innerHTML=""});
  const pg=listaPaginada({url:()=>"/obras"+qs(f),alvo:"#obl",mais:"#obm",vazio:"Nenhuma obra com esses filtros.",
-  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} obras</p><div class="obcards">${it.map(o=>`<a class="obc" href="#/obra/r${o.id}"><div class="obc-t"><b class="rclamp">${esc(o.nome||"Obra")}</b><span class="tag ob-${obSitK(o.situacao)}">${esc(o.situacao||"—")}</span></div><div class="small muted">${esc(o.executor||"")}${o.uf?" · "+(UF[o.uf]?`<span class="ob-uf">${bandeiraImg(o.uf,"flag flag-sm")}${esc(UF[o.uf].nome)}</span>`:esc(o.uf)):""}${o.tipo?" · "+esc(o.tipo):""} · previsto ${brlR(o.valor_previsto)}</div>${etapasObra(o)}</a>`).join("")}</div>`});
+  render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} obras</p><div class="obcards">${it.map(o=>`<a class="obc" href="#/obra/r${o.id}">${o.uf?`<div class="ob-uf ob-uf-t">${UF[o.uf]?bandeiraImg(o.uf,"flag flag-sm")+esc(UF[o.uf].nome):esc(o.uf)}</div>`:""}<div class="obc-t"><b class="rclamp">${esc(o.nome||"Obra")}</b><span class="tag ob-${obSitK(o.situacao)}">${esc(o.situacao||"—")}</span></div><div class="small muted">${[esc(o.executor||""),o.tipo?esc(o.tipo):"","previsto "+brlR(o.valor_previsto)].filter(Boolean).join(" · ")}</div>${etapasObra(o)}</a>`).join("")}</div>`});
  pg(true);$("#obuf").onchange=e=>{f.uf=e.target.value;pg(true)};$("#obtipo").oninput=debounce(e=>{f.tipo=e.target.value.trim();pg(true)})}}:_obras(...a);
 P.obra=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _obra(id,...r);
 return{html:`<div class="crumb"><a href="#/obras">Obras</a> / Obra</div><div id="ro">${rload()}</div>`,
