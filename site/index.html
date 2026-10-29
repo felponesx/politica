@@ -1750,6 +1750,9 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 
 .hp-w{container-type:inline-size}
 @container (min-width:560px){.hp-i{display:flex;align-items:center;justify-content:center;gap:28px}.hp-i .hemi{flex:0 1 340px;margin:0}.hp-i .hleg{flex:0 1 300px;margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;justify-content:start}.hp-i .hleg span{min-width:0}}
+
+.mun-lado{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:900px){.mun-lado{grid-template-columns:minmax(200px,260px) minmax(0,1fr);align-items:start}.mun-lado .kpis{display:grid;grid-template-columns:1fr;gap:10px}.mun-lado .kpi{width:auto}}
 </style>
 </head>
 <body>
@@ -3874,8 +3877,8 @@ P.uf=(id,goSec)=>{const r=_uf2(id,goSec);if(!API.on)return r;const u=UF[id]||UF.
   const GR={A:"Forte",B:"Boa",C:"Fraca",D:"Ruim"},caps={};ms.itens.forEach(m=>{const g=m.capag&&GR[String(m.capag)[0]];if(g)caps[g]=(caps[g]||0)+1});
   const ocupa=rs&&rs.municipios.length,pop=ms.itens.reduce((t,m)=>t+(m.populacao||0),0),mai=ms.itens.slice().sort((x,y)=>(y.populacao||0)-(x.populacao||0));
   const nrm=t=>String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-  box.innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Municípios</span><strong>${nf(ms.total)}</strong></div><div class="kpi"><span>Moradores nas cidades</span><strong>${nf(Math.round(pop))}</strong></div>${mai[0]?`<div class="kpi"><span>Maior cidade</span><strong style="font-size:17px">${esc(mai[0].nome)}</strong><em>${nfR(mai[0].populacao)} hab.</em></div>`:""}${ocupa?`<div class="kpi"><span>Cidades com desastre reconhecido</span><strong>${nf(rs.municipios.length)}</strong></div>`:""}</div>
-  <div class="grid g2 mt"><div class="panel"><h2>As 8 maiores cidades</h2>${hbars(mai.slice(0,8).map(m=>[m.nome,m.populacao||0,"#/municipio/"+m.codigo_ibge]),{fmt:nf})}</div>
+  box.innerHTML=`<div class="mun-lado"><div class="kpis kpis-c"><div class="kpi"><span>Municípios</span><strong>${nf(ms.total)}</strong></div><div class="kpi"><span>Moradores nas cidades</span><strong>${nf(Math.round(pop))}</strong></div>${mai[0]?`<div class="kpi"><span>Maior cidade</span><strong style="font-size:17px">${esc(mai[0].nome)}</strong><em>${nfR(mai[0].populacao)} hab.</em></div>`:""}${ocupa?`<div class="kpi"><span>Cidades com desastre reconhecido</span><strong>${nf(rs.municipios.length)}</strong></div>`:""}</div>
+  <div class="panel"><h2>As 8 maiores cidades</h2>${hbars(mai.slice(0,8).map(m=>[m.nome,m.populacao||0,"#/municipio/"+m.codigo_ibge]),{fmt:nf})}</div>
 </div>
   ${ocupa?`<div class="panel mt"><h2>Desastres mais frequentes</h2>${hbars(Object.entries(rs.por_tipo).slice(0,5),{fmt:nf})}</div>`:""}
   <div class="panel mt"><div class="filters"><input id="ufMunQ" placeholder="Procurar uma cidade de ${esc(u.nome)}" style="flex:1;min-width:180px" autocomplete="off"></div><div id="ufMunL"></div></div>`;
