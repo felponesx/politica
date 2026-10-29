@@ -1803,6 +1803,15 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .seg.sw.sd-abas{display:none!important}
 @media (max-width:760px){.seg.sw.sd-abas{display:flex!important;width:100%;margin:0 0 10px}.sd-abas button{flex:1 1 0;min-width:0;white-space:normal;line-height:1.2;padding:8px 4px;font-size:12.5px}
 .sd-grade{display:block!important}.sd-grade .sd-g{display:none;margin-top:0}.sd-grade .sd-g.on{display:block}}
+
+.fac-pil{display:flex;gap:12px;align-items:flex-end;margin:6px 0 10px}
+.fac-pl{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
+.fac-pv{font-weight:700;font-size:18px}
+.fac-pb{display:flex;align-items:flex-end;justify-content:center;width:100%;height:170px;border-bottom:1px solid var(--line)}
+.fac-pb i{display:block;width:62%;max-width:76px;border-radius:10px 10px 0 0}
+.fac-pn{font-size:12.5px;font-weight:600;line-height:1.25}.fac-pl small{color:var(--muted);font-size:11.5px;line-height:1.25}
+.fac-ex{list-style:none;margin:0 0 4px;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted)}
+.fac-ex li{display:flex;gap:8px;align-items:flex-start}.fac-ex i{flex:none;width:10px;height:10px;border-radius:3px;margin-top:4px}.fac-ex b{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -4991,7 +5000,8 @@ function facHtml(){setTimeout(()=>apiGet("/faccoes").then(d=>{const b=$("#facL")
   const ctl=C?`<div class="fac-ctl"><h3 class="seg-h" style="margin-top:0">${esc(C.titulo)}</h3><p class="small muted" style="margin:0 0 10px">${esc(C.intro)}</p>
    <div class="kpis3"><div class="kpi"><span>Dos brasileiros</span><strong>${vir(C.central.pct)}%</strong><em>1 em cada 5</em></div><div class="kpi"><span>Habitantes</span><strong>${vir(C.central.pessoas_mi)} mi</strong><em>convivem com facção</em></div><div class="kpi"><span>Famílias (estimativa)</span><strong>≈ ${Math.round(C.central.pessoas_mi/C.central.pessoas_por_domicilio)} mi</strong><em>cálculo: ${vir(C.central.pessoas_mi)} mi ÷ ${vir(C.central.pessoas_por_domicilio)} moradores por casa</em></div></div>
    <p class="small muted" style="margin:6px 0 12px">${esc(C.central.rotulo)}: ${esc(C.central.detalhe)} <a href="${esu(C.central.fonte)}" target="_blank" rel="noopener">${esc(C.central.fonte_nome)}</a></p>
-   <h3 class="seg-h">O que cada pesquisa estima</h3>${C.estudos.map(x=>`<div class="fac-e"><div class="fac-e-t"><b>${esc(x.rotulo)}</b><span>${vir(x.pct)}% · ${x.nota_pessoas?esc(x.nota_pessoas):vir(x.pessoas_mi)+" mi"}</span></div>${bar(x.pct,"#E5484D")}<p class="small muted" style="margin:3px 0 0">${esc(x.o_que)}. <a href="${esu(x.fonte)}" target="_blank" rel="noopener">${esc(x.fonte_nome)}</a></p></div>`).join("")}
+   <h3 class="seg-h">O que cada pesquisa estima</h3><div class="fac-pil" role="img" aria-label="Três pesquisas: ${C.estudos.map(x=>x.rotulo+" "+x.pct+"%").join("; ")}">${C.estudos.map((x,k)=>{const cor=["#2F6FED","#F5A524","#E5484D"][k%3];return`<div class="fac-pl"><span class="fac-pv">${vir(x.pct)}%</span><span class="fac-pb"><i style="height:${Math.max(4,x.pct/45*100)}%;background:${cor}"></i></span><b class="fac-pn">${esc(x.rotulo)}</b><small>${x.nota_pessoas?esc(x.nota_pessoas):vir(x.pessoas_mi)+" mi de pessoas"}</small></div>`}).join("")}</div>
+   <ul class="fac-ex">${C.estudos.map((x,k)=>`<li><i style="background:${["#2F6FED","#F5A524","#E5484D"][k%3]}"></i><span><b>${esc(x.rotulo)}:</b> ${esc(x.o_que)}. <a href="${esu(x.fonte)}" target="_blank" rel="noopener">${esc(x.fonte_nome)}</a></span></li>`).join("")}</ul>
 </div>`:"";
   b.innerHTML=ctl+`<h3 class="seg-h">Quem são e onde são mais fortes</h3>`+d.itens.map(x=>`<div class="fac-c"><span class="fac-s">${esc(x.sigla)}</span><div class="fac-t"><b>${esc(x.nome)}</b><span class="small muted">${esc(x.origem)}</span><span class="fac-d"><em>Mais forte em</em> ${x.forte.map(u=>UF[u]?`<span class="fac-u">${bandeiraImg(u,"flag flag-sm")} ${esc(UF[u].nome)}</span>`:"").join("")}</span><span class="small">${esc(x.presenca)}</span><a class="small" href="${esu(x.fonte)}" target="_blank" rel="noopener">Fonte: ${esc(x.fonte_nome)}</a></div></div>`).join("")+`<p class="small muted" style="margin:8px 0 0">${esc(d.aviso)}</p>`}).catch(()=>{}),60);
  return`<div class="panel" data-unp="fac" hidden><div class="hd"><div><h2>Facções criminosas</h2><p>As maiores do país, onde cada uma é mais forte e quanto do país o crime comanda. Informação de interesse público, com a fonte de cada número.</p></div></div><div id="facL" class="fac-l">${rload()}</div></div>`}
