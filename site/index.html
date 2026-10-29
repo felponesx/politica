@@ -1753,6 +1753,10 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 
 .mun-lado{display:grid;grid-template-columns:1fr;gap:12px}
 @media (min-width:900px){.mun-lado{grid-template-columns:minmax(200px,260px) minmax(0,1fr);align-items:stretch}.mun-lado .kpis{display:grid;grid-template-columns:1fr;grid-auto-rows:1fr;gap:10px;margin:0}.mun-lado .kpi{width:auto;margin:0;display:flex;flex-direction:column;justify-content:center}.mun-lado>.panel{margin:0}}
+
+#ufReal .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#ufReal .kpi{min-width:0;width:auto;margin:0;min-height:88px;display:flex;flex-direction:column;justify-content:center}
+@media (max-width:640px){#ufReal .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
