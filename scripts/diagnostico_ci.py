@@ -260,24 +260,36 @@ def entrada_zip(url, nome_parte):
 
 
 def main():
-    """Ensino: onde estão os arquivos do INEP (IDEB, IGC, CPC, ENEM por escola) e o que abre a partir dos servidores do GitHub."""
+    """Ensino: endereços reais dos arquivos do INEP (IDEB, IGC, CPC) e a cadeia de certificados do servidor de downloads."""
+    import re
+    import subprocess
     ua = {"User-Agent": UA_NAV, "Accept": "text/html,application/json,*/*"}
-    paginas = (("IDEB resultados", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados"),
-               ("IDEB dados", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb"),
-               ("IGC", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indice-geral-de-cursos-igc"),
-               ("CPC", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/conceito-preliminar-de-curso-cpc"),
-               ("ENEM por escola", "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/resultados"),
-               ("Indicadores superior", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indicadores-de-qualidade-da-educacao-superior"))
-    for nome, url in paginas:
-        ver(nome, url, headers=ua, n=300)
-        links(nome + " links", url, padrao=r'href="([^"]+\.(?:xlsx?|zip|csv|ods)[^"]*)"', n=60, headers=ua)
-    for nome, url in (("IDEB 2023 zip", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/2023/divulgacao_brasil_ufs_ideb_2023.zip"),
-                      ("IDEB 2023 ufs", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/2023/divulgacao_anos_iniciais_municipios_2023.zip"),
-                      ("IDEB 2021 brasil/ufs", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_brasil_ufs_ideb_2021.zip"),
-                      ("IGC 2022", "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/2022/igc_2022.xlsx"),
-                      ("IGC 2021", "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/2021/igc_2021.xlsx"),
-                      ("IBGE educação UF", "https://apisidra.ibge.gov.br/values/t/7125/n3/all/v/all/p/last")):
-        ver(nome, url, headers=ua, metodo="HEAD")
+    base = "https://www.gov.br/inep/pt-br/"
+    paginas = (base + "areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
+               base + "areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb",
+               base + "areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indicadores-de-qualidade-da-educacao-superior",
+               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais",
+               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais/indice-geral-de-cursos-igc",
+               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais/conceito-preliminar-de-curso-cpc",
+               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais/ideb")
+    for url in paginas:
+        try:
+            r = cli.get(url, headers=ua)
+            txt = r.text
+            hrefs = sorted(set(re.findall(r"""https?://download\.inep\.gov\.br[^"'\s<>)]+""", txt)))
+            rel = sorted(set(re.findall(r"""(?:href|src)=["']([^"']*(?:\.xlsx?|\.zip|\.csv|\.ods)[^"']*)["']""", txt, re.I)))
+            print(f"\n=== {url}: HTTP {r.status_code} {len(txt)} bytes; {len(hrefs)} links download.inep, {len(rel)} outros", flush=True)
+            for h in (hrefs + rel)[:70]:
+                print("  ", h, flush=True)
+        except Exception as e:
+            print(f"\n=== {url}: ERRO {type(e).__name__}: {e}", flush=True)
+    # cadeia de certificados que o servidor envia (só leitura do emissor; a verificação continua ligada nos coletores)
+    try:
+        out = subprocess.run("openssl s_client -connect download.inep.gov.br:443 -servername download.inep.gov.br -showcerts </dev/null 2>&1 | "
+                             "grep -E ' s:| i:|Verify return|verify error|depth' | head -30", shell=True, capture_output=True, text=True, timeout=60).stdout
+        print("\n=== cadeia do download.inep.gov.br\n" + out, flush=True)
+    except Exception as e:
+        print("openssl ERRO", e, flush=True)
 
 
 if __name__ == "__main__":
