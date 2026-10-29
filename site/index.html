@@ -1747,6 +1747,9 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .nf-t td:nth-child(2),.nf-t td:nth-child(2) a,.nf-t td:nth-child(2) div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:1.35}
 .nf-t td:nth-child(1),.nf-t td:nth-child(3){white-space:nowrap}
 @media (max-width:640px){.cota-l .hb-l{grid-template-columns:minmax(0,1fr) 84px 70px!important}.cota-l .hb-b{width:84px!important}}
+
+.hp-w{container-type:inline-size}
+@container (min-width:560px){.hp-i{display:flex;align-items:center;justify-content:center;gap:28px}.hp-i .hemi{flex:0 1 340px;margin:0}.hp-i .hleg{flex:0 1 300px;margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;justify-content:start}.hp-i .hleg span{min-width:0}}
 </style>
 </head>
 <body>
@@ -4253,7 +4256,7 @@ function hemiPessoas(pessoas,{w=320,h=170,ordem=[]}={}){const g={};pessoas.forEa
  const siglas=Object.keys(g).sort((a,b)=>pos(a)-pos(b)||g[b].length-g[a].length||a.localeCompare(b));
  const lista=siglas.flatMap(s=>g[s].sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR")));const N=lista.length;
  const svg=hemiciclo(siglas.map(s=>[s,g[s].length,corSigla(s)]),{w,h,dot:N<=12?12:N<=40?9:undefined}).replace(/<title>[^<]*<\/title>/g,"");
- return{lista,html:svg+`<div class="hleg">${siglas.slice(0,14).map(s=>`<span>${bandPart(s,12)||`<i style="background:${corSigla(s)}"></i>`}${esc(s)}<b>${g[s].length}</b></span>`).join("")}${siglas.length>14?`<span class="muted">+${siglas.length-14} partidos</span>`:""}</div>`}}
+ return{lista,html:`<div class="hp-w"><div class="hp-i">`+svg+`<div class="hleg">${siglas.slice(0,14).map(s=>`<span>${bandPart(s,12)||`<i style="background:${corSigla(s)}"></i>`}${esc(s)}<b>${g[s].length}</b></span>`).join("")}${siglas.length>14?`<span class="muted">+${siglas.length-14} partidos</span>`:""}</div></div></div>`}}
 const ehMouse=()=>matchMedia("(hover:hover) and (pointer:fine)").matches;
 function dicaHemi(){return`<p class="small muted hemi-dica">${ehMouse()?"Passe o mouse em uma bola para ver quem é; clique para abrir o perfil.":"Toque em uma bola para ver quem é; toque de novo para abrir o perfil."} Cada bola leva o logo oficial do partido (Wikimedia Commons) quando ele existe.</p>`}
 function cartaoHemi(p){const pn=PARTIDO_NOME[p.partido];const l=(a,b)=>b?`<div class="ht-l"><span>${a}</span><b>${b}</b></div>`:"";
