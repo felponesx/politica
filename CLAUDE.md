@@ -139,6 +139,16 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   em pull requests (aprovação pelo celular só com verde). Falta: passar ao `agendar.py` o que hoje só o robô do GitHub faz (eleições, segurança, notícias a cada 15 min, impostômetro,
   histórico, fotos) e adaptar `revisar_dados` ao banco local.
 
+## Correções de dado (29/10/2026)
+- Obras: o ObrasGov tem valores digitados a mais (dragagem de porto com R$ 403 bi, bloco de hospital com R$ 81 bi). `app/obras_valor.py` (`valor_suspeito`: ≥ R$ 100 bi sempre; Defesa fica; ≥ R$ 10 bi suspeito;
+  de R$ 1 a 10 bi só com nome de obra pequena — bloco, vestiário, delegacia, campus... — ou "estradas ... município") marca `valor_suspeito` em `/obras` e `/obras/{id}` (com `aviso_valor`), tira o valor das somas
+  e dos percentuais em `/obras-gestao` (`resumir` devolve `valor_suspeito`; `mais_atrasadas` traz `valor_suspeito` e valor nulo) e `/obras-resumo` (`valor_suspeito_excluido`), e `lista_compacta` ganhou a coluna `suspeito`
+  (valor 0). O número declarado continua visível no detalhe; as telas mostram "a conferir". Não corrige o valor.
+- Situação das fontes: `app/collectors/registro.py` (`registro_das_tarefas`) acha o par (fonte, tarefa) que cada coletor grava em `coletas` lendo o código (AST) — antes a tela comparava o nome da linha de comando com a tarefa
+  gravada e mostrava 60 de 60 "nunca coletada". `tests/test_status_fontes.py` garante que toda tarefa do registro tem par.
+- Totais federais diferentes: notas nas telas Gastos › União (SICONFI, liquidado até o bimestre), Órgãos (Portal da Transparência, pago até hoje) e no Gastômetro (Gasto Brasil, União+estados+municípios): fontes, critério e corte próprios.
+- `revisar_dados` confere obras sem marcação e o painel de fontes zerado.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.

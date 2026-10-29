@@ -168,6 +168,24 @@ def consistencia(c: Copia, r: Relatorio):
         r.add(g, "ok" if cam <= 513 else "erro", "Cadeiras da Câmara", f"{cam} deputados em exercício na contagem", "no máximo 513", cam)
     if sen:
         r.add(g, "ok" if sen <= 81 else "erro", "Cadeiras do Senado", f"{sen} senadores em exercício na contagem", "no máximo 81", sen)
+    # obras: valor que parece erro de cadastro precisa estar marcado e a soma não pode depender dele
+    obras = (c.get("/obras") or {}).get("itens") or []
+    if obras:
+        from app.obras_valor import valor_suspeito
+        devia = [o for o in obras if valor_suspeito(o.get("nome"), o.get("descricao"), o.get("tipo"), o.get("valor_previsto"))]
+        sem_marca = [o for o in devia if not o.get("valor_suspeito")]
+        if sem_marca:
+            r.add(g, "aviso", "Obras com valor suspeito sem marcação", f"{len(sem_marca)} obra(s), ex.: {sem_marca[0]['nome'][:60]} "
+                  f"(R$ {sem_marca[0]['valor_previsto'] / 1e9:,.0f} bi). A cópia é anterior à regra ou o robô ainda não exportou de novo.")
+        else:
+            r.ok(g, "Obras com valor suspeito", f"{len(devia)} marcada(s) na cópia e fora das somas" if devia else "nenhuma na amostra")
+    fs = c.get("/fontes/status") or {}
+    resumo_fontes = fs.get("resumo") or {}
+    total_fontes = sum(resumo_fontes.values()) if resumo_fontes else 0
+    if total_fontes and resumo_fontes.get("nunca_coletada") == total_fontes:
+        r.add(g, "erro", "Situação das fontes mostra tudo como nunca coletada", f"{total_fontes} de {total_fontes}: o painel não está achando as coletas")
+    elif total_fontes:
+        r.ok(g, "Situação das fontes", f"{resumo_fontes.get('ok', 0)} em dia, {resumo_fontes.get('nunca_coletada', 0)} nunca coletadas")
     parl = (c.get("/parlamentares") or {}).get("itens") or []
     nomes = {}
     for x in parl:

@@ -111,3 +111,16 @@ def test_midia_tamanho_do_site_e_cobertura_de_fotos(tmp_path):
     assert _niveis(rv.revisar(site / "dados", AGORA, rede=False), "Fotos: Prefeitos eleitos") == ["ok"]
     (site / "grande.bin").write_bytes(b"0" * (251 * 1024 * 1024))
     assert _niveis(rv.revisar(site / "dados", AGORA, rede=False), "Tamanho do site") == ["erro"]
+
+
+def test_revisor_pega_obra_sem_marcacao_e_painel_de_fontes_zerado(tmp_path):
+    dados = {"/obras": {"itens": [{"nome": "Dragagem do Porto", "descricao": None, "tipo": None, "valor_previsto": 403e9},
+                                  {"nome": "Obra de rotina", "descricao": None, "tipo": None, "valor_previsto": 5e6, "valor_suspeito": False}]},
+             "/fontes/status": {"resumo": {"ok": 0, "falhando": 0, "sem_coleta_boa": 0, "nunca_coletada": 60}}}
+    rel = rv.revisar(_copia(tmp_path, dados), AGORA, rede=False)
+    assert _niveis(rel, "Obras com valor suspeito sem marcação") == ["aviso"]
+    assert _niveis(rel, "Situação das fontes mostra tudo") == ["erro"]
+    dados["/obras"]["itens"][0]["valor_suspeito"] = True
+    dados["/fontes/status"]["resumo"] = {"ok": 40, "falhando": 1, "sem_coleta_boa": 2, "nunca_coletada": 17}
+    rel = rv.revisar(_copia(tmp_path, dados), AGORA, rede=False)
+    assert _niveis(rel, "Obras com valor suspeito") == ["ok"] and _niveis(rel, "Situação das fontes") == ["ok"]

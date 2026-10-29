@@ -93,7 +93,8 @@ def montar(imp: dict | None, gas: dict | None, agora: datetime | None = None) ->
             "data_base": datetime.fromisoformat(gas["como_de"]).astimezone(BRASILIA).date().isoformat(),
             "base": f"contagem do Gasto Brasil (CACB/ACSP) em {_hora(gas['como_de'])}: R$ {t['total'] / 1e12:.2f} tri".replace(".", ","),
             "fonte": f"Gasto Brasil (CACB/ACSP) — {SITE_GAS}", "referencia_url": SITE_GAS,
-            "nota": f"Critério: {CRITERIO_GAS}. Lido de {BASE} a cada 15 minutos; o contador segue o ritmo por segundo publicado.",
+            "nota": f"Critério: {CRITERIO_GAS}. Lido de {BASE} a cada 15 minutos; o contador segue o ritmo por segundo publicado. "
+                    "Soma União, estados e municípios: não é comparável ao total federal das telas Gastos e Órgãos.",
             "por_esfera": {"U": gas["uniao"]["total"], "E": gas["estados"]["total"], "M": gas["municipios"]["total"]},
             "bimestre": None,
             "ao_vivo": {"base": t["total"], "quando": gas["como_de"], "taxa": t["por_segundo"]}}

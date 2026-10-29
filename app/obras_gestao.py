@@ -7,6 +7,7 @@ o atraso é o prazo previsto de término já vencido em obra que não foi conclu
 import re
 from datetime import date
 
+from app.obras_valor import AVISO_VALOR, valor_suspeito
 from app.utils import sem_acento
 
 CATEGORIAS = [("concluida", "Concluídas"), ("execucao", "Em andamento"), ("parada", "Paradas"),
@@ -43,15 +44,24 @@ def nome_municipio(executor: str | None) -> str | None:
     return re.sub(r"\s*\([A-Z]{2}\)$", "", m.group(4)).strip() if m else None
 
 
+def _suspeita(o) -> bool:
+    return valor_suspeito(o.nome, o.descricao, getattr(o, "tipo", None), o.valor_previsto)
+
+
 def resumir(obras, hoje: date | None = None, lista: int = 8) -> dict:
-    """obras: iteráveis de objetos com situacao, valor_previsto, fim_previsto, id, nome, descricao, executor."""
+    """obras: iteráveis de objetos com situacao, valor_previsto, fim_previsto, id, nome, descricao, executor (e, se houver, tipo).
+    Obra com valor que parece erro de cadastro (app/obras_valor.py) conta na quantidade, mas não nos valores nem nos percentuais de valor."""
     hoje = hoje or date.today()
+    obras = list(obras)
+    suspeitas = [o for o in obras if _suspeita(o)]
+    ids_suspeitos = {id(o) for o in suspeitas}
+    valor = lambda o: 0 if id(o) in ids_suspeitos else (o.valor_previsto or 0)  # noqa: E731
     por = {k: {"quantidade": 0, "valor": 0.0} for k, _ in CATEGORIAS}
     atrasos, no_prazo, sem_data, prox = [], 0, 0, None
     for o in obras:
         k = categoria(o.situacao)
         por[k]["quantidade"] += 1
-        por[k]["valor"] += o.valor_previsto or 0
+        por[k]["valor"] += valor(o)
         if k in ("concluida", "cancelada"):
             continue
         if not o.fim_previsto or o.fim_previsto.year < 1990:  # data vazia ou absurda (ex.: 1900) não conta como atraso
@@ -75,16 +85,19 @@ def resumir(obras, hoje: date | None = None, lista: int = 8) -> dict:
             "pct_concluido": por["concluida"]["pct_obras"], "pct_concluido_valor": por["concluida"]["pct_valor"],
             "falta": {"obras": abertas, "valor": round(sum(por[k]["valor"] for k in ("execucao", "parada", "nao_iniciada", "sem_situacao")), 2)},
             "atraso": {"obras": len(atrasos), "pct_das_abertas": round(100 * len(atrasos) / abertas, 1) if abertas else None,
-                       "valor": round(sum(o.valor_previsto or 0 for o, _ in atrasos), 2),
+                       "valor": round(sum(valor(o) for o, _ in atrasos), 2),
                        "dias_medio": round(sum(dias) / len(dias)) if dias else None, "dias_maior": max(dias) if dias else None},
             "no_prazo": no_prazo, "sem_data_prevista": sem_data, "proximo_termino": prox,
             "mais_atrasadas": [{"id": o.id, "nome": (o.descricao or o.nome or "Obra")[:140], "situacao": o.situacao, "executor": o.executor,
-                                "fim_previsto": o.fim_previsto, "dias_atraso": d, "valor": o.valor_previsto}
-                               for o, d in sorted(atrasos, key=lambda x: -(x[0].valor_previsto or 0))[:lista]],
+                                "fim_previsto": o.fim_previsto, "dias_atraso": d, "valor": None if id(o) in ids_suspeitos else o.valor_previsto,
+                                "valor_suspeito": id(o) in ids_suspeitos}
+                               for o, d in sorted(atrasos, key=lambda x: -valor(x[0]))[:lista]],
+            "valor_suspeito": {"obras": len(suspeitas), "valor": round(sum(o.valor_previsto or 0 for o in suspeitas), 2),
+                               "aviso": AVISO_VALOR if suspeitas else None},
             "aviso": AVISO, "fonte": "ObrasGov (Ministério da Gestão e Inovação / Ministério da Integração)", "data": hoje}
 
 
-CAMPOS_LISTA = ["id", "nome", "cat", "fim", "valor", "tipo", "municipio", "executor", "tipo_obra"]
+CAMPOS_LISTA = ["id", "nome", "cat", "fim", "valor", "tipo", "municipio", "executor", "tipo_obra", "suspeito"]
 
 
 def lista_compacta(obras) -> list:
@@ -95,7 +108,8 @@ def lista_compacta(obras) -> list:
         mun = nome_municipio(o.executor)
         tipo = "M" if mun else ("E" if eh_estadual(o.executor) else "F")
         fim = o.fim_previsto.isoformat() if o.fim_previsto and o.fim_previsto.year >= 1990 else ""
-        out.append([o.id, (o.descricao or o.nome or "Obra")[:110], categoria(o.situacao), fim, round(o.valor_previsto or 0), tipo,
-                    mun or "", (o.executor or "")[:70], (getattr(o, "tipo", None) or "")[:60]])
+        suspeita = _suspeita(o)  # valor que parece erro de cadastro: vai como 0 (fora das somas) e marcado em `suspeito`
+        out.append([o.id, (o.descricao or o.nome or "Obra")[:110], categoria(o.situacao), fim, 0 if suspeita else round(o.valor_previsto or 0), tipo,
+                    mun or "", (o.executor or "")[:70], (getattr(o, "tipo", None) or "")[:60], 1 if suspeita else 0])
     out.sort(key=lambda r: -r[4])
     return out

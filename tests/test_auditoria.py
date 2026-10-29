@@ -92,9 +92,10 @@ def test_pronto_indisponivel_nao_vaza_detalhe(monkeypatch):
 
 def test_status_das_fontes():
     with SessionLocal() as db:
-        db.query(Coleta).filter(Coleta.tarefa.in_(["camara-deputados", "senado-senadores"])).delete()
-        db.add(Coleta(fonte="camara", tarefa="camara-deputados", status="ok", itens=513))
-        db.add(Coleta(fonte="senado", tarefa="senado-senadores", status="erro", erro="HTTPStatusError: HTTP 503 " + "x" * 400))
+        # o coletor grava fonte e tarefa separados (registrar_coleta("camara", "deputados")); a tela junta os dois para achar "camara-deputados"
+        db.query(Coleta).filter(Coleta.fonte.in_(["camara", "senado"]), Coleta.tarefa.in_(["deputados", "senadores"])).delete(synchronize_session=False)
+        db.add(Coleta(fonte="camara", tarefa="deputados", status="ok", itens=513))
+        db.add(Coleta(fonte="senado", tarefa="senadores", status="erro", erro="HTTPStatusError: HTTP 503 " + "x" * 400))
         db.commit()
     d = cliente.get("/fontes/status").json()
     por = {f["tarefa"]: f for f in d["fontes"]}
