@@ -218,6 +218,40 @@ def orgaos(q: str | None = None, ano: int | None = None, db: Session = Depends(g
             "fonte": "Portal da Transparência (CGU) — orçamento e execução por órgão (arquivo de dados abertos)"}
 
 
+@router.get("/cartao-corporativo", tags=["Órgãos"])
+def cartao_corporativo(db: Session = Depends(get_db)):
+    """Cartão de Pagamento do Governo Federal (cartão corporativo): total por ano e, em cada ano, compras, saques, meses, órgãos e maiores favorecidos."""
+    regs = db.scalars(select(Registro).where(Registro.fonte == "transparencia", Registro.tipo == "cartao_mes")).all()
+    if not regs:
+        raise HTTPException(404, "Sem dados. Rode a coleta transparencia-cartao.")
+    por_ano: dict[int, list] = {}
+    for r in regs:
+        por_ano.setdefault(r.ano, []).append(r.dados or {})
+    anos, detalhe = [], {}
+    for ano, meses in sorted(por_ano.items()):
+        meses.sort(key=lambda d: d.get("mes") or 0)
+        total = sum(_num(m, "total") for m in meses)
+        saques = sum(_num(m, "saques") for m in meses)
+        orgs, favs = {}, {}
+        for m in meses:
+            for k, v in (m.get("orgaos") or {}).items():
+                orgs[k] = orgs.get(k, 0.0) + (v or 0)
+            for f in m.get("favorecidos") or []:
+                x = favs.setdefault(f["cnpj"], {"cnpj": f["cnpj"], "nome": f.get("nome"), "valor": 0.0, "compras": 0})
+                x["valor"] += f.get("valor") or 0
+                x["compras"] += f.get("compras") or 0
+        anos.append({"ano": ano, "total": round(total, 2), "meses": len(meses)})
+        detalhe[str(ano)] = {
+            "total": round(total, 2), "saques": round(saques, 2), "compras": round(total - saques, 2),
+            "transacoes": sum(int(m.get("transacoes") or 0) for m in meses), "meses": len(meses),
+            "por_mes": [{"mes": m.get("mes"), "total": _num(m, "total")} for m in meses],
+            "orgaos": [{"nome": k, "valor": round(v, 2)} for k, v in sorted(orgs.items(), key=lambda x: -x[1])[:10]],
+            "favorecidos": [{**f, "valor": round(f["valor"], 2)} for f in sorted(favs.values(), key=lambda x: -x["valor"])[:10]]}
+    return {"anos": anos, "detalhe": detalhe, "fonte": "Portal da Transparência (CGU) — Cartão de Pagamento do Governo Federal",
+            "nota": ("Gastos feitos com o cartão corporativo por servidores do governo federal. A lista de favorecidos mostra só empresas (CNPJ); "
+                     "os valores por empresa vêm de cada mês, então uma empresa fora do topo 40 de algum mês pode ter total maior. O ano em andamento ainda muda.")}
+
+
 @router.get("/cortes", tags=["Órgãos"])
 def cortes(db: Session = Depends(get_db)):
     return memo(("cortes",), lambda: _cortes(db=db))

@@ -1692,6 +1692,14 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .sd-n{display:flex;flex-direction:column;gap:2px;min-width:0;color:var(--ink2)}.sd-n small{color:var(--muted);font-size:12px;line-height:1.3}
 .sd-l b{font-size:17px;text-align:right;white-space:nowrap}.sd-l b em{font-style:normal;font-weight:500;font-size:11.5px;color:var(--muted);margin-left:3px}
 @media (max-width:640px){.sd-l{grid-template-columns:minmax(0,1fr) auto}}
+/* botões de alternância (v2.1): mesma "chave" para Arrecadação/Repasses, ordem maior/menor e período dos gráficos */
+.seg.sw{display:inline-flex!important;flex-wrap:nowrap!important;gap:2px!important;padding:3px!important;margin:0 0 8px!important;background:var(--line2);border:0;border-radius:12px;max-width:100%}
+.sw button{border:0!important;background:transparent!important;border-radius:9px!important;padding:7px 14px!important;font:600 13px/1.1 inherit!important;color:var(--muted)!important;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;transition:background .18s,color .18s,box-shadow .18s}
+.sw button:hover{color:var(--ink)!important}
+.sw button.on{background:var(--surface)!important;color:var(--blue)!important;box-shadow:0 1px 3px rgba(16,24,40,.16),0 0 0 .5px rgba(16,24,40,.05)}
+.sw.lc-per button{padding:6px 11px!important;font-size:12px!important}.sw.lc-per{margin:14px 0 8px!important}
+.fl-ord{margin-bottom:10px}
+[data-theme="dark"] .seg.sw{background:#1F2A3D}[data-theme="dark"] .sw button.on{background:#2D3F63!important;color:#CFE0FF!important;box-shadow:none}
 </style>
 </head>
 <body>
@@ -1924,7 +1932,7 @@ function lineChart(series,labels,o={}){const id="lc"+(++LC_N);
  const dt=o.datas?{gera:true,anual:o.datas.every(d=>String(d).length===4),m:o.datas.map(d=>{d=String(d);return +d.slice(0,4)*12+(d.length>=7?+d.slice(5,7)-1:11)})}:lcMeses(labels);
  const k=lcCorte(dt,o.per);let chips="";
  if(dt&&o.periodo!==false){const n=dt.m.length,ops=LC_PER.filter(([mm])=>{const c=lcCorte(dt,mm);return c>0&&n-c>=2});
-  if(ops.length){const cur=k&&ops.some(x=>x[0]==o.per)?o.per:0;chips=`<div class="seg lc-per" data-lcp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Todos"]].map(([mm,t])=>`<button type="button" data-m="${mm}" class="${mm==cur?"on":""}">${t}</button>`).join("")}</div>`}}
+  if(ops.length){const cur=k&&ops.some(x=>x[0]==o.per)?o.per:0;chips=`<div class="seg sw lc-per" data-lcp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Todos"]].map(([mm,t])=>`<button type="button" data-m="${mm}" class="${mm==cur?"on":""}">${t}</button>`).join("")}</div>`}}
  LC_REG.set(id,[series,labels||[],o,dt,k]);return`${chips}<div class="lc" data-lc="${id}">${lineSVG(...lcCut(id),600)}</div>`}
 function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.round(W));const H=h,all=series.flatMap(s=>s.v);const mx=Math.max(...all)*1.08,mn=Math.min(0,...all);
  const ticks=[0,1,2,3,4].map(t=>mn+(mx-mn)*t/4),rot=ticks.map(v=>fmt(v).replace("R$ ","")),p=Math.max(30,Math.max(...rot.map(t=>t.length))*6.6+10),dir=14;
@@ -1964,9 +1972,11 @@ document.addEventListener("click",ev=>{const b=ev.target.closest("[data-lcp] but
 // pizzas: as 3 maiores fatias em cores vivas; as outras com cor própria, só um pouco menos saturada; "Outras" em cinza-azulado
 // as 3 maiores usam as cores fortes (azul, laranja, verde); as demais, tons pastéis de outras cores, uma cor para cada item
 const PIZZA_SUAVE=["#F3D277","#B9A4EC","#F2A6C8","#8ED6E8","#C5DE8A","#F4A9A1","#A7BFE8","#9AD8C3","#E9C39B","#C9B6D9"];
-function coresPizza(items){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));
- return items.map((it,k)=>/^outr/i.test(it[0])?"#AEB8CA":pos[k]<3?RANK_VIVO[pos[k]]:PIZZA_SUAVE[(pos[k]-3)%PIZZA_SUAVE.length])}
-function donut(items){const tot=items.reduce((a,b)=>a+b[1],0)||1,pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));const cp=coresPizza(items),cor=k=>cp[k];
+// paletas próprias para pizzas lado a lado (3 cores fortes + pastéis de outras cores)
+const PIZZA_PAL={rj:{v:["#8B5CF6","#EC4899","#14B8A6"],s:["#F2C6DD","#BFE7DF","#D8CBF7","#F7DDA6","#BCD3F4","#F7C4B7"]},fa:{v:["#E5484D","#F59E0B","#0EA5E9"],s:["#F8C9CB","#FBE3A8","#BFE3F5","#D2C9F3","#C9E7B4","#F4C7E0"]}};
+function coresPizza(items,pal){const pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it)),V=pal?pal.v:RANK_VIVO,S=pal?pal.s:PIZZA_SUAVE;
+ return items.map((it,k)=>/^outr/i.test(it[0])?"#AEB8CA":pos[k]<3?V[pos[k]]:S[(pos[k]-3)%S.length])}
+function donut(items,pal){const tot=items.reduce((a,b)=>a+b[1],0)||1,pos=rankPos(items.map(it=>/^outr/i.test(it[0])?[it[0],-1]:it));const cp=coresPizza(items,pal&&PIZZA_PAL[pal]),cor=k=>cp[k];
  let a0=-Math.PI/2,s="";items.forEach((it,k)=>{const a1=a0+it[1]/tot*Math.PI*2;const L=a1-a0>Math.PI?1:0;const P=(a,r)=>[60+r*Math.cos(a),60+r*Math.sin(a)];const[x0,y0]=P(a0,52),[x1,y1]=P(a1,52),[x2,y2]=P(a1,32),[x3,y3]=P(a0,32);s+=`<path d="M${x0} ${y0}A52 52 0 ${L} 1 ${x1} ${y1}L${x2} ${y2}A32 32 0 ${L} 0 ${x3} ${y3}Z" fill="${cor(k)}" stroke="var(--surface)" stroke-width="1.5"/>`;a0=a1});
  const mid="pzm"+(++LC_N);
 return`<div class="pz" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 120 120" width="130" height="130" class="pz-svg"><mask id="${mid}"><circle cx="60" cy="60" r="42" fill="none" stroke="#fff" stroke-width="24" pathLength="1" class="an-l an-pz" transform="rotate(-90 60 60)"/></mask><g mask="url(#${mid})">${s}</g></svg><div style="font-size:13px;flex:1;min-width:150px">${items.map((it,k)=>`<div class="an-f" style="--d:${(.25+k*.18).toFixed(2)}s;display:flex;gap:8px;align-items:center;padding:3px 0"><i style="width:10px;height:10px;border-radius:50%;background:${cor(k)}"></i><span style="flex:1">${it[0]}</span><b style="font-weight:${pos[k]<3?600:500}">${(it[1]/tot*100).toFixed(1).replace(".",",")}%</b></div>`).join("")}</div></div>`}
@@ -3303,7 +3313,7 @@ function linhasDuplo(serie,anos,vals,fmt,o={}){const{alto="Maiores",baixo="Menor
  // botões de período (10 anos / 5 anos / Tudo) quando a série tem mais anos do que o corte
  const yr=anos.map(a=>parseInt(a,10)),u=yr[yr.length-1],ops=yr.some(isNaN)||new Set(yr).size<2?[]:[[10,"10 anos"],[5,"5 anos"],[1,"1 ano"]].filter(([m])=>yr.filter(y=>y>=u-m).length>=2);
  let chips="";if(ops.length){const id="ld"+(++LC_N);LD_REG.set(id,an=>corpo(an));LD_REG.set(id+"a",anos);
-  chips=`<div class="seg lc-per" data-ldp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Todos"]].map(([m,t])=>`<button type="button" data-m="${m}" class="${m?"":"on"}">${t}</button>`).join("")}</div>`;
+  chips=`<div class="seg sw lc-per" data-ldp="${id}" role="group" aria-label="Período do gráfico">${[...ops,[0,"Todos"]].map(([m,t])=>`<button type="button" data-m="${m}" class="${m?"":"on"}">${t}</button>`).join("")}</div>`;
   return`${chips}<div data-ld="${id}">${corpo(anos)}</div>${nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:""}`}
  return corpo(anos)+(nota?`<p class="small muted" style="margin:6px 0 0">${nota}</p>`:"")}
 const LD_REG=new Map();
@@ -3622,7 +3632,7 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
  $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
  <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
- <div class="seg" id="flModo" style="margin-top:14px"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:8px 0 0"></p>
+ <div class="seg sw" id="flModo" style="margin-top:14px"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:8px 0 0"></p>
  <div class="mapwrap mapbig mt"><div id="flMapa"></div><div class="zside" id="flLados"></div></div>
  <h3 class="seg-h">Todos os estados <small>quanto voltou para cada R$ 1 pago de impostos</small></h3><div id="flTab"></div>
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
@@ -3692,6 +3702,15 @@ const fmtVal=(v,u)=>v==null?"—":(u&&/R\$|reais/i.test(u)?brl(v):(Math.abs(v)>=
 const curto=v=>{const a=Math.abs(v);return a>=1e12?(v/1e12).toLocaleString("pt-BR",{maximumFractionDigits:1})+" tri":a>=1e9?Math.round(v/1e9)+" bi":a>=1e6?Math.round(v/1e6)+" mi":nf(Math.round(v))};
 function anosChart(pts,fmt=curto){return pts.length>=2?lineChart([{n:"Valor",v:pts.map(p=>p[1])}],pts.map(p=>String(p[0])),{h:180,fmt}):rvazio("A evolução aparece quando houver mais de um ano coletado.")}
 
+/* cartão corporativo do governo federal (Portal da Transparência), no alto de Gastos públicos da União */
+function cartaoHtml(c,ano){const D=c&&c.detalhe&&c.detalhe[String(ano)];if(!D||!D.total)return"";
+ const nome=t=>{t=tit(t);return t.length>34?t.slice(0,33)+"…":t},k=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
+ const parcial=D.meses<12&&+ano===new Date().getFullYear()?`até ${["","janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"][D.por_mes[D.por_mes.length-1].mes]}`:"";
+ return`<div class="panel mt"><div class="hd"><div><h2>Cartão corporativo</h2><p>Gastos de servidores do governo federal com o cartão de pagamento, em ${ano}${parcial?" ("+parcial+")":""}</p></div></div>
+ <div class="kpis kpis-c">${k("Gasto no ano",brl(D.total))}${k("Compras",brl(D.compras),pctR(D.compras,D.total)+" do total")}${k("Saques",brl(D.saques),pctR(D.saques,D.total)+" do total")}${k("Operações",nf(D.transacoes))}</div>
+ <div class="grid g2 mt"><div class="panel"><h2>Quem mais gastou</h2>${hbars(D.orgaos.slice(0,6).map(o=>[nome(o.nome),o.valor]),{fmt:brlR})}</div><div class="panel"><h2>Onde mais gastaram</h2>${D.favorecidos.length?hbars(D.favorecidos.slice(0,6).map(o=>[nome(o.nome),o.valor]),{fmt:brlR}):rvazio("Sem empresas identificadas.")}</div></div>
+ <p class="small muted" style="margin:10px 0 0">Fonte: Portal da Transparência (CGU). Saque e compra com cartão de pagamento do governo federal; nome e CPF de quem usou o cartão não entram aqui.</p></div>`}
+
 /* ---------- Gastos públicos: despesa por função (SICONFI) ---------- */
 const _gastos=P.gastos;
 P.gastos=(...a)=>API.on?{html:`<div class="ph"><div><h1>Gastos públicos</h1><p>Quanto a União, cada governo estadual e cada capital gastaram em saúde, educação, previdência e nas demais funções.</p></div></div>
@@ -3706,11 +3725,11 @@ mount(){let f={esfera:"U",uf:"",ano:"",municipio:""},entes=[],anosMun=[],CIDS={}
   if(f.esfera==="M"&&!f.municipio){$("#gsres").innerHTML=`<div class="panel">${rvazio("Escolha a cidade.")}</div>`;return}
   if(!f.ano){$("#gsres").innerHTML=`<div class="panel">${rvazio(f.esfera==="M"?"Sem dados desta prefeitura. Rode siconfi-despesas-funcao com esferas=M.":"Sem dados coletados para esse ente. Rode siconfi-despesas-funcao.")}</div>`;return}
   $("#gsres").innerHTML=rload();
-  try{const[d,ev]=await Promise.all([apiGet("/gastos/funcao"+qs({esfera:f.esfera,uf:f.esfera==="M"?"":f.uf,ano:f.ano,municipio:f.esfera==="M"?f.municipio:""})),apiGet("/gastos/evolucao"+qs({esfera:f.esfera,uf:f.esfera==="M"?"":f.uf,municipio:f.esfera==="M"?f.municipio:""}))]);const T=d.total_liquidado;
+  try{const[d,ev,cc]=await Promise.all([apiGet("/gastos/funcao"+qs({esfera:f.esfera,uf:f.esfera==="M"?"":f.uf,ano:f.ano,municipio:f.esfera==="M"?f.municipio:""})),apiGet("/gastos/evolucao"+qs({esfera:f.esfera,uf:f.esfera==="M"?"":f.uf,municipio:f.esfera==="M"?f.municipio:""})),f.esfera==="U"?apiGet("/cartao-corporativo").catch(()=>null):null]);const T=d.total_liquidado;
    const top=d.funcoes.slice(0,6).map(x=>[x.funcao,x.liquidado||0]);const resto=d.funcoes.slice(6).reduce((s,x)=>s+(x.liquidado||0),0);if(resto>0)top.push(["Outras",resto]);
    const emp=d.funcoes.reduce((s,x)=>s+(x.empenhado||0),0),dot=d.funcoes.reduce((s,x)=>s+(x.dotacao||0),0);
    $("#gsres").innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Quem gastou</span><strong style="font-size:17px">${esc(d.ente||ESFN2[f.esfera])}</strong></div>${dot?`<div class="kpi"><span>Orçamento atualizado</span><strong>${brl(dot)}</strong></div>`:""}${emp?`<div class="kpi"><span>Empenhado</span><strong>${brl(emp)}</strong></div>`:""}<div class="kpi"><span>Liquidado em ${d.ano}</span><strong>${brl(T)}</strong>${d.bimestre&&d.bimestre<6?`<em>até o ${d.bimestre}º bimestre</em>`:""}</div></div>
-   <div class="grid g2 mt"><div class="panel"><h2>Para onde foi o dinheiro</h2>${donut(top)}</div><div class="panel"><h2>Evolução do total liquidado</h2>${anosChart(ev.map(x=>[x.ano,x.liquidado]))}</div></div>
+   ${cartaoHtml(cc,d.ano)}<div class="grid g2 mt"><div class="panel"><h2>Para onde foi o dinheiro</h2>${donut(top)}</div><div class="panel"><h2>Evolução do total liquidado</h2>${anosChart(ev.map(x=>[x.ano,x.liquidado]))}</div></div>
    <div class="panel mt"><h2>Gastos por área</h2><p class="small muted" style="margin:0 0 6px">Em que cada área do governo gastou (saúde, educação, previdência…) e quanto isso é do total.</p><div class="gf-l">${d.funcoes.map((x,k)=>{const p=T?(x.liquidado||0)/T*100:0;return`<div class="gf-r"${k>=10?" hidden":""}><div class="gf-n"><b>${esc(x.funcao)}</b><span>${brlR(x.liquidado)}</span></div><div class="gf-p"><span class="bar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${rankCor(k,d.funcoes.length)}"></i></span><b>${pctR(x.liquidado||0,T)}</b></div></div>`}).join("")}</div>${d.funcoes.length>10?`<div style="text-align:center;margin-top:10px"><button class="btn" id="gfmais" type="button">Ver todos (${d.funcoes.length})</button></div>`:""}<p class="small muted">Gasto = serviço ou compra já entregue e conferido (despesa liquidada).</p></div>`;const bt=$("#gfmais");if(bt)bt.onclick=()=>{document.querySelectorAll("#gsres .gf-r[hidden]").forEach(r=>r.hidden=false);bt.remove()}}
   catch(e){$("#gsres").innerHTML=rerro(e)}};
  apiGet("/gastos/entes").then(es=>{entes=es;if(!es.length){demoComAviso(_gastos,a,"Nenhum gasto por função coletado ainda (coleta siconfi-despesas-funcao).");return}carregar()}).catch(e=>{$("#gsres").innerHTML=rerro(e)});
@@ -4498,10 +4517,10 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
 
 /* lista compacta por estado (v2.0): nome, valor grande, linha pequena; ordem maior→menor/menor→maior e "Ver todos" */
 function listaUF(rows,desc=true){const l=rows.slice().sort((a,b)=>desc?b.k-a.k:a.k-b.k);
- return`<div class="fl-box"><div class="fl-ord"><button type="button" class="ord-btn" data-o="d" aria-label="Inverter a ordem"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/></svg><span>Maior → menor</span></button></div><div class="fl-lista">${l.map((e,i)=>`<a class="fl-l${i>=10?" fl-x":""}"${i>=10?" hidden":""} data-k="${e.k}" href="#/uf/${e.uf}"><span class="fl-n">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span><span class="fl-r">${e.r}</span>${e.s?`<span class="fl-s">${e.s}</span>`:""}</a>`).join("")}</div>${l.length>10?`<button type="button" class="btn fl-mais">Ver todos (${l.length})</button>`:""}</div>`}
+ return`<div class="fl-box"><div class="fl-ord"><div class="seg sw" role="group" aria-label="Ordem da lista"><button type="button" class="ord-btn on" data-o="d"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Maiores</button><button type="button" class="ord-btn" data-o="a"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Menores</button></div></div><div class="fl-lista">${l.map((e,i)=>`<a class="fl-l${i>=10?" fl-x":""}"${i>=10?" hidden":""} data-k="${e.k}" href="#/uf/${e.uf}"><span class="fl-n">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span><span class="fl-r">${e.r}</span>${e.s?`<span class="fl-s">${e.s}</span>`:""}</a>`).join("")}</div>${l.length>10?`<button type="button" class="btn fl-mais">Ver todos (${l.length})</button>`:""}</div>`}
 document.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest(".fl-box .fl-mais,.fl-box .ord-btn");if(!t)return;const box=t.closest(".fl-box");
  if(t.classList.contains("fl-mais")){box.dataset.todos="1";box.querySelectorAll(".fl-x").forEach(x=>x.hidden=false);t.remove();return}
- t.dataset.o=t.dataset.o==="d"?"a":"d";t.querySelector("span").textContent=t.dataset.o==="d"?"Maior → menor":"Menor → maior";
+ if(t.classList.contains("on"))return;t.parentElement.querySelectorAll(".ord-btn").forEach(x=>x.classList.toggle("on",x===t));
  const desc=t.dataset.o==="d",lista=box.querySelector(".fl-lista");
  [...lista.children].sort((a,b)=>desc?b.dataset.k-a.dataset.k:a.dataset.k-b.dataset.k).forEach((x,i)=>{lista.appendChild(x);const oculto=i>=10&&!box.dataset.todos;x.hidden=oculto;x.classList.toggle("fl-x",i>=10)})});
 /* CAPAG em palavras e cores, do verde ao vermelho (a nota A, B, C ou D do Tesouro fica só na explicação) */
@@ -4583,7 +4602,7 @@ function telaEmpresasDiv(D){const box=$("#dvE");if(!box)return;apiGet("/dividas/
  <div class="grid g2 mt"><div class="panel"><h2>Quantas empresas existem, por porte</h2>${donut(ps.map(p=>[p,P[p].total]))}</div>
  <div class="panel"><h2>Quantas de cada porte devem à União</h2>${pbars(ps.map(p=>[p,pc(P[p].com_divida,P[p].total)]).concat([["Todas",pc(T.com_divida,T.total)]]))}<p class="small muted" style="margin:6px 0 0">Porcentagem das empresas ativas de cada porte que têm dívida inscrita na dívida ativa da União.</p></div></div>
  <div class="panel mt"><h2>Por porte</h2><div class="fl-lista">${linhaP.map(r=>{const q=pc(r[1].com_divida,r[1].total);return`<div class="fl-l"><span class="fl-n">${esc(r[0])}</span><span class="fl-r">${nf(r[1].total)}</span><span class="fl-s">${pct(pc(r[1].total,T.total))} das empresas · devem ${brl(r[1].divida_total)} · recuperação ${nf(r[1].recuperacao_judicial)} · falidas ${nf(r[1].falidas)}</span><span class="fl-b"><span class="bar"><i style="width:${Math.min(100,q).toFixed(1)}%"></i></span><b>${pct0(q)} com dívida</b></span></div>`}).join("")}</div></div>
- ${D.rj||D.fa?`<div class="panel mt"><h2>Recuperação judicial e falência</h2><p class="small muted" style="margin:0 0 8px">Empresas ainda ativas no CNPJ com essa situação, por porte e por estado.</p><div class="grid g2">${D.rj?`<div><h3 class="seg-h" style="margin-top:0">Em recuperação, por porte</h3>${donut(Object.entries(D.rj.por_porte||{}))}</div>`:""}${D.fa?`<div><h3 class="seg-h" style="margin-top:0">Em falência, por porte</h3>${donut(Object.entries(D.fa.por_porte||{}))}</div>`:""}</div>
+ ${D.rj||D.fa?`<div class="panel mt"><h2>Recuperação judicial e falência</h2><p class="small muted" style="margin:0 0 8px">Empresas ainda ativas no CNPJ com essa situação, por porte e por estado.</p><div class="grid g2">${D.rj?`<div><h3 class="seg-h" style="margin-top:0">Em recuperação, por porte</h3>${donut(Object.entries(D.rj.por_porte||{}),"rj")}</div>`:""}${D.fa?`<div><h3 class="seg-h" style="margin-top:0">Em falência, por porte</h3>${donut(Object.entries(D.fa.por_porte||{}),"fa")}</div>`:""}</div>
  <h3 class="seg-h">Por estado</h3>${listaUF(Object.entries((D.rj&&D.rj.por_uf)||{}).filter(([u])=>UF[u]).map(([u,n])=>({uf:u,k:n,r:nf(n),s:`em recuperação${D.fa&&D.fa.por_uf&&D.fa.por_uf[u]!=null?` · ${nf(D.fa.por_uf[u])} em falência`:""}`})))}</div>`:""}
  <p class="small muted">${esc(E.nota||"")} ${esc(E.aviso||"")} Logos e resumos: Wikipédia, quando o verbete é da mesma empresa; sem verbete, aparece a atividade principal registrada no CNPJ.</p>${resumoEmpresas(D)}${RSRC(E.fonte||"Receita Federal e PGFN")}`;
  rowLinks()}).catch(()=>{box.innerHTML=rvazio("O cruzamento das empresas com a dívida ativa ainda está sendo coletado pelo robô (coleta receita-empresas-porte).")})}

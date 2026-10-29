@@ -238,3 +238,20 @@ def test_cortes_no_orcamento_por_ano_e_orgao():
     assert (a["inicial"], a["atualizado"], a["cortado"], a["ampliado"]) == (360.0, 320.0, 60.0, 20.0) and a["percentual"] == round(60 / 360 * 100, 2)
     itens = r["itens"][str(ano)]
     assert [i["nome"] for i in itens] == ["MIN A", "MIN B"] and itens[0]["cortado"] == 40.0 and itens[0]["percentual_do_corte"] == round(40 / 60 * 100, 2)
+
+
+def test_cartao_corporativo_soma_e_rota(monkeypatch):
+    from app.collectors import cartao
+    csv_ = ('"CÓDIGO ÓRGÃO SUPERIOR";"NOME ÓRGÃO SUPERIOR";"CÓDIGO ÓRGÃO";"NOME ÓRGÃO";"CÓDIGO UNIDADE GESTORA";"NOME UNIDADE GESTORA";"ANO EXTRATO";"MÊS EXTRATO";"CPF PORTADOR";"NOME PORTADOR";'
+            '"CNPJ OU CPF FAVORECIDO";"NOME FAVORECIDO";"TRANSAÇÃO";"DATA TRANSAÇÃO";"VALOR TRANSAÇÃO"\n'
+            '"63000";"Advocacia-Geral da União";"63000";"AGU";"1";"UG";"2025";"09";"***.945.361-**";"A";"27186216000140";"W P CARIMBOS";"COMPRA A/V - R$ - APRES";"12/08/2025";"48,00"\n'
+            '"63000";"Advocacia-Geral da União";"63000";"AGU";"1";"UG";"2025";"09";"***.402.072-**";"B";"";"SAQUE";"SAQUE - R$ - APRES";"05/08/2025";"1.000,50"\n')
+    d = cartao.agregar_cartao(csv_)
+    assert d["total"] == 1048.5 and d["saques"] == 1000.5 and d["transacoes"] == 2
+    assert d["favorecidos"][0]["cnpj"] == "27186216000140" and "portador" not in str(d).lower()
+    with SessionLocal() as db:
+        db.add(Registro(fonte="transparencia", tipo="cartao_mes", chave="cpgf-202509", ano=2025, titulo="x", valor=d["total"], dados={**d, "mes": 9}))
+        db.commit()
+    r = cliente.get("/cartao-corporativo").json()
+    a = [x for x in r["anos"] if x["ano"] == 2025][0]
+    assert a["total"] >= 1048.5 and r["detalhe"]["2025"]["orgaos"][0]["nome"] == "Advocacia-Geral da União"

@@ -61,7 +61,7 @@ LISTAS = {
 }
 # respostas guardadas exatamente como o site pede
 FIXAS = [
-    "/saude", "/cortes", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
+    "/saude", "/cortes", "/cartao-corporativo", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
     "/mapa/estados", "/agora/eventos", "/partidos/composicao", "/assembleias", "/gastos/entes", "/orgaos",
     "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/obras-gestao?escopo=pais", "/indicadores",
     "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
