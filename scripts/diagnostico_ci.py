@@ -259,19 +259,29 @@ def entrada_zip(url, nome_parte):
     return None
 
 
+def _ctx_sistema():
+    """Contexto TLS com o repositório de certificados do sistema (tem o intermediário que o `certifi` não tem); verificação ligada."""
+    import os
+    import ssl
+    for caminho in ("/etc/ssl/certs/ca-certificates.crt", "/etc/pki/tls/certs/ca-bundle.crt"):
+        if os.path.exists(caminho):
+            return ssl.create_default_context(cafile=caminho)
+    return ssl.create_default_context()
+
+
 def main():
     """Ensino: nomes reais dos arquivos do INEP (IDEB, IGC). O servidor de downloads só abre com o repositório de certificados do
     sistema (o do `certifi` não tem o certificado intermediário dele); a verificação do certificado continua ligada."""
     import re
     import ssl
     ua = {"User-Agent": UA_NAV, "Accept": "text/html,application/json,*/*"}
-    sis = httpx.Client(timeout=60, follow_redirects=True, verify=ssl.create_default_context(), headers={"User-Agent": UA_NAV})
+    sis = httpx.Client(timeout=60, follow_redirects=True, verify=_ctx_sistema(), headers={"User-Agent": UA_NAV})
     base = "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/"
     for url in (base + "ideb/resultados", base + "indicadores-de-qualidade-da-educacao-superior"):
         try:
             r = cli.get(url, headers=ua)
             hrefs = sorted(set(re.findall(r"""href=["']([^"']+)["']""", r.text)))
-            uteis = [h for h in hrefs if re.search(r"ideb|igc|cpc|enade|resultado|indicador|download|planilha", h, re.I)]
+            uteis = [h for h in hrefs if re.search(r"download|planilha|\.zip|\.xls|ideb\.inep|portal_ideb|igc|resultado", h, re.I) and "linkedin" not in h]
             print(f"\n=== {url}: HTTP {r.status_code}; {len(hrefs)} links, {len(uteis)} úteis", flush=True)
             for h in uteis[:80]:
                 print("  ", h, flush=True)
@@ -290,10 +300,15 @@ def main():
     for y in (2023, 2022, 2021):
         for n in ("igc_{y}.xlsx", "IGC_{y}.xlsx", "resultados_igc_{y}.xlsx", "igc_{y}_atualizado.xlsx", "igc_{y}.zip"):
             cand.append(G.format(y=y, n=n.format(y=y)))
+    cand += ["http://ideb.inep.gov.br/", "https://ideb.inep.gov.br/", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/",
+             "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/", "https://download.inep.gov.br/educacao_superior/indicadores/"]
     for u in cand:
         try:
-            r = sis.head(u)
+            r = sis.get(u) if u.endswith("/") else sis.head(u)
             print(f"HEAD {r.status_code} {r.headers.get('content-length')} {u}", flush=True)
+            if u.endswith("/") and r.status_code == 200:
+                for h in sorted(set(re.findall(r"""href=["']([^"']+)["']""", r.text)))[:60]:
+                    print("    ", h, flush=True)
         except Exception as e:
             print(f"HEAD ERRO {type(e).__name__}: {str(e)[:80]} {u}", flush=True)
 
