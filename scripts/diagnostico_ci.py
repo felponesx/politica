@@ -275,7 +275,7 @@ def main():
     roteiro = r"""
 set -u
 H=download.inep.gov.br
-openssl s_client -connect $H:443 -servername $H -showcerts </dev/null 2>/dev/null > /tmp/cadeia.txt
+timeout 20 openssl s_client -connect $H:443 -servername $H -showcerts </dev/null 2>/dev/null > /tmp/cadeia.txt
 echo "--- linhas da cadeia"; grep -E '^( [0-9] s:|   i:|---|Verification|Verify return code)' /tmp/cadeia.txt | head -20
 awk '/BEGIN CERT/{n++} n>=1{print > "/tmp/c" n ".pem"} /END CERT/{}' /tmp/cadeia.txt
 for f in /tmp/c1.pem /tmp/c2.pem /tmp/c3.pem; do [ -f $f ] || continue; echo "--- $f"; openssl x509 -in $f -noout -subject -issuer -dates 2>&1 | head -4; openssl x509 -in $f -noout -text 2>/dev/null | grep -A3 'Authority Information Access' ; done
