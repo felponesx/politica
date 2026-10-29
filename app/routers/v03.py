@@ -725,3 +725,10 @@ def julgamentos():
     """Julgamentos de grande repercussão do STF (lista curada, com placar e fonte)."""
     from app import julgamentos as _j
     return _j.dados()
+
+
+@router.get("/faccoes", tags=["Segurança"])
+def faccoes():
+    """Facções criminosas de maior alcance, onde são mais fortes e a fonte de cada uma (lista curada)."""
+    from app import faccoes as _f
+    return _f.dados()

@@ -109,3 +109,10 @@ def test_julgamentos_com_fonte():
     from app import julgamentos
     d = julgamentos.dados()
     assert d["itens"] and all(i["fonte"].startswith("https://") for i in d["itens"])
+
+
+def test_faccoes_com_fonte():
+    from app import faccoes
+    d = faccoes.dados()
+    assert {"PCC", "CV"} <= {i["sigla"] for i in d["itens"]}
+    assert all(i["forte"] and i["fonte"].startswith("https://") for i in d["itens"])
