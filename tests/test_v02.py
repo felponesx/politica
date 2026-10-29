@@ -255,3 +255,23 @@ def test_cartao_corporativo_soma_e_rota(monkeypatch):
     r = cliente.get("/cartao-corporativo").json()
     a = [x for x in r["anos"] if x["ano"] == 2025][0]
     assert a["total"] >= 1048.5 and r["detalhe"]["2025"]["orgaos"][0]["nome"] == "Advocacia-Geral da União"
+
+
+def test_emendas_soma_e_rota():
+    from app.collectors import emendas
+    cab = ('"Código da Emenda";"Ano da Emenda";"Tipo de Emenda";"Código do Autor da Emenda";"Nome do Autor da Emenda";"Número da emenda";"Localidade de aplicação do recurso";'
+           '"Código Município IBGE";"Município";"Código UF IBGE";"UF";"Região";"Código Função";"Nome Função";"Código Subfunção";"Nome Subfunção";"Código Programa";"Nome Programa";'
+           '"Código Ação";"Nome Ação";"Código Plano Orçamentário";"Nome Plano Orçamentário";"Valor Empenhado";"Valor Liquidado";"Valor Pago";"Valor Restos A Pagar Inscritos";'
+           '"Valor Restos A Pagar Cancelados";"Valor Restos A Pagar Pagos"\n')
+    lin = lambda ano, tipo, autor, uf, fn, emp, pago, rap: (f'"1";"{ano}";"{tipo}";"7";"{autor}";"1";"X";"1";"M";"1";"{uf}";"Sul";"10";"{fn}";"1";"s";"1";"p";"1";"a";"1";"pl";'
+                                                             f'"{emp}";"0,00";"{pago}";"0,00";"0,00";"{rap}"\n')
+    t = cab + lin(2099, "Emenda Individual - Transferências com Finalidade Definida", "FULANA", "SÃO PAULO", "Saúde", "1.000,00", "400,00", "100,00") + \
+        lin(2099, "Emenda de Bancada", "BANCADA DO PI", "PIAUÍ", "Educação", "500,00", "500,00", "0,00")
+    r = emendas.agregar_emendas(t)[2099]
+    assert r["empenhado"] == 1500.0 and r["pago"] == 900.0 and r["restos_pagos"] == 100.0
+    assert set(r["tipos"]) == {"Individual", "Bancada"} and r["ufs"]["SÃO PAULO"]["pago"] == 500.0
+    with SessionLocal() as db:
+        db.add(Registro(fonte="transparencia", tipo="emendas_ano", chave="emendas-2099", ano=2099, titulo="x", valor=900, dados=r))
+        db.commit()
+    j = cliente.get("/emendas").json()
+    assert j["detalhe"]["2099"]["pago"] == 1000.0 and j["anos"][-1]["ano"] == 2099

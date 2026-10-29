@@ -53,7 +53,8 @@ CAPAG_ANOS = {
     2025: "https://www.tesourotransparente.gov.br/ckan/dataset/9ff93162-409e-48b5-91d9-cf645a47fdfc/resource/046f7fcf-a742-4787-9768-dbb10747d55d/download/capag-municipios-posicao-2025-nov-09---processamento-2025-nov-10.xlsx",
 }
 # sem chave: orçamento por órgão (Portal da Transparência, arquivo anual) e notícias de política
-EXTRAS = [*[("tesouro-capag", {"url": u, "ano": a}) for a, u in CAPAG_ANOS.items()],
+EXTRAS = [("transparencia-emendas", {}),
+          *[("tesouro-capag", {"url": u, "ano": a}) for a, u in CAPAG_ANOS.items()],
           *[("transparencia-cartao", {"ano": a}) for a in range(2015, date.today().year + 1)],
           *[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
           ("noticias-politica", {}), ("bcb-scr-estados", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),

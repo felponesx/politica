@@ -218,6 +218,27 @@ def orgaos(q: str | None = None, ano: int | None = None, db: Session = Depends(g
             "fonte": "Portal da Transparência (CGU) — orçamento e execução por órgão (arquivo de dados abertos)"}
 
 
+@router.get("/emendas", tags=["Órgãos"])
+def emendas(db: Session = Depends(get_db)):
+    """Emendas parlamentares por ano: empenhado e pago (inclui restos a pagar pagos), por tipo, função, estado e autor."""
+    regs = db.scalars(select(Registro).where(Registro.fonte == "transparencia", Registro.tipo == "emendas_ano")).all()
+    if not regs:
+        raise HTTPException(404, "Sem dados. Rode a coleta transparencia-emendas.")
+    anos, detalhe = [], {}
+    for r in sorted(regs, key=lambda r: r.ano or 0):
+        d = r.dados or {}
+        pago = _num(d, "pago") + _num(d, "restos_pagos")
+        anos.append({"ano": r.ano, "empenhado": round(_num(d, "empenhado"), 2), "pago": round(pago, 2), "emendas": int(d.get("n") or 0)})
+        lista = lambda k: [{"nome": n, **v} for n, v in (d.get(k) or {}).items()]
+        detalhe[str(r.ano)] = {"empenhado": round(_num(d, "empenhado"), 2), "liquidado": round(_num(d, "liquidado"), 2), "pago": round(pago, 2),
+                               "emendas": int(d.get("n") or 0), "tipos": lista("tipos"), "funcoes": lista("funcoes")[:12],
+                               "ufs": {n: v for n, v in (d.get("ufs") or {}).items()}, "autores": lista("autores")[:10]}
+    return {"anos": anos, "detalhe": detalhe, "fonte": "Portal da Transparência (CGU) — Emendas Parlamentares",
+            "nota": ("Emendas são verbas do orçamento da União que deputados, senadores, bancadas e comissões indicam para obras e serviços. "
+                     "\"Pago\" soma o que foi pago no ano e os restos a pagar pagos depois. O estado \"Múltiplo\" é quando a emenda atende vários estados; "
+                     "\"Nacional\" e \"Exterior\" também aparecem. O ano em andamento ainda muda.")}
+
+
 @router.get("/cartao-corporativo", tags=["Órgãos"])
 def cartao_corporativo(db: Session = Depends(get_db)):
     """Cartão de Pagamento do Governo Federal (cartão corporativo): total por ano e, em cada ano, compras, saques, meses, órgãos e maiores favorecidos."""
