@@ -260,21 +260,24 @@ def entrada_zip(url, nome_parte):
 
 
 def main():
-    """Fontes de processos (STF, TSE, DataJud): o que abre a partir dos servidores do GitHub (o ambiente de desenvolvimento é bloqueado)."""
+    """Ensino: onde estão os arquivos do INEP (IDEB, IGC, CPC, ENEM por escola) e o que abre a partir dos servidores do GitHub."""
     ua = {"User-Agent": UA_NAV, "Accept": "text/html,application/json,*/*"}
-    for nome, url in (("STF portal", "https://portal.stf.jus.br/"), ("STF Corte Aberta", "https://portal.stf.jus.br/hotsites/corteaberta/"),
-                      ("STF transparência", "https://transparencia.stf.jus.br/"), ("STF dados abertos", "https://dadosabertos.stf.jus.br/"),
-                      ("STF processos por parte", "https://portal.stf.jus.br/processos/"),
-                      ("STF Corte Aberta painéis", "https://portal.stf.jus.br/hotsites/corteaberta/paineis.asp"),
-                      ("TSE dados abertos", "https://dadosabertos.tse.jus.br/dataset/"),
-                      ("TSE conjuntos processos", "https://dadosabertos.tse.jus.br/api/3/action/package_search?q=processo&rows=10"),
-                      ("TSE conjuntos inelegib", "https://dadosabertos.tse.jus.br/api/3/action/package_search?q=inelegibilidade&rows=10"),
-                      ("DataJud wiki", "https://datajud-wiki.cnj.jus.br/api-publica/endpoints"),
-                      ("Câmara REP", "https://dadosabertos.camara.leg.br/api/v2/proposicoes?siglaTipo=REP&ano=2025&itens=3")):
-        ver(nome, url, headers=ua, n=900)
-    for nome, url in (("STF Corte Aberta links", "https://portal.stf.jus.br/hotsites/corteaberta/"),
-                      ("STF Corte Aberta links 2", "https://portal.stf.jus.br/hotsites/corteaberta/paineis.asp")):
-        links(nome, url, padrao=r'href="([^"]+)"', n=80, headers=ua)
+    paginas = (("IDEB resultados", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados"),
+               ("IDEB dados", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb"),
+               ("IGC", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indice-geral-de-cursos-igc"),
+               ("CPC", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/conceito-preliminar-de-curso-cpc"),
+               ("ENEM por escola", "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/resultados"),
+               ("Indicadores superior", "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indicadores-de-qualidade-da-educacao-superior"))
+    for nome, url in paginas:
+        ver(nome, url, headers=ua, n=300)
+        links(nome + " links", url, padrao=r'href="([^"]+\.(?:xlsx?|zip|csv|ods)[^"]*)"', n=60, headers=ua)
+    for nome, url in (("IDEB 2023 zip", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/2023/divulgacao_brasil_ufs_ideb_2023.zip"),
+                      ("IDEB 2023 ufs", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/2023/divulgacao_anos_iniciais_municipios_2023.zip"),
+                      ("IDEB 2021 brasil/ufs", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_brasil_ufs_ideb_2021.zip"),
+                      ("IGC 2022", "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/2022/igc_2022.xlsx"),
+                      ("IGC 2021", "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/2021/igc_2021.xlsx"),
+                      ("IBGE educação UF", "https://apisidra.ibge.gov.br/values/t/7125/n3/all/v/all/p/last")):
+        ver(nome, url, headers=ua, metodo="HEAD")
 
 
 if __name__ == "__main__":
