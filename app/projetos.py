@@ -26,6 +26,32 @@ _ID = re.compile(r"\b(PL|PLP|PEC|MPV|PDL|PDC|PLN|PRC|PLS|PLC|PDS|PLV)\s*n?[ºo°
 _RELATOR = re.compile(r"relator(?:a)?\b[\s,:\-–]*(?:dep(?:utad[oa])?\.?\s*|sen(?:ador[a]?)?\.?\s*)?([A-ZÁÉÍÓÚÂÊÔÃÕÇ][^(,.;\n]{3,60})", re.I)
 
 
+def prioridade(p) -> str | None:
+    """alta / media / baixa a partir do regime de tramitação da Câmara (Urgência, Prioridade, Ordinária). Medida provisória tranca a pauta: alta.
+    Sem regime coletado (ou fora da Câmara), vem vazio: nada é inventado."""
+    if p.sigla_tipo == "MPV":
+        return "alta"
+    r = (p.regime or "").lower()
+    if r.startswith("urg"):
+        return "alta"
+    if r.startswith("prior"):
+        return "media"
+    if r.startswith("ordin"):
+        return "baixa"
+    return None
+
+
+def filtrar_por_prioridade(stmt, prio: str | None):
+    if not prio:
+        return stmt
+    reg = func.lower(func.coalesce(Proposicao.regime, ""))
+    if prio == "alta":
+        return stmt.where(or_(reg.like("urg%"), Proposicao.sigla_tipo == "MPV"))
+    if prio == "media":
+        return stmt.where(reg.like("prior%"), Proposicao.sigla_tipo != "MPV")
+    return stmt.where(or_(reg.like("ordin%")), Proposicao.sigla_tipo != "MPV")
+
+
 def _pauta_de_hoje(db, hoje: date) -> dict[tuple, str]:
     """{(sigla, numero, ano): 'em_andamento' | 'convocada'} dos eventos de hoje cuja pauta cita a proposição."""
     out: dict[tuple, str] = {}
@@ -141,7 +167,7 @@ def enriquecer(db, props: list[Proposicao]) -> list[dict]:
             fase = "a_votar"
         else:
             fase = None
-        out.append({"id": p.id, "casa": p.casa, "sigla_tipo": p.sigla_tipo, "numero": p.numero, "ano": p.ano, "ementa": p.ementa,
+        out.append({"prioridade": prioridade(p), "regime": p.regime, "id": p.id, "casa": p.casa, "sigla_tipo": p.sigla_tipo, "numero": p.numero, "ano": p.ano, "ementa": p.ementa,
                     "data_apresentacao": p.data_apresentacao.isoformat() if p.data_apresentacao else None, "situacao": p.situacao,
                     "autor": autor, "relator": _relator(t.get("passos") or []), "placar": pl, "fase": fase, "na_pauta": na_pauta,
                     "virou_lei": bool(p.urn_final) or bool(re.search(r"norma jur|transformad[oa] em (lei|norma)", sit))})

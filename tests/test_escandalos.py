@@ -93,3 +93,13 @@ def test_foragidos_com_fonte():
     c = escandalos.crimes()
     assert c["total_foragidos"] >= 1
     assert all(i["fontes"] for i in c["foragidos"])
+
+
+def test_prioridade_do_regime():
+    from types import SimpleNamespace as N
+    from app.projetos import prioridade
+    assert prioridade(N(sigla_tipo="PL", regime="Urgência (Art. 155, RICD)")) == "alta"
+    assert prioridade(N(sigla_tipo="PL", regime="Prioridade (Art. 151, II, RICD)")) == "media"
+    assert prioridade(N(sigla_tipo="PL", regime="Ordinária (Art. 151, III, RICD)")) == "baixa"
+    assert prioridade(N(sigla_tipo="MPV", regime=None)) == "alta"
+    assert prioridade(N(sigla_tipo="PL", regime=None)) is None

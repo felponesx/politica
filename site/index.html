@@ -1767,6 +1767,8 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .prm-n{color:var(--c);font-weight:700}
 .prm-h{display:flex;align-items:center;gap:14px}.prm-h .prm-i{width:58px;height:58px;border-radius:18px}
 .prm-r{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
+
+.pj-prio{color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 32%,transparent)}
 </style>
 </head>
 <body>
@@ -2671,7 +2673,7 @@ document.addEventListener("click",e=>{const tr=e.target.closest&&e.target.closes
 function rowLinks(){}
 
 P.orgaos=()=>{let e="",pd="",uf="";return{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios, secretarias, prefeituras, câmaras, assembleias, tribunais, autarquias e empresas públicas.</p></div></div>
-<div class="panel"><div class="filters"><select id="oe" data-titulo="Esfera"><option value="">Todas as esferas</option><option>Federal</option><option>Estadual</option><option>Municipal</option></select><select id="opd" data-titulo="Poder"><option value="">Todos os poderes</option><option>Executivo</option><option>Legislativo</option><option>Judiciário</option><option>Controle</option></select><select id="ouf" data-titulo="Estado"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div><div id="ot"></div>${SRC}</div>`,
+<div class="panel"><div class="filters"><select id="oe" data-titulo="Esfera"><option value="">Todas as esferas</option><option>Federal</option><option>Estadual</option><option>Municipal</option></select><select id="opd" data-titulo="Poder"><option value="">Todos os poderes</option><option>Executivo</option><option>Legislativo</option><option>Judiciário</option><option>Controle</option></select><select id="ouf" data-titulo="Estado" data-pill="Estado"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div><div id="ot"></div>${SRC}</div>`,
 mount(){const d=()=>{$("#ot").innerHTML=table([["Órgão",o=>`<a href="#/orgao/${o.id}">${o.nome}</a><div class="small muted">${[o.esfera,o.poder,o.uf].filter(Boolean).join(" · ")}</div>`],["Orçamento",o=>brl(o.orc),"n"]],ORGAOS.filter(o=>(!e||o.esfera===e)&&(!pd||o.poder.startsWith(pd))&&(!uf||o.uf===uf)),o=>"#/orgao/"+o.id);if(!$("#ot tbody tr"))$("#ot").innerHTML='<p class="muted small">Nenhum órgão com esses filtros nesta amostra.</p>';rowLinks()};d();$("#oe").onchange=x=>{e=x.target.value;d()};$("#opd").onchange=x=>{pd=x.target.value;d()};$("#ouf").onchange=x=>{uf=x.target.value;d()}}}};
 
 P.orgao=(id)=>{const o=orgao(id)||ORGAOS[0];const cs=CONTRATOS.filter(c=>c.org===o.id);const ob=OBRAS.filter(x=>x.org===o.id);const u=UF[o.uf];
@@ -2724,7 +2726,7 @@ return{html:`<div class="ph"><div><h1>Candidatos</h1><p>Eleitos, não eleitos e 
 <div class="panel mt" id="pmapcard" hidden><div id="pmapmain" class="zmain"><div class="hd"><div><h2 id="pmapT">Mapa dos partidos</h2><p>Cada bola mostra o partido e quantas cadeiras ele tem no estado. Toque em um estado para ver a divisão.</p></div><button type="button" class="btn" id="pmapX">Fechar mapa</button></div><div class="mapwrap mapbig"><div id="pmap"></div><div class="zside" id="pmapside"></div></div></div><div id="pmapstate" style="display:none"></div></div>
 <h2 class="sec-t" id="plistT" style="margin-top:18px">Deputados federais</h2>
 <div class="seg" id="psit" style="margin-bottom:12px"></div>
-<div class="panel"><div class="filters" id="pfil"><select id="ppt" data-titulo="Partido"><option value="">Todos os partidos</option>${PARTS.map(x=>`<option value="${x}">${x}</option>`).join("")}<option value="__sem">Sem partido</option></select><select id="puf" data-titulo="Estado"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div>
+<div class="panel"><div class="filters" id="pfil"><select id="ppt" data-titulo="Partido"><option value="">Todos os partidos</option>${PARTS.map(x=>`<option value="${x}">${x}</option>`).join("")}<option value="__sem">Sem partido</option></select><select id="puf" data-titulo="Estado" data-pill="Estado"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div>
 <p class="small muted" id="plistN" style="margin:0 0 10px"></p><div class="grid g3" id="plist"></div><div id="plistMais"></div><div id="plistSrc"></div></div>
 <div class="panel mt pinfo" id="pinfo"></div>`,
 mount(){const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -2824,7 +2826,7 @@ const empN=e=>CONTRATOS.filter(c=>c.emp===e.id).length||e.n||0,empV=e=>CONTRATOS
 const empList=()=>{let st="",uf="",q="";
 return{html:`<div class="ph"><div><h1>Empresas e fornecedores</h1><p>Quem vende para o poder público, para quais órgãos e por quanto.</p></div></div>
 <div class="seg" id="eset" style="margin-bottom:12px"><button data-s="" class="on">Todos os setores</button>${SETORES.map(s=>`<button data-s="${s}">${s} <small>${EMPRESAS.filter(e=>e.setor===s).length}</small></button>`).join("")}</div>
-<div class="panel"><div class="filters"><input id="emq" placeholder="Nome, atividade ou CNPJ" style="flex:1;min-width:180px"><select id="emuf"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div><div id="emt"></div>${SRC}</div>`,
+<div class="panel"><div class="filters"><input id="emq" placeholder="Nome, atividade ou CNPJ" style="flex:1;min-width:180px"><select id="emuf" data-pill="Estado"><option value="">Todos os estados</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select></div><div id="emt"></div>${SRC}</div>`,
 mount(){const norm=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
  const d=()=>{const r=EMPRESAS.filter(e=>(!st||e.setor===st)&&(!uf||e.uf===uf)&&(!q||norm(e.nome+e.ativ+e.cnpj).includes(norm(q))));
  $("#emt").innerHTML=r.length?table([["Empresa",e=>`<a href="#/empresa/${e.id}">${e.nome}</a><div class="small muted">${e.ativ}</div>`],["Dono e CEO",e=>{const d=diretoria(e);return`<span class="small">${d.dono.nome}</span><div class="small muted">CEO: ${d.ceoDono?"o próprio dono":d.ceo}</div>`}],["Setor",e=>`<span class="tag set-${SETORES.indexOf(e.setor)}">${e.setor}</span>`],["Local",e=>e.mun+", "+e.uf],["Contratos",e=>empN(e),"n"],["Valor contratado",e=>brl(empV(e)),"n"]],r,e=>"#/empresa/"+e.id):'<p class="muted small">Nenhuma empresa com esses filtros nesta amostra.</p>';rowLinks()};d();
@@ -2868,7 +2870,7 @@ ${c0?`<div class="panel mt"><h2>Caminho do dinheiro <small>exemplo do contrato m
 
 const ctrList=()=>{const f={uf:"",cat:"",sit:"",q:""};
 return{html:`<div class="ph"><div><h1>Contratos</h1><p>Consulte contratos por local, órgão, empresa, valor, data e situação.</p></div></div>
-<div class="panel"><div class="filters"><input id="cq" placeholder="Objeto, número ou empresa" style="flex:1;min-width:180px"><select id="cu"><option value="">Todos os estados</option>${[...new Set(CONTRATOS.map(c=>c.uf))].map(u=>`<option value="${u}">${UF[u].nome}</option>`).join("")}</select><select id="cc"><option value="">Todas as categorias</option>${[...new Set(CONTRATOS.map(c=>c.cat))].map(c=>`<option>${c}</option>`).join("")}</select><select id="cs"><option value="">Todas as situações</option><option>Vigente</option><option>Encerrado</option><option>Suspenso</option></select></div><div id="ct"></div>${SRC}</div>`,
+<div class="panel"><div class="filters"><input id="cq" placeholder="Objeto, número ou empresa" style="flex:1;min-width:180px"><select id="cu" data-pill="Estado"><option value="">Todos os estados</option>${[...new Set(CONTRATOS.map(c=>c.uf))].map(u=>`<option value="${u}">${UF[u].nome}</option>`).join("")}</select><select id="cc"><option value="">Todas as categorias</option>${[...new Set(CONTRATOS.map(c=>c.cat))].map(c=>`<option>${c}</option>`).join("")}</select><select id="cs"><option value="">Todas as situações</option><option>Vigente</option><option>Encerrado</option><option>Suspenso</option></select></div><div id="ct"></div>${SRC}</div>`,
 mount(){const d=()=>{const r=CONTRATOS.filter(c=>(!f.uf||c.uf===f.uf)&&(!f.cat||c.cat===f.cat)&&(!f.sit||c.sit===f.sit)&&(!f.q||(c.obj+c.num+empresa(c.emp).nome).toLowerCase().includes(f.q.toLowerCase())));$("#ct").innerHTML=r.length?table([["Contrato",c=>`<a href="#/contrato/${c.id}">${c.obj}</a><div class="small muted">${c.num} · ${orgao(c.org).nome}</div>`],["Empresa",c=>empresa(c.emp).nome],["Valor",c=>brl(c.valor),"n"]],r,c=>"#/contrato/"+c.id):'<p class="muted">Nenhum contrato com esses filtros. Remova um filtro para ampliar a busca.</p>';rowLinks()};d();
 $("#cq").oninput=e=>{f.q=e.target.value;d()};$("#cu").onchange=e=>{f.uf=e.target.value;d()};$("#cc").onchange=e=>{f.cat=e.target.value;d()};$("#cs").onchange=e=>{f.sit=e.target.value;d()}}}};
 
@@ -3341,7 +3343,7 @@ function bandPart(s,h=12){if(!s)return"";return`<i class="plg" data-plogo="${esc
 const corSigla=s=>{const b=bandDe(s);return b?(b[0]==="#FFFFFF"?b[1]:b[0]):RCOR[hs(String(s||"?"))%RCOR.length]};
 const sigla=(s,big)=>s?`<span class="rsig${big?" big":""}" style="--c:${corSigla(s)}">${bandPart(s,big?13:11)}${esc(s)}</span>`:"";
 const fotoR=(url,nome,sz=84)=>`<span class="rfoto ini" style="width:${sz}px;height:${sz}px"${url?` data-foto="${esc(url)}" data-nome="${esc(nome||"")}"`:""}>${esc(String(nome||"?").trim()[0]||"?")}</span>`;
-const UFSel=(id,lab="Todos os estados")=>`<select id="${id}" data-titulo="Estado"><option value="">${lab}</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select>`;
+const UFSel=(id,lab="Todos os estados")=>`<select id="${id}" data-titulo="Estado" data-pill="Estado"><option value="">${lab}</option>${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select>`;
 const VCOR={Sim:"var(--p2)","Não":"var(--p6)",Abstenção:"var(--p3)",Obstrução:"var(--p4)"};
 const vcor=v=>VCOR[v]||"var(--line)";
 function placarBar(pl){const it=Object.entries(pl||{}).sort((a,b)=>b[1]-a[1]);const T=it.reduce((a,b)=>a+b[1],0)||1;
@@ -4028,7 +4030,7 @@ mount(){
    if(temReal())listaPaginada({url:()=>"/legislacao?esfera=estadual&uf="+uf,alvo:"#cfufl",mais:"#cfufm",limite:20,vazio:`Nenhuma lei estadual ${deUF(uf)} coletada ainda.`,
     render:(it,tot)=>`<p class="small muted" style="margin:0 0 8px">${nf(tot)} normas</p>`+it.map(n=>`<a class="list-row rrow" href="${n.url_texto?esu(n.url_texto):"#/norma/r"+n.id}" ${n.url_texto?'target="_blank" rel="noopener"':""}><span class="tag">${esc(n.tipo)}</span><div style="flex:1;min-width:0"><b>${esc(rotNorma(n))}</b><div class="small muted rclamp">${esc(n.ementa||"")}</div></div><span class="small muted">${fdr(n.data)}</span></a>`).join("")})(true)};
   const liga=()=>bindMap($("#cfmap"),null,null,u=>mostra(u));liga();$("#cfuf").onchange=e=>{if(e.target.value)mostra(e.target.value)};mostra(prefsUF())}}}};
-function UFSelC(id){return`<select id="${id}" data-titulo="Estado">${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select>`}
+function UFSelC(id){return`<select id="${id}" data-titulo="Estado" data-pill="Estado">${UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${u.nome}</option>`).join("")}</select>`}
 function prefsUF(){try{const p=prefs();if(p&&p.uf&&UF[p.uf])return p.uf}catch(e){}return"SP"}
 
 /* ---------- v0.3: contadores, economia, agenda do Congresso, comparação e exportação ---------- */
@@ -4604,7 +4606,7 @@ function obrasLista(ctx){const hoje=OB_HOJE();let L=[],f={c:"todas",a:"todas",p:
  const carrega=uf=>{$("#obL").innerHTML=rload();return apiGet("/obras-gestao/lista?uf="+uf).then(d=>{const c=d.campos;let l=d.itens.map(a=>Object.fromEntries(c.map((k,i)=>[k,a[i]])));
    const cg=normNome(ctx.cargo);if(cg==="GOVERNADOR")l=l.filter(r=>r.tipo==="E");else if(cg==="PREFEITO")l=l.filter(r=>r.municipio===normNome(ctx.unidade));L=l;des()}).catch(()=>{$("#obL").innerHTML=rvazio("A lista de obras deste estado ainda não foi coletada.")})};
  $("#obF3").onchange=e=>{f.o=e.target.value;des()};$("#obF4").oninput=debounce(e=>{f.q=e.target.value.trim();des()},200);
- if(normNome(ctx.cargo)==="PRESIDENTE"){$("#obUF").innerHTML=`<div class="filters" style="margin:0 0 8px"><select id="obUFs" data-titulo="Estado">${UFS.map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("")}</select></div><p class="small muted" style="margin:0 0 8px">O país tem ${nf(ctx.total||0)} obras: escolha o estado para ver as dele.</p>`;
+ if(normNome(ctx.cargo)==="PRESIDENTE"){$("#obUF").innerHTML=`<div class="filters" style="margin:0 0 8px"><select id="obUFs" data-titulo="Estado" data-pill="Estado">${UFS.map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("")}</select></div><p class="small muted" style="margin:0 0 8px">O país tem ${nf(ctx.total||0)} obras: escolha o estado para ver as dele.</p>`;
   $("#obUFs").onchange=e=>carrega(e.target.value);carrega(UFS[0].uf)}
  else carrega(ctx.uf)}
 function obrasTelaHtml(g,ctx){return obrasGestaoHtml(g)+`<div id="obT2">${obrasListaHtml()}</div>`}
@@ -5759,12 +5761,14 @@ const pautaVale=()=>!API.snap||(SNAP.m&&String(SNAP.m.gerado_em||"").slice(0,10)
 function votadoInfo(p){const pl=p.placar,t=[];if(p.virou_lei)t.push('<span class="sit-p sit-ok">Virou lei</span>');
  if(pl){const ap=/aprov/i.test(pl.resultado||"");t.push(`<span class="sit-p ${ap?"sit-go":"sit-off"}">${ap?"Aprovado":esc(pl.resultado||"Votado")}${pl.data?" em "+fdr(pl.data):""}</span>`)}
  return t.length?`<div class="pj-tags">${t.join("")}</div>`:""}
+const PRIO={alta:["Prioridade alta","#E5484D"],media:["Prioridade média","#F5A524"],baixa:["Prioridade baixa","#1BAF7A"]};
+const prioTag=(k,reg)=>PRIO[k]?`<div class="pj-t"><span class="sit-p pj-prio" style="--c:${PRIO[k][1]}" title="${esc(reg||"Medida provisória: tranca a pauta")}">${PRIO[k][0]}</span></div>`:"";
 function cartaoProjeto(p){const num=`${p.sigla_tipo||""} ${p.numero||""}`.trim()+(p.ano?`/${p.ano}`:"");const au=p.autor;
  const autor=au?`${esc(au.nome||"")}${au.partido?` (${esc(au.partido)}${au.uf?"-"+esc(au.uf):""})`:""}${au.outros?` +${au.outros}`:""}`:"";
  const hoje=!pautaVale()?"":p.na_pauta==="em_andamento"?'<span class="sit-p sit-vote">Em votação agora</span>':p.na_pauta==="convocada"?'<span class="sit-p sit-wait">Na pauta de hoje</span>':"";
  return`<a class="pj-c" href="#/projeto/r${p.id}"><div class="pj-h"><div style="min-width:0"><div class="pj-n">${esc(num)}</div>
   <div class="pj-s">${autor?`Autor: ${autor}`:"Autor não coletado"}${p.relator?`<br>Relator: ${esc(p.relator)}`:""}</div></div>
-  <div class="pj-d"><div>${esc(casaN(p.casa)||"")}</div><div>${p.data_apresentacao?fdr(p.data_apresentacao):""}</div><div class="pj-t">${hoje||sitProjTag(p.situacao)}</div></div></div>
+  <div class="pj-d"><div>${esc(casaN(p.casa)||"")}</div><div>${p.data_apresentacao?fdr(p.data_apresentacao):""}</div><div class="pj-t">${hoje||sitProjTag(p.situacao)}</div>${prioTag(p.prioridade,p.regime)}</div></div>
   <p class="pj-r">${esc(p.ementa||"Sem resumo.")}</p>${votadoInfo(p)}</a>`}
 /* seletor de ano em calendário de anos (sem data) */
 function anoPickHtml(id,rot="Todos os anos",de=1985){const ate=new Date().getFullYear();
@@ -5791,10 +5795,10 @@ function telaLeis(){return{html:`<div class="panel"><div class="filters"><input 
   const re=debounce(()=>pg(true));$("#lgq").oninput=e=>{f.q=e.target.value.trim();re()};$("#lgt").onchange=e=>{f.tipo=e.target.value;pg(true)};pg(true)}}}
 function telaProjetos(){const ativas=()=>FASES_P.filter(f=>f[0]!=="em_votacao"||pautaVale());
  return{html:`<div class="seg pj-fases" id="pjf">${ativas().map(f=>`<button type="button" data-f="${f[0]}" class="${f[0]==="a_votar"?"on":""}">${f[1]}<small></small></button>`).join("")}</div><div id="pjbox" class="mt"></div>`,
- mount(){const leis=telaLeis();let f={q:"",casa:"",ano:"",fase:"a_votar"},pg=null;
-  const lista=()=>{$("#pjbox").innerHTML=`<div class="panel"><div class="filters"><input id="prq" placeholder="Palavra do resumo ou número" style="flex:1;min-width:180px" autocomplete="off" value="${esu(f.q)}"><select id="prc" data-titulo="Casa"><option value="">Todas as casas</option><option value="camara">Câmara dos Deputados</option><option value="senado">Senado Federal</option><option value="congresso">Congresso Nacional (sessão conjunta)</option></select>${anoPickHtml("pra")}</div>
+ mount(){const leis=telaLeis();let f={q:"",casa:"",ano:"",fase:"a_votar",prioridade:""},pg=null;
+  const lista=()=>{$("#pjbox").innerHTML=`<div class="panel"><div class="filters"><input id="prq" placeholder="Palavra do resumo ou número" style="flex:1;min-width:180px" autocomplete="off" value="${esu(f.q)}"><select id="prc" data-titulo="Casa"><option value="">Todas as casas</option><option value="camara">Câmara dos Deputados</option><option value="senado">Senado Federal</option><option value="congresso">Congresso Nacional (sessão conjunta)</option></select><select id="prp" data-titulo="Prioridade"><option value="">Qualquer prioridade</option><option value="alta">Prioridade alta (urgência)</option><option value="media">Prioridade média</option><option value="baixa">Prioridade baixa (ordinária)</option></select>${anoPickHtml("pra")}</div>
     <div id="prl" class="pj">${rload()}</div>${maisBtn("prm")}${RSRC("Câmara dos Deputados e Senado Federal")}</div>`;
-   $("#prc").value=f.casa;anoPickMount("pra",y=>{f.ano=y;pg(true)});$("#pra").pick(f.ano);
+   $("#prc").value=f.casa;$("#prp").value=f.prioridade||"";$("#prp").onchange=e=>{f.prioridade=e.target.value;pg(true)};anoPickMount("pra",y=>{f.ano=y;pg(true)});$("#pra").pick(f.ano);
    pg=listaPaginada({url:()=>"/proposicoes"+qs(f),alvo:"#prl",mais:"#prm",vazio:"Nenhum projeto nesta lista com esses filtros (ou ainda não coletado).",
     render:(it,tot)=>`<p class="small muted" style="margin:0 0 10px">${nf(tot)} ${tot===1?"projeto":"projetos"}</p><div class="pj">${it.map(cartaoProjeto).join("")}</div>`});
    const re=debounce(()=>pg(true));$("#prq").oninput=e=>{f.q=e.target.value.trim();re()};

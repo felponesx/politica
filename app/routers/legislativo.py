@@ -101,6 +101,7 @@ def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
 @router.get("/proposicoes", response_model=Pagina)
 def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: str | None = None,
                        desde: date | None = None, q: str | None = Query(None, max_length=120), fase: str | None = Query(None, pattern="^(a_votar|em_votacao|votado)$"),
+                       prioridade: str | None = Query(None, pattern="^(alta|media|baixa)$"),
                        limit: int = Query(50, ge=1, le=500), offset: int = Query(0, ge=0, le=1_000_000),
                        db: Session = Depends(get_db)):
     """Projetos com autor, relator, placar da última votação e fase (a_votar = pronto para ir a voto; em_votacao = na pauta de uma sessão em
@@ -121,6 +122,7 @@ def listar_proposicoes(casa: str | None = None, ano: int | None = None, tipo: st
     if q:
         stmt = stmt.where(or_(Proposicao.ementa.ilike(f"%{_sem_curinga(q)}%", escape="\\"), Proposicao.numero == q.strip().lstrip("0")))
     stmt = projetos.filtrar_por_fase(db, stmt, fase)
+    stmt = projetos.filtrar_por_prioridade(stmt, prioridade)
     total = db.scalar(select(func.count()).select_from(stmt.subquery()))
     rows = db.scalars(stmt.limit(limit).offset(offset)).all()
     return {"total": total, "itens": projetos.enriquecer(db, rows)}

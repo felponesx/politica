@@ -46,6 +46,7 @@ class Proposicao(Base):
     data_apresentacao: Mapped[date | None] = mapped_column(Date)
     situacao: Mapped[str | None] = mapped_column(String(300))
     urn_final: Mapped[str | None] = mapped_column(String(300), index=True)  # URN LexML da norma gerada
+    regime: Mapped[str | None] = mapped_column(String(120))  # regime de tramitação (Urgência, Prioridade, Ordinária...)
 
 
 class Norma(Base):

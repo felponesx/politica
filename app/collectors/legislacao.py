@@ -111,6 +111,8 @@ def situacao_proposicoes_camara(ano: int | None = None, desde: int | None = None
                 st = d.get("ultimoStatus") or {}
                 sit = st.get("descricaoSituacao") or d.get("ultimoStatus_descricaoSituacao")
                 tram = st.get("descricaoTramitacao") or d.get("ultimoStatus_descricaoTramitacao")
+                if st.get("regime"):
+                    p.regime = str(st["regime"])[:120]
                 if sit or tram:
                     p.situacao = (sit or tram)[:300]
                 if not p.data_apresentacao:
