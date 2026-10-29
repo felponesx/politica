@@ -270,47 +270,22 @@ def _ctx_sistema():
 
 
 def main():
-    """Ensino: nomes reais dos arquivos do INEP (IDEB, IGC). O servidor de downloads só abre com o repositório de certificados do
-    sistema (o do `certifi` não tem o certificado intermediário dele); a verificação do certificado continua ligada."""
-    import re
-    import ssl
-    ua = {"User-Agent": UA_NAV, "Accept": "text/html,application/json,*/*"}
-    sis = httpx.Client(timeout=60, follow_redirects=True, verify=_ctx_sistema(), headers={"User-Agent": UA_NAV})
-    base = "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/"
-    for url in (base + "ideb/resultados", base + "indicadores-de-qualidade-da-educacao-superior"):
-        try:
-            r = cli.get(url, headers=ua)
-            hrefs = sorted(set(re.findall(r"""href=["']([^"']+)["']""", r.text)))
-            uteis = [h for h in hrefs if re.search(r"download|planilha|\.zip|\.xls|ideb\.inep|portal_ideb|igc|resultado", h, re.I) and "linkedin" not in h]
-            print(f"\n=== {url}: HTTP {r.status_code}; {len(hrefs)} links, {len(uteis)} úteis", flush=True)
-            for h in uteis[:80]:
-                print("  ", h, flush=True)
-            txt = re.sub(r"<[^>]+>", " ", re.sub(r"(?s)<(script|style)[^>]*>.*?</\\1>", "", r.text))
-            txt = re.sub(r"\s+", " ", txt)
-            for m in list(re.finditer(r"(?i)(planilha|download|microdados|arquivo)", txt))[:6]:
-                print("  texto:", txt[max(0, m.start() - 80):m.start() + 160], flush=True)
-        except Exception as e:
-            print(f"\n=== {url}: ERRO {type(e).__name__}: {e}", flush=True)
-    B = "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/{y}/{n}"
-    nomes = ["divulgacao_brasil_ideb_{y}.zip", "divulgacao_brasil_regioes_ufs_ideb_{y}.zip", "divulgacao_regioes_ufs_ideb_{y}.zip",
-             "divulgacao_brasil_ufs_ideb_{y}.zip", "divulgacao_anos_iniciais_escolas_{y}.zip", "divulgacao_anos_finais_escolas_{y}.zip",
-             "divulgacao_ensino_medio_escolas_{y}.zip", "divulgacao_anos_iniciais_municipios_{y}.zip"]
-    cand = [B.format(y=y, n=n.format(y=y)) for y in (2023, 2021, 2019) for n in nomes]
-    G = "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/{y}/{n}"
-    for y in (2023, 2022, 2021):
-        for n in ("igc_{y}.xlsx", "IGC_{y}.xlsx", "resultados_igc_{y}.xlsx", "igc_{y}_atualizado.xlsx", "igc_{y}.zip"):
-            cand.append(G.format(y=y, n=n.format(y=y)))
-    cand += ["http://ideb.inep.gov.br/", "https://ideb.inep.gov.br/", "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/",
-             "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/", "https://download.inep.gov.br/educacao_superior/indicadores/"]
-    for u in cand:
-        try:
-            r = sis.get(u) if u.endswith("/") else sis.head(u)
-            print(f"HEAD {r.status_code} {r.headers.get('content-length')} {u}", flush=True)
-            if u.endswith("/") and r.status_code == 200:
-                for h in sorted(set(re.findall(r"""href=["']([^"']+)["']""", r.text)))[:60]:
-                    print("    ", h, flush=True)
-        except Exception as e:
-            print(f"HEAD ERRO {type(e).__name__}: {str(e)[:80]} {u}", flush=True)
+    """Ensino: certificado intermediário do servidor de downloads do INEP (o servidor não o envia; o `certifi` e o Python não o têm)."""
+    import subprocess
+    roteiro = r"""
+set -u
+H=download.inep.gov.br
+openssl s_client -connect $H:443 -servername $H -showcerts </dev/null 2>/dev/null > /tmp/cadeia.txt
+echo "--- linhas da cadeia"; grep -E '^( [0-9] s:|   i:|---|Verification|Verify return code)' /tmp/cadeia.txt | head -20
+awk '/BEGIN CERT/{n++} n>=1{print > "/tmp/c" n ".pem"} /END CERT/{}' /tmp/cadeia.txt
+for f in /tmp/c1.pem /tmp/c2.pem /tmp/c3.pem; do [ -f $f ] || continue; echo "--- $f"; openssl x509 -in $f -noout -subject -issuer -dates 2>&1 | head -4; openssl x509 -in $f -noout -text 2>/dev/null | grep -A3 'Authority Information Access' ; done
+URI=$(openssl x509 -in /tmp/c1.pem -noout -text 2>/dev/null | grep 'CA Issuers' | head -1 | sed 's/.*URI://')
+echo "AIA: $URI"
+if [ -n "$URI" ]; then curl -s -m 30 -o /tmp/inter.der "$URI"; file /tmp/inter.der; (openssl x509 -inform DER -in /tmp/inter.der -outform PEM 2>/dev/null || cat /tmp/inter.der) | head -40; fi
+"""
+    out = subprocess.run(["bash", "-c", roteiro], capture_output=True, text=True, timeout=120)
+    print(out.stdout, flush=True)
+    print(out.stderr[:800], flush=True)
 
 
 if __name__ == "__main__":
