@@ -260,36 +260,42 @@ def entrada_zip(url, nome_parte):
 
 
 def main():
-    """Ensino: endereços reais dos arquivos do INEP (IDEB, IGC, CPC) e a cadeia de certificados do servidor de downloads."""
+    """Ensino: nomes reais dos arquivos do INEP (IDEB, IGC). O servidor de downloads só abre com o repositório de certificados do
+    sistema (o do `certifi` não tem o certificado intermediário dele); a verificação do certificado continua ligada."""
     import re
-    import subprocess
+    import ssl
     ua = {"User-Agent": UA_NAV, "Accept": "text/html,application/json,*/*"}
-    base = "https://www.gov.br/inep/pt-br/"
-    paginas = (base + "areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
-               base + "areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb",
-               base + "areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indicadores-de-qualidade-da-educacao-superior",
-               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais",
-               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais/indice-geral-de-cursos-igc",
-               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais/conceito-preliminar-de-curso-cpc",
-               base + "acesso-a-informacao/dados-abertos/indicadores-educacionais/ideb")
-    for url in paginas:
+    sis = httpx.Client(timeout=60, follow_redirects=True, verify=ssl.create_default_context(), headers={"User-Agent": UA_NAV})
+    base = "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/"
+    for url in (base + "ideb/resultados", base + "indicadores-de-qualidade-da-educacao-superior"):
         try:
             r = cli.get(url, headers=ua)
-            txt = r.text
-            hrefs = sorted(set(re.findall(r"""https?://download\.inep\.gov\.br[^"'\s<>)]+""", txt)))
-            rel = sorted(set(re.findall(r"""(?:href|src)=["']([^"']*(?:\.xlsx?|\.zip|\.csv|\.ods)[^"']*)["']""", txt, re.I)))
-            print(f"\n=== {url}: HTTP {r.status_code} {len(txt)} bytes; {len(hrefs)} links download.inep, {len(rel)} outros", flush=True)
-            for h in (hrefs + rel)[:70]:
+            hrefs = sorted(set(re.findall(r"""href=["']([^"']+)["']""", r.text)))
+            uteis = [h for h in hrefs if re.search(r"ideb|igc|cpc|enade|resultado|indicador|download|planilha", h, re.I)]
+            print(f"\n=== {url}: HTTP {r.status_code}; {len(hrefs)} links, {len(uteis)} úteis", flush=True)
+            for h in uteis[:80]:
                 print("  ", h, flush=True)
+            txt = re.sub(r"<[^>]+>", " ", re.sub(r"(?s)<(script|style)[^>]*>.*?</\\1>", "", r.text))
+            txt = re.sub(r"\s+", " ", txt)
+            for m in list(re.finditer(r"(?i)(planilha|download|microdados|arquivo)", txt))[:6]:
+                print("  texto:", txt[max(0, m.start() - 80):m.start() + 160], flush=True)
         except Exception as e:
             print(f"\n=== {url}: ERRO {type(e).__name__}: {e}", flush=True)
-    # cadeia de certificados que o servidor envia (só leitura do emissor; a verificação continua ligada nos coletores)
-    try:
-        out = subprocess.run("openssl s_client -connect download.inep.gov.br:443 -servername download.inep.gov.br -showcerts </dev/null 2>&1 | "
-                             "grep -E ' s:| i:|Verify return|verify error|depth' | head -30", shell=True, capture_output=True, text=True, timeout=60).stdout
-        print("\n=== cadeia do download.inep.gov.br\n" + out, flush=True)
-    except Exception as e:
-        print("openssl ERRO", e, flush=True)
+    B = "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/{y}/{n}"
+    nomes = ["divulgacao_brasil_ideb_{y}.zip", "divulgacao_brasil_regioes_ufs_ideb_{y}.zip", "divulgacao_regioes_ufs_ideb_{y}.zip",
+             "divulgacao_brasil_ufs_ideb_{y}.zip", "divulgacao_anos_iniciais_escolas_{y}.zip", "divulgacao_anos_finais_escolas_{y}.zip",
+             "divulgacao_ensino_medio_escolas_{y}.zip", "divulgacao_anos_iniciais_municipios_{y}.zip"]
+    cand = [B.format(y=y, n=n.format(y=y)) for y in (2023, 2021, 2019) for n in nomes]
+    G = "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/{y}/{n}"
+    for y in (2023, 2022, 2021):
+        for n in ("igc_{y}.xlsx", "IGC_{y}.xlsx", "resultados_igc_{y}.xlsx", "igc_{y}_atualizado.xlsx", "igc_{y}.zip"):
+            cand.append(G.format(y=y, n=n.format(y=y)))
+    for u in cand:
+        try:
+            r = sis.head(u)
+            print(f"HEAD {r.status_code} {r.headers.get('content-length')} {u}", flush=True)
+        except Exception as e:
+            print(f"HEAD ERRO {type(e).__name__}: {str(e)[:80]} {u}", flush=True)
 
 
 if __name__ == "__main__":

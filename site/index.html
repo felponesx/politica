@@ -1866,6 +1866,7 @@ dividas:'<path d="M3 7h18v12H3z"/><path d="M3 11h18"/><path d="M7 15h4"/><path d
 indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4l2 2 4-4"/><path d="M17 11h4M19 9v4"/>',
 seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
 escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6 4-4"/><path d="m9 13-5 5"/><path d="M4 21h8"/>',
+ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
@@ -1883,7 +1884,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -5235,6 +5236,51 @@ handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M
 "jogos-eletronicos":["#D6409F",'<path d="M7 8h10a4 4 0 0 1 4 4.2l-.6 3.6a2.5 2.5 0 0 1-4.2 1.3L14.5 15h-5l-1.700 2.1a2.5 2.5 0 0 1-4.2-1.3L3 12.2A4 4 0 0 1 7 8z"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="15.5" cy="11.5" r=".6"/><circle cx="17.5" cy="13" r=".6"/>']};
 const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
 const prmRes=c=>{const r=c.grupos.flatMap(g=>g.brasil),t=r.filter(x=>/^(campe|ouro)/i.test(x.resultado)).length,o=r.length-t;return r.length?(t?`<b class="prm-n" style="--c:#F5A524">${nf(t)}</b> ${t===1?"título":"títulos"}`:"")+(t&&o?" · ":"")+(o?`${nf(o)} ${o===1?"pódio":"pódios"}`:""):"sem título confirmado"};
+/* ---------- Ensino (IDEB, faculdades, escolas) ---------- */
+const ENS_ETAPAS=[["iniciais","Anos iniciais (1º ao 5º ano)"],["finais","Anos finais (6º ao 9º ano)"],["medio","Ensino médio"]],ENS_COR={iniciais:"#2F6FED",finais:"#1BAF7A",medio:"#F5A524"};
+const ENS_ABAS=[["geral","Visão geral"],["estados","Por estado"],["faculdades","Faculdades"],["escolas","Escolas"]];
+const ensN1=v=>v==null?"—":(+v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const ensAnos=o=>Object.keys(o||{}).filter(a=>o[a]!=null).sort();
+const ensUFSel=()=>UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("");
+function ensVazio(){return`<div class="rbanner">Os dados do INEP (IDEB, IGC e escolas) ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`}
+function ensGeral(D){const I=D.ideb;if(!I||!I.brasil)return ensVazio();
+ const kp=ENS_ETAPAS.map(([k,t])=>{const o=I.brasil[k]||{},an=ensAnos(o),u=an[an.length-1],p=an[0];if(!u)return"";const meta=(I.metas&&I.metas[k]||{})[u];
+  return`<div class="kpi"><span>${esc(t)}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
+ const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(I.brasil[k])))].sort();
+ const series=ENS_ETAPAS.map(([k,t])=>({n:t.split(" (")[0],c:ENS_COR[k],v:anos.map(a=>I.brasil[k]&&I.brasil[k][a]!=null?I.brasil[k][a]:null)})).filter(x=>x.v.some(y=>y!=null));
+ return`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da qualidade do ensino no Brasil</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos nas escolas. Medido a cada 2 anos.</p>${lineChart(series,anos,{h:260,fmt:ensN1,periodo:false})}</div>
+ <div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa (anos iniciais, anos finais e ensino médio) tem a sua nota e a sua meta. As escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`}
+function ensEstados(D,sel){const I=D.ideb;if(!I||!I.ufs)return{html:ensVazio()};let etapa=sel.etapa||"iniciais",uf=sel.uf||"";
+ const vals=e=>{const v={};Object.keys(I.ufs).forEach(u=>{const a=ensAnos(I.ufs[u][e]);if(a.length)v[u]=I.ufs[u][e][a[a.length-1]]});return v};
+ const anosE=e=>[...new Set(Object.values(I.ufs).flatMap(o=>ensAnos(o[e])))].sort();
+ const pill=(id,lab,opts,cur)=>`<select id="${id}" data-pill="${lab}">${opts.map(([v,t])=>`<option value="${v}"${v===cur?" selected":""}>${esc(t)}</option>`).join("")}</select>`;
+ const corpo=()=>{const e=etapa,anos=anosE(e),v=vals(e),ua=anos[anos.length-1];
+  const linhaUF=uf&&I.ufs[uf]?`<div class="panel mt"><h2>${esc(UF[uf].nome)}: ${esc(ENS_ETAPAS.find(x=>x[0]===e)[1])}</h2>${lineChart([{n:UF[uf].nome,c:ENS_COR[e],v:anos.map(a=>(I.ufs[uf][e]||{})[a]??null)},{n:"Brasil",c:"#8A94A6",v:anos.map(a=>(I.brasil[e]||{})[a]??null)}],anos,{h:240,fmt:ensN1,periodo:false})}<p class="small muted" style="margin:8px 0 0">IDEB ${ua}: ${esc(UF[uf].nome)} ${ensN1((I.ufs[uf][e]||{})[ua])} · Brasil ${ensN1((I.brasil[e]||{})[ua])}</p></div>`:"";
+  const serie={};Object.keys(I.ufs).forEach(u=>{serie[u]={};anos.forEach(a=>{const x=(I.ufs[u][e]||{})[a];if(x!=null)serie[u][a]=x})});
+  return`${linhaUF}<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua}</h2>${mapaValores(v,ensN1,{escala:SCALE})}</div><div class="panel"><h2>Todos os estados</h2>${listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])})))}</div></div>
+  <div class="mt">${linhasDuplo(serie,anos,v,ensN1,{alto:"Melhores notas",baixo:"Piores notas",coresAlto:LIN_AZUL})}</div>`};
+ return{html:`<div class="pbar mt" id="ensSel">${pill("ensE","Etapa",ENS_ETAPAS,etapa)}${pill("ensU","Estado",[["","Brasil"],...UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>[u.uf,u.nome])],uf)}</div><div id="ensB">${corpo()}</div>`,
+  mount(){const re=()=>{const b=$("#ensB");if(b)b.innerHTML=corpo()};$("#ensE").onchange=e=>{etapa=e.target.value;re()};$("#ensU").onchange=e=>{uf=e.target.value;re()}}}}
+function ensFaculdades(D){const S=D.superior;if(!S||!(S.instituicoes||[]).length)return{html:ensVazio()};const L=S.instituicoes;let f={uf:"",cat:"",q:""};
+ const faixa=x=>x.faixa!=null?`<span class="prm-r" style="--c:${x.faixa>=4?"#1BAF7A":x.faixa===3?"#F5A524":"#E5484D"}">Faixa ${x.faixa}</span>`:"—";
+ const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.uf||x.uf===f.uf)&&(!f.cat||x.categoria===f.cat)&&(!q||snapNorm(x.nome+" "+(x.sigla||"")+" "+(x.municipio||"")).includes(q))).sort((a,b)=>(b.igc??-1)-(a.igc??-1));
+  $("#ensFL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(l.length)} instituições · IGC ${S.ano}</p>`+table([["Instituição",x=>`<b>${esc(x.nome)}</b>${x.sigla?` <span class="small muted">${esc(x.sigla)}</span>`:""}`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Tipo",x=>esc(x.categoria||"—")],["IGC contínuo",x=>ensN1(x.igc),"n"],["Faixa",x=>faixa(x)]],l)};
+ return{html:`<div class="panel mt"><h2>Melhores faculdades e universidades</h2><p class="small muted" style="margin:0 0 8px">Ranking pelo IGC (Índice Geral de Cursos) do INEP, de ${S.ano}: junta a qualidade dos cursos de graduação, mestrado e doutorado. Faixa 5 é a melhor; só valem instituições avaliadas.</p>
+  <div class="filters"><select id="efU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="efC" data-pill="Tipo"><option value="">Públicas e privadas</option>${[...new Set(L.map(x=>x.categoria).filter(Boolean))].map(c=>`<option>${esc(c)}</option>`).join("")}</select><input id="efQ" placeholder="Buscar instituição" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensFL"></div></div>`,
+  mount(){lista();$("#efU").onchange=e=>{f.uf=e.target.value;lista()};$("#efC").onchange=e=>{f.cat=e.target.value;lista()};$("#efQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+function ensEscolas(D){const E=D.escolas;if(!E||!ENS_ETAPAS.some(([k])=>(E[k]||[]).length))return{html:ensVazio()};let f={etapa:"iniciais",uf:"",rede:"",q:""};
+ const lista=()=>{const q=snapNorm(f.q),L=(E[f.etapa]||[]).filter(x=>(!f.uf||x.uf===f.uf)&&(!f.rede||x.rede===f.rede)&&(!q||snapNorm(x.nome+" "+(x.municipio||"")).includes(q)));
+  $("#ensEL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(L.length)} escolas · IDEB ${E.ano||""}</p>`+table([["Escola",x=>`<b>${esc(x.nome)}</b><div class="small muted">${esc(x.municipio||"")}</div>`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Rede",x=>esc(x.rede||"—")],["IDEB",x=>ensN1(x.ideb),"n"]],L)};
+ const redes=[...new Set(ENS_ETAPAS.flatMap(([k])=>(E[k]||[]).map(x=>x.rede)).filter(Boolean))];
+ return{html:`<div class="panel mt"><h2>Melhores escolas do país</h2><p class="small muted" style="margin:0 0 8px">As escolas com maior IDEB em cada etapa (INEP): anos iniciais (fundamental 1), anos finais (fundamental 2) e ensino médio. Só entram escolas com nota divulgada.</p>
+  <div class="pbar" style="margin-bottom:8px"><select id="eeE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}">${esc(t)}</option>`).join("")}</select></div>
+  <div class="filters"><select id="eeU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="eeR" data-pill="Rede"><option value="">Todas as redes</option>${redes.map(r=>`<option>${esc(r)}</option>`).join("")}</select><input id="eeQ" placeholder="Buscar escola ou cidade" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensEL"></div></div>`,
+  mount(){lista();$("#eeE").onchange=e=>{f.etapa=e.target.value;lista()};$("#eeU").onchange=e=>{f.uf=e.target.value;lista()};$("#eeR").onchange=e=>{f.rede=e.target.value;lista()};$("#eeQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";
+ return{html:`<div class="ph"><div><h1>Ensino</h1><p>Qualidade do ensino no Brasil e em cada estado: evolução do IDEB, melhores faculdades e melhores escolas.</p></div></div><div class="tabs" id="ensTabs" style="margin-top:0">${ENS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/ensino/${a[0]}">${a[1]}</a>`).join("")}</div><div id="ensV">${API.on?rload():`<div class="rbanner">O Ensino aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+  mount(){if(!API.on)return;apiGet("/ensino").then(D=>{const v=$("#ensV");if(!v)return;let o;
+   if(aba==="geral")o={html:ensGeral(D)+RSRC()};else if(aba==="estados")o=ensEstados(D,{uf:UF[uf]?uf:""});else if(aba==="faculdades")o=ensFaculdades(D);else o=ensEscolas(D);
+   v.innerHTML=o.html;if(o.mount)o.mount();if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)})}}};
 P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premios").then(d=>{const box=$("#prmD");if(!box)return;let C,G,E;
   for(const c of d.categorias)for(const g of c.grupos){const e=g.brasil.find(x=>x.chave===chave);if(e){C=c;G=g;E=e}}
   if(!E){box.innerHTML=rvazio("Título não encontrado.");return}
@@ -5772,13 +5818,13 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",leis:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
