@@ -8,11 +8,14 @@ Nome do portador e CPF não são guardados.
 import csv
 import io
 import re
+import time
 import zipfile
 from datetime import date
 
 from app import http
 from app.collectors.base import registrar_coleta
+from sqlalchemy import select
+
 from app.models import Registro
 from app.utils import sem_acento, upsert
 
@@ -72,16 +75,22 @@ def agregar_cartao(texto: str) -> dict:
 
 
 def _baixar(ano: int, mes: int) -> str | None:
-    r = http._cliente.get(URL.format(ano=ano, mes=mes), headers=UA, timeout=120, follow_redirects=True)
-    if r.status_code in (403, 404):  # mês ainda não publicado
-        return None
-    r.raise_for_status()
-    with zipfile.ZipFile(io.BytesIO(r.content)) as z:
-        bruto = z.read(next(x for x in z.namelist() if x.lower().endswith(".csv")))
-    try:
-        return bruto.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        return bruto.decode("latin-1")
+    """O Portal bloqueia (405) quem baixa muitos arquivos seguidos: espera e tenta de novo."""
+    for espera in (0, 20, 60, 120):
+        time.sleep(espera)
+        r = http._cliente.get(URL.format(ano=ano, mes=mes), headers=UA, timeout=120, follow_redirects=True)
+        if r.status_code in (403, 404):  # mês ainda não publicado
+            return None
+        if r.status_code == 405:
+            continue
+        r.raise_for_status()
+        with zipfile.ZipFile(io.BytesIO(r.content)) as z:
+            bruto = z.read(next(x for x in z.namelist() if x.lower().endswith(".csv")))
+        try:
+            return bruto.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            return bruto.decode("latin-1")
+    raise RuntimeError(f"Portal da Transparência bloqueou o download de {mes:02d}/{ano} (405)")
 
 
 def coletar_cartao(ano: int):
@@ -91,11 +100,16 @@ def coletar_cartao(ano: int):
         for mes in range(1, 13):
             if ano == date.today().year and mes > date.today().month:
                 break
+            chave = f"cpgf-{ano}{mes:02d}"
+            fechado = (ano, mes) < (date.today().year, date.today().month - 1 or 1) and ano < date.today().year
+            if fechado and db.scalar(select(Registro.id).where(Registro.fonte == "transparencia", Registro.tipo == "cartao_mes", Registro.chave == chave)):
+                continue  # mês antigo já guardado: não baixa de novo
+            time.sleep(3)  # um arquivo a cada poucos segundos
             texto = _baixar(ano, mes)
             if texto is None:
                 continue
             d = agregar_cartao(texto)
-            upsert(db, Registro, {"fonte": "transparencia", "tipo": "cartao_mes", "chave": f"cpgf-{ano}{mes:02d}"},
+            upsert(db, Registro, {"fonte": "transparencia", "tipo": "cartao_mes", "chave": chave},
                    {"ano": ano, "titulo": f"Cartão corporativo {mes:02d}/{ano}", "valor": d["total"],
                     "dados": {**d, "mes": mes, "url": URL.format(ano=ano, mes=mes)}})
             n += 1
