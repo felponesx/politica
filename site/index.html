@@ -1709,6 +1709,7 @@ a.fl-l[href^="#/orgao/"] .fl-n{display:-webkit-box;-webkit-line-clamp:2;-webkit-
 .cp-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--c);color:var(--t,#fff);font-size:12px;font-weight:650;white-space:nowrap}.cp-pill b{font-weight:700}
 /* Órgãos: o valor pago fica centralizado na altura da linha do órgão */
 a.fl-l[href^="#/orgao/"]{position:relative;padding-right:104px}a.fl-l[href^="#/orgao/"] .fl-r{position:absolute;right:2px;top:50%;transform:translateY(-50%);white-space:nowrap}a.fl-l[href^="#/orgao/"] .fl-c{grid-column:1}
+@media (min-width:1100px){.grid.g3w{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -1948,7 +1949,7 @@ function lineSVG(series,labels,{h=200,fmt=brl}={},W=600){W=Math.max(260,Math.rou
  const n=labels.length,x=i=>p+(n<2?0:i*(W-p-dir)/(n-1)),y=v=>H-26-(v-mn)/(mx-mn||1)*(H-40);
  let g="";ticks.forEach((v,t)=>{g+=`<line x1="${p}" x2="${W-dir}" y1="${y(v)}" y2="${y(v)}" class="lc-grade${t?"":" base"}"/><text x="${p-8}" y="${y(v)+4}" font-size="11.5" text-anchor="end" class="lc-eixo">${rot[t]}</text>`});
  let vis=labels.map((l,i)=>[l,i]).filter(([l])=>l!==""&&l!=null);
- {const lw=len=>len*6.3+7;let len=Math.max(...vis.map(([l])=>String(l).length));const gmin=()=>Math.min(...vis.slice(1).map((v,k)=>x(v[1])-x(vis[k][1])),1e9);
+ {const lw=len=>len*7+11;let len=Math.max(...vis.map(([l])=>String(l).length));const gmin=()=>Math.min(...vis.slice(1).map((v,k)=>x(v[1])-x(vis[k][1])),1e9);
   // anos: se os 4 dígitos não cabem, usa '24; depois só pula, contando do último para trás, e nunca deixa dois rótulos encostados
   if(gmin()<lw(len)&&vis.every(([l])=>/^\d{4}$/.test(l))){vis=vis.map(([l,i])=>["'"+String(l).slice(2),i]);len=3}
   {let ult=1e9;const keep=[];for(let k=vis.length-1;k>=0;k--){const px=x(vis[k][1]);if(ult-px<lw(len))continue;keep.unshift(vis[k]);ult=px}vis=keep}}
@@ -4576,7 +4577,7 @@ const TELA_DIV={
  publica:D=>{const s=D.s,b=s.divida_bruta_pib,l=s.divida_liquida_pib,j=s.juros_nominais_pib;if(!b)return rvazio("Séries do Banco Central ainda não coletadas.");
   return resumoBox(`<p>A <b>dívida bruta do governo geral</b> (União, estados e municípios) chegou a <b>${pctF(b.ultimo.valor)} do PIB</b> em ${mesAno(b.ultimo.data)}, ${txtVar(varPP(b))}.${l?` Descontando o que o setor público tem a receber, a <b>dívida líquida</b> está em ${pctF(l.ultimo.valor)} do PIB.`:""}${j?` Nos últimos 12 meses, os <b>juros</b> da dívida somaram ${pctF(j.ultimo.valor)} do PIB (${txtVar(varPP(j))}).`:""}</p><p class="small muted" style="margin:0">Dívida bruta: tudo o que o governo deve. Dívida líquida: a bruta menos créditos e reservas (inclui o Banco Central e as estatais). PIB: tudo o que o país produz em um ano.</p>`)+
   `<div class="kpis3 mt">${kpiS("Bruta (% do PIB)",b,pctF,1)}${kpiS("Líquida (% do PIB)",l,pctF,1)}${kpiS("Juros em 12 meses",j,pctF,1)}</div>
-  <div class="grid g2 mt"><div class="panel"><h2>Dívida bruta, % do PIB</h2>${serieChart(b.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>${l?`<div class="panel"><h2>Dívida líquida, % do PIB</h2>${serieChart(l.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${j?`<div class="panel"><h2>Juros nominais em 12 meses, % do PIB</h2>${serieChart(j.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 13762, 4513 e 5727 do SGS")}`},
+  <div class="grid g2 g3w mt"><div class="panel"><h2>Dívida bruta, % do PIB</h2>${serieChart(b.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>${l?`<div class="panel"><h2>Dívida líquida, % do PIB</h2>${serieChart(l.historico,{fmt:x=>x.toFixed(0)+"%",n:120})}</div>`:""}${j?`<div class="panel"><h2>Juros nominais em 12 meses, % do PIB</h2>${serieChart(j.historico,{fmt:x=>x.toFixed(1)+"%",n:120})}</div>`:""}</div>${RSRC("Banco Central do Brasil, séries 13762, 4513 e 5727 do SGS")}`},
  estados:D=>{const g=govEstados(D.es),ufs=Object.keys(g);if(!ufs.length)return rvazio("Dívida dos estados ainda não coletada (SICONFI).");
   const tot=ufs.reduce((a,u)=>a+g[u].c,0),ord=ufs.sort((a,b)=>g[b].c-g[a].c),neg=ufs.filter(u=>g[u].l!=null&&g[u].l<0),top3=ord.slice(0,3);
   return resumoBox(`<p>Os ${ufs.length} governos estaduais somavam <b>${brl(tot)}</b> em dívida consolidada (${esc(g[ord[0]].ref||"")} de ${g[ord[0]].ano}). Os três maiores devedores — ${top3.map(u=>`${UF[u].nome} (${brl(g[u].c)})`).join(", ")} — concentram ${pct(top3.reduce((a,u)=>a+g[u].c,0)/tot*100)} do total.${neg.length?` ${neg.length} ${neg.length===1?"estado tem":"estados têm"} dívida líquida negativa (mais dinheiro em caixa e a receber do que dívidas).`:""}</p><p class="small muted" style="margin:0">Dívida consolidada: empréstimos, financiamentos e parcelamentos com prazo maior que um ano. Líquida: descontado o dinheiro em caixa e os créditos. O limite da Lei de Responsabilidade Fiscal é de duas vezes a receita corrente líquida.</p>`)+
