@@ -270,22 +270,32 @@ def _ctx_sistema():
 
 
 def main():
-    """Ensino: certificado intermediário do servidor de downloads do INEP (o servidor não o envia; o `certifi` e o Python não o têm)."""
+    """Ensino: o servidor de downloads do INEP passa na verificação do `curl`/openssl do sistema, mas não na do Python (ver o que o curl enxerga)."""
     import subprocess
-    roteiro = r"""
-set -u
-H=download.inep.gov.br
-timeout 20 openssl s_client -connect $H:443 -servername $H -showcerts </dev/null 2>/dev/null > /tmp/cadeia.txt
-echo "--- linhas da cadeia"; grep -E '^( [0-9] s:|   i:|---|Verification|Verify return code)' /tmp/cadeia.txt | head -20
-awk '/BEGIN CERT/{n++} n>=1{print > "/tmp/c" n ".pem"} /END CERT/{}' /tmp/cadeia.txt
-for f in /tmp/c1.pem /tmp/c2.pem /tmp/c3.pem; do [ -f $f ] || continue; echo "--- $f"; openssl x509 -in $f -noout -subject -issuer -dates 2>&1 | head -4; openssl x509 -in $f -noout -text 2>/dev/null | grep -A3 'Authority Information Access' ; done
-URI=$(openssl x509 -in /tmp/c1.pem -noout -text 2>/dev/null | grep 'CA Issuers' | head -1 | sed 's/.*URI://')
-echo "AIA: $URI"
-if [ -n "$URI" ]; then curl -s -m 30 -o /tmp/inter.der "$URI"; file /tmp/inter.der; (openssl x509 -inform DER -in /tmp/inter.der -outform PEM 2>/dev/null || cat /tmp/inter.der) | head -40; fi
-"""
-    out = subprocess.run(["bash", "-c", roteiro], capture_output=True, text=True, timeout=120)
-    print(out.stdout, flush=True)
-    print(out.stderr[:800], flush=True)
+    B = "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/{y}/{n}"
+    nomes = ["divulgacao_brasil_ideb_{y}.zip", "divulgacao_brasil_regioes_ufs_ideb_{y}.zip", "divulgacao_regioes_ufs_ideb_{y}.zip",
+             "divulgacao_brasil_ufs_ideb_{y}.zip", "divulgacao_anos_iniciais_escolas_{y}.zip", "divulgacao_anos_finais_escolas_{y}.zip",
+             "divulgacao_ensino_medio_escolas_{y}.zip", "divulgacao_anos_iniciais_municipios_{y}.zip"]
+    cand = [B.format(y=y, n=n.format(y=y)) for y in (2023, 2021) for n in nomes]
+    G = "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/{y}/{n}"
+    for y in (2023, 2022, 2021):
+        for n in ("igc_{y}.xlsx", "IGC_{y}.xlsx", "resultados_igc_{y}.xlsx", "igc_{y}_atualizado.xlsx"):
+            cand.append(G.format(y=y, n=n.format(y=y)))
+    cand += ["https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/",
+             "https://download.inep.gov.br/educacao_basica/portal_ideb/",
+             "https://download.inep.gov.br/educacao_superior/indicadores/igc/resultado/",
+             "https://download.inep.gov.br/educacao_superior/indicadores/", "https://download.inep.gov.br/"]
+    for u in cand:
+        r = subprocess.run(["curl", "-sS", "-m", "20", "-I", "-o", "/dev/null", "-w", "%{http_code} %{size_download} %{content_length_download}", u],
+                           capture_output=True, text=True, timeout=40)
+        print(f"curl {r.stdout.strip()} {r.stderr.strip()[:90]} {u}", flush=True)
+    for u in cand[-5:]:
+        r = subprocess.run(["curl", "-sS", "-m", "25", u], capture_output=True, text=True, timeout=40)
+        import re
+        hrefs = sorted(set(re.findall(r"""href=["']([^"']+)["']""", r.stdout)))
+        print(f"\nLISTA {u}: {len(r.stdout)} bytes; {len(hrefs)} links {r.stderr.strip()[:80]}", flush=True)
+        for h in hrefs[:60]:
+            print("   ", h, flush=True)
 
 
 if __name__ == "__main__":
