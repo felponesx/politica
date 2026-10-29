@@ -1758,10 +1758,14 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 #ufReal .kpi{min-width:0;width:auto;margin:0;min-height:88px;display:flex;flex-direction:column;justify-content:center}
 @media (max-width:640px){#ufReal .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-.prm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.prm-c{display:flex;flex-direction:column;gap:2px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);text-decoration:none}
-.prm-c:hover,.prm-c.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
-.prm-i{font-size:26px;line-height:1.1}.prm-c b{font-weight:600;font-size:14.5px}.prm-c small{color:var(--muted);font-size:12px}
+.prm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.prm-c{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none;transition:transform .15s,box-shadow .15s,border-color .15s}
+.prm-c:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,25,45,.1)}
+.prm-c.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue) inset}
+.prm-i{flex:none;display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.prm-t{display:flex;flex-direction:column;gap:2px;min-width:0}.prm-t b{font-weight:600;font-size:14.5px;line-height:1.2}.prm-t small{color:var(--muted);font-size:12px;line-height:1.3}
+.prm-n{color:var(--c);font-weight:700}
+.prm-h{display:flex;align-items:center;gap:14px}.prm-h .prm-i{width:58px;height:58px;border-radius:18px}
 .prm-r{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
 </style>
 </head>
@@ -5189,12 +5193,25 @@ const escVal=v=>!v?"—":`<a href="${esu(v.fonte)}" target="_blank" rel="noopene
 const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
 const escPer=p=>p&&p.inicio?(p.fim&&p.fim!==p.inicio?`${p.inicio}–${p.fim}`:p.fim?p.inicio:`desde ${p.inicio}`):"";
 const escAviso=a=>`<div class="rbanner esc-aviso">${esc(a)}</div>`;
+const PRM_IC={
+futebol:["#1BAF7A",'<circle cx="12" cy="12" r="9"/><path d="M12 8.2l3.2 2.3-1.2 3.8h-4l-1.2-3.8z"/><path d="M12 8.2V3.2M15.2 10.5l4.7-1.5M14 14.3l2.9 4M10 14.3l-2.9 4M8.8 10.5L4.1 9"/>'],
+volei:["#F5A524",'<circle cx="12" cy="12" r="9"/><path d="M12 3c0 5-3 8-8.5 9M12 3c3 1 6 4 6.8 8M3.6 15.5c5 0 9 1.5 11 5M20.4 15c-3.4-2.5-7.4-2-10.4 0"/>'],
+basquete:["#EB6834",'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3 2.5 3 10.3 0 12.8M18.4 5.6c-3 2.5-3 10.3 0 12.8"/>'],
+beisebol:["#5B6B8C",'<circle cx="12" cy="12" r="9"/><path d="M7 4.5c2.5 2.2 2.5 12.8 0 15M17 4.5c-2.5 2.2-2.5 12.8 0 15M5.5 8.5l2 .5M5.2 12h2.3M5.5 15.5l2-.5M18.5 8.5l-2 .5M18.8 12h-2.3M18.5 15.5l-2-.5"/>'],
+olimpiadas:["#2F6FED",'<circle cx="12" cy="15" r="5.5"/><path d="M8.5 3l3 6.5M15.5 3l-3 6.5M10.5 14.5l1.5-1v5"/>'],
+automobilismo:["#E5484D",'<path d="M3 16v-3.5l2-4a2 2 0 0 1 1.8-1.1h6.4a2 2 0 0 1 1.5.700L17 11h2.5A1.5 1.5 0 0 1 21 12.5V16"/><path d="M9.5 16h5"/><circle cx="7" cy="16.5" r="2"/><circle cx="17" cy="16.5" r="2"/>'],
+tenis:["#84A92C",'<ellipse cx="9.5" cy="9.5" rx="5" ry="6.5" transform="rotate(-45 9.5 9.5)"/><path d="M13.5 13.5L20 20"/><circle cx="18" cy="6" r="2"/>'],
+surfe:["#1FA3C9",'<path d="M3 11c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 3 3M3 16c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 3 3M3 21c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3"/>'],
+handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M12 8v5M8 18.5l4-5.5 4 5.5"/>'],
+"jogos-eletronicos":["#D6409F",'<path d="M7 8h10a4 4 0 0 1 4 4.2l-.6 3.6a2.5 2.5 0 0 1-4.2 1.3L14.5 15h-5l-1.700 2.1a2.5 2.5 0 0 1-4.2-1.3L3 12.2A4 4 0 0 1 7 8z"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="15.5" cy="11.5" r=".6"/><circle cx="17.5" cy="13" r=".6"/>']};
+const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
+const prmRes=c=>{const r=c.grupos.flatMap(g=>g.brasil),t=r.filter(x=>/^(campe|ouro)/i.test(x.resultado)).length,o=r.length-t;return r.length?(t?`<b class="prm-n" style="--c:#F5A524">${nf(t)}</b> ${t===1?"título":"títulos"}`:"")+(t&&o?" · ":"")+(o?`${nf(o)} ${o===1?"pódio":"pódios"}`:""):"sem título confirmado"};
 P.premios=slug=>{let D=null;
  return{html:`<div class="ph"><div><h1>Prêmios</h1><p>Títulos e medalhas do Brasil nos principais campeonatos mundiais e nos Jogos Olímpicos. Escolha o esporte para ver cada campeonato.</p></div></div><div id="prmBox">${API.on?rload():`<div class="rbanner">Os prêmios aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/premios").then(d=>{D=d;const box=$("#prmBox");if(!box)return;const cats=d.categorias,cur=cats.find(c=>c.slug===slug);
   const resCor=r=>/^(campe|ouro)/i.test(r)?"#F5A524":/^(vice|prata)/i.test(r)?"#8A94A6":/^bronze/i.test(r)?"#C47A3A":"#2F6FED";
-  const cards=`<div class="prm-grid">${cats.map(c=>`<a class="prm-c${cur&&cur.slug===c.slug?" on":""}" href="#/premios/${c.slug}"><span class="prm-i">${c.icone}</span><b>${esc(c.nome)}</b><small>${c.total?nf(c.total)+(c.total===1?" resultado":" resultados"):"sem título confirmado"}</small></a>`).join("")}</div>`;
-  const det=c=>`<div class="panel mt"><h2>${c.icone} ${esc(c.nome)}</h2><p class="small muted" style="margin:0 0 6px">${esc(c.resumo)}</p></div>`+c.grupos.map(g=>`<div class="panel mt"><h3 class="seg-h" style="margin-top:0">${esc(g.nome)}</h3>${g.descricao?`<p class="small muted" style="margin:0 0 8px">${esc(g.descricao)}</p>`:""}${g.brasil.length?table([["Ano",x=>x.ano],["Resultado",x=>`<span class="prm-r" style="--c:${resCor(x.resultado)}">${esc(x.resultado)}</span>`],["Quem / onde",x=>esc(x.detalhe||"—")]],g.brasil.slice().sort((a,b)=>b.ano-a.ano)):`<p class="small muted" style="margin:0">Sem resultados listados.</p>`}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esc(g.fonte)}" target="_blank" rel="noopener">${esc(g.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p></div>`).join("");
+  const cards=`<div class="prm-grid">${cats.map(c=>`<a class="prm-c${cur&&cur.slug===c.slug?" on":""}" href="#/premios/${c.slug}">${prmIco(c.slug)}<span class="prm-t"><b>${esc(c.nome)}</b><small>${prmRes(c)}</small></span></a>`).join("")}</div>`;
+  const det=c=>`<div class="panel mt prm-h">${prmIco(c.slug,34)}<div><h2 style="margin:0">${esc(c.nome)}</h2><p class="small muted" style="margin:2px 0 0">${esc(c.resumo)}</p></div></div>`+c.grupos.map(g=>`<div class="panel mt"><h3 class="seg-h" style="margin-top:0">${esc(g.nome)}</h3>${g.descricao?`<p class="small muted" style="margin:0 0 8px">${esc(g.descricao)}</p>`:""}${g.brasil.length?table([["Ano",x=>x.ano],["Resultado",x=>`<span class="prm-r" style="--c:${resCor(x.resultado)}">${esc(x.resultado)}</span>`],["Quem / onde",x=>esc(x.detalhe||"—")]],g.brasil.slice().sort((a,b)=>b.ano-a.ano)):`<p class="small muted" style="margin:0">Sem resultados listados.</p>`}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esc(g.fonte)}" target="_blank" rel="noopener">${esc(g.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p></div>`).join("");
   box.innerHTML=cards+(cur?det(cur):`<p class="small muted" style="margin-top:12px">Toque em um esporte acima.</p>`)+`<p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`}).catch(e=>{const b=$("#prmBox");if(b)b.innerHTML=rerro(e)})}}};
 P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
