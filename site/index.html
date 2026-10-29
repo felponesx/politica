@@ -4126,9 +4126,8 @@ async function camadaMunPais(o){const{f,corDe,forte,cands,modo,onZoom}=o;const t
  if(venc&&st){svg.insertBefore(g,st);svg.classList.add("com-mun","mun-venc")}else{const lt=svg.querySelector("text");svg.insertBefore(g,lt);svg.classList.add("com-mun")}
  const tip=dicaFlutuante();
  g.addEventListener("click",e=>{const p=e.target.closest("path[data-uf]");if(!p)return;tip.classList.remove("on");onZoom(p.dataset.uf,svg.querySelector(`path.st[data-uf="${p.dataset.uf}"]`))});
- g.addEventListener("mouseover",e=>{if(!ehMouse())return;const p=e.target.closest("path[data-c]"),x=p&&info[p.dataset.c];if(!x){tip.classList.remove("on");return}
-  fecharDica();tip.innerHTML=infoMunicipio(x,p.dataset.uf,nomeDe,corDe,partDe)+`<em>Clique para ver o estado inteiro</em>`;tip.classList.add("on");posDica(tip,e.clientX,e.clientY)});
- g.addEventListener("mousemove",e=>{if(tip.classList.contains("on"))posDica(tip,e.clientX,e.clientY)});g.addEventListener("mouseleave",()=>tip.classList.remove("on"))}
+ // o cartão da cidade não aparece mais ao passar o mouse no mapa do país: só depois de tocar no estado
+}
 async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=["GOVERNADOR","PRESIDENTE","SENADOR","PREFEITO"];if(!maj.includes(String(f.cargo).toUpperCase()))return;
  box.innerHTML=`<div class="panel mt"><h2>Quem venceu em cada município</h2><div id="elmapaC">${rload()}</div></div>`;
  try{const[m,v]=await Promise.all([apiGet("/malhas/"+f.uf),apiGet(`/eleicoes/${f.ano}/${f.uf}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]);
