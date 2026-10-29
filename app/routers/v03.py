@@ -732,3 +732,10 @@ def faccoes():
     """Facções criminosas de maior alcance, onde são mais fortes e a fonte de cada uma (lista curada)."""
     from app import faccoes as _f
     return _f.dados()
+
+
+@router.get("/transito", tags=["Cidades"])
+def transito():
+    """Índice anual de congestionamento das capitais (TomTom Traffic Index). Não é km em tempo real."""
+    from app import transito as _t
+    return _t.dados()

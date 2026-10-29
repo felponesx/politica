@@ -116,3 +116,9 @@ def test_faccoes_com_fonte():
     d = faccoes.dados()
     assert {"PCC", "CV"} <= {i["sigla"] for i in d["itens"]}
     assert all(i["forte"] and i["fonte"].startswith("https://") for i in d["itens"])
+
+
+def test_transito_ordenado():
+    from app import transito
+    it = transito.dados()["itens"]
+    assert it and it == sorted(it, key=lambda i: -i["pct"])

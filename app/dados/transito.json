@@ -1,0 +1,52 @@
+{
+ "aviso": "Índice anual de congestionamento (TomTom Traffic Index), por capital. NÃO é medição de quilômetros em tempo real: não existe base aberta e gratuita disso. O índice diz quanto uma viagem leva a mais, em média, do que levaria sem trânsito (58% = 58% mais tempo). Só as capitais que a TomTom publica para o Brasil aparecem; o ranking compara só entre elas.",
+ "fonte": "https://www.tomtom.com/traffic-index/country/brazil/",
+ "fonte_nome": "TomTom Traffic Index, página do Brasil",
+ "itens": [
+  {
+   "uf": "PE",
+   "cidade": "Recife",
+   "pct": 64.7
+  },
+  {
+   "uf": "RS",
+   "cidade": "Porto Alegre",
+   "pct": 59.6
+  },
+  {
+   "uf": "MG",
+   "cidade": "Belo Horizonte",
+   "pct": 58.6
+  },
+  {
+   "uf": "SP",
+   "cidade": "São Paulo",
+   "pct": 58.5
+  },
+  {
+   "uf": "RJ",
+   "cidade": "Rio de Janeiro",
+   "pct": 57.8
+  },
+  {
+   "uf": "CE",
+   "cidade": "Fortaleza",
+   "pct": 56.9
+  },
+  {
+   "uf": "PR",
+   "cidade": "Curitiba",
+   "pct": 54.0
+  },
+  {
+   "uf": "BA",
+   "cidade": "Salvador",
+   "pct": 47.6
+  },
+  {
+   "uf": "DF",
+   "cidade": "Brasília",
+   "pct": 34.4
+  }
+ ]
+}
