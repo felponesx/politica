@@ -1742,8 +1742,8 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .cota-l .hb-l{grid-template-columns:minmax(0,1fr) 110px 80px!important;min-height:48px;padding:4px 0}
 .cota-l .hb-n{white-space:normal!important;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:clip!important}
 .cota-l .hb-b{width:110px!important}
-.nf-t td{height:56px;vertical-align:middle}
-.nf-t td:nth-child(2){max-width:0;width:100%}
+.nf-t table{table-layout:fixed;width:100%}.nf-t th:nth-child(1),.nf-t td:nth-child(1){width:68px}.nf-t th:nth-child(3),.nf-t td:nth-child(3){width:92px}
+.nf-t td{height:44px;padding-top:4px;padding-bottom:4px;vertical-align:middle;font-size:13px}
 .nf-t td:nth-child(2),.nf-t td:nth-child(2) a,.nf-t td:nth-child(2) div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:1.35}
 .nf-t td:nth-child(1),.nf-t td:nth-child(3){white-space:nowrap}
 @media (max-width:640px){.cota-l .hb-l{grid-template-columns:minmax(0,1fr) 84px 70px!important}.cota-l .hb-b{width:84px!important}}
@@ -3509,7 +3509,7 @@ mount(){Promise.all([apiGet("/parlamentares/"+id),apiGet("/parlamentares/"+id+"/
   if(tab==="Atuação")apiGet("/parlamentares/"+id+"/atuacao").then(x=>{const b=$("#rpat");if(!b)return;b.innerHTML=`<div class="grid g2"><div class="panel"><h2>Comissões</h2>${x.comissoes.length?x.comissoes.map(c=>`<div class="list-row"><span class="tag">${esc(c.sigla||"")}</span><div style="flex:1;min-width:0"><b style="font-weight:500">${esc(c.nome||"")}</b><div class="small muted">${esc(c.cargo||"")}${c.inicio?" · desde "+fdr(c.inicio):""}</div></div></div>`).join(""):rvazio("Nenhuma comissão coletada (coleta congresso-atuacao).")}</div>
   <div class="panel"><h2>Discursos</h2>${x.discursos_12_meses!=null?`<p style="margin:0 0 8px"><b>${nf(x.discursos_12_meses)}</b> discursos nos últimos 12 meses.</p>`:""}${x.ultimos_discursos.length?x.ultimos_discursos.map(d=>`<div class="list-row"><div style="flex:1;min-width:0"><b style="font-weight:500">${fdr(d.data)}</b> <span class="small muted">${esc(d.tipo||"")}</span><div class="small muted rclamp">${esc(d.resumo||"")}</div></div></div>`).join(""):rvazio(p.casa==="senado"?"Discursos do Senado ainda não entram nesta versão.":"Nenhum discurso coletado.")}</div></div>
   ${x.projetos_autoria.length?`<div class="panel mt"><h2>Projetos de autoria</h2>${x.projetos_autoria.map(j=>`<a class="list-row rrow" href="#/projeto/r${j.proposicao_id}"><b>${esc(j.titulo)}</b></a>`).join("")}</div>`:""}<p class="small muted">Fonte: ${esc(x.fonte)}.</p>`}).catch(e=>{const b=$("#rpat");if(b)b.innerHTML=rerro(e)});
- if(tab==="Gastos"&&$("#rpd"))listaPaginada({url:()=>`/parlamentares/${id}/despesas`,alvo:"#rpd",mais:"#rpdm",limite:20,vazio:"Sem notas.",render:it=>table([["Mês",x=>(x.mes?String(x.mes).padStart(2,"0")+"/":"")+x.ano],["Gasto com",x=>`${esc(tit(String(x.tipo||"").replace(/\.$/,"")))}<div class="small muted">${x.cnpj_cpf&&x.cnpj_cpf.length===14?`<a href="#/fornecedor/${x.cnpj_cpf}">${esc(x.fornecedor||x.cnpj_cpf)}</a>`:esc(x.fornecedor||"")}</div>`],["Valor",x=>brl(x.valor),"n"]],it)})(true)};
+ if(tab==="Gastos"&&$("#rpd"))listaPaginada({url:()=>`/parlamentares/${id}/despesas`,alvo:"#rpd",mais:"#rpdm",limite:8,vazio:"Sem notas.",render:it=>table([["Mês",x=>(x.mes?String(x.mes).padStart(2,"0")+"/":"")+x.ano],["Gasto com",x=>`${esc(tit(String(x.tipo||"").replace(/\.$/,"")))}<div class="small muted">${x.cnpj_cpf&&x.cnpj_cpf.length===14?`<a href="#/fornecedor/${x.cnpj_cpf}">${esc(x.fornecedor||x.cnpj_cpf)}</a>`:esc(x.fornecedor||"")}</div>`],["Valor",x=>brl(x.valor),"n"]],it)})(true)};
  des();document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{tab=b.textContent;document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));des()})
 }).catch(e=>{$("#rp").innerHTML=rerro(e)})}}};
 
