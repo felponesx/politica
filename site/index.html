@@ -1714,6 +1714,18 @@ a.fl-l[href^="#/orgao/"]{position:relative;padding-right:104px}a.fl-l[href^="#/o
 .ob-uf-t{font-size:12.5px;font-weight:600;margin-bottom:5px}
 /* Órgãos: o corte aparece em destaque, com uma barra vermelha ao lado */
 a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-top:3px;padding:2px 8px 2px 8px;border-left:3px solid #E5484D;background:rgba(229,72,77,.08);border-radius:0 6px 6px 0;color:var(--ink2);font-weight:600;font-size:12px}
+/* Crimes de políticos: foto, nome e situação jurídica em selo */
+.fl-l.cr-l{display:flex;align-items:center;gap:12px;padding:12px 2px}.cr-foto{width:48px;height:48px}.cr-foto,.cr-l .rfoto{flex:none;border-radius:50%;object-fit:cover}
+.cr-c{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.cr-n{font-weight:650;font-size:14.5px}.cr-m{font-size:12px;color:var(--muted);line-height:1.35}
+.cr-tag{flex:none;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:8px;font-size:12px;font-weight:650;line-height:1.2;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border:1px solid color-mix(in srgb,var(--c) 38%,transparent)}.cr-tag i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+@media (max-width:640px){.fl-l.cr-l{flex-wrap:wrap}.cr-c{flex-basis:calc(100% - 64px)}.cr-tag{margin-left:60px}}
+/* menu de atalhos do celular: a folha sobe acima da barra de baixo (nada fica escondido) e os botões têm a mesma altura */
+.sheet{bottom:calc(61px + env(safe-area-inset-bottom,0px));max-height:calc(100vh - 150px);padding-bottom:12px;z-index:75;box-shadow:0 -8px 24px rgba(16,24,40,.16)}
+.sheet .nav a{min-height:54px;align-items:center}
+.cmpbar{display:flex;gap:12px;flex-wrap:wrap}.cmpc{position:relative;flex:1 1 260px;min-width:0}.cmpq{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.cmpl{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,.14);padding:6px;max-height:320px;overflow:auto}.cmpl button{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:0;background:none;border-radius:8px;text-align:left;font:inherit;color:var(--ink);cursor:pointer}.cmpl button:hover{background:var(--soft)}
+.cmpsel{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.cmpsel span{display:flex;flex-direction:column;min-width:0;flex:1}.cmpsel small{color:var(--muted)}.cmpx{border:0;background:var(--soft);border-radius:8px;width:28px;height:28px;font-size:18px;cursor:pointer;color:var(--ink2)}
+.cmph{display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none;font-weight:650}
 </style>
 </head>
 <body>
@@ -1803,7 +1815,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar Regiões"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -4058,6 +4070,41 @@ mount(){$("#cpA").value=A;$("#cpB").value=B;
   $("#cpR").innerHTML=`<div class="panel"><div class="tw"><table class="cpt"><thead><tr><th></th><th>${bandeiraImg(A,"flag flag-sm")} ${esc(UF[A].nome)}</th><th>${bandeiraImg(B,"flag flag-sm")} ${esc(UF[B].nome)}</th></tr></thead><tbody>${linhas.map(l=>`<tr><td>${l[0]}</td><td>${l[1](x)}</td><td>${l[1](y)}</td></tr>`).join("")}</tbody></table></div>${RSRC("IBGE, SICONFI, Receita Federal, Tesouro, PGFN, PNCP, ObrasGov e Câmara")}</div>`};
  carregar();$("#cpA").onchange=e=>{if(e.target.value){A=e.target.value;carregar()}};$("#cpB").onchange=e=>{if(e.target.value){B=e.target.value;carregar()}}}}};
 
+
+/* ---------- Comparar: Regiões (dois estados) e Candidatos (dois parlamentares) ---------- */
+{const _cmpR=P.comparar;
+ const ABAS_CMP=a=>`<div class="tabs" id="abasCmp" style="margin-top:0">${[["reg","","Regiões"],["cand","candidatos","Candidatos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/comparar${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
+ const nrmC=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+ function telaCandidatos(){let L=[],A=null,B=null;
+  const pick=(n)=>`<div class="cmpc" id="cmpc${n}"><input class="cmpq" id="cmpq${n}" placeholder="Candidato ${n} (nome de deputado ou senador)" autocomplete="off"><div class="cmpl" id="cmpl${n}" hidden></div><div class="cmps" id="cmps${n}"></div></div>`;
+  return{html:`<div class="panel"><div class="cmpbar">${pick(1)}<span class="muted" style="align-self:center">com</span>${pick(2)}</div></div><div id="cmpR" class="mt">${rvazio("Escolha dois candidatos para comparar.")}</div>`,
+  mount(){
+   Promise.all([pessoasCasa("camara").catch(()=>[]),pessoasCasa("senado").catch(()=>[])]).then(([c,s])=>{L=[...c,...s]});
+   const card=p=>`<div class="cmpsel">${p.foto?fotoR(p.foto,p.nome,36):iniFoto(p.nome,36)}<span><b>${esc(p.nome)}</b><small>${esc(p.cargo||"")} · ${esc(p.partido||"")} · ${esc(p.uf||"")}</small></span><button type="button" class="cmpx" aria-label="Trocar">×</button></div>`;
+   const dados=async p=>{const id=String(p.href||"").split("/").pop();const[at,per,lig]=await Promise.all([apiGet("/parlamentares/"+id+"/atuacao").catch(()=>null),apiGet("/parlamentares/"+id).catch(()=>null),apiGet("/parlamentares/"+id+"/ligacoes").catch(()=>null)]);return{p,at,per,lig}};
+   const mostra=async()=>{const box=$("#cmpR");if(!box)return;if(!A||!B){box.innerHTML=rvazio("Escolha dois candidatos para comparar.");return}
+    box.innerHTML=rload();const[x,y]=await Promise.all([dados(A),dados(B)]);if(!$("#cmpR"))return;
+    const ult=d=>{const c=(d.lig&&d.lig.candidaturas||[]).slice().sort((a,b)=>b.ano-a.ano)[0];return c||null};
+    const R=[["Partido",d=>esc(d.p.partido||"—")],["Estado",d=>esc(d.p.uf||"—")],["Cargo",d=>esc(d.p.cargo||"—")],["Situação",d=>esc(d.p.sit||"—")],
+     ["Presença nas votações (12 meses)",d=>{const q=d.at&&d.at.presenca;return q?`${nf(q.votou)} de ${nf(q.total)} <span class="small muted">${pct(q.percentual)}</span>`:"—"}],
+     ["Gasto com a cota parlamentar",d=>d.per&&d.per.total_gasto!=null?brl(d.per.total_gasto):"—"],
+     ["Projetos de autoria",d=>{const a=d.at&&d.at.projetos_autoria;const n=Array.isArray(a)?a.length:a&&a.total;return n!=null?nf(n):"—"}],
+     ["Comissões em que participa",d=>{const c=d.at&&d.at.comissoes;return c?nf(c.filter(z=>!z.fim).length):"—"}],
+     ["Última eleição",d=>{const c=ult(d);return c?`${c.ano}, ${esc(c.resultado||"")}`:"—"}],
+     ["Votos na última eleição",d=>{const c=ult(d);return c&&c.votos!=null?nf(c.votos):"—"}],
+     ["Dinheiro arrecadado na campanha",d=>{const c=ult(d);return c&&c.receitas_campanha!=null?brl(c.receitas_campanha):"—"}],
+     ["Dinheiro gasto na campanha",d=>{const c=ult(d);return c&&c.despesas_campanha!=null?brl(c.despesas_campanha):"—"}],
+     ["Patrimônio declarado",d=>{const c=ult(d);return c&&c.patrimonio!=null?brl(c.patrimonio):"—"}]].filter(l=>!(l[1](x)==="—"&&l[1](y)==="—"));
+    const cab=d=>`<th><a href="${esu(d.p.href)}" class="cmph">${d.p.foto?fotoR(d.p.foto,d.p.nome,40):iniFoto(d.p.nome,40)}<span>${esc(d.p.nome)}</span></a></th>`;
+    box.innerHTML=`<div class="panel"><div class="tw"><table class="cpt"><thead><tr><th></th>${cab(x)}${cab(y)}</tr></thead><tbody>${R.map(l=>`<tr><td>${l[0]}</td><td>${l[1](x)}</td><td>${l[1](y)}</td></tr>`).join("")}</tbody></table></div><p class="small muted" style="margin:8px 0 0">Dados oficiais da Câmara, do Senado e do TSE. Aparecer em duas bases não indica irregularidade.</p>${RSRC("Câmara dos Deputados, Senado Federal e TSE")}</div>`;aplicarMidia&&aplicarMidia()};
+   [1,2].forEach(n=>{const q=$("#cmpq"+n),l=$("#cmpl"+n),sel=$("#cmps"+n);
+    const set=p=>{if(n===1)A=p;else B=p;q.hidden=!!p;sel.innerHTML=p?card(p):"";l.hidden=true;if(p){sel.querySelector(".cmpx").onclick=()=>set(null)}mostra()};
+    q.oninput=debounce(()=>{const t=nrmC(q.value.trim());if(t.length<2){l.hidden=true;return}const r=L.filter(p=>nrmC(p.nome).includes(t)).slice(0,8);
+     l.innerHTML=r.length?r.map((p,i)=>`<button type="button" data-i="${i}">${p.foto?fotoR(p.foto,p.nome,28):iniFoto(p.nome,28)}<span>${esc(p.nome)} <small class="muted">${esc(p.partido||"")} · ${esc(p.uf||"")}</small></span></button>`).join(""):`<p class="small muted" style="margin:6px 10px">Ninguém com esse nome.</p>`;l.hidden=false;
+     l.querySelectorAll("button").forEach(b=>b.onclick=()=>set(r[+b.dataset.i]))},150)})}}}
+ P.comparar=(pre,...a)=>{const aba=pre==="candidatos"?"cand":"reg";
+  if(aba==="cand")return{html:`<div class="ph"><div><h1>Comparar</h1><p>Compare regiões e candidatos lado a lado, com os dados oficiais.</p></div></div>${ABAS_CMP("cand")}<div id="cmpT"></div>`,mount(){const t=telaCandidatos();$("#cmpT").innerHTML=t.html;t.mount()}};
+  const r=_cmpR(pre,...a);return{html:r.html.replace(/<h1>Comparar[^<]*<\/h1>/,"<h1>Comparar</h1>").replace(/(<div class="ph">[\s\S]*?<\/div><\/div>)/,`$1${ABAS_CMP("reg")}`),mount:r.mount}}}
 /* Relatórios e Dados: exportação em CSV */
 const _rel=P.relatorios;
 P.relatorios=(...a)=>API.on&&!API.snap?{html:`<div class="ph"><div><h1>Relatórios e Dados</h1><p>Baixe as bases do BRASIL+ em CSV, prontas para abrir no Excel ou no Google Planilhas.</p></div></div>
@@ -5715,6 +5762,36 @@ function telaCortes(){return{html:`<div id="ctrRes">${rload()}</div>`,
  const r=_org5(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasOrg"))ph.insertAdjacentHTML("afterend",ABAS_ORG("org"))}}}}
 /* ---------- Indicadores (v2.1): bolsa, inflação, Selic, salário mínimo, balança comercial, PIB, dólar e desemprego — cada um com gráfico e tabela em linhas ---------- */
 const nfD=(x,d=0)=>x.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+/* ---------- Indicadores › Impostos: alíquotas dos principais tributos (tabela curada, com a base legal de cada um) ---------- */
+const ICMS_UF={AC:[19],AL:[20.5,"mais 1% do fundo de combate à pobreza (FECOEP); subiu de 19% para 20,5% em abril de 2026"],AP:[18],AM:[20],BA:[20.5],CE:[20],DF:[20],ES:[17],GO:[19],MA:[23],MT:[17],MS:[17],MG:[18],PA:[19],PB:[20],PR:[19.5],PE:[20.5],PI:[22.5],RJ:[22,"20% mais 2% do fundo de combate à pobreza (FECP)"],RN:[20],RS:[17],RO:[19.5],RR:[20],SC:[17],SP:[18],SE:[19,"mais 1% do fundo de combate à pobreza"],TO:[20]};
+const IMP_GRUPOS=[
+ ["Federais (pagos à União)",[
+  ["Imposto de Renda, pessoa física","Tabela mensal de 2026: isento até R$ 2.428,80; 7,5% até R$ 2.826,65; 15% até R$ 3.751,05; 22,5% até R$ 4.664,68; 27,5% acima disso. Desde 2026, quem ganha até R$ 5.000 por mês não paga imposto (redutor), e há redução parcial até R$ 7.350.","27,5% (máxima)","Lei 15.270/2025","https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/L15270.htm"],
+  ["INSS do empregado","Progressiva sobre o salário: 7,5% até R$ 1.621,00; 9% até R$ 2.902,84; 12% até R$ 4.354,27; 14% até o teto de R$ 8.475,55 (contribuição máxima de R$ 988,09).","7,5% a 14%","Portaria interministerial de reajuste de 2026 (Previdência e Fazenda)","https://www.gov.br/previdencia"],
+  ["INSS da empresa (patronal)","Contribuição sobre a folha de pagamento, mais o seguro de acidente de trabalho (1% a 3%).","20% da folha","Lei 8.212/1991","https://www.planalto.gov.br/ccivil_03/leis/l8212cons.htm"],
+  ["Imposto de Renda, empresas (IRPJ)","15% do lucro, mais 10% sobre a parte do lucro que passa de R$ 20 mil por mês.","15% + 10%","Lei 9.249/1995","https://www.planalto.gov.br/ccivil_03/leis/l9249.htm"],
+  ["CSLL (contribuição sobre o lucro)","Cobrada das empresas sobre o lucro; alíquotas maiores para bancos e seguradoras.","9%","Lei 7.689/1988","https://www.planalto.gov.br/ccivil_03/leis/l7689.htm"],
+  ["PIS e Cofins","Sobre o faturamento. Regime cumulativo: 0,65% + 3%. Regime não cumulativo: 1,65% + 7,6%.","3,65% ou 9,25%","Leis 9.718/1998, 10.637/2002 e 10.833/2003","https://www.planalto.gov.br/ccivil_03/leis/2003/l10.833.htm"],
+  ["IPI (produtos industrializados)","Cada produto tem a sua alíquota na tabela TIPI.","0% a 330%","Decreto 11.158/2022 (TIPI)","https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/decreto/d11158.htm"],
+  ["Simples Nacional (pequenas empresas)","Um só pagamento que junta vários tributos; a alíquota efetiva depende do setor e do faturamento.","4% a 33%","Lei Complementar 123/2006","https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp123.htm"],
+  ["IOF (crédito, câmbio, seguros)","A alíquota muda conforme a operação e é alterada por decreto do governo.","varia por operação","Decreto 6.306/2007","https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2007/decreto/d6306.htm"],
+  ["ITR (propriedade rural)","Depende do tamanho do imóvel e do grau de uso da terra.","0,03% a 20%","Lei 9.393/1996","https://www.planalto.gov.br/ccivil_03/leis/l9393.htm"]]],
+ ["Estaduais (pagos ao governo do estado)",[
+  ["ICMS","O maior imposto dos estados, sobre a circulação de mercadorias e alguns serviços. A tabela abaixo traz a alíquota geral de cada estado; produtos como combustíveis, energia, bebidas e supérfluos têm alíquotas próprias.","17% a 23% (geral)","Lei Kandir (LC 87/1996) e a lei de cada estado","https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp87.htm"],
+  ["IPVA","Sobre a propriedade de veículos; cada estado define a alíquota por tipo de veículo.","cerca de 1% a 4% do valor do veículo","Lei de cada estado",""],
+  ["ITCMD (herança e doação)","Cada estado fixa a sua alíquota, que não pode passar do limite do Senado.","até 8%","Resolução 9/1992 do Senado Federal",""]]],
+ ["Municipais (pagos à prefeitura)",[
+  ["ISS (serviços)","Cada cidade define a alíquota dentro do limite nacional.","2% a 5%","Lei Complementar 116/2003","https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp116.htm"],
+  ["IPTU (imóveis urbanos)","Cada cidade define a alíquota por tipo e valor do imóvel.","varia por cidade","Lei de cada município",""],
+  ["ITBI (compra de imóveis)","Cada cidade define a alíquota; costuma ficar entre 2% e 3%.","cerca de 2% a 3%","Lei de cada município",""]]],
+ ["Reforma tributária (em transição)",[
+  ["CBS e IBS (novos tributos sobre o consumo)","Vão substituir PIS, Cofins, IPI, ICMS e ISS aos poucos. Em 2026 é só o teste: CBS de 0,9% e IBS de 0,1%, compensados nos tributos atuais. A troca completa vai até 2033.","0,9% + 0,1% em 2026","Emenda 132/2023 e Lei Complementar 214/2025","https://www.planalto.gov.br/ccivil_03/leis/lcp/Lcp214.htm"]]]];
+function impostosHtml(){
+ const icms=Object.entries(ICMS_UF).map(([uf,[v,n]])=>({uf,k:v,r:v.toLocaleString("pt-BR",{minimumFractionDigits:v%1?1:0})+"%",s:n||""}));
+ return`<div class="panel mt ind-p" id="indImp"><h2>Impostos no Brasil</h2><p class="small muted" style="margin:0 0 8px">Quanto se paga dos principais tributos, de quem cobra cada um e em que lei está a regra. Valores de 2026 (conferidos em 29/10/2026). Alíquotas mudam por produto, serviço e cidade: para decidir algo importante, confira na lei ou na Secretaria da Fazenda.</p>
+ ${IMP_GRUPOS.map(([g,l])=>`<h3 class="seg-h">${g}</h3><div class="fl-lista">${l.map(([n,d,a,lei,url])=>`<div class="fl-l"><span class="fl-n">${n}</span><span class="fl-r">${a}</span><span class="fl-s">${d}${lei?` <span class="small">· ${url?`<a href="${url}" target="_blank" rel="noopener">${lei}</a>`:lei}</span>`:""}</span></div>`).join("")}</div>`).join("")}
+ <h3 class="seg-h">ICMS em cada estado <small>alíquota geral de 2026</small></h3>${listaUF(icms)}
+ <p class="small muted" style="margin:8px 0 0">ICMS: compilado de tabelas públicas de 2026 e das leis estaduais; pode divergir por produto e muda quando o estado altera a lei. Confirme na Secretaria da Fazenda do estado.</p></div>`}
 const IND_NOVOS=[
  {id:"ibovespa",t:"Bolsa brasileira (Ibovespa)",d:"Índice das ações mais negociadas da B3. Fechamento de cada mês, em pontos.",k:["ibovespa"],f:x=>nfD(x)+" pts",varp:true},
  {id:"inflacao",t:"Inflação (IPCA)",d:"Quanto os preços subiram. O IPCA é a inflação oficial, medida pelo IBGE.",k:["ipca_12m","ipca_mes"],f:x=>nfD(x,2)+"%",cols:["Acumulado em 12 meses","No mês"]},
@@ -5734,7 +5811,7 @@ function indNovosHtml(s){return IND_NOVOS.filter(c=>s[c.k[0]]&&s[c.k[0]].histori
   <h3 class="seg-h">Valores, do mais recente ao mais antigo</h3><div class="fl-box"><div class="fl-lista">${linhas}</div>${h.length>12?`<button type="button" class="btn fl-mais">Ver todos (${h.length})</button>`:""}</div></div>`}).join("")}
 {const _ind5=P.indicadores;P.indicadores=(...a)=>{const r=_ind5(...a);if(!API.on)return r;
  return{html:r.html.replace('<div id="ecoReal"></div>','<div id="ecoReal"></div><div id="indNovos"></div>'),mount(){r.mount&&r.mount();const mover=()=>{const g=$("#inReal"),n=$("#indNovos");if(g&&n)g.after(n)};mover();setTimeout(mover,800);
-  apiGet("/economia?nomes="+[...new Set(IND_NOVOS.flatMap(c=>c.k))].join(",")).then(e=>{const b=$("#indNovos");if(b)b.innerHTML=indNovosHtml(e.series||{})}).catch(()=>{})}}}}
+  apiGet("/economia?nomes="+[...new Set(IND_NOVOS.flatMap(c=>c.k))].join(",")).then(e=>{const b=$("#indNovos");if(b)b.innerHTML=indNovosHtml(e.series||{})+impostosHtml()}).catch(()=>{const b=$("#indNovos");if(b)b.innerHTML=impostosHtml()})}}}}
 const ABAS_ESC=a=>`<div class="tabs" id="abasEsc" style="margin-top:0">${[["esc","","Escândalos"],["crimes","crimes","Crimes de políticos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/escandalos${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
 function telaCrimes(){return{html:`<div id="crmL">${rload()}</div>`,mount(){apiGet("/crimes-politicos").then(d=>{const b=$("#crmL");if(!b)return;
  const L={"condenado":"Condenado","condenado (recorre)":"Condenado (cabe recurso)","indultado":"Condenado, pena perdoada (indulto)","pena cumprida":"Condenado, pena cumprida"};
@@ -5748,7 +5825,7 @@ function telaCrimes(){return{html:`<div id="crmL">${rload()}</div>`,mount(){apiG
   <p class="small muted" style="margin:10px 0 0">${esc(d.aviso)}</p></div>${RSRC()}`;
  const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
  const lista=()=>{const q=norm($("#crmQ").value),c=$("#crmC").value;const l=d.itens.filter(x=>(!c||x.caso===c)&&(!q||norm(x.nome+" "+(x.cargo||"")+" "+(x.partido||"")).includes(q)));
-  $("#crmT").innerHTML=l.length?`<div class="fl-box"><div class="fl-lista">${l.map((x,i)=>`<div class="fl-l${i>=10?" fl-x":""}"${i>=10?" hidden":""}><span class="fl-n"><a href="#/escandalo/${x.slug}">${esc(x.nome)}</a></span><span class="fl-r"><span class="cp-chip" style="--c:${cor[x.situacao]||"#999"}"><i></i>${esc(L[x.situacao]||x.situacao)}</span></span><span class="fl-s">${esc([x.cargo,x.partido,x.caso].filter(Boolean).join(" · "))}${x.data_situacao?` · ${quando(x.data_situacao)}`:""}${x.liberdade?` · ${esc(x.liberdade)}`:""} · <a href="${esu(x.fonte)}" target="_blank" rel="noopener">fonte</a></span></div>`).join("")}</div>${l.length>10?`<button type="button" class="btn fl-mais">Ver todos (${l.length})</button>`:""}</div>`:rvazio("Ninguém com esses filtros.")};
+  $("#crmT").innerHTML=l.length?`<div class="fl-box"><div class="fl-lista">${l.map((x,i)=>{const nm=x.nome.replace(/\s*\(.*\)$/,"");return`<div class="fl-l cr-l${i>=10?" fl-x":""}"${i>=10?" hidden":""}><span class="arv-foto cr-foto" data-foto="esc:${esc(x.nome)}" data-nome="${esc(x.nome)}" style="width:48px;height:48px">${esc(iniciais(nm))}</span><span class="cr-c"><span class="cr-n"><a href="#/escandalo/${x.slug}">${esc(x.nome)}</a></span><span class="cr-m">${esc([x.cargo,x.partido].filter(Boolean).join(" · "))}</span><span class="cr-m">${esc(x.caso||"")}${x.data_situacao?` · ${quando(x.data_situacao)}`:""}${x.liberdade?` · ${esc(x.liberdade)}`:""} · <a href="${esu(x.fonte)}" target="_blank" rel="noopener">fonte</a></span></span><span class="cr-tag" style="--c:${cor[x.situacao]||"#999"}"><i></i>${esc(L[x.situacao]||x.situacao)}</span></div>`}).join("")}</div>${l.length>10?`<button type="button" class="btn fl-mais">Ver todos (${l.length})</button>`:""}</div>`:rvazio("Ninguém com esses filtros.");if(typeof aplicarMidia==="function")aplicarMidia()};
  lista();$("#crmQ").oninput=debounce(lista,200);$("#crmC").onchange=lista}).catch(e=>{const b=$("#crmL");if(b)b.innerHTML=e.status===404?rvazio("Os crimes entram na próxima cópia dos dados."):rerro(e)})}}}
 {const _esc6=P.escandalos;P.escandalos=(t,...a)=>{if(!API.on)return _esc6(t,...a);
  if(t==="crimes"){const c=telaCrimes();return{html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Casos de corrupção investigados no Brasil e os políticos condenados neles. Cada informação tem o link da fonte.</p></div></div>${ABAS_ESC("crimes")}${c.html}`,mount:c.mount}}
