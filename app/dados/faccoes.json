@@ -118,35 +118,6 @@
     "fonte": "https://paulofigueiredoshow.com/68-milhoes-moram-em-areas-dominadas-por-faccoes-ou-milicias/",
     "fonte_nome": "Paulo Figueiredo (resumo do estudo)"
    }
-  ],
-  "rio": {
-   "titulo": "Região Metropolitana do Rio (capital + 21 cidades): o único recorte com mapa",
-   "pessoas_mi": 4,
-   "pct": 35,
-   "pct_capital_territorio": 31,
-   "quem": [
-    [
-     "Milícias",
-     49,
-     "#F5A524"
-    ],
-    [
-     "Comando Vermelho",
-     47,
-     "#E5484D"
-    ],
-    [
-     "Outros",
-     4,
-     "#8A94A6"
-    ]
-   ],
-   "quem_nota": "Divisão das áreas com grupos armados na região. Outros é o que sobra para 100%.",
-   "fonte": "https://vermelho.org.br/2025/12/04/grupos-criminosos-dominam-35-da-regiao-metropolitana-do-rio/",
-   "fonte_nome": "Mapa dos Grupos Armados (GENI/UFF e Fogo Cruzado), edição 2025, via Vermelho",
-   "fonte2": "https://geni.uff.br/2022/09/13/mapa-historico-dos-grupos-armados-no-rio-de-janeiro/",
-   "fonte2_nome": "GENI/UFF"
-  },
-  "por_estado": "Não há estimativa de pessoas por estado em fonte aberta, só o recorte do Grande Rio acima. Para saber onde cada facção é mais forte, veja os cartões abaixo."
+  ]
  }
 }
