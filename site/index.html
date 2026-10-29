@@ -1799,6 +1799,10 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 
 .fac-stack{display:flex;height:14px;border-radius:99px;overflow:hidden}.fac-stack span{display:block;height:100%}
 .fac-leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;font-size:12.5px}.fac-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+
+.seg.sw.sd-abas{display:none!important}
+@media (max-width:760px){.seg.sw.sd-abas{display:flex!important;width:100%;margin:0 0 10px}.sd-abas button{flex:1 1 0;min-width:0;white-space:normal;line-height:1.2;padding:8px 4px;font-size:12.5px}
+.sd-grade{display:block!important}.sd-grade .sd-g{display:none;margin-top:0}.sd-grade .sd-g.on{display:block}}
 </style>
 </head>
 <body>
@@ -4972,7 +4976,8 @@ function segBlocos(e,br,ref,arr){const n1=arr?n0:_n1,o=e.ocorrencias||{},p=e.pri
   L("Não voltaram",n0(p.abandonos),p.nao_voltaram_por_mil_saidas!=null?`${n1(p.nao_voltaram_por_mil_saidas)} por mil saídas`:""),L("Mortes no sistema",n0(p.obitos),"no semestre")]));
  if(e.violencia)out.push(quadro("Mortes violentas intencionais",`${v.ano||ref.violencia}`,[L("Mortes violentas",n0(v.mvi),v.variacao_mvi!=null?`${v.variacao_mvi>0?"+":""}${n1(v.variacao_mvi)}% em um ano`:""),L("Taxa por 100 mil",n1(v.taxa_mvi),cmp(v.taxa_mvi,gv(B,"violencia","taxa_mvi"))),
   L("Homicídios dolosos",n0(v.homicidio_doloso),""),L("Mortes por intervenção policial",n0(v.mortes_intervencao),""),L("Policiais mortos",n0(v.policiais_mortos),"")]));
- return out.length?`<div class="sd-grade" style="margin-top:14px">${out.join("")}</div>${v.ano||ref.violencia?`<p class="small muted" style="margin:6px 0 0">Mortes violentas: Anuário Brasileiro de Segurança Pública.</p>`:""}`:""}
+ const rot=h=>{const m=/<h4>(.*?)(?: <small|<\/h4>)/.exec(h);return m?m[1]:"Dados"},cur=out.filter(Boolean).map((h,i)=>h.replace('class="panel sd-g"',`class="panel sd-g${i===0?" on":""}" data-sdp="${i}"`));
+ return out.length?`<div class="sd-wrap" style="margin-top:14px"><div class="seg sw sd-abas" role="tablist">${out.filter(Boolean).map((h,i)=>`<button type="button" data-sd="${i}" class="${i===0?"on":""}">${rot(h).replace("Mortes violentas intencionais","Mortes violentas")}</button>`).join("")}</div><div class="sd-grade">${cur.join("")}</div></div>${v.ano||ref.violencia?`<p class="small muted" style="margin:6px 0 0">Mortes violentas: Anuário Brasileiro de Segurança Pública.</p>`:""}`:""}
 function segEfetivo(f,uf){if(!f)return"";const P=f.previsto||{},n1=uf?n0:_n1;
  const L=[["policia_militar","Polícia Militar","pm"],["policia_civil","Polícia Civil (judiciária)","pc"],["policia_penal","Polícia Penal (penitenciária)","penal"],["guardas_municipais","Guardas municipais (GCM)","gcm"],["bombeiros","Corpo de Bombeiros","pm"],["pericia","Perícia oficial","pc"],
   ["policia_federal","Polícia Federal","pf"],["prf","Polícia Rodoviária Federal","prf"],["policia_penal_federal","Polícia Penal Federal","penal"],["policia_legislativa","Polícia Legislativa (Câmara e Senado)","pf"]].filter(x=>f[x[0]]!=null&&f[x[0]]>0);
@@ -5028,7 +5033,9 @@ function segPorDia(e,d,uf){const o=e.ocorrencias||{},p=e.prisional||{},R=d.refer
   ["Prisões",[oc("mandados_cumpridos"),pr("Entram nas prisões",p.entradas,ref.prisional),pr("Saídas temporárias",p.saidas_temporarias,`${nf(p.abandonos||0)} não voltaram no semestre`),pr("Não voltaram para a prisão",p.abandonos,ref.prisional)]],
   ["Pessoas desaparecidas",["desaparecidos","localizados"].map(oc)]].map(([t,l])=>[t,l.filter(Boolean)]).filter(([,l])=>l.length);
  if(!GR.length)return"";
- return`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="sd-grade">${GR.map(([t,l])=>`<div class="panel sd-g"><h4>${t}</h4>${l.map(([n,v,x],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span class="sd-n">${esc(n)}<small>${esc(x)}</small></span><b>${fd(v)}<em>/dia</em></b></div>`).join("")}</div>`).join("")}</div>`}
+ return`<h3 class="seg-h">Por dia <small>média diária, ${ref.ocorr||ref.prisional}</small></h3><div class="sd-wrap"><div class="seg sw sd-abas" role="tablist">${GR.map(([t],i)=>`<button type="button" data-sd="${i}" class="${i===0?"on":""}">${esc(({"Mortes e violência":"Mortes","Roubos, furtos e drogas":"Roubos e drogas","Pessoas desaparecidas":"Desaparecidos"})[t]||t)}</button>`).join("")}</div><div class="sd-grade">${GR.map(([t,l],i)=>`<div class="panel sd-g${i===0?" on":""}" data-sdp="${i}"><h4>${t}</h4>${l.map(([n,v,x],k)=>`<div class="sd-l${k===0?" sd-top":""}"><span class="sd-n">${esc(n)}<small>${esc(x)}</small></span><b>${fd(v)}<em>/dia</em></b></div>`).join("")}</div>`).join("")}</div></div>`}
+document.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest(".sd-abas [data-sd]");if(!t)return;const w=t.closest(".sd-wrap");
+ w.querySelectorAll(".sd-abas [data-sd]").forEach(b=>b.classList.toggle("on",b===t));w.querySelectorAll(".sd-g").forEach(g=>g.classList.toggle("on",g.dataset.sdp===t.dataset.sd))});
 function _dias(ref){if(!ref)return 182;const[a,sm]=String(ref).split("/");return sm==="2"?184:((+a%4===0&&+a%100!==0)||+a%400===0?182:181)}
 // gráfico do indicador escolhido (homicídios dolosos, feminicídios, presos, mortes…): por mês (país, Sinesp) ou por ano; estados só por ano
 const SA_REG=new Map();let SA_N=0;
