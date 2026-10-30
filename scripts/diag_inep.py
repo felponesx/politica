@@ -24,31 +24,47 @@ pem = der.decode() if der.startswith(b"-----") else ssl.DER_cert_to_PEM_cert(der
 with tempfile.NamedTemporaryFile("w", suffix=".pem", delete=False) as f:
     f.write(open(certifi.where()).read() + "\n" + pem)
 cli = httpx.Client(verify=f.name, timeout=30, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36"})
-paginas = ["https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais"]
-for u in paginas:
-    r = cli.get(u)
-    hrefs = list(dict.fromkeys(re.findall(r"""href=["']([^"']+)["']""", r.text)))
-    arq = [h for h in hrefs if re.search(r"download\.inep|\.(zip|xlsx?|ods|csv)\b", h, re.I)]
-    print(f"\n=== {u} HTTP {r.status_code}: {len(hrefs)} links, {len(arq)} de arquivo", flush=True)
-    for h in arq[:150]:
-        print("   ", h, flush=True)
+import io
+import zipfile
 
-# adivinha nomes dos arquivos de resultados do IDEB (HEAD)
-base = "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/{ano}/{nome}"
-nomes = ["divulgacao_brasil_ideb_{ano}.xlsx", "divulgacao_brasil_ufs_{ano}.xlsx", "divulgacao_brasil_regioes_ufs_{ano}.xlsx", "divulgacao_brasil_ideb_{ano}.zip",
-         "divulgacao_anos_iniciais_municipios_{ano}.zip", "divulgacao_anos_iniciais_escolas_{ano}.zip", "divulgacao_anos_finais_municipios_{ano}.zip",
-         "divulgacao_anos_finais_escolas_{ano}.zip", "divulgacao_ensino_medio_municipios_{ano}.zip", "divulgacao_ensino_medio_escolas_{ano}.zip",
-         "divulgacao_ensino_medio_estados_{ano}.zip", "divulgacao_anos_iniciais_estados_{ano}.zip", "divulgacao_brasil_ufs_ideb_{ano}.zip",
-         "divulgacao_anos_iniciais_brasil_estados_{ano}.zip", "divulgacao_regioes_ufs_ideb_{ano}.zip", "divulgacao_municipios_ideb_{ano}.zip",
-         "divulgacao_escolas_ideb_{ano}.zip", "divulgacao_brasil_ufs_ideb_{ano}.xlsx", "divulgacao_regioes_ufs_ideb_{ano}.xlsx"]
-print("\n--- HEAD de nomes prováveis", flush=True)
-for ano in (2023, 2021, 2019):
-    for n in nomes:
-        u = base.format(ano=ano, nome=n.format(ano=ano))
-        try:
-            h = cli.head(u)
-            if h.status_code != 404 and h.status_code != 403:
-                print(h.status_code, h.headers.get("content-length"), u, flush=True)
-        except Exception as e:
-            print("ERRO", type(e).__name__, u, flush=True)
+import openpyxl
+
+B = "https://download.inep.gov.br/"
+NOMES = ["divulgacao_regioes_ufs_ideb_{a}.xlsx", "divulgacao_anos_iniciais_municipios_{a}.zip", "divulgacao_anos_iniciais_escolas_{a}.zip",
+         "divulgacao_anos_finais_escolas_{a}.zip", "divulgacao_ensino_medio_escolas_{a}.zip"]
+achados = {}
+print("--- onde estão os arquivos de 2023 (e 2025, se houver)", flush=True)
+for ano in (2025, 2023):
+    for pasta in ("ideb/", f"educacao_basica/portal_ideb/planilhas_para_download/{ano}/", f"ideb/{ano}/", f"ideb/resultados/{ano}/", f"educacao_basica/ideb/{ano}/"):
+        for n in NOMES:
+            u = B + pasta + n.format(a=ano)
+            try:
+                h = cli.head(u)
+                if h.status_code == 200:
+                    print(200, h.headers.get("content-length"), u, flush=True)
+                    achados[(ano, n)] = u
+            except Exception as e:
+                print("ERRO", type(e).__name__, u, flush=True)
+
+
+def olhar(nome, conteudo, linhas=8):
+    wb = openpyxl.load_workbook(io.BytesIO(conteudo), read_only=True, data_only=True)
+    print(f"\n##### {nome}: abas {wb.sheetnames}", flush=True)
+    for ws in wb.worksheets[:6]:
+        print(f"  -- aba {ws.title!r} dims={ws.dimensions}", flush=True)
+        for i, row in enumerate(ws.iter_rows(values_only=True)):
+            if i >= linhas:
+                break
+            print("    ", [c for c in row][:22], flush=True)
+
+
+alvo = next((u for (a, n), u in achados.items() if n.startswith("divulgacao_regioes")), B + "educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_regioes_ufs_ideb_2021.xlsx")
+olhar(alvo, cli.get(alvo).content, 14)
+for u in (B + "educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_anos_iniciais_municipios_2021.zip",
+          B + "educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_anos_finais_escolas_2021.zip"):
+    z = zipfile.ZipFile(io.BytesIO(cli.get(u).content))
+    print("\nZIP", u, z.namelist(), flush=True)
+    for nome in z.namelist()[:2]:
+        if nome.lower().endswith(".xlsx"):
+            olhar(nome, z.read(nome), 8)
 print("fim", flush=True)
