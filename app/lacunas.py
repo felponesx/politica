@@ -176,3 +176,15 @@ def fundos(db: Session) -> dict | None:
 def energia(db: Session) -> dict | None:
     d = db.scalar(select(Registro.dados).where(Registro.fonte == "aneel", Registro.tipo == "tarifas_residencial", Registro.chave == "BR"))
     return {**d, "aviso": AVISO_ENERGIA, "fontes": ["ANEEL — dados abertos (tarifas homologadas)"]} if d else None
+
+
+AVISO_CPIS = ("CPI (Comissão Parlamentar de Inquérito) investiga um fato certo por um prazo; CPMI reúne deputados e senadores. Abrir uma CPI não prova irregularidade nem culpa de ninguém: "
+              "o relatório final é recomendação e só a Justiça condena. A lista do Senado traz só as em atividade.")
+
+
+def cpis(db: Session) -> dict | None:
+    regs = {r.chave: (r.dados or {}).get("itens") or [] for r in db.scalars(select(Registro).where(Registro.fonte == "congresso", Registro.tipo == "cpis_casa"))}
+    if not regs.get("camara") and not regs.get("senado"):
+        return None
+    itens = sorted(regs.get("camara", []) + regs.get("senado", []), key=lambda x: x.get("inicio") or x.get("instalacao") or "", reverse=True)
+    return {"itens": itens, "total": len(itens), "aviso": AVISO_CPIS, "fontes": ["Câmara dos Deputados — dados abertos", "Senado Federal — dados abertos"]}

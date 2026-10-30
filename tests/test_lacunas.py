@@ -181,3 +181,23 @@ def test_desmatamento_filtra_biomas_e_pula_deter(monkeypatch):
     criar_tabelas()
     ambiente.coletar_desmatamento(biomas="pantanal", deter="false")
     assert len(lidos) == 1 and lidos[0][0].startswith("prodes-pantanal") and lidos[0][1] is None and lidos[0][2] is None
+
+
+def test_cpis_xml_do_senado_e_lista_ordenada(monkeypatch):
+    from app.collectors import cpis
+    xml = ("<ListaBasicaComissoes><Comissoes><Comissao><CodigoComissao>2500</CodigoComissao><SiglaComissao>CPIX</SiglaComissao><NomeComissao>CPI do Teste</NomeComissao>"
+           "<DataInicio>2026-03-10</DataInicio></Comissao></Comissoes></ListaBasicaComissoes>")
+    r = cpis.ler_xml_senado(xml)
+    assert r == [{"id": "2500", "casa": "senado", "sigla": "CPIX", "nome": "CPI do Teste", "inicio": "2026-03-10", "fim": None, "situacao": "em atividade"}]
+    criar_tabelas()
+    from app import lacunas
+    db = SessionLocal()
+    try:
+        from app.utils import upsert
+        upsert(db, Registro, {"fonte": "congresso", "tipo": "cpis_casa", "chave": "camara"}, {"titulo": "x", "dados": {"itens": [{"id": 1, "nome": "Velha", "inicio": "2001-01-01"}, {"id": 2, "nome": "Nova", "inicio": "2025-01-01"}]}})
+        db.commit()
+        d = lacunas.cpis(db)
+        assert [i["nome"] for i in d["itens"]][:2] == ["Nova", "Velha"] and "não prova" in d["aviso"]
+    finally:
+        db.rollback()
+        db.close()

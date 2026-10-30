@@ -6043,9 +6043,9 @@ document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
 /* ---------- Leis e Projetos: Constituição, leis e projetos numa área só (as telas antigas viram abas; o que se repetia saiu) ---------- */
-const LEIS_ABAS=[["projetos","Projetos e leis"],["tribunais","Julgamentos dos tribunais"],["constituicao","Constituição"],["como","Como uma lei nasce"]];
+const LEIS_ABAS=[["projetos","Projetos e leis"],["tribunais","Julgamentos dos tribunais"],["cpis","CPIs"],["constituicao","Constituição"],["como","Como uma lei nasce"]];
 const LEIS_DESC={projetos:"O que o Congresso vai votar, o que já votou (com o placar) e as leis que já estão em vigor.",
- tribunais:"Julgamentos de grande repercussão do STF, com o placar dos ministros e a fonte de cada um.",constituicao:"A Constituição de 1988 explicada: títulos, artigos mais consultados e emendas.",como:"Como um projeto vira lei, da ideia à sanção."};
+ cpis:"As Comissões Parlamentares de Inquérito da Câmara e do Senado: quando começaram, se ainda estão ativas e o que investigam.",tribunais:"Julgamentos de grande repercussão do STF, com o placar dos ministros e a fonte de cada um.",constituicao:"A Constituição de 1988 explicada: títulos, artigos mais consultados e emendas.",como:"Como um projeto vira lei, da ideia à sanção."};
 const _PROJ_IN=P.projetos,_LEG_IN=P.legislacao,_CONST_IN=P.constituicao;
 const FASES_P=[["a_votar","Para votar"],["em_votacao","Em votação agora"],["votado","Já votados"],["leis","Leis em vigor"]];
 function semCabecalho(o,{tabsConst}={}){const t=document.createElement("template");t.innerHTML=o.html;const ph=t.content.querySelector(".ph");if(ph)ph.remove();
@@ -6109,6 +6109,10 @@ function telaProjetos(){const ativas=()=>FASES_P.filter(f=>f[0]!=="em_votacao"||
    f.fase=k;lista()};
   document.querySelectorAll("#pjf button").forEach(b=>b.onclick=()=>abrir(b.dataset.f));
   abrir("a_votar");contar()}}}
+function telaCpis(){return{html:`<div id="cpiL">${API.on?rload():`<div class="rbanner">As CPIs aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ mount(){if(!API.on)return;apiGet("/cpis").then(d=>{const b=$("#cpiL");if(!b)return;
+  const dt=v=>v?fdr(v):"—",st=x=>x.fim?"Encerrada":(x.situacao||"—");
+  b.innerHTML=`<div class="panel"><h2>CPIs e CPMIs</h2><p class="small muted" style="margin:0 0 8px">${esc(d.aviso)}</p>${table([["CPI",x=>`<b>${esc(x.nome||x.sigla||"")}</b><div class="small muted">${x.casa==="senado"?"Senado":"Câmara"}${x.sigla?" · "+esc(x.sigla):""}</div>`],["Começou",x=>dt(x.inicio||x.instalacao)],["Terminou",x=>dt(x.fim)],["Situação",x=>esc(st(x))],["Página",x=>x.site?`<a href="${esu(x.site)}" target="_blank" rel="noopener">abrir</a>`:"—"]],d.itens)}<p class="small muted" style="margin:8px 0 0">Fonte: ${d.fontes.map(esc).join("; ")}.</p></div>`}).catch(e=>{const b=$("#cpiL");if(b)b.innerHTML=e.status===404?rvazio("As CPIs entram na próxima cópia dos dados."):rerro(e)})}}}
 function telaTribunais(){return{html:`<div id="trbL">${API.on?rload():`<div class="rbanner">Os julgamentos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/justica").then(j=>{const el=$("#trbL");if(!el)return;const T=Object.entries(j.tribunais).map(([sg,t])=>{const an=Object.keys(t.anos).sort(),u=an.filter(y=>t.anos[y].tc!=null).pop();return u?{sg,just:t.justica,ano:u,...t.anos[u]}:null}).filter(Boolean);if(!T.length)return;const ano=Math.max(...T.map(x=>+x.ano)),L=T.filter(x=>+x.ano===ano);el.insertAdjacentHTML("afterend",`<div class="panel mt"><h2>Fila dos tribunais (Justiça em Números, ${ano})</h2><p class="small muted" style="margin:0 0 8px">${esc(j.aviso)}</p>${table([["Tribunal",x=>`<b>${esc(x.sg)}</b><div class="small muted">${esc(x.just)}</div>`],["Casos novos",x=>x.cn!=null?nf(x.cn):"—","n"],["Pendentes",x=>x.cp!=null?nf(x.cp):"—","n"],["Baixados",x=>x.tbaix!=null?nf(x.tbaix):"—","n"],["Congestionamento",x=>pct(x.tc<=1?x.tc*100:x.tc),"n"],["Magistrados",x=>x.mag!=null?nf(x.mag):"—","n"]],L.sort((u,v)=>v.tc-u.tc))}<p class="small muted" style="margin:8px 0 0">Fonte: ${esc(j.fonte)}.</p></div>`)}).catch(()=>{});apiGet("/julgamentos").then(d=>{const b=$("#trbL");if(!b)return;
   const barra=x=>{if(x.unanime)return`<div class="pj-p"><div class="pj-pt"><span><b>Decisão unânime</b></span><span class="muted">sem contagem de votos na fonte</span></div></div>`;
@@ -6118,6 +6122,7 @@ function telaTribunais(){return{html:`<div id="trbL">${API.on?rload():`<div clas
 P.leis=(aba,...r)=>{aba=LEIS_ABAS.some(a=>a[0]===aba)?aba:"projetos";let o;
  if(aba==="projetos")o=API.on?telaProjetos():semCabecalho(_PROJ_IN());
  else if(aba==="tribunais")o=telaTribunais();
+ else if(aba==="cpis")o=telaCpis();
  else o=semCabecalho(_CONST_IN(aba==="constituicao"?"federal":aba),{tabsConst:true});
  return{html:`<div class="ph"><div><h1>Leis e Projetos</h1><p>${esc(LEIS_DESC[aba])}</p></div></div><div class="tabs" id="lstabs" style="margin-top:0">${LEIS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/leis/${a[0]}">${a[1]}</a>`).join("")}</div><div id="lsv">${o.html}</div>`,mount:o.mount}};
 /* endereços antigos continuam funcionando e levam para a aba certa */

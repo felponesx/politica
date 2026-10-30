@@ -57,3 +57,9 @@ def fundos(db: Session = Depends(get_db)):
 def energia_tarifas(db: Session = Depends(get_db)):
     """Tarifa residencial de energia por distribuidora (ANEEL)."""
     return _ou_404(memo(("energia",), lambda: lacunas.energia(db)), "aneel-tarifas")
+
+
+@router.get("/cpis", tags=["Congresso"])
+def cpis(db: Session = Depends(get_db)):
+    """CPIs e CPMIs da Câmara e do Senado (nome, datas, situação)."""
+    return _ou_404(memo(("cpis",), lambda: lacunas.cpis(db)), "congresso-cpis")
