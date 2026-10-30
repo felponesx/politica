@@ -21,6 +21,7 @@ PRIMEIRO_ANO = 2008
 BIOMAS = {"amazonia": ("Amazônia", "prodes-amazon-nb:yearly_deforestation_biome"), "cerrado": ("Cerrado", "prodes-cerrado-nb:yearly_deforestation"),
           "caatinga": ("Caatinga", "prodes-caatinga-nb:yearly_deforestation"), "mata_atlantica": ("Mata Atlântica", "prodes-mata-atlantica-nb:yearly_deforestation"),
           "pantanal": ("Pantanal", "prodes-pantanal-nb:yearly_deforestation"), "pampa": ("Pampa", "prodes-pampa-nb:yearly_deforestation")}
+SEM_FILTRO_DE_COLUNAS = {"pantanal"}   # o GeoServer recusa propertyName + sortBy nesta camada (erro 400); ela é pequena
 DETER = {"amazonia": ("Amazônia", "deter-amz:deter_amz"), "cerrado": ("Cerrado", "deter-cerrado-nb:deter_cerrado")}
 
 
@@ -35,7 +36,7 @@ def _pedido(params: dict):
     """GET no WFS; em erro 400 a mensagem do servidor (XML de exceção) entra no erro para facilitar o diagnóstico."""
     import httpx
     try:
-        return http.get(WFS, params=params, headers={"Accept": "*/*"})
+        return http.get(WFS, params=params, headers={"Accept": "*/*"}, timeout=600)
     except httpx.HTTPStatusError as e:
         corpo = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", e.response.text or ""))[:220]
         raise RuntimeError(f"HTTP {e.response.status_code} do WFS: {corpo}") from e
@@ -57,12 +58,13 @@ def paginas(camada: str, propriedades: str, filtro: str | None = None, ordem: st
     Se o servidor falhar com 5xx numa página grande (acontece nas camadas de milhões de feições), repete com a metade do tamanho."""
     inicio, tamanho = 0, PAGINA
     while True:
-        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "outputFormat": "csv", "propertyName": propriedades,
-                  "sortBy": ordem, "count": tamanho, "startIndex": inicio}
+        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "outputFormat": "csv", "count": tamanho, "startIndex": inicio}
+        if propriedades:
+            params["propertyName"] = propriedades
+        if ordem:
+            params["sortBy"] = ordem
         if filtro:
             params["cql_filter"] = filtro
-        if not ordem:
-            params.pop("sortBy")
         try:
             texto = _pedido(params).text
         except RuntimeError as e:
@@ -119,13 +121,18 @@ def somar_deter(linhas) -> dict:
     return {u: {m: {k: round(v, 2) for k, v in e.items()} for m, e in sorted(s.items())} for u, s in out.items()}
 
 
-def coletar_desmatamento():
-    """PRODES por bioma e estado desde 2008 e alertas DETER dos últimos 24 meses."""
+def coletar_desmatamento(biomas: str = "", deter: bool = True):
+    """PRODES por bioma e estado desde 2008 e alertas DETER dos últimos 24 meses. `biomas` = lista separada por vírgula (vazio = todos); `deter=false` pula os alertas.
+    Camadas gigantes (Cerrado, Caatinga) e a Mata Atlântica vão melhor uma por vez; o Pantanal (camada pequena) é lido sem filtro de colunas, que o servidor recusa."""
+    quer = {b.strip() for b in str(biomas).split(",") if b.strip()}
+    deter = str(deter).lower() not in ("false", "0", "nao", "não")
     with registrar_coleta("inpe", "desmatamento") as (db, n):
         for chave, (nome, camada) in BIOMAS.items():
+            if quer and chave not in quer:
+                continue
             try:
                 esperado = total_feicoes(camada)
-                por_uf, feicoes = somar_prodes(paginas(camada, "state,year,area_km,main_class"))
+                por_uf, feicoes = somar_prodes(paginas(camada, None if chave in SEM_FILTRO_DE_COLUNAS else "state,year,area_km,main_class", ordem=None if chave in SEM_FILTRO_DE_COLUNAS else "fid"))
                 if not esperado * 0.99 <= feicoes <= esperado * 1.01 or not por_uf:
                     raise RuntimeError(f"leu {feicoes:,} de {esperado:,} feições; nada foi gravado")
                 anos = sorted({a for s in por_uf.values() for a in s})
@@ -139,7 +146,7 @@ def coletar_desmatamento():
                 log.warning("PRODES %s: %s", nome, e)
         desde = date.today().replace(day=1)
         desde = date(desde.year - 2, desde.month, 1)
-        for chave, (nome, camada) in DETER.items():
+        for chave, (nome, camada) in (DETER.items() if deter else ()):
             try:
                 filtro = f"view_date >= '{desde.isoformat()}'"
                 esperado = total_feicoes(camada, filtro)

@@ -58,12 +58,12 @@ _cliente = httpx.Client(
 )
 
 
-def get(url: str, params: dict | None = None, headers: dict | None = None) -> httpx.Response:
+def get(url: str, params: dict | None = None, headers: dict | None = None, timeout: float | None = None) -> httpx.Response:
     """GET com retentativa exponencial para 429/5xx e falhas de rede."""
     espera = 2.0
     for tentativa in range(1, settings.http_retries + 1):
         try:
-            r = _cliente.get(url, params=params, headers=headers)
+            r = _cliente.get(url, params=params, headers=headers, **({"timeout": timeout} if timeout else {}))
             if r.status_code in (429, 500, 502, 503, 504):
                 raise httpx.HTTPStatusError(f"HTTP {r.status_code}", request=r.request, response=r)
             r.raise_for_status()

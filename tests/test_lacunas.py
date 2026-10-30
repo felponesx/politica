@@ -167,3 +167,17 @@ def test_wfs_cai_para_sem_sortby_no_400_e_reduz_pagina_no_502(monkeypatch):
     linhas = list(ambiente.paginas("c", "state"))
     assert [l["state"] for l in linhas] == ["AC", "AM"]
     assert "sortBy" not in chamadas[-1] and chamadas[-1]["count"] == ambiente.PAGINA // 2
+
+
+def test_desmatamento_filtra_biomas_e_pula_deter(monkeypatch):
+    lidos = []
+    monkeypatch.setattr(ambiente, "total_feicoes", lambda camada, filtro=None: 1)
+
+    def falso(camada, props, filtro=None, ordem="fid"):
+        lidos.append((camada, props, ordem))
+        yield {"state": "AC", "year": "2020", "area_km": "1.5", "main_class": "desmatamento"}
+
+    monkeypatch.setattr(ambiente, "paginas", falso)
+    criar_tabelas()
+    ambiente.coletar_desmatamento(biomas="pantanal", deter="false")
+    assert len(lidos) == 1 and lidos[0][0].startswith("prodes-pantanal") and lidos[0][1] is None and lidos[0][2] is None
