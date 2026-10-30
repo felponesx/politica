@@ -81,3 +81,5 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 | querido-diario | queridodiario.ok.org.br/api | **Funciona** (robô 30/10/2026); `api.` não tem certificado para o nome | TLS validado; histórico de disponibilidade |
 | osm-malha-capitais | OpenStreetMap (Overpass) | **Indisponível** nas duas tentativas do robô (5xx em todos os espelhos) | Tentar fora do horário de pico |
 | tomtom-transito | TomTom Traffic API | Aguarda `TOMTOM_API_KEY` (gratuita) | Sem chave não coleta nem simula |
+
+| reforma-tributaria | Receita (arrecadacao-estado.csv) + CGIBS (transparência) | Monitor funciona; **arrecadação de CBS/IBS ainda não é publicada** (30/10/2026) | Não estimamos valores; ICMS/ISS seguem como linha de base |

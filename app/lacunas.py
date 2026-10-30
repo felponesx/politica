@@ -229,6 +229,21 @@ def caged(db: Session) -> dict | None:
     return {"ultimo": meses[ordem[0]], "meses": [{"competencia": m, **meses[m]["brasil"]} for m in ordem], "aviso": AVISO_CAGED, "fontes": ["Ministério do Trabalho — Novo CAGED (FTP do PDET)"]}
 
 
+def iva(db: Session) -> dict:
+    """Calendário do IVA dual (curado, com a lei como fonte) + o que o monitor achou nas fontes oficiais. Nunca devolve valor de arrecadação que não tenha sido publicado."""
+    import json
+    from pathlib import Path
+    cal = json.loads((Path(__file__).resolve().parent / "dados" / "iva.json").read_text(encoding="utf-8"))
+    mon = _regs(db, "iva_monitor", "reforma").get("ultimo")
+    if mon is None:
+        mensagem = "Ainda não conferimos as fontes (rode a coleta reforma-tributaria)."
+    elif mon["arrecadacao_publicada"]:
+        mensagem = "As fontes oficiais já trazem dados de arrecadação de CBS/IBS: veja os valores abaixo."
+    else:
+        mensagem = "Nenhuma fonte oficial publica ainda a arrecadação de CBS ou de IBS. Não estimamos valores."
+    return {**cal, "monitor": mon, "situacao": mensagem}
+
+
 def servidores(db: Session) -> dict | None:
     meses = _regs(db, "servidores_mes", "transparencia")
     if not meses:

@@ -138,3 +138,17 @@ def test_caged_le_arquivo_em_utf8_e_em_latin1(tmp_path):
         ag = caged.agregar(linhas, cab)
         fh.close()
         assert ag["linhas"] == 1, enc
+
+
+def test_reforma_monitor_acha_coluna_cbs_ibs_e_diz_quando_nao_ha():
+    from app.collectors import reforma
+    sem = "Ano;Mês;UF;COFINS;CSLL\n2026;Setembro;SP;1.000,00;2.000,00\n"
+    d = reforma.analisar_planilha(sem)
+    assert d["colunas_cbs_ibs"] == [] and d["ultimo_mes"] == "2026-09"
+    com = "Ano;Mês;UF;COFINS;CBS;IBS - ESTADOS\n2026;Setembro;SP;1.000,00;50,5;10,25\n2026;Setembro;RJ;1;49,5;0\n"
+    d = reforma.analisar_planilha(com)
+    assert d["colunas_cbs_ibs"] == ["CBS", "IBS - ESTADOS"] and d["total_por_mes"]["2026-09"]["CBS"] == 100.0
+    assert "COFINS" not in str(d["colunas_cbs_ibs"])
+    html = '<a href="/upload/arquivos/202607/x-resolucao-10.pdf">Resolução 10</a><a href="https://x.gov.br/a.xlsx"> Arrecadação do IBS </a>'
+    a = reforma.arquivos_cgibs(html)
+    assert a[0]["url"].startswith("https://www.cgibs.gov.br/upload") and a[1]["titulo"] == "Arrecadação do IBS"

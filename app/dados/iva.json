@@ -1,0 +1,19 @@
+{
+ "titulo": "Reforma tributária do consumo (IVA dual: CBS + IBS)",
+ "aviso": "Resumo do calendário previsto em lei, para orientar a leitura dos dados. Confira sempre o texto da lei: datas e percentuais podem ser alterados por nova lei complementar. Em 2026 a CBS e o IBS estão em fase de teste, com valores pequenos que podem ser compensados com PIS/Cofins; por isso a arrecadação própria ainda pode não aparecer nas planilhas.",
+ "fonte_geral": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm",
+ "etapas": [
+  {"periodo": "2026", "o_que": "Ano de teste: CBS de 0,9% e IBS de 0,1% (compensados com PIS/Cofins e outros tributos). Documentos fiscais passam a trazer os campos de CBS e IBS.", "fonte": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm"},
+  {"periodo": "2027", "o_que": "A CBS começa a valer plenamente em nível federal; PIS e Cofins são extintos; o IPI cai a zero (exceto produtos da Zona Franca).", "fonte": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm"},
+  {"periodo": "2029 a 2032", "o_que": "Transição do IBS: entra aos poucos (10%, 20%, 30%, 40% da alíquota) enquanto ICMS e ISS caem na mesma proporção.", "fonte": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm"},
+  {"periodo": "2033", "o_que": "IBS pleno; ICMS e ISS deixam de existir.", "fonte": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm"}
+ ],
+ "quem_cobra": [
+  {"tributo": "CBS", "quem": "União (Receita Federal)", "substitui": "PIS, Cofins e IPI"},
+  {"tributo": "IBS", "quem": "Estados, DF e municípios, pelo Comitê Gestor do IBS (CGIBS)", "substitui": "ICMS e ISS"}
+ ],
+ "onde_olhar": [
+  {"nome": "Arrecadação por estado (Receita)", "url": "https://www.gov.br/receitafederal/dados/arrecadacao-estado.csv"},
+  {"nome": "Transparência do Comitê Gestor do IBS", "url": "https://www.cgibs.gov.br/transparencia"}
+ ]
+}

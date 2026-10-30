@@ -106,6 +106,12 @@ def caged(db: Session = Depends(get_db)):
     return _ou_404(memo(("caged",), lambda: lacunas.caged(db)), "caged-saldos")
 
 
+@router.get("/iva", tags=["Dinheiro público"])
+def iva(db: Session = Depends(get_db)):
+    """Reforma tributária do consumo (CBS + IBS): calendário e o que as fontes oficiais já publicam sobre a arrecadação."""
+    return memo(("iva",), lambda: lacunas.iva(db))
+
+
 @router.get("/servidores", tags=["Dinheiro público"])
 def servidores(db: Session = Depends(get_db)):
     """Servidores civis federais por órgão e estado: quantidade, remuneração bruta, abate-teto e líquida (só somas)."""
