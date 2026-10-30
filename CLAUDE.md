@@ -479,3 +479,6 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - `cnj-justica` (`app/collectors/cnj.py`, `GET /justica`): acha na página do CNJ o zip mais novo que traz `JN_*.csv` (variáveis em código: cn, cp, tbaix, tc, iad, mag, k, ipm, f2; "nd" = sem dado) e guarda por tribunal e ano. Site: quadro "Fila dos tribunais" abaixo dos julgamentos (Leis e Projetos › Julgamentos dos tribunais). NÃO conferido contra a coleta real.
 - `tcu-inabilitados` (`app/collectors/tcu.py`, `GET /tcu-inabilitados`): só totais por estado e ano; painel em Escândalos e crimes › Empresas punidas. Robô disparado em 30/10 com as seis tarefas da tabela de lacunas.
 - `anatel-banda-larga` (`app/collectors/anatel.py`, lê só o CSV do ano mais novo do zip da Anatel por Range): acessos por estado no último mês e % de fibra; entra em `/trabalho` (`internet100`, `fibra_pct`) e nas medidas `internet`/`fibra` do menu Social e Trabalho. NÃO conferido contra a coleta real.
+
+- ANP (`anp-combustiveis`, `app/collectors/anp.py`): preço médio por estado no último mês do zip semestral (GET com User-Agent de navegador; HEAD dá 403); entra em `/trabalho` (`preco_gasolina`, `preco_etanol`, `preco_diesel_s10`). NÃO conferido contra a coleta real.
+- Roteiro do que fazer quando o robô terminar: `docs/PROXIMOS_PASSOS.md`.

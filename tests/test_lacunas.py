@@ -133,3 +133,16 @@ def test_anatel_soma_so_o_ultimo_mes_e_conta_fibra():
     assert r["mes"] == "2026-08" and r["ufs"]["SP"]["acessos"] == 400 and r["ufs"]["SP"]["fibra"] == 300 and r["ufs"]["AC"]["fibra"] == 0
     with pytest.raises(ValueError, match="colunas"):
         anatel.agregar(iter(["a;b", "1;2"]))
+
+
+def test_anp_media_por_estado_so_do_ultimo_mes():
+    from app.collectors import anp
+    cab = "Regiao - Sigla;Estado - Sigla;Municipio;Revenda;CNPJ da Revenda;Nome da Rua;Numero Rua;Complemento;Bairro;Cep;Produto;Data da Coleta;Valor de Venda;Valor de Compra;Unidade de Medida;Bandeira\n"
+    def l(uf, prod, data, v):
+        return f"N;{uf};X;R; 01;;1;;;;{prod};{data};{v};;R$ / litro;B\n"
+    txt = cab + l("AC", "GASOLINA", "02/12/2025", "9,00") + l("AC", "GASOLINA", "02/01/2026", "8,00") + l("AC", "GASOLINA", "09/01/2026", "6,00") + l("AC", "ETANOL", "09/01/2026", "5,00") + l("SP", "OLEO", "09/01/2026", "1,00")
+    r = anp.agregar("﻿" + txt)
+    assert r["mes"] == "2026-01" and r["ufs"]["AC"]["gasolina"] == {"preco": 7.0, "coletas": 2} and r["ufs"]["AC"]["etanol"]["preco"] == 5.0 and "SP" not in r["ufs"]
+    assert anp.semestres_do_site('<a href="/x/ca/ca-2025-02.zip"></a><a href="/x/ca/ca-2026-01.zip"></a><a href="/x/ca/ca-2021-01.csv"></a>') == ["ca-2026-01.zip", "ca-2025-02.zip"]
+    with pytest.raises(ValueError, match="colunas"):
+        anp.agregar("a;b\n1;2\n")

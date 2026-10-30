@@ -79,7 +79,8 @@ def social_municipios(db: Session, uf: str, limite: int = 60) -> list[dict]:
 def trabalho(db: Session) -> dict | None:
     series = {k: _regs(db, f"trabalho_{k}", "ibge") for k in ("desocupacao", "rendimento")}
     net = _regs(db, "banda_larga_uf", "anatel")
-    if not any(series.values()) and not net:
+    comb = _regs(db, "combustiveis_uf", "anp")
+    if not any(series.values()) and not net and not comb:
         return None
     estados = {}
     for uf in UFS:
@@ -96,6 +97,12 @@ def trabalho(db: Session) -> dict | None:
             e["internet_mes"] = n["mes"]
             e["internet_acessos"] = n["acessos"]
             e["fibra_pct"] = round(n["fibra"] / n["acessos"] * 100, 1) if n["acessos"] else None
+        c = comb.get(uf)
+        if c:
+            e["combustiveis_mes"] = c["mes"]
+            for prod in ("gasolina", "etanol", "diesel_s10", "gnv"):
+                if (c["produtos"].get(prod) or {}).get("preco"):
+                    e["preco_" + prod] = c["produtos"][prod]["preco"]
         if e:
             estados[uf] = e
     pop = _pop_uf(db)
@@ -103,7 +110,7 @@ def trabalho(db: Session) -> dict | None:
         if e.get("internet_acessos") and pop.get(uf):
             e["internet100"] = _por(e["internet_acessos"], pop[uf], 100)
     return {"estados": estados, "rotulos": {k: (next(iter(d.values()))["rotulo"] if d else None) for k, d in series.items()}, "aviso": AVISO_TRABALHO,
-            "fontes": ["IBGE — PNAD Contínua trimestral (SIDRA)", "Anatel — acessos de banda larga fixa"]}
+            "fontes": ["IBGE — PNAD Contínua trimestral (SIDRA)", "Anatel — acessos de banda larga fixa", "ANP — levantamento de preços de combustíveis"]}
 
 
 def ambiente(db: Session) -> dict | None:
