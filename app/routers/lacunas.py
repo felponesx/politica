@@ -47,6 +47,18 @@ def viagens(db: Session = Depends(get_db)):
     return _ou_404(memo(("viagens",), lambda: lacunas.viagens(db)), "transparencia-viagens")
 
 
+@router.get("/acidentes-rodovias", tags=["Segurança"])
+def acidentes_rodovias(db: Session = Depends(get_db)):
+    """Acidentes nas rodovias federais (PRF): por ano, estado, mês, causa, tipo e rodovia."""
+    return _ou_404(memo(("acidentes",), lambda: lacunas.acidentes_rodovias(db)), "prf-acidentes")
+
+
+@router.get("/servidores", tags=["Dinheiro público"])
+def servidores(db: Session = Depends(get_db)):
+    """Servidores civis federais por órgão e estado: quantidade, remuneração bruta, abate-teto e líquida (só somas)."""
+    return _ou_404(memo(("servidores",), lambda: lacunas.servidores(db)), "transparencia-servidores")
+
+
 @router.get("/fundos", tags=["Dinheiro público"])
 def fundos(db: Session = Depends(get_db)):
     """Fundo eleitoral (FEFC) por partido e eleição."""

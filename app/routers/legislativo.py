@@ -72,6 +72,16 @@ def listar_votacoes(casa: str | None = None, desde: date | None = None, ate: dat
     return _paginar(db, stmt, VotacaoOut, limit, offset)
 
 
+@router.get("/votacoes/{vid}/orientacoes")
+def orientacoes_da_votacao(vid: int, db: Session = Depends(get_db)):
+    """Orientação de cada bancada (Câmara) e quanto do partido votou como orientado."""
+    from app import orientacao
+    v = db.get(Votacao, vid)
+    if not v:
+        raise HTTPException(404, "Votação não encontrada")
+    return orientacao.da_votacao(db, v)
+
+
 @router.get("/votacoes/{vid}")
 def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
     """Popout de votação: placar geral, placar por partido e por UF, e lista nominal."""

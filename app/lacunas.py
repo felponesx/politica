@@ -13,6 +13,9 @@ AVISO_AMBIENTE = ("PRODES (INPE) mede o desmatamento por corte raso em cada ano 
                   "Nesta cópia só entram os biomas que a coleta conseguiu ler por inteiro (hoje Amazônia e Pampa); no Pampa, anos com valor zero ou quase zero são lacunas da fonte, não desmatamento nulo.")
 AVISO_VIAGENS = ("Viagens a serviço de servidores e colaboradores do governo federal (Portal da Transparência): diárias, passagens e outros gastos, menos o que foi devolvido. "
                  "Nomes e CPFs não são guardados. O ano corrente está em andamento.")
+AVISO_SERVIDORES = ("Servidores civis federais do SIAPE (Portal da Transparência), por órgão e estado, no último mês publicado. Só somas: nomes, CPFs e matrículas não são guardados. "
+                    "Valores acima do teto de referência não são ilegais por si só: há parcelas que a lei deixa fora do teto (indenizações, 13º, férias, decisões judiciais). "
+                    "'Cortados pelo teto' são os que tiveram abate-teto no mês. Não inclui militares nem Legislativo e Judiciário que usam outro sistema.")
 AVISO_FUNDOS = "Fundo Especial de Financiamento de Campanha (fundo eleitoral), distribuído pelo TSE a cada partido para as eleições; valor do partido em cada ano. Fonte: TSE, dados abertos."
 AVISO_ENERGIA = ("Tarifa residencial convencional (grupo B1) em vigor de cada distribuidora, TUSD (uso da rede) + TE (energia), em R$ por kWh, antes de impostos (ICMS, PIS/Cofins) e bandeiras tarifárias. "
                  "Fonte: ANEEL, dados abertos.")
@@ -171,6 +174,29 @@ def viagens(db: Session) -> dict | None:
     ordem = sorted(anos, reverse=True)
     return {"anos": [{k: v for k, v in anos[a].items() if k != "orgaos"} for a in ordem], "orgaos": {a: anos[a]["orgaos"] for a in ordem}, "aviso": AVISO_VIAGENS,
             "fontes": ["Portal da Transparência — viagens a serviço"]}
+
+
+AVISO_PRF = ("Acidentes registrados pela Polícia Rodoviária Federal nas rodovias federais (arquivos 'agrupados por ocorrência'). Só somas por estado, mês, causa, tipo e rodovia; "
+             "a causa é a registrada pelo policial no local, não uma conclusão de perícia. Rodovias estaduais e ruas das cidades não entram.")
+
+
+def acidentes_rodovias(db: Session) -> dict | None:
+    anos = _regs(db, "acidentes_ano", "prf")
+    if not anos:
+        return None
+    ordem = sorted(anos, reverse=True)
+    return {"anos": [{"ano": int(a), **anos[a]["total"], "ultimo_mes": anos[a].get("ultimo_mes")} for a in ordem], "detalhe": {a: anos[a] for a in ordem}, "aviso": AVISO_PRF,
+            "fontes": ["Polícia Rodoviária Federal — dados abertos"]}
+
+
+def servidores(db: Session) -> dict | None:
+    meses = _regs(db, "servidores_mes", "transparencia")
+    if not meses:
+        return None
+    ordem = sorted(meses, reverse=True)
+    atual = meses[ordem[0]]
+    return {**atual, "meses": [{"competencia": m, "servidores": meses[m]["servidores"], **meses[m]["total"]} for m in ordem], "aviso": AVISO_SERVIDORES,
+            "fontes": ["Portal da Transparência — servidores (SIAPE)"]}
 
 
 def fundos(db: Session) -> dict | None:

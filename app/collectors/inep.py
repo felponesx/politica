@@ -71,10 +71,14 @@ def cliente() -> httpx.Client:
 
 def baixar(nome: str) -> Path:
     """Baixa um arquivo de BASE para um arquivo temporário (os das escolas passam de 100 MB)."""
-    destino = Path(tempfile.mkdtemp(prefix="inep-")) / nome
+    return baixar_url(BASE + nome)
+
+
+def baixar_url(url: str) -> Path:
+    destino = Path(tempfile.mkdtemp(prefix="inep-")) / url.rsplit("/", 1)[-1]
 
     def go():
-        with cliente().stream("GET", BASE + nome) as r:
+        with cliente().stream("GET", url) as r:
             r.raise_for_status()
             with open(destino, "wb") as f:
                 for parte in r.iter_bytes(1 << 20):

@@ -299,8 +299,8 @@ def atuacao(pid: int, db: Session = Depends(get_db)):
                 if any(str(a.get("id_externo")) == p.id_externo and (a.get("casa") or "camara") == p.casa
                        for a in (x.dados or {}).get("autores") or [])] if p.casa in ("camara", "senado") else []
     luta = _temas([x.titulo for x in projetos] + [(x.dados or {}).get("ementa") or "" for x in projetos])
-    from app import fidelidade
-    return {"luta": luta, "presenca": _presenca(db, p), "alinhamento": fidelidade.do_parlamentar(db, p),
+    from app import fidelidade, orientacao
+    return {"luta": luta, "presenca": _presenca(db, p), "alinhamento": fidelidade.do_parlamentar(db, p), "orientacao": orientacao.do_parlamentar(db, p),
             "comissoes": (r.dados or {}).get("comissoes", []) if r else [],
             "discursos_12_meses": (r.dados or {}).get("discursos") if r else None,
             "ultimos_discursos": (r.dados or {}).get("ultimos_discursos", []) if r else [],
