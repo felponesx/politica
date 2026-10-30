@@ -468,3 +468,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   empate e votação secreta fora). NÃO é fidelidade à orientação da bancada (a orientação oficial não está coletada: Câmara `/votacoes/{id}/orientacoes` seria a fonte). Site: bloco "Vota como o partido?" no Resumo.
 - Perfil › Eleições: tabela "Patrimônio declarado a cada eleição" com a variação entre candidaturas (valor declarado, sem correção pela inflação).
 - Ainda sem implementação (fonte não alcançável daqui ou sem arquivo achado): servidores e salários, CAGED, renúncia fiscal, doadores (CPF não é guardado de propósito), TCU, lista suja, ANP, Anatel/ANAC, CNJ, Querido Diário, PRF/DNIT, CPIs.
+
+## Diagnóstico das fontes pendentes (30/10/2026)
+- `scripts/diag_pendentes.py`, `diag_pendentes2.py`, `diag_pendentes3.py` (+ `diag-pendentes*.yml`): o que responde pelo robô. Responde: TCU inabilitados (API ORDS, `tcu-inabilitados` já feito, só totais), ANP (`ca-AAAA-0N.zip` os novos, `.csv` os antigos),
+  Anatel banda larga fixa (zip de 1 GB, um CSV por ano `Acessos_Banda_Larga_Fixa_AAAA.csv`: Ano;Mês;...;UF;Município;Código IBGE;Faixa;Velocidade;Tecnologia;Meio de Acesso;Tipo de Pessoa;Tipo de Produto;Acessos), CNJ (zip em
+  `cnj.jus.br/wp-content/uploads/2026/09/17-set-2026.zip`: `JN_23-Jun-2026.csv` por tribunal e ano com variáveis em código + `Variáveis - JN.csv`), Tesouro Transparente (CKAN), CPIs da Câmara (`/orgaos?sigla=CPI`) e do Senado.
+  Não responde: lista suja (gov.br 404), Querido Diário (520), CAGED (timeout), renúncia (login), ANAC (404), `/votacoes/{id}/orientacoes` da Câmara (vazio nas votações recentes), TCU contas irregulares (sem arquivo achado), PRF (arquivos só em links do Google Drive).

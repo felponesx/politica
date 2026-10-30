@@ -7,6 +7,9 @@ from app import sancoes
 from app.db import get_db
 from app.utils import memo
 
+AVISO_TCU = ("Inabilitação é uma sanção do TCU que impede a pessoa de ocupar cargo em comissão ou função de confiança por um prazo (em geral de 5 a 8 anos). "
+             "Os números são totais da lista pública do TCU; nomes não são exibidos aqui. 'Ainda no prazo' conta quem tem data final no futuro.")
+
 router = APIRouter()
 
 
@@ -16,6 +19,19 @@ def sancoes_resumo(db: Session = Depends(get_db)):
     d = memo(("sancoes",), lambda: sancoes.resumo(db))
     if not d:
         raise HTTPException(404, "Sem dados de sanções. Rode a coleta cgu-sancoes.")
+    return d
+
+
+@router.get("/tcu-inabilitados", tags=["Empresas punidas"])
+def tcu_inabilitados(db: Session = Depends(get_db)):
+    """Totais de pessoas inabilitadas pelo TCU para função pública (por estado e por ano). Sem nomes nem CPF."""
+    from sqlalchemy import select
+
+    from app.models import Registro
+    d = memo(("tcu-inabilitados",), lambda: (lambda r: {**r.dados, "aviso": AVISO_TCU, "fonte": "Tribunal de Contas da União — lista de inabilitados"} if r else None)(
+        db.scalar(select(Registro).where(Registro.fonte == "tcu", Registro.tipo == "tcu_inabilitados", Registro.chave == "BR"))))
+    if not d:
+        raise HTTPException(404, "Sem dados do TCU. Rode a coleta tcu-inabilitados.")
     return d
 
 

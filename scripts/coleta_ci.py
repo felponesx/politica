@@ -30,7 +30,7 @@ def _arg(v):
 
 # limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
 LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "tse-contas": 90, "cnpj-fornecedores": 25,
-           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90, "cgu-sancoes": 40, "transparencia-social": 60, "transparencia-viagens": 40, "inpe-desmatamento": 90, "ibge-trabalho": 10, "tse-fundos": 15, "aneel-tarifas": 20,
+           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90, "cgu-sancoes": 40, "tcu-inabilitados": 15, "transparencia-social": 60, "transparencia-viagens": 40, "inpe-desmatamento": 90, "ibge-trabalho": 10, "tse-fundos": 15, "aneel-tarifas": 20,
            # base inteira do CNPJ (10 arquivos de estabelecimentos e 10 de empresas) + PGFN: a coleta para sozinha em 200 min
            "receita-empresas-porte": 215, "obrasgov-obras": 130, "siconfi-despesas-funcao": 170}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
@@ -57,7 +57,7 @@ EXTRAS = [("transparencia-emendas", {}),
           *[("tesouro-capag", {"url": u, "ano": a}) for a, u in CAPAG_ANOS.items()],
           *[("transparencia-cartao", {"ano": a}) for a in range(2015, date.today().year + 1)],
           *[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
-          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("saude-ubs", {}), ("saude-mais-medicos", {}), ("saude-datasus", {}), ("ensino-ideb", {}), ("cgu-sancoes", {}), ("transparencia-social", {}), ("transparencia-viagens", {}), ("inpe-desmatamento", {}), ("ibge-trabalho", {}), ("tse-fundos", {}), ("aneel-tarifas", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
+          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("saude-ubs", {}), ("saude-mais-medicos", {}), ("saude-datasus", {}), ("ensino-ideb", {}), ("cgu-sancoes", {}), ("tcu-inabilitados", {}), ("transparencia-social", {}), ("transparencia-viagens", {}), ("inpe-desmatamento", {}), ("ibge-trabalho", {}), ("tse-fundos", {}), ("aneel-tarifas", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
           # anos anteriores para os gráficos em linha dos estados (retorno por R$ 1 e dívida do governo estadual)
           ("receita-arrecadacao", {"ano_minimo": date.today().year - 6}),
           *[("tesouro-transferencias", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
@@ -93,6 +93,7 @@ VALIDADE = {
     "saude-datasus": ("datasus", "saude", (), lambda p: 20),
     "ensino-ideb": ("inep", "ideb", (), lambda p: 60),
     "cgu-sancoes": ("cgu", "sancoes", (), lambda p: 7),
+    "tcu-inabilitados": ("tcu", "inabilitados", (), lambda p: 7),
     "transparencia-social": ("transparencia", "social", (), lambda p: 25),   # um mês novo por mês
     "transparencia-viagens": ("transparencia", "viagens", (), lambda p: 25),
     "inpe-desmatamento": ("inpe", "desmatamento", (), lambda p: 30),

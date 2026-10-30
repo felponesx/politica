@@ -90,3 +90,15 @@ def test_rotas_e_cruzamento_com_contratos():
             db.query(Registro).filter(Registro.fonte.in_(["cgu", "pncp"]), Registro.chave.like("SANC-%") | (Registro.fonte == "cgu")).delete(synchronize_session=False)
             db.commit()
         _MEMO.clear()
+
+
+def test_tcu_inabilitados_resumo_so_totais_e_guarda():
+    from datetime import date
+
+    from app.collectors import tcu
+    itens = [{"nome": "FULANO", "cpf": "1", "uf": "MA", "data_final": "2027-07-16T03:00:00Z", "data_acordao": "2022-04-06T17:30:00Z"},
+             {"nome": "BELTRANO", "cpf": "2", "uf": "MA", "data_final": "2020-01-01T03:00:00Z", "data_acordao": "2015-04-06T17:30:00Z"},
+             {"nome": "CICLANO", "cpf": "3", "uf": "SP", "data_final": None, "data_acordao": None}]
+    r = tcu.resumir(itens, hoje=date(2026, 10, 30))
+    assert r["total"] == 3 and r["ativos"] == 1 and r["por_uf"]["MA"] == {"total": 2, "ativos": 1} and r["por_ano"] == {"2015": 1, "2022": 1}
+    assert "FULANO" not in str(r) and "cpf" not in str(r).lower()
