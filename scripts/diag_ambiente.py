@@ -1,34 +1,36 @@
-"""Diagnóstico das fontes de meio ambiente (INPE: PRODES/DETER no TerraBrasilis e queimadas). Roda no GitHub Actions (diag-ambiente.yml)."""
+"""Diagnóstico das camadas de desmatamento do TerraBrasilis (PRODES/DETER). Roda no GitHub Actions (diag-ambiente.yml)."""
 import re
 
 import httpx
 
-cli = httpx.Client(timeout=180, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/126.0", "Accept": "*/*"})
+cli = httpx.Client(timeout=300, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/126.0", "Accept": "*/*"})
 WFS = "https://terrabrasilis.dpi.inpe.br/geoserver/ows"
+CAMADAS = ["prodes-legal-amz:yearly_deforestation", "prodes-amazon-nb:yearly_deforestation_biome", "prodes-cerrado-nb:yearly_deforestation",
+           "prodes-caatinga-nb:yearly_deforestation", "prodes-mata-atlantica-nb:yearly_deforestation", "prodes-pantanal-nb:yearly_deforestation",
+           "prodes-pampa-nb:yearly_deforestation", "deter-amz:deter_amz", "deter-cerrado-nb:deter_cerrado"]
 
 
-def get(u, params=None):
+def get(params):
     try:
-        r = cli.get(u, params=params)
-        print(f"\n=== {r.url}: HTTP {r.status_code} {r.headers.get('content-type')} {len(r.content)} bytes", flush=True)
+        r = cli.get(WFS, params=params)
+        print(f"\n=== {r.url[:160]}: HTTP {r.status_code} {r.headers.get('content-type')} {len(r.content)} bytes", flush=True)
         return r
     except Exception as e:
-        print(f"\n=== {u}: ERRO {type(e).__name__} {e}", flush=True)
+        print(f"\n=== ERRO {type(e).__name__} {e}", flush=True)
 
 
-r = get(WFS, {"service": "WFS", "request": "GetCapabilities"})
-nomes = re.findall(r"<(?:wfs:)?Name>([^<]+)</(?:wfs:)?Name>", r.text) if r is not None else []
-print(len(nomes), "camadas", flush=True)
-interesse = [n for n in nomes if re.search(r"yearly|state|estado|uf|rate|taxa|accum|prodes|deter", n, re.I)]
-for n in interesse[:120]:
-    print("  ", n, flush=True)
-for n in [x for x in interesse if re.search(r"yearly|state|rate", x, re.I)][:6]:
-    g = get(WFS, {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": n, "outputFormat": "application/json", "count": 3})
+for c in CAMADAS:
+    d = get({"service": "WFS", "version": "2.0.0", "request": "DescribeFeatureType", "typeNames": c})
+    if d is not None and d.status_code == 200:
+        print("  campos:", re.findall(r'name="([^"]+)" type="([^"]+)"', d.text)[:30], flush=True)
+    h = get({"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": c, "resultType": "hits"})
+    if h is not None and h.status_code == 200:
+        print("  total:", re.findall(r'numberMatched="(\d+)"', h.text), flush=True)
+    g = get({"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": c, "outputFormat": "application/json", "count": 4})
     if g is not None and g.status_code == 200:
-        print(g.text[:900], flush=True)
-for u in ("https://dataserver-coids.inpe.br/queimadas/queimadas/", "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/",
-          "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/", "https://dataserver-coids.inpe.br/queimadas/queimadas/estatisticas/"):
-    g = get(u)
-    if g is not None and g.status_code == 200:
-        print("  ", re.findall(r'href="([^"?]+)"', g.text)[:30], flush=True)
+        try:
+            for f in g.json()["features"]:
+                print("   ", {k: v for k, v in f["properties"].items()}, flush=True)
+        except Exception as e:
+            print("  json:", e, g.text[:200], flush=True)
 print("fim", flush=True)
