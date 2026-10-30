@@ -133,3 +133,12 @@ def test_revisor_confere_o_painel_de_saude(tmp_path):
     painel["brasil"].update(ubs=900, mm_ocupadas=30000, gasto_uniao_saude=2e9)
     rel = rv.revisar(_copia(tmp_path, {"/saude/painel": painel}), AGORA, rede=False)
     assert _niveis(rel, "Saúde: UBS no país") == ["aviso"] and _niveis(rel, "Saúde: vagas ocupadas") == ["erro"] and _niveis(rel, "Saúde: gasto da União") == ["aviso"]
+
+
+def test_revisor_confere_leitos_uti_medicos_e_mortalidade_infantil(tmp_path):
+    bom = {"brasil": {"leitos": 460549, "uti_por_100mil": 30.2, "medicos_por_mil": 2.91, "tmi": 12.56}}
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": bom}), AGORA, rede=False)
+    assert all(_niveis(rel, t) == ["ok"] for t in ("Saúde: leitos de internação", "Saúde: UTI por 100", "Saúde: médicos por mil", "Saúde: mortalidade infantil"))
+    ruim = {"brasil": {"leitos": 46000, "uti_por_100mil": 300, "medicos_por_mil": 29.1, "tmi": 125.6}}
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": ruim}), AGORA, rede=False)
+    assert all(_niveis(rel, t) == ["aviso"] for t in ("Saúde: leitos de internação", "Saúde: UTI por 100", "Saúde: médicos por mil", "Saúde: mortalidade infantil"))

@@ -96,3 +96,90 @@ def test_painel_e_rotas():
         with SessionLocal() as db:
             db.query(Registro).filter(Registro.fonte == "saude").delete()
             db.commit()
+
+
+# ---------- DATASUS TabNet (resposta real, resumida: 3 estados + total) ----------
+TABNET_LEITOS = '''<html><H1>CNES - Leitos de internação - Brasil</H1><PRE>
+"Unidade da Federação";"Cirúrgicos";"Clínicos";"Obstétrico";"Total"
+"11 Rondônia";1565;2244;665;5429
+"12 Acre";413;629;218;1607
+"17 Tocantins";1322;1186;-;3682
+"Total";126918;177406;49622;460549
+&
+</PRE>'''
+
+
+def test_tabnet_tabela_e_por_uf():
+    from app.collectors import datasus
+    linhas = datasus.tabela(TABNET_LEITOS)
+    assert linhas[0] == ["Unidade da Federação", "Cirúrgicos", "Clínicos", "Obstétrico", "Total"] and len(linhas) == 5
+    ufs, total = datasus.por_uf(linhas)
+    assert ufs["AC"] == {"Cirúrgicos": 413, "Clínicos": 629, "Obstétrico": 218, "Total": 1607}
+    assert ufs["TO"]["Obstétrico"] == 0 and total["Total"] == 460549 and set(ufs) == {"RO", "AC", "TO"}
+    assert datasus.numero("1.234") == 1234 and datasus.numero("12,56") == 12.56 and datasus.numero("-") == 0
+    assert datasus.competencia("ltbr2609.dbf") == "2026-09"
+
+
+def _ufs27(valor):
+    from app.utils import UF_POR_CODIGO_IBGE
+    return "\n".join(f'"{c} {u}";{valor(i)}' for i, (c, u) in enumerate(UF_POR_CODIGO_IBGE.items()))
+
+
+def test_mortalidade_infantil_usa_so_ano_final_e_guarda_o_preliminar(monkeypatch):
+    from app.collectors import datasus
+    anos_ob = {2022: 100, 2023: 90, 2024: 80, 2025: 70}
+    anos_nas = {2022: 10000, 2023: 9500, 2024: 9000, 2025: 9100}
+
+    def tab(valores):
+        cab = '"Unidade da Federação";' + ";".join(f'"{a}"' for a in valores) + ';"Total"'
+        corpo = _ufs27(lambda i: ";".join(str(v) for v in valores.values()) + ";0")
+        return f"<PRE>\n{cab}\n{corpo}\n\"Total\";" + ";".join(str(v * 27) for v in valores.values()) + ";0\n&"
+
+    monkeypatch.setattr(datasus, "arquivos_disponiveis", lambda caminho: [f"{'infuf' if 'inf10' in caminho else 'nvuf'}{a % 100}.dbf" for a in (2022, 2023, 2024, 2025)])
+    monkeypatch.setattr(datasus, "ANO_INICIAL", 2022)
+    monkeypatch.setattr(datasus, "_post", lambda caminho, dados: tab(anos_ob if "inf10" in caminho else anos_nas))
+    r = datasus.ler_mortalidade_infantil(ano_final=2026)
+    assert r["BR"]["ultimo_ano"] == "2024" and sorted(r["BR"]["serie"]) == ["2022", "2023", "2024"]  # 2025 é preliminar: fica fora da série
+    assert r["SP"]["serie"]["2024"]["taxa"] == pytest.approx(80 / 9000 * 1000, abs=0.01) and r["BR"]["preliminar"]["2025"]["obitos"] == 70 * 27
+
+
+def test_leitura_com_estados_faltando_nao_grava(monkeypatch):
+    from app.collectors import datasus
+    monkeypatch.setattr(datasus, "_post", lambda caminho, dados: TABNET_LEITOS)
+    with pytest.raises(RuntimeError, match="27"):
+        datasus.ler_medicos("pfbr2609.dbf")
+
+
+def test_painel_com_leitos_uti_medicos_e_mortalidade():
+    criar_tabelas()
+    cliente = TestClient(app)
+    with SessionLocal() as db:
+        _base(db)
+        db.query(Registro).filter(Registro.fonte == "datasus").delete()
+        uti = {"UTI adulto II": 60, "UTI neonatal II": 20, "Unidade de cuidados intermed adulto": 30, "Total": 110}
+        db.add(Registro(fonte="datasus", tipo="leitos_uf", chave="AC", dados={
+            "competencia_internacao": "2026-09", "competencia_uti": "2026-09", "internacao": {"Clínicos": 1000, "Total": 1500}, "internacao_sus": {"Clínicos": 900, "Total": 1200},
+            "uti": uti, "uti_sus": {"UTI adulto II": 40, "UTI neonatal II": 10, "Total": 70}}))
+        db.add(Registro(fonte="datasus", tipo="medicos_uf", chave="AC", dados={"competencia": "2026-09", "total": 1610, "por_cbo": {"Médico Clínico": 669}}))
+        db.add(Registro(fonte="datasus", tipo="mortalidade_infantil_uf", chave="AC", dados={"ultimo_ano": "2024", "serie": {
+            "2023": {"obitos": 250, "nascidos": 14000, "taxa": 17.86}, "2024": {"obitos": 245, "nascidos": 14239, "taxa": 17.21}}}))
+        db.add(Registro(fonte="datasus", tipo="mortalidade_infantil_uf", chave="BR", dados={"ultimo_ano": "2024", "serie": {"2024": {"obitos": 30020, "nascidos": 2389325, "taxa": 12.56}},
+                                                                                           "preliminar": {"2025": {"obitos": 29904, "nascidos": 2456688, "taxa": 12.17}}}))
+        db.commit()
+    try:
+        from app.utils import _MEMO
+        _MEMO.clear()
+        d = cliente.get("/saude/painel").json()
+        ac = d["estados"]["AC"]
+        assert ac["leitos"] == 1500 and ac["leitos_sus"] == 1200 and ac["pct_leitos_sus"] == 80.0 and ac["leitos_por_mil"] == pytest.approx(1500 / 500_000 * 1000, abs=0.01)
+        assert ac["uti"] == 80 and ac["uti_sus"] == 50 and ac["leitos_complementares"] == 110  # UTI não soma unidade intermediária
+        assert ac["uti_por_100mil"] == pytest.approx(80 / 500_000 * 100000, abs=0.01)
+        assert ac["medicos"] == 1610 and ac["medicos_por_mil"] == pytest.approx(1610 / 500_000 * 1000, abs=0.01)
+        assert ac["tmi"] == 17.21 and ac["tmi_ano"] == "2024" and ac["tmi_serie"] == {"2023": 17.86, "2024": 17.21}
+        b = d["brasil"]
+        assert b["tmi"] == 12.56 and b["tmi_preliminar"]["2025"]["taxa"] == 12.17 and b["leitos"] == 1500 and b["medicos"] == 1610
+        assert d["competencias"] == {"leitos": "2026-09", "uti": "2026-09", "medicos": "2026-09"}
+    finally:
+        with SessionLocal() as db:
+            db.query(Registro).filter(Registro.fonte.in_(["saude", "datasus"])).delete()
+            db.commit()

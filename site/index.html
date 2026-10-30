@@ -5343,44 +5343,70 @@ P.premios=slug=>{let D=null;
   const cards=`<div class="prm-grid">${cats.map(c=>`<a class="prm-c${cur&&cur.slug===c.slug?" on":""}" href="#/premios/${c.slug}">${prmIco(c.slug)}<span class="prm-t"><b>${esc(c.nome)}</b><small>${prmRes(c)}</small></span></a>`).join("")}</div>`;
   const det=c=>`<div class="panel mt prm-h">${prmIco(c.slug,34)}<div><h2 style="margin:0">${esc(c.nome)}</h2><p class="small muted" style="margin:2px 0 0">${esc(c.resumo)}</p></div></div>`+c.grupos.map(g=>`<div class="panel mt"><h3 class="seg-h" style="margin-top:0">${esc(g.nome)}</h3>${g.descricao?`<p class="small muted" style="margin:0 0 8px">${esc(g.descricao)}</p>`:""}${g.brasil.length?table([["Ano",x=>x.ano],["Resultado",x=>`<span class="prm-r" style="--c:${resCor(x.resultado)}">${esc(x.resultado)}</span>`],["Quem / onde",x=>esc(x.detalhe||"—")+(x.historia?' <span class="prm-ver">ver história ›</span>':' <span class="prm-ver">ver ›</span>')]],g.brasil.slice().sort((a,b)=>b.ano-a.ano),x=>"#/premio/"+x.chave):`<p class="small muted" style="margin:0">Sem resultados listados.</p>`}<p class="small muted" style="margin:8px 0 0">Fonte: <a href="${esc(g.fonte)}" target="_blank" rel="noopener">${esc(g.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p></div>`).join("");
   box.innerHTML=cards+(cur?det(cur):`<p class="small muted" style="margin-top:12px">Toque em um esporte acima.</p>`)+`<p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`}).catch(e=>{const b=$("#prmBox");if(b)b.innerHTML=rerro(e)})}}};
-/* ---------- Saúde: UBS e Mais Médicos (Ministério da Saúde) e gasto em saúde (SICONFI); /saude/painel e /saude/municipios ---------- */
+/* ---------- Saúde: UBS e Mais Médicos, leitos, UTI, médicos e mortalidade infantil (Ministério da Saúde) e gasto em saúde (SICONFI); /saude/painel e /saude/municipios ---------- */
 const sauD1=v=>v==null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const sauD2=v=>v==null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sauR=v=>v==null?"—":"R$ "+Math.round(v).toLocaleString("pt-BR");
-const SAU_M=[["ubs","UBS por 100 mil habitantes",e=>e.ubs_por_100mil,sauD1,"As UBS são a porta de entrada do SUS. Mais unidades por habitante não quer dizer melhor atendimento: conte também as equipes e os médicos."],
- ["mm","Mais Médicos por 100 mil habitantes",e=>e.mm_por_100mil,sauD1,"Vagas ocupadas do Programa Mais Médicos para cada 100 mil habitantes. São só os médicos do programa, não todos os do SUS."],
- ["mmp","Vagas do Mais Médicos ocupadas",e=>e.mm_pct_ocupadas,v=>sauD1(v)+"%","Quanto das vagas do programa no estado está preenchida. O que sobra é vaga aberta."],
- ["gasto","Gasto do estado em saúde por habitante",e=>e.gasto_saude_por_hab,sauR,"Despesa liquidada do governo do estado na função Saúde, dividida pela população. Não inclui o que as prefeituras e a União gastam no estado."],
- ["pct","Saúde no gasto do estado",e=>e.pct_do_gasto,v=>sauD1(v)+"%","Quanto da despesa liquidada do governo do estado foi para a função Saúde."]];
+const SAU_G=[["Atenção básica","ubs","mm","mmp"],["Hospitais e leitos","leitos","leitosus","pctsus","uti"],["Médicos","medicos"],["Mortalidade infantil","tmi"],["Gasto em saúde","gasto","pct"]];
+const SAU_M={
+ ubs:["UBS por 100 mil habitantes",e=>e.ubs_por_100mil,sauD1,"As UBS são a porta de entrada do SUS. Mais unidades por habitante não quer dizer melhor atendimento: conte também as equipes e os médicos."],
+ mm:["Mais Médicos por 100 mil habitantes",e=>e.mm_por_100mil,sauD1,"Vagas ocupadas do Programa Mais Médicos para cada 100 mil habitantes. São só os médicos do programa, não todos os do SUS."],
+ mmp:["Vagas do Mais Médicos ocupadas",e=>e.mm_pct_ocupadas,v=>sauD1(v)+"%","Quanto das vagas do programa no estado está preenchida. O que sobra é vaga aberta."],
+ leitos:["Leitos de internação por mil habitantes",e=>e.leitos_por_mil,sauD2,"Leitos de hospital (clínicos, cirúrgicos, obstétricos, pediátricos e outros), públicos e privados, por mil habitantes. A OMS costuma citar 3 por mil como régua; não mede a qualidade."],
+ leitosus:["Leitos do SUS por mil habitantes",e=>e.leitos_sus_por_mil,sauD2,"Só os leitos que atendem o SUS, por mil habitantes. É o que está à disposição de quem não tem plano de saúde."],
+ pctsus:["Leitos que atendem o SUS",e=>e.pct_leitos_sus,v=>sauD1(v)+"%","Quanto dos leitos do estado atende o SUS. Onde é baixo, boa parte da estrutura é só privada."],
+ uti:["Leitos de UTI por 100 mil habitantes",e=>e.uti_por_100mil,sauD1,"UTI adulto, pediátrica, neonatal, de queimados e coronariana (sem as unidades intermediárias), por 100 mil habitantes, públicas e privadas."],
+ medicos:["Médicos por mil habitantes",e=>e.medicos_por_mil,sauD2,"Médicos cadastrados no CNES por mil habitantes. Quem tem duas especialidades pode contar duas vezes; os médicos se concentram nas capitais."],
+ tmi:["Mortalidade infantil (por mil nascidos vivos)",e=>e.tmi,sauD1,"Bebês que morreram antes de 1 ano para cada mil nascidos vivos, pela residência da mãe. Menor é melhor. Estados pequenos oscilam de um ano para o outro."],
+ gasto:["Gasto do estado em saúde por habitante",e=>e.gasto_saude_por_hab,sauR,"Despesa liquidada do governo do estado na função Saúde, dividida pela população. Não inclui o que as prefeituras e a União gastam no estado."],
+ pct:["Saúde no gasto do estado",e=>e.pct_do_gasto,v=>sauD1(v)+"%","Quanto da despesa liquidada do governo do estado foi para a função Saúde."]};
 function saudeKpi(t,v,s){return`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`}
-function saudeFim(D){return`<div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:0;padding-left:18px;color:var(--ink2);line-height:1.5">${(D.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul><p class="small muted" style="margin:10px 0 0">Fontes: ${(D.fontes||[]).map(esc).join("; ")}.</p></div>`}
+function saudeFim(D){return`<div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:0;padding-left:18px;color:var(--ink2);line-height:1.5">${(D.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul><p class="small muted" style="margin:10px 0 0">Fontes: ${(D.fontes||[]).map(esc).join("; ")}.${D.competencias&&D.competencias.leitos?` Leitos, UTI e médicos: ${D.competencias.leitos.slice(5)}/${D.competencias.leitos.slice(0,4)}.`:""}</p></div>`}
+function saudeTmiBr(B){const s=B.tmi_serie;if(!s)return"";const a=Object.keys(s).sort();if(a.length<2)return"";
+ const pre=B.tmi_preliminar&&Object.keys(B.tmi_preliminar).sort().pop();
+ return`<div class="panel mt"><h2>Mortalidade infantil no Brasil <small>por mil nascidos vivos</small></h2>${lineChart([{n:"Brasil",v:a.map(x=>s[x])}],a,{h:200,fmt:v=>sauD1(v)})}<p class="small muted" style="margin:6px 0 0">${a[a.length-1]}: ${sauD2(s[a[a.length-1]])}.${pre?` Em ${pre} (dados ainda preliminares): ${sauD2(B.tmi_preliminar[pre].taxa)}.`:""}</p></div>`}
 function saudeBrasil(v,D){const B=D.brasil,E=D.estados;let m="ubs";
  const kp=[B.ubs!=null?saudeKpi("UBS no país",nf(B.ubs),`${sauD1(B.ubs_por_100mil)} por 100 mil habitantes`):"",
-  B.municipios_sem_ubs!=null?saudeKpi("Municípios sem UBS cadastrada",nf(B.municipios_sem_ubs),`de ${nf(B.municipios)} municípios`):"",
+  B.leitos!=null?saudeKpi("Leitos de internação",nf(B.leitos),`${sauD2(B.leitos_por_mil)} por mil hab. · ${sauD1(B.pct_leitos_sus)}% atendem o SUS`):"",
+  B.uti!=null?saudeKpi("Leitos de UTI",nf(B.uti),`${sauD1(B.uti_por_100mil)} por 100 mil hab. · ${sauD1(B.pct_uti_sus)}% do SUS`):"",
+  B.medicos!=null?saudeKpi("Médicos cadastrados",nf(B.medicos),`${sauD2(B.medicos_por_mil)} por mil habitantes`):"",
+  B.tmi!=null?saudeKpi("Mortalidade infantil",`${sauD1(B.tmi)}`,`por mil nascidos vivos em ${B.tmi_ano}`):"",
   B.mm_ocupadas!=null?saudeKpi("Mais Médicos: vagas ocupadas",nf(B.mm_ocupadas),`${sauD1(B.mm_pct_ocupadas)}% das ${nf(B.mm_vagas)} vagas${B.mm_data?` · ${fdr(B.mm_data)}`:""}`):"",
+  B.municipios_sem_ubs!=null?saudeKpi("Municípios sem UBS cadastrada",nf(B.municipios_sem_ubs),`de ${nf(B.municipios)} municípios`):"",
   B.gasto_uniao_saude!=null?saudeKpi(`União gastou em saúde${D.ano_gasto?` em ${D.ano_gasto}`:""}`,brl(B.gasto_uniao_saude),`${sauR(B.gasto_uniao_saude_por_hab)} por habitante`):"",
   B.gasto_estados_saude!=null?saudeKpi("Governos estaduais, em saúde",brl(B.gasto_estados_saude),`${sauR(B.gasto_estados_saude_por_hab)} por habitante`):""].filter(Boolean).join("");
- v.innerHTML=`<div class="kpis kpis-c">${kp}</div><div class="panel mt"><div class="hd"><div><h2 id="saT"></h2><p class="small muted" id="saN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="saM" data-titulo="Mostrar" data-pill>${SAU_M.map(x=>`<option value="${x[0]}">${x[1]}</option>`).join("")}</select></div></div>
-  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="saMap"></div><div id="saRk"></div></div></div><div class="panel mt"><h2>Todos os estados</h2><div id="saLs"></div></div>${saudeFim(D)}`;
- const des=()=>{const x=SAU_M.find(z=>z[0]===m),vals={};UFS.forEach(u=>{const e=E[u.uf],val=e&&x[2](e);if(val!=null)vals[u.uf]=val});
-  $("#saT").textContent=x[1];$("#saN").textContent=x[4];
-  $("#saMap").innerHTML=Object.keys(vals).length?mapaValores(vals,x[3]):rvazio("Sem dados desta medida ainda.");bindMap($("#saMap"),null,null,u=>{location.hash="#/saude/"+u});
-  $("#saRk").innerHTML=rankDuplo(vals,x[3],{href:u=>"#/saude/"+u,corAlto:"#2F6FED",corBaixo:"#7C8CA8"});
-  $("#saLs").innerHTML=listaUF(Object.entries(vals).map(([u,k])=>({uf:u,k,r:x[3](k)}))).replace(/href="#\/uf\//g,'href="#/saude/')};
+ const ops=SAU_G.map(g=>`<optgroup label="${g[0]}">${g.slice(1).filter(k=>Object.values(E).some(e=>SAU_M[k][1](e)!=null)).map(k=>`<option value="${k}">${SAU_M[k][0]}</option>`).join("")}</optgroup>`).join("");
+ v.innerHTML=`<div class="kpis kpis-c">${kp}</div><div class="panel mt"><div class="hd"><div><h2 id="saT"></h2><p class="small muted" id="saN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="saM" data-titulo="Mostrar" data-pill>${ops}</select></div></div>
+  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="saMap"></div><div id="saRk"></div></div></div>${saudeTmiBr(B)}<div class="panel mt"><h2>Todos os estados</h2><div id="saLs"></div></div>${saudeFim(D)}`;
+ const des=()=>{const x=SAU_M[m],vals={};UFS.forEach(u=>{const e=E[u.uf],val=e&&x[1](e);if(val!=null)vals[u.uf]=val});
+  $("#saT").textContent=x[0];$("#saN").textContent=x[3];
+  $("#saMap").innerHTML=Object.keys(vals).length?mapaValores(vals,x[2]):rvazio("Sem dados desta medida ainda.");bindMap($("#saMap"),null,null,u=>{location.hash="#/saude/"+u});
+  const href=u=>"#/saude/"+u;
+  if(m==="tmi"){const serie={},anos=new Set();UFS.forEach(u=>{const s=E[u.uf]&&E[u.uf].tmi_serie;if(s){serie[u.uf]=s;Object.keys(s).forEach(a=>anos.add(a))}});
+   $("#saRk").innerHTML=linhasDuplo(serie,[...anos].sort(),vals,x[2],{href,alto:"Mais mortes de bebês",baixo:"Menos mortes de bebês",nota:"Mortes de menores de 1 ano por mil nascidos vivos, ano a ano."})}
+  else $("#saRk").innerHTML=rankDuplo(vals,x[2],{href,corAlto:"#2F6FED",corBaixo:"#7C8CA8"});
+  $("#saLs").innerHTML=listaUF(Object.entries(vals).map(([u,k])=>({uf:u,k,r:x[2](k)}))).replace(/href="#\/uf\//g,'href="#/saude/')};
  des();if(typeof pilulas==="function")pilulas();$("#saM").onchange=e=>{m=e.target.value;des()}}
 function saudeUF(v,D,uf){const e=D.estados[uf]||{},B=D.brasil,n=UF[uf].nome;
  const cmp=(a,b,f)=>a==null||b==null?"":`<em>Brasil: ${f(b)}</em>`;
  const kp=[e.ubs!=null?saudeKpi("UBS",nf(e.ubs),`${sauD1(e.ubs_por_100mil)} por 100 mil hab. ${cmp(e.ubs_por_100mil,B.ubs_por_100mil,sauD1)}`):"",
+  e.leitos!=null?saudeKpi("Leitos de internação",nf(e.leitos),`${sauD2(e.leitos_por_mil)} por mil hab. ${cmp(e.leitos_por_mil,B.leitos_por_mil,sauD2)} · ${sauD1(e.pct_leitos_sus)}% atendem o SUS`):"",
+  e.uti!=null?saudeKpi("Leitos de UTI",nf(e.uti),`${sauD1(e.uti_por_100mil)} por 100 mil hab. ${cmp(e.uti_por_100mil,B.uti_por_100mil,sauD1)}`):"",
+  e.medicos!=null?saudeKpi("Médicos cadastrados",nf(e.medicos),`${sauD2(e.medicos_por_mil)} por mil hab. ${cmp(e.medicos_por_mil,B.medicos_por_mil,sauD2)}`):"",
+  e.tmi!=null?saudeKpi("Mortalidade infantil",sauD1(e.tmi),`por mil nascidos vivos em ${e.tmi_ano} ${cmp(e.tmi,B.tmi,sauD1)}`):"",
   e.municipios_sem_ubs!=null?saudeKpi("Municípios sem UBS cadastrada",nf(e.municipios_sem_ubs),`de ${nf(e.municipios)}`):"",
   e.mm_ocupadas!=null?saudeKpi("Mais Médicos: vagas ocupadas",nf(e.mm_ocupadas),`${sauD1(e.mm_pct_ocupadas)}% das ${nf(e.mm_vagas)} vagas`):"",
   e.gasto_saude!=null?saudeKpi(`Governo do estado em saúde${D.ano_gasto?` (${D.ano_gasto})`:""}`,brl(e.gasto_saude),`${e.gasto_saude_por_hab!=null?sauR(e.gasto_saude_por_hab)+" por habitante · ":""}${sauD1(e.pct_do_gasto)}% do gasto do estado`):""].filter(Boolean).join("");
- v.innerHTML=`<div class="crumb"><a href="#/saude">Saúde</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||rvazio("Ainda não há dados de saúde deste estado.")}</div>
+ const sr=e.tmi_serie,bs=B.tmi_serie,an=sr?Object.keys(sr).filter(a=>bs&&bs[a]!=null).sort():[];
+ const graf=an.length>=2?`<div class="panel mt"><h2>Mortalidade infantil: ${esc(n)} e Brasil <small>por mil nascidos vivos</small></h2>${lineChart([{n,v:an.map(a=>sr[a])},{n:"Brasil",v:an.map(a=>bs[a])}],an,{h:200,fmt:v=>sauD1(v)})}<p class="small muted" style="margin:6px 0 0">Estados pequenos oscilam muito de um ano para o outro; olhe a tendência, não um ano só.</p></div>`:"";
+ v.innerHTML=`<div class="crumb"><a href="#/saude">Saúde</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||rvazio("Ainda não há dados de saúde deste estado.")}</div>${graf}
   <div class="panel mt"><h2>Maiores municípios de ${esc(n)}</h2><p class="small muted" style="margin:0 0 8px">UBS cadastradas e vagas do Mais Médicos em cada um.</p><div id="saMun">${rload()}</div></div>
   <p class="small" style="margin:10px 0 0"><a class="btn" href="#/uf/${uf}">Abrir a ficha completa de ${esc(n)}</a></p>${saudeFim(D)}`;
  apiGet("/saude/municipios?uf="+uf+"&limit=500").then(r=>{const b=$("#saMun");if(!b)return;
   b.innerHTML=table([["Município",x=>esc(x.nome)],["População",x=>x.populacao?nf(x.populacao):"—","n"],["UBS",x=>nf(x.ubs),"n"],["UBS por 10 mil hab.",x=>sauD1(x.ubs_por_10mil),"n"],
    ["Mais Médicos (vagas)",x=>x.mm_vagas==null?"—":nf(x.mm_ocupadas)+" de "+nf(x.mm_vagas),"n"]],r.itens)}).catch(e=>{const b=$("#saMun");if(b)b.innerHTML=rerro(e)})}
 P.saude=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
- return{html:`<div class="ph"><div><h1>Saúde</h1><p>Atenção básica no SUS (unidades de saúde e Mais Médicos) e quanto os governos gastam em saúde, no país, em cada estado e em cada cidade.</p></div></div><div id="saV">${API.on?rload():`<div class="rbanner">A Saúde aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ return{html:`<div class="ph"><div><h1>Saúde</h1><p>Unidades de saúde, leitos, UTI, médicos, mortalidade infantil e quanto os governos gastam em saúde, no país e em cada estado.</p></div></div><div id="saV">${API.on?rload():`<div class="rbanner">A Saúde aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/saude/painel").then(D=>{const v=$("#saV");if(!v)return;uf?saudeUF(v,D,uf):saudeBrasil(v,D)}).catch(e=>{const v=$("#saV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("Os dados de saúde ainda estão sendo coletados. Quando o robô terminar, esta tela se preenche sozinha."):rerro(e)})}}};
 P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
