@@ -44,8 +44,14 @@ def _lista_ufs(ufs) -> list[str]:
     return [u for u in (str(i).strip().upper() for i in itens) if u in CAPITAIS]
 
 
-def consulta(ibge: str) -> str:
-    return (f'[out:json][timeout:600][maxsize:2147483648];rel["boundary"="administrative"]["IBGE:GEOCODIGO"="{ibge}"];map_to_area->.a;'
+# Conferido com o Overpass pelo robô (30/10/2026): Palmas acha-se por IBGE:GEOCODIGO; a relação de Brasília não tem esse código, mas o DF é um município só
+# (relação do Distrito Federal, ISO3166-2 BR-DF).
+SELETOR_ESPECIAL = {"DF": '["admin_level"="4"]["ISO3166-2"="BR-DF"]'}
+
+
+def consulta(ibge: str, uf: str = "") -> str:
+    sel = SELETOR_ESPECIAL.get(uf) or f'["IBGE:GEOCODIGO"="{ibge}"]'
+    return (f'[out:json][timeout:600][maxsize:2147483648];rel["boundary"="administrative"]{sel};map_to_area->.a;'
             f'way(area.a)["highway"]["highway"!~"^({EXCLUIDAS})$"]["area"!="yes"];out geom qt;')
 
 
@@ -101,20 +107,20 @@ def resumir_malha(elementos: list[dict]) -> dict:
             "por_categoria": {k: {"km": round(v["km"], 1), "trechos": v["trechos"]} for k, v in sorted(por_cat.items(), key=lambda x: -x[1]["km"])}, "pontos_amostra": pontos}
 
 
-def overpass(q: str) -> dict:
+def overpass(q: str, tentativas: int = 6) -> dict:
+    """POST no Overpass, alternando espelhos com espera crescente (o servidor público devolve 502/504 e demora minutos em consultas grandes)."""
     erros = []
-    for url in OVERPASS:
-        for tentativa in range(2):
-            try:
-                r = httpx.post(url, data={"data": q}, headers=UA, timeout=httpx.Timeout(60.0, read=700.0))
-                if r.status_code in (429, 504):
-                    time.sleep(30 * (tentativa + 1))
-                    continue
-                r.raise_for_status()
-                return r.json()
-            except (httpx.TransportError, httpx.HTTPStatusError, ValueError) as e:
-                erros.append(f"{url.split('/')[2]}: {type(e).__name__}")
-                time.sleep(10)
+    for i in range(tentativas):
+        url = OVERPASS[i % len(OVERPASS)]
+        try:
+            r = httpx.post(url, data={"data": q}, headers=UA, timeout=httpx.Timeout(60.0, read=700.0))
+            if r.status_code in (429, 502, 503, 504):
+                raise httpx.HTTPStatusError(f"HTTP {r.status_code}", request=r.request, response=r)
+            r.raise_for_status()
+            return r.json()
+        except (httpx.TransportError, httpx.HTTPStatusError, ValueError) as e:
+            erros.append(f"{url.split('/')[2]}: {type(e).__name__}")
+            time.sleep(min(20 * (i + 1), 120))
     raise RuntimeError("Overpass indisponível: " + "; ".join(erros[-4:]))
 
 
@@ -125,7 +131,7 @@ def coletar_osm_malha(ufs: str = ""):
         for uf in alvo:
             nome, ibge = CAPITAIS[uf]
             try:
-                dados = overpass(consulta(ibge))
+                dados = overpass(consulta(ibge, uf))
                 d = resumir_malha(dados.get("elements") or [])
                 minimo = MINIMO_KM.get(uf, MINIMO_KM_PADRAO)
                 if d["km_total"] < minimo:
