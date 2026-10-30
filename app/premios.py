@@ -16,6 +16,8 @@ def dados() -> dict:
         for gi, g in enumerate(c["grupos"]):
             for ei, e in enumerate(g["brasil"]):
                 e["chave"] = f"{c['slug']}-{gi}-{ei}"
+                if e.get("jogadores") and not e.get("jogadores_fonte"):
+                    e.pop("jogadores")  # sem fonte, descarta
                 w = wiki.get(e["chave"])
                 if w and w.get("texto"):  # história e imagem vêm do verbete da Wikipédia (CC BY-SA), com o link
                     e["historia"] = {"titulo": w["titulo"], "texto": w["texto"], "pagina": w["pagina"], "imagem": w.get("arquivo")}
