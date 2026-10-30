@@ -102,3 +102,16 @@ def test_tcu_inabilitados_resumo_so_totais_e_guarda():
     r = tcu.resumir(itens, hoje=date(2026, 10, 30))
     assert r["total"] == 3 and r["ativos"] == 1 and r["por_uf"]["MA"] == {"total": 2, "ativos": 1} and r["por_ano"] == {"2015": 1, "2022": 1}
     assert "FULANO" not in str(r) and "cpf" not in str(r).lower()
+
+
+def test_cnj_jn_le_tribunais_por_ano_e_acha_o_zip_certo():
+    from app.collectors import cnj
+    csv_jn = "ano;justica;sigla;cn;cp;tbaix;tc;mag\n2023;Estadual;TJAC;1000;5.000,5;900;55,2;nd\n2024;Estadual;TJAC;1100;5000;1200;48,0;30\n2024;Federal;TRF1;7;8;9;nd;1\n"
+    r = cnj.ler_jn(csv_jn)
+    assert r["TJAC"]["anos"]["2023"] == {"cn": 1000.0, "cp": 5000.5, "tbaix": 900.0, "tc": 55.2} and r["TJAC"]["anos"]["2024"]["mag"] == 30.0
+    assert r["TRF1"]["justica"] == "Federal" and "tc" not in r["TRF1"]["anos"]["2024"]
+    html = '<a href="/wp-content/uploads/2026/06/dea-jn2026.zip">x</a><a href="https://www.cnj.jus.br/wp-content/uploads/2026/09/17-set-2026.zip">y</a><a href="/wp-content/uploads/2024/08/basejn-03-jun-2024.zip">z</a>'
+    assert cnj.links_de_zip(html)[0].endswith("2026/09/17-set-2026.zip") and not any("dea-jn" in u for u in cnj.links_de_zip(html))
+    import pytest
+    with pytest.raises(ValueError):
+        cnj.ler_jn("a;b\n1;2\n")

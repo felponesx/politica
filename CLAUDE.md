@@ -474,3 +474,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   Anatel banda larga fixa (zip de 1 GB, um CSV por ano `Acessos_Banda_Larga_Fixa_AAAA.csv`: Ano;Mês;...;UF;Município;Código IBGE;Faixa;Velocidade;Tecnologia;Meio de Acesso;Tipo de Pessoa;Tipo de Produto;Acessos), CNJ (zip em
   `cnj.jus.br/wp-content/uploads/2026/09/17-set-2026.zip`: `JN_23-Jun-2026.csv` por tribunal e ano com variáveis em código + `Variáveis - JN.csv`), Tesouro Transparente (CKAN), CPIs da Câmara (`/orgaos?sigla=CPI`) e do Senado.
   Não responde: lista suja (gov.br 404), Querido Diário (520), CAGED (timeout), renúncia (login), ANAC (404), `/votacoes/{id}/orientacoes` da Câmara (vazio nas votações recentes), TCU contas irregulares (sem arquivo achado), PRF (arquivos só em links do Google Drive).
+
+## CNJ e TCU (30/10/2026)
+- `cnj-justica` (`app/collectors/cnj.py`, `GET /justica`): acha na página do CNJ o zip mais novo que traz `JN_*.csv` (variáveis em código: cn, cp, tbaix, tc, iad, mag, k, ipm, f2; "nd" = sem dado) e guarda por tribunal e ano. Site: quadro "Fila dos tribunais" abaixo dos julgamentos (Leis e Projetos › Julgamentos dos tribunais). NÃO conferido contra a coleta real.
+- `tcu-inabilitados` (`app/collectors/tcu.py`, `GET /tcu-inabilitados`): só totais por estado e ano; painel em Escândalos e crimes › Empresas punidas. Robô disparado em 30/10 com as seis tarefas da tabela de lacunas.

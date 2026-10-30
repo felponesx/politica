@@ -10,6 +10,9 @@ from app.utils import memo
 AVISO_TCU = ("Inabilitação é uma sanção do TCU que impede a pessoa de ocupar cargo em comissão ou função de confiança por um prazo (em geral de 5 a 8 anos). "
              "Os números são totais da lista pública do TCU; nomes não são exibidos aqui. 'Ainda no prazo' conta quem tem data final no futuro.")
 
+AVISO_CNJ = ("Dados informados pelos próprios tribunais ao CNJ. Taxa de congestionamento = processos que sobraram sem solução em relação ao total que poderia ser resolvido no ano; "
+             "quanto maior, mais devagar o tribunal esvazia a fila. Tribunais de portes e áreas diferentes não são diretamente comparáveis.")
+
 router = APIRouter()
 
 
@@ -32,6 +35,19 @@ def tcu_inabilitados(db: Session = Depends(get_db)):
         db.scalar(select(Registro).where(Registro.fonte == "tcu", Registro.tipo == "tcu_inabilitados", Registro.chave == "BR"))))
     if not d:
         raise HTTPException(404, "Sem dados do TCU. Rode a coleta tcu-inabilitados.")
+    return d
+
+
+@router.get("/justica", tags=["Justiça"])
+def justica(db: Session = Depends(get_db)):
+    """Justiça em Números (CNJ): por tribunal, casos novos, pendentes, baixados, congestionamento e magistrados, por ano."""
+    from sqlalchemy import select
+
+    from app.models import Registro
+    d = memo(("justica",), lambda: (lambda r: {**r.dados, "aviso": AVISO_CNJ, "fonte": "Conselho Nacional de Justiça — Justiça em Números"} if r else None)(
+        db.scalar(select(Registro).where(Registro.fonte == "cnj", Registro.tipo == "justica_em_numeros", Registro.chave == "BR"))))
+    if not d:
+        raise HTTPException(404, "Sem dados do CNJ. Rode a coleta cnj-justica.")
     return d
 
 
