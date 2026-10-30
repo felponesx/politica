@@ -6,6 +6,7 @@ O WFS não soma por conta própria: lemos as feições em páginas de 100 mil (C
 import csv
 import io
 import logging
+import re
 from datetime import date
 
 from app import http
@@ -15,13 +16,12 @@ from app.utils import NOME_PARA_UF, UFS, sem_acento, upsert
 
 log = logging.getLogger("brasilplus.ambiente")
 WFS = "https://terrabrasilis.dpi.inpe.br/geoserver/ows"
-PAGINA = 100_000
+PAGINA = 50_000   # o servidor limita cada resposta a 50 mil feições (pedir mais devolve só 50 mil)
 PRIMEIRO_ANO = 2008
 BIOMAS = {"amazonia": ("Amazônia", "prodes-amazon-nb:yearly_deforestation_biome"), "cerrado": ("Cerrado", "prodes-cerrado-nb:yearly_deforestation"),
           "caatinga": ("Caatinga", "prodes-caatinga-nb:yearly_deforestation"), "mata_atlantica": ("Mata Atlântica", "prodes-mata-atlantica-nb:yearly_deforestation"),
           "pantanal": ("Pantanal", "prodes-pantanal-nb:yearly_deforestation"), "pampa": ("Pampa", "prodes-pampa-nb:yearly_deforestation")}
 DETER = {"amazonia": ("Amazônia", "deter-amz:deter_amz"), "cerrado": ("Cerrado", "deter-cerrado-nb:deter_cerrado")}
-MINIMO_FEICOES = {"amazonia": 400_000, "cerrado": 1_000_000, "caatinga": 1_000_000, "mata_atlantica": 500_000, "pantanal": 10_000, "pampa": 50_000}
 
 
 def uf_de(txt) -> str | None:
@@ -29,6 +29,27 @@ def uf_de(txt) -> str | None:
     if t.upper() in UFS:
         return t.upper()
     return NOME_PARA_UF.get(sem_acento(t))
+
+
+def _pedido(params: dict):
+    """GET no WFS; em erro 400 a mensagem do servidor (XML de exceção) entra no erro para facilitar o diagnóstico."""
+    import httpx
+    try:
+        return http.get(WFS, params=params, headers={"Accept": "*/*"})
+    except httpx.HTTPStatusError as e:
+        corpo = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", e.response.text or ""))[:220]
+        raise RuntimeError(f"HTTP {e.response.status_code} do WFS: {corpo}") from e
+
+
+def total_feicoes(camada: str, filtro: str | None = None) -> int:
+    """Número exato de feições da camada (resultType=hits), para conferir que a leitura paginada veio inteira."""
+    params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "resultType": "hits"}
+    if filtro:
+        params["cql_filter"] = filtro
+    m = re.search(r'numberMatched="(\d+)"', _pedido(params).text)
+    if not m:
+        raise RuntimeError("o WFS não informou numberMatched")
+    return int(m.group(1))
 
 
 def paginas(camada: str, propriedades: str, filtro: str | None = None):
@@ -39,8 +60,7 @@ def paginas(camada: str, propriedades: str, filtro: str | None = None):
                   "sortBy": "fid", "count": PAGINA, "startIndex": inicio}
         if filtro:
             params["cql_filter"] = filtro
-        r = http.get(WFS, params=params, headers={"Accept": "*/*"})
-        linhas = list(csv.DictReader(io.StringIO(r.text)))
+        linhas = list(csv.DictReader(io.StringIO(_pedido(params).text)))
         yield from linhas
         if len(linhas) < PAGINA:
             return
@@ -89,9 +109,10 @@ def coletar_desmatamento():
     with registrar_coleta("inpe", "desmatamento") as (db, n):
         for chave, (nome, camada) in BIOMAS.items():
             try:
+                esperado = total_feicoes(camada)
                 por_uf, feicoes = somar_prodes(paginas(camada, "state,year,area_km,main_class"))
-                if feicoes < MINIMO_FEICOES[chave] or not por_uf:
-                    raise RuntimeError(f"só {feicoes:,} feições (esperado ≥ {MINIMO_FEICOES[chave]:,}); nada foi gravado")
+                if feicoes < esperado * 0.99 or not por_uf:
+                    raise RuntimeError(f"leu {feicoes:,} de {esperado:,} feições; nada foi gravado")
                 anos = sorted({a for s in por_uf.values() for a in s})
                 total = {a: round(sum(s.get(a, 0) for s in por_uf.values()), 2) for a in anos}
                 upsert(db, Registro, {"fonte": "inpe", "tipo": "prodes_bioma", "chave": chave},
@@ -105,7 +126,12 @@ def coletar_desmatamento():
         desde = date(desde.year - 2, desde.month, 1)
         for chave, (nome, camada) in DETER.items():
             try:
-                por_uf = somar_deter(paginas(camada, "uf,areamunkm,classname,view_date", f"view_date >= '{desde.isoformat()}'"))
+                filtro = f"view_date >= '{desde.isoformat()}'"
+                esperado = total_feicoes(camada, filtro)
+                linhas = list(paginas(camada, "uf,areamunkm,classname,view_date", filtro))
+                if len(linhas) < esperado * 0.99:
+                    raise RuntimeError(f"leu {len(linhas):,} de {esperado:,} alertas; nada foi gravado")
+                por_uf = somar_deter(linhas)
                 if not por_uf:
                     raise RuntimeError("nenhum alerta no período")
                 upsert(db, Registro, {"fonte": "inpe", "tipo": "deter_bioma", "chave": chave},

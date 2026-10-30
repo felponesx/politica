@@ -16,7 +16,7 @@ from app.utils import UF_POR_CODIGO_IBGE, sem_acento, upsert
 log = logging.getLogger("brasilplus.economia_extra")
 SIDRA = "https://apisidra.ibge.gov.br/values"
 # nome: (tabela, variável, rótulo, unidade); a PNAD Contínua trimestral por UF
-SERIES_TRABALHO = {"desocupacao": (4099, 4099, "Taxa de desocupação", "%"), "rendimento": (5436, 5929, "Rendimento médio real habitual", "R$")}
+SERIES_TRABALHO = {"desocupacao": (4099, 4099, "Taxa de desocupação", "%"), "rendimento": (5436, 5932, "Rendimento médio real habitual", "R$")}
 FEFC_URL = "https://cdn.tse.jus.br/estatistica/sead/odsele/fefc_fp/fefc_fp_{ano}.zip"
 ANEEL_URL = ("https://dadosabertos.aneel.gov.br/dataset/5a583f3e-1646-4f67-bf0f-69db4203e89e/resource/fcf2906c-7c32-4b9b-a637-054e7a5234f4/download/"
              "tarifas-homologadas-distribuidoras-energia-eletrica.csv")
@@ -46,7 +46,7 @@ def coletar_trabalho(trimestres: int = 24):
     with registrar_coleta("ibge", "trabalho") as (db, n):
         for chave, (tabela, var, rotulo, unid) in SERIES_TRABALHO.items():
             try:
-                r = http.get_json(f"{SIDRA}/t/{tabela}/n3/all/v/{var}/p/last%20{int(trimestres)}")
+                r = http.get_json(f"{SIDRA}/t/{tabela}/n3/all/v/{var}/p/last%20{int(trimestres)}" + ("/c2/6794" if tabela == 5436 else ""))
                 serie = ler_sidra(r or [])
                 if len(serie) < 27:
                     raise RuntimeError(f"vieram {len(serie)} estados (esperado 27); nada foi gravado")
