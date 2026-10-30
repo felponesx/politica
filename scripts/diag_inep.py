@@ -35,7 +35,7 @@ NOMES = ["divulgacao_regioes_ufs_ideb_{a}.xlsx", "divulgacao_regioes_ufs_ideb_{a
          "divulgacao_regioes_ufs_{a}.xlsx", "divulgacao_ufs_ideb_{a}.xlsx", "resultados_ideb_{a}.zip", "divulgacao_ideb_{a}.zip"]
 achados = {}
 print("--- onde estão os arquivos de 2023 (e 2025, se houver)", flush=True)
-for ano in (2025, 2023):
+for ano in ():
     for pasta in ("ideb/", f"educacao_basica/portal_ideb/planilhas_para_download/{ano}/", f"ideb/{ano}/", f"ideb/resultados/{ano}/", f"educacao_basica/ideb/{ano}/",
                   "ideb/resultados/", f"ideb/planilhas_para_download/{ano}/", f"ideb/divulgacao/{ano}/", f"educacao_basica/portal_ideb/planilhas_para_download/", f"ideb/{ano}/planilhas/",
                   f"educacao_basica/portal_ideb/{ano}/", f"ideb/divulgacao_{ano}/"):
@@ -61,13 +61,21 @@ def olhar(nome, conteudo, linhas=8):
             print("    ", [c for c in row][:22], flush=True)
 
 
-alvo = next((u for (a, n), u in achados.items() if n.startswith("divulgacao_regioes")), B + "educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_regioes_ufs_ideb_2021.xlsx")
-olhar(alvo, cli.get(alvo).content, 14)
-for u in (B + "educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_anos_iniciais_municipios_2021.zip",
-          B + "educacao_basica/portal_ideb/planilhas_para_download/2021/divulgacao_anos_finais_escolas_2021.zip"):
-    z = zipfile.ZipFile(io.BytesIO(cli.get(u).content))
-    print("\nZIP", u, z.namelist(), flush=True)
-    for nome in z.namelist()[:2]:
+def abrir_zip(u, linhas):
+    z = zipfile.ZipFile(io.BytesIO(cli.get(u, timeout=300).content))
+    print("\nZIP", u, [(i.filename, i.file_size) for i in z.infolist()], flush=True)
+    for nome in z.namelist()[:3]:
         if nome.lower().endswith(".xlsx"):
-            olhar(nome, z.read(nome), 8)
+            olhar(nome, z.read(nome), linhas)
+        elif nome.lower().endswith((".csv", ".txt")):
+            print("##### csv", nome, flush=True)
+            for l in z.read(nome)[:3000].decode("latin-1").splitlines()[:6]:
+                print("    ", l[:400], flush=True)
+
+
+R = B + "ideb/resultados/"
+abrir_zip(R + "divulgacao_regioes_ufs_ideb_2025.zip", 16)
+olhar("brasil 2023", cli.get(R + "divulgacao_brasil_ideb_2023.xlsx").content, 12)
+abrir_zip(R + "divulgacao_anos_iniciais_municipios_2025.zip", 8)
+abrir_zip(R + "divulgacao_ensino_medio_escolas_2025.zip", 8)
 print("fim", flush=True)
