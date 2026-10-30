@@ -34,15 +34,13 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
     recente = {"inicio": hoje - timedelta(days=3), "fim": hoje}
     com_chave = bool(settings.transparencia_api_key)
     ta, tt = _trimestre_anterior(hoje)
-    return {
+    g = {
         "diario": [("camara-votacoes", recente), ("senado-votacoes", recente), ("camara-proposicoes", recente),
                    ("pncp-contratos", {"inicio": hoje - timedelta(days=2), "fim": hoje}),
                    ("legislacao-normas", {"ano": ano}), ("camara-despesas", {"ano": ano}),
                    ("camara-proposicoes-detalhe", {"ano": ano}), ("bcb-series", {"anos": 2}),
                    ("camara-tramitacoes", {"limite": 800})],
         "agenda": [("congresso-agenda", {})],
-        # trânsito das 27 capitais a cada hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500); só com a chave configurada
-        "transito": [("tomtom-transito", {})] if settings.tomtom_api_key else [],
         "semanal": [("saude-mais-medicos", {}), ("cgu-sancoes", {}), ("tcu-inabilitados", {}), ("cnj-justica", {}), ("anatel-banda-larga", {}), ("anp-combustiveis", {}), ("congresso-cpis", {}), ("anac-aerodromos", {}), ("ibama-multas", {}), ("inpe-queimadas", {}), ("tcu-contas-irregulares", {}), ("mte-lista-suja", {}), ("receita-renuncia-fiscal", {}), ("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
                     ("senado-materias", {"ano": ano}), ("cnpj-fornecedores", {"limite": 300}),
                     ("lexml-estaduais", {"ano": ano}), ("congresso-atuacao", {}), ("senado-ceaps", {"ano": ano}),
@@ -55,6 +53,9 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("tesouro-capag", {}), ("ibge-malhas", {})],
         "trimestral": [("pgfn-divida-ativa", {"ano": ta, "trimestre": tt})],
     }
+    if settings.tomtom_api_key:   # trânsito das 27 capitais de hora em hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500)
+        g["transito"] = [("tomtom-transito", {})]
+    return g
 
 
 def rodar_grupo(nome: str):
