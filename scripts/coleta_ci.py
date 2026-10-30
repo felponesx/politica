@@ -30,7 +30,7 @@ def _arg(v):
 
 # limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
 LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "tse-contas": 90, "cnpj-fornecedores": 25,
-           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90, "cgu-sancoes": 40, "tcu-inabilitados": 15, "cnj-justica": 15, "anatel-banda-larga": 60, "anp-combustiveis": 20, "congresso-cpis": 20, "anac-aerodromos": 10, "ibama-multas": 60, "inpe-queimadas": 30, "tcu-contas-irregulares": 15, "mte-lista-suja": 10, "receita-renuncia-fiscal": 15, "transparencia-social": 60, "transparencia-viagens": 40, "transparencia-servidores": 30, "camara-orientacoes": 15, "prf-acidentes": 30, "inep-igc": 30, "inpe-desmatamento": 90, "ibge-trabalho": 10, "tse-fundos": 15, "aneel-tarifas": 20,
+           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90, "cgu-sancoes": 40, "tcu-inabilitados": 15, "cnj-justica": 15, "anatel-banda-larga": 60, "anp-combustiveis": 20, "congresso-cpis": 20, "anac-aerodromos": 10, "ibama-multas": 60, "inpe-queimadas": 30, "tcu-contas-irregulares": 15, "mte-lista-suja": 10, "receita-renuncia-fiscal": 15, "transparencia-social": 60, "transparencia-viagens": 40, "transparencia-servidores": 30, "camara-orientacoes": 15, "prf-acidentes": 30, "inep-igc": 30, "tse-doadores": 40, "inpe-desmatamento": 90, "ibge-trabalho": 10, "tse-fundos": 15, "aneel-tarifas": 20,
            # base inteira do CNPJ (10 arquivos de estabelecimentos e 10 de empresas) + PGFN: a coleta para sozinha em 200 min
            "receita-empresas-porte": 215, "obrasgov-obras": 130, "siconfi-despesas-funcao": 170}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
@@ -39,6 +39,7 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
             ("tse-candidatos", {"ano": 2018}), ("tse-resultados", {"ano": 2018}),
             # gastos de campanha (prestação de contas) de 2002 a 2026 (2004 não traz o código do candidato); só das candidaturas já coletadas; zips de 14 MB a 1,4 GB
             *[("tse-contas", {"ano": a}) for a in (2022, 2018, 2026, 2024, 2020, 2016, 2014, 2012, 2010, 2008, 2006, 2002)],
+            *[("tse-doadores", {"ano": a}) for a in (2022, 2018, 2024, 2020, 2016, 2014, 2012, 2010, 2008, 2006, 2002)],
             ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
 # CAPAG dos municípios de anos anteriores (arquivos do Tesouro, um por ano) para a tabela e as linhas por ano da Saúde fiscal
@@ -119,6 +120,7 @@ VALIDADE = {
     "siconfi-despesas-funcao": ("siconfi", "despesas_funcao", ("ano",),
                                 lambda p: (365 if int(p.get("ano", 0)) < date.today().year - 1 else 30 if int(p.get("ano", 0)) == date.today().year - 1 else None)),
 }
+VALIDADE["tse-doadores"] = ("tse", "doadores_cnpj", ("ano",), lambda p: 365)
 VALIDADE["bcb-financeiro"] = ("bcb", "financeiro", ("ano",), lambda p: 30)
 VALIDADE["legislacao-normas"] = ("senado", "legislacao", ("ano",), lambda p: 365 if int(p.get("ano", 0)) < date.today().year else None)
 MIDIA_DIAS = int(os.environ.get("MIDIA_DIAS", "7"))

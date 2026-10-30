@@ -1,10 +1,11 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
 _TAREFAS_BRUTAS = {
     "ensino-ideb": inep.coletar_ensino_ideb,
+    "tse-doadores": tse_doadores.coletar_tse_doadores,   # ano, uf
     "inep-igc": inep_igc.coletar_inep_igc,   # edicoes
     "cgu-sancoes": sancoes.coletar_sancoes,
     "tcu-inabilitados": tcu.coletar_tcu_inabilitados,

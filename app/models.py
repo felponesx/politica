@@ -399,6 +399,29 @@ class CandidatoFinancas(Base):
     despesas_fornecedores: Mapped[list | None] = mapped_column(JsonType, nullable=True)  # até 12 maiores: [{nome, cnpj, valor}]
 
 
+class DoacaoEmpresa(Base):
+    """Dinheiro de campanha vindo de DOADOR COM CNPJ (empresa, partido, comitê), somado por candidatura e origem (TSE). CPF de pessoa física não é guardado."""
+    __tablename__ = "doacoes_empresas"
+    __table_args__ = (UniqueConstraint("ano", "cnpj", "sq_candidato", "origem", name="uq_doacao_empresa"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    ano: Mapped[int] = mapped_column(Integer, index=True)            # ano da eleição (doação eleitoral histórica)
+    cnpj: Mapped[str] = mapped_column(String(14), index=True)
+    doador: Mapped[str | None] = mapped_column(String(200))          # razão social como veio do arquivo
+    sq_candidato: Mapped[str] = mapped_column(String(20), index=True)
+    candidato: Mapped[str | None] = mapped_column(String(200))
+    cargo: Mapped[str | None] = mapped_column(String(60))
+    uf: Mapped[str | None] = mapped_column(String(2), index=True)
+    partido: Mapped[str | None] = mapped_column(String(30), index=True)
+    origem: Mapped[str] = mapped_column(String(120))                 # tipo/origem do recurso como o TSE escreve
+    tipo_doador: Mapped[str] = mapped_column(String(20), index=True) # empresa | partido_ou_comite
+    valor: Mapped[float] = mapped_column(Float)
+    n_doacoes: Mapped[int] = mapped_column(Integer)
+    primeira_data: Mapped[date | None] = mapped_column(Date)
+    ultima_data: Mapped[date | None] = mapped_column(Date)
+    coletado_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
 class UsoLimite(Base):
     """Contadores compartilhados entre os processos (limite de requisições e da IA). Uma linha por (chave, janela de tempo)."""
     __tablename__ = "uso_limites"
