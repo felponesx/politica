@@ -33,6 +33,7 @@ ETAPAS = {"iniciais": ("AI", "anos_iniciais"), "finais": ("AF", "anos_finais"), 
 ESCOLAS_POR_UF = 80   # melhores de cada estado e etapa (o ranking do país sai desta lista)
 MINIMO_UFS = 27
 MINIMO_ESCOLAS = {"iniciais": 20_000, "finais": 15_000, "medio": 8_000}
+ABREVIADOS = {"M. G. DO SUL": "MS", "R. G. DO NORTE": "RN", "R. G. DO SUL": "RS"}  # a planilha abrevia estes três
 _cliente_cache: httpx.Client | None = None
 
 
@@ -109,6 +110,21 @@ def linhas_da_aba(ws, n_chaves: int):
         yield (tuple(linha[:n_chaves]), {a: valor(linha[j]) for a, j in obs.items() if j < len(linha)}, {a: valor(linha[j]) for a, j in proj.items() if j < len(linha)})
 
 
+_MIUDAS = {"DE", "DA", "DO", "DAS", "DOS", "E", "EM", "NA", "NO"}
+_SIGLAS = {"EE", "EEEFM", "EEEM", "EEEF", "EEEMTI", "EMEF", "EMEI", "EMEIF", "EMEB", "EMEFM", "CED", "CEM", "CEEP", "CE", "CEF", "CEI", "CAIC", "CIEP", "CTISP", "CTPM", "IFES", "IFSP", "IF", "UFSC", "UFMG", "UFRJ", "USP", "II", "III", "IV", "V", "VI", "UE", "ETE", "ETEC", "EEB", "EB", "EJA", "CEPI", "CEMTI", "CMPM", "CPM", "SESI", "SENAI", "PM", "DF", "RJ", "SP", "MG"}
+
+
+def nome_escola(nome) -> str:
+    """O INEP escreve em MAIÚSCULAS e sem acento: vira 'Escola Estadual de ...', mantendo as siglas (EEEFM, CED...)."""
+    t = str(nome or "").strip()
+    if not t.isupper():
+        return t
+    pal = []
+    for i, w in enumerate(t.split()):
+        pal.append(w if w in _SIGLAS or not re.search(r"[AEIOU]", w) else w.lower() if (w in _MIUDAS and i) else w.capitalize())
+    return " ".join(pal)
+
+
 def _tira_nota(txt) -> str:
     return re.sub(r"\s*\(\d+\)", "", str(txt or "")).strip()
 
@@ -130,8 +146,8 @@ def ler_ufs(ano: int) -> tuple[dict, dict, dict]:
             nome = sem_acento(_tira_nota(reg))
             if nome == "BRASIL":
                 brasil[etapa], metas[etapa] = _sem_nulos(o), _sem_nulos(p)
-            elif nome in NOME_PARA_UF:
-                ufs[etapa][NOME_PARA_UF[nome]] = _sem_nulos(o)
+            elif nome in NOME_PARA_UF or nome in ABREVIADOS:
+                ufs[etapa][NOME_PARA_UF.get(nome) or ABREVIADOS[nome]] = _sem_nulos(o)
     return ufs, brasil, metas
 
 
@@ -165,7 +181,7 @@ def ler_escolas(etapa: str, ano: int) -> list[dict]:
         total += 1
         v = o.get(ano)
         if v is not None and uf in UFS and nome:
-            achadas.append({"codigo": str(cod_esc), "nome": str(nome).strip().title() if str(nome).isupper() else str(nome).strip(), "uf": uf,
+            achadas.append({"codigo": str(cod_esc), "nome": nome_escola(nome), "uf": uf,
                             "municipio": str(mun).strip(), "rede": _tira_nota(rede), "ideb": round(v, 1)})
     if total < MINIMO_ESCOLAS[etapa]:
         raise RuntimeError(f"escolas {etapa}: só {total} linhas (esperado ≥ {MINIMO_ESCOLAS[etapa]:,}); nada foi gravado")

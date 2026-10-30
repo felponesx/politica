@@ -67,7 +67,7 @@ def test_ler_escolas_fica_com_as_melhores_de_cada_estado(monkeypatch, tmp_path):
     r = inep.ler_escolas("iniciais", 2023)
     sp = [e for e in r if e["uf"] == "SP"]
     assert len(sp) == inep.ESCOLAS_POR_UF and sp[0]["ideb"] == 6.0 and sp[0]["nome"] == "Escola 95"  # 5,95 a 5,99 arredondam para 6,0: desempata pelo nome
-    assert [e["nome"] for e in r if e["uf"] == "AC"] == ["Escola Do Acre"]  # sem nota fica de fora
+    assert [e["nome"] for e in r if e["uf"] == "AC"] == ["Escola do Acre"]  # sem nota fica de fora
     assert r == sorted(r, key=lambda x: (-x["ideb"], x["nome"]))
     monkeypatch.setitem(inep.MINIMO_ESCOLAS, "iniciais", 1000)
     with pytest.raises(RuntimeError, match="nada foi gravado"):
@@ -95,3 +95,26 @@ def test_rota_ensino():
             db.query(Registro).filter(Registro.fonte == "inep").delete()
             db.commit()
         _MEMO.clear()
+
+
+def test_nome_escola_mantem_siglas_e_minusculas_pequenas():
+    assert inep.nome_escola("EEEFM EURIDICE LOPES PEDROSO") == "EEEFM Euridice Lopes Pedroso"
+    assert inep.nome_escola("COLEGIO ESTADUAL DOUTOR JOSE BALDUINO DE SOUZA DECIO") == "Colegio Estadual Doutor Jose Balduino de Souza Decio"
+    assert inep.nome_escola("CED CASA GRANDE") == "CED Casa Grande" and inep.nome_escola("Escola Já Escrita") == "Escola Já Escrita"
+
+
+def test_ufs_abreviadas_na_planilha(monkeypatch, tmp_path):
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    from app.utils import NOME_PARA_UF
+    for sigla in ("AI", "AF", "EM"):
+        ws = wb.create_sheet(f"UF e Regiões ({sigla})")
+        for _ in range(9):
+            ws.append([None] * 4)
+        ws.append(["Região/UF", "Rede", "VL_OBSERVADO_2025", "VL_PROJECAO_2021"])
+        for nome in list(NOME_PARA_UF) + ["R. G. DO NORTE", "R. G. DO SUL", "M. G. DO SUL"]:
+            ws.append([nome.title(), "Total", 5.0, 6.0])
+    caminho = _salva(wb, tmp_path, "ab.xlsx")
+    monkeypatch.setattr(inep, "baixar", lambda nome: caminho)
+    ufs, _, _ = inep.ler_ufs(2025)
+    assert {"RN", "RS", "MS"} <= set(ufs["iniciais"])
