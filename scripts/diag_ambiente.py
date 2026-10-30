@@ -13,7 +13,7 @@ CAMADAS = ["prodes-legal-amz:yearly_deforestation", "prodes-amazon-nb:yearly_def
 def get(params):
     try:
         r = cli.get(WFS, params=params)
-        print(f"\n=== {r.url[:160]}: HTTP {r.status_code} {r.headers.get('content-type')} {len(r.content)} bytes", flush=True)
+        print(f"\n=== {str(r.url)[:160]}: HTTP {r.status_code} {r.headers.get('content-type')} {len(r.content)} bytes", flush=True)
         return r
     except Exception as e:
         print(f"\n=== ERRO {type(e).__name__} {e}", flush=True)
