@@ -38,6 +38,7 @@ e na tela **Relatórios e Dados › Situação das fontes**.
 | inpe-desmatamento | INPE TerraBrasilis (WFS geoserver/ows: PRODES `*:yearly_deforestation` por bioma e DETER) | desmatamento por estado, bioma e ano desde 2008 + alertas dos últimos 24 meses | não |
 | tcu-inabilitados | TCU (contas.tcu.gov.br/ords/condenacao/consulta/inabilitados, ORDS paginado) | totais de inabilitados por estado e ano, quantos ainda no prazo; sem nomes nem CPF | não |
 | cnj-justica | CNJ Justiça em Números (zip na página, `JN_*.csv`, colunas em código) | por tribunal e ano: casos novos, pendentes, baixados, congestionamento, magistrados | não |
+| anatel-banda-larga | Anatel dados abertos (zip de ~1 GB, lido por Range: só `Acessos_Banda_Larga_Fixa_AAAA.csv` do ano mais novo) | acessos de banda larga fixa por estado no último mês, total e fibra | não |
 | ibge-trabalho | IBGE SIDRA (PNAD Contínua: tabela 4099 desocupação; 5436 rendimento, variável a conferir) | desocupação e rendimento por estado, 24 trimestres | não |
 | tse-fundos | TSE dados abertos (cdn.tse.jus.br/.../fefc_fp/fefc_fp_AAAA.zip) | fundo eleitoral (FEFC) por partido em 2018, 2020, 2022 e 2024 | não |
 | aneel-tarifas | ANEEL dados abertos (tarifas-homologadas-distribuidoras-energia-eletrica.csv, 180 MB) | tarifa residencial B1 em vigor por distribuidora (TUSD + TE) | não |

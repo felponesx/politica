@@ -5455,6 +5455,8 @@ const SOC_M={bolsa100:["Beneficiários do Bolsa Família por 100 habitantes",e=>
  bolsaval:["Bolsa Família pago por habitante no mês",e=>e.bolsa&&e.bolsa.valor_por_hab,v=>"R$ "+lacD(v,2),"Quanto o governo federal pagou de Bolsa Família no mês, dividido pelos moradores do estado."],
  bpc100:["Beneficiários do BPC por 100 habitantes",e=>e.bpc&&e.bpc.por_100_hab,lacD,"O BPC paga um salário mínimo a idosos de baixa renda e a pessoas com deficiência. Benefícios pagos no mês para cada 100 moradores."],
  desoc:["Taxa de desocupação",e=>e.desocupacao,v=>lacD(v)+"%","Parte da força de trabalho que não tem emprego e procurou vaga, no último trimestre da PNAD Contínua. Pesquisa por amostra.",e=>e.desocupacao_serie,null,lacTri,"#E5484D"],
+ internet:["Acessos de banda larga fixa por 100 habitantes",e=>e.internet100,lacD,"Contratos de internet fixa (todos os tipos) para cada 100 moradores, no último mês publicado pela Anatel. Um acesso pode atender uma casa inteira, então o número não é % da população."],
+ fibra:["Parte dos acessos que é fibra óptica",e=>e.fibra_pct,v=>lacD(v)+"%","Fibra é a tecnologia mais rápida e estável; rádio, cabo metálico e satélite ficam de fora desta conta."],
  renda:["Rendimento médio mensal real do trabalho",e=>e.rendimento,lacR,"Rendimento médio real habitual de todos os trabalhos, a preços do último trimestre.",e=>e.rendimento_serie,null,lacTri]};
 function socialUF(v,S,T,uf){const e=(S&&S.estados[uf])||{},t=(T&&T.estados[uf])||{},n=UF[uf].nome;
  const b=e.bolsa,c=e.bpc,kp=[b?lacKpi("Bolsa Família",lacN(b.beneficiarios),`${lacD(b.por_100_hab)} por 100 hab. · ${brl(b.valor)} no mês · média ${lacR(b.valor_medio)}`):"",

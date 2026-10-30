@@ -120,3 +120,16 @@ def test_rotas_social_ambiente_e_demais():
             db.query(Municipio).filter(Municipio.codigo_ibge == "3999001").delete()
             db.commit()
         _MEMO.clear()
+
+
+def test_anatel_soma_so_o_ultimo_mes_e_conta_fibra():
+    from app.collectors import anatel
+    linhas = ["Ano;Mês;Grupo Econômico;Empresa;CNPJ;Porte da Prestadora;UF;Município;Código IBGE Município;Faixa de Velocidade;Velocidade;Tecnologia;Meio de Acesso;Tipo de Pessoa;Tipo de Produto;Acessos",
+              "2026;7;A;X;1;Grande;SP;Sao Paulo;1;>34;1;FTTH;Fibra;PF;INTERNET;100",
+              "2026;8;A;X;1;Grande;SP;Sao Paulo;1;>34;1;FTTH;Fibra;PF;INTERNET;300",
+              "2026;8;A;X;1;Grande;SP;Santos;2;>34;1;ETHERNET;Rádio;PF;INTERNET;100",
+              "2026;8;A;X;1;Grande;AC;Rio Branco;3;>34;1;ETHERNET;Cabo Metálico;PF;INTERNET;50"]
+    r = anatel.agregar(iter(linhas))
+    assert r["mes"] == "2026-08" and r["ufs"]["SP"]["acessos"] == 400 and r["ufs"]["SP"]["fibra"] == 300 and r["ufs"]["AC"]["fibra"] == 0
+    with pytest.raises(ValueError, match="colunas"):
+        anatel.agregar(iter(["a;b", "1;2"]))
