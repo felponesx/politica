@@ -73,9 +73,44 @@ def abrir_zip(u, linhas):
                 print("    ", l[:400], flush=True)
 
 
+import hashlib
+import re as _re
+
+print("AIA SHA256:", hashlib.sha256(der).hexdigest(), "bytes", len(der), flush=True)
 R = B + "ideb/resultados/"
-abrir_zip(R + "divulgacao_regioes_ufs_ideb_2025.zip", 16)
-olhar("brasil 2023", cli.get(R + "divulgacao_brasil_ideb_2023.xlsx").content, 12)
-abrir_zip(R + "divulgacao_anos_iniciais_municipios_2025.zip", 8)
-abrir_zip(R + "divulgacao_ensino_medio_escolas_2025.zip", 8)
+
+
+def codigos(nome, conteudo):
+    wb = openpyxl.load_workbook(io.BytesIO(conteudo), read_only=True, data_only=True)
+    for ws in wb.worksheets[:3]:
+        linhas = []
+        for i, row in enumerate(ws.iter_rows(values_only=True)):
+            linhas.append(row)
+            if i >= 14:
+                break
+        grupo = next((r for r in linhas if any(isinstance(c, str) and "Taxa de Aprova" in c for c in r)), None)
+        cod = next((r for r in linhas if any(isinstance(c, str) and c.startswith("VL_") for c in r)), None)
+        print(f"\n## {nome} / {ws.title}: linha de grupos={linhas.index(grupo) if grupo else None}, de códigos={linhas.index(cod) if cod else None}", flush=True)
+        if cod:
+            pref = {}
+            for c in cod:
+                if isinstance(c, str) and c.startswith("VL_"):
+                    pref.setdefault(_re.sub(r"\d{4}", "AAAA", c), []).append(c)
+            for k, v in pref.items():
+                print("   cod", k, len(v), v[:2], v[-1], flush=True)
+        if grupo:
+            print("   grupos:", [g for g in grupo if g], flush=True)
+        j = linhas.index(cod) + 1 if cod else 9
+        for r in linhas[j:j + 3]:
+            print("   dado:", [c for c in r][:6], "...", [c for c in r][-8:], flush=True)
+
+
+z = zipfile.ZipFile(io.BytesIO(cli.get(R + "divulgacao_regioes_ufs_ideb_2025.zip", timeout=300).content))
+for nome in z.namelist():
+    if nome.lower().endswith(".xlsx"):
+        codigos("UF 2025", z.read(nome))
+z = zipfile.ZipFile(io.BytesIO(cli.get(R + "divulgacao_ensino_medio_escolas_2025.zip", timeout=300).content))
+for nome in z.namelist():
+    if nome.lower().endswith(".xlsx"):
+        codigos("escolas EM 2025", z.read(nome))
 print("fim", flush=True)
