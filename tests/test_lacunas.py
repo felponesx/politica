@@ -201,3 +201,14 @@ def test_cpis_xml_do_senado_e_lista_ordenada(monkeypatch):
     finally:
         db.rollback()
         db.close()
+
+
+def test_anac_le_aerodromos_com_linha_de_data_e_acentos():
+    from app.collectors import anac
+    txt = ("Atualizado em: 2026-10-15\nCódigo OACI;CIAD;Nome;Município;UF;Município Servido;UF Servido;LATGEOPOINT;LONGEOPOINT;Latitude;Longitude;Altitude;Operação Diurna;Operação Noturna;Situação;Validade do Registro\n"
+           "SBRB;AC0001;Plácido de Castro;RIO BRANCO;Acre;Rio Branco;Acre;-9.8;-67.8;a;b;193;VFR / IFR;VFR / IFR;Cadastrado;2030\n"
+           "SDXX;SP0002;Pista;SANTOS;SP;Santos;SP;-23;-46;a;b;5;VFR;Não;Registrado;2029\n")
+    r = anac.ler(txt)
+    assert r["atualizado"] == "2026-10-15" and r["total"] == 2 and r["por_uf"]["AC"] == {"total": 1, "noturno": 1} and r["por_uf"]["SP"]["noturno"] == 0
+    with pytest.raises(ValueError, match="colunas"):
+        anac.ler("a;b\n1;2\n")

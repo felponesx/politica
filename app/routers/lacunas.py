@@ -63,3 +63,9 @@ def energia_tarifas(db: Session = Depends(get_db)):
 def cpis(db: Session = Depends(get_db)):
     """CPIs e CPMIs da Câmara e do Senado (nome, datas, situação)."""
     return _ou_404(memo(("cpis",), lambda: lacunas.cpis(db)), "congresso-cpis")
+
+
+@router.get("/aeroportos", tags=["Infraestrutura"])
+def aeroportos(db: Session = Depends(get_db)):
+    """Aeródromos públicos (ANAC): total, por estado, situação e operação noturna."""
+    return _ou_404(memo(("aeroportos",), lambda: lacunas.aeroportos(db)), "anac-aerodromos")

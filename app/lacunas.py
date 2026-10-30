@@ -188,3 +188,11 @@ def cpis(db: Session) -> dict | None:
         return None
     itens = sorted(regs.get("camara", []) + regs.get("senado", []), key=lambda x: x.get("inicio") or x.get("instalacao") or "", reverse=True)
     return {"itens": itens, "total": len(itens), "aviso": AVISO_CPIS, "fontes": ["Câmara dos Deputados — dados abertos", "Senado Federal — dados abertos"]}
+
+
+AVISO_AEROPORTOS = "Aeródromos públicos registrados na ANAC (cadastro oficial). Inclui aeroportos grandes e pistas pequenas; 'operação noturna' é a que o cadastro informa para o aeródromo, não o horário de voos."
+
+
+def aeroportos(db: Session) -> dict | None:
+    d = db.scalar(select(Registro.dados).where(Registro.fonte == "anac", Registro.tipo == "aerodromos", Registro.chave == "BR"))
+    return {**d, "aviso": AVISO_AEROPORTOS, "fontes": ["ANAC — dados abertos (lista de aeródromos públicos)"]} if d else None

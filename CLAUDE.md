@@ -485,3 +485,4 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 
 - Desmatamento (30/10/2026): só Amazônia e Pampa (PRODES) + DETER entraram; Cerrado e Caatinga deram ReadTimeout, Mata Atlântica 502 e Pantanal 400 (ver `docs/FONTES.md`). Na tela, a soma por estado vale só para o que veio.
 - CPIs (`congresso-cpis`, `app/collectors/cpis.py`, `GET /cpis`, aba "CPIs" em Leis e Projetos): lista da Câmara (CPI e CPMI com datas) e do Senado (só as ativas). NÃO conferido contra a coleta real; o aviso diz que abrir CPI não prova irregularidade.
+- Aeródromos (`anac-aerodromos`, `app/collectors/anac.py`, `GET /aeroportos`, quadro em Indicadores): CSV oficial da ANAC; formato conferido no diagnóstico de 30/10 (a coleta ainda não rodou no robô).
