@@ -63,3 +63,7 @@ duas vezes ao mesmo tempo), coletas "rodando" há mais de 12 h viram `abortada`,
 | DataJud (CNJ) — API pública | a própria wiki diz: metadados de processos **públicos**, "resguardo de processos sigilosos e dados de partes"; consulta por número do processo, chave pública do CNJ | **Não usada**: não busca por nome e não traz partes; só serviria para enriquecer um número de processo já conhecido |
 | TSE dados abertos (CKAN) | busca "processo": 8 conjuntos (resultados e afins, nenhum de processos contra candidatos); "inelegibilidade": 0 | **Não usada** |
 | JusBrasil e similares | agregadores privados, sem API aberta, termos de uso restritivos | **Descartados** |
+
+## INPE desmatamento — estado em 30/10/2026
+Entraram: PRODES Amazônia e Pampa e DETER Amazônia/Cerrado (24 meses). Ficaram de fora: Cerrado e Caatinga (`ReadTimeout` do WFS do TerraBrasilis nas camadas de 1 a 2 milhões de feições), Mata Atlântica (502) e Pantanal (400 "Can handle 5 attributes only").
+Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `paginas`, uma tarefa por bioma (para uma não segurar a outra) e, no Pantanal, pedir sem `propertyName` (a camada é pequena). O Pampa tem anos sem dado na fonte (2009; 2012 e 2015 quase zero).

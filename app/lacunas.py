@@ -9,7 +9,8 @@ AVISO_SOCIAL = ("Bolsa Família e BPC (Benefício de Prestação Continuada) pag
                 "o que foi pago de meses atrasados aparece à parte. Nomes e CPFs não são guardados. Beneficiários por 100 habitantes usa a população estimada dos municípios (IBGE).")
 AVISO_TRABALHO = "PNAD Contínua trimestral (IBGE): desocupação é a parcela da força de trabalho sem emprego que procurou vaga; rendimento é o médio real habitual de todos os trabalhos. É pesquisa por amostra: estados pequenos oscilam."
 AVISO_AMBIENTE = ("PRODES (INPE) mede o desmatamento por corte raso em cada ano (de agosto a julho) pelos satélites; os seis biomas não se sobrepõem e a soma é do estado. DETER é alerta rápido, "
-                  "não é a taxa oficial, e cobre só a Amazônia e o Cerrado. Km² = quilômetros quadrados; 100 km² ≈ 10 mil campos de futebol.")
+                  "não é a taxa oficial, e cobre só a Amazônia e o Cerrado. Km² = quilômetros quadrados; 100 km² ≈ 10 mil campos de futebol. "
+                  "Nesta cópia só entram os biomas que a coleta conseguiu ler por inteiro (hoje Amazônia e Pampa); no Pampa, anos com valor zero ou quase zero são lacunas da fonte, não desmatamento nulo.")
 AVISO_VIAGENS = ("Viagens a serviço de servidores e colaboradores do governo federal (Portal da Transparência): diárias, passagens e outros gastos, menos o que foi devolvido. "
                  "Nomes e CPFs não são guardados. O ano corrente está em andamento.")
 AVISO_FUNDOS = "Fundo Especial de Financiamento de Campanha (fundo eleitoral), distribuído pelo TSE a cada partido para as eleições; valor do partido em cada ano. Fonte: TSE, dados abertos."

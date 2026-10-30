@@ -482,3 +482,5 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 
 - ANP (`anp-combustiveis`, `app/collectors/anp.py`): preço médio por estado no último mês do zip semestral (GET com User-Agent de navegador; HEAD dá 403); entra em `/trabalho` (`preco_gasolina`, `preco_etanol`, `preco_diesel_s10`). Conferido em 30/10/2026: 27 estados, até jun/2026 (o zip do 2º semestre ainda não saiu).
 - Roteiro do que fazer quando o robô terminar: `docs/PROXIMOS_PASSOS.md`.
+
+- Desmatamento (30/10/2026): só Amazônia e Pampa (PRODES) + DETER entraram; Cerrado e Caatinga deram ReadTimeout, Mata Atlântica 502 e Pantanal 400 (ver `docs/FONTES.md`). Na tela, a soma por estado vale só para o que veio.
