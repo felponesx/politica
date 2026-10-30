@@ -11,8 +11,10 @@ certificado do endereço AIA do próprio certificado, conferido pela impressão 
 para este cliente. Se o INEP trocar o certificado, a coleta falha dizendo a nova impressão digital."""
 import io
 import logging
+import random
 import re
 import tempfile
+import time
 import zipfile
 from datetime import date
 from pathlib import Path
@@ -34,13 +36,27 @@ ESCOLAS_POR_UF = 80   # melhores de cada estado e etapa (o ranking do país sai 
 MINIMO_UFS = 27
 MINIMO_ESCOLAS = {"iniciais": 20_000, "finais": 15_000, "medio": 8_000}
 ABREVIADOS = {"M. G. DO SUL": "MS", "R. G. DO NORTE": "RN", "R. G. DO SUL": "RS"}  # a planilha abrevia estes três
+UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36", "Accept": "*/*"}  # o servidor do INEP derruba clientes sem cara de navegador
 _cliente_cache: httpx.Client | None = None
+
+
+def _tentar(fn, vezes: int = 5):
+    """O servidor do INEP derruba conexões de vez em quando (reset): tenta de novo com espera crescente."""
+    for i in range(1, vezes + 1):
+        try:
+            return fn()
+        except (httpx.TransportError, httpx.HTTPStatusError) as e:
+            if i == vezes:
+                raise
+            pausa = 4 * i * (0.5 + random.random())
+            log.warning("INEP: %s; nova tentativa em %.0fs", type(e).__name__, pausa)
+            time.sleep(pausa)
 
 
 def cliente() -> httpx.Client:
     global _cliente_cache
     if _cliente_cache is None:
-        der = httpx.get(AIA, timeout=60).content
+        der = _tentar(lambda: httpx.get(AIA, timeout=60, headers=UA).content)
         import hashlib
         h = hashlib.sha256(der).hexdigest()
         if h != AIA_SHA256:
@@ -49,19 +65,22 @@ def cliente() -> httpx.Client:
         pem = ssl.DER_cert_to_PEM_cert(der)
         arq = Path(tempfile.mkdtemp(prefix="inep-ca-")) / "cadeia.pem"
         arq.write_text(Path(certifi.where()).read_text() + "\n" + pem)
-        _cliente_cache = httpx.Client(verify=str(arq), timeout=300, follow_redirects=True, headers={"User-Agent": "BRASIL+ coletor de dados publicos"})
+        _cliente_cache = httpx.Client(verify=str(arq), timeout=300, follow_redirects=True, headers=UA)
     return _cliente_cache
 
 
 def baixar(nome: str) -> Path:
     """Baixa um arquivo de BASE para um arquivo temporário (os das escolas passam de 100 MB)."""
     destino = Path(tempfile.mkdtemp(prefix="inep-")) / nome
-    with cliente().stream("GET", BASE + nome) as r:
-        r.raise_for_status()
-        with open(destino, "wb") as f:
-            for parte in r.iter_bytes(1 << 20):
-                f.write(parte)
-    return destino
+
+    def go():
+        with cliente().stream("GET", BASE + nome) as r:
+            r.raise_for_status()
+            with open(destino, "wb") as f:
+                for parte in r.iter_bytes(1 << 20):
+                    f.write(parte)
+        return destino
+    return _tentar(go)
 
 
 def abrir_xlsx(caminho: Path) -> openpyxl.Workbook:
@@ -197,7 +216,7 @@ def ultimo_ano_disponivel(nome_modelo: str, ate: int | None = None) -> int:
     """Último ano (de dois em dois) com o arquivo publicado; o IDEB sai nos anos ímpares."""
     ate = ate or date.today().year
     for ano in range(ate, 2014, -1):
-        r = cliente().head(BASE + nome_modelo.format(ano=ano))
+        r = _tentar(lambda: cliente().head(BASE + nome_modelo.format(ano=ano)))
         if r.status_code == 200:
             return ano
     raise RuntimeError(f"INEP: nenhum arquivo {nome_modelo} encontrado")
