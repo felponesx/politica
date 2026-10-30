@@ -86,7 +86,7 @@ def ler_fefc(texto: str) -> list[dict]:
     return sorted(out, key=lambda x: -x["valor"])
 
 
-def coletar_fundos(anos=(2018, 2020, 2022, 2024)):
+def coletar_fundos(anos=(2020, 2022, 2024)):
     """Fundo eleitoral (FEFC) por partido em cada eleição (TSE)."""
     with registrar_coleta("tse", "fundos") as (db, n):
         for ano in anos:
