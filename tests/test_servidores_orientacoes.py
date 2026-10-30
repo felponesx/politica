@@ -123,3 +123,18 @@ def test_caged_agrega_so_contagens_por_uf_e_secao_e_le_7z(tmp_path):
 def test_ufs_do_robo_aceita_lista_e_texto():
     from app.collectors import transito as t
     assert t._lista_ufs(["TO", "DF"]) == ["TO", "DF"] and t._lista_ufs("to, df") == ["TO", "DF"] and t._lista_ufs("") == [] and t._lista_ufs("XX") == []
+
+
+def test_caged_le_arquivo_em_utf8_e_em_latin1(tmp_path):
+    import py7zr
+    from app.collectors import caged
+    for enc in ("utf-8", "latin-1"):
+        arq = tmp_path / f"CAGEDMOV{enc}.txt"
+        arq.write_text("competênciamov;região;uf;município;seção;subclasse;saldomovimentação\n202608;3;35;1;G;1;1\n", encoding=enc)
+        z = tmp_path / f"{enc}.7z"
+        with py7zr.SevenZipFile(z, "w") as w:
+            w.write(arq, arq.name)
+        cab, linhas, pasta, fh = caged.ler_7z(z)
+        ag = caged.agregar(linhas, cab)
+        fh.close()
+        assert ag["linhas"] == 1, enc

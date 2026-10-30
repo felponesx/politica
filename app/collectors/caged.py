@@ -77,7 +77,13 @@ def ler_7z(caminho: Path):
     with py7zr.SevenZipFile(caminho) as z:
         z.extractall(path=pasta)
     arq = next(p for p in pasta.rglob("*") if p.is_file() and p.suffix.lower() in (".txt", ".csv"))
-    fh = open(arq, encoding="latin-1", newline="")
+    bruto = arq.read_bytes()[:65536]
+    try:
+        bruto.decode("utf-8")
+        enc = "utf-8-sig"
+    except UnicodeDecodeError as e:
+        enc = "utf-8-sig" if e.start >= len(bruto) - 4 else "latin-1"   # corte no meio de um caractere não conta
+    fh = open(arq, encoding=enc, newline="")
     leitor = csv.reader(fh, delimiter=";")
     return next(leitor), leitor, pasta, fh
 
