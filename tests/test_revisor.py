@@ -124,3 +124,12 @@ def test_revisor_pega_obra_sem_marcacao_e_painel_de_fontes_zerado(tmp_path):
     dados["/fontes/status"]["resumo"] = {"ok": 40, "falhando": 1, "sem_coleta_boa": 2, "nunca_coletada": 17}
     rel = rv.revisar(_copia(tmp_path, dados), AGORA, rede=False)
     assert _niveis(rel, "Obras com valor suspeito") == ["ok"] and _niveis(rel, "Situação das fontes") == ["ok"]
+
+
+def test_revisor_confere_o_painel_de_saude(tmp_path):
+    painel = {"brasil": {"ubs": 46847, "ubs_por_100mil": 21.9, "mm_vagas": 27618, "mm_ocupadas": 25868, "gasto_estados_saude": 198e9, "gasto_uniao_saude": 217e9}}
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": painel}), AGORA, rede=False)
+    assert _niveis(rel, "Saúde: UBS no país") == ["ok"] and _niveis(rel, "Saúde: vagas ocupadas") == ["ok"] and _niveis(rel, "Saúde: gasto da União") == []
+    painel["brasil"].update(ubs=900, mm_ocupadas=30000, gasto_uniao_saude=2e9)
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": painel}), AGORA, rede=False)
+    assert _niveis(rel, "Saúde: UBS no país") == ["aviso"] and _niveis(rel, "Saúde: vagas ocupadas") == ["erro"] and _niveis(rel, "Saúde: gasto da União") == ["aviso"]

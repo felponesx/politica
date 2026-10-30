@@ -186,6 +186,15 @@ def consistencia(c: Copia, r: Relatorio):
         r.add(g, "erro", "Situação das fontes mostra tudo como nunca coletada", f"{total_fontes} de {total_fontes}: o painel não está achando as coletas")
     elif total_fontes:
         r.ok(g, "Situação das fontes", f"{resumo_fontes.get('ok', 0)} em dia, {resumo_fontes.get('nunca_coletada', 0)} nunca coletadas")
+    saude = c.get("/saude/painel") or {}
+    if saude:
+        b = saude.get("brasil") or {}
+        if b.get("ubs") is not None:
+            r.add(g, "ok" if 40_000 <= b["ubs"] <= 60_000 else "aviso", "Saúde: UBS no país", f"{b['ubs']:,} UBS ({b.get('ubs_por_100mil')} por 100 mil hab.)", "entre 40 mil e 60 mil", b["ubs"])
+        if b.get("mm_vagas"):
+            r.add(g, "ok" if b["mm_ocupadas"] <= b["mm_vagas"] else "erro", "Saúde: vagas ocupadas do Mais Médicos não passam das vagas", f"{b['mm_ocupadas']:,} de {b['mm_vagas']:,}")
+        if b.get("gasto_estados_saude") and b.get("gasto_uniao_saude") and not (20e9 < b["gasto_uniao_saude"] < 600e9):
+            r.add(g, "aviso", "Saúde: gasto da União fora do esperado", f"R$ {b['gasto_uniao_saude'] / 1e9:,.0f} bi", "entre R$ 20 bi e R$ 600 bi", round(b["gasto_uniao_saude"]))
     parl = (c.get("/parlamentares") or {}).get("itens") or []
     nomes = {}
     for x in parl:

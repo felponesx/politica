@@ -41,7 +41,7 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("camara-proposicoes-detalhe", {"ano": ano}), ("bcb-series", {"anos": 2}),
                    ("camara-tramitacoes", {"limite": 800})],
         "agenda": [("congresso-agenda", {})],
-        "semanal": [("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
+        "semanal": [("saude-mais-medicos", {}), ("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
                     ("senado-materias", {"ano": ano}), ("cnpj-fornecedores", {"limite": 300}),
                     ("lexml-estaduais", {"ano": ano}), ("congresso-atuacao", {}), ("senado-ceaps", {"ano": ano}),
                     ("assembleias", {"inicio": hoje - timedelta(days=8), "fim": hoje})]
@@ -49,7 +49,7 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
         "mensal": [("ibge-indicadores", {}), ("ibge-municipios", {}), ("ibge-indicadores-sociais", {}),
                    ("siconfi-receitas", {"ano": ant}), ("siconfi-divida", {"ano": ant}),
                    ("siconfi-despesas-funcao", {"ano": ant}), ("obrasgov-obras", {}),
-                   ("receita-arrecadacao", {"ano_minimo": ano - 3}), ("tesouro-transferencias", {"ano": ano}),
+                   ("receita-arrecadacao", {"ano_minimo": ano - 3}), ("tesouro-transferencias", {"ano": ano}), ("saude-ubs", {}),
                    ("tesouro-capag", {}), ("ibge-malhas", {})],
         "trimestral": [("pgfn-divida-ativa", {"ano": ta, "trimestre": tt})],
     }

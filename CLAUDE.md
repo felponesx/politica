@@ -149,6 +149,13 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Totais federais diferentes: notas nas telas Gastos › União (SICONFI, liquidado até o bimestre), Órgãos (Portal da Transparência, pago até hoje) e no Gastômetro (Gasto Brasil, União+estados+municípios): fontes, critério e corte próprios.
 - `revisar_dados` confere obras sem marcação e o painel de fontes zerado.
 
+## Saúde (30/10/2026)
+- Menu Saúde (`P.saude`, `#/saude` e `#/saude/<UF>`; `saudeBrasil`, `saudeUF` no site): mapa, ranking e lista por estado com seletor (UBS por 100 mil hab., Mais Médicos por 100 mil, % das vagas ocupadas, gasto do estado em saúde por habitante,
+  saúde no gasto do estado) e, por estado, os maiores municípios. API `GET /saude/painel` e `GET /saude/municipios?uf=` (`app/saude.py`, `app/routers/saude.py`; `/saude` continua sendo a checagem de saúde do sistema).
+- Coletores `saude-ubs` e `saude-mais-medicos` (`app/collectors/saude.py`; robô: `EXTRAS`, validade 25 e 7 dias; agendador: mensal e semanal). API do Ministério: `limit` até 1.000, `offset` = posição da linha. Guarda contra leitura cortada
+  (mín. 40 mil UBS e 5 mil municípios). Gasto = despesa liquidada na função Saúde (RREO Anexo 02, `despesa_funcao`) do último ano com o 6º bimestre em ≥ 20 estados (2025: estados R$ 198,8 bi, União R$ 217,1 bi).
+- Fora por enquanto (motivos em `docs/FONTES.md`): leitos hospitalares (API do Ministério não serve um mês só), mínimo constitucional em saúde (Anexo 12 do SICONFI não responde), vacinação, mortalidade, dengue.
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.
