@@ -1,11 +1,17 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
 _TAREFAS_BRUTAS = {
     "ensino-ideb": inep.coletar_ensino_ideb,
     "cgu-sancoes": sancoes.coletar_sancoes,
+    "transparencia-social": social.coletar_social,
+    "transparencia-viagens": social.coletar_viagens,       # anos
+    "inpe-desmatamento": ambiente.coletar_desmatamento,
+    "ibge-trabalho": economia_extra.coletar_trabalho,      # trimestres
+    "tse-fundos": economia_extra.coletar_fundos,
+    "aneel-tarifas": economia_extra.coletar_tarifas_energia,
     "ibge-saneamento": saneamento.coletar_saneamento,
     "ibge-empresas-economia": ibge_empresas.coletar_empresas_economia,  # ano
     "camara-deputados": camara.coletar_deputados,
