@@ -32,12 +32,12 @@ for u in paginas:
     for cl in (cli, httpx.Client(timeout=30, follow_redirects=True)):
         try:
             r = cl.get(u)
-            links = sorted(set(re.findall(r'href="([^"]*(?:download\.inep|\.zip|\.xlsx?|\.ods)[^"]*)"', r.text)))
-            print(f"\n=== {u}\n  HTTP {r.status_code} {len(r.text)} bytes; links de arquivo: {len(links)}")
-            for l in links[:60]:
-                print("   ", l)
-            if not links:
-                print(re.sub(r"\s+", " ", r.text)[:600])
+            hrefs = re.findall(r"""href=["']([^"']+)["']""", r.text)
+            chave = [h for h in dict.fromkeys(hrefs) if re.search(r"download\.inep|\.(zip|xlsx?|ods|csv)\b|ideb|igc|resultado|dados-abertos|planilha", h, re.I)]
+            soltas = sorted(set(re.findall(r"https?://download\.inep[^\s\"'<>)]+", r.text)))
+            print(f"\n=== {u}\n  HTTP {r.status_code} {len(r.text)} bytes; {len(hrefs)} links, {len(chave)} com palavra-chave, {len(soltas)} download.inep soltos", flush=True)
+            for l in chave[:80] + soltas[:40]:
+                print("   ", l, flush=True)
             break
         except Exception as e:
             print(f"\n=== {u}: ERRO {type(e).__name__} {e}", flush=True)
