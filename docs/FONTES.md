@@ -75,3 +75,9 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 
 | inpe-queimadas | INPE, focos de calor (zip anual `focos_br_ref_AAAA.zip`) | Implementado e testado com amostra; coleta real ainda não rodada | Só contagens por estado/bioma/mês |
 | tcu-contas-irregulares | TCU, certidões (POST `{}` em `responsaveis-contas-irregulares`) | Implementado e testado com amostra; coleta real ainda não rodada | Só totais por estado/ano (sem nomes) |
+
+| caged-saldos | Novo CAGED (FTP do PDET, `CAGEDMOV/FOR/EXC` .7z) | **Funciona** (robô 30/10/2026: ago/2026 +165.675 de saldo nos movimentos do mês; 27 UFs) | Só somas por UF/mês/setor; saldo oficial pode diferir um pouco |
+| tse-doadores | TSE prestação de contas (zips de 2002 a 2024) | **Funciona** (local 2002–2022; robô 2016 e 2024) | Só CNPJ; descarta "recursos próprios" e partido/comitê < R$ 10 mil |
+| querido-diario | queridodiario.ok.org.br/api | **Funciona** (robô 30/10/2026); `api.` não tem certificado para o nome | TLS validado; histórico de disponibilidade |
+| osm-malha-capitais | OpenStreetMap (Overpass) | **Indisponível** nas duas tentativas do robô (5xx em todos os espelhos) | Tentar fora do horário de pico |
+| tomtom-transito | TomTom Traffic API | Aguarda `TOMTOM_API_KEY` (gratuita) | Sem chave não coleta nem simula |
