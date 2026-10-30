@@ -31,7 +31,7 @@ def buscar(querystring: str = "", desde: date | None = None, ate: date | None = 
     if territorios:
         params["territory_ids"] = territorios
     chave = ("qd", querystring, params.get("published_since"), params.get("published_until"), tuple(territorios or ()), tamanho, offset)
-    return memo(chave, lambda: _enxugar(http.get_json(f"{BASE}/gazettes", params=params, timeout=45)), ttl=3600)
+    return memo(chave, lambda: _enxugar(http.get(f"{BASE}/gazettes", params=params, timeout=45).json()), ttl=3600)
 
 
 def _enxugar(js: dict | None) -> dict:

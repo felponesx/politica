@@ -118,3 +118,8 @@ def test_caged_agrega_so_contagens_por_uf_e_secao_e_le_7z(tmp_path):
     assert ag["linhas"] == 3 and sp["adm"] == 2 and sp["desl"] == 1 and sp["secoes"]["G"] == [1, 1]
     d = caged.resumir({"CAGEDMOV": ag, "CAGEDFOR": {"linhas": 0, "competencias": {}}, "CAGEDEXC": {"linhas": 0, "competencias": {}}}, "202608")
     assert d["brasil"]["saldo_mov"] == 1 and "salario" not in str(d).lower() and d["por_uf"]["SP"]["por_secao"]["C"]["setor"] == "Indústria de transformação"
+
+
+def test_ufs_do_robo_aceita_lista_e_texto():
+    from app.collectors import transito as t
+    assert t._lista_ufs(["TO", "DF"]) == ["TO", "DF"] and t._lista_ufs("to, df") == ["TO", "DF"] and t._lista_ufs("") == [] and t._lista_ufs("XX") == []

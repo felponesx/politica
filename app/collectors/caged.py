@@ -8,8 +8,10 @@ excluídos (CAGEDEXC); por isso guardamos também as contagens desses dois arqui
 import csv
 import ftplib
 import logging
+import random
 import re
 import shutil
+import time
 import tempfile
 from pathlib import Path
 
@@ -80,6 +82,23 @@ def ler_7z(caminho: Path):
     return next(leitor), leitor, pasta, fh
 
 
+def conectar(tentativas: int = 5) -> ftplib.FTP:
+    """Conexão ao FTP com espera crescente: o robô já recebeu 'Temporary failure in name resolution' numa execução e funcionou em outra."""
+    for i in range(1, tentativas + 1):
+        try:
+            ftp = ftplib.FTP(timeout=120, encoding="latin-1")
+            ftp.connect(HOST, 21)
+            ftp.login()
+            return ftp
+        except (OSError, ftplib.Error) as e:
+            if i == tentativas:
+                raise
+            pausa = 5 * i * (0.5 + random.random())
+            log.warning("CAGED FTP: %s; nova tentativa em %.0fs", type(e).__name__, pausa)
+            time.sleep(pausa)
+    raise RuntimeError("inalcançável")
+
+
 def listar_ftp(ftp: ftplib.FTP, caminho: str) -> list[str]:
     ftp.cwd(caminho)
     return ftp.nlst()
@@ -137,9 +156,7 @@ def resumir(partes: dict, mes: str) -> dict:
 def coletar_caged(meses: int = 2, refazer: bool = False):
     """Os `meses` mais recentes do FTP do Novo CAGED (competência já gravada não volta a ser baixada)."""
     with registrar_coleta("caged", "saldos") as (db, n):
-        ftp = ftplib.FTP(timeout=120, encoding="latin-1")
-        ftp.connect(HOST, 21)
-        ftp.login()
+        ftp = conectar()
         try:
             anos = sorted(a for a in listar_ftp(ftp, RAIZ) if re.fullmatch(r"\d{4}", a))
             if not anos:

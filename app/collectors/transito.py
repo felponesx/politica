@@ -38,6 +38,12 @@ MINIMO_KM = {"SP": 8_000, "RJ": 4_000}   # guarda contra consulta cortada; as ou
 MINIMO_KM_PADRAO = 300
 
 
+def _lista_ufs(ufs) -> list[str]:
+    """Aceita "TO,DF", ["TO", "DF"] (a linha de comando do robô converte vírgulas em lista) ou vazio; só UFs de capitais conhecidas."""
+    itens = ufs if isinstance(ufs, (list, tuple)) else str(ufs or "").split(",")
+    return [u for u in (str(i).strip().upper() for i in itens) if u in CAPITAIS]
+
+
 def consulta(ibge: str) -> str:
     return (f'[out:json][timeout:600][maxsize:2147483648];rel["boundary"="administrative"]["IBGE:GEOCODIGO"="{ibge}"];map_to_area->.a;'
             f'way(area.a)["highway"]["highway"!~"^({EXCLUIDAS})$"]["area"!="yes"];out geom qt;')
@@ -115,7 +121,7 @@ def overpass(q: str) -> dict:
 def coletar_osm_malha(ufs: str = ""):
     """Quilômetros de via de cada capital (OpenStreetMap). `ufs` = lista separada por vírgula (vazio = as 27)."""
     with registrar_coleta("osm", "malha_capitais", ufs=ufs or "todas") as (db, n):
-        alvo = [u.strip().upper() for u in ufs.split(",") if u.strip()] or list(CAPITAIS)
+        alvo = _lista_ufs(ufs) or list(CAPITAIS)
         for uf in alvo:
             nome, ibge = CAPITAIS[uf]
             try:
@@ -180,7 +186,7 @@ def coletar_tomtom_transito(ufs: str = "", pontos: int = 4):
         db.flush()
         chamadas = int((uso.dados or {}).get("chamadas", 0))
         limite = int(settings.tomtom_limite_dia)
-        alvo = [u.strip().upper() for u in ufs.split(",") if u.strip()] or list(CAPITAIS)
+        alvo = _lista_ufs(ufs) or list(CAPITAIS)
         for uf in alvo:
             malha = db.query(Registro).filter_by(fonte="osm", tipo="malha_capital", chave=uf).first()
             amostra = ((malha.dados or {}).get("pontos_amostra") or [])[: int(pontos)] if malha else []
