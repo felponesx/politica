@@ -31,6 +31,12 @@ CAPITAIS = {
     "RS": ("Porto Alegre", "4314902"), "RO": ("Porto Velho", "1100205"), "RR": ("Boa Vista", "1400100"), "SC": ("Florianópolis", "4205407"), "SP": ("São Paulo", "3550308"),
     "SE": ("Aracaju", "2800308"), "TO": ("Palmas", "1721000"),
 }
+# Ponto de amostra no centro de cada capital, usado só enquanto a malha do OSM não foi coletada (uma via principal central por cidade: amostra mínima, não a cidade toda).
+CENTROS = {"AC": (-9.9747, -67.8100), "AL": (-9.6658, -35.7353), "AP": (0.0349, -51.0694), "AM": (-3.1190, -60.0217), "BA": (-12.9714, -38.5014), "CE": (-3.7319, -38.5267),
+           "DF": (-15.7939, -47.8828), "ES": (-20.3155, -40.3128), "GO": (-16.6869, -49.2648), "MA": (-2.5307, -44.3068), "MT": (-15.6014, -56.0979), "MS": (-20.4697, -54.6201),
+           "MG": (-19.9167, -43.9345), "PA": (-1.4558, -48.4902), "PB": (-7.1195, -34.8450), "PR": (-25.4284, -49.2733), "PE": (-8.0476, -34.8770), "PI": (-5.0892, -42.8019),
+           "RJ": (-22.9068, -43.1729), "RN": (-5.7945, -35.2110), "RS": (-30.0346, -51.2177), "RO": (-8.7612, -63.9039), "RR": (2.8235, -60.6758), "SC": (-27.5954, -48.5480),
+           "SP": (-23.5505, -46.6333), "SE": (-10.9472, -37.0731), "TO": (-10.1689, -48.3317)}
 CATEGORIAS = {"motorway": "Expressas e rodovias", "trunk": "Expressas e rodovias", "primary": "Arteriais", "secondary": "Coletoras", "tertiary": "Coletoras",
               "residential": "Locais", "living_street": "Locais", "unclassified": "Locais", "service": "Acesso e serviço"}
 EXCLUIDAS = "footway|path|steps|cycleway|pedestrian|bridleway|corridor|proposed|construction|platform|elevator|raceway|bus_guideway|escape|rest_area|services|track"
@@ -196,9 +202,10 @@ def coletar_tomtom_transito(ufs: str = "", pontos: int = 4):
         for uf in alvo:
             malha = db.query(Registro).filter_by(fonte="osm", tipo="malha_capital", chave=uf).first()
             amostra = ((malha.dados or {}).get("pontos_amostra") or [])[: int(pontos)] if malha else []
+            origem = "vias principais da malha do OpenStreetMap"
             if not amostra:
-                n.avisos.append(f"{uf}: sem pontos de amostra (rode osm-malha-capitais antes)")
-                continue
+                amostra = [{"lat": CENTROS[uf][0], "lon": CENTROS[uf][1]}]
+                origem = "um ponto no centro da cidade (a malha do OSM ainda não foi coletada)"
             if chamadas + len(amostra) + 1 > limite:
                 n.avisos.append(f"{uf}: limite diário de {limite} chamadas atingido; parou aqui")
                 break
@@ -219,7 +226,7 @@ def coletar_tomtom_transito(ufs: str = "", pontos: int = 4):
             bbox = f"{min(lons) - .05},{min(lats) - .05},{max(lons) + .05},{max(lats) + .05}"
             inc = {"incidentes": None}
             try:
-                js = http.get_json(TOMTOM_INCIDENTES, params={"bbox": bbox, "fields": "{incidents{type,properties{iconCategory,delay,length}}}", "language": "pt-BR", "key": chave})
+                js = http.get_json(TOMTOM_INCIDENTES, params={"bbox": bbox, "fields": "{incidents{type,properties{iconCategory,delay,length}}}", "language": "pt-PT", "key": chave})
                 chamadas += 1
                 inc = ler_incidentes(js)
             except Exception as e:  # noqa: BLE001
@@ -227,7 +234,7 @@ def coletar_tomtom_transito(ufs: str = "", pontos: int = 4):
             media = lambda k: round(sum(m[k] for m in medidas) / len(medidas), 1)  # noqa: E731
             agora = datetime.now().isoformat(timespec="seconds")
             d = {"capital": CAPITAIS[uf][0], "uf": uf, "medido_em": agora, "pontos_medidos": len(medidas), "velocidade_media_kmh": media("velocidade_kmh"),
-                 "fluxo_livre_medio_kmh": media("fluxo_livre_kmh"), "congestionamento_pct": media("congestionamento_pct"), **inc, "fonte": "TomTom Traffic API (amostra de vias, não a cidade inteira)"}
+                 "fluxo_livre_medio_kmh": media("fluxo_livre_kmh"), "congestionamento_pct": media("congestionamento_pct"), **inc, "fonte": "TomTom Traffic API (amostra de vias, não a cidade inteira)", "amostra": origem}
             upsert(db, Registro, {"fonte": "tomtom", "tipo": "transito_agora", "chave": uf}, {"uf": uf, "titulo": f"Trânsito agora em {d['capital']}", "valor": d["congestionamento_pct"], "dados": d})
             dia = db.query(Registro).filter_by(fonte="tomtom", tipo="transito_dia", chave=f"{uf}|{hoje}").first()
             ant = (dia.dados or {}) if dia else {}

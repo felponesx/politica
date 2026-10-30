@@ -41,6 +41,8 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("camara-proposicoes-detalhe", {"ano": ano}), ("bcb-series", {"anos": 2}),
                    ("camara-tramitacoes", {"limite": 800})],
         "agenda": [("congresso-agenda", {})],
+        # trânsito das 27 capitais a cada hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500); só com a chave configurada
+        "transito": [("tomtom-transito", {})] if settings.tomtom_api_key else [],
         "semanal": [("saude-mais-medicos", {}), ("cgu-sancoes", {}), ("tcu-inabilitados", {}), ("cnj-justica", {}), ("anatel-banda-larga", {}), ("anp-combustiveis", {}), ("congresso-cpis", {}), ("anac-aerodromos", {}), ("ibama-multas", {}), ("inpe-queimadas", {}), ("tcu-contas-irregulares", {}), ("mte-lista-suja", {}), ("receita-renuncia-fiscal", {}), ("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
                     ("senado-materias", {"ano": ano}), ("cnpj-fornecedores", {"limite": 300}),
                     ("lexml-estaduais", {"ano": ano}), ("congresso-atuacao", {}), ("senado-ceaps", {"ano": ano}),
@@ -99,6 +101,8 @@ def main(argv):
                                                                       "misfire_grace_time": 3600})
     s.add_job(rodar_grupo, "cron", args=["diario"], hour=2, minute=10, id="diario")
     s.add_job(rodar_grupo, "cron", args=["agenda"], day_of_week="mon-fri", hour="8-21", minute="*/15", id="agenda")
+    if settings.tomtom_api_key:
+        s.add_job(rodar_grupo, "cron", args=["transito"], hour="6-22", minute=7, id="transito")
     s.add_job(rodar_grupo, "cron", args=["semanal"], day_of_week="sun", hour=4, minute=0, id="semanal")
     s.add_job(rodar_grupo, "cron", args=["mensal"], day=5, hour=5, minute=0, id="mensal")
     s.add_job(rodar_grupo, "cron", args=["trimestral"], month="2,5,8,11", day=20, hour=6, minute=0, id="trimestral")

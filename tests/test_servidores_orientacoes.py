@@ -152,3 +152,9 @@ def test_reforma_monitor_acha_coluna_cbs_ibs_e_diz_quando_nao_ha():
     html = '<a href="/upload/arquivos/202607/x-resolucao-10.pdf">Resolução 10</a><a href="https://x.gov.br/a.xlsx"> Arrecadação do IBS </a>'
     a = reforma.arquivos_cgibs(html)
     assert a[0]["url"].startswith("https://www.cgibs.gov.br/upload") and a[1]["titulo"] == "Arrecadação do IBS"
+
+
+def test_tomtom_tem_ponto_central_para_todas_as_capitais():
+    from app.collectors import transito as t
+    assert set(t.CENTROS) == set(t.CAPITAIS)
+    assert all(-34 < la < 6 and -75 < lo < -34 for la, lo in t.CENTROS.values())

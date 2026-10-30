@@ -191,7 +191,7 @@ def acidentes_rodovias(db: Session) -> dict | None:
 
 AVISO_MALHA = ("Quilômetros de via de cada capital segundo o OpenStreetMap (mapa colaborativo): é o tamanho da malha, NÃO o trânsito. Pista dupla conta um trecho por sentido; "
                "vias que cruzam a divisa entram inteiras; ciclovias, calçadas, escadas e vias em obra ficam de fora; bairros ainda não são separados.")
-AVISO_TRANSITO_AGORA = ("Medição do TomTom numa AMOSTRA de poucas vias principais de cada capital (não a cidade toda), na hora indicada. Congestionamento = quanto a velocidade atual está abaixo da "
+AVISO_TRANSITO_AGORA = ("Medição do TomTom numa AMOSTRA de poucas vias de cada capital (não a cidade toda; o campo 'amostra' diz de onde vieram os pontos), na hora indicada. Congestionamento = quanto a velocidade atual está abaixo da "
                         "velocidade com a via livre. Não é o índice anual do TomTom Traffic Index nem os quilômetros da malha.")
 
 
