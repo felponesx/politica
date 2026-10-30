@@ -24,23 +24,31 @@ pem = der.decode() if der.startswith(b"-----") else ssl.DER_cert_to_PEM_cert(der
 with tempfile.NamedTemporaryFile("w", suffix=".pem", delete=False) as f:
     f.write(open(certifi.where()).read() + "\n" + pem)
 cli = httpx.Client(verify=f.name, timeout=30, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36"})
-paginas = ["https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais",
-           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/@@search?format=json",
-           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/@@contents",
-           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/outros-documentos",
-           "http://ideb.inep.gov.br/"]
+paginas = ["https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais"]
 for u in paginas:
-    for cl in (cli, httpx.Client(timeout=30, follow_redirects=True)):
+    r = cli.get(u)
+    hrefs = list(dict.fromkeys(re.findall(r"""href=["']([^"']+)["']""", r.text)))
+    arq = [h for h in hrefs if re.search(r"download\.inep|\.(zip|xlsx?|ods|csv)\b", h, re.I)]
+    print(f"\n=== {u} HTTP {r.status_code}: {len(hrefs)} links, {len(arq)} de arquivo", flush=True)
+    for h in arq[:150]:
+        print("   ", h, flush=True)
+
+# adivinha nomes dos arquivos de resultados do IDEB (HEAD)
+base = "https://download.inep.gov.br/educacao_basica/portal_ideb/planilhas_para_download/{ano}/{nome}"
+nomes = ["divulgacao_brasil_ideb_{ano}.xlsx", "divulgacao_brasil_ufs_{ano}.xlsx", "divulgacao_brasil_regioes_ufs_{ano}.xlsx", "divulgacao_brasil_ideb_{ano}.zip",
+         "divulgacao_anos_iniciais_municipios_{ano}.zip", "divulgacao_anos_iniciais_escolas_{ano}.zip", "divulgacao_anos_finais_municipios_{ano}.zip",
+         "divulgacao_anos_finais_escolas_{ano}.zip", "divulgacao_ensino_medio_municipios_{ano}.zip", "divulgacao_ensino_medio_escolas_{ano}.zip",
+         "divulgacao_ensino_medio_estados_{ano}.zip", "divulgacao_anos_iniciais_estados_{ano}.zip", "divulgacao_brasil_ufs_ideb_{ano}.zip",
+         "divulgacao_anos_iniciais_brasil_estados_{ano}.zip", "divulgacao_regioes_ufs_ideb_{ano}.zip", "divulgacao_municipios_ideb_{ano}.zip",
+         "divulgacao_escolas_ideb_{ano}.zip", "divulgacao_brasil_ufs_ideb_{ano}.xlsx", "divulgacao_regioes_ufs_ideb_{ano}.xlsx"]
+print("\n--- HEAD de nomes prováveis", flush=True)
+for ano in (2023, 2021, 2019):
+    for n in nomes:
+        u = base.format(ano=ano, nome=n.format(ano=ano))
         try:
-            r = cl.get(u)
-            hrefs = re.findall(r"""href=["']([^"']+)["']""", r.text)
-            chave = [h for h in dict.fromkeys(hrefs) if re.search(r"download\.inep|\.(zip|xlsx?|ods|csv)\b|ideb|igc|resultado|dados-abertos|planilha", h, re.I)]
-            soltas = sorted(set(re.findall(r"https?://download\.inep[^\s\"'<>)]+", r.text)))
-            print(f"\n=== {u}\n  HTTP {r.status_code} {len(r.text)} bytes; {len(hrefs)} links, {len(chave)} com palavra-chave, {len(soltas)} download.inep soltos", flush=True)
-            for l in chave[:120] + soltas[:60]:
-                print("   ", l, flush=True)
-            if not chave:
-                print(re.sub(r"\s+", " ", r.text)[:800], flush=True)
-            break
+            h = cli.head(u)
+            if h.status_code != 404 and h.status_code != 403:
+                print(h.status_code, h.headers.get("content-length"), u, flush=True)
         except Exception as e:
-            print(f"\n=== {u}: ERRO {type(e).__name__} {e}", flush=True)
+            print("ERRO", type(e).__name__, u, flush=True)
+print("fim", flush=True)
