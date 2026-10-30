@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -12,6 +12,9 @@ _TAREFAS_BRUTAS = {
     "anp-combustiveis": anp.coletar_anp_combustiveis,
     "congresso-cpis": cpis.coletar_cpis,
     "anac-aerodromos": anac.coletar_anac_aerodromos,
+    "ibama-multas": ibama.coletar_ibama_multas,
+    "mte-lista-suja": trabalho_escravo.coletar_lista_suja,
+    "receita-renuncia-fiscal": renuncia.coletar_renuncia_fiscal,
     "transparencia-social": social.coletar_social,
     "transparencia-viagens": social.coletar_viagens,       # anos
     "inpe-desmatamento": ambiente.coletar_desmatamento,

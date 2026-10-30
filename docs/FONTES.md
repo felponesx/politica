@@ -42,6 +42,9 @@ e na tela **Relatórios e Dados › Situação das fontes**.
 | anp-combustiveis | ANP (zip semestral `ca-AAAA-0N.zip`, CSV de preços por posto; HEAD dá 403, GET com User-Agent de navegador) | preço médio por estado e produto no último mês | não |
 | congresso-cpis | Câmara `/orgaos?sigla=CPI` e `CPMI` + `/orgaos/{id}`; Senado `/comissao/lista/cpi` (XML, só as ativas) | nome, datas e situação de cada CPI | não |
 | anac-aerodromos | ANAC `sistemas.anac.gov.br/dadosabertos/Aerodromos/.../AerodromosPublicos.csv` (CSV ; latin-1, 1ª linha "Atualizado em") | total de aeródromos públicos por estado, situação e operação noturna | não |
+| ibama-multas | IBAMA dados abertos (Azure Blob `auto_infracao_csv.zip`, 1 CSV por ano, lido por Range) | autos de infração por estado e ano (quantidade e valor aplicado, sem cancelados; sem nomes) | não |
+| mte-lista-suja | Ministério do Trabalho `cadastro_de_empregadores.csv` | empregadores e trabalhadores por estado e ano da ação fiscal (sem nomes) | não |
+| receita-renuncia-fiscal | Receita Federal `dgt-bases-efetivas-AAAA-...-quadros.xlsx` (aba Q I) | gastos tributários por função orçamentária e região | não |
 | ibge-trabalho | IBGE SIDRA (PNAD Contínua: tabela 4099 desocupação; 5436 rendimento, variável a conferir) | desocupação e rendimento por estado, 24 trimestres | não |
 | tse-fundos | TSE dados abertos (cdn.tse.jus.br/.../fefc_fp/fefc_fp_AAAA.zip) | fundo eleitoral (FEFC) por partido em 2018, 2020, 2022 e 2024 | não |
 | aneel-tarifas | ANEEL dados abertos (tarifas-homologadas-distribuidoras-energia-eletrica.csv, 180 MB) | tarifa residencial B1 em vigor por distribuidora (TUSD + TE) | não |

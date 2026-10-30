@@ -69,3 +69,21 @@ def cpis(db: Session = Depends(get_db)):
 def aeroportos(db: Session = Depends(get_db)):
     """Aeródromos públicos (ANAC): total, por estado, situação e operação noturna."""
     return _ou_404(memo(("aeroportos",), lambda: lacunas.aeroportos(db)), "anac-aerodromos")
+
+
+@router.get("/multas-ambientais", tags=["Meio ambiente"])
+def multas_ambientais(db: Session = Depends(get_db)):
+    """Autos de infração do IBAMA por estado e ano (quantidade e valor aplicado), sem nomes."""
+    return _ou_404(memo(("multas-amb",), lambda: lacunas.multas_ambientais(db)), "ibama-multas")
+
+
+@router.get("/lista-suja", tags=["Trabalho"])
+def lista_suja(db: Session = Depends(get_db)):
+    """Cadastro de Empregadores (trabalho análogo ao de escravo): totais por estado e ano, sem nomes."""
+    return _ou_404(memo(("lista-suja",), lambda: lacunas.lista_suja(db)), "mte-lista-suja")
+
+
+@router.get("/renuncia-fiscal", tags=["Dinheiro"])
+def renuncia_fiscal(db: Session = Depends(get_db)):
+    """Gastos tributários (renúncia fiscal) por função orçamentária e região, ano-base mais novo."""
+    return _ou_404(memo(("renuncia",), lambda: lacunas.renuncia_fiscal(db)), "receita-renuncia-fiscal")

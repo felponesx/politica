@@ -212,3 +212,42 @@ def test_anac_le_aerodromos_com_linha_de_data_e_acentos():
     assert r["atualizado"] == "2026-10-15" and r["total"] == 2 and r["por_uf"]["AC"] == {"total": 1, "noturno": 1} and r["por_uf"]["SP"]["noturno"] == 0
     with pytest.raises(ValueError, match="colunas"):
         anac.ler("a;b\n1;2\n")
+
+
+def test_ibama_soma_so_nao_cancelados_e_nao_guarda_nome():
+    from app.collectors import ibama
+    cab = "SEQ_AUTO_INFRACAO;SIT_CANCELADO;VAL_AUTO_INFRACAO;DAT_HORA_AUTO_INFRACAO;UF;TIPO_INFRACAO;NOME_INFRATOR\n"
+    linhas = (cab + "1;N;1.000,50;2024-03-01 10:00:00;PA;Flora;FULANO\n2;S;9999,00;2024-04-01 10:00:00;PA;Flora;BELTRANO\n3;N;500,00;2025-01-05 00:00:00;MT;Pesca;CICLANO\n").splitlines()
+    r = ibama.agregar(iter(linhas))
+    assert r["lidos"] == 3 and r["cancelados"] == 1 and r["por_uf_ano"]["PA"]["2024"] == {"autos": 1, "valor": 1000.5} and r["por_tipo"]["Pesca"]["2025"] == 500.0
+    assert "FULANO" not in str(r) and ibama.juntar([r, r])["por_uf_ano"]["PA"]["2024"]["autos"] == 2
+    with pytest.raises(ValueError, match="colunas"):
+        ibama.agregar(iter(["a;b", "1;2"]))
+
+
+def test_lista_suja_so_totais_por_uf_e_ano():
+    from app.collectors import trabalho_escravo as te
+    txt = ("ID;Ano da ação fiscal;UF;Empregador;CNPJ/CPF;Estabelecimento;Trabalhadores envolvidos;CNAE;Decisão administrativa de procedência;Inclusão no Cadastro de Empregadores\n"
+           "1;2024;SP;FULANO LTDA;41.297.068/0001-61;ROD X;2;4399-1/03;15/05/2025;06/10/2025\n2;2024;SP;OUTRO;48.937.720/0001-04;MT 235;5;2391-5/03;08/10/2024;09/04/2025\n3;2025;RS;TERCEIRO;1;R;3;1;1;1\n")
+    r = te.ler(txt)
+    assert r["total"] == 3 and r["trabalhadores"] == 10 and r["por_uf"]["SP"] == {"empregadores": 2, "trabalhadores": 7} and r["por_ano"]["2025"]["empregadores"] == 1
+    assert "FULANO" not in str(r) and "41.297" not in str(r)
+
+
+def test_renuncia_fiscal_le_quadro_1_e_acha_o_arquivo_mais_novo():
+    from app.collectors import renuncia
+
+    class Aba:
+        def iter_rows(self, values_only=True):
+            yield ("QUADRO I",)
+            yield ("GASTOS TRIBUTÁRIOS - ESTIMATIVAS BASES EFETIVAS 2023 - POR FUNÇÃO ORÇAMENTÁRIA - REGIONALIZADO",)
+            yield ("FUNÇÃO ORÇAMENTÁRIA", "NORTE", "NORDESTE", "CENTRO-OESTE", "SUDESTE", "SUL", "TOTAL")
+            for k in range(12):
+                yield (f"Função {k}", 1.0, 2.0, 3.0, 4.0, 5.0, 15.0)
+            yield (None,)
+            yield ("Depois", 9, 9, 9, 9, 9, 9)
+    q = renuncia.ler_quadro1(Aba())
+    assert q["ano_base"] == 2023 and len(q["funcoes"]) == 12 and q["funcoes"]["Função 0"]["centro_oeste"] == 3.0 and "Depois" not in q["funcoes"]
+    html = '<a href="https://x/gastos-tributarios-bases-efetivas/dgt-bases-efetivas-2022-serie-2020-a-2025-quadros.xlsx/view"></a><a href="/y/dgt-bases-efetivas-2023-serie-2021-a-2026-quadros.xlsx/view"></a>'
+    arqs = renuncia.arquivos_da_pagina(html)
+    assert arqs[0][0] == 2023 and arqs[0][1].startswith("https://www.gov.br/y/") and arqs[0][1].endswith("quadros.xlsx")

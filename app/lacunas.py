@@ -196,3 +196,30 @@ AVISO_AEROPORTOS = "Aeródromos públicos registrados na ANAC (cadastro oficial)
 def aeroportos(db: Session) -> dict | None:
     d = db.scalar(select(Registro.dados).where(Registro.fonte == "anac", Registro.tipo == "aerodromos", Registro.chave == "BR"))
     return {**d, "aviso": AVISO_AEROPORTOS, "fontes": ["ANAC — dados abertos (lista de aeródromos públicos)"]} if d else None
+
+
+AVISO_IBAMA = ("Autos de infração ambiental lavrados pelo IBAMA, sem os cancelados. O valor é o da multa APLICADA no auto, não o que foi pago: muitas são contestadas, reduzidas ou nunca pagas. "
+               "Nomes e documentos dos autuados não são guardados aqui. Ser autuado não é condenação definitiva.")
+AVISO_LISTA_SUJA = ("Cadastro de Empregadores que submeteram trabalhadores a condições análogas à de escravo (Ministério do Trabalho), após decisão administrativa definitiva. "
+                    "Mostramos só totais por estado e ano da ação fiscal; nomes ficam na fonte oficial.")
+AVISO_RENUNCIA = ("Estimativa da Receita Federal de quanto o governo deixa de arrecadar por benefícios tributários (isenções, deduções, regimes especiais), em valores nominais do ano-base. "
+                  "Não é gasto efetivo nem prova de irregularidade: são regras previstas em lei.")
+
+
+def _dados(db: Session, fonte: str, tipo: str):
+    return db.scalar(select(Registro.dados).where(Registro.fonte == fonte, Registro.tipo == tipo, Registro.chave == "BR"))
+
+
+def multas_ambientais(db: Session) -> dict | None:
+    d = _dados(db, "ibama", "multas_ambientais")
+    return {**d, "aviso": AVISO_IBAMA, "fontes": ["IBAMA — dados abertos (autos de infração)"]} if d else None
+
+
+def lista_suja(db: Session) -> dict | None:
+    d = _dados(db, "mte", "lista_suja")
+    return {**d, "aviso": AVISO_LISTA_SUJA, "fontes": ["Ministério do Trabalho e Emprego — Cadastro de Empregadores"]} if d else None
+
+
+def renuncia_fiscal(db: Session) -> dict | None:
+    d = _dados(db, "receita", "renuncia_fiscal")
+    return {**d, "aviso": AVISO_RENUNCIA, "fontes": ["Receita Federal — gastos tributários (bases efetivas)"]} if d else None

@@ -41,7 +41,7 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("camara-proposicoes-detalhe", {"ano": ano}), ("bcb-series", {"anos": 2}),
                    ("camara-tramitacoes", {"limite": 800})],
         "agenda": [("congresso-agenda", {})],
-        "semanal": [("saude-mais-medicos", {}), ("cgu-sancoes", {}), ("tcu-inabilitados", {}), ("cnj-justica", {}), ("anatel-banda-larga", {}), ("anp-combustiveis", {}), ("congresso-cpis", {}), ("anac-aerodromos", {}), ("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
+        "semanal": [("saude-mais-medicos", {}), ("cgu-sancoes", {}), ("tcu-inabilitados", {}), ("cnj-justica", {}), ("anatel-banda-larga", {}), ("anp-combustiveis", {}), ("congresso-cpis", {}), ("anac-aerodromos", {}), ("ibama-multas", {}), ("mte-lista-suja", {}), ("receita-renuncia-fiscal", {}), ("camara-deputados", {}), ("senado-senadores", {}), ("camara-orgaos", {}),
                     ("senado-materias", {"ano": ano}), ("cnpj-fornecedores", {"limite": 300}),
                     ("lexml-estaduais", {"ano": ano}), ("congresso-atuacao", {}), ("senado-ceaps", {"ano": ano}),
                     ("assembleias", {"inicio": hoje - timedelta(days=8), "fim": hoje})]
