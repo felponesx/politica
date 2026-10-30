@@ -92,6 +92,14 @@ def diarios_oficiais_status(db: Session = Depends(get_db)):
             "termos": (t.dados if t else None), "aviso": "Se 'disponivel' for falso, os números de termos podem ser antigos: confira a data de 'medido_em'."}
 
 
+@router.get("/ocorrencias", tags=["Escândalos"])
+def ocorrencias(etapa: str | None = Query(None, pattern="^(investigacao|denuncia|condenacao|absolvicao|arquivamento|outra)$"), q: str | None = Query(None, max_length=100),
+                limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0)):
+    """Marcos dos casos curados (investigação, denúncia, condenação, absolvição, arquivamento), cada um com a fonte original."""
+    from app import ocorrencias as oc
+    return oc.listar(etapa, q, limit, offset)
+
+
 @router.get("/servidores", tags=["Dinheiro público"])
 def servidores(db: Session = Depends(get_db)):
     """Servidores civis federais por órgão e estado: quantidade, remuneração bruta, abate-teto e líquida (só somas)."""

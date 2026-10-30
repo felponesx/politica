@@ -88,3 +88,14 @@ def test_querido_diario_usa_endereco_com_certificado_valido_e_enxuga_resposta(mo
     assert qd.BASE.startswith("https://queridodiario.ok.org.br/api") and "api.queridodiario" not in qd.BASE
     r = qd._enxugar({"total_gazettes": 10000, "gazettes": [{"territory_name": "X", "state_code": "SP", "territory_id": "3509502", "date": "2026-10-01", "url": "https://u", "excerpts": ["a" * 900]}]})
     assert r["limitado"] is True and r["diarios"][0]["uf"] == "SP" and len(r["diarios"][0]["trechos"][0]) == 400
+
+
+def test_ocorrencias_vem_dos_casos_com_fonte_e_classifica_so_com_palavra_clara():
+    from app import ocorrencias as oc
+    assert oc.classificar("TRF-1 arquiva ação penal contra X por falta de provas.") == "arquivamento"
+    assert oc.classificar("STF condena fulano a 10 anos.") == "condenacao"
+    assert oc.classificar("MPF apresenta denúncia contra 5 pessoas.") == "denuncia"
+    assert oc.classificar("PF deflagra a Operação Zelotes.") == "investigacao"
+    assert oc.classificar("Fulano se reúne com o ministro.") == "outra"
+    d = oc.listar(limit=500)
+    assert d["total"] >= 100 and all(i["fonte_url"].startswith("http") for i in d["ocorrencias"]) and "presumidos inocentes" in d["aviso"]
