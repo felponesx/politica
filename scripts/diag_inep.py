@@ -24,10 +24,11 @@ pem = der.decode() if der.startswith(b"-----") else ssl.DER_cert_to_PEM_cert(der
 with tempfile.NamedTemporaryFile("w", suffix=".pem", delete=False) as f:
     f.write(open(certifi.where()).read() + "\n" + pem)
 cli = httpx.Client(verify=f.name, timeout=30, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36"})
-paginas = ["https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
-           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb",
-           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/indicadores-educacionais/indice-geral-de-cursos-igc",
-           "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais/indice-de-desenvolvimento-da-educacao-basica-ideb"]
+paginas = ["https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais",
+           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/@@search?format=json",
+           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/@@contents",
+           "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/outros-documentos",
+           "http://ideb.inep.gov.br/"]
 for u in paginas:
     for cl in (cli, httpx.Client(timeout=30, follow_redirects=True)):
         try:
@@ -36,8 +37,10 @@ for u in paginas:
             chave = [h for h in dict.fromkeys(hrefs) if re.search(r"download\.inep|\.(zip|xlsx?|ods|csv)\b|ideb|igc|resultado|dados-abertos|planilha", h, re.I)]
             soltas = sorted(set(re.findall(r"https?://download\.inep[^\s\"'<>)]+", r.text)))
             print(f"\n=== {u}\n  HTTP {r.status_code} {len(r.text)} bytes; {len(hrefs)} links, {len(chave)} com palavra-chave, {len(soltas)} download.inep soltos", flush=True)
-            for l in chave[:80] + soltas[:40]:
+            for l in chave[:120] + soltas[:60]:
                 print("   ", l, flush=True)
+            if not chave:
+                print(re.sub(r"\s+", " ", r.text)[:800], flush=True)
             break
         except Exception as e:
             print(f"\n=== {u}: ERRO {type(e).__name__} {e}", flush=True)
