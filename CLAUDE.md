@@ -462,3 +462,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   (conferir os termos de uso sobre guardar e publicar os números). Waze for Cities só para órgãos públicos; CET-SP publica lentidão em km só de São Paulo.
 - **Robô**: rodar `camara-proposicoes-situacao` (preenche o regime de tramitação e liga a prioridade alta/média/baixa dos projetos) e `premios` (história e imagens da Wikipédia dos Prêmios) quando o GitHub Actions estiver livre.
   A chave `transparencia-emendas` já rodou; cartão corporativo falta o ano de 2023.
+
+## Congresso e Eleições — o que veio do banco que já existe (30/10/2026)
+- `app/fidelidade.py`, `GET /fidelidade?casa=` e `alinhamento` em `/parlamentares/{id}/atuacao`: quanto cada parlamentar votou como a MAIORIA DO PRÓPRIO PARTIDO (só Sim/Não, 12 meses, mín. 3 colegas e 10 votações,
+  empate e votação secreta fora). NÃO é fidelidade à orientação da bancada (a orientação oficial não está coletada: Câmara `/votacoes/{id}/orientacoes` seria a fonte). Site: bloco "Vota como o partido?" no Resumo.
+- Perfil › Eleições: tabela "Patrimônio declarado a cada eleição" com a variação entre candidaturas (valor declarado, sem correção pela inflação).
+- Ainda sem implementação (fonte não alcançável daqui ou sem arquivo achado): servidores e salários, CAGED, renúncia fiscal, doadores (CPF não é guardado de propósito), TCU, lista suja, ANP, Anatel/ANAC, CNJ, Querido Diário, PRF/DNIT, CPIs.
