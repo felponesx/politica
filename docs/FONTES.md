@@ -72,3 +72,6 @@ duas vezes ao mesmo tempo), coletas "rodando" há mais de 12 h viram `abortada`,
 ## INPE desmatamento — estado em 30/10/2026
 Entraram: PRODES Amazônia e Pampa e DETER Amazônia/Cerrado (24 meses). Ficaram de fora: Cerrado e Caatinga (`ReadTimeout` do WFS do TerraBrasilis nas camadas de 1 a 2 milhões de feições), Mata Atlântica (502) e Pantanal (400 "Can handle 5 attributes only").
 Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `paginas`, uma tarefa por bioma (para uma não segurar a outra) e, no Pantanal, pedir sem `propertyName` (a camada é pequena). O Pampa tem anos sem dado na fonte (2009; 2012 e 2015 quase zero).
+
+| inpe-queimadas | INPE, focos de calor (zip anual `focos_br_ref_AAAA.zip`) | Implementado e testado com amostra; coleta real ainda não rodada | Só contagens por estado/bioma/mês |
+| tcu-contas-irregulares | TCU, certidões (POST `{}` em `responsaveis-contas-irregulares`) | Implementado e testado com amostra; coleta real ainda não rodada | Só totais por estado/ano (sem nomes) |

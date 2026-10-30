@@ -116,7 +116,8 @@ def trabalho(db: Session) -> dict | None:
 
 def ambiente(db: Session) -> dict | None:
     prodes, deter = _regs(db, "prodes_bioma", "inpe"), _regs(db, "deter_bioma", "inpe")
-    if not prodes and not deter:
+    focos = db.scalar(select(Registro.dados).where(Registro.fonte == "inpe", Registro.tipo == "focos_queimadas", Registro.chave == "BR"))
+    if not prodes and not deter and not focos:
         return None
     por_uf: dict[str, dict] = {}
     biomas = {}
@@ -152,9 +153,15 @@ def ambiente(db: Session) -> dict | None:
     for uf, mm in alertas["por_uf"].items():
         e = estados.setdefault(uf, {})
         e["deter_12m"] = round(sum(mm.get(m, {}).get("desmatamento", 0) for m in ult12), 2)
+    if focos:
+        for uf, serie in focos["por_uf"].items():
+            e = estados.setdefault(uf, {})
+            e["focos"] = serie.get(focos["ultimo_ano"])
+            e["focos_serie"] = serie
     return {"brasil": brasil, "ultimo_ano": anos[-1] if anos else None, "biomas": biomas, "estados": estados,
+            "focos": ({"ultimo_ano": focos["ultimo_ano"], "total": focos["total"], "por_bioma": focos["por_bioma"]} if focos else None),
             "deter": {"desde": desde, "ultimos_meses": ult12, "mensal": {m: {k: round(v, 2) for k, v in alertas["mensal"][m].items()} for m in meses}},
-            "aviso": AVISO_AMBIENTE, "fontes": ["INPE — PRODES e DETER (TerraBrasilis)"]}
+            "aviso": AVISO_AMBIENTE, "fontes": ["INPE — PRODES e DETER (TerraBrasilis)", "INPE — Programa Queimadas (focos de calor)"]}
 
 
 def viagens(db: Session) -> dict | None:
@@ -223,3 +230,12 @@ def lista_suja(db: Session) -> dict | None:
 def renuncia_fiscal(db: Session) -> dict | None:
     d = _dados(db, "receita", "renuncia_fiscal")
     return {**d, "aviso": AVISO_RENUNCIA, "fontes": ["Receita Federal — gastos tributários (bases efetivas)"]} if d else None
+
+
+AVISO_IRREGULARES = ("Contas julgadas irregulares pelo TCU com decisão que não cabe mais recurso (trânsito em julgado). A lista pública inclui pessoas e empresas; aqui entram só totais, sem nomes nem documentos. "
+                     "Conta irregular é decisão de controle externo sobre uso de dinheiro público: não é, por si, condenação penal.")
+
+
+def tcu_irregulares(db: Session) -> dict | None:
+    d = db.scalar(select(Registro.dados).where(Registro.fonte == "tcu", Registro.tipo == "tcu_irregulares", Registro.chave == "BR"))
+    return {**d, "aviso": AVISO_IRREGULARES, "fontes": ["Tribunal de Contas da União — responsáveis com contas julgadas irregulares"]} if d else None

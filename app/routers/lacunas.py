@@ -87,3 +87,9 @@ def lista_suja(db: Session = Depends(get_db)):
 def renuncia_fiscal(db: Session = Depends(get_db)):
     """Gastos tributários (renúncia fiscal) por função orçamentária e região, ano-base mais novo."""
     return _ou_404(memo(("renuncia",), lambda: lacunas.renuncia_fiscal(db)), "receita-renuncia-fiscal")
+
+
+@router.get("/tcu-irregulares", tags=["Empresas punidas"])
+def tcu_irregulares(db: Session = Depends(get_db)):
+    """Totais de responsáveis com contas julgadas irregulares pelo TCU (por estado, ano e tipo). Sem nomes nem documentos."""
+    return _ou_404(memo(("tcu-irreg",), lambda: lacunas.tcu_irregulares(db)), "tcu-contas-irregulares")

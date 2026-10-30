@@ -251,3 +251,21 @@ def test_renuncia_fiscal_le_quadro_1_e_acha_o_arquivo_mais_novo():
     html = '<a href="https://x/gastos-tributarios-bases-efetivas/dgt-bases-efetivas-2022-serie-2020-a-2025-quadros.xlsx/view"></a><a href="/y/dgt-bases-efetivas-2023-serie-2021-a-2026-quadros.xlsx/view"></a>'
     arqs = renuncia.arquivos_da_pagina(html)
     assert arqs[0][0] == 2023 and arqs[0][1].startswith("https://www.gov.br/y/") and arqs[0][1].endswith("quadros.xlsx")
+
+
+def test_queimadas_conta_focos_por_estado_bioma_e_mes():
+    from app.collectors import queimadas
+    txt = "lat,lon,data_hora_gmt,satelite,estado,municipio,bioma\n-1,-2,2025-08-01 12:00:00,AQUA,PARÁ,X,Amazônia\n-1,-2,2025-08-02 12:00:00,AQUA,PARÁ,X,Amazônia\n-3,-4,2025-09-01 12:00:00,AQUA,MATO GROSSO,Y,Cerrado\n"
+    r = queimadas.agregar(txt, 2025)
+    assert r["total"] == 3 and r["por_uf"] == {"PA": 2, "MT": 1} and r["por_bioma"]["Cerrado"] == 1 and r["mensal"] == {"2025-08": 2, "2025-09": 1}
+    with pytest.raises(ValueError, match="estado"):
+        queimadas.agregar("a,b\n1,2\n", 2025)
+
+
+def test_tcu_irregulares_so_totais():
+    from app.collectors import tcu
+    itens = [{"nome": "FULANO", "tipoRegistro": "CPF", "numeroRegistro": "1", "uf": "SP", "dataTransitoEmJulgado": "10/12/2010"},
+             {"nome": "EMPRESA", "tipoRegistro": "CNPJ", "numeroRegistro": "2", "uf": "SP", "dataTransitoEmJulgado": "05/01/2011"}]
+    r = tcu.resumir_irregulares(itens)
+    assert r["total"] == 2 and r["por_uf"] == {"SP": 2} and r["por_ano"] == {"2010": 1, "2011": 1} and r["por_tipo"] == {"CPF": 1, "CNPJ": 1}
+    assert "FULANO" not in str(r) and "EMPRESA" not in str(r)
