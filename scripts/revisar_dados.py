@@ -194,9 +194,15 @@ def consistencia(c: Copia, r: Relatorio):
         if b.get("mm_vagas"):
             r.add(g, "ok" if b["mm_ocupadas"] <= b["mm_vagas"] else "erro", "Saúde: vagas ocupadas do Mais Médicos não passam das vagas", f"{b['mm_ocupadas']:,} de {b['mm_vagas']:,}")
         for chave, rot, lo, hi in (("leitos", "leitos de internação", 350_000, 550_000), ("uti_por_100mil", "UTI por 100 mil habitantes", 15, 60),
-                                   ("medicos_por_mil", "médicos por mil habitantes", 1.5, 4.5), ("tmi", "mortalidade infantil (por mil)", 6, 20)):
+                                   ("medicos_por_mil", "médicos por mil habitantes", 1.5, 4.5), ("tmi", "mortalidade infantil (por mil)", 6, 20),
+                                   ("mortes", "mortes por ano no país", 1_000_000, 2_000_000), ("internacoes", "internações do SUS por ano", 8_000_000, 20_000_000)):
             if b.get(chave) is not None:
                 r.add(g, "ok" if lo <= b[chave] <= hi else "aviso", f"Saúde: {rot}", f"{b[chave]:,}", f"entre {lo:,} e {hi:,}", b[chave])
+        causas = sum(x["mortes"] for x in b.get("mortes_causas") or [])
+        if b.get("mortes") and causas > b["mortes"]:
+            r.add(g, "erro", "Saúde: causas de morte somam mais que o total", f"{causas:,} > {b['mortes']:,}")
+        if b.get("dengue_serie") and b.get("dengue") is not None and not (50_000 < b["dengue"] < 12_000_000):
+            r.add(g, "aviso", "Saúde: casos de dengue no último ano", f"{b['dengue']:,}", "entre 50 mil e 12 milhões", b["dengue"])
         if b.get("gasto_estados_saude") and b.get("gasto_uniao_saude") and not (20e9 < b["gasto_uniao_saude"] < 600e9):
             r.add(g, "aviso", "Saúde: gasto da União fora do esperado", f"R$ {b['gasto_uniao_saude'] / 1e9:,.0f} bi", "entre R$ 20 bi e R$ 600 bi", round(b["gasto_uniao_saude"]))
     parl = (c.get("/parlamentares") or {}).get("itens") or []

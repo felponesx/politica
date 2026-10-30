@@ -21,7 +21,21 @@ NOTAS = [
     "Médicos são pessoas cadastradas no CNES com ocupação de médico; quem tem duas especialidades pode aparecer duas vezes e quem trabalha só no setor privado sem cadastro não entra.",
     "Mortalidade infantil = óbitos de menores de 1 ano ÷ nascidos vivos × 1.000, pela residência da mãe (SIM e SINASC). A série oficial vai até dois anos atrás; o ano mais recente ainda é preliminar. Estados pequenos têm taxa instável de um ano para o outro.",
 ]
-FONTES = ["CNES e Mais Médicos / Ministério da Saúde — https://apidadosabertos.saude.gov.br", "DATASUS TabNet — CNES, SIM e SINASC — http://tabnet.datasus.gov.br",
+CAPITULOS = {"Cap I": "Doenças infecciosas e parasitárias", "Cap II": "Tumores (câncer)", "Cap III": "Doenças do sangue", "Cap IV": "Doenças endócrinas e metabólicas (diabetes)",
+             "Cap V": "Transtornos mentais", "Cap VI": "Doenças do sistema nervoso", "Cap VII": "Doenças do olho", "Cap VIII": "Doenças do ouvido",
+             "Cap IX": "Doenças do coração e da circulação", "Cap X": "Doenças respiratórias", "Cap XI": "Doenças do aparelho digestivo", "Cap XII": "Doenças da pele",
+             "Cap XIII": "Doenças dos ossos e músculos", "Cap XIV": "Doenças dos rins e do aparelho urinário", "Cap XV": "Gravidez, parto e puerpério",
+             "Cap XVI": "Problemas do período do nascimento", "Cap XVII": "Malformações de nascença", "Cap XVIII": "Sintomas e causas mal definidas",
+             "Cap XX": "Causas externas (acidentes e violência)"}
+NOTAS += [
+    "Causas de morte: todos os óbitos do SIM pela residência, no último ano fechado (o Ministério fecha cerca de dois anos depois), por capítulo da CID-10. A taxa por 100 mil é bruta "
+    "(sem ajustar pela idade): estados com mais idosos têm mais mortes por doenças do coração e câncer sem que a saúde seja pior. Causas externas incluem acidentes, homicídios e suicídios.",
+    "Internações do SUS: AIH aprovadas no SIH, pela residência do paciente, no último ano com os 12 meses processados. O valor é o que o SUS pagou aos hospitais pelos serviços; "
+    "quem se trata em outro estado conta no estado onde mora. Não inclui hospitais particulares sem convênio.",
+    "Dengue: casos prováveis (notificados, sem os descartados) por ano de notificação e estado de residência, no SINAN. Mostra a série dos anos fechados; o ano corrente é parcial. "
+    "Mudanças na notificação e em testes entre anos dificultam comparar anos distantes. A taxa usa a população atual dos municípios.",
+]
+FONTES = ["CNES e Mais Médicos / Ministério da Saúde — https://apidadosabertos.saude.gov.br", "DATASUS TabNet — CNES, SIM, SINASC, SIH e SINAN — http://tabnet.datasus.gov.br",
           "SICONFI / Tesouro Nacional — RREO Anexo 02", "IBGE — população dos municípios"]
 
 
@@ -83,7 +97,42 @@ def _datasus_uf(dsus: dict, uf: str, pop: int | None) -> dict:
         ano = t["ultimo_ano"]
         e.update(tmi=t["serie"][ano]["taxa"], tmi_ano=ano, tmi_obitos=t["serie"][ano]["obitos"], tmi_nascidos=t["serie"][ano]["nascidos"],
                  tmi_serie={a: v["taxa"] for a, v in t["serie"].items()})
+    c = dsus["causas_morte_uf"].get(uf)
+    if c:
+        e.update(_causas(c, pop))
+    i = dsus["internacoes_uf"].get(uf)
+    if i:
+        e.update(_internacoes(i, pop))
+    g = dsus["dengue_uf"].get(uf)
+    if g:
+        e.update(_dengue(g, pop))
     return e
+
+
+def _causas(c: dict, pop) -> dict:
+    tot = c["total"]
+    caps = sorted(c["capitulos"].items(), key=lambda kv: -kv[1])
+    taxa = lambda k: _por(c["capitulos"].get(k), pop, 100000)  # noqa: E731
+    return {"mortes": tot, "mortes_ano": c["ano"], "mortes_por_100mil": _por(tot, pop, 100000),
+            "mortes_causas": [{"capitulo": k, "nome": CAPITULOS.get(k, k), "mortes": n, "pct": _pct(n, tot), "por_100mil": _por(n, pop, 100000)} for k, n in caps[:8]],
+            "mortes_coracao_100mil": taxa("Cap IX"), "mortes_cancer_100mil": taxa("Cap II"), "mortes_externas_100mil": taxa("Cap XX"),
+            "mortes_respiratorias_100mil": taxa("Cap X"), "mortes_infecciosas_100mil": taxa("Cap I"), "mortes_mal_definidas_pct": _pct(c["capitulos"].get("Cap XVIII", 0), tot)}
+
+
+def _internacoes(i: dict, pop) -> dict:
+    n = i["internacoes"]
+    return {"internacoes": n, "internacoes_ano": i["ano"], "internacoes_por_mil": _por(n, pop, 1000), "internacoes_valor": round(i["valor_total"], 2),
+            "internacoes_valor_medio": round(i["valor_total"] / n, 2) if n else None, "internacoes_valor_por_hab": _por(i["valor_total"], pop, 1),
+            "internacoes_obitos": i["obitos"], "internacoes_letalidade": _pct(i["obitos"], n), "internacoes_dias_medios": round(i["dias"] / n, 1) if n else None}
+
+
+def _dengue(g: dict, pop) -> dict:
+    serie = g["serie"]
+    if not serie:
+        return {}
+    ano = max(serie)
+    return {"dengue": serie[ano], "dengue_ano": ano, "dengue_por_100mil": _por(serie[ano], pop, 100000), "dengue_serie": serie,
+            "dengue_parcial": g.get("parcial") or {}}
 
 
 def _datasus_brasil(dsus: dict, estados: dict, pop_br) -> dict:
@@ -100,6 +149,9 @@ def _datasus_brasil(dsus: dict, estados: dict, pop_br) -> dict:
         ano = t["ultimo_ano"]
         out.update(tmi=t["serie"][ano]["taxa"], tmi_ano=ano, tmi_obitos=t["serie"][ano]["obitos"], tmi_nascidos=t["serie"][ano]["nascidos"],
                    tmi_serie={a: v["taxa"] for a, v in t["serie"].items()}, tmi_preliminar=t.get("preliminar") or {})
+    for chave, f in (("causas_morte_uf", _causas), ("internacoes_uf", _internacoes), ("dengue_uf", _dengue)):
+        if dsus[chave].get("BR"):
+            out.update(f(dsus[chave]["BR"], pop_br))
     return out
 
 
@@ -110,7 +162,7 @@ def painel(db: Session) -> dict | None:
     resumo_mm = db.scalar(select(Registro.dados).where(Registro.fonte == "saude", Registro.tipo == "mais_medicos_resumo", Registro.chave == "BR")) or {}
     ano_gasto, gasto, uniao = _gasto_saude(db)
     dsus = {t: {c: d for c, d in db.execute(select(Registro.chave, Registro.dados).where(Registro.fonte == "datasus", Registro.tipo == t))}
-            for t in ("leitos_uf", "medicos_uf", "mortalidade_infantil_uf")}
+            for t in ("leitos_uf", "medicos_uf", "mortalidade_infantil_uf", "causas_morte_uf", "internacoes_uf", "dengue_uf")}
     if not ubs and not mm and not gasto and not any(dsus.values()):
         return None
     estados = {}

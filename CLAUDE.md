@@ -157,7 +157,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Segunda etapa: `saude-datasus` (`app/collectors/datasus.py`, TabNet do DATASUS por POST com `formato=prn`): leitos de internação e UTI (existentes e SUS), médicos (CBO) e mortalidade infantil por estado
   (óbitos SIM ÷ nascidos SINASC; série oficial até `ano_final - 2`, o resto fica em `tmi_preliminar`). O painel traz `leitos_por_mil`, `leitos_sus_por_mil`, `pct_leitos_sus`, `uti_por_100mil` (só UTI, sem unidades
   intermediárias), `medicos_por_mil`, `tmi` e `tmi_serie`; o site tem o seletor com grupos, o gráfico do Brasil e, no estado, a linha do estado contra o Brasil. Robô: `EXTRAS`, validade 20 dias; agendador: mensal.
-- Fora por enquanto (motivos em `docs/FONTES.md`): mínimo constitucional em saúde (Anexo 12 do SICONFI não responde), vacinação (tabela do TabNet não abriu), dengue por estado, leitos por município (dá para pedir `Linha=Município` ao TabNet).
+- Terceira etapa (30/10/2026, mesma tarefa `saude-datasus`, novos blocos `causas_morte_uf`, `internacoes_uf`, `dengue_uf`): óbitos por capítulo da CID-10 (`sim/cnv/obt10uf.def`, último ano fechado = `ano_final - 2`, 2024: 1,53 mi no país),
+  internações do SUS por residência (`sih/cnv/nruf.def`, 12 arquivos mensais do último ano completo, 2025: 14,5 mi, R$ 25,8 bi) e casos prováveis de dengue (`sinannet/cnv/denguebbr.def`, linha UF de residência × coluna ano de notificação; 2024: 6,57 mi; ano corrente em `parcial`).
+  Painel traz `mortes*`, `mortes_causas` (8 maiores), `internacoes*` e `dengue*`; site: seletor com 3 grupos novos + quadros "De que morrem", internações e gráfico da dengue. Taxas de morte são brutas (sem ajuste por idade) e o site avisa.
+- Fora por enquanto (motivos em `docs/FONTES.md`): mínimo constitucional em saúde (Anexo 12 do SICONFI não responde), vacinação (tabela do TabNet não abriu), leitos por município (dá para pedir `Linha=Município` ao TabNet).
 
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`

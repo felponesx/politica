@@ -5347,7 +5347,7 @@ P.premios=slug=>{let D=null;
 const sauD1=v=>v==null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const sauD2=v=>v==null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sauR=v=>v==null?"—":"R$ "+Math.round(v).toLocaleString("pt-BR");
-const SAU_G=[["Atenção básica","ubs","mm","mmp"],["Hospitais e leitos","leitos","leitosus","pctsus","uti"],["Médicos","medicos"],["Mortalidade infantil","tmi"],["Gasto em saúde","gasto","pct"]];
+const SAU_G=[["Atenção básica","ubs","mm","mmp"],["Hospitais e leitos","leitos","leitosus","pctsus","uti"],["Médicos","medicos"],["Mortalidade infantil","tmi"],["Causas de morte","mortes","mcor","mcan","mext","mresp"],["Internações do SUS","intmil","intvalor","intlet"],["Dengue","dengue"],["Gasto em saúde","gasto","pct"]];
 const SAU_M={
  ubs:["UBS por 100 mil habitantes",e=>e.ubs_por_100mil,sauD1,"As UBS são a porta de entrada do SUS. Mais unidades por habitante não quer dizer melhor atendimento: conte também as equipes e os médicos."],
  mm:["Mais Médicos por 100 mil habitantes",e=>e.mm_por_100mil,sauD1,"Vagas ocupadas do Programa Mais Médicos para cada 100 mil habitantes. São só os médicos do programa, não todos os do SUS."],
@@ -5358,6 +5358,15 @@ const SAU_M={
  uti:["Leitos de UTI por 100 mil habitantes",e=>e.uti_por_100mil,sauD1,"UTI adulto, pediátrica, neonatal, de queimados e coronariana (sem as unidades intermediárias), por 100 mil habitantes, públicas e privadas."],
  medicos:["Médicos por mil habitantes",e=>e.medicos_por_mil,sauD2,"Médicos cadastrados no CNES por mil habitantes. Quem tem duas especialidades pode contar duas vezes; os médicos se concentram nas capitais."],
  tmi:["Mortalidade infantil (por mil nascidos vivos)",e=>e.tmi,sauD1,"Bebês que morreram antes de 1 ano para cada mil nascidos vivos, pela residência da mãe. Menor é melhor. Estados pequenos oscilam de um ano para o outro."],
+ mortes:["Mortes por 100 mil habitantes (todas as causas)",e=>e.mortes_por_100mil,sauD1,"Óbitos de moradores do estado no último ano fechado, por 100 mil habitantes. Taxa bruta: estados com mais idosos têm taxa maior sem que a saúde seja pior."],
+ mcor:["Mortes por doenças do coração e da circulação (por 100 mil)",e=>e.mortes_coracao_100mil,sauD1,"Infarto, derrame e outras doenças do aparelho circulatório, por 100 mil habitantes. Taxa bruta, sem ajuste pela idade."],
+ mcan:["Mortes por câncer (por 100 mil)",e=>e.mortes_cancer_100mil,sauD1,"Tumores (capítulo II da CID-10), por 100 mil habitantes. Taxa bruta, sem ajuste pela idade."],
+ mext:["Mortes por causas externas (por 100 mil)",e=>e.mortes_externas_100mil,sauD1,"Acidentes de trânsito, quedas, afogamentos, homicídios, suicídios e outras mortes violentas, por 100 mil habitantes."],
+ mresp:["Mortes por doenças respiratórias (por 100 mil)",e=>e.mortes_respiratorias_100mil,sauD1,"Pneumonia, doenças crônicas do pulmão e outras do aparelho respiratório, por 100 mil habitantes."],
+ intmil:["Internações do SUS por mil habitantes",e=>e.internacoes_por_mil,sauD1,"Internações pagas pelo SUS (AIH aprovadas) no último ano completo, pela residência do paciente. Mais internações pode ser mais acesso ou mais doença: a conta sozinha não diz qual."],
+ intvalor:["Valor médio de cada internação do SUS",e=>e.internacoes_valor_medio,sauR,"Quanto o SUS pagou, em média, por internação (serviços hospitalares e profissionais). Varia com o tipo de caso atendido."],
+ intlet:["Mortes entre os internados do SUS",e=>e.internacoes_letalidade,v=>sauD1(v)+"%","Parte das internações que terminou em óbito no hospital. Hospitais de casos graves têm taxa maior; não mede qualidade sozinha."],
+ dengue:["Casos prováveis de dengue por 100 mil habitantes",e=>e.dengue_por_100mil,v=>Math.round(v).toLocaleString("pt-BR"),"Casos prováveis (sem os descartados) no último ano fechado. Varia muito de um ano para o outro, com o clima e as epidemias."],
  gasto:["Gasto do estado em saúde por habitante",e=>e.gasto_saude_por_hab,sauR,"Despesa liquidada do governo do estado na função Saúde, dividida pela população. Não inclui o que as prefeituras e a União gastam no estado."],
  pct:["Saúde no gasto do estado",e=>e.pct_do_gasto,v=>sauD1(v)+"%","Quanto da despesa liquidada do governo do estado foi para a função Saúde."]};
 function saudeKpi(t,v,s){return`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`}
@@ -5365,6 +5374,14 @@ function saudeFim(D){return`<div class="panel mt"><h2>Como ler estes números</h
 function saudeTmiBr(B){const s=B.tmi_serie;if(!s)return"";const a=Object.keys(s).sort();if(a.length<2)return"";
  const pre=B.tmi_preliminar&&Object.keys(B.tmi_preliminar).sort().pop();
  return`<div class="panel mt"><h2>Mortalidade infantil no Brasil <small>por mil nascidos vivos</small></h2>${lineChart([{n:"Brasil",v:a.map(x=>s[x])}],a,{h:200,fmt:v=>sauD1(v)})}<p class="small muted" style="margin:6px 0 0">${a[a.length-1]}: ${sauD2(s[a[a.length-1]])}.${pre?` Em ${pre} (dados ainda preliminares): ${sauD2(B.tmi_preliminar[pre].taxa)}.`:""}</p></div>`}
+function saudeCausas(e,titulo){const c=e.mortes_causas;if(!c||!c.length)return"";
+ return`<div class="panel mt"><h2>${titulo} <small>${nf(e.mortes)} mortes em ${e.mortes_ano}</small></h2>${hbars(c.slice(0,6).map(x=>[x.nome,x.mortes]),{fmt:nf})}<p class="small muted" style="margin:6px 0 0">${c.slice(0,3).map(x=>`${esc(x.nome)}: ${sauD1(x.pct)}% das mortes (${sauD1(x.por_100mil)} por 100 mil)`).join(" · ")}.${e.mortes_mal_definidas_pct>=5?` ${sauD1(e.mortes_mal_definidas_pct)}% das mortes ficaram com causa mal definida.`:""}</p></div>`}
+function saudeDengue(e,titulo,B){const s=e.dengue_serie;if(!s)return"";const a=Object.keys(s).sort();if(a.length<2)return"";const pa=e.dengue_parcial||{},pk=Object.keys(pa).sort().pop();
+ return`<div class="panel mt"><h2>${titulo} <small>casos prováveis por ano</small></h2>${lineChart([{n:"Casos",v:a.map(x=>s[x])}],a,{h:200,fmt:v=>nf(Math.round(v))})}<p class="small muted" style="margin:6px 0 0">${a[a.length-1]}: ${nf(s[a[a.length-1]])} casos${e.dengue_por_100mil!=null?` (${Math.round(e.dengue_por_100mil).toLocaleString("pt-BR")} por 100 mil hab.)`:""}.${pk?` ${pk} ainda em andamento: ${nf(pa[pk])} até agora.`:""}</p></div>`}
+function saudeInt(e){if(e.internacoes==null)return"";
+ return`<div class="kpis kpis-c" style="margin-top:8px">${[saudeKpi("Internações pagas pelo SUS",nf(e.internacoes),`em ${e.internacoes_ano} · ${sauD1(e.internacoes_por_mil)} por mil hab.`),
+  saudeKpi("Valor pago pelo SUS",brl(e.internacoes_valor),`${sauR(e.internacoes_valor_medio)} por internação`),
+  saudeKpi("Permanência média",`${sauD1(e.internacoes_dias_medios)} dias`,`${sauD1(e.internacoes_letalidade)}% terminaram em óbito`)].join("")}</div>`}
 function saudeBrasil(v,D){const B=D.brasil,E=D.estados;let m="ubs";
  const kp=[B.ubs!=null?saudeKpi("UBS no país",nf(B.ubs),`${sauD1(B.ubs_por_100mil)} por 100 mil habitantes`):"",
   B.leitos!=null?saudeKpi("Leitos de internação",nf(B.leitos),`${sauD2(B.leitos_por_mil)} por mil hab. · ${sauD1(B.pct_leitos_sus)}% atendem o SUS`):"",
@@ -5377,7 +5394,7 @@ function saudeBrasil(v,D){const B=D.brasil,E=D.estados;let m="ubs";
   B.gasto_estados_saude!=null?saudeKpi("Governos estaduais, em saúde",brl(B.gasto_estados_saude),`${sauR(B.gasto_estados_saude_por_hab)} por habitante`):""].filter(Boolean).join("");
  const ops=SAU_G.map(g=>`<optgroup label="${g[0]}">${g.slice(1).filter(k=>Object.values(E).some(e=>SAU_M[k][1](e)!=null)).map(k=>`<option value="${k}">${SAU_M[k][0]}</option>`).join("")}</optgroup>`).join("");
  v.innerHTML=`<div class="kpis kpis-c">${kp}</div><div class="panel mt"><div class="hd"><div><h2 id="saT"></h2><p class="small muted" id="saN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="saM" data-titulo="Mostrar" data-pill>${ops}</select></div></div>
-  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="saMap"></div><div id="saRk"></div></div></div>${saudeTmiBr(B)}<div class="panel mt"><h2>Todos os estados</h2><div id="saLs"></div></div>${saudeFim(D)}`;
+  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="saMap"></div><div id="saRk"></div></div></div>${saudeTmiBr(B)}${saudeInt(B)}${saudeCausas(B,"De que os brasileiros morrem")}${saudeDengue(B,"Dengue no Brasil",B)}<div class="panel mt"><h2>Todos os estados</h2><div id="saLs"></div></div>${saudeFim(D)}`;
  const des=()=>{const x=SAU_M[m],vals={};UFS.forEach(u=>{const e=E[u.uf],val=e&&x[1](e);if(val!=null)vals[u.uf]=val});
   $("#saT").textContent=x[0];$("#saN").textContent=x[3];
   $("#saMap").innerHTML=Object.keys(vals).length?mapaValores(vals,x[2]):rvazio("Sem dados desta medida ainda.");bindMap($("#saMap"),null,null,u=>{location.hash="#/saude/"+u});
@@ -5399,7 +5416,7 @@ function saudeUF(v,D,uf){const e=D.estados[uf]||{},B=D.brasil,n=UF[uf].nome;
   e.gasto_saude!=null?saudeKpi(`Governo do estado em saúde${D.ano_gasto?` (${D.ano_gasto})`:""}`,brl(e.gasto_saude),`${e.gasto_saude_por_hab!=null?sauR(e.gasto_saude_por_hab)+" por habitante · ":""}${sauD1(e.pct_do_gasto)}% do gasto do estado`):""].filter(Boolean).join("");
  const sr=e.tmi_serie,bs=B.tmi_serie,an=sr?Object.keys(sr).filter(a=>bs&&bs[a]!=null).sort():[];
  const graf=an.length>=2?`<div class="panel mt"><h2>Mortalidade infantil: ${esc(n)} e Brasil <small>por mil nascidos vivos</small></h2>${lineChart([{n,v:an.map(a=>sr[a])},{n:"Brasil",v:an.map(a=>bs[a])}],an,{h:200,fmt:v=>sauD1(v)})}<p class="small muted" style="margin:6px 0 0">Estados pequenos oscilam muito de um ano para o outro; olhe a tendência, não um ano só.</p></div>`:"";
- v.innerHTML=`<div class="crumb"><a href="#/saude">Saúde</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||rvazio("Ainda não há dados de saúde deste estado.")}</div>${graf}
+ v.innerHTML=`<div class="crumb"><a href="#/saude">Saúde</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||rvazio("Ainda não há dados de saúde deste estado.")}</div>${graf}${saudeInt(e)}${saudeCausas(e,"De que morrem em "+esc(n))}${saudeDengue(e,"Dengue em "+esc(n),B)}
   <div class="panel mt"><h2>Maiores municípios de ${esc(n)}</h2><p class="small muted" style="margin:0 0 8px">UBS cadastradas e vagas do Mais Médicos em cada um.</p><div id="saMun">${rload()}</div></div>
   <p class="small" style="margin:10px 0 0"><a class="btn" href="#/uf/${uf}">Abrir a ficha completa de ${esc(n)}</a></p>${saudeFim(D)}`;
  apiGet("/saude/municipios?uf="+uf+"&limit=500").then(r=>{const b=$("#saMun");if(!b)return;

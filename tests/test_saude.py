@@ -183,3 +183,50 @@ def test_painel_com_leitos_uti_medicos_e_mortalidade():
         with SessionLocal() as db:
             db.query(Registro).filter(Registro.fonte.in_(["saude", "datasus"])).delete()
             db.commit()
+
+
+def _tab_simples(cabecalho, valores):
+    corpo = _ufs27(lambda i: ";".join(str(v) for v in valores))
+    return f'<PRE>\n"Unidade da Federação";{cabecalho}\n{corpo}\n"00 Ignorado/exterior";1\n"Total";{";".join(str(v * 27 + 1) for v in valores)}\n&'
+
+
+def test_causas_internacoes_e_dengue_lidos_do_tabnet(monkeypatch):
+    from app.collectors import datasus
+    cab_cap = '"Cap I";"Cap II";"Cap IX";"Cap XX";"Total"'
+    monkeypatch.setattr(datasus, "arquivos_disponiveis", lambda c: (["obtuf24.dbf", "obtuf23.dbf"] if "obt10" in c else
+                        [f"nruf25{m:02d}.dbf" for m in range(1, 13)] + ["nruf2601.dbf"] if "nruf" in c else ["dengbr25.dbf", "dengbr24.dbf", "dengbr26.dbf"]))
+    monkeypatch.setattr(datasus, "_post", lambda caminho, dados: _tab_simples(cab_cap, [10, 20, 40, 30, 100]) if "obt10" in caminho else
+                        _tab_simples('"Internações"', [500]) if "nruf" in caminho else _tab_simples('"2013";"2024";"2025";"2026";"Total"', [1, 100, 50, 5, 156]))
+    c = datasus.ler_causas_morte(ano_final=2026)
+    assert c["SP"] == {"ano": 2024, "total": 100, "capitulos": {"Cap I": 10, "Cap II": 20, "Cap IX": 40, "Cap XX": 30}} and c["BR"]["total"] == 2701
+    i = datasus.ler_internacoes(ano_final=2026)  # 2026 só tem janeiro: usa 2025
+    assert i["SP"]["ano"] == 2025 and i["SP"]["internacoes"] == 500 and i["BR"]["internacoes"] == 13501
+    g = datasus.ler_dengue(ano_final=2026)
+    assert g["SP"]["serie"] == {"2024": 100, "2025": 50} and g["SP"]["parcial"] == {"2026": 5}  # 2013 fica fora
+
+
+def test_painel_com_causas_internacoes_e_dengue():
+    criar_tabelas()
+    cliente = TestClient(app)
+    with SessionLocal() as db:
+        _base(db)
+        db.query(Registro).filter(Registro.fonte == "datasus").delete()
+        for chave in ("AC", "BR"):
+            db.add(Registro(fonte="datasus", tipo="causas_morte_uf", chave=chave, dados={"ano": 2024, "total": 1000, "capitulos": {"Cap IX": 300, "Cap II": 200, "Cap XX": 150, "Cap XVIII": 50}}))
+            db.add(Registro(fonte="datasus", tipo="internacoes_uf", chave=chave, dados={"ano": 2025, "internacoes": 5000, "valor_total": 10_000_000.0, "obitos": 250, "dias": 25000}))
+            db.add(Registro(fonte="datasus", tipo="dengue_uf", chave=chave, dados={"serie": {"2024": 4000, "2025": 1000}, "parcial": {"2026": 20}}))
+        db.commit()
+    try:
+        from app.utils import _MEMO
+        _MEMO.clear()
+        ac = cliente.get("/saude/painel").json()["estados"]["AC"]
+        assert ac["mortes"] == 1000 and ac["mortes_causas"][0] == {"capitulo": "Cap IX", "nome": "Doenças do coração e da circulação", "mortes": 300, "pct": 30.0,
+                                                                  "por_100mil": pytest.approx(300 / 500_000 * 100000, abs=0.01)}
+        assert ac["mortes_externas_100mil"] == pytest.approx(30.0, abs=0.01) and ac["mortes_mal_definidas_pct"] == 5.0
+        assert ac["internacoes_por_mil"] == pytest.approx(10.0) and ac["internacoes_valor_medio"] == 2000.0 and ac["internacoes_letalidade"] == 5.0 and ac["internacoes_dias_medios"] == 5.0
+        assert ac["dengue"] == 1000 and ac["dengue_ano"] == "2025" and ac["dengue_por_100mil"] == pytest.approx(200.0) and ac["dengue_parcial"] == {"2026": 20}
+        assert cliente.get("/saude/painel").json()["brasil"]["mortes"] == 1000
+    finally:
+        with SessionLocal() as db:
+            db.query(Registro).filter(Registro.fonte.in_(["saude", "datasus"])).delete()
+            db.commit()

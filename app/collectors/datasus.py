@@ -6,7 +6,10 @@ tabela. Só abre em http (não em https). Tabelas usadas (cada uma com o arquivo
 - CNES leitos complementares `cnes/cnv/leiutibr.def`  (UTI e unidades intermediárias, por tipo; existentes e SUS);
 - CNES profissionais         `cnes/cnv/prid02br.def`  (indivíduos por CBO; só as ocupações de médico);
 - SIM óbitos infantis        `sim/cnv/inf10uf.def`    (por ano, residência da mãe);
-- SINASC nascidos vivos      `sinasc/cnv/nvuf.def`    (por ano, residência da mãe).
+- SINASC nascidos vivos      `sinasc/cnv/nvuf.def`    (por ano, residência da mãe);
+- SIM todos os óbitos        `sim/cnv/obt10uf.def`    (estado × capítulo da CID-10, residência);
+- SIH internações do SUS     `sih/cnv/nruf.def`       (por estado de residência, 12 arquivos mensais do último ano completo);
+- SINAN dengue               `sinannet/cnv/denguebbr.def` (casos prováveis por ano de notificação e estado de residência).
 Taxa de mortalidade infantil = óbitos de menores de 1 ano ÷ nascidos vivos × 1.000, por ano; só entra ano com nascimentos completos (≥ 85% do ano anterior),
 porque os arquivos mais novos são parciais.
 """
@@ -168,6 +171,56 @@ def ler_mortalidade_infantil(ano_final: int | None = None) -> dict[str, dict]:
     return out
 
 
+def ler_causas_morte(ano_final: int | None = None) -> dict[str, dict]:
+    """{UF ou 'BR': {ano, total, capitulos: {'Cap IX': n}}} no último ano com óbitos fechados (ano_final - 2), pela residência."""
+    ano_final = ano_final or date.today().year
+    existentes = set(arquivos_disponiveis("sim/cnv/obt10uf.def"))
+    ano = next((a for a in range(ano_final - 2, ANO_INICIAL - 1, -1) if f"obtuf{a % 100:02d}.dbf" in existentes), None)
+    if ano is None:
+        raise RuntimeError("causas de morte: nenhum arquivo do SIM encontrado")
+    ufs, total = por_uf(consultar("sim/cnv/obt10uf.def", "Unidade_da_Federação", "Capítulo_CID-10", "Óbitos_p/Residênc", [f"obtuf{ano % 100:02d}.dbf"]))
+    _exige_ufs(ufs, "causas de morte")
+
+    def reg(v):
+        return {"ano": ano, "total": int(v.get("Total", 0)), "capitulos": {k: int(x) for k, x in v.items() if k.startswith("Cap") and x}}
+    out = {uf: reg(v) for uf, v in ufs.items()}
+    out["BR"] = reg(total)
+    return out
+
+
+def ler_internacoes(ano_final: int | None = None) -> dict[str, dict]:
+    """{UF ou 'BR': {ano, internacoes, valor_total, obitos, dias}} do SUS no último ano com os 12 meses processados (por residência do paciente)."""
+    ano_final = ano_final or date.today().year
+    existentes = set(arquivos_disponiveis("sih/cnv/nruf.def"))
+    ano = next((a for a in range(ano_final, ANO_INICIAL - 1, -1) if all(f"nruf{a % 100:02d}{m:02d}.dbf" in existentes for m in range(1, 13))), None)
+    if ano is None:
+        raise RuntimeError("internações: nenhum ano completo no SIH")
+    arqs = [f"nruf{ano % 100:02d}{m:02d}.dbf" for m in range(1, 13)]
+    out: dict[str, dict] = {}
+    for campo, incr in (("internacoes", "Internações"), ("valor_total", "Valor_total"), ("obitos", "Óbitos"), ("dias", "Dias_permanência")):
+        ufs, total = por_uf(consultar("sih/cnv/nruf.def", "Unidade_da_Federação", "--Não-Ativa--", incr, arqs))
+        _exige_ufs(ufs, f"internações {campo}")
+        for uf, v in {**ufs, "BR": total}.items():
+            out.setdefault(uf, {"ano": ano})[campo] = next(iter(v.values()), 0) if v else 0
+    return out
+
+
+def ler_dengue(ano_final: int | None = None) -> dict[str, dict]:
+    """{UF ou 'BR': {serie: {ano: casos prováveis}, parcial: {ano: casos}}}: anos fechados até ano_final - 1; o ano corrente fica em `parcial`."""
+    ano_final = ano_final or date.today().year
+    existentes = set(arquivos_disponiveis("sinannet/cnv/denguebbr.def"))
+    arqs = [f"dengbr{a % 100:02d}.dbf" for a in range(2014, ano_final + 1) if f"dengbr{a % 100:02d}.dbf" in existentes]
+    if not arqs:
+        raise RuntimeError("dengue: nenhum arquivo do SINAN encontrado")
+    ufs, total = por_uf(consultar("sinannet/cnv/denguebbr.def", "UF_de_residência", "Ano_notificação", "Casos_Prováveis", arqs))
+    _exige_ufs(ufs, "dengue")
+    out = {}
+    for uf, v in {**ufs, "BR": total}.items():
+        anos = {a: int(x) for a, x in v.items() if a.isdigit() and 2014 <= int(a)}
+        out[uf] = {"serie": {a: x for a, x in anos.items() if int(a) < ano_final}, "parcial": {a: x for a, x in anos.items() if int(a) >= ano_final}}
+    return out
+
+
 def _gravar(db, tipo: str, dados: dict, n):
     for chave, d in dados.items():
         upsert(db, Registro, {"fonte": "datasus", "tipo": tipo, "chave": chave}, {"uf": None if chave == "BR" else chave, "titulo": f"{tipo} {chave}", "dados": d})
@@ -176,9 +229,10 @@ def _gravar(db, tipo: str, dados: dict, n):
 
 
 def coletar_saude_datasus():
-    """Leitos de internação e UTI, médicos e mortalidade infantil por estado (DATASUS TabNet). Cada bloco é gravado só se vier completo."""
+    """Leitos de internação e UTI, médicos, mortalidade infantil, causas de morte, internações do SUS e dengue por estado (DATASUS TabNet). Cada bloco é gravado só se vier completo."""
     with registrar_coleta("datasus", "saude") as (db, n):
-        for tipo, fn in (("leitos_uf", ler_leitos), ("medicos_uf", ler_medicos), ("mortalidade_infantil_uf", ler_mortalidade_infantil)):
+        for tipo, fn in (("leitos_uf", ler_leitos), ("medicos_uf", ler_medicos), ("mortalidade_infantil_uf", ler_mortalidade_infantil),
+                         ("causas_morte_uf", ler_causas_morte), ("internacoes_uf", ler_internacoes), ("dengue_uf", ler_dengue)):
             try:
                 _gravar(db, tipo, fn(), n)
             except Exception as e:  # noqa: BLE001 - um bloco que falha não derruba os outros (a coleta fica "parcial")
