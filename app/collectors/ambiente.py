@@ -52,19 +52,28 @@ def total_feicoes(camada: str, filtro: str | None = None) -> int:
     return int(m.group(1))
 
 
-def paginas(camada: str, propriedades: str, filtro: str | None = None):
-    """Gera as linhas (dict) do CSV do WFS, página a página (ordenadas por fid para a paginação não repetir nem pular)."""
-    inicio = 0
+def paginas(camada: str, propriedades: str, filtro: str | None = None, ordem: str = "fid"):
+    """Gera as linhas (dict) do CSV do WFS, página a página (ordenadas para a paginação não repetir nem pular).
+    Se o servidor falhar com 5xx numa página grande (acontece nas camadas de milhões de feições), repete com a metade do tamanho."""
+    inicio, tamanho = 0, PAGINA
     while True:
         params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "outputFormat": "csv", "propertyName": propriedades,
-                  "sortBy": "fid", "count": PAGINA, "startIndex": inicio}
+                  "sortBy": ordem, "count": tamanho, "startIndex": inicio}
         if filtro:
             params["cql_filter"] = filtro
-        linhas = list(csv.DictReader(io.StringIO(_pedido(params).text)))
+        try:
+            texto = _pedido(params).text
+        except RuntimeError as e:
+            if re.search(r"HTTP 5\d\d", str(e)) and tamanho > 6_000:
+                tamanho //= 2
+                log.warning("WFS %s: %s; tentando páginas de %s", camada, str(e)[:80], tamanho)
+                continue
+            raise
+        linhas = list(csv.DictReader(io.StringIO(texto)))
         yield from linhas
-        if len(linhas) < PAGINA:
+        if len(linhas) < tamanho:
             return
-        inicio += PAGINA
+        inicio += len(linhas)
 
 
 def somar_prodes(linhas) -> tuple[dict, int]:
