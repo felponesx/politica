@@ -85,9 +85,10 @@ def trabalho(db: Session) -> dict | None:
         e = {}
         for k, d in series.items():
             x = d.get(uf)
-            if x:
-                e[k] = x["serie"][x["ultimo"]]
-                e[k + "_trimestre"] = x["ultimo"]
+            if x and x.get("serie"):
+                ult = x["ultimo"] if x["ultimo"] in x["serie"] else max(x["serie"])
+                e[k] = x["serie"][ult]
+                e[k + "_trimestre"] = ult
                 e[k + "_serie"] = x["serie"]
         if e:
             estados[uf] = e

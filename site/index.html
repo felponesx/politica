@@ -1890,6 +1890,8 @@ indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d
 seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
 saude:'<rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/>',
 escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6 4-4"/><path d="m9 13-5 5"/><path d="M4 21h8"/>',
+social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
+ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
 ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
@@ -1908,7 +1910,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -5425,6 +5427,87 @@ function saudeUF(v,D,uf){const e=D.estados[uf]||{},B=D.brasil,n=UF[uf].nome;
 P.saude=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
  return{html:`<div class="ph"><div><h1>Saúde</h1><p>Unidades de saúde, leitos, UTI, médicos, mortalidade infantil e quanto os governos gastam em saúde, no país e em cada estado.</p></div></div><div id="saV">${API.on?rload():`<div class="rbanner">A Saúde aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/saude/painel").then(D=>{const v=$("#saV");if(!v)return;uf?saudeUF(v,D,uf):saudeBrasil(v,D)}).catch(e=>{const v=$("#saV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("Os dados de saúde ainda estão sendo coletados. Quando o robô terminar, esta tela se preenche sozinha."):rerro(e)})}}};
+/* ---------- Social e Trabalho, Meio ambiente, viagens a serviço, fundo eleitoral e tarifa de energia ---------- */
+const lacN=v=>v==null?"—":Number(v).toLocaleString("pt-BR",{maximumFractionDigits:0}),lacD=(v,d=1)=>v==null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const lacR=v=>v==null?"—":"R$ "+Math.round(v).toLocaleString("pt-BR"),lacKm=v=>v==null?"—":lacN(v)+" km²";
+const lacTri=c=>/^\d{6}$/.test(c)?`${c.slice(0,4)} T${Math.ceil(+c.slice(4)/3)}`:c;
+const lacKpi=(t,v,s)=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`;
+const lacVazio=m=>rvazio(m||"Os dados ainda estão sendo coletados. Quando o robô terminar, esta tela se preenche sozinha.");
+/* painel por estado: seletor de medida, mapa, maiores/menores e lista; M = {chave:[título,(e)=>valor,formato,explicação,(e)=>série opcional]}, G = grupos do seletor */
+function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini}){let m=ini||Object.keys(M)[0];
+ const ops=G.map(g=>`<optgroup label="${g[0]}">${g.slice(1).filter(k=>Object.values(E).some(e=>M[k][1](e)!=null)).map(k=>`<option value="${k}">${M[k][0]}</option>`).join("")}</optgroup>`).join("");
+ v.innerHTML=`${kpis?`<div class="kpis kpis-c">${kpis}</div>`:""}${antes}<div class="panel mt"><div class="hd"><div><h2 id="lcT"></h2><p class="small muted" id="lcN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="lcM" data-titulo="Mostrar" data-pill>${ops}</select></div></div>
+  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="lcMap"></div><div id="lcRk"></div></div></div><div class="panel mt"><h2>Todos os estados</h2><div id="lcLs"></div></div>${depois}`;
+ const des=()=>{const x=M[m],vals={};UFS.forEach(u=>{const e=E[u.uf],val=e&&x[1](e);if(val!=null)vals[u.uf]=val});
+  $("#lcT").textContent=x[0];$("#lcN").textContent=x[3];
+  $("#lcMap").innerHTML=Object.keys(vals).length?mapaValores(vals,x[2],x[5]?{escala:x[5]}:{}):rvazio("Sem dados desta medida ainda.");bindMap($("#lcMap"),null,null,u=>{location.hash="#/"+rota+"/"+u});
+  const href=u=>"#/"+rota+"/"+u,serie={},anos=new Set();
+  if(x[4])UFS.forEach(u=>{const s=E[u.uf]&&x[4](E[u.uf]);if(s){serie[u.uf]=s;Object.keys(s).forEach(a=>anos.add(a))}});
+  $("#lcRk").innerHTML=anos.size>=2?linhasDuplo(serie,[...anos].sort(),vals,x[2],{href,rot:x[6]||(a=>a)}):rankDuplo(vals,x[2],{href,corAlto:x[7]||"#2F6FED",corBaixo:"#7C8CA8"});
+  $("#lcLs").innerHTML=listaUF(Object.entries(vals).map(([u,k])=>({uf:u,k,r:x[2](k)}))).replace(/href="#\/uf\//g,`href="#/${rota}/`)};
+ des();if(typeof pilulas==="function")pilulas();$("#lcM").onchange=e=>{m=e.target.value;des()}}
+const lacFim=(D,...mais)=>`<div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:0;padding-left:18px;color:var(--ink2);line-height:1.5">${[D&&D.aviso,...mais].filter(Boolean).map(n=>`<li>${esc(n)}</li>`).join("")}</ul>${D&&D.fontes?`<p class="small muted" style="margin:8px 0 0">Fontes: ${D.fontes.map(esc).join(" · ")}.</p>`:""}</div>`;
+function lacTela(nome,desc,rota,pegar,montar,uf){return{html:`<div class="ph"><div><h1>${nome}</h1><p>${desc}</p></div></div><div id="lcV">${API.on?rload():`<div class="rbanner">Esta tela aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ mount(){if(!API.on)return;Promise.all(pegar()).then(D=>{const v=$("#lcV");if(v)montar(v,D,uf)}).catch(e=>{const v=$("#lcV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)})}}}
+/* ----- Social e Trabalho ----- */
+const SOC_G=[["Bolsa Família e BPC","bolsa100","bolsaval","bpc100"],["Trabalho e renda","desoc","renda"]];
+const SOC_M={bolsa100:["Beneficiários do Bolsa Família por 100 habitantes",e=>e.bolsa&&e.bolsa.por_100_hab,lacD,"Parcelas do Bolsa Família pagas no mês para cada 100 moradores. Não é % da população: cada parcela é de uma família."],
+ bolsaval:["Bolsa Família pago por habitante no mês",e=>e.bolsa&&e.bolsa.valor_por_hab,v=>"R$ "+lacD(v,2),"Quanto o governo federal pagou de Bolsa Família no mês, dividido pelos moradores do estado."],
+ bpc100:["Beneficiários do BPC por 100 habitantes",e=>e.bpc&&e.bpc.por_100_hab,lacD,"O BPC paga um salário mínimo a idosos de baixa renda e a pessoas com deficiência. Benefícios pagos no mês para cada 100 moradores."],
+ desoc:["Taxa de desocupação",e=>e.desocupacao,v=>lacD(v)+"%","Parte da força de trabalho que não tem emprego e procurou vaga, no último trimestre da PNAD Contínua. Pesquisa por amostra.",e=>e.desocupacao_serie,null,lacTri,"#E5484D"],
+ renda:["Rendimento médio mensal real do trabalho",e=>e.rendimento,lacR,"Rendimento médio real habitual de todos os trabalhos, a preços do último trimestre.",e=>e.rendimento_serie,null,lacTri]};
+function socialUF(v,S,T,uf){const e=(S&&S.estados[uf])||{},t=(T&&T.estados[uf])||{},n=UF[uf].nome;
+ const b=e.bolsa,c=e.bpc,kp=[b?lacKpi("Bolsa Família",lacN(b.beneficiarios),`${lacD(b.por_100_hab)} por 100 hab. · ${brl(b.valor)} no mês · média ${lacR(b.valor_medio)}`):"",
+  c?lacKpi("BPC",lacN(c.beneficiarios),`${lacD(c.por_100_hab)} por 100 hab. · ${brl(c.valor)} no mês`):"",
+  t.desocupacao!=null?lacKpi("Desocupação",lacD(t.desocupacao)+"%",lacTri(t.desocupacao_trimestre)):"",t.rendimento!=null?lacKpi("Rendimento médio",lacR(t.rendimento),lacTri(t.rendimento_trimestre)):""].filter(Boolean).join("");
+ const an=t.desocupacao_serie?Object.keys(t.desocupacao_serie).sort():[];
+ const graf=an.length>=2?`<div class="panel mt"><h2>Desocupação em ${esc(n)} <small>por trimestre</small></h2>${lineChart([{n,v:an.map(a=>t.desocupacao_serie[a])}],an.map(lacTri),{h:200,fmt:x=>lacD(x)+"%"})}</div>`:"";
+ v.innerHTML=`<div class="crumb"><a href="#/social">Social e Trabalho</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||lacVazio("Ainda não há dados sociais deste estado.")}</div>${graf}<div class="panel mt"><h2>Maiores municípios de ${esc(n)}</h2><p class="small muted" style="margin:0 0 8px">Parcelas do Bolsa Família e benefícios do BPC pagos no mês, por 100 habitantes.</p><div id="socMun">${rload()}</div></div>${lacFim(S||T)}`;
+ apiGet("/social/municipios?uf="+uf+"&limit=500").then(d=>{const b=$("#socMun");if(b)b.innerHTML=d.itens.length?table([["Município",x=>`<b>${esc(x.nome)}</b>`],["População",x=>lacN(x.populacao),"n"],["Bolsa Família",x=>lacN(x.bolsa),"n"],["por 100 hab.",x=>lacD(x.bolsa_por_100_hab),"n"],["BPC",x=>lacN(x.bpc),"n"],["por 100 hab.",x=>lacD(x.bpc_por_100_hab),"n"]],d.itens):rvazio("Sem municípios.")}).catch(()=>{const b=$("#socMun");if(b)b.innerHTML=rvazio("Os municípios entram na próxima cópia dos dados.")})}
+P.social=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
+ return lacTela("Social e Trabalho","Bolsa Família, BPC, desemprego e renda do trabalho, no país e em cada estado.","social",()=>[apiGet("/social").catch(e=>e.status===404?null:Promise.reject(e)),apiGet("/trabalho").catch(e=>e.status===404?null:Promise.reject(e))],(v,[S,T])=>{
+  if(!S&&!T)return void(v.innerHTML=lacVazio());if(uf)return socialUF(v,S,T,uf);
+  const E={};UFS.forEach(u=>{E[u.uf]={...((S&&S.estados[u.uf])||{}),...((T&&T.estados[u.uf])||{})}});
+  const b=S&&S.brasil.bolsa,c=S&&S.brasil.bpc,kp=[b?lacKpi("Bolsa Família",lacN(b.beneficiarios),`${brl(b.valor)} no mês · média ${lacR(b.valor_medio)} por parcela`):"",c?lacKpi("BPC",lacN(c.beneficiarios),`${brl(c.valor)} no mês`):""].join("");
+  lacPainel(v,{E,M:SOC_M,G:SOC_G,rota:"social",kpis:kp,depois:lacFim(S||T)})},uf)};
+/* ----- Meio ambiente ----- */
+const AMB_G=[["Desmatamento (PRODES, ano fechado)","km2","total","serie"],["Alertas recentes (DETER)","deter"]];
+const AMB_M={km2:["Desmatamento no último ano (km²)",e=>e.km2,lacKm,"Área de floresta e vegetação nativa desmatada por corte raso no último ano do PRODES, somando os biomas do estado.",e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
+ total:["Desmatamento acumulado desde 2008 (km²)",e=>e.total_desde_inicio,lacKm,"Soma do desmatamento por corte raso de 2008 até o último ano do PRODES.",null,SCALE_VERM,null,"#E5484D"],
+ serie:["Desmatamento por ano (comparação das séries)",e=>e.km2,lacKm,"Mesma medida do último ano, mostrando a evolução de cada estado ano a ano.",e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
+ deter:["Alertas de desmatamento nos últimos 12 meses (km²)",e=>e.deter_12m,lacKm,"Alertas do DETER (Amazônia e Cerrado) nos últimos 12 meses completos. É sinal rápido, não a taxa oficial.",null,SCALE_VERM,null,"#E5484D"]};
+function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{},an=Object.keys(s).sort();
+ const kp=[e.km2!=null?lacKpi("Desmatamento em "+e.ultimo_ano,lacKm(e.km2),"PRODES, corte raso"):"",e.total_desde_inicio!=null?lacKpi("Desde 2008",lacKm(e.total_desde_inicio)):"",e.deter_12m!=null?lacKpi("Alertas em 12 meses",lacKm(e.deter_12m),"DETER"):""].filter(Boolean).join("");
+ const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento em ${esc(n)} <small>km² por ano</small></h2>${lineChart([{n,v:an.map(a=>s[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
+ const bi=Object.entries(e.por_bioma||{}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+ v.innerHTML=`<div class="crumb"><a href="#/ambiente">Meio ambiente</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||lacVazio("Sem dados de desmatamento deste estado.")}</div>${graf}${bi.length?`<div class="panel mt"><h2>Em quais biomas, em ${e.ultimo_ano}</h2>${hbars(bi,{fmt:lacKm})}</div>`:""}${lacFim(D)}`}
+P.ambiente=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
+ return lacTela("Meio ambiente","Desmatamento por estado e bioma (INPE) e os alertas mais recentes.","ambiente",()=>[apiGet("/ambiente")],(v,[D])=>{
+  if(uf)return ambienteUF(v,D,uf);
+  const an=Object.keys(D.brasil).sort(),u=an[an.length-1],ant=an[an.length-2],bio=Object.values(D.biomas).filter(b=>b.total[b.ultimo_ano]!=null).sort((x,y)=>y.total[y.ultimo_ano]-x.total[x.ultimo_ano]);
+  const kp=[lacKpi("Desmatamento em "+u,lacKm(D.brasil[u]),ant?`${D.brasil[ant]?((D.brasil[u]/D.brasil[ant]-1)*100>=0?"+":"−")+lacD(Math.abs((D.brasil[u]/D.brasil[ant]-1)*100),0)+"% sobre "+ant:""}`:"PRODES, corte raso"),
+   D.deter&&D.deter.ultimos_meses.length?lacKpi("Alertas em 12 meses",lacKm(Object.values(D.estados).reduce((s,x)=>s+(x.deter_12m||0),0)),"DETER, Amazônia e Cerrado"):""].join("");
+  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento no Brasil <small>km² por ano, soma dos biomas</small></h2>${lineChart([{n:"Brasil",v:an.map(a=>D.brasil[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
+  const pb=bio.length?`<div class="panel mt"><h2>Por bioma, em ${u}</h2>${hbars(bio.map(b=>[b.nome,b.total[b.ultimo_ano]]),{fmt:lacKm})}<p class="small muted" style="margin:6px 0 0">Cada bioma tem o seu último ano no PRODES (a Amazônia fecha em julho; os outros, no ano seguinte).</p></div>`:"";
+  lacPainel(v,{E:D.estados,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb,depois:lacFim(D)})},uf)};
+/* ----- Órgãos › Viagens a serviço e Fundo eleitoral; Indicadores › tarifa de energia ----- */
+function telaViagens(){return{html:`<div id="vgL">${rload()}</div>`,mount(){apiGet("/viagens").then(D=>{const b=$("#vgL");if(!b)return;let ano=String(D.anos[0].ano);
+ const pinta=()=>{const a=D.anos.find(x=>String(x.ano)===ano)||D.anos[0],og=(D.orgaos[ano]||[]);
+  $("#vgB").innerHTML=`<div class="kpis3"><div class="kpi"><span>Gasto com viagens em ${a.ano}</span><strong>${brl(a.gasto)}</strong><em>${lacN(a.viagens)} viagens${a.ano===new Date().getFullYear()?" · ano em andamento":""}</em></div><div class="kpi"><span>Diárias</span><strong>${brl(a.diarias)}</strong></div><div class="kpi"><span>Passagens</span><strong>${brl(a.passagens)}</strong></div></div>
+   <h3 class="seg-h">Os órgãos que mais gastaram</h3>${table([["Órgão superior",x=>`<b>${esc(x.orgao)}</b>`],["Viagens",x=>lacN(x.viagens),"n"],["Diárias",x=>brl(x.diarias),"n"],["Passagens",x=>brl(x.passagens),"n"],["Gasto total",x=>brl(x.gasto),"n"]],og)}`};
+ b.innerHTML=`<div class="panel"><h2>Viagens a serviço do governo federal</h2><p class="small muted" style="margin:0 0 8px">Diárias e passagens pagas a servidores e colaboradores, por órgão. ${esc(D.aviso)}</p>
+  <div class="pbar" style="margin-bottom:8px"><select id="vgA" data-pill="Ano">${D.anos.map(x=>`<option value="${x.ano}">${x.ano}</option>`).join("")}</select></div><div id="vgB"></div></div>${RSRC()}`;
+ pinta();if(typeof pilulas==="function")pilulas();$("#vgA").onchange=e=>{ano=e.target.value;pinta()}}).catch(e=>{const b=$("#vgL");if(b)b.innerHTML=e.status===404?lacVazio("As viagens entram na próxima cópia dos dados."):rerro(e)})}}}
+function telaFundos(){return{html:`<div id="fdL">${rload()}</div>`,mount(){apiGet("/fundos").then(D=>{const b=$("#fdL");if(!b)return;const anos=Object.keys(D.anos);let ano=anos[0];
+ const pinta=()=>{const a=D.anos[ano],ps=a.partidos;
+  $("#fdB").innerHTML=`<div class="kpis3"><div class="kpi"><span>Fundo eleitoral em ${a.ano}</span><strong>${brl(ps.reduce((s,p)=>s+p.valor,0))}</strong><em>${nf(ps.length)} partidos</em></div><div class="kpi"><span>Maior fatia</span><strong>${esc(ps[0].partido)}</strong><em>${brl(ps[0].valor)}</em></div></div>
+   <h3 class="seg-h">Quanto cada partido recebeu</h3>${table([["Partido",x=>`<b>${esc(x.partido)}</b>`],["Fundo eleitoral",x=>brl(x.valor),"n"],["Candidaturas",x=>lacN(x.candidatos),"n"],["Mulheres",x=>x.candidatos?lacD(100*x.mulheres/x.candidatos)+"%":"—","n"]],ps)}`};
+ b.innerHTML=`<div class="panel"><h2>Fundo eleitoral dos partidos</h2><p class="small muted" style="margin:0 0 8px">Dinheiro público que cada partido recebeu para financiar as campanhas. ${esc(D.aviso)}</p>
+  <div class="pbar" style="margin-bottom:8px"><select id="fdA" data-pill="Eleição">${anos.map(x=>`<option value="${x}">${x}</option>`).join("")}</select></div><div id="fdB"></div></div>${RSRC()}`;
+ pinta();if(typeof pilulas==="function")pilulas();$("#fdA").onchange=e=>{ano=e.target.value;pinta()}}).catch(e=>{const b=$("#fdL");if(b)b.innerHTML=e.status===404?lacVazio("O fundo eleitoral entra na próxima cópia dos dados."):rerro(e)})}}}
+function energiaHtml(D){const L=D.distribuidoras;if(!L||!L.length)return"";const f=v=>"R$ "+lacD(v,3);
+ return`<div class="panel mt"><h2>Tarifa de energia por distribuidora <small>R$ por kWh, residencial, sem impostos</small></h2><p class="small muted" style="margin:0 0 8px">${esc(D.aviso)}</p>${hbars(L.slice(0,10).map(x=>[x.distribuidora,x.total]),{fmt:f})}
+ <h3 class="seg-h">Todas as distribuidoras</h3>${table([["Distribuidora",x=>`<b>${esc(x.distribuidora)}</b>`],["Uso da rede (TUSD)",x=>f(x.tusd),"n"],["Energia (TE)",x=>f(x.te),"n"],["Total",x=>f(x.total),"n"],["Em vigor desde",x=>esc((x.inicio||"").split("-").reverse().join("/"))]],L)}</div>`}
 P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
   const cards=d.itens.map(c=>{const dv=c.valores.desviado,rc=c.valores.recuperado;return`<a class="panel esc-card" href="#/escandalo/${c.slug}">
@@ -6038,7 +6121,7 @@ P.projetos=()=>irLeis("projetos");P.legislacao=()=>irLeis("projetos");
 P.constituicao=(t)=>irLeis({federal:"constituicao",estados:"constituicao",leis:"projetos",como:"como"}[t]||"constituicao");
 
 /* ---------- Arrecadação e repasses › Cortes de gastos ---------- */
-const ABAS_ORG=a=>`<div class="tabs" id="abasOrg" style="margin-top:0">${[["org","","Órgãos"],["cortes","cortes","Cortes de gastos"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/orgaos${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
+const ABAS_ORG=a=>`<div class="tabs" id="abasOrg" style="margin-top:0">${[["org","","Órgãos"],["cortes","cortes","Cortes de gastos"],["viagens","viagens","Viagens a serviço"],["fundos","fundos","Fundo eleitoral"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/orgaos${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
 function telaCortes(){return{html:`<div id="ctrRes">${rload()}</div>`,
  mount(){apiGet("/cortes").then(D=>{const box=$("#ctrRes");if(!box)return;const anos=D.anos||[];if(!anos.length){box.innerHTML=rvazio("Os cortes ainda não foram coletados (coleta transparencia-orcamento).");return}
   const kp=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
@@ -6053,6 +6136,7 @@ function telaCortes(){return{html:`<div id="ctrRes">${rload()}</div>`,
   tabela(anos[anos.length-1].ano);$("#ctrAno").onchange=e=>tabela(e.target.value)}).catch(e=>{const b=$("#ctrRes");if(b)b.innerHTML=e.status===404?rvazio("Os cortes ainda não foram coletados."):rerro(e)})}}}
 {const _arr5=P.arrecadacao;P.arrecadacao=(t,...a)=>{if(t==="cortes"&&API.on){setTimeout(()=>location.replace("#/orgaos/cortes"),0);return{html:rload(),mount(){}}}return _arr5(t,...a)}}
 {const _org5=P.orgaos;P.orgaos=(t,...a)=>{if(!API.on)return _org5(t,...a);
+ if(t==="viagens"||t==="fundos"){const c=t==="viagens"?telaViagens():telaFundos();return{html:`<div class="ph"><div><h1>Órgãos</h1><p>${t==="viagens"?"Quanto o governo federal gasta com viagens de servidores, órgão por órgão.":"Quanto de dinheiro público cada partido recebeu para as campanhas."}</p></div></div>${ABAS_ORG(t)}${c.html}`,mount:c.mount}}
  if(t==="cortes"){const c=telaCortes();return{html:`<div class="ph"><div><h1>Órgãos</h1><p>Ministérios, tribunais, Congresso e demais órgãos federais: o que foi autorizado, pago e cortado.</p></div></div>${ABAS_ORG("cortes")}${c.html}`,mount:c.mount}}
  const r=_org5(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasOrg"))ph.insertAdjacentHTML("afterend",ABAS_ORG("org"))}}}}
 /* ---------- Indicadores (v2.1): bolsa, inflação, Selic, salário mínimo, balança comercial, PIB, dólar e desemprego — cada um com gráfico e tabela em linhas ---------- */
@@ -6108,7 +6192,7 @@ function indNovosHtml(s){return IND_NOVOS.filter(c=>s[c.k[0]]&&s[c.k[0]].histori
   <h3 class="seg-h">Valores, do mais recente ao mais antigo</h3><div class="fl-box"><div class="fl-lista">${linhas}</div>${h.length>12?`<button type="button" class="btn fl-mais">Ver todos (${h.length})</button>`:""}</div></div>`}).join("")}
 {const _ind5=P.indicadores;P.indicadores=(...a)=>{const r=_ind5(...a);if(!API.on)return r;
  return{html:r.html.replace('<div id="ecoReal"></div>','<div id="ecoReal"></div><div id="indNovos"></div>'),mount(){r.mount&&r.mount();const mover=()=>{const g=$("#inReal"),n=$("#indNovos");if(g&&n)g.after(n)};mover();setTimeout(mover,800);
-  apiGet("/economia?nomes="+[...new Set(IND_NOVOS.flatMap(c=>c.k))].join(",")).then(e=>{const b=$("#indNovos");if(b)b.innerHTML=indNovosHtml(e.series||{})+impostosHtml()}).catch(()=>{const b=$("#indNovos");if(b)b.innerHTML=impostosHtml()})}}}}
+  apiGet("/economia?nomes="+[...new Set(IND_NOVOS.flatMap(c=>c.k))].join(",")).then(e=>{const b=$("#indNovos");if(b)b.innerHTML=indNovosHtml(e.series||{})+impostosHtml()+'<div id="indEnergia"></div>';apiGet("/energia-tarifas").then(D=>{const x=$("#indEnergia");if(x)x.innerHTML=energiaHtml(D)}).catch(()=>{})}).catch(()=>{const b=$("#indNovos");if(b)b.innerHTML=impostosHtml()})}}}}
 const ABAS_ESC=a=>`<div class="tabs" id="abasEsc" style="margin-top:0">${[["esc","","Escândalos"],["crimes","crimes","Crimes de políticos"],["empresas","empresas","Empresas punidas"]].map(([k,h,t])=>`<a class="tabl ${k===a?"on":""}" href="#/escandalos${h?"/"+h:""}">${t}</a>`).join("")}</div>`;
 function telaCrimes(){return{html:`<div id="crmL">${rload()}</div>`,mount(){apiGet("/crimes-politicos").then(d=>{const b=$("#crmL");if(!b)return;
  const L={"condenado":"Condenado","condenado (recorre)":"Condenado (cabe recurso)","indultado":"Condenado, pena perdoada (indulto)","pena cumprida":"Condenado, pena cumprida","investigado":"Investigado","indiciado":"Indiciado","denunciado":"Denunciado","réu":"Réu"};
