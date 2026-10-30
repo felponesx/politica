@@ -53,7 +53,7 @@
   "texto": "O Campeonato Sul-Americano de Futebol de 1919 foi a terceira edição desta competição. A sede da disputa foi no Brasil. Inicialmente, o torneio seria realizado em novembro de 1918, também no Brasil. Porém, por conta da epidemia de gripe espanhola e diante da alta de casos e mortes, as autoridades brasileiras decidiram suspender todos os eventos esportivos. Em meados de outubro daquele ano, a CBD enviou um telegrama à Conmebol para comunicar que não havia condições de sediar o torneio. Este adiamento, no entanto, foi bom para os brasileiros, pois lhes deu tempo para acabar de construir o Estádio de Laranjeiras.",
   "pagina": "https://pt.wikipedia.org/wiki/Campeonato_Sul-Americano_de_Futebol_de_1919",
   "imagem": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Copa_america_poster1919.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
-  "arquivo": null
+  "arquivo": "premios/futebol-2-0.webp"
  },
  "futebol-2-1": {
   "titulo": "Campeonato Sul-Americano de Futebol de 1922",
@@ -111,6 +111,13 @@
   "imagem": "https://thumb.wikimedia.org/wikipedia/pt/thumb/e/e7/2019_Copa_Am%C3%A9rica_logo.svg/langpt-250px-2019_Copa_Am%C3%A9rica_logo.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
   "arquivo": "premios/futebol-2-8.webp"
  },
+ "futebol-3-0": {
+  "titulo": "Copa das Confederações FIFA de 1997",
+  "texto": "A Copa das Confederações FIFA de 1997 foi a primeira edição oficial da Copa das Confederações organizada pela FIFA. O torneio evoluiu da Copa Rei Fahd, que foi disputada em 1992 e 1995. Essa edição da Copa foi sediada pela Arábia Saudita em dezembro de 1997.",
+  "pagina": "https://pt.wikipedia.org/wiki/Copa_das_Confedera%C3%A7%C3%B5es_FIFA_de_1997",
+  "imagem": "https://upload.wikimedia.org/wikipedia/pt/f/fc/1997..png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+  "arquivo": "premios/futebol-3-0.webp"
+ },
  "futebol-3-1": {
   "titulo": "Copa das Confederações FIFA de 2005",
   "texto": "A Copa das Confederações FIFA de 2005 foi a sétima edição da competição de futebol realizada a cada quatro anos pela Federação Internacional de Futebol (FIFA). Foi realizada na Alemanha entre 15 a 29 de junho e serviu como teste para realização da Copa do Mundo FIFA de 2006.",
@@ -144,7 +151,7 @@
   "texto": "Os torneios de futebol nos Jogos Olímpicos de Verão de 2020 foram disputados entre 21 de julho e 7 de agosto de 2021 em seis estádios pelo Japão. Além da cidade sede e capital Tóquio, foram realizadas partidas em Yokohama, Saitama, Kashima, Rifu e Sapporo.",
   "pagina": "https://pt.wikipedia.org/wiki/Futebol_nos_Jogos_Ol%C3%ADmpicos_de_Ver%C3%A3o_de_2020",
   "imagem": "https://upload.wikimedia.org/wikipedia/pt/0/07/FutebolT%C3%B3quio2020.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
-  "arquivo": null
+  "arquivo": "premios/futebol-4-1.webp"
  },
  "futebol-4-2": {
   "titulo": "Futebol nos Jogos Olímpicos de Verão de 2004",
@@ -215,6 +222,13 @@
   "pagina": "https://pt.wikipedia.org/wiki/Voleibol_nos_Jogos_Ol%C3%ADmpicos_de_Ver%C3%A3o_de_2016",
   "imagem": "https://upload.wikimedia.org/wikipedia/commons/6/69/FinalVoleiMasculino.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
   "arquivo": "premios/volei-0-2.webp"
+ },
+ "volei-0-3": {
+  "titulo": "Voleibol nos Jogos Olímpicos de Verão de 2008",
+  "texto": "As competições de voleibol nos Jogos Olímpicos de Verão de 2008 foram disputadas entre 9 e 24 de agosto em Pequim, na China. Os jogos ocorreram no Ginásio Indoor da Capital e no Ginásio do Instituto de Tecnologia de Pequim.",
+  "pagina": "https://pt.wikipedia.org/wiki/Voleibol_nos_Jogos_Ol%C3%ADmpicos_de_Ver%C3%A3o_de_2008",
+  "imagem": null,
+  "arquivo": null
  },
  "volei-0-4": {
   "titulo": "Voleibol nos Jogos Olímpicos de Verão de 2012",
@@ -342,6 +356,20 @@
   "imagem": "https://upload.wikimedia.org/wikipedia/commons/4/47/Aurelio_miguel_ouro_nas_olimpiadas_de_seul.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
   "arquivo": "premios/olimpiadas-0-0.webp"
  },
+ "olimpiadas-0-1": {
+  "titulo": "Rogério Sampaio",
+  "texto": "Rogério Sampaio Cardoso é um judoca e campeão olímpico brasileiro.",
+  "pagina": "https://pt.wikipedia.org/wiki/Rog%C3%A9rio_Sampaio",
+  "imagem": "https://upload.wikimedia.org/wikipedia/commons/5/57/2023-06-23_Sess%C3%A3o_Especial_-_Dia_Mundial_do_Desporto_Ol%C3%ADmpico_04_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+  "arquivo": "premios/olimpiadas-0-1.webp"
+ },
+ "olimpiadas-0-2": {
+  "titulo": "Sarah Menezes",
+  "texto": "Sarah Gabrielle Cabral de Menezes é uma judoca e campeã olímpica brasileira. Entrou para a história do esporte nacional ao se tornar a primeira mulher do país a conquistar uma medalha de ouro neste esporte em Jogos Olímpicos. Atualmente, é treinadora da seleção brasileira feminina de judô.",
+  "pagina": "https://pt.wikipedia.org/wiki/Sarah_Menezes",
+  "imagem": "https://upload.wikimedia.org/wikipedia/commons/1/10/Sarah_Menezes_2015.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+  "arquivo": "premios/olimpiadas-0-2.webp"
+ },
  "olimpiadas-0-3": {
   "titulo": "Rafaela Silva",
   "texto": "Rafaela Lopes Silva é uma judoca campeã olímpica e mundial brasileira.",
@@ -375,7 +403,7 @@
   "texto": "Joaquim Carvalho Cruz é um ex-meio-fundista brasileiro, campeão olímpico dos 800 metros em Los Angeles 1984, medalha de prata na mesma prova nas Seul 1988 e por duas vezes campeão pan-americano, em Indianápolis, 1987 e Mar del Plata, 1995.",
   "pagina": "https://pt.wikipedia.org/wiki/Joaquim_Cruz",
   "imagem": "https://upload.wikimedia.org/wikipedia/commons/4/47/JoaquimCruz2007.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
-  "arquivo": null
+  "arquivo": "premios/olimpiadas-1-2.webp"
  },
  "olimpiadas-1-3": {
   "titulo": "Maurren Maggi",
