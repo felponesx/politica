@@ -436,6 +436,12 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   `camara-proposicoes-situacao`; filtro `?prioridade=` em `GET /proposicoes`. Sem regime coletado, o cartão não mostra a etiqueta.
 - Votações dos tribunais: aba "Julgamentos dos tribunais" em Leis e Projetos (`app/dados/julgamentos.json`, 6 casos do STF curados com placar e fonte; não há base aberta com os votos de cada ministro; STJ/TSE ainda não entraram).
 
+## Empresas punidas (30/10/2026)
+- Aba "Empresas punidas" em Escândalos e crimes (`#/escandalos/empresas`; `telaPunidas`): coletor `cgu-sancoes` (`app/collectors/sancoes.py`) lê os arquivos diários do Portal da Transparência (`download-de-dados/{ceis|cnep|acordos-leniencia}/AAAAMMDD`, zip com CSV ';' latin-1; o de hoje
+  dá 403, tenta os 12 dias anteriores). Só pessoas jurídicas (CPF fica de fora). Um registro por CNPJ (`sancao_empresa`: sanções mais novas primeiro, `vigente`, `multa_total`) + `sancoes_resumo` (categorias do CEIS, UF, maiores multas, acordos). API `GET /sancoes`, `/sancoes/contratos`
+  (empresas punidas com contratos coletados e quantos foram assinados dentro do período de uma sanção), `/sancoes/busca?q=`, `/sancoes/{cnpj}` (`app/sancoes.py`, `app/routers/sancoes.py`). Sempre com o aviso: a sanção pode valer só para o órgão/esfera/estado que a aplicou e muitas já acabaram; aparecer em duas bases não indica irregularidade.
+  Robô: validade 7 dias; agendador: semanal. Ainda não feito deste tema: contas julgadas irregulares do TCU (a página `sites.tcu.gov.br/dados-abertos/inidoneos-irregulares` existe, falta achar o arquivo) e a lista suja do trabalho escravo (a página do MTE no gov.br mudou: 404).
+
 ## Pendências (30/10/2026)
 - **Ensino** (menu acima de Prêmios; `P.ensino`, `GET /ensino` em `app/routers/ensino.py`, `app/ensino.py`): coletor `ensino-ideb` (`app/collectors/inep.py`, robô: `LIMITES` 90 min, validade 60 dias; agendador: mensal). Os arquivos estão em
   `https://download.inep.gov.br/ideb/resultados/` (zip com .xlsx): `divulgacao_regioes_ufs_ideb_<ano>.zip` (uma aba por etapa, uma linha por rede; códigos de coluna `VL_OBSERVADO_<ano>` = IDEB e `VL_PROJECAO_<ano>` = meta),

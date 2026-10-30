@@ -205,6 +205,11 @@ def consistencia(c: Copia, r: Relatorio):
             r.add(g, "aviso", "Saúde: casos de dengue no último ano", f"{b['dengue']:,}", "entre 50 mil e 12 milhões", b["dengue"])
         if b.get("gasto_estados_saude") and b.get("gasto_uniao_saude") and not (20e9 < b["gasto_uniao_saude"] < 600e9):
             r.add(g, "aviso", "Saúde: gasto da União fora do esperado", f"R$ {b['gasto_uniao_saude'] / 1e9:,.0f} bi", "entre R$ 20 bi e R$ 600 bi", round(b["gasto_uniao_saude"]))
+    sanc = c.get("/sancoes")
+    if sanc:
+        g_s = "consistencia"
+        r.add(g_s, "ok" if 5_000 <= sanc["empresas"] <= 60_000 else "aviso", "Sanções: empresas no CEIS/CNEP", f"{sanc['empresas']:,}", "entre 5 mil e 60 mil", sanc["empresas"])
+        r.add(g_s, "ok" if sanc["vigentes"] <= sanc["empresas"] else "erro", "Sanções: vigentes não passam do total", f"{sanc['vigentes']:,} de {sanc['empresas']:,}")
     parl = (c.get("/parlamentares") or {}).get("itens") or []
     nomes = {}
     for x in parl:

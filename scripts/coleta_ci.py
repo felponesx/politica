@@ -30,7 +30,7 @@ def _arg(v):
 
 # limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
 LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "tse-contas": 90, "cnpj-fornecedores": 25,
-           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90,
+           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90, "cgu-sancoes": 40,
            # base inteira do CNPJ (10 arquivos de estabelecimentos e 10 de empresas) + PGFN: a coleta para sozinha em 200 min
            "receita-empresas-porte": 215, "obrasgov-obras": 130, "siconfi-despesas-funcao": 170}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
@@ -57,7 +57,7 @@ EXTRAS = [("transparencia-emendas", {}),
           *[("tesouro-capag", {"url": u, "ano": a}) for a, u in CAPAG_ANOS.items()],
           *[("transparencia-cartao", {"ano": a}) for a in range(2015, date.today().year + 1)],
           *[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
-          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("saude-ubs", {}), ("saude-mais-medicos", {}), ("saude-datasus", {}), ("ensino-ideb", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
+          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("saude-ubs", {}), ("saude-mais-medicos", {}), ("saude-datasus", {}), ("ensino-ideb", {}), ("cgu-sancoes", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
           # anos anteriores para os gráficos em linha dos estados (retorno por R$ 1 e dívida do governo estadual)
           ("receita-arrecadacao", {"ano_minimo": date.today().year - 6}),
           *[("tesouro-transferencias", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
@@ -91,7 +91,8 @@ VALIDADE = {
     "saude-ubs": ("saude", "ubs", (), lambda p: 25),                    # mudam devagar: uma vez por mês basta
     "saude-mais-medicos": ("saude", "mais_medicos", (), lambda p: 7),
     "saude-datasus": ("datasus", "saude", (), lambda p: 20),
-    "ensino-ideb": ("inep", "ideb", (), lambda p: 60),                  # o IDEB sai de 2 em 2 anos
+    "ensino-ideb": ("inep", "ideb", (), lambda p: 60),
+    "cgu-sancoes": ("cgu", "sancoes", (), lambda p: 7),                      # o CEIS/CNEP mudam todo dia útil: uma vez por semana basta
     "siconfi-tributos": ("siconfi", "tributos_entes", ("ano", "esferas"), lambda p: 30 if p.get("esferas") == "M" else None),
     # anos fechados do RREO não mudam mais; o último ano fechado é revisto todo mês
     "siconfi-despesas-funcao": ("siconfi", "despesas_funcao", ("ano",),

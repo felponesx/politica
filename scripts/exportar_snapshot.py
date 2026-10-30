@@ -63,7 +63,7 @@ LISTAS = {
 FIXAS = [
     "/saude", "/cortes", "/cartao-corporativo", "/emendas", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
     "/mapa/estados", "/agora/eventos", "/partidos/composicao", "/assembleias", "/gastos/entes", "/orgaos",
-    "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/saude/painel", "/ensino", "/obras-gestao?escopo=pais", "/indicadores",
+    "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/saude/painel", "/ensino", "/sancoes", "/sancoes/contratos?limit=40", "/obras-gestao?escopo=pais", "/indicadores",
     "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
