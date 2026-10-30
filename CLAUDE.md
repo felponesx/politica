@@ -139,6 +139,29 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   em pull requests (aprovação pelo celular só com verde). Falta: passar ao `agendar.py` o que hoje só o robô do GitHub faz (eleições, segurança, notícias a cada 15 min, impostômetro,
   histórico, fotos) e adaptar `revisar_dados` ao banco local.
 
+## Correções de dado (29/10/2026)
+- Obras: o ObrasGov tem valores digitados a mais (dragagem de porto com R$ 403 bi, bloco de hospital com R$ 81 bi). `app/obras_valor.py` (`valor_suspeito`: ≥ R$ 100 bi sempre; Defesa fica; ≥ R$ 10 bi suspeito;
+  de R$ 1 a 10 bi só com nome de obra pequena — bloco, vestiário, delegacia, campus... — ou "estradas ... município") marca `valor_suspeito` em `/obras` e `/obras/{id}` (com `aviso_valor`), tira o valor das somas
+  e dos percentuais em `/obras-gestao` (`resumir` devolve `valor_suspeito`; `mais_atrasadas` traz `valor_suspeito` e valor nulo) e `/obras-resumo` (`valor_suspeito_excluido`), e `lista_compacta` ganhou a coluna `suspeito`
+  (valor 0). O número declarado continua visível no detalhe; as telas mostram "a conferir". Não corrige o valor.
+- Situação das fontes: `app/collectors/registro.py` (`registro_das_tarefas`) acha o par (fonte, tarefa) que cada coletor grava em `coletas` lendo o código (AST) — antes a tela comparava o nome da linha de comando com a tarefa
+  gravada e mostrava 60 de 60 "nunca coletada". `tests/test_status_fontes.py` garante que toda tarefa do registro tem par.
+- Totais federais diferentes: notas nas telas Gastos › União (SICONFI, liquidado até o bimestre), Órgãos (Portal da Transparência, pago até hoje) e no Gastômetro (Gasto Brasil, União+estados+municípios): fontes, critério e corte próprios.
+- `revisar_dados` confere obras sem marcação e o painel de fontes zerado.
+
+## Saúde (30/10/2026)
+- Menu Saúde (`P.saude`, `#/saude` e `#/saude/<UF>`; `saudeBrasil`, `saudeUF` no site): mapa, ranking e lista por estado com seletor (UBS por 100 mil hab., Mais Médicos por 100 mil, % das vagas ocupadas, gasto do estado em saúde por habitante,
+  saúde no gasto do estado) e, por estado, os maiores municípios. API `GET /saude/painel` e `GET /saude/municipios?uf=` (`app/saude.py`, `app/routers/saude.py`; `/saude` continua sendo a checagem de saúde do sistema).
+- Coletores `saude-ubs` e `saude-mais-medicos` (`app/collectors/saude.py`; robô: `EXTRAS`, validade 25 e 7 dias; agendador: mensal e semanal). API do Ministério: `limit` até 1.000, `offset` = posição da linha. Guarda contra leitura cortada
+  (mín. 40 mil UBS e 5 mil municípios). Gasto = despesa liquidada na função Saúde (RREO Anexo 02, `despesa_funcao`) do último ano com o 6º bimestre em ≥ 20 estados (2025: estados R$ 198,8 bi, União R$ 217,1 bi).
+- Segunda etapa: `saude-datasus` (`app/collectors/datasus.py`, TabNet do DATASUS por POST com `formato=prn`): leitos de internação e UTI (existentes e SUS), médicos (CBO) e mortalidade infantil por estado
+  (óbitos SIM ÷ nascidos SINASC; série oficial até `ano_final - 2`, o resto fica em `tmi_preliminar`). O painel traz `leitos_por_mil`, `leitos_sus_por_mil`, `pct_leitos_sus`, `uti_por_100mil` (só UTI, sem unidades
+  intermediárias), `medicos_por_mil`, `tmi` e `tmi_serie`; o site tem o seletor com grupos, o gráfico do Brasil e, no estado, a linha do estado contra o Brasil. Robô: `EXTRAS`, validade 20 dias; agendador: mensal.
+- Terceira etapa (30/10/2026, mesma tarefa `saude-datasus`, novos blocos `causas_morte_uf`, `internacoes_uf`, `dengue_uf`): óbitos por capítulo da CID-10 (`sim/cnv/obt10uf.def`, último ano fechado = `ano_final - 2`, 2024: 1,53 mi no país),
+  internações do SUS por residência (`sih/cnv/nruf.def`, 12 arquivos mensais do último ano completo, 2025: 14,5 mi, R$ 25,8 bi) e casos prováveis de dengue (`sinannet/cnv/denguebbr.def`, linha UF de residência × coluna ano de notificação; 2024: 6,57 mi; ano corrente em `parcial`).
+  Painel traz `mortes*`, `mortes_causas` (8 maiores), `internacoes*` e `dengue*`; site: seletor com 3 grupos novos + quadros "De que morrem", internações e gráfico da dengue. Taxas de morte são brutas (sem ajuste por idade) e o site avisa.
+- Fora por enquanto (motivos em `docs/FONTES.md`): mínimo constitucional em saúde (Anexo 12 do SICONFI não responde), vacinação (tabela do TabNet não abriu), leitos por município (dá para pedir `Linha=Município` ao TabNet).
+
 ## Missão nesta sessão (em ordem)
 1. **Subir o ambiente:** Postgres via `docker compose up -d` (se não houver Docker, usar SQLite no `.env`
    e avisar que a busca avançada fica limitada). Criar `.venv`, instalar `requirements.txt`, copiar `.env.example`.
@@ -413,13 +436,72 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   `camara-proposicoes-situacao`; filtro `?prioridade=` em `GET /proposicoes`. Sem regime coletado, o cartão não mostra a etiqueta.
 - Votações dos tribunais: aba "Julgamentos dos tribunais" em Leis e Projetos (`app/dados/julgamentos.json`, 6 casos do STF curados com placar e fonte; não há base aberta com os votos de cada ministro; STJ/TSE ainda não entraram).
 
+## Empresas punidas (30/10/2026)
+- Aba "Empresas punidas" em Escândalos e crimes (`#/escandalos/empresas`; `telaPunidas`): coletor `cgu-sancoes` (`app/collectors/sancoes.py`) lê os arquivos diários do Portal da Transparência (`download-de-dados/{ceis|cnep|acordos-leniencia}/AAAAMMDD`, zip com CSV ';' latin-1; o de hoje
+  dá 403, tenta os 12 dias anteriores). Só pessoas jurídicas (CPF fica de fora). Um registro por CNPJ (`sancao_empresa`: sanções mais novas primeiro, `vigente`, `multa_total`) + `sancoes_resumo` (categorias do CEIS, UF, maiores multas, acordos). API `GET /sancoes`, `/sancoes/contratos`
+  (empresas punidas com contratos coletados e quantos foram assinados dentro do período de uma sanção), `/sancoes/busca?q=`, `/sancoes/{cnpj}` (`app/sancoes.py`, `app/routers/sancoes.py`). Sempre com o aviso: a sanção pode valer só para o órgão/esfera/estado que a aplicou e muitas já acabaram; aparecer em duas bases não indica irregularidade.
+  Robô: validade 7 dias; agendador: semanal. Ainda não feito deste tema: contas julgadas irregulares do TCU (a página `sites.tcu.gov.br/dados-abertos/inidoneos-irregulares` existe, falta achar o arquivo) e a lista suja do trabalho escravo (a página do MTE no gov.br mudou: 404).
+
+## Tabela de lacunas — Social, Meio ambiente, Dinheiro, Trabalho, Energia (30/10/2026)
+- Menus novos: **Social e Trabalho** (`P.social`, `#/social` e `#/social/<UF>`; `/social`, `/social/municipios?uf=`, `/trabalho`) e **Meio ambiente** (`P.ambiente`, `#/ambiente/<UF>`; `/ambiente`), ambos com o painel genérico `lacPainel` (seletor de medida, mapa, maiores/menores, lista) no bloco "Social e Trabalho, Meio ambiente..." do site.
+  Abas novas em Órgãos: Viagens a serviço (`/viagens`) e Fundo eleitoral (`/fundos`). Indicadores ganhou o quadro de tarifa de energia (`/energia-tarifas`, `energiaHtml`). Lógica em `app/lacunas.py`, rotas em `app/routers/lacunas.py`.
+- Coletores (todos sem chave; robô `EXTRAS`, agendador mensal): `transparencia-social` (`app/collectors/social.py`: só as parcelas do próprio mês — referência = competência —, o atrasado vai em `retroativo`; guarda mín. 5 mi/3 mi de linhas e 27 estados), `transparencia-viagens`,
+  `inpe-desmatamento` (`app/collectors/ambiente.py`: lê as feições do WFS em páginas de 100 mil em CSV com `propertyName`; seis biomas sem sobreposição — Amazônia pelo bioma —; só `main_class` desmatamento; DETER 24 meses de Amazônia e Cerrado), `ibge-trabalho`, `tse-fundos`, `aneel-tarifas` (`app/collectors/economia_extra.py`).
+- Descobertas: o Portal devolve 403 para o mês ou dia que ainda não saiu (tenta os anteriores); `servidores/AAAAMM` deu 403 (servidores e salários ainda não feito); CAGED (ftp.mtps.gov.br) não responde; IBAMA bloqueia o robô (403); Receita "gastos tributários" (página mudou, 404); ANP: arquivos semestrais
+  `.../dados-abertos/arquivos/shpc/dsas/ca/ca-AAAA-0N.csv` (nome do mais novo a conferir); queimadas: CSV mensal do INPE com 130 MB por mês (`dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/mensal/Brasil/`), pesado demais para somar tudo; IGC (faculdades) sem arquivo achado.
+- Conferidos contra a coleta real em 30/10/2026: `transparencia-social` (set/2026: 18,65 mi parcelas do Bolsa Família, R$ 12,6 bi; BPC 6,6 mi), `transparencia-viagens` (2025: 814 mil viagens, R$ 2,5 bi), `ibge-trabalho` (desocupação 4099; rendimento = tabela 5436, variável 5932, `/c2/6794`), `tse-fundos` (2020, 2022, 2024; 2018 não existe no CDN), `aneel-tarifas` (103 distribuidoras). `inpe-desmatamento`: Amazônia (PRODES) conferida; o WFS do TerraBrasilis recusa propertyName+sortBy em outras camadas (400) e derruba as gigantes com 502 — ver a nota do fim deste arquivo.
+
 ## Pendências (30/10/2026)
-- **Ensino** (menu acima de Prêmios; `P.ensino`, `GET /ensino`, `app/ensino.py`): a tela está pronta (Visão geral, Por estado, Faculdades, Escolas), mas SEM dados. Falta o coletor do INEP: IDEB do Brasil/UFs e por escola
-  (anos iniciais, finais e médio) e IGC das instituições de ensino superior. O servidor `download.inep.gov.br` não envia o certificado intermediário (falha no `curl` e no Python, também no GitHub Actions) e a página do
-  IDEB (`ideb.inep.gov.br`) é Power BI; os nomes dos arquivos não aparecem em links. Saída combinada: baixar os arquivos pelo navegador e colocar no projeto, ou embutir o certificado intermediário no robô. NÃO desligar a
-  verificação de TLS. O gráfico de linha usa `lineChart`/`linhasDuplo`; formato esperado em `ensGeral`/`ensEstados`/`ensFaculdades`/`ensEscolas`.
+- **Ensino** (menu acima de Prêmios; `P.ensino`, `GET /ensino` em `app/routers/ensino.py`, `app/ensino.py`): coletor `ensino-ideb` (`app/collectors/inep.py`, robô: `LIMITES` 90 min, validade 60 dias; agendador: mensal). Os arquivos estão em
+  `https://download.inep.gov.br/ideb/resultados/` (zip com .xlsx): `divulgacao_regioes_ufs_ideb_<ano>.zip` (uma aba por etapa, uma linha por rede; códigos de coluna `VL_OBSERVADO_<ano>` = IDEB e `VL_PROJECAO_<ano>` = meta),
+  `divulgacao_brasil_ideb_<ano>.xlsx` (só até 2023) e `divulgacao_<anos_iniciais|anos_finais|ensino_medio>_escolas_<ano>.zip` (até 112 MB). 2025 já saiu. O servidor não envia o certificado intermediário (RNP ICPEdu GR46, GlobalSign Root R46): o
+  coletor baixa o do endereço AIA, confere a impressão digital (`AIA_SHA256`) e usa uma cadeia só para esse cliente; a verificação do TLS continua ligada. Grava `ensino_ideb` (brasil, ufs, metas) e `ensino_escolas` (80 melhores de cada estado e etapa).
+  O Brasil de 2025 não vem em planilha: usa-se a de 2023 (a coleta avisa). **Falta a aba Faculdades (IGC)**: ainda sem arquivo achado (página do IGC no gov.br dá 404); `scripts/diag_inep.py` + `diag-inep.yml` servem para explorar o servidor.
 - **Trânsito em km por estado/capital** (pedido do Felipe, ainda não feito): hoje só o índice anual de congestionamento do TomTom para 9 capitais (`app/dados/transito.json`, `GET /transito`, quadro "Trânsito" na ficha do estado).
   Duas partes sugeridas: (1) km totais de vias por capital pelo OpenStreetMap/Overpass (grátis, sem chave, robô mensal); (2) km por nível de trânsito (livre, intermediário, médio, severo) com chave gratuita do TomTom ou HERE
   (conferir os termos de uso sobre guardar e publicar os números). Waze for Cities só para órgãos públicos; CET-SP publica lentidão em km só de São Paulo.
 - **Robô**: rodar `camara-proposicoes-situacao` (preenche o regime de tramitação e liga a prioridade alta/média/baixa dos projetos) e `premios` (história e imagens da Wikipédia dos Prêmios) quando o GitHub Actions estiver livre.
   A chave `transparencia-emendas` já rodou; cartão corporativo falta o ano de 2023.
+
+## Congresso e Eleições — o que veio do banco que já existe (30/10/2026)
+- `app/fidelidade.py`, `GET /fidelidade?casa=` e `alinhamento` em `/parlamentares/{id}/atuacao`: quanto cada parlamentar votou como a MAIORIA DO PRÓPRIO PARTIDO (só Sim/Não, 12 meses, mín. 3 colegas e 10 votações,
+  empate e votação secreta fora). NÃO é fidelidade à orientação da bancada (a orientação oficial não está coletada: Câmara `/votacoes/{id}/orientacoes` seria a fonte). Site: bloco "Vota como o partido?" no Resumo.
+- Perfil › Eleições: tabela "Patrimônio declarado a cada eleição" com a variação entre candidaturas (valor declarado, sem correção pela inflação).
+- Ainda sem implementação (fonte não alcançável daqui ou sem arquivo achado): servidores e salários, CAGED, renúncia fiscal, doadores (CPF não é guardado de propósito), TCU, lista suja, ANP, Anatel/ANAC, CNJ, Querido Diário, PRF/DNIT, CPIs.
+
+## Diagnóstico das fontes pendentes (30/10/2026)
+- `scripts/diag_pendentes.py`, `diag_pendentes2.py`, `diag_pendentes3.py` (+ `diag-pendentes*.yml`): o que responde pelo robô. Responde: TCU inabilitados (API ORDS, `tcu-inabilitados` já feito, só totais), ANP (`ca-AAAA-0N.zip` os novos, `.csv` os antigos),
+  Anatel banda larga fixa (zip de 1 GB, um CSV por ano `Acessos_Banda_Larga_Fixa_AAAA.csv`: Ano;Mês;...;UF;Município;Código IBGE;Faixa;Velocidade;Tecnologia;Meio de Acesso;Tipo de Pessoa;Tipo de Produto;Acessos), CNJ (zip em
+  `cnj.jus.br/wp-content/uploads/2026/09/17-set-2026.zip`: `JN_23-Jun-2026.csv` por tribunal e ano com variáveis em código + `Variáveis - JN.csv`), Tesouro Transparente (CKAN), CPIs da Câmara (`/orgaos?sigla=CPI`) e do Senado.
+  Não responde: lista suja (gov.br 404), Querido Diário (520), CAGED (timeout), renúncia (login), ANAC (404), `/votacoes/{id}/orientacoes` da Câmara (vazio nas votações recentes), TCU contas irregulares (sem arquivo achado), PRF (arquivos só em links do Google Drive).
+
+## CNJ e TCU (30/10/2026)
+- `cnj-justica` (`app/collectors/cnj.py`, `GET /justica`): acha na página do CNJ o zip mais novo que traz `JN_*.csv` (variáveis em código: cn, cp, tbaix, tc, iad, mag, k, ipm, f2; "nd" = sem dado) e guarda por tribunal e ano. Site: quadro "Fila dos tribunais" abaixo dos julgamentos (Leis e Projetos › Julgamentos dos tribunais). Conferido em 30/10/2026: 99 tribunais, dados até 2025 (`tc` vem como fração, 0,68 = 68%).
+- `tcu-inabilitados` (`app/collectors/tcu.py`, `GET /tcu-inabilitados`): só totais por estado e ano; painel em Escândalos e crimes › Empresas punidas. Robô disparado em 30/10 com as seis tarefas da tabela de lacunas.
+- `anatel-banda-larga` (`app/collectors/anatel.py`, lê só o CSV do ano mais novo do zip da Anatel por Range): acessos por estado no último mês e % de fibra; entra em `/trabalho` (`internet100`, `fibra_pct`) e nas medidas `internet`/`fibra` do menu Social e Trabalho. Conferido em 30/10/2026: 27 estados, ago/2026 (SP 36,7 acessos por 100 hab., 74,5% fibra).
+
+- ANP (`anp-combustiveis`, `app/collectors/anp.py`): preço médio por estado no último mês do zip semestral (GET com User-Agent de navegador; HEAD dá 403); entra em `/trabalho` (`preco_gasolina`, `preco_etanol`, `preco_diesel_s10`). Conferido em 30/10/2026: 27 estados, até jun/2026 (o zip do 2º semestre ainda não saiu).
+- Roteiro do que fazer quando o robô terminar: `docs/PROXIMOS_PASSOS.md`.
+
+- Desmatamento (30/10/2026): só Amazônia e Pampa (PRODES) + DETER entraram; Cerrado e Caatinga deram ReadTimeout, Mata Atlântica 502 e Pantanal 400 (ver `docs/FONTES.md`). Na tela, a soma por estado vale só para o que veio.
+- CPIs (`congresso-cpis`, `app/collectors/cpis.py`, `GET /cpis`, aba "CPIs" em Leis e Projetos): lista da Câmara (CPI e CPMI com datas) e do Senado (só as ativas). NÃO conferido contra a coleta real; o aviso diz que abrir CPI não prova irregularidade.
+- Aeródromos (`anac-aerodromos`, `app/collectors/anac.py`, `GET /aeroportos`, quadro em Indicadores): CSV oficial da ANAC; formato conferido no diagnóstico de 30/10 (a coleta ainda não rodou no robô).
+- Fontes novas (30/10/2026; formatos conferidos no diagnóstico `scripts/diag_novas*.py`, coletas ainda NÃO rodadas no robô): `ibama-multas` (`/multas-ambientais`), `mte-lista-suja` (`/lista-suja`), `receita-renuncia-fiscal` (`/renuncia-fiscal`), `anac-aerodromos` (`/aeroportos`). Telas: Empresas punidas (lista suja e multas), Indicadores (renúncia e aeroportos).
+  Nenhuma guarda nome nem documento. Ainda sem fonte: Querido Diário (falha de TLS no handshake do servidor), TCU contas irregulares (GET da API dá 405; falta descobrir o POST/parâmetros), PRF/IGC/servidores (páginas sem links no HTML estático). CAGED: o FTP responde (`/pdet/microdados/NOVO CAGED`); nomes de arquivo em latin-1.
+
+- Queimadas e contas irregulares (30/10/2026, implementados e testados, coleta NÃO rodada no robô): `inpe-queimadas` (`app/collectors/queimadas.py`, zips anuais de focos do INPE; focos por estado, bioma e mês; entra em `/ambiente`, medida `focos`) e
+  `tcu-contas-irregulares` (`app/collectors/tcu.py`, POST `{}` na API pública de certidões; só totais por estado e ano, sem nome nem CPF; `GET /tcu-irregulares`, painel em Empresas punidas).
+
+## Segunda etapa de desbloqueio (30/10/2026) — dados REAIS conferidos no Postgres local (`brasilplus_real`) e coletas ainda a rodar no robô
+- Servidores (`transparencia-servidores`, `app/collectors/servidores.py`, `GET /servidores`): o endereço certo é `download-de-dados/servidores/AAAAMM_Servidores_SIAPE` (sem o sufixo dá 403; zip de 83 MB com `_Cadastro.csv` e `_Remuneracao.csv`, latin-1, ligados por `Id_SERVIDOR_PORTAL`). Só somas por órgão
+  e UF (nome/CPF/matrícula não são guardados). `UF_EXERCICIO` "-1" vira "sem UF". Conferido: ago/2026 = 516.754 servidores civis, 338 órgãos, 9.360 com abate-teto, 2.544 com bruta acima do teto de referência (R$ 46.366,19, constante `TETO_REFERENCIA`). Competência já gravada não volta a ser baixada (`refazer=true` força).
+- Orientação de bancada (`camara-orientacoes`, `GET /votacoes/{id}/orientacoes`, bloco `orientacao` em `/parlamentares/{id}/atuacao`): arquivos anuais `votacoesOrientacoes-AAAA.json` funcionam (2025: 540 votações; 2026: 153). Orientação vazia = "Sem orientação registrada" (nunca "Liberado"). Só liga voto a orientação quando o partido tem bancada com a própria sigla (blocos vêm com nome cortado).
+- PRF (`prf-acidentes`, `app/collectors/prf.py`, `GET /acidentes-rodovias`): a página oficial lista um link do Google Drive por ano/tipo ("Documento CSV de Acidentes AAAA (Agrupados por ocorrência)"); o descobridor lê a página, casa título → "Baixar planilha" e baixa por `drive.usercontent.google.com/download?id=…&export=download&confirm=t`. Conferido: 2025 = 72.529 acidentes, 6.043 mortos; 2026 até ago = 48.712.
+- IGC (`inep-igc`, `app/collectors/inep_igc.py`, `GET /igc`): `dados-abertos/.../indicadores-de-qualidade-da-educacao-superior/<ano>` (aba por ano, carregada à parte) traz `IGC_<ano>.xlsx` em `download.inep.gov.br` (cadeia TLS completada como no IDEB). Conferido: 2023 = 2.101 instituições (2.048 com nota), 2022 = 2.023. O IGC não traz município.
+- Doadores (`tse-doadores`, `app/collectors/tse_doadores.py`, tabela `doacoes_empresas`, migração 0010, `GET /doadores`, `/doadores/empresas`, `/doadores/empresas/{cnpj}`): só CNPJ de 14 dígitos; tipo `empresa` / `partido_ou_comite` / `cnpj_sem_tipo` (2002 não diz a origem). "Recursos próprios" (CNPJ da conta do próprio candidato) é descartado; transferências de partido/comitê abaixo de R$ 10 mil por candidatura também (contadas em `registros` tipo `doadores_ano`).
+  Datas fora de ano-1…ano+4 (erros de digitação do TSE) são ignoradas. Refazer um ano atualiza pela chave (ano, CNPJ, candidatura, origem) sem apagar nada.
+- Querido Diário (`querido-diario`, `app/collectors/querido_diario.py`, `GET /diarios-oficiais`, `/diarios-oficiais/status`): `api.queridodiario.ok.org.br` não tem certificado para esse nome (handshake falha em TLS 1.2/1.3); `https://queridodiario.ok.org.br/api` responde 200 com TLS válido (validação mantida). Histórico de disponibilidade em `registros`; fora do ar → 503, nunca dado antigo.
+- Trânsito (`osm-malha-capitais`, `tomtom-transito`, `app/collectors/transito.py`, `GET /transito/malha`, `/transito/agora`): malha = km de via por capital (Overpass, relação do município pelo `IBGE:GEOCODIGO`, comprimento pela geometria, cada via uma vez); congestionamento/velocidade = TomTom Traffic API em até 4 pontos por capital (pontos vêm da malha), chave só em `TOMTOM_API_KEY`
+  (sem chave: falha com mensagem, nada simulado), limite `TOMTOM_LIMITE_DIA` (2000). As duas medidas e o índice anual do TomTom (`transito.json`) ficam separados.
+- Ocorrências (`GET /ocorrencias`, `app/ocorrencias.py`): marcos dos casos curados com etapa (investigação, denúncia, condenação, absolvição, arquivamento, outra) pelas palavras do próprio marco; sempre com a URL da fonte.
+- CAGED: gov.br só traz PDF/imagem por mês; as tabelas e os microdados (FTP `ftp.mtps.gov.br`, `/pdet/microdados/NOVO CAGED/…`, 7z) exigem sondagem (`scripts/diag_caged.py`).

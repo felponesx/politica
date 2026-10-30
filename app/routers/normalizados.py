@@ -8,6 +8,7 @@ from app.busca import ENTIDADES, buscar
 from app.db import get_db
 from app.utils import memo
 from app.models import Candidato, Contrato, Indicador, Obra
+from app.obras_valor import AVISO_VALOR, valor_suspeito
 
 router = APIRouter()
 
@@ -16,9 +17,16 @@ def _linha(obj, *excluir):
     return {c.name: getattr(obj, c.name) for c in obj.__table__.columns if c.name not in ("registro_id", "normalizado_em", *excluir)}
 
 
-def _pagina(db, stmt, limit, offset):
+def _obra_linha(o):
+    d = _linha(o)
+    d["valor_suspeito"] = valor_suspeito(o.nome, o.descricao, o.tipo, o.valor_previsto)
+    return d
+
+
+def _pagina(db, stmt, limit, offset, linha=None):
     total = db.scalar(select(func.count()).select_from(stmt.subquery()))
-    return {"total": total, "itens": [_linha(o) for o in db.scalars(stmt.limit(limit).offset(offset))]}
+    linha = linha or _linha
+    return {"total": total, "itens": [linha(o) for o in db.scalars(stmt.limit(limit).offset(offset))]}
 
 
 @router.get("/busca", tags=["Busca"])
@@ -88,7 +96,7 @@ def obras(uf: str | None = None, situacao: str | None = None, tipo: str | None =
         stmt = stmt.where(Obra.situacao.ilike(situacao))
     if tipo:
         stmt = stmt.where(Obra.tipo.ilike(f"%{tipo}%"))
-    return _pagina(db, stmt, limit, offset)
+    return {**_pagina(db, stmt, limit, offset, _obra_linha), "aviso_valor": AVISO_VALOR}
 
 
 @router.get("/obras-gestao", tags=["Obras"])
@@ -101,7 +109,7 @@ def _obras_gestao(escopo: str, uf: str | None, db: Session):
     """Andamento das obras de um governo: `pais` (presidente), `uf` (governador: obras do estado) ou `municipios`
     (prefeitos: resumo de cada prefeitura do estado, chave = nome sem acento em maiúsculas)."""
     from app.obras_gestao import eh_estadual, nome_municipio, resumir
-    stmt = select(Obra.id, Obra.nome, Obra.descricao, Obra.situacao, Obra.executor, Obra.valor_previsto, Obra.fim_previsto, Obra.uf)
+    stmt = select(Obra.id, Obra.nome, Obra.descricao, Obra.situacao, Obra.executor, Obra.valor_previsto, Obra.fim_previsto, Obra.uf, Obra.tipo)
     if escopo != "pais":
         if not uf:
             raise HTTPException(400, "Informe uf")
@@ -138,14 +146,20 @@ def obra(oid: int, db: Session = Depends(get_db)):
     o = db.get(Obra, oid)
     if not o:
         raise HTTPException(404, "Obra não encontrada")
-    return _linha(o)
+    return {**_obra_linha(o), "aviso_valor": AVISO_VALOR if valor_suspeito(o.nome, o.descricao, o.tipo, o.valor_previsto) else None}
 
 
 @router.get("/obras-resumo/{uf}", tags=["Obras"])
 def obras_resumo(uf: str, db: Session = Depends(get_db)):
     linhas = db.execute(select(Obra.situacao, func.count(), func.sum(Obra.valor_previsto))
                         .where(Obra.uf == uf.upper()).group_by(Obra.situacao)).all()
-    return [{"situacao": s, "quantidade": q, "valor_previsto": v} for s, q, v in linhas]
+    # obras com valor que parece erro de cadastro saem da soma (só pode haver suspeita de R$ 1 bi para cima: consulta pequena)
+    tirar: dict = {}
+    for o in db.scalars(select(Obra).where(Obra.uf == uf.upper(), Obra.valor_previsto >= 1e9)):
+        if valor_suspeito(o.nome, o.descricao, o.tipo, o.valor_previsto):
+            tirar[o.situacao] = tirar.get(o.situacao, 0) + o.valor_previsto
+    return [{"situacao": s, "quantidade": q, "valor_previsto": (v or 0) - tirar.get(s, 0) if v is not None else v,
+             "valor_suspeito_excluido": tirar.get(s, 0) or None} for s, q, v in linhas]
 
 
 @router.get("/candidatos", tags=["Eleições"])

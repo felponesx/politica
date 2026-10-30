@@ -8,5 +8,6 @@ pytest==9.*
 pydantic-settings==2.6.*
 alembic==1.14.*
 openpyxl==3.1.*
+py7zr==1.*
 apscheduler==3.10.*
 pillow==13.*

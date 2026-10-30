@@ -1,9 +1,37 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
 _TAREFAS_BRUTAS = {
+    "ensino-ideb": inep.coletar_ensino_ideb,
+    "tse-doadores": tse_doadores.coletar_tse_doadores,   # ano, uf
+    "osm-malha-capitais": transito.coletar_osm_malha,   # ufs
+    "tomtom-transito": transito.coletar_tomtom_transito,   # ufs, pontos
+    "querido-diario": querido_diario.coletar_querido_diario,   # dias
+    "caged-saldos": caged.coletar_caged,   # meses, refazer
+    "inep-igc": inep_igc.coletar_inep_igc,   # edicoes
+    "cgu-sancoes": sancoes.coletar_sancoes,
+    "tcu-inabilitados": tcu.coletar_tcu_inabilitados,
+    "cnj-justica": cnj.coletar_cnj_justica,
+    "anatel-banda-larga": anatel.coletar_anatel_banda_larga,
+    "anp-combustiveis": anp.coletar_anp_combustiveis,
+    "congresso-cpis": cpis.coletar_cpis,
+    "anac-aerodromos": anac.coletar_anac_aerodromos,
+    "ibama-multas": ibama.coletar_ibama_multas,
+    "inpe-queimadas": queimadas.coletar_queimadas,
+    "tcu-contas-irregulares": tcu.coletar_tcu_irregulares,
+    "mte-lista-suja": trabalho_escravo.coletar_lista_suja,
+    "receita-renuncia-fiscal": renuncia.coletar_renuncia_fiscal,
+    "transparencia-social": social.coletar_social,
+    "transparencia-viagens": social.coletar_viagens,       # anos
+    "transparencia-servidores": servidores.coletar_servidores,   # meses
+    "prf-acidentes": prf.coletar_prf_acidentes,   # anos
+    "camara-orientacoes": orientacoes.coletar_camara_orientacoes,   # ano_inicial, ano_final
+    "inpe-desmatamento": ambiente.coletar_desmatamento,
+    "ibge-trabalho": economia_extra.coletar_trabalho,      # trimestres
+    "tse-fundos": economia_extra.coletar_fundos,
+    "aneel-tarifas": economia_extra.coletar_tarifas_energia,
     "ibge-saneamento": saneamento.coletar_saneamento,
     "ibge-empresas-economia": ibge_empresas.coletar_empresas_economia,  # ano
     "camara-deputados": camara.coletar_deputados,
@@ -67,6 +95,9 @@ _TAREFAS_BRUTAS = {
     "transparencia-emendas": emendas.coletar_emendas,                  # sem parâmetros (arquivo único, sem chave)
     "transparencia-cartao": cartao.coletar_cartao,                     # ano (cartão corporativo, sem chave)
     "bcb-scr-estados": bcb_scr.coletar_scr_uf,                         # ano (mês mais recente do SCR.data)
+    "saude-ubs": saude.coletar_ubs,                                    # Unidades Básicas de Saúde por município (CNES)
+    "saude-mais-medicos": saude.coletar_mais_medicos,                  # vagas do Mais Médicos por município
+    "saude-datasus": datasus.coletar_saude_datasus,                    # leitos, UTI, médicos e mortalidade infantil por estado (TabNet)
 }
 
 

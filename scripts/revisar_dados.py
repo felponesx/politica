@@ -168,6 +168,48 @@ def consistencia(c: Copia, r: Relatorio):
         r.add(g, "ok" if cam <= 513 else "erro", "Cadeiras da Câmara", f"{cam} deputados em exercício na contagem", "no máximo 513", cam)
     if sen:
         r.add(g, "ok" if sen <= 81 else "erro", "Cadeiras do Senado", f"{sen} senadores em exercício na contagem", "no máximo 81", sen)
+    # obras: valor que parece erro de cadastro precisa estar marcado e a soma não pode depender dele
+    obras = (c.get("/obras") or {}).get("itens") or []
+    if obras:
+        from app.obras_valor import valor_suspeito
+        devia = [o for o in obras if valor_suspeito(o.get("nome"), o.get("descricao"), o.get("tipo"), o.get("valor_previsto"))]
+        sem_marca = [o for o in devia if not o.get("valor_suspeito")]
+        if sem_marca:
+            r.add(g, "aviso", "Obras com valor suspeito sem marcação", f"{len(sem_marca)} obra(s), ex.: {sem_marca[0]['nome'][:60]} "
+                  f"(R$ {sem_marca[0]['valor_previsto'] / 1e9:,.0f} bi). A cópia é anterior à regra ou o robô ainda não exportou de novo.")
+        else:
+            r.ok(g, "Obras com valor suspeito", f"{len(devia)} marcada(s) na cópia e fora das somas" if devia else "nenhuma na amostra")
+    fs = c.get("/fontes/status") or {}
+    resumo_fontes = fs.get("resumo") or {}
+    total_fontes = sum(resumo_fontes.values()) if resumo_fontes else 0
+    if total_fontes and resumo_fontes.get("nunca_coletada") == total_fontes:
+        r.add(g, "erro", "Situação das fontes mostra tudo como nunca coletada", f"{total_fontes} de {total_fontes}: o painel não está achando as coletas")
+    elif total_fontes:
+        r.ok(g, "Situação das fontes", f"{resumo_fontes.get('ok', 0)} em dia, {resumo_fontes.get('nunca_coletada', 0)} nunca coletadas")
+    saude = c.get("/saude/painel") or {}
+    if saude:
+        b = saude.get("brasil") or {}
+        if b.get("ubs") is not None:
+            r.add(g, "ok" if 40_000 <= b["ubs"] <= 60_000 else "aviso", "Saúde: UBS no país", f"{b['ubs']:,} UBS ({b.get('ubs_por_100mil')} por 100 mil hab.)", "entre 40 mil e 60 mil", b["ubs"])
+        if b.get("mm_vagas"):
+            r.add(g, "ok" if b["mm_ocupadas"] <= b["mm_vagas"] else "erro", "Saúde: vagas ocupadas do Mais Médicos não passam das vagas", f"{b['mm_ocupadas']:,} de {b['mm_vagas']:,}")
+        for chave, rot, lo, hi in (("leitos", "leitos de internação", 350_000, 550_000), ("uti_por_100mil", "UTI por 100 mil habitantes", 15, 60),
+                                   ("medicos_por_mil", "médicos por mil habitantes", 1.5, 4.5), ("tmi", "mortalidade infantil (por mil)", 6, 20),
+                                   ("mortes", "mortes por ano no país", 1_000_000, 2_000_000), ("internacoes", "internações do SUS por ano", 8_000_000, 20_000_000)):
+            if b.get(chave) is not None:
+                r.add(g, "ok" if lo <= b[chave] <= hi else "aviso", f"Saúde: {rot}", f"{b[chave]:,}", f"entre {lo:,} e {hi:,}", b[chave])
+        causas = sum(x["mortes"] for x in b.get("mortes_causas") or [])
+        if b.get("mortes") and causas > b["mortes"]:
+            r.add(g, "erro", "Saúde: causas de morte somam mais que o total", f"{causas:,} > {b['mortes']:,}")
+        if b.get("dengue_serie") and b.get("dengue") is not None and not (50_000 < b["dengue"] < 12_000_000):
+            r.add(g, "aviso", "Saúde: casos de dengue no último ano", f"{b['dengue']:,}", "entre 50 mil e 12 milhões", b["dengue"])
+        if b.get("gasto_estados_saude") and b.get("gasto_uniao_saude") and not (20e9 < b["gasto_uniao_saude"] < 600e9):
+            r.add(g, "aviso", "Saúde: gasto da União fora do esperado", f"R$ {b['gasto_uniao_saude'] / 1e9:,.0f} bi", "entre R$ 20 bi e R$ 600 bi", round(b["gasto_uniao_saude"]))
+    sanc = c.get("/sancoes")
+    if sanc:
+        g_s = "consistencia"
+        r.add(g_s, "ok" if 5_000 <= sanc["empresas"] <= 60_000 else "aviso", "Sanções: empresas no CEIS/CNEP", f"{sanc['empresas']:,}", "entre 5 mil e 60 mil", sanc["empresas"])
+        r.add(g_s, "ok" if sanc["vigentes"] <= sanc["empresas"] else "erro", "Sanções: vigentes não passam do total", f"{sanc['vigentes']:,} de {sanc['empresas']:,}")
     parl = (c.get("/parlamentares") or {}).get("itens") or []
     nomes = {}
     for x in parl:

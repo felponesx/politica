@@ -167,14 +167,17 @@ def listar_coletas(limit: int = Query(50, ge=1, le=200), db: Session = Depends(g
 @router.get("/fontes/status", tags=["Coletas"])
 def status_das_fontes(db: Session = Depends(get_db)):
     """Saúde de cada fonte: última coleta boa, idade dos dados, última situação e erro recente (resumido, sem detalhes internos).
-    Fonte que nunca rodou aparece como "nunca_coletada" (configurada, mas não verificada)."""
+    Fonte que nunca rodou aparece como "nunca_coletada" (configurada, mas não verificada). A coleta é achada pelo par (fonte, tarefa) que o
+    coletor grava em `coletas` (app/collectors/registro.py), não pelo nome da linha de comando."""
     from datetime import datetime
+
+    from app.collectors.registro import registro_das_tarefas
     agora = datetime.now()
-    linhas = db.execute(select(Coleta.tarefa, Coleta.status, Coleta.fim, Coleta.inicio, Coleta.itens, Coleta.erro)
-                        .order_by(Coleta.id.desc()).limit(5000)).all()
-    por: dict[str, dict] = {}
-    for tarefa, status, fim, inicio, itens, erro in linhas:  # da mais nova para a mais velha
-        d = por.setdefault(tarefa, {"tarefa": tarefa, "ultima_ok": None, "ultimo_status": status, "ultimo_erro": None, "falhas_recentes": 0})
+    linhas = db.execute(select(Coleta.fonte, Coleta.tarefa, Coleta.status, Coleta.fim, Coleta.inicio, Coleta.itens, Coleta.erro)
+                        .order_by(Coleta.id.desc()).limit(8000)).all()
+    por: dict[tuple, dict] = {}
+    for fonte, tarefa, status, fim, inicio, itens, erro in linhas:  # da mais nova para a mais velha
+        d = por.setdefault((fonte, tarefa), {"ultima_ok": None, "ultimo_status": status, "ultimo_erro": None, "falhas_recentes": 0})
         if d["ultimo_erro"] is None and erro and status in ("erro", "parcial", "abortada"):
             d["ultimo_erro"] = " ".join(erro.split())[:160]
         if status in ("erro", "abortada") and d["ultima_ok"] is None:
@@ -183,9 +186,11 @@ def status_das_fontes(db: Session = Depends(get_db)):
             d["ultima_ok"] = (fim or inicio).isoformat(timespec="minutes") if (fim or inicio) else None
             d["itens_ultima_ok"] = itens
             d["horas_desde_ok"] = round((agora - (fim or inicio)).total_seconds() / 3600, 1) if (fim or inicio) else None
+    registro = registro_das_tarefas()
     out = []
     for t in sorted(TAREFAS):
-        d = por.get(t) or {"tarefa": t, "ultima_ok": None, "ultimo_status": "nunca_coletada", "ultimo_erro": None, "falhas_recentes": 0}
+        chave = registro.get(t) or next((k for k in por if f"{k[0]}-{k[1]}".replace("_", "-") == t), None)
+        d = dict(por.get(chave) or {"ultima_ok": None, "ultimo_status": "nunca_coletada", "ultimo_erro": None, "falhas_recentes": 0}, tarefa=t)
         d["situacao"] = ("nunca_coletada" if d["ultimo_status"] == "nunca_coletada" else "sem_coleta_boa" if d["ultima_ok"] is None
                          else "falhando" if d["ultimo_status"] in ("erro", "abortada") else "ok")
         out.append(d)

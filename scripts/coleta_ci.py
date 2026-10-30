@@ -30,7 +30,7 @@ def _arg(v):
 
 # limite de tempo por tarefa (minutos); as demais usam LIMITE_TAREFA_MIN
 LIMITES = {"pncp-contratos": 60, "tse-resultados": 110, "tse-candidatos": 40, "tse-contas": 90, "cnpj-fornecedores": 25,
-           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150,
+           "receita-recuperacao-judicial": 170, "siconfi-tributos": 150, "saude-ubs": 40, "saude-mais-medicos": 20, "saude-datasus": 40, "ensino-ideb": 90, "cgu-sancoes": 40, "tcu-inabilitados": 15, "cnj-justica": 15, "anatel-banda-larga": 60, "anp-combustiveis": 20, "congresso-cpis": 20, "anac-aerodromos": 10, "ibama-multas": 60, "inpe-queimadas": 30, "tcu-contas-irregulares": 15, "mte-lista-suja": 10, "receita-renuncia-fiscal": 15, "transparencia-social": 60, "transparencia-viagens": 40, "transparencia-servidores": 30, "camara-orientacoes": 15, "prf-acidentes": 30, "inep-igc": 30, "tse-doadores": 40, "osm-malha-capitais": 150, "querido-diario": 10, "caged-saldos": 60, "inpe-desmatamento": 90, "ibge-trabalho": 10, "tse-fundos": 15, "aneel-tarifas": 20,
            # base inteira do CNPJ (10 arquivos de estabelecimentos e 10 de empresas) + PGFN: a coleta para sozinha em 200 min
            "receita-empresas-porte": 215, "obrasgov-obras": 130, "siconfi-despesas-funcao": 170}
 # eleições: não fazem parte da carga inicial (arquivos grandes), mas o site precisa delas
@@ -39,6 +39,7 @@ ELEICOES = [("tse-candidatos", {"ano": 2022}), ("tse-candidatos", {"ano": 2024, 
             ("tse-candidatos", {"ano": 2018}), ("tse-resultados", {"ano": 2018}),
             # gastos de campanha (prestação de contas) de 2002 a 2026 (2004 não traz o código do candidato); só das candidaturas já coletadas; zips de 14 MB a 1,4 GB
             *[("tse-contas", {"ano": a}) for a in (2022, 2018, 2026, 2024, 2020, 2016, 2014, 2012, 2010, 2008, 2006, 2002)],
+            *[("tse-doadores", {"ano": a}) for a in (2022, 2018, 2024, 2020, 2016, 2014, 2012, 2010, 2008, 2006, 2002)],
             ("tse-candidatos", {"ano": 2020, "apenas_eleitos": "true"}), ("tse-resultados", {"ano": 2020})]
 # segurança pública: Sisdepen (semestral), Anuário (anual) e Sinesp (mensal; ano passado completo e o atual)
 # CAPAG dos municípios de anos anteriores (arquivos do Tesouro, um por ano) para a tabela e as linhas por ano da Saúde fiscal
@@ -57,7 +58,7 @@ EXTRAS = [("transparencia-emendas", {}),
           *[("tesouro-capag", {"url": u, "ano": a}) for a, u in CAPAG_ANOS.items()],
           *[("transparencia-cartao", {"ano": a}) for a in range(2015, date.today().year + 1)],
           *[("transparencia-orcamento", {"ano": a}) for a in range(2014, date.today().year + 1)],
-          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
+          ("noticias-politica", {}), ("bcb-scr-estados", {}), ("saude-ubs", {}), ("saude-mais-medicos", {}), ("saude-datasus", {}), ("ensino-ideb", {}), ("cgu-sancoes", {}), ("tcu-inabilitados", {}), ("cnj-justica", {}), ("anatel-banda-larga", {}), ("anp-combustiveis", {}), ("congresso-cpis", {}), ("anac-aerodromos", {}), ("ibama-multas", {}), ("inpe-queimadas", {}), ("tcu-contas-irregulares", {}), ("mte-lista-suja", {}), ("receita-renuncia-fiscal", {}), ("transparencia-social", {}), ("transparencia-viagens", {}), ("transparencia-servidores", {}), ("camara-orientacoes", {}), ("prf-acidentes", {}), ("inep-igc", {}), ("osm-malha-capitais", {}), ("querido-diario", {}), ("caged-saldos", {}), ("inpe-desmatamento", {}), ("ibge-trabalho", {}), ("tse-fundos", {}), ("aneel-tarifas", {}), ("ibge-empresas-economia", {}), ("ibge-saneamento", {}),
           # anos anteriores para os gráficos em linha dos estados (retorno por R$ 1 e dívida do governo estadual)
           ("receita-arrecadacao", {"ano_minimo": date.today().year - 6}),
           *[("tesouro-transferencias", {"ano": a}) for a in range(date.today().year - 6, date.today().year - 1)],
@@ -88,11 +89,42 @@ SEGURANCA = [("seguranca-prisional", {"todos": "true"}), ("seguranca-anuario", {
 
 # tarefas da carga completa que mudam pouco: (fonte, tarefa) gravados em `coletas`, parâmetros que devem coincidir e dias de validade
 VALIDADE = {
+    "saude-ubs": ("saude", "ubs", (), lambda p: 25),                    # mudam devagar: uma vez por mês basta
+    "saude-mais-medicos": ("saude", "mais_medicos", (), lambda p: 7),
+    "saude-datasus": ("datasus", "saude", (), lambda p: 20),
+    "ensino-ideb": ("inep", "ideb", (), lambda p: 60),
+    "inep-igc": ("inep", "igc", (), lambda p: 60),
+    "querido-diario": ("querido_diario", "diarios", (), lambda p: 1),
+    "caged-saldos": ("caged", "saldos", (), lambda p: 20),
+    "osm-malha-capitais": ("osm", "malha_capitais", ("ufs",), lambda p: 60),
+    "tomtom-transito": ("tomtom", "transito", ("ufs", "pontos"), lambda p: None),
+    "cgu-sancoes": ("cgu", "sancoes", (), lambda p: 7),
+    "tcu-inabilitados": ("tcu", "inabilitados", (), lambda p: 7),
+    "cnj-justica": ("cnj", "justica_em_numeros", (), lambda p: 60),
+    "anatel-banda-larga": ("anatel", "banda_larga", (), lambda p: 25),
+    "anp-combustiveis": ("anp", "combustiveis", (), lambda p: 25),
+    "congresso-cpis": ("congresso", "cpis", (), lambda p: 14),
+    "anac-aerodromos": ("anac", "aerodromos", (), lambda p: 30),
+    "ibama-multas": ("ibama", "multas", (), lambda p: 14),
+    "inpe-queimadas": ("inpe", "queimadas", (), lambda p: 20),
+    "tcu-contas-irregulares": ("tcu", "contas_irregulares", (), lambda p: 7),
+    "mte-lista-suja": ("mte", "lista_suja", (), lambda p: 14),
+    "receita-renuncia-fiscal": ("receita", "renuncia_fiscal", (), lambda p: 60),
+    "transparencia-social": ("transparencia", "social", (), lambda p: 25),   # um mês novo por mês
+    "transparencia-viagens": ("transparencia", "viagens", (), lambda p: 25),
+    "transparencia-servidores": ("transparencia", "servidores", (), lambda p: 25),
+    "camara-orientacoes": ("camara", "orientacoes", (), lambda p: 1),
+    "prf-acidentes": ("prf", "acidentes", (), lambda p: 20),
+    "inpe-desmatamento": ("inpe", "desmatamento", (), lambda p: 30),
+    "ibge-trabalho": ("ibge", "trabalho", (), lambda p: 30),
+    "tse-fundos": ("tse", "fundos", (), lambda p: 90),
+    "aneel-tarifas": ("aneel", "tarifas", (), lambda p: 20),                      # o CEIS/CNEP mudam todo dia útil: uma vez por semana basta
     "siconfi-tributos": ("siconfi", "tributos_entes", ("ano", "esferas"), lambda p: 30 if p.get("esferas") == "M" else None),
     # anos fechados do RREO não mudam mais; o último ano fechado é revisto todo mês
     "siconfi-despesas-funcao": ("siconfi", "despesas_funcao", ("ano",),
                                 lambda p: (365 if int(p.get("ano", 0)) < date.today().year - 1 else 30 if int(p.get("ano", 0)) == date.today().year - 1 else None)),
 }
+VALIDADE["tse-doadores"] = ("tse", "doadores_cnpj", ("ano",), lambda p: 365)
 VALIDADE["bcb-financeiro"] = ("bcb", "financeiro", ("ano",), lambda p: 30)
 VALIDADE["legislacao-normas"] = ("senado", "legislacao", ("ano",), lambda p: 365 if int(p.get("ano", 0)) < date.today().year else None)
 MIDIA_DIAS = int(os.environ.get("MIDIA_DIAS", "7"))

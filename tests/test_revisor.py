@@ -111,3 +111,34 @@ def test_midia_tamanho_do_site_e_cobertura_de_fotos(tmp_path):
     assert _niveis(rv.revisar(site / "dados", AGORA, rede=False), "Fotos: Prefeitos eleitos") == ["ok"]
     (site / "grande.bin").write_bytes(b"0" * (251 * 1024 * 1024))
     assert _niveis(rv.revisar(site / "dados", AGORA, rede=False), "Tamanho do site") == ["erro"]
+
+
+def test_revisor_pega_obra_sem_marcacao_e_painel_de_fontes_zerado(tmp_path):
+    dados = {"/obras": {"itens": [{"nome": "Dragagem do Porto", "descricao": None, "tipo": None, "valor_previsto": 403e9},
+                                  {"nome": "Obra de rotina", "descricao": None, "tipo": None, "valor_previsto": 5e6, "valor_suspeito": False}]},
+             "/fontes/status": {"resumo": {"ok": 0, "falhando": 0, "sem_coleta_boa": 0, "nunca_coletada": 60}}}
+    rel = rv.revisar(_copia(tmp_path, dados), AGORA, rede=False)
+    assert _niveis(rel, "Obras com valor suspeito sem marcação") == ["aviso"]
+    assert _niveis(rel, "Situação das fontes mostra tudo") == ["erro"]
+    dados["/obras"]["itens"][0]["valor_suspeito"] = True
+    dados["/fontes/status"]["resumo"] = {"ok": 40, "falhando": 1, "sem_coleta_boa": 2, "nunca_coletada": 17}
+    rel = rv.revisar(_copia(tmp_path, dados), AGORA, rede=False)
+    assert _niveis(rel, "Obras com valor suspeito") == ["ok"] and _niveis(rel, "Situação das fontes") == ["ok"]
+
+
+def test_revisor_confere_o_painel_de_saude(tmp_path):
+    painel = {"brasil": {"ubs": 46847, "ubs_por_100mil": 21.9, "mm_vagas": 27618, "mm_ocupadas": 25868, "gasto_estados_saude": 198e9, "gasto_uniao_saude": 217e9}}
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": painel}), AGORA, rede=False)
+    assert _niveis(rel, "Saúde: UBS no país") == ["ok"] and _niveis(rel, "Saúde: vagas ocupadas") == ["ok"] and _niveis(rel, "Saúde: gasto da União") == []
+    painel["brasil"].update(ubs=900, mm_ocupadas=30000, gasto_uniao_saude=2e9)
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": painel}), AGORA, rede=False)
+    assert _niveis(rel, "Saúde: UBS no país") == ["aviso"] and _niveis(rel, "Saúde: vagas ocupadas") == ["erro"] and _niveis(rel, "Saúde: gasto da União") == ["aviso"]
+
+
+def test_revisor_confere_leitos_uti_medicos_e_mortalidade_infantil(tmp_path):
+    bom = {"brasil": {"leitos": 460549, "uti_por_100mil": 30.2, "medicos_por_mil": 2.91, "tmi": 12.56}}
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": bom}), AGORA, rede=False)
+    assert all(_niveis(rel, t) == ["ok"] for t in ("Saúde: leitos de internação", "Saúde: UTI por 100", "Saúde: médicos por mil", "Saúde: mortalidade infantil"))
+    ruim = {"brasil": {"leitos": 46000, "uti_por_100mil": 300, "medicos_por_mil": 29.1, "tmi": 125.6}}
+    rel = rv.revisar(_copia(tmp_path, {"/saude/painel": ruim}), AGORA, rede=False)
+    assert all(_niveis(rel, t) == ["aviso"] for t in ("Saúde: leitos de internação", "Saúde: UTI por 100", "Saúde: médicos por mil", "Saúde: mortalidade infantil"))

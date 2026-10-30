@@ -6,6 +6,8 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./brasilplus.db"
     transparencia_api_key: str = ""
+    tomtom_api_key: str = ""            # TOMTOM_API_KEY: só no servidor, nunca no site
+    tomtom_limite_dia: int = 2000       # franquia gratuita do TomTom: 2.500 chamadas por dia
     admin_token: str = "troque-este-token"
     # CSV "Arrecadação por Estado" da Receita Federal (dataset "Resultado da Arrecadação" no dados.gov.br).
     # Se o link mudar, troque aqui ou baixe o arquivo e use arquivo_local=...
