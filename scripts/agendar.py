@@ -49,7 +49,7 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
         "mensal": [("ibge-indicadores", {}), ("ibge-municipios", {}), ("ibge-indicadores-sociais", {}),
                    ("siconfi-receitas", {"ano": ant}), ("siconfi-divida", {"ano": ant}),
                    ("siconfi-despesas-funcao", {"ano": ant}), ("obrasgov-obras", {}),
-                   ("receita-arrecadacao", {"ano_minimo": ano - 3}), ("tesouro-transferencias", {"ano": ano}), ("saude-ubs", {}), ("saude-datasus", {}),
+                   ("receita-arrecadacao", {"ano_minimo": ano - 3}), ("tesouro-transferencias", {"ano": ano}), ("saude-ubs", {}), ("saude-datasus", {}), ("ensino-ideb", {}),
                    ("tesouro-capag", {}), ("ibge-malhas", {})],
         "trimestral": [("pgfn-divida-ativa", {"ano": ta, "trimestre": tt})],
     }

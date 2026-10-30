@@ -437,10 +437,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Votações dos tribunais: aba "Julgamentos dos tribunais" em Leis e Projetos (`app/dados/julgamentos.json`, 6 casos do STF curados com placar e fonte; não há base aberta com os votos de cada ministro; STJ/TSE ainda não entraram).
 
 ## Pendências (30/10/2026)
-- **Ensino** (menu acima de Prêmios; `P.ensino`, `GET /ensino`, `app/ensino.py`): a tela está pronta (Visão geral, Por estado, Faculdades, Escolas), mas SEM dados. Falta o coletor do INEP: IDEB do Brasil/UFs e por escola
-  (anos iniciais, finais e médio) e IGC das instituições de ensino superior. O servidor `download.inep.gov.br` não envia o certificado intermediário (falha no `curl` e no Python, também no GitHub Actions) e a página do
-  IDEB (`ideb.inep.gov.br`) é Power BI; os nomes dos arquivos não aparecem em links. Saída combinada: baixar os arquivos pelo navegador e colocar no projeto, ou embutir o certificado intermediário no robô. NÃO desligar a
-  verificação de TLS. O gráfico de linha usa `lineChart`/`linhasDuplo`; formato esperado em `ensGeral`/`ensEstados`/`ensFaculdades`/`ensEscolas`.
+- **Ensino** (menu acima de Prêmios; `P.ensino`, `GET /ensino` em `app/routers/ensino.py`, `app/ensino.py`): coletor `ensino-ideb` (`app/collectors/inep.py`, robô: `LIMITES` 90 min, validade 60 dias; agendador: mensal). Os arquivos estão em
+  `https://download.inep.gov.br/ideb/resultados/` (zip com .xlsx): `divulgacao_regioes_ufs_ideb_<ano>.zip` (uma aba por etapa, uma linha por rede; códigos de coluna `VL_OBSERVADO_<ano>` = IDEB e `VL_PROJECAO_<ano>` = meta),
+  `divulgacao_brasil_ideb_<ano>.xlsx` (só até 2023) e `divulgacao_<anos_iniciais|anos_finais|ensino_medio>_escolas_<ano>.zip` (até 112 MB). 2025 já saiu. O servidor não envia o certificado intermediário (RNP ICPEdu GR46, GlobalSign Root R46): o
+  coletor baixa o do endereço AIA, confere a impressão digital (`AIA_SHA256`) e usa uma cadeia só para esse cliente; a verificação do TLS continua ligada. Grava `ensino_ideb` (brasil, ufs, metas) e `ensino_escolas` (80 melhores de cada estado e etapa).
+  O Brasil de 2025 não vem em planilha: usa-se a de 2023 (a coleta avisa). **Falta a aba Faculdades (IGC)**: ainda sem arquivo achado (página do IGC no gov.br dá 404); `scripts/diag_inep.py` + `diag-inep.yml` servem para explorar o servidor.
 - **Trânsito em km por estado/capital** (pedido do Felipe, ainda não feito): hoje só o índice anual de congestionamento do TomTom para 9 capitais (`app/dados/transito.json`, `GET /transito`, quadro "Trânsito" na ficha do estado).
   Duas partes sugeridas: (1) km totais de vias por capital pelo OpenStreetMap/Overpass (grátis, sem chave, robô mensal); (2) km por nível de trânsito (livre, intermediário, médio, severo) com chave gratuita do TomTom ou HERE
   (conferir os termos de uso sobre guardar e publicar os números). Waze for Cities só para órgãos públicos; CET-SP publica lentidão em km só de São Paulo.
