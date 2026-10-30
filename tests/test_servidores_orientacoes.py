@@ -60,3 +60,24 @@ def test_doadores_so_cnpj_e_data_com_ano_plausivel():
     e = next(iter(ag.values()))
     assert e["valor"] == 150.5 and e["n"] == 2 and e["ini"] == date(2014, 10, 10) and e["doador"] == "EMPRESA X"
     assert t.tipo_doador("Recursos de pessoas jurídicas") == "empresa" and t.tipo_doador("Recursos de partido político") == "partido_ou_comite" and t.tipo_doador("Em espécie") == "cnpj_sem_tipo"
+
+
+def test_transito_malha_conta_cada_via_uma_vez_e_calcula_km_pela_geometria():
+    from app.collectors import transito as t
+    a = {"type": "way", "id": 1, "tags": {"highway": "primary", "name": "Av. Brasil"}, "geometry": [{"lat": 0.0, "lon": 0.0}, {"lat": 0.0, "lon": 0.01}]}
+    els = [a, dict(a), {"type": "way", "id": 2, "tags": {"highway": "residential"}, "geometry": [{"lat": 0.0, "lon": 0.0}, {"lat": 0.001, "lon": 0.0}]},
+           {"type": "way", "id": 3, "tags": {}, "geometry": [{"lat": 0, "lon": 0}, {"lat": 1, "lon": 1}]}]
+    d = t.resumir_malha(els)
+    assert d["trechos"] == 2 and d["vias_nomeadas"] == 1
+    assert d["por_categoria"]["Arteriais"]["km"] == 1.1 and d["por_categoria"]["Locais"]["km"] == 0.1
+
+
+def test_tomtom_ler_fluxo_e_incidentes_e_exige_chave(monkeypatch):
+    import pytest
+    from app.collectors import transito as t
+    f = t.ler_fluxo({"flowSegmentData": {"currentSpeed": 20, "freeFlowSpeed": 40, "currentTravelTime": 100, "freeFlowTravelTime": 50, "confidence": 0.9}})
+    assert f["congestionamento_pct"] == 50.0 and t.ler_fluxo({}) is None
+    assert t.ler_incidentes({"incidents": [{"properties": {"iconCategory": 6, "delay": 120}}, {"properties": {"iconCategory": 6}}]}) == {"incidentes": 2, "por_categoria_tomtom": {"6": 2}, "atraso_total_s": 120}
+    monkeypatch.setattr(t.settings, "tomtom_api_key", "")
+    with pytest.raises(RuntimeError, match="TOMTOM_API_KEY"):
+        t.coletar_tomtom_transito()

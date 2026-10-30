@@ -14,7 +14,7 @@ from pathlib import Path
 from app import http
 from app.collectors.base import registrar_coleta
 from app.models import Registro
-from app.utils import upsert
+from app.utils import UFS, upsert
 
 log = logging.getLogger("brasilplus.servidores")
 URL = "https://portaldatransparencia.gov.br/download-de-dados/servidores/{periodo}_Servidores_SIAPE"
@@ -66,7 +66,8 @@ def agregar(z: zipfile.ZipFile, teto: float = TETO_REFERENCIA) -> dict:
             continue
         cod = l[i_cod].strip()
         orgaos.setdefault(cod, [l[i_org].strip(), l[i_sup].strip()])
-        lotacao[sid] = (cod, l[i_uf].strip())
+        uf = l[i_uf].strip()
+        lotacao[sid] = (cod, uf if uf in UFS else "")   # "-1" = sem estado informado (exterior ou sem lotação)
     cab, linhas = _leitor(z, "_Remuneracao.csv")
     (i_id, i_bruta, i_abate, i_liq) = _idx(cab, "ID_SERVIDOR_PORTAL", "REMUNERAÇÃO BÁSICA BRUTA (R$)", "ABATE-TETO (R$)", "REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)")
     maximo = max(i_id, i_bruta, i_abate, i_liq)
@@ -130,7 +131,7 @@ def baixar(periodos: list[str]) -> tuple[str, Path]:
     raise RuntimeError(f"Portal da Transparência: nenhum arquivo de servidores em {periodos}")
 
 
-def coletar_servidores(meses: int = 1):
+def coletar_servidores(meses: int = 1, refazer: bool = False):
     """Último mês publicado (ou os `meses` mais recentes; competências já gravadas não são baixadas de novo)."""
     with registrar_coleta("transparencia", "servidores") as (db, n):
         hoje = date.today()
@@ -144,7 +145,7 @@ def coletar_servidores(meses: int = 1):
         for per in periodos:
             if feitos >= int(meses):
                 break
-            if db.query(Registro).filter_by(fonte="transparencia", tipo="servidores_mes", chave=per).first():
+            if not refazer and db.query(Registro).filter_by(fonte="transparencia", tipo="servidores_mes", chave=per).first():
                 feitos += 1
                 continue
             try:

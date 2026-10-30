@@ -189,6 +189,33 @@ def acidentes_rodovias(db: Session) -> dict | None:
             "fontes": ["Polícia Rodoviária Federal — dados abertos"]}
 
 
+AVISO_MALHA = ("Quilômetros de via de cada capital segundo o OpenStreetMap (mapa colaborativo): é o tamanho da malha, NÃO o trânsito. Pista dupla conta um trecho por sentido; "
+               "vias que cruzam a divisa entram inteiras; ciclovias, calçadas, escadas e vias em obra ficam de fora; bairros ainda não são separados.")
+AVISO_TRANSITO_AGORA = ("Medição do TomTom numa AMOSTRA de poucas vias principais de cada capital (não a cidade toda), na hora indicada. Congestionamento = quanto a velocidade atual está abaixo da "
+                        "velocidade com a via livre. Não é o índice anual do TomTom Traffic Index nem os quilômetros da malha.")
+
+
+def transito_malha(db: Session) -> dict | None:
+    r = _regs(db, "malha_capital", "osm")
+    if not r:
+        return None
+    capitais = [{k: v for k, v in d.items() if k != "pontos_amostra"} for d in r.values()]
+    capitais.sort(key=lambda x: -x["km_total"])
+    return {"capitais": capitais, "total_km": round(sum(c["km_total"] for c in capitais), 1), "aviso": AVISO_MALHA, "fontes": ["OpenStreetMap (Overpass)"]}
+
+
+def transito_agora(db: Session) -> dict | None:
+    r = _regs(db, "transito_agora", "tomtom")
+    if not r:
+        return None
+    dias = _regs(db, "transito_dia", "tomtom")
+    historico: dict[str, list] = {}
+    for k in sorted(dias):
+        historico.setdefault(k.split("|")[0], []).append(dias[k])
+    return {"capitais": sorted(r.values(), key=lambda x: -x["congestionamento_pct"]), "historico_diario": {u: v[-30:] for u, v in historico.items()}, "aviso": AVISO_TRANSITO_AGORA,
+            "fontes": ["TomTom Traffic API"]}
+
+
 def servidores(db: Session) -> dict | None:
     meses = _regs(db, "servidores_mes", "transparencia")
     if not meses:

@@ -53,6 +53,18 @@ def acidentes_rodovias(db: Session = Depends(get_db)):
     return _ou_404(memo(("acidentes",), lambda: lacunas.acidentes_rodovias(db)), "prf-acidentes")
 
 
+@router.get("/transito/malha", tags=["Cidades"])
+def transito_malha(db: Session = Depends(get_db)):
+    """Quilômetros de via das capitais (OpenStreetMap), por categoria. Não é trânsito em tempo real."""
+    return _ou_404(memo(("transito_malha",), lambda: lacunas.transito_malha(db)), "osm-malha-capitais")
+
+
+@router.get("/transito/agora", tags=["Cidades"])
+def transito_agora(db: Session = Depends(get_db)):
+    """Congestionamento e velocidade observada nas capitais (TomTom, amostra de vias) e histórico diário."""
+    return _ou_404(memo(("transito_agora",), lambda: lacunas.transito_agora(db)), "tomtom-transito")
+
+
 @router.get("/servidores", tags=["Dinheiro público"])
 def servidores(db: Session = Depends(get_db)):
     """Servidores civis federais por órgão e estado: quantidade, remuneração bruta, abate-teto e líquida (só somas)."""
