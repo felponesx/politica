@@ -4,6 +4,7 @@ PRODES: uma camada por bioma (`prodes-<bioma>-nb:yearly_deforestation`), cada fe
 Os seis biomas não se sobrepõem (Amazônia pelo bioma, não pela Amazônia Legal), então podem ser somados por estado. DETER: alertas mensais de desmatamento e degradação na Amazônia e no Cerrado.
 O WFS não soma por conta própria: lemos as feições em páginas de 100 mil (CSV só com as colunas necessárias)."""
 import csv
+import sys
 import io
 import logging
 import re
@@ -14,6 +15,7 @@ from app.collectors.base import registrar_coleta
 from app.models import Registro
 from app.utils import NOME_PARA_UF, UFS, sem_acento, upsert
 
+csv.field_size_limit(sys.maxsize)   # a coluna de geometria do WFS passa de 131 mil caracteres (o Pantanal falhou por isso)
 log = logging.getLogger("brasilplus.ambiente")
 WFS = "https://terrabrasilis.dpi.inpe.br/geoserver/ows"
 PAGINA = 50_000   # o servidor limita cada resposta a 50 mil feições (pedir mais devolve só 50 mil)
