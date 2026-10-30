@@ -61,9 +61,15 @@ def paginas(camada: str, propriedades: str, filtro: str | None = None, ordem: st
                   "sortBy": ordem, "count": tamanho, "startIndex": inicio}
         if filtro:
             params["cql_filter"] = filtro
+        if not ordem:
+            params.pop("sortBy")
         try:
             texto = _pedido(params).text
         except RuntimeError as e:
+            if "HTTP 400" in str(e) and ordem:   # o GeoServer recusa propertyName + sortBy em algumas camadas: segue sem ordenar (a contagem exata confere no fim)
+                log.warning("WFS %s: %s; tentando sem sortBy", camada, str(e)[:80])
+                ordem = None
+                continue
             if re.search(r"HTTP 5\d\d", str(e)) and tamanho > 6_000:
                 tamanho //= 2
                 log.warning("WFS %s: %s; tentando páginas de %s", camada, str(e)[:80], tamanho)
@@ -120,7 +126,7 @@ def coletar_desmatamento():
             try:
                 esperado = total_feicoes(camada)
                 por_uf, feicoes = somar_prodes(paginas(camada, "state,year,area_km,main_class"))
-                if feicoes < esperado * 0.99 or not por_uf:
+                if not esperado * 0.99 <= feicoes <= esperado * 1.01 or not por_uf:
                     raise RuntimeError(f"leu {feicoes:,} de {esperado:,} feições; nada foi gravado")
                 anos = sorted({a for s in por_uf.values() for a in s})
                 total = {a: round(sum(s.get(a, 0) for s in por_uf.values()), 2) for a in anos}
@@ -138,7 +144,7 @@ def coletar_desmatamento():
                 filtro = f"view_date >= '{desde.isoformat()}'"
                 esperado = total_feicoes(camada, filtro)
                 linhas = list(paginas(camada, "uf,areamunkm,classname,view_date", filtro))
-                if len(linhas) < esperado * 0.99:
+                if not esperado * 0.99 <= len(linhas) <= esperado * 1.01:
                     raise RuntimeError(f"leu {len(linhas):,} de {esperado:,} alertas; nada foi gravado")
                 por_uf = somar_deter(linhas)
                 if not por_uf:

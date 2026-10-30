@@ -146,3 +146,24 @@ def test_anp_media_por_estado_so_do_ultimo_mes():
     assert anp.semestres_do_site('<a href="/x/ca/ca-2025-02.zip"></a><a href="/x/ca/ca-2026-01.zip"></a><a href="/x/ca/ca-2021-01.csv"></a>') == ["ca-2026-01.zip", "ca-2025-02.zip"]
     with pytest.raises(ValueError, match="colunas"):
         anp.agregar("a;b\n1;2\n")
+
+
+def test_wfs_cai_para_sem_sortby_no_400_e_reduz_pagina_no_502(monkeypatch):
+    chamadas = []
+
+    class R:
+        def __init__(self, t):
+            self.text = t
+
+    def falso(params):
+        chamadas.append(dict(params))
+        if "sortBy" in params:
+            raise RuntimeError("HTTP 400 do WFS: Can handle 5 attributes only")
+        if params["count"] == ambiente.PAGINA:
+            raise RuntimeError("HTTP 502 do WFS: Falha interna")
+        return R("FID,state\na,AC\nb,AM\n")
+
+    monkeypatch.setattr(ambiente, "_pedido", falso)
+    linhas = list(ambiente.paginas("c", "state"))
+    assert [l["state"] for l in linhas] == ["AC", "AM"]
+    assert "sortBy" not in chamadas[-1] and chamadas[-1]["count"] == ambiente.PAGINA // 2
