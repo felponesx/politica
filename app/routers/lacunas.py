@@ -1,8 +1,11 @@
+from datetime import date
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app import lacunas
 from app.db import get_db
+from app.models import Registro
 from app.utils import memo, para_uf
 
 router = APIRouter()
@@ -63,6 +66,30 @@ def transito_malha(db: Session = Depends(get_db)):
 def transito_agora(db: Session = Depends(get_db)):
     """Congestionamento e velocidade observada nas capitais (TomTom, amostra de vias) e histórico diário."""
     return _ou_404(memo(("transito_agora",), lambda: lacunas.transito_agora(db)), "tomtom-transito")
+
+
+@router.get("/diarios-oficiais", tags=["Dinheiro público"])
+def diarios_oficiais(q: str = Query("", max_length=200), desde: date | None = None, ate: date | None = None, ibge: str | None = Query(None, pattern=r"^\d{7}$"),
+                     limit: int = Query(10, ge=1, le=50), offset: int = Query(0, ge=0, le=9950)):
+    """Busca nos diários oficiais municipais (Querido Diário). Consulta ao vivo; se o serviço estiver fora do ar, responde 503 (nunca devolve dado antigo como atual)."""
+    from app.collectors import querido_diario as qd
+    try:
+        d = qd.buscar(q, desde, ate, [ibge] if ibge else None, limit, offset)
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(503, f"Querido Diário indisponível no momento ({type(e).__name__}). Tente de novo mais tarde.") from e
+    return {**d, "aviso": "Trechos de diários oficiais publicados pelas prefeituras, reunidos pelo projeto Querido Diário (Open Knowledge Brasil). Aparecer num diário não indica irregularidade.", "fonte": "Querido Diário"}
+
+
+@router.get("/diarios-oficiais/status", tags=["Dinheiro público"])
+def diarios_oficiais_status(db: Session = Depends(get_db)):
+    """Disponibilidade do Querido Diário (histórico das últimas verificações) e a contagem de diários com termos de contratação."""
+    h = db.query(Registro).filter_by(fonte="querido_diario", tipo="disponibilidade", chave="historico").first()
+    if not h:
+        raise HTTPException(404, "Sem verificações do Querido Diário. Rode a coleta querido-diario.")
+    t = db.query(Registro).filter_by(fonte="querido_diario", tipo="termos").order_by(Registro.atualizado_em.desc()).first()
+    ultima = (h.dados or {}).get("ultima") or {}
+    return {"disponivel_na_ultima_verificacao": ultima.get("disponivel"), "ultima_verificacao": ultima.get("medido_em"), "historico": ((h.dados or {}).get("medicoes") or [])[-50:],
+            "termos": (t.dados if t else None), "aviso": "Se 'disponivel' for falso, os números de termos podem ser antigos: confira a data de 'medido_em'."}
 
 
 @router.get("/servidores", tags=["Dinheiro público"])

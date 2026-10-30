@@ -11,17 +11,19 @@ from datetime import date, datetime
 from app.collectors.base import registrar_coleta
 from app.collectors.tse import sq_unico
 from app.collectors.tse_financas import (R_ORIGEM, R_VALOR, SQ, UE, _arquivos, _baixar, _linhas, _pega, _rotulo, url_contas)
-from app.models import DoacaoEmpresa
+from app.models import DoacaoEmpresa, Registro
+from app.utils import upsert
 from app.utils import para_float
 
 log = logging.getLogger("brasilplus.doadores")
-DOC = ("nr_cpf_cnpj_doador", "cpf_cnpj_do_doador", "numero_cpf_cgc_doador", "cd_cpf_cgc")
+DOC = ("nr_cpf_cnpj_doador", "cd_cpf_cnpj_doador", "cpf_cnpj_do_doador", "numero_cpf_cgc_doador", "cd_cpf_cgc")
 NOME = ("nm_doador_rfb", "nome_do_doador_receita_federal", "nm_doador", "nome_do_doador", "nome_doador", "no_doador")
 DATA = ("dt_receita", "data_da_receita", "data_receita")
 PARTIDO = ("sg_partido", "sigla_partido", "sg_part")
 CARGO = ("ds_cargo", "cargo", "descricao_cargo")
 CAND = ("nm_candidato", "nome_candidato", "no_cand")
 ORIGEM = R_ORIGEM
+PISO_PARTIDO = 10_000.0   # transferências de partido/comitê/outros candidatos abaixo disto (por candidatura e origem) não são guardadas, só contadas no resumo do ano
 MINIMO = 500   # linhas de doador CNPJ esperadas por ano (guarda contra arquivo cortado ou leiaute mudado)
 
 
@@ -40,6 +42,12 @@ def para_dia(v, ano: int | None = None) -> date | None:
     except ValueError:
         return None
     return d if ano is None or ano - 1 <= d.year <= ano + 4 else None
+
+
+def propria(origem: str) -> bool:
+    """'Recursos próprios' traz o CNPJ da própria conta de campanha do candidato: não é doador."""
+    o = origem.lower()
+    return "próprio" in o or "proprio" in o
 
 
 def tipo_doador(origem: str) -> str:
@@ -96,6 +104,14 @@ def coletar_tse_doadores(ano: int, uf: str | None = None, arquivo_local: str | N
                 agreg.update(parcial)
         if lidas < MINIMO and not uf:
             raise RuntimeError(f"doadores {ano}: só {lidas} linhas com CNPJ (esperado ≥ {MINIMO}); nada foi gravado")
+        descartes = {"proprios": {"linhas": 0, "valor": 0.0}, "partido_pequeno": {"linhas": 0, "valor": 0.0}}
+        for chave in list(agreg):
+            o, e = chave[2], agreg[chave]
+            motivo = "proprios" if propria(o) else "partido_pequeno" if tipo_doador(o) == "partido_ou_comite" and e["valor"] < PISO_PARTIDO else None
+            if motivo:
+                descartes[motivo]["linhas"] += e["n"]
+                descartes[motivo]["valor"] += e["valor"]
+                del agreg[chave]
         existentes = {(c, s, o): i for i, c, s, o in db.query(DoacaoEmpresa.id, DoacaoEmpresa.cnpj, DoacaoEmpresa.sq_candidato, DoacaoEmpresa.origem).filter_by(ano=int(ano))}
         agora = datetime.now()
         novas, mudadas = [], []
@@ -111,6 +127,9 @@ def coletar_tse_doadores(ano: int, uf: str | None = None, arquivo_local: str | N
             db.bulk_insert_mappings(DoacaoEmpresa, novas[i:i + 5000])
         for i in range(0, len(mudadas), 5000):
             db.bulk_update_mappings(DoacaoEmpresa, mudadas[i:i + 5000])
+        resumo = {"ano": int(ano), "linhas_lidas": lidas, "gravadas": len(agreg), "piso_partido_comite": PISO_PARTIDO,
+                  "descartadas": {k: {"linhas": v["linhas"], "valor": round(v["valor"], 2)} for k, v in descartes.items()}, "coletado_em": agora.isoformat(timespec="seconds")}
+        upsert(db, Registro, {"fonte": "tse", "tipo": "doadores_ano", "chave": f"{ano}|{uf or 'todas'}"}, {"ano": int(ano), "titulo": f"Doadores com CNPJ {ano}", "dados": resumo})
         db.commit()
         n += len(agreg)
         log.info("doadores %s: %s linhas lidas, %s novas, %s atualizadas", ano, lidas, len(novas), len(mudadas))
