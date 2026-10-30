@@ -100,6 +100,12 @@ def ocorrencias(etapa: str | None = Query(None, pattern="^(investigacao|denuncia
     return oc.listar(etapa, q, limit, offset)
 
 
+@router.get("/caged", tags=["Trabalho"])
+def caged(db: Session = Depends(get_db)):
+    """Novo CAGED: admissões, desligamentos e saldo por estado e setor nos últimos meses coletados."""
+    return _ou_404(memo(("caged",), lambda: lacunas.caged(db)), "caged-saldos")
+
+
 @router.get("/servidores", tags=["Dinheiro público"])
 def servidores(db: Session = Depends(get_db)):
     """Servidores civis federais por órgão e estado: quantidade, remuneração bruta, abate-teto e líquida (só somas)."""

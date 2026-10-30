@@ -216,6 +216,19 @@ def transito_agora(db: Session) -> dict | None:
             "fontes": ["TomTom Traffic API"]}
 
 
+AVISO_CAGED = ("Novo CAGED (Ministério do Trabalho): admissões, desligamentos e saldo de empregos com carteira (CLT) por estado e setor, a partir dos movimentos declarados no mês. "
+               "Só somas; nenhum trabalhador é identificado. Os números oficiais somam também as declarações fora do prazo e tiram as excluídas, então podem diferir um pouco destes. "
+               "Não inclui servidores estatutários nem trabalho informal.")
+
+
+def caged(db: Session) -> dict | None:
+    meses = _regs(db, "caged_mes", "caged")
+    if not meses:
+        return None
+    ordem = sorted(meses, reverse=True)
+    return {"ultimo": meses[ordem[0]], "meses": [{"competencia": m, **meses[m]["brasil"]} for m in ordem], "aviso": AVISO_CAGED, "fontes": ["Ministério do Trabalho — Novo CAGED (FTP do PDET)"]}
+
+
 def servidores(db: Session) -> dict | None:
     meses = _regs(db, "servidores_mes", "transparencia")
     if not meses:

@@ -99,3 +99,22 @@ def test_ocorrencias_vem_dos_casos_com_fonte_e_classifica_so_com_palavra_clara()
     assert oc.classificar("Fulano se reúne com o ministro.") == "outra"
     d = oc.listar(limit=500)
     assert d["total"] >= 100 and all(i["fonte_url"].startswith("http") for i in d["ocorrencias"]) and "presumidos inocentes" in d["aviso"]
+
+
+def test_caged_agrega_so_contagens_por_uf_e_secao_e_le_7z(tmp_path):
+    import py7zr
+    from app.collectors import caged
+    cab = "competênciamov;região;uf;município;seção;subclasse;saldomovimentação;cbo2002ocupação;salário\n"
+    corpo = "202608;3;35;355030;G;4711;1;411010;1500,00\n202608;3;35;355030;G;4711;-1;411010;1500,00\n202608;3;35;355030;C;1011;1;411010;2000,00\n202608;1;99;1;G;1;1;1;1\n"
+    arq = tmp_path / "CAGEDMOV202608.txt"
+    arq.write_text(cab + corpo, encoding="latin-1")
+    z = tmp_path / "CAGEDMOV202608.7z"
+    with py7zr.SevenZipFile(z, "w") as w:
+        w.write(arq, arq.name)
+    cabecalho, linhas, pasta, fh = caged.ler_7z(z)
+    ag = caged.agregar(linhas, cabecalho)
+    fh.close()
+    sp = ag["competencias"]["202608"]["SP"]
+    assert ag["linhas"] == 3 and sp["adm"] == 2 and sp["desl"] == 1 and sp["secoes"]["G"] == [1, 1]
+    d = caged.resumir({"CAGEDMOV": ag, "CAGEDFOR": {"linhas": 0, "competencias": {}}, "CAGEDEXC": {"linhas": 0, "competencias": {}}}, "202608")
+    assert d["brasil"]["saldo_mov"] == 1 and "salario" not in str(d).lower() and d["por_uf"]["SP"]["por_secao"]["C"]["setor"] == "Indústria de transformação"
