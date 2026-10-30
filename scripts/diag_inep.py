@@ -30,12 +30,15 @@ import zipfile
 import openpyxl
 
 B = "https://download.inep.gov.br/"
-NOMES = ["divulgacao_regioes_ufs_ideb_{a}.xlsx", "divulgacao_anos_iniciais_municipios_{a}.zip", "divulgacao_anos_iniciais_escolas_{a}.zip",
-         "divulgacao_anos_finais_escolas_{a}.zip", "divulgacao_ensino_medio_escolas_{a}.zip"]
+NOMES = ["divulgacao_regioes_ufs_ideb_{a}.xlsx", "divulgacao_regioes_ufs_ideb_{a}.zip", "divulgacao_anos_iniciais_municipios_{a}.zip", "divulgacao_anos_iniciais_escolas_{a}.zip",
+         "divulgacao_anos_finais_escolas_{a}.zip", "divulgacao_ensino_medio_escolas_{a}.zip", "divulgacao_brasil_ideb_{a}.xlsx", "ideb_{a}.zip", "Ideb_{a}.zip",
+         "divulgacao_regioes_ufs_{a}.xlsx", "divulgacao_ufs_ideb_{a}.xlsx", "resultados_ideb_{a}.zip", "divulgacao_ideb_{a}.zip"]
 achados = {}
 print("--- onde estão os arquivos de 2023 (e 2025, se houver)", flush=True)
 for ano in (2025, 2023):
-    for pasta in ("ideb/", f"educacao_basica/portal_ideb/planilhas_para_download/{ano}/", f"ideb/{ano}/", f"ideb/resultados/{ano}/", f"educacao_basica/ideb/{ano}/"):
+    for pasta in ("ideb/", f"educacao_basica/portal_ideb/planilhas_para_download/{ano}/", f"ideb/{ano}/", f"ideb/resultados/{ano}/", f"educacao_basica/ideb/{ano}/",
+                  "ideb/resultados/", f"ideb/planilhas_para_download/{ano}/", f"ideb/divulgacao/{ano}/", f"educacao_basica/portal_ideb/planilhas_para_download/", f"ideb/{ano}/planilhas/",
+                  f"educacao_basica/portal_ideb/{ano}/", f"ideb/divulgacao_{ano}/"):
         for n in NOMES:
             u = B + pasta + n.format(a=ano)
             try:
@@ -51,7 +54,7 @@ def olhar(nome, conteudo, linhas=8):
     wb = openpyxl.load_workbook(io.BytesIO(conteudo), read_only=True, data_only=True)
     print(f"\n##### {nome}: abas {wb.sheetnames}", flush=True)
     for ws in wb.worksheets[:6]:
-        print(f"  -- aba {ws.title!r} dims={ws.dimensions}", flush=True)
+        print(f"  -- aba {ws.title!r}", flush=True)
         for i, row in enumerate(ws.iter_rows(values_only=True)):
             if i >= linhas:
                 break
