@@ -83,3 +83,10 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 | tomtom-transito | TomTom Traffic API | Aguarda `TOMTOM_API_KEY` (gratuita) | Sem chave não coleta nem simula |
 
 | reforma-tributaria | Receita (arrecadacao-estado.csv) + CGIBS (transparência) | Monitor funciona; **arrecadação de CBS/IBS ainda não é publicada** (30/10/2026) | Não estimamos valores; ICMS/ISS seguem como linha de base |
+
+| caged-estoque-referencia | MTE: estoque-de-referencia-AAAA.zip | **Funciona** (2026: 668.902 linhas, 47.110.663 vínculos = total oficial) | Referência anual (dez/2025), não estoque mensal; encadeado só por UF×setor |
+| inep-censo-ies | INEP: microdados do Censo da Educação Superior (zip, Range) | **Funciona** (27.758 pares IES×município) | IGC é da instituição; sem nota municipal; EAD sem polo fica de fora |
+| prf-acidentes (2022) | PRF: página oficial (Drive) | **Funciona** (2022: 64.606 acidentes) | Zip testado, SHA-256 guardado |
+| escandalos-fila | PF e CGU (gov.br), STF (feed) | **Funciona**; MPF 404, STJ 403, TCU só JS | Fila de revisão, nada publicado como caso |
+| mapbiomas-alertas | MapBiomas Alerta (GraphQL público) | **Funciona** (contagem por bioma e mês) | Não é PRODES; área exige token |
+| inpe-prodes (Cerrado, Caatinga, Mata Atlântica) | TerraBrasilis (downloads/WFS) | **Indisponível**: downloads 502/403/404, WFS com 502 e timeout | Sem alternativa oficial aberta encontrada |
