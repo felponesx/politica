@@ -284,3 +284,153 @@ def test_ibs_detecta_publicacao_nova_mantem_dados_quando_portal_cai_e_nao_invent
         assert db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_monitor").count() == 1
     finally:
         db.close()
+
+
+# ---------- Overpass em partes, com retomada (31/10/2026) ----------
+def _resp(js=None, status=200, texto=None):
+    import httpx
+    import json as _j
+    return httpx.Response(status, request=httpx.Request("POST", "https://x"), text=texto if texto is not None else _j.dumps(js))
+
+
+def _agora_iso(dias=0):
+    from datetime import datetime, timedelta, timezone
+    return (datetime.now(timezone.utc) - timedelta(days=dias)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _via(i, lat=-10.0, tipo="primary", nome="Av. X"):
+    return {"type": "way", "id": i, "tags": {"highway": tipo, "name": nome}, "geometry": [{"lat": lat, "lon": -48.0}, {"lat": lat + 0.01, "lon": -48.0}]}
+
+
+def test_overpass_gira_espelhos_recusa_base_velha_e_resposta_cortada(monkeypatch):
+    import httpx
+    from app.collectors import osm_malha as om
+    chamadas = []
+    def post(url, **kw):
+        chamadas.append(url.split("/")[2])
+        if "overpass-api" in url:
+            return _resp(status=504, texto="Gateway Time-out")
+        if "private.coffee" in url:
+            return _resp({"osm3s": {"timestamp_osm_base": _agora_iso(90)}, "elements": []})   # base de 3 meses atrás
+        return _resp({"osm3s": {"timestamp_osm_base": _agora_iso()}, "elements": [_via(1)]})
+    monkeypatch.setattr(om.httpx, "post", post)
+    monkeypatch.setattr(om.httpx, "get", lambda *a, **k: _resp(texto="Rate limit: 0\n2 slots available now."))
+    cli = om.Overpass(dormir=lambda s: None, intervalo=0)
+    d, esp = cli.consultar("[out:json][timeout:60];out;")
+    assert esp == "maps.mail.ru" and chamadas == ["overpass-api.de", "overpass.private.coffee", "maps.mail.ru"]
+    assert len(cli.falhas) == 2 and "base OSM velha" in cli.falhas[1]
+    # 200 com `remark` de erro (resultado cortado pelo servidor) é recusado em todos os espelhos
+    monkeypatch.setattr(om.httpx, "post", lambda url, **kw: _resp({"osm3s": {"timestamp_osm_base": _agora_iso()}, "remark": "runtime error: Query timed out in \"query\"", "elements": [_via(2)]}))
+    import pytest
+    with pytest.raises(RuntimeError, match="Overpass indisponível"):
+        om.Overpass(dormir=lambda s: None, intervalo=0).consultar("[out:json];out;")
+    # JSON cortado no meio
+    monkeypatch.setattr(om.httpx, "post", lambda url, **kw: _resp(texto='{"osm3s": {"timestamp'))
+    with pytest.raises(RuntimeError, match="Overpass indisponível"):
+        om.Overpass(dormir=lambda s: None, intervalo=0).consultar("[out:json];out;")
+
+
+def test_overpass_espera_a_vaga_do_status(monkeypatch):
+    from app.collectors import osm_malha as om
+    esperas = []
+    monkeypatch.setattr(om.httpx, "get", lambda *a, **k: _resp(texto="0 slots available now.\nSlot available after: 2026-10-31T12:00:00Z, in 17 seconds."))
+    monkeypatch.setattr(om.httpx, "post", lambda url, **kw: _resp({"osm3s": {"timestamp_osm_base": _agora_iso()}, "elements": []}))
+    om.Overpass(dormir=esperas.append, intervalo=0).consultar("[out:json];out;")
+    assert 18 in esperas
+
+
+def test_partes_sao_disjuntas_e_completas_e_dedupe_por_id():
+    from app.collectors import osm_malha as om
+    import re
+    todos = ["motorway", "primary_link", "tertiary", "residential", "living_street", "unclassified", "service", "road", "busway", "footway", "track", "path", "steps"]
+    def cai(grupo, tipo):
+        filtro = om.GRUPOS[grupo]
+        regs = re.findall(r'\["highway"(!?~|=)"([^"]+)"\]', filtro)
+        ok = True
+        for op, val in regs:
+            casa = bool(re.fullmatch(val.strip("^$"), tipo)) if "~" in op else tipo == val
+            ok = ok and (casa if "!" not in op else not casa)
+        return ok
+    for t in todos:
+        n = sum(cai(g, t) for g in om.GRUPOS)
+        assert n == (0 if t in om.EXCLUIDAS.split("|") else 1), (t, n)
+    p = om.resumir_parte([_via(1), _via(1), _via(2, nome="Rua B"), {"type": "node", "id": 9}])
+    assert p["vias"] == 2 and p["ids_duplicados"] == 1 and len(p["nomes_crc32"]) == 2
+    j = om.juntar_partes({"a": p, "b": om.resumir_parte([_via(3, tipo="residential", nome="Av. X")])})
+    assert j["vias_nomeadas"] == 2 and j["trechos"] == 3   # "Av. X" aparece nas duas partes e conta uma vez
+
+
+def test_malha_salva_por_partes_e_retoma_depois_de_falha(monkeypatch):
+    import pytest
+    from app.collectors import osm_malha as om, transito
+    from app.db import SessionLocal, criar_tabelas
+    from app.models import Registro
+    criar_tabelas()
+    monkeypatch.setitem(transito.MINIMO_KM, "TO", 1)
+    pedidos = []
+    falhar = {"grupo": "servico"}
+    def consultar(self, q, timeout_servidor=180):
+        pedidos.append(q)
+        if "out ids" in q:
+            return {"osm3s": {"timestamp_osm_base": _agora_iso()}, "elements": [{"type": "relation", "id": 123}]}, "overpass-api.de"
+        if falhar["grupo"] and 'highway"="service"' in q:
+            raise RuntimeError("Overpass indisponível: teste")
+        return {"osm3s": {"timestamp_osm_base": _agora_iso()}, "elements": [_via(len(pedidos), tipo="primary" if "motorway" in q else "residential")]}, "overpass-api.de"
+    monkeypatch.setattr(om.Overpass, "consultar", consultar)
+    db = SessionLocal()
+    try:
+        for t in ("malha_parte", "malha_capital", "relacao_municipio"):
+            db.query(Registro).filter_by(fonte="osm", tipo=t).delete()
+        db.commit()
+        cli = om.Overpass(dormir=lambda s: None, intervalo=0)
+        with pytest.raises(RuntimeError):
+            om.coletar_capital(db, cli, "TO")
+        assert db.query(Registro).filter_by(fonte="osm", tipo="malha_parte").count() == 2   # principais e locais ficaram salvas
+        assert db.query(Registro).filter_by(fonte="osm", tipo="malha_capital").count() == 0   # capital incompleta: nada publicado
+        antes = len(pedidos)
+        falhar["grupo"] = None
+        d = om.coletar_capital(db, cli, "TO")
+        assert len(pedidos) - antes == 2 and d["partes_reaproveitadas"] == 2   # só pediu as duas que faltavam
+        assert set(d["partes"]) == set(om.GRUPOS) and d["osm_base"] and d["relacao_osm"] == 123 and d["metodo"] == "overpass"
+        assert "area(3600000123)" in pedidos[-1]
+        om.coletar_capital(db, cli, "TO")   # nova rodada: tudo no cache, nenhuma consulta nova
+        assert len(pedidos) - antes == 2
+        assert db.query(Registro).filter_by(fonte="osm", tipo="malha_capital", chave="TO").count() == 1
+        assert db.query(Registro).filter_by(fonte="osm", tipo="malha_parte").count() == 4
+    finally:
+        db.close()
+
+
+def _pbf_de_teste(caminho):
+    """PBF minúsculo: um quadrado de ~1,1 km de lado em Palmas com uma avenida dentro (≈1,1 km), uma rua local dentro, uma via FORA do limite, uma calçada (excluída) e uma área."""
+    import osmium
+    w = osmium.SimpleWriter(str(caminho))
+    ns = {}
+    for i, (lat, lon) in enumerate([(-10.20, -48.34), (-10.19, -48.34), (-10.19, -48.33), (-10.20, -48.33), (-10.195, -48.335), (-10.30, -48.30), (-10.31, -48.30)], start=1):
+        w.add_node(osmium.osm.mutable.Node(id=i, location=(lon, lat)))
+        ns[i] = i
+    for wid, nos, tags in ((100, [1, 2], {"highway": "primary", "name": "Av. Teste"}), (101, [4, 5, 3], {"highway": "residential", "name": "Rua A"}), (102, [6, 7], {"highway": "primary", "name": "Fora"}),
+                           (103, [1, 4], {"highway": "footway"}), (104, [1, 2], {"highway": "service", "area": "yes"}), (105, [1, 2], {"highway": "service"})):
+        w.add_way(osmium.osm.mutable.Way(id=wid, nodes=nos, tags=tags))
+    w.close()
+
+
+def test_pbf_le_cabecalho_atribui_pelo_ponto_do_meio_e_exclui_o_que_nao_e_via(tmp_path):
+    from shapely.geometry import box
+    from shapely.prepared import prep
+    from app.collectors import osm_pbf
+    arq = tmp_path / "t.osm.pbf"
+    _pbf_de_teste(arq)
+    g = box(-48.345, -10.205, -48.325, -10.185)
+    res = osm_pbf.processar_pbf(arq, {"TO": (g, prep(g))})
+    ids = sorted(e["id"] for e in res["vias"]["TO"])
+    assert ids == [100, 101, 105]   # a via de fora, a calçada e a área não entram
+    assert res["estatisticas"]["vias_highway_lidas"] == 6
+    p = osm_pbf.resumir_parte(res["vias"]["TO"])
+    assert p["vias"] == 3 and p["ids_duplicados"] == 0
+    km = sum(c["km"] for c in p["por_categoria"].values())
+    assert abs(km - 3.784) < 0.01   # avenida 1,112 km + rua em zigue-zague 2 × 0,78 km + serviço 1,112 km (haversine, conferido à mão)
+    assert "osm_base" in osm_pbf.cabecalho_pbf(arq)
+    # fora do ar sem erro de MD5: o MD5 do arquivo bate com o calculado
+    from app.downloads import md5
+    assert len(md5(arq)) == 32
