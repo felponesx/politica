@@ -47,6 +47,8 @@ jobs:
       DATABASE_URL: postgresql+psycopg://brasil:brasil@localhost:5432/brasilplus
       TRANSPARENCIA_API_KEY: ${{ secrets.TRANSPARENCIA_API_KEY }}
       TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+      MAPBIOMAS_EMAIL: ${{ secrets.MAPBIOMAS_EMAIL }}
+      MAPBIOMAS_SENHA: ${{ secrets.MAPBIOMAS_SENHA }}
       TAREFAS: ${{ inputs.tarefas }}
       PYTHONUNBUFFERED: "1"
       CNPJ_INTERVALO: "1.5"

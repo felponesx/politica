@@ -36,6 +36,7 @@ _TAREFAS_BRUTAS = {
     "prf-acidentes": prf.coletar_prf_acidentes,   # anos
     "camara-orientacoes": orientacoes.coletar_camara_orientacoes,   # ano_inicial, ano_final
     "inpe-desmatamento": ambiente.coletar_desmatamento,
+    "mapbiomas-alertas-territorio": mapbiomas.coletar_mapbiomas_territorio,
     "osm-malha-pbf": osm_pbf.coletar_malha_pbf,
     "inpe-prodes-mata-atlantica": prodes_mata.coletar_prodes_mata_atlantica,
     "ibge-trabalho": economia_extra.coletar_trabalho,      # trimestres

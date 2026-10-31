@@ -6,6 +6,8 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./brasilplus.db"
     transparencia_api_key: str = ""
+    mapbiomas_email: str = ""           # MAPBIOMAS_EMAIL / MAPBIOMAS_SENHA: conta da plataforma MapBiomas Alerta (login da API); só no servidor, nunca no site nem no repositório
+    mapbiomas_senha: str = ""
     tomtom_api_key: str = ""            # TOMTOM_API_KEY: só no servidor, nunca no site
     tomtom_limite_dia: int = 2000       # franquia gratuita do TomTom: 2.500 chamadas por dia
     admin_token: str = "troque-este-token"

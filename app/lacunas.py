@@ -418,9 +418,23 @@ AVISO_MAPBIOMAS = ("ALERTAS validados pelo MapBiomas Alerta, contados por bioma 
                    "e os números não devem ser somados nem comparados com os do PRODES. A área e o detalhe de cada alerta exigem login na plataforma e não são coletados.")
 
 
+AVISO_TERRITORIO_MB = ("Alertas validados do MapBiomas Alerta por estado, bioma e município, em HECTARES por ano. NÃO é a taxa oficial do PRODES/INPE (metodologia, período e unidade diferentes): não somar nem misturar. "
+                       "O ranking de municípios traz só o nome, sem o estado (homônimos podem se juntar). O último ano é parcial. Dados agregados: nenhuma propriedade rural nem pessoa.")
+
+
 def alertas_mapbiomas(db: Session) -> dict | None:
     d = _regs(db, "alertas_bioma", "mapbiomas").get("ultimo")
     return {**d, "aviso": AVISO_MAPBIOMAS, "fontes": ["MapBiomas Alerta (API pública)"]} if d else None
+
+
+def alertas_mapbiomas_territorio(db: Session, uf: str | None = None) -> dict | None:
+    d = _regs(db, "alertas_territorio", "mapbiomas").get("ultimo")
+    if not d:
+        return None
+    base = {k: v for k, v in d.items() if k not in ("por_uf", "municipios")}
+    if uf:
+        return {**base, "uf": uf.upper(), "estado": (d["por_uf"].get(uf.upper()) or None), "aviso": AVISO_TERRITORIO_MB, "fontes": ["MapBiomas Alerta (API com login)"]}
+    return {**base, "por_uf": d["por_uf"], "municipios": d["municipios"][:100], "aviso": AVISO_TERRITORIO_MB, "fontes": ["MapBiomas Alerta (API com login)"]}
 
 
 def servidores(db: Session) -> dict | None:

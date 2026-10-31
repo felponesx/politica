@@ -550,3 +550,50 @@ def test_limite_do_osm_junta_caminhos_e_tira_buracos_e_cai_para_o_osm_quando_o_i
             osm_pbf.limite_municipio(db, "TO", "1721000")
     finally:
         db.close()
+
+
+def test_mapbiomas_territorio_login_so_por_ambiente_valida_retorno_e_guarda_historico(monkeypatch):
+    import pytest
+    from app.collectors import mapbiomas as mb
+    from app.config import settings
+    from app.db import SessionLocal, criar_tabelas
+    from app.models import Registro
+    ano = mb.date.today().year
+    def linha(nome, chave, a2019, a2020):
+        return {chave: nome, "alertsTotal": 10, "areaTotal": a2019 + a2020, **{f"area{a}": (a2019 if a == 2019 else a2020 if a == 2020 else 0.0) for a in mb.ANOS}}
+    estados = ["ACRE", "ALAGOAS", "AMAPÁ", "AMAZONAS", "BAHIA", "CEARÁ", "DISTRITO FEDERAL", "ESPÍRITO SANTO", "GOIÁS", "MARANHÃO", "MATO GROSSO", "MATO GROSSO DO SUL", "MINAS GERAIS", "PARÁ", "PARAÍBA", "PARANÁ", "PERNAMBUCO",
+               "PIAUÍ", "RIO DE JANEIRO", "RIO GRANDE DO NORTE", "RIO GRANDE DO SUL", "RONDÔNIA", "RORAIMA", "SANTA CATARINA", "SÃO PAULO", "SERGIPE", "TOCANTINS"]
+    corpo = {"data": {"alerts": {"metadata": {"totalCount": 99}, "summary": {"total": 99, "area": 1234.56},
+                                 "rankingByState": [linha(e, "state", 100.0, 50.5) for e in estados],
+                                 "rankingByBiome": [linha(b, "biome", 10.0, 5.0) for b in ("Amazônia", "Cerrado", "Caatinga", "Mata Atlântica", "Pampa", "Pantanal")],
+                                 "rankingByCity": [linha(f"Cidade {i}", "city", float(i), 1.0) for i in range(1200)]}}}
+    chamadas = []
+    def post(corpo_, token=None, tentativas=4):
+        chamadas.append(token)
+        return {"data": {"signIn": {"token": "TOKEN-FALSO"}}} if "signIn" in corpo_["query"] else corpo
+    monkeypatch.setattr(mb, "_post", post)
+    monkeypatch.setattr(settings, "mapbiomas_email", "")
+    monkeypatch.setattr(settings, "mapbiomas_senha", "")
+    with pytest.raises(RuntimeError, match="sem MAPBIOMAS_EMAIL"):
+        mb.coletar_mapbiomas_territorio()
+    assert chamadas == []   # sem conta, nem tenta (e nada é simulado)
+    monkeypatch.setattr(settings, "mapbiomas_email", "a@b.c")
+    monkeypatch.setattr(settings, "mapbiomas_senha", "segredo-de-teste")
+    criar_tabelas()
+    assert mb.coletar_mapbiomas_territorio() > 0
+    assert chamadas == [None, "TOKEN-FALSO"]
+    db = SessionLocal()
+    try:
+        r = db.query(Registro).filter_by(fonte="mapbiomas", tipo="alertas_territorio", chave="ultimo").one().dados
+        assert r["unidade"] == "hectares" and r["por_uf"]["TO"]["area_ha_por_ano"] == {"2019": 100.0, "2020": 50.5} and r["por_uf"]["PA"]["estado"] == "PARÁ"
+        assert r["municipios"][0]["municipio"] == "Cidade 1199" and len(r["municipios"]) == mb.MAX_MUNICIPIOS and r["n_municipios"] == 1200
+        assert "segredo-de-teste" not in str(r) and "TOKEN-FALSO" not in str(r)
+        assert db.query(Registro).filter(Registro.fonte == "mapbiomas", Registro.tipo == "alertas_territorio", Registro.chave.like("snap:%")).count() == 1
+        from app import lacunas
+        api = lacunas.alertas_mapbiomas_territorio(db)
+        assert "PRODES" in api["aviso"] and len(api["municipios"]) == 100 and lacunas.alertas_mapbiomas_territorio(db, "to")["estado"]["alertas"] == 10
+    finally:
+        db.close()
+    corpo["data"]["alerts"]["rankingByState"] = corpo["data"]["alerts"]["rankingByState"][:20]   # retorno cortado: não grava
+    with pytest.raises(RuntimeError, match="retorno incompleto"):
+        mb.coletar_mapbiomas_territorio()
