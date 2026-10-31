@@ -5508,7 +5508,7 @@ function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{
  const kp=[e.km2!=null?lacKpi("Desmatamento em "+e.ultimo_ano,lacKm(e.km2),"PRODES, corte raso"):"",e.total_desde_inicio!=null?lacKpi("Desde 2008",lacKm(e.total_desde_inicio)):"",e.deter_12m!=null?lacKpi("Alertas em 12 meses",lacKm(e.deter_12m),"DETER"):""].filter(Boolean).join("");
  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento em ${esc(n)} <small>km² por ano</small></h2>${lineChart([{n,v:an.map(a=>s[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
  const bi=Object.entries(e.por_bioma||{}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
- v.innerHTML=`<div class="crumb"><a href="#/ambiente">Meio ambiente</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||lacVazio("Sem dados de desmatamento deste estado.")}</div>${graf}${bi.length?`<div class="panel mt"><h2>Em quais biomas, em ${e.ultimo_ano}</h2>${hbars(bi,{fmt:lacKm})}</div>`:""}${lacFim(D)}`}
+ v.innerHTML=`<div class="crumb"><a href="#/ambiente">Meio ambiente</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||lacVazio("Sem dados de desmatamento deste estado.")}</div>${graf}${bi.length?`<div class="panel mt"><h2>Em quais biomas, em ${e.ultimo_ano}</h2>${hbars(bi,{fmt:lacKm})}</div>`:""}<div id="mbT"></div>${lacFim(D)}`;mbCarregar($("#mbT"),uf)}
 P.ambiente=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
  return lacTela("Meio ambiente","Desmatamento por estado e bioma (INPE) e os alertas mais recentes.","ambiente",()=>[apiGet("/ambiente")],(v,[D])=>{
   if(uf)return ambienteUF(v,D,uf);
@@ -5517,7 +5517,33 @@ P.ambiente=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"
    D.deter&&D.deter.ultimos_meses.length?lacKpi("Alertas em 12 meses",lacKm(Object.values(D.estados).reduce((s,x)=>s+(x.deter_12m||0),0)),"DETER, Amazônia e Cerrado"):""].join("");
   const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento no Brasil <small>km² por ano, soma dos biomas</small></h2>${lineChart([{n:"Brasil",v:an.map(a=>D.brasil[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
   const pb=bio.length?`<div class="panel mt"><h2>Por bioma, em ${u}</h2>${hbars(bio.map(b=>[b.nome,b.total[b.ultimo_ano]]),{fmt:lacKm})}<p class="small muted" style="margin:6px 0 0">Cada bioma tem o seu último ano no PRODES (a Amazônia fecha em julho; os outros, no ano seguinte).</p></div>`:"";
-  lacPainel(v,{E:D.estados,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb,depois:lacFim(D)})},uf)};
+  lacPainel(v,{E:D.estados,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb,depois:'<div id="mbT"></div>'+lacFim(D)});mbCarregar($("#mbT"))},uf)};
+/* ----- Meio ambiente › Alertas do MapBiomas por território (hectares; NÃO é o PRODES) ----- */
+const lacHa=v=>v==null?"—":lacN(v)+" ha";
+function mbCarregar(el,uf){if(!el)return;apiGet("/alertas-mapbiomas/territorio").then(D=>{if(D&&D.por_uf&&document.body.contains(el))mbPainel(el,D,uf)}).catch(()=>{})}
+function mbPainel(el,D,uf){
+ const anos=D.anos||[],parc=String(D.ano_parcial||""),rot=a=>a==="tudo"?"Todos os anos":a+(a===parc?" (parcial)":""),
+  aviso=`<p class="small muted" style="margin:2px 0 0">${esc(D.aviso||"")}</p>`;
+ if(uf){const e=D.por_uf[uf];
+  if(!e){el.innerHTML="";return}
+  const an=Object.keys(e.area_ha_por_ano||{}).sort();
+  el.innerHTML=`<div class="panel mt"><h2>Alertas de desmatamento do MapBiomas em ${esc(UF[uf].nome)} <small>hectares por ano de detecção</small></h2>${aviso}<div class="kpis kpis-c" style="margin-top:8px">${lacKpi("Alertas validados",lacN(e.alertas),"desde "+(anos[0]||"2019"))}${lacKpi("Área total",lacHa(e.area_ha_total),"soma dos alertas")}${an.length?lacKpi("Último ano ("+an[an.length-1]+(an[an.length-1]===parc?", parcial":"")+")",lacHa(e.area_ha_por_ano[an[an.length-1]])):""}</div>${an.length>=2?lineChart([{n:UF[uf].nome,v:an.map(a=>e.area_ha_por_ano[a]),c:"#8B5CF6"}],an,{h:220,fmt:x=>lacN(x)+" ha"}):""}<p class="small muted" style="margin:8px 0 0">Fonte: MapBiomas Alerta (coletado em ${esc(String(D.coletado_em||"").slice(0,10))}). Medida diferente do PRODES acima: não compare nem some.</p></div>`;return}
+ let ano="tudo";
+ const val=(u,a)=>{const e=D.por_uf[u];if(!e)return null;return a==="tudo"?e.area_ha_total:(e.area_ha_por_ano[a]??null)};
+ const ops=["tudo",...anos].map(a=>`<option value="${a}">${rot(a)}</option>`).join("");
+ el.innerHTML=`<div class="panel mt"><div class="hd"><div><h2>Alertas de desmatamento do MapBiomas <small>hectares por ano de detecção</small></h2>${aviso}</div><div class="filters" style="margin:0;flex:none;min-width:190px"><select id="mbA" data-titulo="Período" data-pill>${ops}</select></div></div>
+  <div class="kpis kpis-c" style="margin-top:8px" id="mbK"></div><div class="grid g2" style="align-items:start;margin-top:10px"><div id="mbMap"></div><div id="mbRk"></div></div></div>
+  <div class="panel mt"><h2>Por bioma</h2><div id="mbBi"></div></div><div class="panel mt"><h2>Municípios com mais área alertada <small>nome do município, sem o estado (homônimos podem se juntar)</small></h2><div id="mbMu"></div></div>`;
+ const des=()=>{const vals={};UFS.forEach(u=>{const v=val(u.uf,ano);if(v!=null&&v>0)vals[u.uf]=v});
+  const tot=Object.values(vals).reduce((s,v)=>s+v,0),n=ano==="tudo"?D.total_alertas:null;
+  $("#mbK").innerHTML=lacKpi("Área alertada",lacHa(tot),rot(ano))+(n!=null?lacKpi("Alertas validados",lacN(n),"MapBiomas Alerta"):"")+lacKpi("Estados com alertas",lacN(Object.keys(vals).length),"de 27");
+  $("#mbMap").innerHTML=Object.keys(vals).length?mapaValores(vals,lacHa,{escala:SCALE_VERM}):rvazio("Sem alertas neste período.");bindMap($("#mbMap"),null,null,u=>{location.hash="#/ambiente/"+u});
+  $("#mbRk").innerHTML=rankDuplo(vals,lacHa,{href:u=>"#/ambiente/"+u,corAlto:"#8B5CF6",corBaixo:"#A9B4C8"});
+  const bi=Object.entries(D.por_bioma||{}).map(([b,e])=>[b,ano==="tudo"?e.area_ha_total:(e.area_ha_por_ano[ano]||0)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  $("#mbBi").innerHTML=bi.length?hbars(bi,{fmt:lacHa}):rvazio("Sem alertas neste período.");
+  const mu=(D.municipios||[]).map(m=>({m:m.municipio,v:ano==="tudo"?m.area_ha_total:(m.area_ha_por_ano[ano]||0),a:m.alertas})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  $("#mbMu").innerHTML=mu.length?table([["Município",x=>esc(x.m)],["Área alertada",x=>lacHa(x.v),"n"],ano==="tudo"?["Alertas",x=>lacN(x.a),"n"]:null].filter(Boolean),mu):rvazio("Sem alertas neste período.")};
+ des();if(typeof pilulas==="function")pilulas();$("#mbA").onchange=e=>{ano=e.target.value;des()}}
 /* ----- Órgãos › Viagens a serviço e Fundo eleitoral; Indicadores › tarifa de energia ----- */
 function telaViagens(){return{html:`<div id="vgL">${rload()}</div>`,mount(){apiGet("/viagens").then(D=>{const b=$("#vgL");if(!b)return;let ano=String(D.anos[0].ano);
  const pinta=()=>{const a=D.anos.find(x=>String(x.ano)===ano)||D.anos[0],og=(D.orgaos[ano]||[]);

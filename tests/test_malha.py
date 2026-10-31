@@ -217,3 +217,13 @@ def test_comparar_sem_malha_provisoria_nao_e_erro(db):
     assert im.comparar_malhas() == 0
     c = db.scalars(select(Coleta).where(Coleta.fonte == "malha", Coleta.tarefa == "comparacao").order_by(Coleta.id.desc())).first()
     assert c is not None and c.status == "ok" and not c.erro
+
+
+def test_exportacao_da_copia_inclui_a_rota_do_mapbiomas_por_territorio_e_a_tela_a_usa():
+    import re
+    from pathlib import Path
+    raiz = Path(__file__).resolve().parents[1]
+    assert '"/alertas-mapbiomas/territorio"' in (raiz / "scripts" / "exportar_snapshot.py").read_text(encoding="utf-8")
+    site = (raiz / "site" / "index.html").read_text(encoding="utf-8")
+    assert 'apiGet("/alertas-mapbiomas/territorio")' in site and "não é a taxa" in site.lower() or "PRODES" in site   # a tela existe e o aviso vem da API
+    assert re.search(r"mbCarregar\(\$\(\"#mbT\"\)\)", site) and 'mbCarregar($("#mbT"),uf)' in site     # tela do Brasil e ficha do estado
