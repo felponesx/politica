@@ -23,6 +23,7 @@ PRIMEIRO_ANO = 2008
 BIOMAS = {"amazonia": ("Amazônia", "prodes-amazon-nb:yearly_deforestation_biome"), "cerrado": ("Cerrado", "prodes-cerrado-nb:yearly_deforestation"),
           "caatinga": ("Caatinga", "prodes-caatinga-nb:yearly_deforestation"), "mata_atlantica": ("Mata Atlântica", "prodes-mata-atlantica-nb:yearly_deforestation"),
           "pantanal": ("Pantanal", "prodes-pantanal-nb:yearly_deforestation"), "pampa": ("Pampa", "prodes-pampa-nb:yearly_deforestation")}
+SEM_MAIN_CLASS = {"cerrado", "caatinga"}   # essas camadas só têm state, year e area_km (pedir main_class dá erro 400)
 SEM_FILTRO_DE_COLUNAS = {"pantanal"}   # o GeoServer recusa propertyName + sortBy nesta camada (erro 400); ela é pequena
 DETER = {"amazonia": ("Amazônia", "deter-amz:deter_amz"), "cerrado": ("Cerrado", "deter-cerrado-nb:deter_cerrado")}
 
@@ -34,11 +35,17 @@ def uf_de(txt) -> str | None:
     return NOME_PARA_UF.get(sem_acento(t))
 
 
+def _endereco(params: dict) -> str:
+    """Cerrado, Caatinga e Mata Atlântica respondem melhor pelo endereço do próprio bioma (`/geoserver/<área>/ows`) que pelo geral, que dá 502."""
+    camada = str(params.get("typeNames") or params.get("typeName", ""))
+    return f"https://terrabrasilis.dpi.inpe.br/geoserver/{camada.split(':')[0]}/ows" if camada.startswith("prodes-") and "amazon" not in camada else WFS
+
+
 def _pedido(params: dict):
     """GET no WFS; em erro 400 a mensagem do servidor (XML de exceção) entra no erro para facilitar o diagnóstico."""
     import httpx
     try:
-        return http.get(WFS, params=params, headers={"Accept": "*/*"}, timeout=600)
+        return http.get(_endereco(params), params=params, headers={"Accept": "*/*"}, timeout=600)
     except httpx.HTTPStatusError as e:
         corpo = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", e.response.text or ""))[:220]
         raise RuntimeError(f"HTTP {e.response.status_code} do WFS: {corpo}") from e
@@ -49,7 +56,7 @@ def total_feicoes(camada: str, filtro: str | None = None) -> int:
     params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "resultType": "hits"}
     if filtro:
         params["cql_filter"] = filtro
-    m = re.search(r'numberMatched="(\d+)"', _pedido(params).text)
+    m = re.search(r'(?:numberMatched|numberOfFeatures)="(\d+)"', _pedido(params).text)
     if not m:
         raise RuntimeError("o WFS não informou numberMatched")
     return int(m.group(1))
@@ -59,11 +66,13 @@ def paginas(camada: str, propriedades: str, filtro: str | None = None, ordem: st
     """Gera as linhas (dict) do CSV do WFS, página a página (ordenadas para a paginação não repetir nem pular).
     Se o servidor falhar com 5xx numa página grande (acontece nas camadas de milhões de feições), repete com a metade do tamanho."""
     inicio, tamanho = 0, PAGINA
+    v1 = camada.split(":")[0].replace("prodes-", "").replace("-nb", "").replace("-", "_") in SEM_MAIN_CLASS   # Cerrado/Caatinga: só o WFS 1.0.0 pagina sem erro (a ordem é a da chave primária)
     while True:
-        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "outputFormat": "csv", "count": tamanho, "startIndex": inicio}
+        params = ({"service": "WFS", "version": "1.0.0", "request": "GetFeature", "typeName": camada, "outputFormat": "csv", "maxFeatures": tamanho, "startIndex": inicio} if v1 else
+                  {"service": "WFS", "version": "2.0.0", "request": "GetFeature", "typeNames": camada, "outputFormat": "csv", "count": tamanho, "startIndex": inicio})
         if propriedades:
             params["propertyName"] = propriedades
-        if ordem:
+        if ordem and not v1:
             params["sortBy"] = ordem
         if filtro:
             params["cql_filter"] = filtro
@@ -92,7 +101,8 @@ def somar_prodes(linhas) -> tuple[dict, int]:
     n = 0
     for l in linhas:
         n += 1
-        if str(l.get("main_class", "")).strip().lower() != "desmatamento":
+        classe = str(l.get("main_class", "desmatamento")).strip().lower()   # Cerrado e Caatinga não trazem a coluna: toda feição é desmatamento
+        if classe != "desmatamento":
             continue
         uf = uf_de(l.get("state"))
         try:
@@ -134,7 +144,7 @@ def coletar_desmatamento(biomas: str = "", deter: bool = True):
                 continue
             try:
                 esperado = total_feicoes(camada)
-                por_uf, feicoes = somar_prodes(paginas(camada, None if chave in SEM_FILTRO_DE_COLUNAS else "state,year,area_km,main_class", ordem=None if chave in SEM_FILTRO_DE_COLUNAS else "fid"))
+                por_uf, feicoes = somar_prodes(paginas(camada, None if chave in SEM_FILTRO_DE_COLUNAS else ("state,year,area_km" if chave in SEM_MAIN_CLASS else "state,year,area_km,main_class"), ordem=None if chave in SEM_FILTRO_DE_COLUNAS else "fid"))
                 if not esperado * 0.99 <= feicoes <= esperado * 1.01 or not por_uf:
                     raise RuntimeError(f"leu {feicoes:,} de {esperado:,} feições; nada foi gravado")
                 anos = sorted({a for s in por_uf.values() for a in s})
