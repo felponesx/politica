@@ -137,7 +137,8 @@ def somar_deter(linhas) -> dict:
 def coletar_desmatamento(biomas: str = "", deter: bool = True):
     """PRODES por bioma e estado desde 2008 e alertas DETER dos últimos 24 meses. `biomas` = lista separada por vírgula (vazio = todos); `deter=false` pula os alertas.
     Camadas gigantes (Cerrado, Caatinga) e a Mata Atlântica vão melhor uma por vez; o Pantanal (camada pequena) é lido sem filtro de colunas, que o servidor recusa."""
-    quer = {b.strip() for b in str(biomas).split(",") if b.strip()}
+    itens = biomas if isinstance(biomas, (list, tuple)) else str(biomas).split(",")   # o robô converte "a,b" em lista
+    quer = {str(b).strip() for b in itens if str(b).strip()}
     deter = str(deter).lower() not in ("false", "0", "nao", "não")
     with registrar_coleta("inpe", "desmatamento") as (db, n):
         for chave, (nome, camada) in BIOMAS.items():
