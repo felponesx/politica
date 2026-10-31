@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -37,6 +37,8 @@ _TAREFAS_BRUTAS = {
     "camara-orientacoes": orientacoes.coletar_camara_orientacoes,   # ano_inicial, ano_final
     "inpe-desmatamento": ambiente.coletar_desmatamento,
     "mapbiomas-alertas-territorio": mapbiomas.coletar_mapbiomas_territorio,
+    "ibge-malha-municipios": ibge_malha.coletar_ibge_malha,
+    "malha-comparar": ibge_malha.comparar_malhas,
     "osm-malha-pbf": osm_pbf.coletar_malha_pbf,
     "inpe-prodes-mata-atlantica": prodes_mata.coletar_prodes_mata_atlantica,
     "ibge-trabalho": economia_extra.coletar_trabalho,      # trimestres

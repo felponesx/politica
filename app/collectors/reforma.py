@@ -4,6 +4,7 @@ Conferido em 30/10/2026: a planilha de arrecadação por estado da Receita não 
 do Comitê Gestor do IBS só publica contratos, portarias e orçamento. Este coletor NÃO inventa valores: todo mês ele (1) lê o cabeçalho da planilha da Receita e
 procura colunas CBS/IBS (se aparecerem, soma por mês) e (2) lista os arquivos da página de transparência do CGIBS. O resultado diz, com data, se há ou não arrecadação publicada."""
 import csv
+import hashlib
 import io
 import logging
 import re
@@ -155,20 +156,147 @@ def buscar_pagina(urls: list[str], tentativas: int = 3, timeout: float = 45.0, p
     return {"estado": "erro_http" if http_4xx and all(t["resultado"] == http_4xx for t in log_t[-len(urls):]) else "erro_conexao", "texto": None, "url": None, "tentativas": log_t}
 
 
-def situacao_do_tributo(leitura_ok: bool, publicacoes: list[dict], com_arrecadacao: bool) -> str:
-    """Quatro situações que NUNCA se confundem: `indisponivel` (não deu para ler o portal), `sem_publicacao` (portal lido, nenhum documento),
-    `publicacoes_sem_arrecadacao` (há documentos, nenhum traz arrecadação) e `arrecadacao_publicada`."""
+def situacao_do_tributo(leitura_ok: bool, publicacoes: list[dict], relatorio_encontrado: bool, validados: int = 0) -> str:
+    """Quatro estados que NUNCA se confundem:
+    `fonte_indisponivel` (não deu para ler o portal: erro de conexão, a leitura anterior é mantida) · `aguardando_publicacao_oficial` (portal lido, nenhum documento traz a arrecadação do tributo) ·
+    `relatorio_encontrado` (há documento oficial sobre a arrecadação, mas os dados ainda não foram extraídos e validados) · `dados_coletados_validados` (extraídos, com competência e unidade conferidas, e guardados com a origem)."""
+    if validados:
+        return "dados_coletados_validados"
+    if relatorio_encontrado:
+        return "relatorio_encontrado"
     if not leitura_ok:
-        return "indisponivel"
-    if not publicacoes:
-        return "sem_publicacao"
-    return "arrecadacao_publicada" if com_arrecadacao else "publicacoes_sem_arrecadacao"
+        return "fonte_indisponivel"
+    return "aguardando_publicacao_oficial"
 
 
-MENSAGEM = {"indisponivel": "Não foi possível ler o portal nesta conferência (erro de conexão). Isso NÃO significa que não há publicação: a leitura anterior foi mantida.",
-            "sem_publicacao": "O portal respondeu, mas não lista nenhum documento.",
-            "publicacoes_sem_arrecadacao": "O portal lista documentos, mas nenhum informa a arrecadação deste tributo. Não estimamos valores.",
-            "arrecadacao_publicada": "Há documento ou coluna com a arrecadação deste tributo: veja os arquivos."}
+MENSAGEM = {"fonte_indisponivel": "Não foi possível ler o portal nesta conferência (erro de conexão). Isso NÃO significa que não há publicação: a leitura anterior foi mantida.",
+            "aguardando_publicacao_oficial": "O portal responde, mas nenhum documento publica a arrecadação deste tributo. Aguardando publicação oficial; não estimamos valores.",
+            "relatorio_encontrado": "Foi encontrado um documento oficial sobre a arrecadação deste tributo; os dados ainda não foram extraídos e validados (revisão necessária).",
+            "dados_coletados_validados": "Dados de arrecadação extraídos de documento oficial, com competência e unidade conferidas e a origem registrada."}
+ESTADOS = tuple(MENSAGEM)
+MESES_ABREV = {"jan": 1, "fev": 2, "mar": 3, "abr": 4, "mai": 5, "jun": 6, "jul": 7, "ago": 8, "set": 9, "out": 10, "nov": 11, "dez": 12}
+
+
+def _competencia(v) -> str | None:
+    """AAAA-MM a partir de data, "2026-09", "09/2026", "set/2026" ou "Setembro 2026"; None se não der."""
+    if hasattr(v, "year") and hasattr(v, "month"):
+        return f"{v.year}-{v.month:02d}"
+    t = sem_acento(str(v or "")).lower().strip()
+    m = re.fullmatch(r"(\d{4})[-/](\d{1,2})(?:[-/]\d{1,2})?", t) or None
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}" if 1 <= int(m.group(2)) <= 12 else None
+    m = re.fullmatch(r"(\d{1,2})[-/](\d{4})", t)
+    if m:
+        return f"{m.group(2)}-{int(m.group(1)):02d}" if 1 <= int(m.group(1)) <= 12 else None
+    m = re.fullmatch(r"([a-z]{3})[a-z]*[ /.-]+(?:de )?(\d{4})", t)
+    if m and m.group(1) in MESES_ABREV:
+        return f"{m.group(2)}-{MESES_ABREV[m.group(1)]:02d}"
+    return None
+
+
+def _numero(v) -> float | None:
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return float(v)
+    t = str(v or "").strip().replace("R$", "").replace(" ", "")
+    if not t or not re.fullmatch(r"-?[\d.,]+", t):
+        return None
+    return float(t.replace(".", "").replace(",", ".")) if "," in t else float(t)
+
+
+def _unidade(textos: list[str]) -> str | None:
+    t = sem_acento(" ".join(textos)).lower()
+    for pad, nome in ((r"r\$\s*(?:em\s*)?bilh", "R$ bilhões"), (r"r\$\s*(?:em\s*)?milh", "R$ milhões"), (r"r\$\s*(?:em\s*)?mil\b", "R$ mil"), (r"r\$", "R$")):
+        if re.search(pad, t):
+            return nome
+    return None
+
+
+def _linhas_planilha(conteudo: bytes, formato: str):
+    """Gera (nome_da_aba, lista de linhas) de um xlsx ou csv."""
+    if formato == "xlsx":
+        import openpyxl
+        wb = openpyxl.load_workbook(io.BytesIO(conteudo), read_only=True, data_only=True)
+        for ws in wb.worksheets:
+            yield ws.title, [list(r) for r in ws.iter_rows(values_only=True)]
+        return
+    for enc in ("utf-8-sig", "latin-1"):
+        try:
+            texto = conteudo.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    sep = ";" if texto.count(";") >= texto.count(",") else ","
+    yield "csv", [list(r) for r in csv.reader(io.StringIO(texto), delimiter=sep)]
+
+
+def extrair_arrecadacao(conteudo: bytes, formato: str, tributo: str) -> dict | None:
+    """Procura numa planilha (xlsx/csv) um cabeçalho com a coluna do tributo (CBS ou IBS) e uma coluna de competência (mês). Soma por competência. Devolve
+    {competencias: {AAAA-MM: valor}, unidade, aba, coluna, linhas} ou None se não achar. NÃO adivinha: sem as duas colunas, nada é extraído."""
+    padrao = re.compile(rf"(?<![A-Z0-9]){tributo}(?![A-Z0-9])")
+    for aba, linhas in _linhas_planilha(conteudo, formato):
+        for i, cab in enumerate(linhas[:60]):
+            cols = [sem_acento(str(c or "")).upper() for c in cab]
+            col_t = next((j for j, c in enumerate(cols) if padrao.search(c)), None)
+            col_c = next((j for j, c in enumerate(cols) if re.search(r"COMPET|MES|PERIODO|DATA|ANO.?MES", c)), None)
+            if col_t is None or col_c is None or col_t == col_c:
+                continue
+            por_mes: dict[str, float] = {}
+            n = 0
+            for lin in linhas[i + 1:]:
+                if len(lin) <= max(col_t, col_c):
+                    continue
+                comp, val = _competencia(lin[col_c]), _numero(lin[col_t])
+                if comp and val is not None:
+                    por_mes[comp] = round(por_mes.get(comp, 0.0) + val, 2)
+                    n += 1
+            if por_mes:
+                unidade = _unidade([str(c or "") for c in cab] + [str(c or "") for lin in linhas[:i] for c in lin])
+                return {"competencias": dict(sorted(por_mes.items())), "unidade": unidade, "aba": aba, "coluna": str(cab[col_t]), "linhas": n}
+    return None
+
+
+def validar_arrecadacao(d: dict | None, hoje: date | None = None) -> tuple[bool, str]:
+    """(válido, motivo). Exige competências reais (2026 em diante e não futuras), valores finitos e não negativos e a unidade identificada no próprio arquivo."""
+    hoje = hoje or date.today()
+    if not d or not d.get("competencias"):
+        return False, "nenhuma competência com valor"
+    limite = f"{hoje.year}-{hoje.month:02d}"
+    for comp, v in d["competencias"].items():
+        if not (("2026-01" <= comp <= limite) and v == v and v >= 0 and abs(v) != float("inf")):
+            return False, f"competência ou valor inválido ({comp}: {v})"
+    if not d.get("unidade"):
+        return False, "unidade monetária não identificada no arquivo (revisão humana)"
+    return True, "ok"
+
+
+def _extrair_dos_documentos(db, n, docs: list[dict], tributo: str, fonte: str) -> int:
+    """Baixa cada planilha oficial ainda não processada, extrai a arrecadação do tributo, valida e guarda por competência (`<tributo>_arrecadacao`) com a origem (URL, SHA-256, aba, coluna).
+    Devolve quantas competências foram guardadas. O que não valida fica marcado no próprio documento (`extracao`) para revisão."""
+    guardadas = 0
+    for pub in docs:
+        if pub.get("formato") not in ("xlsx", "csv") or (pub.get("extracao") or {}).get("estado") in ("validada", "reprovada"):
+            continue
+        try:
+            conteudo = http.get(pub["url"], headers={"Accept": "*/*"}, timeout=120).content
+            sha = hashlib.sha256(conteudo).hexdigest()
+            d = extrair_arrecadacao(conteudo, pub["formato"], tributo)
+            ok, motivo = validar_arrecadacao(d)
+        except Exception as e:  # noqa: BLE001
+            n.avisos.append(f"{tributo}: não li {pub.get('titulo', '')[:50]}: {type(e).__name__}")
+            continue
+        pub["extracao"] = {"estado": "validada" if ok else "reprovada", "motivo": motivo, "em": datetime.now().isoformat(timespec="seconds"), "sha256": sha}
+        if not ok:
+            continue
+        for comp, valor in d["competencias"].items():
+            upsert(db, Registro, {"fonte": fonte, "tipo": f"{tributo.lower()}_arrecadacao", "chave": comp},
+                   {"titulo": f"Arrecadação de {tributo} em {comp}", "valor": valor, "dados": {"tributo": tributo, "competencia": comp, "valor": valor, "unidade": d["unidade"], "origem_url": pub["url"], "origem_titulo": pub.get("titulo"),
+                                                                                      "sha256": sha, "aba": d["aba"], "coluna": d["coluna"], "extraido_em": pub["extracao"]["em"]}})
+            guardadas += 1
+    return guardadas
+
+
 PALAVRAS_ARRECADACAO = re.compile(r"arrecada|recolhi|repartic|distribui", re.I)
 
 
@@ -239,11 +367,22 @@ def _conferir_cbs(db, n) -> dict:
     novas = [p for p in todas if p["url"] not in conhecidas]
     primeira_vez = anterior is None
     receitadata = buscar_pagina(["https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos/receitadata/arrecadacao"], tentativas=2, timeout=60)
-    com_arrecadacao = bool(planilha["colunas_cbs_ibs"]) or any(p.get("menciona_cbs_ibs") for p in todas)
-    situacao = situacao_do_tributo(leitura_ok or not erro_planilha, todas or ([{}] if planilha["n_colunas"] else []), com_arrecadacao)
+    relatorio = any(p.get("menciona_cbs_ibs") for p in todas) or bool(planilha["colunas_cbs_ibs"])
+    _extrair_dos_documentos(db, n, [p for p in todas if p.get("menciona_cbs_ibs")], "CBS", "receita")
+    for comp, cols in (planilha.get("total_por_mes") or {}).items():   # a planilha de arrecadação por estado da Receita ganhou coluna de CBS: guarda por competência, com a origem
+        total = sum(v for c, v in cols.items() if re.search(r"(?<![A-Z0-9])CBS(?![A-Z0-9])", sem_acento(c).upper()))
+        if total and "2026-01" <= comp <= f"{hoje.year}-{hoje.month:02d}" and total >= 0:
+            upsert(db, Registro, {"fonte": "receita", "tipo": "cbs_arrecadacao", "chave": comp}, {"titulo": f"Arrecadação de CBS em {comp}", "valor": round(total, 2),
+                   "dados": {"tributo": "CBS", "competencia": comp, "valor": round(total, 2), "unidade": "R$ (planilha de arrecadação por estado da Receita)", "origem_url": settings.receita_arrecadacao_url,
+                             "origem_titulo": "arrecadacao-estado.csv", "extraido_em": agora}})
+    db.flush()
+    validados = db.query(Registro).filter_by(fonte="receita", tipo="cbs_arrecadacao").count()
+    com_arrecadacao = validados > 0
+    situacao = situacao_do_tributo(leitura_ok or not erro_planilha, todas or ([{}] if planilha["n_colunas"] else []), relatorio, validados)
     if novas and not primeira_vez:
         alertas.enviar("BRASIL+: nova publicação da Receita sobre arrecadação (CBS) — " + "; ".join(f"{p['titulo']} ({p['url']})" for p in novas[:5]) + (" [cita CBS]" if any(p.get("menciona_cbs_ibs") for p in novas) else ""))
-    d = {"tributo": "CBS", "orgao": "Receita Federal", "checado_em": agora, "situacao": situacao, "mensagem": MENSAGEM[situacao], "arrecadacao_publicada": com_arrecadacao,
+    d = {"tributo": "CBS", "orgao": "Receita Federal", "checado_em": agora, "ultima_verificacao": agora, "situacao": situacao, "mensagem": MENSAGEM[situacao], "arrecadacao_publicada": com_arrecadacao, "competencias_validadas": validados,
+         "disponibilidade": {"planilha_receita": "ok" if not erro_planilha else "fonte_indisponivel", "relatorios_receita": "ok" if leitura_ok else "fonte_indisponivel", "receitadata": receitadata["estado"], "documentacao_api": "ok"},
          "planilha": {**planilha, "url": settings.receita_arrecadacao_url, "erro": erro_planilha}, "paginas_relatorios": paginas, "relatorios_url": RECEITA_RELATORIOS,
          "receitadata": {"url": "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos/receitadata/arrecadacao", "estado": receitadata["estado"]},
          "api_apuracao": avaliar_api_cbs(), "publicacoes": todas, "novas_nesta_conferencia": novas if not primeira_vez else [], "primeira_conferencia": primeira_vez,
@@ -275,10 +414,14 @@ def _conferir_ibs(db, n) -> dict:
     novas = [p for p in todas if p["url"] not in conhecidas]
     primeira_vez = anterior is None
     sobre_arrecadacao = [p for p in todas if PALAVRAS_ARRECADACAO.search(p["titulo"] + " " + p["url"])]
-    situacao = situacao_do_tributo(leitura_ok, todas, bool(sobre_arrecadacao))
+    _extrair_dos_documentos(db, n, sobre_arrecadacao, "IBS", "cgibs")
+    db.flush()
+    validados = db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_arrecadacao").count()
+    situacao = situacao_do_tributo(leitura_ok, todas, bool(sobre_arrecadacao), validados)
     if novas and not primeira_vez:
         alertas.enviar("BRASIL+: novo documento do Comitê Gestor do IBS — " + "; ".join(f"{p['titulo']} ({p['url']})" for p in novas[:5]))
-    d = {"tributo": "IBS", "orgao": "Comitê Gestor do IBS (CGIBS)", "checado_em": agora, "situacao": situacao, "mensagem": MENSAGEM[situacao], "arrecadacao_publicada": situacao == "arrecadacao_publicada",
+    d = {"tributo": "IBS", "orgao": "Comitê Gestor do IBS (CGIBS)", "checado_em": agora, "ultima_verificacao": agora, "situacao": situacao, "mensagem": MENSAGEM[situacao], "arrecadacao_publicada": validados > 0, "competencias_validadas": validados,
+         "disponibilidade": {"relatorios": "ok" if rel["estado"] == "ok" else "fonte_indisponivel", "transparencia": "ok" if tra["estado"] == "ok" else "fonte_indisponivel"},
          "paginas": {"relatorios": {"estado": rel["estado"], "tentativas": rel["tentativas"]}, "transparencia": {"estado": tra["estado"], "tentativas": tra["tentativas"]}},
          "publicacoes": todas, "sobre_arrecadacao": sobre_arrecadacao, "novas_nesta_conferencia": novas if not primeira_vez else [], "primeira_conferencia": primeira_vez,
          "ultima_competencia": max([p["competencia"] for p in todas if p.get("competencia")] or [""]) or None, "ultima_publicacao_em_mes": max([p["publicado_em_mes"] for p in todas if p.get("publicado_em_mes")] or [""]) or None,

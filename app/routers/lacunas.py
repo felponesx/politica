@@ -134,6 +134,12 @@ def escandalos_fila(etapa: str | None = Query(None, pattern="^(investigacao|denu
     return _ou_404(lacunas.escandalos_fila(db, etapa, orgao, limit), "escandalos-fila")
 
 
+@router.get("/malha/status", tags=["Territorio"])
+def malha_status(db: Session = Depends(get_db)):
+    """Malha municipal: de que fonte vem cada geometria (IBGE oficial ou OSM provisório), versão, validação e comparação."""
+    return _ou_404(memo(("malha_status",), lambda: lacunas.malha_status(db)), "ibge-malha-municipios")
+
+
 @router.get("/alertas-mapbiomas/territorio", tags=["Meio ambiente"])
 def alertas_mapbiomas_territorio(uf: str | None = Query(None, pattern="^[A-Za-z]{2}$"), db: Session = Depends(get_db)):
     """Alertas do MapBiomas por estado, bioma e município (hectares por ano). Não é o PRODES; vem separado e identificado como MapBiomas."""

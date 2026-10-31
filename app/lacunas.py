@@ -243,9 +243,9 @@ def iva(db: Session) -> dict:
     if mon is None:
         mensagem = "Ainda não conferimos as fontes (rode as coletas receita-cbs e cgibs-ibs)."
     elif mon["arrecadacao_publicada"]:
-        mensagem = "As fontes oficiais já trazem dados de arrecadação de CBS/IBS: veja os valores abaixo."
+        mensagem = "Há dados de arrecadação de CBS e/ou IBS extraídos de documento oficial e validados: veja a origem de cada valor."
     else:
-        mensagem = "Nenhuma fonte oficial publica ainda a arrecadação de CBS ou de IBS. Não estimamos valores."
+        mensagem = "Aguardando publicação oficial da arrecadação de CBS e de IBS. Os portais são conferidos periodicamente; não estimamos valores."
     return {**cal, "monitor": mon, "situacao": mensagem}
 
 
@@ -435,6 +435,24 @@ def alertas_mapbiomas_territorio(db: Session, uf: str | None = None) -> dict | N
     if uf:
         return {**base, "uf": uf.upper(), "estado": (d["por_uf"].get(uf.upper()) or None), "aviso": AVISO_TERRITORIO_MB, "fontes": ["MapBiomas Alerta (API com login)"]}
     return {**base, "por_uf": d["por_uf"], "municipios": d["municipios"][:100], "aviso": AVISO_TERRITORIO_MB, "fontes": ["MapBiomas Alerta (API com login)"]}
+
+
+def malha_status(db: Session) -> dict | None:
+    """Fontes da malha municipal (IBGE oficial, OSM provisório…): versão, data, validação, quantas geometrias estão em uso de cada origem e a última comparação OSM × IBGE."""
+    from sqlalchemy import func
+
+    from app.models import MalhaFonte, MalhaMunicipio
+    fontes = db.scalars(select(MalhaFonte).order_by(MalhaFonte.id.desc())).all()
+    if not fontes:
+        return None
+    em_uso = dict(db.execute(select(MalhaFonte.origem, func.count()).join(MalhaMunicipio, MalhaMunicipio.fonte_id == MalhaFonte.id).where(MalhaMunicipio.ativa.is_(True)).group_by(MalhaFonte.origem)).all())
+    comp = _regs(db, "comparacao_osm_ibge", "malha")
+    ultima = comp[max(comp)] if comp else None
+    return {"fontes": [{"id": f.id, "origem": f.origem, "oficial": f.oficial, "rotulo": f.rotulo, "versao": f.versao, "publicado_em": f.publicado_em, "coletado_em": f.coletado_em.isoformat(timespec="seconds"), "status": f.status,
+                        "municipios": f.n_municipios, "validos": f.n_validos, "invalidos": f.n_invalidos, "url": f.url, "sha256": f.sha256} for f in fontes],
+            "geometrias_em_uso": {"ibge_oficial": em_uso.get("ibge", 0), "osm_provisorio": em_uso.get("osm", 0), "outras": sum(v for k, v in em_uso.items() if k not in ("ibge", "osm"))},
+            "comparacao_osm_ibge": ({k: v for k, v in ultima.items() if k != "itens"} | {"maiores_diferencas": sorted(ultima["itens"], key=lambda i: -abs(i["dif_area_pct"]))[:10]}) if ultima else None,
+            "aviso": "Malha OFICIAL = IBGE. OSM é provisório: só vale onde a oficial ainda não foi importada e nunca é misturado sem registrar a origem. Trocar de fonte não apaga a geometria anterior."}
 
 
 def servidores(db: Session) -> dict | None:

@@ -114,27 +114,31 @@ def limite_osm(db, uf: str, ibge: str):
 
 
 def limite_municipio(db, uf: str, ibge: str):
-    """(geometria, preparada, fonte). Guardado no banco (`limite_municipio`): o contorno quase não muda. Ordem: guardado → IBGE → OSM; se nenhum responde, o erro lista os dois motivos."""
-    from shapely import wkt
+    """(geometria, preparada, fonte). Ordem: malha guardada no banco (`malha_municipio`: a OFICIAL do IBGE se já foi importada, senão a provisória do OSM) → API do IBGE → OSM (relação, via Overpass; vira malha provisória
+    guardada). A fonte devolvida diz sempre a origem e se é oficial ou provisória; se nenhuma responde, o erro lista os motivos."""
     from shapely.prepared import prep
-    reg = db.query(Registro).filter_by(fonte="osm", tipo="limite_municipio", chave=uf).first()
-    if reg and (reg.dados or {}).get("ibge") == ibge and reg.dados.get("wkt"):
-        g = wkt.loads(reg.dados["wkt"])
-        return g, prep(g), reg.dados["fonte"] + " (guardado)"
+
+    from app import malha
+    ativa = malha.geometria_ativa(db, ibge)
+    if ativa:
+        g, origem, versao, oficial = ativa
+        return g, prep(g), f"{origem.upper()} {versao} ({'oficial' if oficial else 'provisório'}, guardado)"
     erros = []
-    for fonte, obter in (("IBGE malha municipal (qualidade máxima)", lambda: limite_ibge(ibge)), ("OpenStreetMap (relação do município)", lambda: limite_osm(db, uf, ibge))):
-        try:
-            g = obter()
-            if g.is_empty or not g.is_valid:
-                g = g.buffer(0)
-            if g.is_empty:
-                raise RuntimeError("limite vazio")
-            upsert(db, Registro, {"fonte": "osm", "tipo": "limite_municipio", "chave": uf}, {"uf": uf, "titulo": f"Limite de {CAPITAIS[uf][0]}", "dados": {"ibge": ibge, "fonte": fonte, "wkt": g.wkt, "area_graus2": g.area}})
-            db.commit()
-            return g, prep(g), fonte
-        except Exception as e:  # noqa: BLE001
-            db.rollback()
-            erros.append(f"{fonte}: {type(e).__name__} {str(e)[:70]}")
+    try:
+        g = limite_ibge(ibge)
+        return g.buffer(0) if not g.is_valid else g, prep(g), "IBGE (API, sem versão guardada)"
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"IBGE API: {type(e).__name__} {str(e)[:70]}")
+    try:
+        g = limite_osm(db, uf, ibge)
+        g = g.buffer(0) if not g.is_valid else g
+        rel = db.query(Registro).filter_by(fonte="osm", tipo="relacao_municipio", chave=uf).first()
+        malha.salvar_osm_provisorio(db, uf, ibge, CAPITAIS[uf][0], g, relacao=(rel.dados or {}).get("relacao") if rel else None)
+        db.commit()
+        return g, prep(g), "OSM (relação do município, PROVISÓRIO)"
+    except Exception as e:  # noqa: BLE001
+        db.rollback()
+        erros.append(f"OSM: {type(e).__name__} {str(e)[:70]}")
     raise RuntimeError("sem limite do município. " + "; ".join(erros))
 
 

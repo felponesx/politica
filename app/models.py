@@ -6,8 +6,8 @@ para depois serem normalizadas em tabelas específicas conforme as telas exigire
 """
 from datetime import date, datetime
 
-from sqlalchemy import (JSON, Date, DateTime, Float, ForeignKey, Integer, String, Text,
-                        UniqueConstraint, func)
+from sqlalchemy import (JSON, BigInteger, Date, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, String, Text,
+                        UniqueConstraint, func, text)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -452,6 +452,51 @@ class IesMunicipio(Base):
     n_cursos: Mapped[int] = mapped_column(Integer, default=0)             # cursos ofertados neste município (linhas do cadastro de cursos)
     vagas: Mapped[int] = mapped_column(Integer, default=0)
     matriculas: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class MalhaFonte(Base):
+    """Uma importação da malha municipal: de onde veio (IBGE oficial, OSM provisório…), qual versão, quando e o resultado da validação. Nunca é apagada: é o histórico."""
+    __tablename__ = "malha_fonte"
+    __table_args__ = (UniqueConstraint("origem", "versao", name="uq_malha_fonte_versao"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    origem: Mapped[str] = mapped_column(String(20))                       # ibge | osm | outra
+    oficial: Mapped[bool] = mapped_column(default=False)
+    escopo: Mapped[str] = mapped_column(String(40), default="municipios")
+    versao: Mapped[str] = mapped_column(String(60))
+    rotulo: Mapped[str | None] = mapped_column(String(120))
+    publicado_em: Mapped[str | None] = mapped_column(String(40))
+    coletado_em: Mapped[datetime] = mapped_column(DateTime)
+    url: Mapped[str | None] = mapped_column(Text)
+    sha256: Mapped[str | None] = mapped_column(String(64))
+    etag: Mapped[str | None] = mapped_column(String(80))
+    tamanho: Mapped[int | None] = mapped_column(BigInteger)
+    arquivo_local: Mapped[str | None] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(20), default="provisoria")  # validada | provisoria | reprovada | substituida
+    n_municipios: Mapped[int] = mapped_column(Integer, default=0)
+    n_validos: Mapped[int] = mapped_column(Integer, default=0)
+    n_invalidos: Mapped[int] = mapped_column(Integer, default=0)
+    verificacao: Mapped[dict | None] = mapped_column(JSON)
+
+
+class MalhaMunicipio(Base):
+    """Geometria de um município numa importação (`MalhaFonte`). Só uma linha por município fica `ativa`; trocar a ativa não apaga a anterior."""
+    __tablename__ = "malha_municipio"
+    __table_args__ = (UniqueConstraint("fonte_id", "cod_ibge", name="uq_malha_municipio"),
+                      Index("uq_malha_municipio_ativa", "cod_ibge", unique=True, postgresql_where=text("ativa"), sqlite_where=text("ativa")))
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    fonte_id: Mapped[int] = mapped_column(ForeignKey("malha_fonte.id", name="fk_malha_municipio_fonte", ondelete="RESTRICT"))
+    cod_ibge: Mapped[str] = mapped_column(String(7), index=True)
+    nome: Mapped[str | None] = mapped_column(String(120))
+    uf: Mapped[str | None] = mapped_column(String(2), index=True)
+    geom_wkb: Mapped[bytes | None] = mapped_column(LargeBinary)
+    tolerancia_graus: Mapped[float | None] = mapped_column(Float)
+    area_km2: Mapped[float | None] = mapped_column(Float)
+    perimetro_km: Mapped[float | None] = mapped_column(Float)
+    valida: Mapped[bool] = mapped_column(default=True)
+    motivo: Mapped[str | None] = mapped_column(Text)
+    ativa: Mapped[bool] = mapped_column(default=False)
 
 
 class UsoLimite(Base):

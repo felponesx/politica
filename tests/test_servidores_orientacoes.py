@@ -224,8 +224,9 @@ def test_cgibs_le_painel_competencia_e_mes_de_publicacao():
 def test_situacoes_nunca_se_confundem():
     from app.collectors import reforma
     s = reforma.situacao_do_tributo
-    assert s(False, [], False) == "indisponivel" and s(True, [], False) == "sem_publicacao"
-    assert s(True, [{"a": 1}], False) == "publicacoes_sem_arrecadacao" and s(True, [{"a": 1}], True) == "arrecadacao_publicada"
+    assert s(False, [], False) == "fonte_indisponivel" and s(True, [], False) == "aguardando_publicacao_oficial"
+    assert s(True, [{"a": 1}], False) == "aguardando_publicacao_oficial" and s(True, [{"a": 1}], True) == "relatorio_encontrado" and s(True, [{"a": 1}], True, 3) == "dados_coletados_validados"
+    assert s(False, [], True) == "relatorio_encontrado"   # o que já foi encontrado não some se o portal cair
 
 
 def test_buscar_pagina_distingue_erro_de_conexao_e_http(monkeypatch):
@@ -266,21 +267,22 @@ def test_ibs_detecta_publicacao_nova_mantem_dados_quando_portal_cai_e_nao_invent
     monkeypatch.setattr(reforma, "buscar_pagina", pagina)
     db = SessionLocal()
     try:
-        db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_monitor").delete()
+        for t in ("ibs_monitor", "ibs_arrecadacao"):
+            db.query(Registro).filter_by(fonte="cgibs", tipo=t).delete()
         db.commit()
 
         class N:
             avisos: list = []
         d1 = reforma._conferir_ibs(db, N())
-        assert d1["situacao"] == "publicacoes_sem_arrecadacao" and len(d1["publicacoes"]) == 1 and d1["primeira_conferencia"] and not alertas
+        assert d1["situacao"] == "aguardando_publicacao_oficial" and len(d1["publicacoes"]) == 1 and d1["primeira_conferencia"] and not alertas
         html["v"] = CGIBS_HTML   # sai um documento novo, com "Arrecadação" no título
         d2 = reforma._conferir_ibs(db, N())
-        assert d2["situacao"] == "arrecadacao_publicada" and [p["titulo"][:11] for p in d2["novas_nesta_conferencia"]] == ["Arrecadação"] and len(alertas) == 1
+        assert d2["situacao"] == "relatorio_encontrado" and [p["titulo"][:11] for p in d2["novas_nesta_conferencia"]] == ["Arrecadação"] and len(alertas) == 1
         assert {p["descoberto_em"] for p in d2["publicacoes"]} == {d1["publicacoes"][0]["descoberto_em"]}
         html["v"] = None   # portal fora do ar: não apaga nem vira "sem publicação"
         d3 = reforma._conferir_ibs(db, N())
-        assert d3["situacao"] == "indisponivel" and len(d3["publicacoes"]) == 2 and d3["paginas"]["relatorios"]["estado"] == "erro_conexao"
-        assert [h["situacao"] for h in d3["historico"]] == ["publicacoes_sem_arrecadacao", "arrecadacao_publicada", "indisponivel"]
+        assert d3["situacao"] == "relatorio_encontrado" and len(d3["publicacoes"]) == 2 and d3["paginas"]["relatorios"]["estado"] == "erro_conexao"
+        assert [h["situacao"] for h in d3["historico"]] == ["aguardando_publicacao_oficial", "relatorio_encontrado", "relatorio_encontrado"]
         assert db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_monitor").count() == 1
     finally:
         db.close()
@@ -530,9 +532,11 @@ def test_limite_do_osm_junta_caminhos_e_tira_buracos_e_cai_para_o_osm_quando_o_i
     with pytest.raises(RuntimeError, match="não fecha"):
         osm_pbf.poligono_da_relacao({"members": [_membro("outer", [(0, 0), (1, 0)])]})
     criar_tabelas()
+    from app.models import MalhaFonte, MalhaMunicipio
     db = SessionLocal()
     try:
-        db.query(Registro).filter_by(fonte="osm", tipo="limite_municipio", chave="TO").delete()
+        db.query(MalhaMunicipio).delete()
+        db.query(MalhaFonte).delete()
         db.commit()
         chamadas = []
         def ibge_fora(ibge): chamadas.append("ibge"); raise RuntimeError("IBGE não respondeu")
@@ -540,13 +544,16 @@ def test_limite_do_osm_junta_caminhos_e_tira_buracos_e_cai_para_o_osm_quando_o_i
         monkeypatch.setattr(osm_pbf, "limite_ibge", ibge_fora)
         monkeypatch.setattr(osm_pbf, "limite_osm", osm_ok)
         _g, _p, fonte = osm_pbf.limite_municipio(db, "TO", "1721000")
-        assert chamadas == ["ibge", "osm"] and fonte.startswith("OpenStreetMap")
-        _g, pr, fonte = osm_pbf.limite_municipio(db, "TO", "1721000")   # segunda vez: vem do banco, sem rede
-        assert chamadas == ["ibge", "osm"] and fonte.endswith("(guardado)") and pr.contains(osm_pbf.__dict__["__builtins__"]["__import__"]("shapely.geometry", fromlist=["Point"]).Point(0.5, 0.5))
-        db.query(Registro).filter_by(fonte="osm", tipo="limite_municipio", chave="TO").delete()
+        assert chamadas == ["ibge", "osm"] and "PROVISÓRIO" in fonte
+        _g, pr, fonte = osm_pbf.limite_municipio(db, "TO", "1721000")   # segunda vez: vem da malha guardada, sem rede
+        assert chamadas == ["ibge", "osm"] and "provisório" in fonte and "guardado" in fonte and pr.contains(osm_pbf.__dict__["__builtins__"]["__import__"]("shapely.geometry", fromlist=["Point"]).Point(0.5, 0.5))
+        m = db.query(MalhaMunicipio).one()
+        assert m.ativa and m.cod_ibge == "1721000" and db.get(MalhaFonte, m.fonte_id).origem == "osm" and not db.get(MalhaFonte, m.fonte_id).oficial
+        db.query(MalhaMunicipio).delete()
+        db.query(MalhaFonte).delete()
         db.commit()
         monkeypatch.setattr(osm_pbf, "limite_osm", lambda *a: (_ for _ in ()).throw(RuntimeError("Overpass indisponível")))
-        with pytest.raises(RuntimeError, match="sem limite do município.*IBGE.*OpenStreetMap"):
+        with pytest.raises(RuntimeError, match="sem limite do município.*IBGE.*OSM"):
             osm_pbf.limite_municipio(db, "TO", "1721000")
     finally:
         db.close()
@@ -597,3 +604,78 @@ def test_mapbiomas_territorio_login_so_por_ambiente_valida_retorno_e_guarda_hist
     corpo["data"]["alerts"]["rankingByState"] = corpo["data"]["alerts"]["rankingByState"][:20]   # retorno cortado: não grava
     with pytest.raises(RuntimeError, match="retorno incompleto"):
         mb.coletar_mapbiomas_territorio()
+
+
+def _xlsx_arrecadacao(com_unidade=True, competencias=(("2026-08", 10.5, 1.0), ("2026-09", 20.0, 2.0), ("2026-09", 5.0, 3.0))):
+    import io
+    import openpyxl
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Arrecadação"
+    ws.append(["Arrecadação mensal" + (" (R$ milhões)" if com_unidade else "")])
+    ws.append([])
+    ws.append(["Competência", "CBS", "IBS", "Observação"])
+    for c, cbs, ibs in competencias:
+        ws.append([c, cbs, ibs, "x"])
+    b = io.BytesIO()
+    wb.save(b)
+    return b.getvalue()
+
+
+def test_extrai_arrecadacao_de_planilha_oficial_so_com_competencia_e_unidade_e_separa_cbs_de_ibs():
+    from datetime import date
+    from app.collectors import reforma
+    x = _xlsx_arrecadacao()
+    cbs = reforma.extrair_arrecadacao(x, "xlsx", "CBS")
+    ibs = reforma.extrair_arrecadacao(x, "xlsx", "IBS")
+    assert cbs["competencias"] == {"2026-08": 10.5, "2026-09": 25.0} and ibs["competencias"] == {"2026-08": 1.0, "2026-09": 5.0}   # soma das linhas da mesma competência
+    assert cbs["unidade"] == "R$ milhões" and cbs["coluna"] == "CBS" and ibs["coluna"] == "IBS"
+    hoje = date(2026, 10, 31)
+    assert reforma.validar_arrecadacao(cbs, hoje) == (True, "ok")
+    assert reforma.extrair_arrecadacao(b"Competencia;PIS\n2026-09;10\n", "csv", "CBS") is None   # sem a coluna do tributo, nada é extraído
+    sem_un = reforma.extrair_arrecadacao(_xlsx_arrecadacao(com_unidade=False), "xlsx", "CBS")
+    ok, motivo = reforma.validar_arrecadacao(sem_un, hoje)
+    assert not ok and "unidade" in motivo
+    futuro = reforma.extrair_arrecadacao(_xlsx_arrecadacao(competencias=(("2027-03", 1.0, 1.0),)), "xlsx", "CBS")
+    assert not reforma.validar_arrecadacao(futuro, hoje)[0]
+    antigo = reforma.extrair_arrecadacao(_xlsx_arrecadacao(competencias=(("2025-03", 1.0, 1.0),)), "xlsx", "CBS")
+    assert not reforma.validar_arrecadacao(antigo, hoje)[0]
+    csv_ = "Mês;IBS (R$);UF\nset/2026;1.234,50;SP\nset/2026;100,00;RJ\n".encode("latin-1")
+    d = reforma.extrair_arrecadacao(csv_, "csv", "IBS")
+    assert d["competencias"] == {"2026-09": 1334.5} and d["unidade"] == "R$"
+
+
+def test_ibs_publicacao_oficial_nova_vira_dados_validados_com_origem_e_pdf_fica_para_revisao(monkeypatch):
+    import httpx
+    from app.collectors import reforma
+    from app.db import SessionLocal, criar_tabelas
+    from app.models import Registro
+    criar_tabelas()
+    monkeypatch.setattr(reforma.alertas, "enviar", lambda *a, **k: None)
+    monkeypatch.setattr(reforma.time, "sleep", lambda s: None)
+    html = {"v": ('<div class="panel panel-default"><h4 class="panel-title">Arrecadação do IBS em setembro de 2026</h4><a href="/upload/arquivos/202610/arr.xlsx">Planilha</a>'
+                  '<a href="/upload/arquivos/202610/arr.pdf">Relatório em PDF</a></div>')}
+    planilha = _xlsx_arrecadacao()
+    monkeypatch.setattr(reforma, "buscar_pagina", lambda urls, **kw: {"estado": "ok", "texto": html["v"], "url": urls[0], "tentativas": []} if "relatorios" in urls[0] else {"estado": "erro_conexao", "texto": None, "url": None, "tentativas": []})
+    monkeypatch.setattr(reforma.http, "get", lambda url, **kw: httpx.Response(200, request=httpx.Request("GET", url), content=planilha))
+    db = SessionLocal()
+    try:
+        for t in ("ibs_monitor", "ibs_arrecadacao"):
+            db.query(Registro).filter_by(fonte="cgibs", tipo=t).delete()
+        db.commit()
+
+        class N:
+            avisos: list = []
+        d = reforma._conferir_ibs(db, N())
+        assert d["situacao"] == "dados_coletados_validados" and d["competencias_validadas"] == 2 and d["arrecadacao_publicada"] and d["ultima_verificacao"]
+        assert d["disponibilidade"] == {"relatorios": "ok", "transparencia": "fonte_indisponivel"}
+        r = db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_arrecadacao", chave="2026-09").one().dados
+        assert r["valor"] == 5.0 and r["unidade"] == "R$ milhões" and r["origem_url"].endswith("/202610/arr.xlsx") and len(r["sha256"]) == 64 and r["tributo"] == "IBS"
+        pdf = next(p for p in d["publicacoes"] if p["formato"] == "pdf")
+        assert "extracao" not in pdf   # PDF não é extraído automaticamente: o relatório fica visível para revisão
+        assert db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_arrecadacao").count() == 2
+        assert db.query(Registro).filter_by(fonte="receita", tipo="cbs_arrecadacao").count() == 0   # CBS e IBS não se misturam
+        d2 = reforma._conferir_ibs(db, N())   # nova conferência: não duplica nem baixa de novo
+        assert db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_arrecadacao").count() == 2 and d2["situacao"] == "dados_coletados_validados"
+    finally:
+        db.close()
