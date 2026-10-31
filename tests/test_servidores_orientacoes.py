@@ -434,3 +434,81 @@ def test_pbf_le_cabecalho_atribui_pelo_ponto_do_meio_e_exclui_o_que_nao_e_via(tm
     # fora do ar sem erro de MD5: o MD5 do arquivo bate com o calculado
     from app.downloads import md5
     assert len(md5(arq)) == 32
+
+
+def _zip_prodes(caminho, truncar_shx=False, sem_prj=False):
+    import io
+    import zipfile
+    import shapefile
+    shp, shx, dbf = io.BytesIO(), io.BytesIO(), io.BytesIO()
+    w = shapefile.Writer(shp=shp, shx=shx, dbf=dbf, shapeType=shapefile.POINT)
+    for nome, tipo, tam, dec in (("state", "C", 2, 0), ("year", "N", 9, 0), ("area_km", "N", 24, 15), ("main_class", "C", 32, 0), ("uuid", "C", 80, 0)):
+        w.field(nome, tipo, tam, dec)
+    for i, (uf, ano, km, cls, uid) in enumerate([("MG", 2020, 1.5, "DESMATAMENTO", "a"), ("MG", 2020, 0.5, "DESMATAMENTO", "b"), ("MG", 2020, 0.5, "DESMATAMENTO", "b"),   # "b" repetido
+                                                  ("SP", 2024, 2.0, "DESMATAMENTO", "c"), ("SP", 2024, 9.0, "RESERVATORIO", "d"), ("SP", 2002, 7.0, "DESMATAMENTO", "e")]):   # classe de fora e ano < 2004
+        w.point(i, i)
+        w.record(uf, ano, km, cls, uid)
+    w.close()
+    with zipfile.ZipFile(caminho, "w") as z:
+        z.writestr("prodes_x.shp", shp.getvalue())
+        z.writestr("prodes_x.shx", shx.getvalue()[:-8] if truncar_shx else shx.getvalue())
+        z.writestr("prodes_x.dbf", dbf.getvalue())
+        if not sem_prj:
+            z.writestr("prodes_x.prj", "GEOGCS[]")
+
+
+def test_prodes_mata_valida_zip_somas_por_uf_ano_sem_duplicidade_e_importa_idempotente(tmp_path):
+    import pytest
+    from app.collectors import prodes_mata as pm
+    from app.db import SessionLocal, criar_tabelas
+    from app.models import Registro
+    z = tmp_path / "ok.zip"
+    _zip_prodes(z)
+    v = pm.validar_zip(z)
+    assert v["feicoes"] == 6 and set(v["componentes"]) == {".shp", ".shx", ".dbf", ".prj"}
+    por_uf, est = pm.ler_incrementos(z)
+    assert por_uf == {"MG": {"2020": 2.0}, "SP": {"2024": 2.0}}   # b só uma vez; reservatório e 2002 fora
+    assert est["duplicados"] == 1 and est["outras_classes"] == 1 and est["desmatamento"] == 3 and est["ano_min"] == 2020
+    for kw, msg in (({"sem_prj": True}, "faltam componentes"), ({"truncar_shx": True}, "inconsistente")):
+        ruim = tmp_path / f"{msg[:4]}.zip"
+        _zip_prodes(ruim, **kw)
+        with pytest.raises(RuntimeError, match=msg):
+            pm.validar_zip(ruim)
+    lixo = tmp_path / "lixo.zip"
+    lixo.write_bytes(b"isso nao e um zip")
+    with pytest.raises(RuntimeError, match="ZIP inválido"):
+        pm.validar_zip(lixo)
+    criar_tabelas()
+    db = SessionLocal()
+    try:
+        db.query(Registro).filter(Registro.fonte == "inpe", Registro.tipo.in_(["prodes_bioma", "prodes_download"]), Registro.chave.like("mata_atlantica%")).delete(synchronize_session=False)
+        db.commit()
+        # ano antigo já existente e que o arquivo não traz: é preservado; ano que o arquivo traz: é substituído
+        from app.utils import upsert
+        upsert(db, Registro, {"fonte": "inpe", "tipo": "prodes_bioma", "chave": "mata_atlantica"}, {"titulo": "x", "dados": {"por_uf": {"MG": {"2019": 7.0, "2020": 99.0}}}})
+        db.commit()
+    finally:
+        db.close()
+    assert pm.coletar_prodes_mata_atlantica(arquivo=str(z)) == 1
+    assert pm.coletar_prodes_mata_atlantica(arquivo=str(z)) == 0   # mesma versão e mesmo SHA-256: não repete
+    db = SessionLocal()
+    try:
+        r = db.query(Registro).filter_by(fonte="inpe", tipo="prodes_bioma", chave="mata_atlantica").one().dados
+        assert r["por_uf"]["MG"] == {"2019": 7.0, "2020": 2.0} and r["por_uf"]["SP"] == {"2024": 2.0} and r["total"]["2020"] == 2.0
+        assert r["feicoes"] == 3 and r["origem"] == "arquivo" and len(r["sha256"]) == 64 and r["ultimo_ano"] == "2024"
+        assert db.query(Registro).filter(Registro.fonte == "inpe", Registro.tipo == "prodes_download", Registro.chave.like("mata_atlantica%")).count() == 1
+    finally:
+        db.close()
+
+
+def test_prodes_escolhe_o_shapefile_certo_no_catalogo():
+    import pytest
+    from app.collectors import prodes_mata as pm
+    cat = [{"enabled": True, "lang": "pt-br", "link": "/download/dataset/mata-atlantica-prodes/vector/prodes_biome_mata_atlantica_v1.gpkg.zip", "created": "2026-08-07"},
+           {"enabled": True, "lang": "en", "link": "/download/dataset/mata-atlantica-prodes/vector/yearly_deforestation_biome_mata_atlantica_v2.zip", "created": "2026-08-07"},
+           {"enabled": True, "lang": "pt-br", "link": "/download/dataset/mata-atlantica-prodes/vector/yearly_deforestation_biome_mata_atlantica_v20260806.zip", "created": "2026-08-07 10:16:17", "description": "d", "metadata": "/geonetwork/x"},
+           {"enabled": False, "lang": "pt-br", "link": "/download/dataset/mata-atlantica-prodes/vector/yearly_deforestation_biome_mata_atlantica_v20270101.zip", "created": "2027-01-01"}]
+    e = pm.escolher(cat)
+    assert e["versao"] == "20260806" and e["url"].startswith("https://terrabrasilis.dpi.inpe.br/download/dataset/") and e["metadados"].endswith("/geonetwork/x")
+    with pytest.raises(RuntimeError, match="não traz"):
+        pm.escolher([cat[0]])

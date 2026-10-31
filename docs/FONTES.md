@@ -79,7 +79,8 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 | caged-saldos | Novo CAGED (FTP do PDET, `CAGEDMOV/FOR/EXC` .7z) | **Funciona** (robô 30/10/2026: ago/2026 +165.675 de saldo nos movimentos do mês; 27 UFs) | Só somas por UF/mês/setor; saldo oficial pode diferir um pouco |
 | tse-doadores | TSE prestação de contas (zips de 2002 a 2024) | **Funciona** (local 2002–2022; robô 2016 e 2024) | Só CNPJ; descarta "recursos próprios" e partido/comitê < R$ 10 mil |
 | querido-diario | queridodiario.ok.org.br/api | **Funciona** (robô 30/10/2026); `api.` não tem certificado para o nome | TLS validado; histórico de disponibilidade |
-| osm-malha-capitais | OpenStreetMap (Overpass) | **Indisponível** nas duas tentativas do robô (5xx em todos os espelhos) | Tentar fora do horário de pico |
+| osm-malha-capitais | OpenStreetMap (Overpass, 3 espelhos) | Reescrito em 31/10: partes por tipo de via, retomada, rodízio, base ≤ 7 dias | Ver "Correção dos coletores" abaixo |
+| osm-malha-pbf | Geofabrik (extrato regional/nacional PBF + MD5) + limite municipal do IBGE | Novo, preferido para coleta recorrente | Ver "Correção dos coletores" abaixo |
 | tomtom-transito | TomTom Traffic API | Aguarda `TOMTOM_API_KEY` (gratuita) | Sem chave não coleta nem simula |
 
 | reforma-tributaria | Receita (arrecadacao-estado.csv) + CGIBS (transparência) | Monitor funciona; **arrecadação de CBS/IBS ainda não é publicada** (30/10/2026) | Não estimamos valores; ICMS/ISS seguem como linha de base |
@@ -89,4 +90,20 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 | prf-acidentes (2022) | PRF: página oficial (Drive) | **Funciona** (2022: 64.606 acidentes) | Zip testado, SHA-256 guardado |
 | escandalos-fila | PF e CGU (gov.br), STF (feed) | **Funciona**; MPF 404, STJ 403, TCU só JS | Fila de revisão, nada publicado como caso |
 | mapbiomas-alertas | MapBiomas Alerta (GraphQL público) | **Funciona** (contagem por bioma e mês) | Não é PRODES; área exige token |
-| inpe-prodes (Cerrado, Caatinga, Mata Atlântica) | TerraBrasilis (downloads/WFS) | **Indisponível**: downloads 502/403/404, WFS com 502 e timeout | Sem alternativa oficial aberta encontrada |
+| inpe-desmatamento (Cerrado, Caatinga) | TerraBrasilis WFS do bioma, versão 1.0.0 | **Funciona** (Caatinga 2.260.564 feições, Cerrado 2.388.715; 2025/2026) | Sem `main_class`; sem `sortBy` |
+| inpe-prodes-mata-atlantica | TerraBrasilis: catálogo `/business/api/v1/download/all` → shapefile do incremento anual | **Funciona** (1.113.709 feições; 1.104.742 de desmatamento; até 2025) | Versão `v20260806`, 472 MB, SHA-256 guardado |
+
+
+## Correção dos coletores Overpass, CGIBS e Mata Atlântica (31/10/2026)
+- **Overpass — causa**: o diagnóstico do robô (`scripts/diag_osm.py`) mostrou overpass-api.de lento (30–45 s numa consulta mínima, fila de vagas), overpass.private.coffee com base de 28/07/2026 (3 meses velha) e leitura de 60–90 s,
+  maps.mail.ru com 504 ("Dispatcher_Client::request_read_and_idx::timeout: o servidor está ocupado") antes de responder. A coleta antiga pedia a cidade inteira numa chamada (`map_to_area` + `out geom`, 700 s) e girava
+  por espelho morto (kumi.systems). Agora (`app/collectors/osm_malha.py`): relação do município achada uma vez; quatro partes por tipo de via, disjuntas (testado); cada parte salva ao chegar (`malha_parte`) e retomada na rodada seguinte;
+  uma consulta por vez, 10 s entre consultas e espera pela vaga do `/api/status`; espelhos overpass-api.de → overpass.private.coffee → maps.mail.ru; resposta com `remark` de erro, JSON cortado ou base > 7 dias é recusada;
+  `timestamp_osm_base` por parte; id repetido conta uma vez. O Overpass não sobrescreve uma leitura do extrato (PBF) com menos de 25 dias.
+- **Extrato da Geofabrik (PBF)** (`app/collectors/osm_pbf.py`, tarefa `osm-malha-pbf`): `brazil-latest.osm.pbf` tem 2,1 GB e é atualizado todo dia (MD5 publicado); usa o extrato da região da capital se existir, senão o nacional. Download em streaming com retomada
+  (`app/downloads.py`), MD5 conferido, leitura em um passe com pyosmium, limite municipal da malha do IBGE (qualidade máxima), via atribuída ao município do ponto do MEIO dela. Preferido ao Overpass na coleta recorrente.
+- **CBS** (`receita-cbs`) e **IBS** (`cgibs-ibs`) são coletores independentes (`app/collectors/reforma.py`; `reforma-tributaria` roda os dois). Causa do "CGIBS: ConnectTimeout": a página de transparência (`www.cgibs.gov.br/transparencia`) e a de relatórios
+  estavam no mesmo `try`; o timeout da primeira impedia a leitura da segunda. Agora cada página é lida em separado, com e sem `www`, com repetição; o estado é sempre um destes: `indisponivel` (erro de conexão: mantém o que se sabia), `sem_publicacao`,
+  `publicacoes_sem_arrecadacao`, `arrecadacao_publicada`. Nunca grava arrecadação zero nem estimada. A API de apuração da CBS (`docs.receitafederal.gov.br/apuracao-cbs`) é POR CONTRIBUINTE (CNPJ base, OAuth2, IP autorizado): lida, registrada e NÃO usada.
+- **Mata Atlântica**: a página de downloads monta a lista por `GET /business/api/v1/download/all`; o arquivo é versionado no nome (`yearly_deforestation_biome_mata_atlantica_v20260806.zip`), por isso os nomes chutados davam 404. `app/collectors/prodes_mata.py`.
+- **MapBiomas Alerta**: `alerts` (alertas com área e filtro por território) responde "Token de acesso inválido"; só as contagens por bioma e mês (`alertStatusByBiomes`) e `territoryOptions` são públicas. Cruzamento territorial depende de token (cadastro do Felipe em plataforma.alerta.mapbiomas.org).
