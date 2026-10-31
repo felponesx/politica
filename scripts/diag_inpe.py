@@ -22,17 +22,19 @@ def get(url, tentativas=3, **kw):
 
 
 achados = {}
-paginas = ["https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/cerrado/increments", "https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/caatinga/increments",
-           "https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/mata-atlantica/increments", "https://terrabrasilis.dpi.inpe.br/downloads/", "https://terrabrasilis.dpi.inpe.br/app/map/deforestation"]
+paginas = ["https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/cerrado/increments", "https://terrabrasilis.dpi.inpe.br/app/map/deforestation"]
 for pg in paginas:
     r = get(pg)
     if r is None or r.status_code != 200:
         continue
     js = re.findall(r'(?:src|href)="([^"]+\.js)"', r.text)
-    print("  scripts:", js[:6], flush=True)
+    print("  scripts:", len(js), js[6:16], flush=True)
     base = pg.rsplit("/", 1)[0] + "/" if not pg.endswith("/") else pg
-    for s in js[:6]:
-        u = s if s.startswith("http") else (("https://terrabrasilis.dpi.inpe.br" + s) if s.startswith("/") else base + s)
+    for s in js[:40]:
+        if "jquery" in s or "bootstrap" in s or "popper" in s or "lodash" in s or s.startswith("//"):
+            continue
+        u = s if s.startswith("http") else (("https://terrabrasilis.dpi.inpe.br" + s) if s.startswith("/") else "https://terrabrasilis.dpi.inpe.br/app/" + s.lstrip("./"))
+        print("  js:", u[:110], flush=True)
         j = get(u, 1)
         if j is not None and j.status_code == 200:
             for m in re.findall(r"""["'`]((?:https?:)?//?[\w./:{}$-]*(?:terrabrasilis|api/v\d|download|redis|prodes|geoserver)[\w./:?=&%{}$-]*)["'`]""", j.text):
