@@ -301,3 +301,28 @@ def test_caged_estoque_encadeado_soma_referencia_e_saldos_so_com_todos_os_meses(
         db.query(Registro).filter(Registro.fonte == "caged").delete()
         db.commit()
         db.close()
+
+
+def test_igc_por_municipio_mostra_nota_da_instituicao_e_nao_inventa_nota_municipal():
+    from app import lacunas
+    from app.models import IesMunicipio
+    criar_tabelas()
+    db = SessionLocal()
+    try:
+        db.query(IesMunicipio).delete()
+        db.query(Registro).filter(Registro.fonte == "inep", Registro.tipo == "igc_edicao").delete()
+        db.add(Registro(fonte="inep", tipo="igc_edicao", chave="2023", dados={"lista": [{"codigo": 7, "igc": 4.1, "faixa": "5", "categoria": "Pública Federal", "organizacao": "Universidade"}]}))
+        db.add_all([IesMunicipio(ano_censo=2024, co_ies=7, nome="UNI X", sigla="UX", cod_municipio="5103403", municipio="Cuiabá", uf="MT", sede=True, n_cursos=30, vagas=1000, matriculas=9000),
+                    IesMunicipio(ano_censo=2024, co_ies=7, nome="UNI X", sigla="UX", cod_municipio="5107602", municipio="Rondonópolis", uf="MT", sede=False, n_cursos=5, vagas=100, matriculas=400),
+                    IesMunicipio(ano_censo=2024, co_ies=8, nome="FAC Y", sigla=None, cod_municipio="5103403", municipio="Cuiabá", uf="MT", sede=True, n_cursos=2, vagas=50, matriculas=60)])
+        db.commit()
+        d = lacunas.igc_municipio(db, "510340")
+        assert [i["co_ies"] for i in d["instituicoes"]] == [7, 8] and d["instituicoes"][0]["igc_da_instituicao"] == 4.1 and d["instituicoes"][1]["igc_da_instituicao"] is None
+        assert d["com_igc"] == 1 and "não do município" in d["aviso"]
+        i = lacunas.igc_instituicao(db, 7)
+        assert [m["municipio"] for m in i["municipios"]] == ["Cuiabá", "Rondonópolis"] and i["igc"] == 4.1
+    finally:
+        db.query(IesMunicipio).delete()
+        db.query(Registro).filter(Registro.fonte == "inep", Registro.tipo == "igc_edicao").delete()
+        db.commit()
+        db.close()

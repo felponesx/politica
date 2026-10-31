@@ -363,6 +363,52 @@ def escandalos_fila(db: Session, etapa: str | None = None, orgao: str | None = N
     return {"total": len(sel), "por_etapa": por_etapa, "itens": sel[:limite], "fontes": (fontes or {}).get("fontes", []), "verificado_em": (fontes or {}).get("verificado_em"), "aviso": AVISO_FILA}
 
 
+AVISO_IGC_MUN = ("O IGC é a nota da INSTITUIÇÃO de ensino superior, não do município. Aqui aparecem as instituições com sede ou cursos presenciais no município (Censo da Educação Superior), cada uma com a sua nota "
+                 "institucional. Uma instituição com cursos em vários municípios mostra a MESMA nota em todos eles. Cursos a distância sem polo não têm município e não entram. Instituição sem IGC publicado aparece sem nota.")
+
+
+def _igc_por_ies(db: Session) -> dict[int, dict]:
+    """Nota mais recente de cada instituição entre as edições do IGC coletadas."""
+    out: dict[int, dict] = {}
+    for ano, d in sorted(_regs(db, "igc_edicao", "inep").items()):
+        for x in (d or {}).get("lista", []):
+            out[int(x["codigo"])] = {"igc": x.get("igc"), "faixa": x.get("faixa"), "edicao": int(ano), "categoria": x.get("categoria"), "organizacao": x.get("organizacao")}
+    return out
+
+
+def igc_municipio(db: Session, ibge: str) -> dict | None:
+    from app.models import IesMunicipio as M
+    cod = "".join(c for c in ibge if c.isdigit())
+    if len(cod) == 6:   # sem o dígito verificador: casa pelo começo
+        linhas = db.execute(select(M).where(M.cod_municipio.like(cod + "%"))).scalars().all()
+    else:
+        linhas = db.execute(select(M).where(M.cod_municipio == cod)).scalars().all()
+    if not linhas:
+        return None
+    igc = _igc_por_ies(db)
+    ano = max(x.ano_censo for x in linhas)
+    itens = []
+    for x in sorted((l for l in linhas if l.ano_censo == ano), key=lambda l: (-l.matriculas, -l.n_cursos)):
+        n = igc.get(x.co_ies, {})
+        itens.append({"co_ies": x.co_ies, "nome": x.nome, "sigla": x.sigla, "sede_no_municipio": x.sede, "cursos_no_municipio": x.n_cursos, "vagas": x.vagas, "matriculas": x.matriculas,
+                      "igc_da_instituicao": n.get("igc"), "faixa_igc": n.get("faixa"), "edicao_igc": n.get("edicao")})
+    return {"municipio": linhas[0].municipio, "uf": linhas[0].uf, "cod_municipio": linhas[0].cod_municipio, "ano_censo": ano, "instituicoes": itens, "n_instituicoes": len(itens),
+            "com_igc": sum(1 for i in itens if i["igc_da_instituicao"] is not None), "aviso": AVISO_IGC_MUN, "fontes": ["INEP — Censo da Educação Superior", "INEP — IGC"]}
+
+
+def igc_instituicao(db: Session, co_ies: int) -> dict | None:
+    from app.models import IesMunicipio as M
+    linhas = db.execute(select(M).where(M.co_ies == co_ies)).scalars().all()
+    if not linhas:
+        return None
+    ano = max(x.ano_censo for x in linhas)
+    n = _igc_por_ies(db).get(co_ies, {})
+    muns = sorted((l for l in linhas if l.ano_censo == ano), key=lambda l: (-l.matriculas, -l.n_cursos))
+    return {"co_ies": co_ies, "nome": muns[0].nome, "sigla": muns[0].sigla, "igc": n.get("igc"), "faixa_igc": n.get("faixa"), "edicao_igc": n.get("edicao"), "ano_censo": ano,
+            "municipios": [{"cod_municipio": m.cod_municipio, "municipio": m.municipio, "uf": m.uf, "sede": m.sede, "cursos": m.n_cursos, "vagas": m.vagas, "matriculas": m.matriculas} for m in muns],
+            "aviso": AVISO_IGC_MUN}
+
+
 def servidores(db: Session) -> dict | None:
     meses = _regs(db, "servidores_mes", "transparencia")
     if not meses:
