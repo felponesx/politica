@@ -5,7 +5,7 @@ Geofabrik atualiza todo dia, baixa-se uma vez, confere-se com o .md5 e processa-
 (norte, nordeste, centro-oeste, sudeste, sul) quando a Geofabrik o oferece; senão o nacional.
 
 Como: download em streaming com retomada (`app/downloads.py`) + conferência do MD5; leitura em um só passe com pyosmium (`FileProcessor`, só ways com `highway`, localização dos nós em memória);
-o limite do município vem da malha oficial do IBGE (maior qualidade) e cada via é atribuída ao município que contém o PONTO DO MEIO dela (o Overpass usa outro critério na divisa, por isso
+o limite do município vem da malha oficial do IBGE (maior qualidade) ou, se o IBGE não responde (aconteceu no robô em 31/10/2026), da relação do município no OSM, e fica guardado no banco; cada via é atribuída ao município que contém o PONTO DO MEIO dela (o Overpass usa outro critério na divisa, por isso
 os dois métodos podem diferir pouco; o registro diz qual foi usado). Comprimento = distância de haversine entre os nós, via inteira. Carimbo da base = `osmosis_replication_timestamp` do cabeçalho."""
 import logging
 import os
@@ -69,16 +69,73 @@ def md5_oficial(url: str) -> str | None:
         return None
 
 
-def limite_municipio(ibge: str):
-    """Polígono oficial do município (IBGE, maior qualidade) como geometria `shapely`, com `prepared` para testar pontos."""
+def limite_ibge(ibge: str):
+    """Polígono oficial do município (malha do IBGE, maior qualidade). Tempo curto e poucas tentativas: o servidor do IBGE ficou inalcançável a partir do robô (31/10/2026, ConnectTimeout em todas as chamadas)."""
     from shapely.geometry import shape
-    from shapely.prepared import prep
-    js = http.get(IBGE_MALHA.format(ibge=ibge), params={"formato": "application/vnd.geo+json", "qualidade": "maxima"}, headers={"Accept": "*/*"}, timeout=120).json()
+    js = None
+    for _ in range(2):
+        try:
+            js = httpx.get(IBGE_MALHA.format(ibge=ibge), params={"formato": "application/vnd.geo+json", "qualidade": "maxima"}, headers={"Accept": "*/*"}, timeout=httpx.Timeout(15.0, read=90.0)).json()
+            break
+        except (httpx.HTTPError, ValueError):
+            continue
+    if js is None:
+        raise RuntimeError("IBGE não respondeu")
     feat = (js.get("features") or [js])[0]
     g = shape(feat.get("geometry") or feat)
     if g.is_empty:
         raise RuntimeError(f"IBGE devolveu limite vazio para {ibge}")
-    return g, prep(g)
+    return g
+
+
+def poligono_da_relacao(rel: dict):
+    """Polígono de uma relação de limite do OSM (`out geom`): junta os caminhos 'outer' e tira os 'inner'. Falha se os caminhos não fecham."""
+    from shapely.geometry import LineString
+    from shapely.ops import linemerge, polygonize, unary_union
+    def faces(papel):
+        linhas = [LineString([(p["lon"], p["lat"]) for p in m["geometry"]]) for m in rel.get("members", []) if m.get("type") == "way" and m.get("role") == papel and len(m.get("geometry") or []) >= 2]
+        return unary_union(list(polygonize(linemerge(linhas)))) if linhas else None
+    fora, dentro = faces("outer"), faces("inner")
+    if fora is None or fora.is_empty:
+        raise RuntimeError("limite do OSM não fecha (caminhos externos incompletos)")
+    return fora.difference(dentro) if dentro is not None and not dentro.is_empty else fora
+
+
+def limite_osm(db, uf: str, ibge: str):
+    """Reserva: o limite do município pela relação do OSM (Overpass, uma consulta pequena). O OSM do Brasil usa a malha do IBGE como base, mas pode diferir na divisa."""
+    from app.collectors.osm_malha import Overpass, achar_relacao
+    cli = Overpass()
+    rel_id = achar_relacao(db, cli, uf, ibge)
+    d, _esp = cli.consultar(f"[out:json][timeout:120];rel({rel_id});out geom;", 120)
+    rels = [e for e in d.get("elements", []) if e.get("type") == "relation"]
+    if not rels:
+        raise RuntimeError(f"relação {rel_id} sem geometria")
+    return poligono_da_relacao(rels[0])
+
+
+def limite_municipio(db, uf: str, ibge: str):
+    """(geometria, preparada, fonte). Guardado no banco (`limite_municipio`): o contorno quase não muda. Ordem: guardado → IBGE → OSM; se nenhum responde, o erro lista os dois motivos."""
+    from shapely import wkt
+    from shapely.prepared import prep
+    reg = db.query(Registro).filter_by(fonte="osm", tipo="limite_municipio", chave=uf).first()
+    if reg and (reg.dados or {}).get("ibge") == ibge and reg.dados.get("wkt"):
+        g = wkt.loads(reg.dados["wkt"])
+        return g, prep(g), reg.dados["fonte"] + " (guardado)"
+    erros = []
+    for fonte, obter in (("IBGE malha municipal (qualidade máxima)", lambda: limite_ibge(ibge)), ("OpenStreetMap (relação do município)", lambda: limite_osm(db, uf, ibge))):
+        try:
+            g = obter()
+            if g.is_empty or not g.is_valid:
+                g = g.buffer(0)
+            if g.is_empty:
+                raise RuntimeError("limite vazio")
+            upsert(db, Registro, {"fonte": "osm", "tipo": "limite_municipio", "chave": uf}, {"uf": uf, "titulo": f"Limite de {CAPITAIS[uf][0]}", "dados": {"ibge": ibge, "fonte": fonte, "wkt": g.wkt, "area_graus2": g.area}})
+            db.commit()
+            return g, prep(g), fonte
+        except Exception as e:  # noqa: BLE001
+            db.rollback()
+            erros.append(f"{fonte}: {type(e).__name__} {str(e)[:70]}")
+    raise RuntimeError("sem limite do município. " + "; ".join(erros))
 
 
 def cabecalho_pbf(caminho: Path) -> dict:
@@ -152,7 +209,8 @@ def coletar_malha_pbf(ufs: str = "", refazer: bool = False, manter: bool = False
             try:
                 url = escolher_extrato(regiao)
                 etapa = "limite do município (IBGE)"
-                alvos = {uf: limite_municipio(CAPITAIS[uf][1]) for uf in faltam}   # antes do download de GBs: se o IBGE não responde, para logo
+                limites = {uf: limite_municipio(db, uf, CAPITAIS[uf][1]) for uf in faltam}   # antes do download de GBs: se nenhuma fonte de limite responde, para logo
+                alvos = {uf: (g, pr) for uf, (g, pr, _f) in limites.items()}
                 etapa = "download do extrato"
                 destino = pasta_destino() / url.rsplit("/", 1)[-1]
                 oficial = md5_oficial(url)
@@ -167,7 +225,7 @@ def coletar_malha_pbf(ufs: str = "", refazer: bool = False, manter: bool = False
                 res = processar_pbf(destino, alvos)
                 etapa = "gravação"
                 meta = {"extrato": url.rsplit("/", 1)[-1], "extrato_url": url, "md5": real, "md5_confere": bool(oficial) and real == oficial, "osm_base": cab["osm_base"], "baixado_em": datetime.now().isoformat(timespec="seconds"),
-                        "tamanho_extrato": transf["tamanho"], "download_retomado": transf["retomado"], "limite": "IBGE malha municipal (qualidade máxima)", "estatisticas_do_passe": res["estatisticas"], "aviso": AVISO}
+                        "tamanho_extrato": transf["tamanho"], "download_retomado": transf["retomado"], "limites": {uf: f for uf, (_g, _p, f) in limites.items()}, "estatisticas_do_passe": res["estatisticas"], "aviso": AVISO}
                 for uf in faltam:
                     try:
                         d = montar_capital(uf, res["vias"][uf], meta)

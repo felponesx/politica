@@ -512,3 +512,41 @@ def test_prodes_escolhe_o_shapefile_certo_no_catalogo():
     assert e["versao"] == "20260806" and e["url"].startswith("https://terrabrasilis.dpi.inpe.br/download/dataset/") and e["metadados"].endswith("/geonetwork/x")
     with pytest.raises(RuntimeError, match="não traz"):
         pm.escolher([cat[0]])
+
+
+def _membro(papel, pts):
+    return {"type": "way", "role": papel, "geometry": [{"lon": x, "lat": y} for x, y in pts]}
+
+
+def test_limite_do_osm_junta_caminhos_e_tira_buracos_e_cai_para_o_osm_quando_o_ibge_nao_responde(monkeypatch):
+    import pytest
+    from shapely.geometry import box
+    from app.collectors import osm_pbf
+    from app.db import SessionLocal, criar_tabelas
+    from app.models import Registro
+    rel = {"members": [_membro("outer", [(0, 0), (2, 0), (2, 2)]), _membro("outer", [(2, 2), (0, 2), (0, 0)]), _membro("inner", [(0.5, 0.5), (1, 0.5), (1, 1), (0.5, 1), (0.5, 0.5)])]}
+    g = osm_pbf.poligono_da_relacao(rel)
+    assert abs(g.area - (4 - 0.25)) < 1e-9   # quadrado 2×2 montado de dois caminhos, menos o buraco de 0,5×0,5
+    with pytest.raises(RuntimeError, match="não fecha"):
+        osm_pbf.poligono_da_relacao({"members": [_membro("outer", [(0, 0), (1, 0)])]})
+    criar_tabelas()
+    db = SessionLocal()
+    try:
+        db.query(Registro).filter_by(fonte="osm", tipo="limite_municipio", chave="TO").delete()
+        db.commit()
+        chamadas = []
+        def ibge_fora(ibge): chamadas.append("ibge"); raise RuntimeError("IBGE não respondeu")
+        def osm_ok(db_, uf, ibge): chamadas.append("osm"); return box(0, 0, 1, 1)
+        monkeypatch.setattr(osm_pbf, "limite_ibge", ibge_fora)
+        monkeypatch.setattr(osm_pbf, "limite_osm", osm_ok)
+        _g, _p, fonte = osm_pbf.limite_municipio(db, "TO", "1721000")
+        assert chamadas == ["ibge", "osm"] and fonte.startswith("OpenStreetMap")
+        _g, pr, fonte = osm_pbf.limite_municipio(db, "TO", "1721000")   # segunda vez: vem do banco, sem rede
+        assert chamadas == ["ibge", "osm"] and fonte.endswith("(guardado)") and pr.contains(osm_pbf.__dict__["__builtins__"]["__import__"]("shapely.geometry", fromlist=["Point"]).Point(0.5, 0.5))
+        db.query(Registro).filter_by(fonte="osm", tipo="limite_municipio", chave="TO").delete()
+        db.commit()
+        monkeypatch.setattr(osm_pbf, "limite_osm", lambda *a: (_ for _ in ()).throw(RuntimeError("Overpass indisponível")))
+        with pytest.raises(RuntimeError, match="sem limite do município.*IBGE.*OpenStreetMap"):
+            osm_pbf.limite_municipio(db, "TO", "1721000")
+    finally:
+        db.close()
