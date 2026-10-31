@@ -1,6 +1,6 @@
 {
  "versao": 1,
- "gerado_em": "2026-10-31T04:09+00:00",
+ "gerado_em": "2026-10-31T17:37+00:00",
  "shards": 256,
  "bases": {
   "/parlamentares": [
@@ -4484,5 +4484,5 @@
   "normas": 9043
  },
  "consultas": 31026,
- "bytes": 171616910
+ "bytes": 171669343
 }
