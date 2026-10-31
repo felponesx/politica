@@ -148,20 +148,24 @@ def coletar_malha_pbf(ufs: str = "", refazer: bool = False, manter: bool = False
             faltam = [u for u in lista if refazer or not _recente(db, u)]
             if not faltam:
                 continue
+            etapa = "extrato"
             try:
                 url = escolher_extrato(regiao)
+                etapa = "limite do município (IBGE)"
+                alvos = {uf: limite_municipio(CAPITAIS[uf][1]) for uf in faltam}   # antes do download de GBs: se o IBGE não responde, para logo
+                etapa = "download do extrato"
                 destino = pasta_destino() / url.rsplit("/", 1)[-1]
                 oficial = md5_oficial(url)
                 transf = baixar(url, destino)
+                etapa = "conferência do MD5"
                 real = md5(destino)
                 if oficial and real != oficial:
                     destino.unlink(missing_ok=True)
                     raise RuntimeError(f"MD5 do extrato não confere ({real[:8]}… ≠ {oficial[:8]}…); arquivo descartado")
                 cab = cabecalho_pbf(destino)
-                alvos = {}
-                for uf in faltam:
-                    alvos[uf] = limite_municipio(CAPITAIS[uf][1])
+                etapa = "leitura do extrato"
                 res = processar_pbf(destino, alvos)
+                etapa = "gravação"
                 meta = {"extrato": url.rsplit("/", 1)[-1], "extrato_url": url, "md5": real, "md5_confere": bool(oficial) and real == oficial, "osm_base": cab["osm_base"], "baixado_em": datetime.now().isoformat(timespec="seconds"),
                         "tamanho_extrato": transf["tamanho"], "download_retomado": transf["retomado"], "limite": "IBGE malha municipal (qualidade máxima)", "estatisticas_do_passe": res["estatisticas"], "aviso": AVISO}
                 for uf in faltam:
@@ -177,7 +181,7 @@ def coletar_malha_pbf(ufs: str = "", refazer: bool = False, manter: bool = False
                     destino.unlink(missing_ok=True)
             except Exception as e:  # noqa: BLE001 - uma região que falha não derruba as outras
                 db.rollback()
-                n.avisos.append(f"região {regiao}: {type(e).__name__}: {str(e)[:150]}")
+                n.avisos.append(f"região {regiao} ({etapa}): {type(e).__name__}: {str(e)[:150]}")
         if not n.itens and n.avisos:
             raise RuntimeError("; ".join(n.avisos))
     return n.itens
