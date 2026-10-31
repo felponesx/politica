@@ -189,7 +189,7 @@ def test_reforma_publicacoes_separam_cbs_receita_de_ibs_cgibs():
     p = r.publicacoes_receita(html, 2026)
     assert [(x["competencia"], x["formato"]) for x in p] == [("2026-09", "pdf"), ("2026-09", "xlsx")] and p[0]["url"].startswith("https://www.gov.br/receitafederal")
     c = r.publicacoes_cgibs('<a href="/upload/arquivos/202606/a.pdf"><span>Relatórios fiscais</span></a>')
-    assert c == [{"url": "https://cgibs.gov.br/upload/arquivos/202606/a.pdf", "titulo": "Relatórios fiscais", "formato": "pdf"}]
+    assert len(c) == 1 and {k: c[0][k] for k in ("url", "titulo", "formato", "publicado_em_mes")} == {"url": "https://cgibs.gov.br/upload/arquivos/202606/a.pdf", "titulo": "Relatórios fiscais", "formato": "pdf", "publicado_em_mes": "2026-06"}
     import io, openpyxl
     wb = openpyxl.Workbook(); wb.active.append(["Tributo", "COFINS"]); b = io.BytesIO(); wb.save(b)
     assert r.menciona_cbs_ibs(b.getvalue(), "xlsx") is False
@@ -204,3 +204,83 @@ def test_mapbiomas_resume_alertas_por_bioma_sem_misturar_com_prodes():
              "lastAlertPublication": {"publishedAt": "2026-06-05", "total": 500, "publicationRange": "2026-05"}}
     d = m.resumir(dados)
     assert len(d["por_bioma_mes"]) == 6 and d["ultimo_mes"] == "2026-01" and d["por_bioma_ano"]["Cerrado"] == {"2025": 10, "2026": 10} and d["ultima_publicacao"]["alertas"] == 500
+
+
+# ---------- CBS / IBS separados (31/10/2026) ----------
+CGIBS_HTML = ('<div id="accordion-1" class="panel-group accordion"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">DECLARAÇÃO DE AUSÊNCIA<br> 1º QUADRIMESTRE DO EXERCÍCIO FINANCEIRO DE 2026</h4></div>'
+              '<div class="panel-body"><p><a href="/upload/arquivos/202606/15-rel.pdf" download=""> Relatorios Fiscais <small>(.pdf 2,95 MBytes)</small> </a></p></div></div></div>'
+              '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Arrecadação do IBS em julho de 2026</h4></div><div class="panel-body"><a href="/upload/arquivos/202609/9-arr.xlsx">Planilha</a></div></div>')
+
+
+def test_cgibs_le_painel_competencia_e_mes_de_publicacao():
+    from app.collectors import reforma
+    p = reforma.publicacoes_cgibs(CGIBS_HTML)
+    assert [x["competencia"] for x in p] == ["2026-Q1", "2026-07"]
+    assert [x["publicado_em_mes"] for x in p] == ["2026-06", "2026-09"]
+    assert p[0]["arquivo"] == "Relatorios Fiscais" and p[0]["url"] == "https://cgibs.gov.br/upload/arquivos/202606/15-rel.pdf"
+    assert reforma.competencia_cgibs("Sem data nenhuma", "https://x/y.pdf") == {"competencia": None, "periodo": None, "publicado_em_mes": None}
+
+
+def test_situacoes_nunca_se_confundem():
+    from app.collectors import reforma
+    s = reforma.situacao_do_tributo
+    assert s(False, [], False) == "indisponivel" and s(True, [], False) == "sem_publicacao"
+    assert s(True, [{"a": 1}], False) == "publicacoes_sem_arrecadacao" and s(True, [{"a": 1}], True) == "arrecadacao_publicada"
+
+
+def test_buscar_pagina_distingue_erro_de_conexao_e_http(monkeypatch):
+    import httpx
+    from app import http as h
+    from app.collectors import reforma
+    monkeypatch.setattr(reforma.time, "sleep", lambda s: None)
+
+    class Cli:
+        def __init__(self, f): self.f = f
+        def get(self, url, **kw): return self.f(url)
+    req = httpx.Request("GET", "https://x")
+    def cai(url): raise httpx.ConnectTimeout("t", request=req)
+    monkeypatch.setattr(h, "_cliente", Cli(cai))
+    assert reforma.buscar_pagina(["https://a", "https://www.a"], tentativas=2)["estado"] == "erro_conexao"
+    monkeypatch.setattr(h, "_cliente", Cli(lambda u: httpx.Response(404, request=req, text="nao")))
+    assert reforma.buscar_pagina(["https://a"], tentativas=1)["estado"] == "erro_http"
+    # primeiro endereço fora do ar, segundo responde: usa o segundo
+    monkeypatch.setattr(h, "_cliente", Cli(lambda u: (_ for _ in ()).throw(httpx.ConnectTimeout("t", request=req)) if "www" not in u else httpx.Response(200, request=httpx.Request("GET", u), text="oi")))
+    r = reforma.buscar_pagina(["https://a", "https://www.a"], tentativas=1)
+    assert r["estado"] == "ok" and r["url"] == "https://www.a" and r["tentativas"][0]["resultado"] == "ConnectTimeout"
+
+
+def test_ibs_detecta_publicacao_nova_mantem_dados_quando_portal_cai_e_nao_inventa_arrecadacao(monkeypatch):
+    from app.collectors import reforma
+    from app.db import SessionLocal, criar_tabelas
+    from app.models import Registro
+    criar_tabelas()
+    alertas = []
+    monkeypatch.setattr(reforma.alertas, "enviar", lambda m, *a, **k: alertas.append(m))
+    monkeypatch.setattr(reforma.time, "sleep", lambda s: None)
+    html = {"v": CGIBS_HTML.split('<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Arrecadação')[0]}   # só o 1º documento
+
+    def pagina(urls, **kw):
+        if "relatorios" in urls[0] and html["v"] is not None:
+            return {"estado": "ok", "texto": html["v"], "url": urls[0], "tentativas": []}
+        return {"estado": "erro_conexao", "texto": None, "url": None, "tentativas": [{"url": urls[0], "resultado": "ConnectTimeout"}]}
+    monkeypatch.setattr(reforma, "buscar_pagina", pagina)
+    db = SessionLocal()
+    try:
+        db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_monitor").delete()
+        db.commit()
+
+        class N:
+            avisos: list = []
+        d1 = reforma._conferir_ibs(db, N())
+        assert d1["situacao"] == "publicacoes_sem_arrecadacao" and len(d1["publicacoes"]) == 1 and d1["primeira_conferencia"] and not alertas
+        html["v"] = CGIBS_HTML   # sai um documento novo, com "Arrecadação" no título
+        d2 = reforma._conferir_ibs(db, N())
+        assert d2["situacao"] == "arrecadacao_publicada" and [p["titulo"][:11] for p in d2["novas_nesta_conferencia"]] == ["Arrecadação"] and len(alertas) == 1
+        assert {p["descoberto_em"] for p in d2["publicacoes"]} == {d1["publicacoes"][0]["descoberto_em"]}
+        html["v"] = None   # portal fora do ar: não apaga nem vira "sem publicação"
+        d3 = reforma._conferir_ibs(db, N())
+        assert d3["situacao"] == "indisponivel" and len(d3["publicacoes"]) == 2 and d3["paginas"]["relatorios"]["estado"] == "erro_conexao"
+        assert [h["situacao"] for h in d3["historico"]] == ["publicacoes_sem_arrecadacao", "arrecadacao_publicada", "indisponivel"]
+        assert db.query(Registro).filter_by(fonte="cgibs", tipo="ibs_monitor").count() == 1
+    finally:
+        db.close()

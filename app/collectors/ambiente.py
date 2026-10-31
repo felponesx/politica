@@ -23,6 +23,7 @@ PRIMEIRO_ANO = 2008
 BIOMAS = {"amazonia": ("Amazônia", "prodes-amazon-nb:yearly_deforestation_biome"), "cerrado": ("Cerrado", "prodes-cerrado-nb:yearly_deforestation"),
           "caatinga": ("Caatinga", "prodes-caatinga-nb:yearly_deforestation"), "mata_atlantica": ("Mata Atlântica", "prodes-mata-atlantica-nb:yearly_deforestation"),
           "pantanal": ("Pantanal", "prodes-pantanal-nb:yearly_deforestation"), "pampa": ("Pampa", "prodes-pampa-nb:yearly_deforestation")}
+POR_ARQUIVO = {"mata_atlantica"}   # o WFS recusa as colunas e derruba a camada: vem pelo shapefile (tarefa inpe-prodes-mata-atlantica, app/collectors/prodes_mata.py)
 SEM_MAIN_CLASS = {"cerrado", "caatinga"}   # essas camadas só têm state, year e area_km (pedir main_class dá erro 400)
 SEM_FILTRO_DE_COLUNAS = {"pantanal"}   # o GeoServer recusa propertyName + sortBy nesta camada (erro 400); ela é pequena
 DETER = {"amazonia": ("Amazônia", "deter-amz:deter_amz"), "cerrado": ("Cerrado", "deter-cerrado-nb:deter_cerrado")}
@@ -141,6 +142,10 @@ def coletar_desmatamento(biomas: str = "", deter: bool = True):
     with registrar_coleta("inpe", "desmatamento") as (db, n):
         for chave, (nome, camada) in BIOMAS.items():
             if quer and chave not in quer:
+                continue
+            if chave in POR_ARQUIVO:
+                if quer:
+                    n.avisos.append(f"PRODES {nome}: use a tarefa inpe-prodes-mata-atlantica (shapefile oficial); o WFS não serve para esta camada")
                 continue
             try:
                 esperado = total_feicoes(camada)

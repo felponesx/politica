@@ -234,9 +234,14 @@ def iva(db: Session) -> dict:
     import json
     from pathlib import Path
     cal = json.loads((Path(__file__).resolve().parent / "dados" / "iva.json").read_text(encoding="utf-8"))
-    mon = _regs(db, "iva_monitor", "reforma").get("ultimo")
+    cbs = _regs(db, "cbs_monitor", "receita").get("ultimo")
+    ibs = _regs(db, "ibs_monitor", "cgibs").get("ultimo")
+    mon = None
+    if cbs or ibs:
+        mon = {"cbs": cbs, "ibs": ibs, "arrecadacao_publicada": bool((cbs or {}).get("arrecadacao_publicada") or (ibs or {}).get("arrecadacao_publicada")),
+               "checado_em": max(str(x.get("checado_em") or "") for x in (cbs, ibs) if x)}
     if mon is None:
-        mensagem = "Ainda não conferimos as fontes (rode a coleta reforma-tributaria)."
+        mensagem = "Ainda não conferimos as fontes (rode as coletas receita-cbs e cgibs-ibs)."
     elif mon["arrecadacao_publicada"]:
         mensagem = "As fontes oficiais já trazem dados de arrecadação de CBS/IBS: veja os valores abaixo."
     else:
