@@ -209,3 +209,11 @@ def test_coleta_nao_baixa_de_novo_a_versao_ja_validada_e_ativa_a_oficial(db, tmp
     assert db.scalar(select(func.count()).select_from(MalhaMunicipio)) == 3
     assert im.coletar_ibge_malha(refazer=True) > 0 and len(baixados) == 2 and db.scalar(select(func.count()).select_from(MalhaFonte)) == 2   # forçar guarda outra versão, sem apagar a anterior
     assert db.scalar(select(func.count()).select_from(MalhaMunicipio).where(MalhaMunicipio.ativa.is_(True))) == 3
+
+
+def test_comparar_sem_malha_provisoria_nao_e_erro(db):
+    from app.collectors import ibge_malha as im
+    from app.models import Coleta
+    assert im.comparar_malhas() == 0
+    c = db.scalars(select(Coleta).where(Coleta.fonte == "malha", Coleta.tarefa == "comparacao").order_by(Coleta.id.desc())).first()
+    assert c is not None and c.status == "ok" and not c.erro

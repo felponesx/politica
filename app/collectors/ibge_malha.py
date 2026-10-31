@@ -152,8 +152,9 @@ def comparar_malhas():
     with registrar_coleta("malha", "comparacao") as (db, n):
         ibge = db.scalars(select(MalhaFonte).where(MalhaFonte.origem == "ibge", MalhaFonte.status.in_(("validada",))).order_by(MalhaFonte.id.desc())).first()
         osm = db.scalars(select(MalhaFonte).where(MalhaFonte.origem == "osm").order_by(MalhaFonte.id.desc())).first()
-        if ibge is None or osm is None:
-            raise RuntimeError("falta uma das malhas: " + ("IBGE oficial ainda não importada" if ibge is None else "nenhuma geometria OSM guardada"))
+        if ibge is None or osm is None:   # nada a comparar não é erro: com a malha oficial em uso, o OSM provisório só aparece se o IBGE estiver fora do ar
+            log.info("comparação OSM × IBGE adiada: %s", "malha oficial do IBGE ainda não importada" if ibge is None else "nenhuma geometria provisória do OSM guardada")
+            return n.itens
         comp = malha.comparar_fontes(db, osm.id, ibge.id)
         upsert(db, Registro, {"fonte": "malha", "tipo": "comparacao_osm_ibge", "chave": ibge.versao}, {"titulo": "Comparação da malha provisória (OSM) com a oficial (IBGE)", "dados": comp})
         db.commit()
