@@ -134,6 +134,12 @@ def escandalos_fila(etapa: str | None = Query(None, pattern="^(investigacao|denu
     return _ou_404(lacunas.escandalos_fila(db, etapa, orgao, limit), "escandalos-fila")
 
 
+@router.get("/alertas-mapbiomas", tags=["Meio ambiente"])
+def alertas_mapbiomas(db: Session = Depends(get_db)):
+    """Alertas de desmatamento do MapBiomas Alerta por bioma e mês (contagem). Não é a taxa do PRODES."""
+    return _ou_404(memo(("alertas_mapbiomas",), lambda: lacunas.alertas_mapbiomas(db)), "mapbiomas-alertas")
+
+
 @router.get("/servidores", tags=["Dinheiro público"])
 def servidores(db: Session = Depends(get_db)):
     """Servidores civis federais por órgão e estado: quantidade, remuneração bruta, abate-teto e líquida (só somas)."""

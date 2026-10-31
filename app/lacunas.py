@@ -409,6 +409,15 @@ def igc_instituicao(db: Session, co_ies: int) -> dict | None:
             "aviso": AVISO_IGC_MUN}
 
 
+AVISO_MAPBIOMAS = ("ALERTAS validados pelo MapBiomas Alerta, contados por bioma e mês. NÃO é a taxa oficial de desmatamento do PRODES/INPE: a metodologia, o período e a unidade (aqui, quantidade de alertas, não área) são outros, "
+                   "e os números não devem ser somados nem comparados com os do PRODES. A área e o detalhe de cada alerta exigem login na plataforma e não são coletados.")
+
+
+def alertas_mapbiomas(db: Session) -> dict | None:
+    d = _regs(db, "alertas_bioma", "mapbiomas").get("ultimo")
+    return {**d, "aviso": AVISO_MAPBIOMAS, "fontes": ["MapBiomas Alerta (API pública)"]} if d else None
+
+
 def servidores(db: Session) -> dict | None:
     meses = _regs(db, "servidores_mes", "transparencia")
     if not meses:

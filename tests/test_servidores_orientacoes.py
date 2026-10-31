@@ -195,3 +195,12 @@ def test_reforma_publicacoes_separam_cbs_receita_de_ibs_cgibs():
     assert r.menciona_cbs_ibs(b.getvalue(), "xlsx") is False
     wb.active.append(["CBS", 1]); b = io.BytesIO(); wb.save(b)
     assert r.menciona_cbs_ibs(b.getvalue(), "xlsx") is True
+
+
+def test_mapbiomas_resume_alertas_por_bioma_sem_misturar_com_prodes():
+    from app.collectors import mapbiomas as m
+    dados = {"alertStatusByBiomes": [{"biome": b, "total": 10, "totalProcessed": 9, "totalNotprocessed": 1, "yearMonth": ym} for b in sorted(m.BIOMAS) for ym in ("2025-12", "2026-01")]
+             + [{"biome": "Oceano", "total": 1, "totalProcessed": 1, "totalNotprocessed": 0, "yearMonth": "2026-01"}],
+             "lastAlertPublication": {"publishedAt": "2026-06-05", "total": 500, "publicationRange": "2026-05"}}
+    d = m.resumir(dados)
+    assert len(d["por_bioma_mes"]) == 6 and d["ultimo_mes"] == "2026-01" and d["por_bioma_ano"]["Cerrado"] == {"2025": 10, "2026": 10} and d["ultima_publicacao"]["alertas"] == 500
