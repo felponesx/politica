@@ -1,5 +1,6 @@
-"""Diagnóstico do INPE/TerraBrasilis e do MapBiomas Alerta: onde estão os arquivos de PRODES (Cerrado, Caatinga, Mata Atlântica) e se o MapBiomas responde sem login. Saída curta."""
+"""Diagnóstico do INPE/TerraBrasilis (2ª rodada): descobre os endereços reais lendo o aplicativo de painéis e seus scripts. Saída curta."""
 import re
+import time
 
 import httpx
 
@@ -7,38 +8,40 @@ UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, 
 cli = httpx.Client(timeout=60, follow_redirects=True, headers=UA)
 
 
-def get(url, **kw):
-    try:
-        r = cli.get(url, **kw)
-        print("GET", url[:110], r.status_code, len(r.content), r.headers.get("content-type"), flush=True)
-        return r
-    except Exception as e:
-        print("GET", url[:110], "ERRO", type(e).__name__, str(e)[:80], flush=True)
+def get(url, tentativas=3, **kw):
+    for i in range(tentativas):
+        try:
+            r = cli.get(url, **kw)
+            print("GET", url[:120], r.status_code, len(r.content), (r.headers.get("content-type") or "")[:30], flush=True)
+            if r.status_code < 500:
+                return r
+        except Exception as e:
+            print("GET", url[:120], "ERRO", type(e).__name__, str(e)[:60], flush=True)
+        time.sleep(6)
+    return None
 
 
-app = get("https://terrabrasilis.dpi.inpe.br/downloads/")
-achados = set()
-if app is not None and app.status_code == 200:
-    js = re.findall(r'(?:src|href)="([^"]+\.js)"', app.text)
-    print("scripts:", js[:8], flush=True)
+achados = {}
+paginas = ["https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/cerrado/increments", "https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/caatinga/increments",
+           "https://terrabrasilis.dpi.inpe.br/app/dashboard/deforestation/biomes/mata-atlantica/increments", "https://terrabrasilis.dpi.inpe.br/downloads/", "https://terrabrasilis.dpi.inpe.br/app/map/deforestation"]
+for pg in paginas:
+    r = get(pg)
+    if r is None or r.status_code != 200:
+        continue
+    js = re.findall(r'(?:src|href)="([^"]+\.js)"', r.text)
+    print("  scripts:", js[:6], flush=True)
+    base = pg.rsplit("/", 1)[0] + "/" if not pg.endswith("/") else pg
     for s in js[:6]:
-        u = s if s.startswith("http") else "https://terrabrasilis.dpi.inpe.br/downloads/" + s.lstrip("./")
-        r = get(u)
-        if r is not None and r.status_code == 200:
-            achados |= set(re.findall(r'[\w./:-]*(?:download/dataset|api/v\d|prodes)[\w./:?=&%-]*', r.text))
-    print("padrões nos scripts:", sorted(achados)[:40], flush=True)
-for caminho in ("assets/config.json", "assets/config/config.json", "config.json", "api/datasets", "api/v1/datasets"):
-    get("https://terrabrasilis.dpi.inpe.br/downloads/" + caminho)
-for ds in ("cerrado-prodes", "caatinga-prodes", "mata-atlantica-prodes", "pampa-prodes", "pantanal-prodes", "amz-prodes"):
-    for f in ("vector/yearly_deforestation_biome.zip", "vector/yearly_deforestation.zip", "vector/yearly_deforestation_biome_shp.zip", "raster/", "vector/", ""):
-        r = get(f"https://terrabrasilis.dpi.inpe.br/download/dataset/{ds}/{f}", headers={"Range": "bytes=0-300"})
-        if r is not None and r.status_code in (200, 206) and "html" in (r.headers.get("content-type") or ""):
-            print("   html:", re.sub(r"\s+", " ", r.text[:200]), flush=True)
-# MapBiomas Alerta
-get("https://plataforma.alerta.mapbiomas.org/api/docs/index.html")
-try:
-    r = cli.post("https://plataforma.alerta.mapbiomas.org/api/v2/graphql", json={"query": "{ __typename }"})
-    print("MAPBIOMAS graphql", r.status_code, r.text[:200], flush=True)
-except Exception as e:
-    print("MAPBIOMAS graphql ERRO", type(e).__name__, str(e)[:100], flush=True)
+        u = s if s.startswith("http") else (("https://terrabrasilis.dpi.inpe.br" + s) if s.startswith("/") else base + s)
+        j = get(u, 1)
+        if j is not None and j.status_code == 200:
+            for m in re.findall(r"""["'`]((?:https?:)?//?[\w./:{}$-]*(?:terrabrasilis|api/v\d|download|redis|prodes|geoserver)[\w./:?=&%{}$-]*)["'`]""", j.text):
+                achados.setdefault(m, pg)
+print("ENDEREÇOS ENCONTRADOS NOS SCRIPTS:", flush=True)
+for u in sorted(achados)[:80]:
+    print("  ", u[:160], flush=True)
+# testa os mais promissores
+for u in sorted(achados):
+    if re.search(r"(download|api/v|redis).*(cerrado|caatinga|atlantica|prodes)|(cerrado|caatinga|atlantica|prodes).*(download|api/v|redis)", u) and u.startswith("http"):
+        get(u, 1, headers={"Range": "bytes=0-400"})
 print("fim", flush=True)
