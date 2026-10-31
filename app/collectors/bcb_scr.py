@@ -27,15 +27,16 @@ def _n(v: str) -> float:
         return 0.0
 
 
-def entradas_zip(url: str) -> tuple[int, list]:
-    """(tamanho, [(nome, comprimido, metodo, offset)]) lendo só o fim do zip."""
-    tam = int(http._cliente.head(url, headers=UA, timeout=60, follow_redirects=True).headers.get("content-length") or 0)
+def entradas_zip(url: str, cli=None) -> tuple[int, list]:
+    """(tamanho, [(nome, comprimido, metodo, offset)]) lendo só o fim do zip. `cli` = outro cliente httpx (ex.: o do INEP, com a cadeia de certificados completada)."""
+    cli = cli or http._cliente
+    tam = int(cli.head(url, headers=UA, timeout=60, follow_redirects=True).headers.get("content-length") or 0)
     if not tam:
         raise RuntimeError(f"{url}: sem tamanho")
-    fim = http._cliente.get(url, headers={**UA, "Range": f"bytes={max(0, tam - 262144)}-{tam - 1}"}, timeout=120).content
+    fim = cli.get(url, headers={**UA, "Range": f"bytes={max(0, tam - 262144)}-{tam - 1}"}, timeout=120).content
     k = fim.rfind(b"PK\x05\x06")
     _, cd_tam, cd_ini = struct.unpack("<HII", fim[k + 10:k + 20])
-    cd = http._cliente.get(url, headers={**UA, "Range": f"bytes={cd_ini}-{cd_ini + cd_tam - 1}"}, timeout=120).content
+    cd = cli.get(url, headers={**UA, "Range": f"bytes={cd_ini}-{cd_ini + cd_tam - 1}"}, timeout=120).content
     pos, out = 0, []
     while pos < len(cd) and cd[pos:pos + 4] == b"PK\x01\x02":
         metodo = struct.unpack("<H", cd[pos + 10:pos + 12])[0]
@@ -47,15 +48,16 @@ def entradas_zip(url: str) -> tuple[int, list]:
     return tam, out
 
 
-def linhas_entrada(url: str, comp: int, metodo: int, off: int):
+def linhas_entrada(url: str, comp: int, metodo: int, off: int, cli=None, codificacao: str = "utf-8-sig"):
     """Linhas de texto de um arquivo dentro do zip remoto, descompactadas em fluxo."""
-    cab = http._cliente.get(url, headers={**UA, "Range": f"bytes={off}-{off + 29}"}, timeout=60).content
+    cli = cli or http._cliente
+    cab = cli.get(url, headers={**UA, "Range": f"bytes={off}-{off + 29}"}, timeout=60).content
     nl, el = struct.unpack("<HH", cab[26:30])
     ini = off + 30 + nl + el
     dec = zlib.decompressobj(-15) if metodo == 8 else None
-    txt = codecs.getincrementaldecoder("utf-8-sig")(errors="replace")
+    txt = codecs.getincrementaldecoder(codificacao)(errors="replace")
     resto = ""
-    with http._cliente.stream("GET", url, headers={**UA, "Range": f"bytes={ini}-{ini + comp - 1}"}, timeout=None) as r:
+    with cli.stream("GET", url, headers={**UA, "Range": f"bytes={ini}-{ini + comp - 1}"}, timeout=None) as r:
         r.raise_for_status()
         for bloco in r.iter_bytes(1 << 20):
             dados = dec.decompress(bloco) if dec else bloco

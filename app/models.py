@@ -422,6 +422,38 @@ class DoacaoEmpresa(Base):
     coletado_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
 
+class CagedEstoqueRef(Base):
+    """Estoque de referência do Novo CAGED (vínculos formais ativos) por município e subclasse da CNAE, numa competência de referência (dezembro do ano anterior, base RAIS).
+    NÃO é estoque mensal observado: é a base anual sobre a qual o Novo CAGED soma os saldos de cada mês."""
+    __tablename__ = "caged_estoque_ref"
+    __table_args__ = (UniqueConstraint("competencia", "cod_municipio", "subclasse", name="uq_caged_estoque_ref"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    competencia: Mapped[str] = mapped_column(String(7), index=True)      # AAAA-MM do estoque de referência
+    cod_municipio: Mapped[str] = mapped_column(String(6), index=True)    # código IBGE de 6 dígitos (sem o dígito verificador); 999999 = município ignorado
+    subclasse: Mapped[str] = mapped_column(String(7), index=True)        # CNAE 2.0, subclasse
+    vinculos: Mapped[int] = mapped_column(Integer)
+
+
+class IesMunicipio(Base):
+    """Onde cada instituição de ensino superior oferece cursos (Censo da Educação Superior, INEP): uma linha por instituição e município. O IGC é da INSTITUIÇÃO, não do município."""
+    __tablename__ = "ies_municipio"
+    __table_args__ = (UniqueConstraint("ano_censo", "co_ies", "cod_municipio", name="uq_ies_municipio"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    ano_censo: Mapped[int] = mapped_column(Integer, index=True)
+    co_ies: Mapped[int] = mapped_column(Integer, index=True)
+    nome: Mapped[str | None] = mapped_column(String(200))
+    sigla: Mapped[str | None] = mapped_column(String(40))
+    cod_municipio: Mapped[str] = mapped_column(String(7), index=True)     # código IBGE de 7 dígitos
+    municipio: Mapped[str | None] = mapped_column(String(120))
+    uf: Mapped[str | None] = mapped_column(String(2), index=True)
+    sede: Mapped[bool] = mapped_column(default=False)                     # o município é a sede (endereço) da instituição
+    n_cursos: Mapped[int] = mapped_column(Integer, default=0)             # cursos ofertados neste município (linhas do cadastro de cursos)
+    vagas: Mapped[int] = mapped_column(Integer, default=0)
+    matriculas: Mapped[int] = mapped_column(Integer, default=0)
+
+
 class UsoLimite(Base):
     """Contadores compartilhados entre os processos (limite de requisições e da IA). Uma linha por (chave, janela de tempo)."""
     __tablename__ = "uso_limites"

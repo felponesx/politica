@@ -269,3 +269,35 @@ def test_tcu_irregulares_so_totais():
     r = tcu.resumir_irregulares(itens)
     assert r["total"] == 2 and r["por_uf"] == {"SP": 2} and r["por_ano"] == {"2010": 1, "2011": 1} and r["por_tipo"] == {"CPF": 1, "CNPJ": 1}
     assert "FULANO" not in str(r) and "EMPRESA" not in str(r)
+
+
+def test_caged_estoque_encadeado_soma_referencia_e_saldos_so_com_todos_os_meses():
+    from app import lacunas
+    from app.models import CagedEstoqueRef
+    criar_tabelas()
+    db = SessionLocal()
+    try:
+        db.query(CagedEstoqueRef).delete()
+        db.query(Registro).filter(Registro.fonte == "caged").delete()
+        db.add_all([CagedEstoqueRef(competencia="2025-12", cod_municipio="350001", subclasse="4711301", vinculos=100),
+                    CagedEstoqueRef(competencia="2025-12", cod_municipio="350002", subclasse="1011201", vinculos=50)])
+        db.add(Registro(fonte="caged", tipo="estoque_ref_resumo", chave="2025-12", dados={"total_vinculos": 150, "confere_com_comunicado": True, "arquivo": "x"}))
+
+        def mes(m, g, c):
+            return Registro(fonte="caged", tipo="caged_mes", chave=m, dados={"por_uf": {"SP": {"por_secao": {"G": {"saldo_mov": g}, "C": {"saldo_mov": c}}}}})
+        db.add_all([mes("202601", 10, -5), mes("202603", 20, 5)])   # fevereiro falta
+        db.commit()
+        d = lacunas.caged_estoque(db)
+        assert d["total_vinculos"] == 150 and d["por_uf"]["SP"] == 150
+        assert d["encadeado"]["disponivel"] is False and d["encadeado"]["meses_faltando"] == ["202602"]
+        db.add(mes("202602", 0, 0))
+        db.commit()
+        e = lacunas.caged_estoque(db)["encadeado"]
+        assert e["disponivel"] is True and e["brasil"] == {"referencia": 150, "saldo_acumulado": 30, "estoque_estimado": 180}
+        m = lacunas.caged_estoque(db, "350001")
+        assert m["vinculos"] == 100 and m["por_secao"][0]["secao"] == "G"
+    finally:
+        db.query(CagedEstoqueRef).delete()
+        db.query(Registro).filter(Registro.fonte == "caged").delete()
+        db.commit()
+        db.close()

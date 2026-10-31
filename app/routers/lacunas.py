@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 
 from app import lacunas
@@ -110,6 +110,28 @@ def caged(db: Session = Depends(get_db)):
 def iva(db: Session = Depends(get_db)):
     """Reforma tributária do consumo (CBS + IBS): calendário e o que as fontes oficiais já publicam sobre a arrecadação."""
     return memo(("iva",), lambda: lacunas.iva(db))
+
+
+@router.get("/caged/estoque", tags=["Trabalho"])
+def caged_estoque(uf: str | None = Query(None, pattern="^[A-Za-z]{2}$"), db: Session = Depends(get_db)):
+    """Estoque de referência anual do Novo CAGED (vínculos formais ativos) por estado e município, mais a estimativa encadeada por estado e setor quando há os meses de saldo."""
+    return _ou_404(lacunas.caged_estoque(db, None, uf), "caged-estoque-referencia")
+
+
+@router.get("/caged/estoque/{ibge}", tags=["Trabalho"])
+def caged_estoque_municipio(ibge: str = Path(..., pattern=r"^\d{6,7}$"), db: Session = Depends(get_db)):
+    """Vínculos formais ativos de um município (estoque de referência), por setor e subclasse da CNAE."""
+    d = lacunas.caged_estoque(db, ibge)
+    if not d or not d.get("encontrado"):
+        raise HTTPException(404, "Município não consta no estoque de referência coletado.")
+    return d
+
+
+@router.get("/escandalos-fila", tags=["Escândalos"])
+def escandalos_fila(etapa: str | None = Query(None, pattern="^(investigacao|denuncia|condenacao|absolvicao|arquivamento|outra)$"), orgao: str | None = Query(None, pattern="^[a-z]{2,5}$"),
+                    limit: int = Query(50, ge=1, le=200), db: Session = Depends(get_db)):
+    """Fila de revisão: notícias oficiais sobre investigações, com fonte e data, ainda sem pessoas/situação confirmadas. Não é a lista de casos publicados."""
+    return _ou_404(lacunas.escandalos_fila(db, etapa, orgao, limit), "escandalos-fila")
 
 
 @router.get("/servidores", tags=["Dinheiro público"])

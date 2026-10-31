@@ -4,6 +4,7 @@ A página oficial lista um link do Google Drive por ano e tipo ("Documento CSV d
 escritos no código: o descobridor lê a página, casa o título com o link "Baixar planilha" seguinte e baixa pelo endereço de download direto do Drive.
 Guardamos só somas por estado/mês, causa, tipo e rodovia; coordenadas e o resto da ocorrência não. Anos fechados já gravados não são baixados de novo."""
 import csv
+import hashlib
 import html
 import io
 import logging
@@ -31,9 +32,10 @@ def descobrir(texto_html: str, tipo: str = TIPO) -> dict[int, str]:
     t = html.unescape(texto_html)
     achados: dict[int, str] = {}
     atual = None
-    for m in re.finditer(r"Documento CSV de Acidentes (\d{4}) \(([^)]*)\)|<a[^>]*href=\"https://drive\.google\.com/file/d/([^/\"]+)/[^\"]*\"[^>]*>\s*Baixar planilha", t):
+    # os títulos não são todos escritos igual (espaços diferentes em 2022): \s casa qualquer espaço, inclusive o inseparável
+    for m in re.finditer(r"Acidentes\s+(\d{4})\s*\(([^)]*)\)|<a[^>]*href=\"https://drive\.google\.com/file/d/([^/\"]+)/[^\"]*\"[^>]*>\s*Baixar\s+planilha", t):
         if m.group(1):
-            atual = (int(m.group(1)), m.group(2).strip())
+            atual = (int(m.group(1)), re.sub(r"\s+", " ", m.group(2)).strip())
         elif atual:
             if atual[1] == tipo:
                 achados.setdefault(atual[0], m.group(3))
@@ -124,7 +126,10 @@ def coletar_prf_acidentes(anos: int = 5):
                 continue
             try:
                 arq = baixar_ano(ano, achados[ano])
+                impressao = hashlib.sha256(arq.read_bytes()).hexdigest()
                 with zipfile.ZipFile(arq) as z:
+                    if z.testzip() is not None:   # CRC de cada arquivo do zip
+                        raise RuntimeError(f"PRF {ano}: zip corrompido")
                     nome = next(x for x in z.namelist() if x.lower().endswith(".csv"))
                     leitor = csv.reader(io.TextIOWrapper(z.open(nome), encoding="latin-1", newline=""), delimiter=";")
                     ag = agregar(leitor, [c.strip().lower() for c in next(leitor)])
@@ -133,6 +138,7 @@ def coletar_prf_acidentes(anos: int = 5):
                 if ag["acidentes"] < minimo:
                     raise RuntimeError(f"PRF {ano}: só {ag['acidentes']:,} acidentes (esperado ≥ {minimo:,}); nada foi gravado")
                 d = resumir(ag, ano)
+                d.update({"arquivo": nome, "sha256": impressao, "link_oficial_id": achados[ano], "pagina": PAGINA})
                 upsert(db, Registro, {"fonte": "prf", "tipo": "acidentes_ano", "chave": str(ano)},
                        {"ano": ano, "titulo": f"Acidentes nas rodovias federais {ano}", "valor": float(d["total"]["acidentes"]), "dados": d})
                 db.commit()

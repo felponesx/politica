@@ -1,5 +1,5 @@
 """Painéis montados a partir das coletas novas: social (Bolsa Família e BPC), trabalho, meio ambiente, viagens a serviço, fundo eleitoral e tarifa de energia."""
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.models import Municipio, Registro
@@ -242,6 +242,125 @@ def iva(db: Session) -> dict:
     else:
         mensagem = "Nenhuma fonte oficial publica ainda a arrecadação de CBS ou de IBS. Não estimamos valores."
     return {**cal, "monitor": mon, "situacao": mensagem}
+
+
+AVISO_ESTOQUE = ("ESTOQUE DE REFERÊNCIA: é a base anual de vínculos formais (CLT) ativos que o Ministério do Trabalho atualiza depois da RAIS e sobre a qual o Novo CAGED soma os saldos de cada mês. "
+                 "Aqui a data é dezembro do ano anterior; NÃO é um estoque medido todo mês. Estabelecimento sem município definido fica em 'ignorado'. Não inclui servidores estatutários nem trabalho informal.")
+AVISO_ENCADEADO = ("ESTIMATIVA encadeada por estado e setor: estoque de referência de dezembro + soma dos saldos mensais do Novo CAGED (admissões − desligamentos dos movimentos declarados no mês). "
+                   "Os números oficiais também somam as declarações fora do prazo e tiram as excluídas, então podem diferir. Não existe por município: os saldos mensais só vêm por estado e setor.")
+
+
+def secao_da_divisao(d: int) -> str:
+    for a, b, s in ((1, 3, "A"), (5, 9, "B"), (10, 33, "C"), (35, 35, "D"), (36, 39, "E"), (41, 43, "F"), (45, 47, "G"), (49, 53, "H"), (55, 56, "I"), (58, 63, "J"), (64, 66, "K"),
+                    (68, 68, "L"), (69, 75, "M"), (77, 82, "N"), (84, 84, "O"), (85, 85, "P"), (86, 88, "Q"), (90, 93, "R"), (94, 96, "S"), (97, 97, "T"), (99, 99, "U")):
+        if a <= d <= b:
+            return s
+    return "Z"
+
+
+def caged_estoque(db: Session, ibge: str | None = None, uf: str | None = None) -> dict | None:
+    from sqlalchemy import func
+
+    from app.collectors.caged import SECOES, UF_IBGE
+    from app.models import CagedEstoqueRef as E
+    resumo = _regs(db, "estoque_ref_resumo", "caged")
+    if not resumo:
+        return None
+    comp = max(resumo)
+    info = resumo[comp]
+    base = {"competencia_referencia": comp, "total_vinculos": info["total_vinculos"], "confere_com_comunicado": info.get("confere_com_comunicado"), "aviso": AVISO_ESTOQUE,
+            "fontes": ["Ministério do Trabalho e Emprego — estoque de referência do Novo CAGED"], "arquivo": info.get("arquivo")}
+    if ibge:
+        cod = "".join(c for c in ibge if c.isdigit())[:6]
+        linhas = db.execute(select(E.subclasse, E.vinculos).where(E.competencia == comp, E.cod_municipio == cod)).all()
+        if not linhas:
+            return {**base, "municipio": None, "encontrado": False}
+        tot = sum(v for _, v in linhas)
+        por_sec: dict[str, int] = {}
+        for sub, v in linhas:
+            sec = secao_da_divisao(int(sub[:2]))
+            por_sec[sec] = por_sec.get(sec, 0) + v
+        nome = db.execute(select(Municipio.nome, Municipio.uf).where(Municipio.codigo_ibge.like(cod + "%"))).first() if hasattr(Municipio, "codigo_ibge") else None
+        return {**base, "encontrado": True, "cod_municipio": cod, "municipio": nome[0] if nome else None, "uf": (nome[1] if nome else UF_IBGE.get(cod[:2])), "vinculos": tot,
+                "por_secao": [{"secao": k, "setor": SECOES.get(k, k), "vinculos": v, "pct": round(v / tot * 100, 1)} for k, v in sorted(por_sec.items(), key=lambda x: -x[1])],
+                "maiores_subclasses": [{"subclasse": s, "vinculos": v} for s, v in sorted(linhas, key=lambda x: -x[1])[:15]], "n_subclasses": len(linhas)}
+    cod_uf = func.substr(E.cod_municipio, 1, 2).label("cod_uf")   # a mesma expressão no SELECT e no GROUP BY (o Postgres exige)
+    q = select(cod_uf, func.sum(E.vinculos)).where(E.competencia == comp).group_by(cod_uf)
+    por_uf = {UF_IBGE.get(c, "ignorado" if c == "99" else c): int(v) for c, v in db.execute(q)}
+    out = {**base, "por_uf": dict(sorted(por_uf.items(), key=lambda x: -x[1])), "municipios": db.scalar(select(func.count(func.distinct(E.cod_municipio))).where(E.competencia == comp)) - 1}
+    if uf:
+        cods = [c for c, s in UF_IBGE.items() if s == uf.upper()]
+        if cods:
+            r = db.execute(select(E.cod_municipio, func.sum(E.vinculos).label("v")).where(E.competencia == comp, E.cod_municipio.like(cods[0] + "%")).group_by(E.cod_municipio)
+                           .order_by(text("v desc")).limit(50)).all()
+            out["maiores_municipios"] = [{"cod_municipio": c, "vinculos": int(v)} for c, v in r]
+    out["encadeado"] = caged_encadeado(db, comp)
+    return out
+
+
+def caged_encadeado(db: Session, comp: str) -> dict:
+    """Estoque estimado = referência (dezembro) + saldos mensais seguintes, por UF e seção; só se TODOS os meses entre a referência e o último mês coletado estiverem no banco."""
+    from sqlalchemy import func
+
+    from app.collectors.caged import UF_IBGE
+    from app.models import CagedEstoqueRef as E
+    meses = _regs(db, "caged_mes", "caged")
+    ano, mes = int(comp[:4]), int(comp[5:])
+    seguintes = sorted(m for m in meses if m > comp.replace("-", ""))
+    if not seguintes:
+        return {"disponivel": False, "motivo": "Ainda não há saldos mensais do Novo CAGED depois da data de referência."}
+    ultimo = seguintes[-1]
+    esperados, a, m = [], ano, mes
+    while True:
+        m += 1
+        if m == 13:
+            a, m = a + 1, 1
+        esperados.append(f"{a}{m:02d}")
+        if esperados[-1] == ultimo:
+            break
+    faltam = [x for x in esperados if x not in meses]
+    if faltam:
+        return {"disponivel": False, "motivo": "Faltam meses de saldo para encadear: " + ", ".join(faltam), "ultimo_mes_coletado": ultimo, "meses_faltando": faltam, "aviso": AVISO_ENCADEADO}
+    ref: dict[tuple[str, str], int] = {}
+    cod_uf, div = func.substr(E.cod_municipio, 1, 2).label("cod_uf"), func.substr(E.subclasse, 1, 2).label("div")
+    q = select(cod_uf, div, func.sum(E.vinculos)).where(E.competencia == comp).group_by(cod_uf, div)
+    for c, d, v in db.execute(q):
+        uf = UF_IBGE.get(c)
+        if uf:
+            k = (uf, secao_da_divisao(int(d)))
+            ref[k] = ref.get(k, 0) + int(v)
+    saldo: dict[tuple[str, str], int] = {}
+    for m in esperados:
+        for uf, e in meses[m]["por_uf"].items():
+            for sec, x in e["por_secao"].items():
+                saldo[(uf, sec)] = saldo.get((uf, sec), 0) + x["saldo_mov"]
+    por_uf: dict[str, dict] = {}
+    for k in set(ref) | set(saldo):
+        u = por_uf.setdefault(k[0], {"referencia": 0, "saldo_acumulado": 0})
+        u["referencia"] += ref.get(k, 0)
+        u["saldo_acumulado"] += saldo.get(k, 0)
+    for u in por_uf.values():
+        u["estoque_estimado"] = u["referencia"] + u["saldo_acumulado"]
+    tot = {"referencia": sum(u["referencia"] for u in por_uf.values()), "saldo_acumulado": sum(u["saldo_acumulado"] for u in por_uf.values())}
+    tot["estoque_estimado"] = tot["referencia"] + tot["saldo_acumulado"]
+    return {"disponivel": True, "competencia_estimada": ultimo, "meses_somados": esperados, "brasil": tot, "por_uf": dict(sorted(por_uf.items(), key=lambda x: -x[1]["estoque_estimado"])), "aviso": AVISO_ENCADEADO}
+
+
+AVISO_FILA = ("FILA DE REVISÃO, não é publicação de casos. São notícias de órgãos oficiais (com título, data e link da fonte) que tratam de investigação, denúncia, condenação etc. A etapa é só uma sugestão pelo título; "
+              "pessoas envolvidas, local e a situação do processo ficam em branco até uma pessoa conferir a fonte. Ser citado numa notícia de investigação não é condenação, e nenhum nome é extraído automaticamente.")
+
+
+def escandalos_fila(db: Session, etapa: str | None = None, orgao: str | None = None, limite: int = 50) -> dict | None:
+    itens = [r.dados for r in db.execute(select(Registro).where(Registro.fonte == "escandalos", Registro.tipo == "fila_item")).scalars()]
+    fontes = _regs(db, "fila_fontes", "escandalos").get("ultimo")
+    if not itens and not fontes:
+        return None
+    por_etapa: dict[str, int] = {}
+    for i in itens:
+        por_etapa[i["etapa_sugerida"]] = por_etapa.get(i["etapa_sugerida"], 0) + 1
+    sel = [i for i in itens if (not etapa or i["etapa_sugerida"] == etapa) and (not orgao or i["orgao_id"] == orgao)]
+    sel.sort(key=lambda i: i.get("data") or "", reverse=True)
+    return {"total": len(sel), "por_etapa": por_etapa, "itens": sel[:limite], "fontes": (fontes or {}).get("fontes", []), "verificado_em": (fontes or {}).get("verificado_em"), "aviso": AVISO_FILA}
 
 
 def servidores(db: Session) -> dict | None:

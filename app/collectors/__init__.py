@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -9,8 +9,11 @@ _TAREFAS_BRUTAS = {
     "osm-malha-capitais": transito.coletar_osm_malha,   # ufs
     "tomtom-transito": transito.coletar_tomtom_transito,   # ufs, pontos
     "querido-diario": querido_diario.coletar_querido_diario,   # dias
+    "caged-estoque-referencia": caged_estoque.coletar_caged_estoque,   # ano
     "caged-saldos": caged.coletar_caged,   # meses, refazer
     "reforma-tributaria": reforma.coletar_reforma_tributaria,
+    "inep-censo-ies": inep_censo_ies.coletar_inep_censo_ies,   # ano
+    "escandalos-fila": escandalos_fila.coletar_escandalos_fila,   # limite
     "inep-igc": inep_igc.coletar_inep_igc,   # edicoes
     "cgu-sancoes": sancoes.coletar_sancoes,
     "tcu-inabilitados": tcu.coletar_tcu_inabilitados,

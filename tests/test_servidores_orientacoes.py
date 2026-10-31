@@ -158,3 +158,40 @@ def test_tomtom_tem_ponto_central_para_todas_as_capitais():
     from app.collectors import transito as t
     assert set(t.CENTROS) == set(t.CAPITAIS)
     assert all(-34 < la < 6 and -75 < lo < -34 for la, lo in t.CENTROS.values())
+
+
+def test_caged_estoque_le_comunicado_secoes_e_total_confere():
+    from app import lacunas
+    from app.collectors import caged_estoque as ce
+    html = "<p>o estoque de referência do Novo Caged em dezembro de 2025 foi atualizado para 47.110.663 vínculos . A partir</p>"
+    assert ce.ler_comunicado(html, 2026) == {"competencia": "2025-12", "total_oficial": 47110663, "fonte_texto": True}
+    assert ce.ler_comunicado("sem frase", 2026)["competencia"] == "2025-12"
+    assert [lacunas.secao_da_divisao(d) for d in (1, 10, 47, 64, 85, 99, 4)] == ["A", "C", "G", "K", "P", "U", "Z"]
+
+
+def test_fila_de_escandalos_le_data_real_ignora_comentario_e_nao_extrai_nomes():
+    from app.collectors import escandalos_fila as f
+    pagina = ('<meta property="og:title" content="PF deflagra operação X contra fraude" /><meta property="og:description" content="Cumpre mandados" />'
+              '<span class="documentPublished"><span>Publicado em</span><!-- ex.: 15/10/2019 às 14:01 --><span class="value">30/10/2026 07h49</span></span>')
+    a = f.ler_artigo(pagina)
+    assert a == {"titulo": "PF deflagra operação X contra fraude", "resumo": "Cumpre mandados", "data": "2026-10-30"}
+    item = f.montar(f.FONTES[0], {**a, "url": "https://www.gov.br/pf/pt-br/assuntos/noticias/2026/10/x"}, "2026-10-31T00:00:00")
+    assert item["status_revisao"] == "pendente" and item["pessoas_ou_instituicoes"] == [] and item["etapa_sugerida"] == "investigacao" and item["situacao_atual"].startswith("Não verificada")
+    assert f.links_da_lista('<a href="https://www.gov.br/pf/pt-br/assuntos/noticias/2026/10/a">1</a><a href="https://www.gov.br/pf/pt-br/assuntos/noticias/2026/10/a">2</a>', f.FONTES[0]["padrao"]) == ["https://www.gov.br/pf/pt-br/assuntos/noticias/2026/10/a"]
+    assert [x["id"] for x in f.FONTES if not x.get("ativo", True)] == ["mpf", "stj", "tcu"]
+
+
+def test_reforma_publicacoes_separam_cbs_receita_de_ibs_cgibs():
+    from app.collectors import reforma as r
+    html = ('<a href="/receitafederal/pt-br/centrais-de-conteudo/publicacoes/relatorios/arrecadacao-federal/2026/analise-mensal-set-2026.pdf/view">x</a>'
+            '<a href="https://www.gov.br/receitafederal/pt-br/centrais-de-conteudo/publicacoes/relatorios/arrecadacao-federal/2026/analise-mensal-set-2026-anexo.xlsx/view">y</a>'
+            '<a href="/receitafederal/pt-br/centrais-de-conteudo/publicacoes/relatorios/arrecadacao-federal/2026/analise-mensal-set-2026.pdf/view">repetido</a>')
+    p = r.publicacoes_receita(html, 2026)
+    assert [(x["competencia"], x["formato"]) for x in p] == [("2026-09", "pdf"), ("2026-09", "xlsx")] and p[0]["url"].startswith("https://www.gov.br/receitafederal")
+    c = r.publicacoes_cgibs('<a href="/upload/arquivos/202606/a.pdf"><span>Relatórios fiscais</span></a>')
+    assert c == [{"url": "https://cgibs.gov.br/upload/arquivos/202606/a.pdf", "titulo": "Relatórios fiscais", "formato": "pdf"}]
+    import io, openpyxl
+    wb = openpyxl.Workbook(); wb.active.append(["Tributo", "COFINS"]); b = io.BytesIO(); wb.save(b)
+    assert r.menciona_cbs_ibs(b.getvalue(), "xlsx") is False
+    wb.active.append(["CBS", 1]); b = io.BytesIO(); wb.save(b)
+    assert r.menciona_cbs_ibs(b.getvalue(), "xlsx") is True
