@@ -53,24 +53,28 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("tesouro-capag", {}), ("ibge-malhas", {})],
         "trimestral": [("pgfn-divida-ativa", {"ano": ta, "trimestre": tt})],
     }
+    if os.environ.get("GEMINI_API_KEY"):  # verificador Gemini: sugestões da cópia, uma vez por semana (só grava sugestões)
+        g["gemini"] = [("gemini-verificar", {"pasta": "site/dados", "limite": 0})]
     if settings.tomtom_api_key:   # trânsito das 27 capitais de hora em hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500)
         g["transito"] = [("tomtom-transito", {})]
     return g
 
 
 def rodar_grupo(nome: str):
-    for tarefa, params in grupos()[nome]:
-        try:
-            log.info("[%s] %s %s", nome, tarefa, params)
-            TAREFAS[tarefa](**params)
+    """Roda o grupo em paralelo por fonte (app/collectors/paralelo.py). Falhas seguem a contagem de 3 seguidas e geram alerta."""
+    from app.collectors.paralelo import executar_grupo
+    from app.collectors.registro import registro_das_tarefas
+    resultados = executar_grupo(grupos()[nome], lambda t, p: TAREFAS[t](**p), registro_das_tarefas())
+    for tarefa, erro in resultados:
+        if erro is None:
             if FALHAS.get(tarefa, 0) >= 3:
                 enviar(f"BRASIL+: a coleta {tarefa} voltou a funcionar.")
             FALHAS[tarefa] = 0
-        except Exception as e:
+        else:
             FALHAS[tarefa] = FALHAS.get(tarefa, 0) + 1
-            log.error("[%s] %s falhou (%sª vez seguida): %s", nome, tarefa, FALHAS[tarefa], e)
+            log.error("[%s] %s falhou (%sª vez seguida): %s", nome, tarefa, FALHAS[tarefa], erro)
             if FALHAS[tarefa] == 3:
-                enviar(f"BRASIL+: a coleta {tarefa} falhou 3 vezes seguidas. Último erro: {type(e).__name__}: {str(e)[:300]}")
+                enviar(f"BRASIL+: a coleta {tarefa} falhou 3 vezes seguidas. Último erro: {type(erro).__name__}: {str(erro)[:300]}")
 
 
 def _travar():
@@ -105,6 +109,8 @@ def main(argv):
     if settings.tomtom_api_key:
         s.add_job(rodar_grupo, "cron", args=["transito"], hour="6-22", minute=7, id="transito")
     s.add_job(rodar_grupo, "cron", args=["semanal"], day_of_week="sun", hour=4, minute=0, id="semanal")
+    if os.environ.get("GEMINI_API_KEY"):
+        s.add_job(rodar_grupo, "cron", args=["gemini"], day_of_week="sat", hour=6, minute=30, id="gemini")
     s.add_job(rodar_grupo, "cron", args=["mensal"], day=5, hour=5, minute=0, id="mensal")
     s.add_job(rodar_grupo, "cron", args=["trimestral"], month="2,5,8,11", day=20, hour=6, minute=0, id="trimestral")
     log.info("Agendador iniciado: agenda do Congresso a cada 15 min (seg-sex, 8h-22h), diário 02:10, semanal dom 04:00, mensal dia 5 05:00, trimestral dia 20 (fev/mai/ago/nov).")

@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (gemini_verificar, ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -109,6 +109,7 @@ _TAREFAS_BRUTAS = {
     "bcb-scr-estados": bcb_scr.coletar_scr_uf,                         # ano (mês mais recente do SCR.data)
     "saude-ubs": saude.coletar_ubs,                                    # Unidades Básicas de Saúde por município (CNES)
     "saude-mais-medicos": saude.coletar_mais_medicos,                  # vagas do Mais Médicos por município
+    "gemini-verificar": gemini_verificar.coletar_gemini_verificar,   # pasta, limite, modelo: sugestões da cópia (só leitura dos dados)
     "saude-datasus": datasus.coletar_saude_datasus,                    # leitos, UTI, médicos e mortalidade infantil por estado (TabNet)
 }
 
