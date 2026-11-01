@@ -1904,6 +1904,8 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
  .rprow .rstack{grid-column:1/-1;grid-row:2;height:12px;border-radius:999px}
  .rprow small{grid-column:2;grid-row:1;font-size:12.5px;font-weight:600;color:var(--ink)}
 }
+/* o que está sendo votado (popout da votação): texto da ementa com boa leitura */
+.vq-t{font-size:15px;line-height:1.55;margin:4px 0 8px;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -3589,6 +3591,7 @@ return{html:`<div class="crumb"><a href="#/agora">Agora</a> / Votação</div><di
 mount(){apiGet("/votacoes/"+vid).then(d=>{const v=d.votacao;const pl=d.placar||{};const T=Object.values(pl).reduce((a,b)=>a+b,0);
  const partidos=Object.entries(d.por_partido||{}).map(([p,o])=>{const t=Object.values(o).reduce((a,b)=>a+b,0);return[p,o,t]}).sort((a,b)=>b[2]-a[2]);
  $("#rv").innerHTML=`<div class="ph"><div><span class="tag">${casaN(v.casa)}</span><h1 style="margin-top:6px">${esc(v.materia||"Votação")}</h1><p>${esc(v.ementa||v.descricao||"")}</p></div></div>
+ ${d.proposicao?`<div class="panel mt vq"><h2>O que está sendo votado</h2><p class="vq-t">${esc(d.proposicao.ementa)}</p><div class="small muted">${esc((d.proposicao.sigla||"")+" "+(d.proposicao.numero||"")+"/"+(d.proposicao.ano||""))}${d.proposicao.situacao?" · Situação atual: "+esc(d.proposicao.situacao):""}</div>${d.proposicao.fonte?`<p class="small" style="margin:8px 0 0"><a href="${esc(d.proposicao.fonte)}" target="_blank" rel="noopener">Ver a ficha do projeto na Câmara ›</a></p>`:""}<p class="small muted" style="margin:8px 0 0">Resumo oficial da proposição (ementa). Votar a favor ou contra não indica apoio ou oposição ao conteúdo sem leitura do texto.</p></div>`:""}
  <div class="kpis"><div class="kpi"><span>Data</span><strong>${fdr(v.data)}</strong></div><div class="kpi"><span>Resultado</span><strong style="font-size:17px">${esc(v.resultado||"—")}</strong></div><div class="kpi"><span>Votos registrados</span><strong>${nf(T)}</strong></div>${v.orgao?`<div class="kpi"><span>Órgão</span><strong style="font-size:17px">${esc(v.orgao)}</strong></div>`:""}</div>
  ${d.aviso?`<div class="rbanner mt">${esc(d.aviso)}</div>`:""}
  <div class="panel mt"><h2>Placar</h2>${T?placarBar(pl):rvazio("Placar não informado pela casa.")}</div>

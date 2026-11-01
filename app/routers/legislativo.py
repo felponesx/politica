@@ -82,6 +82,23 @@ def orientacoes_da_votacao(vid: int, db: Session = Depends(get_db)):
     return orientacao.da_votacao(db, v)
 
 
+def _proposicao_da_votacao(db: Session, v: Votacao) -> dict | None:
+    """O que está sendo votado: a proposição ligada à votação (pelo vínculo ou pelo nome da matéria, ex.: 'PLP 281/2019').
+    Devolve a ementa oficial da proposição; sem ligação segura, devolve None (nunca chuta outra matéria)."""
+    import re
+    p = db.get(Proposicao, v.proposicao_id) if v.proposicao_id else None
+    if p is None and v.materia:
+        m = re.match(r"^\s*([A-Za-zÇ]+)\s*(\d+)\s*/\s*(\d{4})", v.materia)
+        if m:
+            rows = db.scalars(select(Proposicao).where(Proposicao.casa == v.casa, Proposicao.sigla_tipo == m.group(1).upper(),
+                                                      Proposicao.numero == m.group(2).lstrip("0"), Proposicao.ano == int(m.group(3)))).all()
+            p = rows[0] if len(rows) == 1 else None
+    if p is None or not p.ementa:
+        return None
+    return {"sigla": p.sigla_tipo, "numero": p.numero, "ano": p.ano, "ementa": p.ementa, "situacao": p.situacao,
+            "fonte": f"https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao={p.id_externo}" if v.casa == "camara" else None}
+
+
 @router.get("/votacoes/{vid}")
 def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
     """Popout de votação: placar geral, placar por partido e por UF, e lista nominal."""
@@ -99,6 +116,7 @@ def detalhe_votacao(vid: int, db: Session = Depends(get_db)):
         por_uf[p.uf or "?"][voto] += 1
     return {
         "votacao": VotacaoOut.model_validate(v),
+        "proposicao": _proposicao_da_votacao(db, v),
         "placar": v.placar_oficial if v.secreta and v.placar_oficial else placar,
         "aviso": "Votação secreta: o Senado informa só quem votou, não o voto de cada senador." if v.secreta else None,
         "por_partido": por_partido,
