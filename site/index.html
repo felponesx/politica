@@ -5651,7 +5651,7 @@ function telaViagens(){return{html:`<div id="vgL">${rload()}</div>`,mount(){apiG
 function telaFundos(){return{html:`<div id="fdL">${rload()}</div>`,mount(){apiGet("/fundos").then(D=>{const b=$("#fdL");if(!b)return;const anos=Object.keys(D.anos);let ano=anos[0];
  const pinta=()=>{const a=D.anos[ano],ps=a.partidos;
   $("#fdB").innerHTML=`<div class="kpis"><div class="kpi"><span>Fundo eleitoral em ${a.ano}</span><strong>${brl(ps.reduce((s,p)=>s+p.valor,0))}</strong><em>${nf(ps.length)} partidos</em></div></div>
-   <h3 class="seg-h">Quanto cada partido recebeu</h3>${table([["Partido",x=>sigla(x.partido)],["Fundo eleitoral",x=>brl(x.valor),"n"],["Candidaturas",x=>lacN(x.candidatos),"n"],["Mulheres",x=>x.candidatos?lacD(100*x.mulheres/x.candidatos)+"%":"—","n"]],ps)}`};
+   <h3 class="seg-h">Quanto cada partido recebeu</h3>${table([["Partido",x=>sigla(x.partido)],["Fundo eleitoral",x=>brl(x.valor),"n"],["Candidaturas",x=>lacN(x.candidatos),"n"]],ps)}`};
  b.innerHTML=`<div class="panel"><h2>Fundo eleitoral dos partidos</h2><p class="small muted" style="margin:0 0 8px">Dinheiro público que cada partido recebeu para financiar as campanhas. ${esc(D.aviso)}</p>
   <div class="pbar" style="margin-bottom:8px"><select id="fdA" data-pill="Eleição">${anos.map(x=>`<option value="${x}">${x}</option>`).join("")}</select></div><div id="fdB"></div></div>${RSRC()}`;
  pinta();if(typeof pilulas==="function")pilulas();$("#fdA").onchange=e=>{ano=e.target.value;pinta()}}).catch(e=>{const b=$("#fdL");if(b)b.innerHTML=e.status===404?lacVazio("O fundo eleitoral entra na próxima cópia dos dados."):rerro(e)})}}}
