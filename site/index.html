@@ -1894,6 +1894,16 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
  .cand-p td:nth-child(2){grid-column:2;grid-row:1;justify-self:end;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right!important}
  .cand-p td:nth-child(3){grid-column:1/-1;grid-row:2;font-size:12.5px;color:var(--muted)}
 }
+/* como cada partido votou (celular): a sigla em cima, a barra embaixo ocupando a largura toda, o total à direita da sigla — nada sai do quadro */
+@media (max-width:640px){
+ .rprow{grid-template-columns:minmax(0,1fr) auto;row-gap:6px;column-gap:10px;padding:4px 0}
+ .rprow>span{grid-column:1;grid-row:1;min-width:0;max-width:100%;overflow:hidden;display:flex;align-items:center}
+ .rprow>span .plogo,.rprow>span img{flex:none}
+ .rprow>span{font-size:0}
+ .rprow>span>*{font-size:12.5px}
+ .rprow .rstack{grid-column:1/-1;grid-row:2;height:12px;border-radius:999px}
+ .rprow small{grid-column:2;grid-row:1;font-size:12.5px;font-weight:600;color:var(--ink)}
+}
 </style>
 </head>
 <body>
@@ -3578,13 +3588,12 @@ P.votacao=(id,...r)=>{if(!(API.on&&String(id||"")[0]==="r"))return _votacao(id,.
 return{html:`<div class="crumb"><a href="#/agora">Agora</a> / Votação</div><div id="rv">${rload()}</div>`,
 mount(){apiGet("/votacoes/"+vid).then(d=>{const v=d.votacao;const pl=d.placar||{};const T=Object.values(pl).reduce((a,b)=>a+b,0);
  const partidos=Object.entries(d.por_partido||{}).map(([p,o])=>{const t=Object.values(o).reduce((a,b)=>a+b,0);return[p,o,t]}).sort((a,b)=>b[2]-a[2]);
- const pctSim={};Object.entries(d.por_uf||{}).forEach(([u,o])=>{const t=Object.values(o).reduce((a,b)=>a+b,0);if(UF[u]&&t)pctSim[u]=Math.round(100*(o["Sim"]||0)/t)});
  $("#rv").innerHTML=`<div class="ph"><div><span class="tag">${casaN(v.casa)}</span><h1 style="margin-top:6px">${esc(v.materia||"Votação")}</h1><p>${esc(v.ementa||v.descricao||"")}</p></div></div>
  <div class="kpis"><div class="kpi"><span>Data</span><strong>${fdr(v.data)}</strong></div><div class="kpi"><span>Resultado</span><strong style="font-size:17px">${esc(v.resultado||"—")}</strong></div><div class="kpi"><span>Votos registrados</span><strong>${nf(T)}</strong></div>${v.orgao?`<div class="kpi"><span>Órgão</span><strong style="font-size:17px">${esc(v.orgao)}</strong></div>`:""}</div>
  ${d.aviso?`<div class="rbanner mt">${esc(d.aviso)}</div>`:""}
  <div class="panel mt"><h2>Placar</h2>${T?placarBar(pl):rvazio("Placar não informado pela casa.")}</div>
  ${partidos.length?`<div class="grid g2 mt"><div class="panel"><h2>Como cada partido votou</h2><div class="rpart">${partidos.map(([p,o,t])=>`<div class="rprow"><span>${sigla(p)}</span><div class="rstack sm">${Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<i style="width:${n/t*100}%;background:${vcor(k)}" title="${esc(k)}: ${n}"></i>`).join("")}</div><small>${t}</small></div>`).join("")}</div></div>
- <div class="panel"><h2>Votos “Sim” por estado</h2>${Object.keys(pctSim).length?mapaValores(pctSim,x=>x+"%"):rvazio("Sem votos nominais por estado.")}</div></div>`:""}
+</div>`:""}
  ${d.votos&&d.votos.length?`<div class="panel mt"><h2>Voto de cada parlamentar</h2><div class="filters"><input id="rvq" placeholder="Nome, partido ou estado" style="flex:1;min-width:180px"><select id="rvv" data-titulo="Voto"><option value="">Todos os votos</option>${Object.keys(pl).map(k=>`<option>${esc(k)}</option>`).join("")}</select></div><div id="rvl"></div></div>`:""}
  ${RSRC(v.casa==="senado"?"Senado Federal (Dados Abertos)":"Câmara dos Deputados (Dados Abertos)")}`;
  if(d.votos&&d.votos.length){let q="",fv="";const norm=t=>String(t).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
