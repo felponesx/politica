@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     tomtom_api_key: str = ""            # TOMTOM_API_KEY: só no servidor, nunca no site
     tomtom_limite_dia: int = 2000       # franquia gratuita do TomTom: 2.500 chamadas por dia
     admin_token: str = "troque-este-token"
+    expor_docs: bool = True              # /docs, /redoc e /openapi.json; desligue em produção (EXPOR_DOCS=false)
     # CSV "Arrecadação por Estado" da Receita Federal (dataset "Resultado da Arrecadação" no dados.gov.br).
     # Se o link mudar, troque aqui ou baixe o arquivo e use arquivo_local=...
     receita_arrecadacao_url: str = "https://www.gov.br/receitafederal/dados/arrecadacao-estado.csv"

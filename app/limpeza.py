@@ -70,3 +70,23 @@ def limpar(x, campo: str | None = None, vazio_none: bool = True):
     if isinstance(x, list):
         return [limpar(v, campo, vazio_none) for v in x]
     return x
+
+
+_SEGREDO = re.compile(r"(?i)\b(api[_-]?key|apikey|token|senha|password|passwd|secret|authorization|bearer|chave|x-admin-token)\b(\s*[=:]\s*|\s+)([^\s,;&'\"]+)")
+_CAMINHO = re.compile(r"(?<![\w:/])/(?:home|root|app|tmp|var|usr|etc|opt|srv|mnt)/[^\s'\"),;]*")
+_LONGO = re.compile(r"\b[A-Za-z0-9_\-]{32,}\b")
+_QUERY = re.compile(r"(https?://[^\s'\"?]+)\?[^\s'\"]+")
+
+
+def mascarar(texto: str | None, limite: int = 300) -> str | None:
+    """Esconde o que não deve sair numa mensagem de erro pública: chaves/tokens/senhas, caminhos do servidor,
+    parâmetros de URL (podem levar chave) e textos longos que parecem credencial. Não altera o texto guardado no banco."""
+    if not texto:
+        return texto
+    t = " ".join(str(texto).split())
+    t = re.sub(r"(?i)\b(bearer|basic)\s+[^\s,;'\"]+", r"\1 ***", t)
+    t = _SEGREDO.sub(lambda m: f"{m.group(1)}{m.group(2)}***", t)
+    t = _QUERY.sub(r"\1?…", t)
+    t = _CAMINHO.sub("[caminho]", t)
+    t = _LONGO.sub("***", t)
+    return t[:limite]

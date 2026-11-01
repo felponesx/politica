@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class Base(BaseModel):
@@ -76,6 +76,20 @@ class ColetaOut(Base):
     status: str
     itens: int
     erro: str | None
+
+    @field_validator("erro", mode="before")
+    @classmethod
+    def _erro_sem_segredos(cls, v):
+        from app.limpeza import mascarar
+        return mascarar(v, 400)
+
+    @field_validator("parametros", mode="before")
+    @classmethod
+    def _parametros_sem_segredos(cls, v):
+        from app.limpeza import mascarar
+        if not isinstance(v, dict):
+            return v
+        return {k: (mascarar(x, 200) if isinstance(x, str) else x) for k, x in v.items()}
 
 
 class Pagina(BaseModel):
