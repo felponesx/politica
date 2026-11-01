@@ -1823,6 +1823,7 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .prm-pre{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .prm-sh{margin:14px 0 6px;font-size:14px}.prm-jog{display:flex;flex-wrap:wrap;gap:6px}.prm-jog span{display:flex;flex-direction:column;padding:6px 10px;border:1px solid var(--line);border-radius:10px;font-size:13px}.prm-jog small{color:var(--muted);font-size:11.5px}
 .prm-ants{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}.prm-ant{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+/* v1.10 robôs */.rb-s{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;background:#EEF2F7;color:#1D2939}.rb-captando{background:#E3EEFF;color:#1D4FC4}.rb-ok{background:#E3F6EC;color:#13734A}.rb-atrasado,.rb-parcial{background:#FFF4DC;color:#8A5A00}.rb-falhou{background:#FDE7E7;color:#A12626}.rb-aguardando{background:#F0F2F5;color:#5B6676}.rb-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:10px}.rb-card{display:flex;flex-direction:column;gap:6px;padding:14px;border:1px solid #E3E8EF;border-radius:12px;background:#fff;color:#1D2939;text-decoration:none}.rb-card:hover{border-color:#2F6FED}.rb-nums{margin-top:4px}.rb-tab{overflow-x:auto;margin-top:12px}.rb-tab table{width:100%;border-collapse:collapse;font-size:14px}.rb-tab th,.rb-tab td{padding:8px;border-bottom:1px solid #E3E8EF;text-align:left;vertical-align:top}
 </style>
 </head>
 <body>
@@ -1900,7 +1901,7 @@ escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
 ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
-premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
+robos:'<rect x="5" y="8" width="14" height="10" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M9 17h6"/>',premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
 orgaos:'<path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/>',
@@ -1917,7 +1918,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["robos","Robôs e auditoria"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navHTML(){return NAV.map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
 document.getElementById("nav").innerHTML=navHTML();
@@ -5562,6 +5563,36 @@ function telaFundos(){return{html:`<div id="fdL">${rload()}</div>`,mount(){apiGe
 function energiaHtml(D){const L=D.distribuidoras;if(!L||!L.length)return"";const f=v=>"R$ "+lacD(v,3);
  return`<div class="panel mt"><h2>Tarifa de energia por distribuidora <small>R$ por kWh, residencial, sem impostos</small></h2><p class="small muted" style="margin:0 0 8px">${esc(D.aviso)}</p>${hbars(L.slice(0,10).map(x=>[x.distribuidora,x.total]),{fmt:f})}
  <h3 class="seg-h">Todas as distribuidoras</h3>${table([["Distribuidora",x=>`<b>${esc(x.distribuidora)}</b>`],["Uso da rede (TUSD)",x=>f(x.tusd),"n"],["Energia (TE)",x=>f(x.te),"n"],["Total",x=>f(x.total),"n"],["Em vigor desde",x=>esc((x.inicio||"").split("-").reverse().join("/"))]],L)}</div>`}
+/* v1.10 — Robôs e auditoria: o que cada robô capta, por categoria, e os erros apontados pelo Gemini (corretor) e pelas pessoas. Só leitura. */
+const RB_ROT={captando:"Captando agora",ok:"Ok",atrasado:"Atrasado",parcial:"Parcial",falhou:"Falhou",aguardando:"Aguardando",sem_materia:"Sem matéria recente"};
+const RB_CHIP=s=>`<span class="rb-s rb-${esc(s)}">${esc(RB_ROT[s]||s)}</span>`;
+const RB_DATA=v=>v?esc(String(v).replace("T"," ")):"—";
+P.robos=slug=>{
+ return{html:`<div class="ph"><div><h1>Robôs e auditoria</h1><p>Cada robô capta uma parte dos dados. Aqui se vê o que está captando agora, o que está ok, o que atrasou e o que falhou. A auditoria mostra os erros apontados pelo corretor Gemini e pelas pessoas, para conferência: nada muda nos dados sem conferência na fonte oficial.</p></div></div><div id="rbBox">${API.on?rload():`<div class="rbanner">Os robôs aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados.</div>`}</div>`,
+ mount(){ if(!API.on) return; const box=$("#rbBox"); if(!box) return;
+  const cartao=(c)=>`<a class="rb-card" href="#/robos/${esc(c.slug)}"><b>${esc(c.nome)}</b><span class="muted small">${c.bots} robô${c.bots===1?"":"s"}</span><div class="rb-nums">${c.captando?`<span class="rb-s rb-captando">${c.captando} captando</span>`:""}<span class="rb-s rb-ok">${c.ok} ok</span>${c.atrasados?`<span class="rb-s rb-atrasado">${c.atrasados} atrasado${c.atrasados>1?"s":""}</span>`:""}${c.falhas?`<span class="rb-s rb-falhou">${c.falhas} com falha</span>`:""}${c.aguardando?`<span class="rb-s rb-aguardando">${c.aguardando} aguardando</span>`:""}</div></a>`;
+  const tabela=(cab,linhas)=>`<div class="rb-tab"><table><thead><tr>${cab.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${linhas.join("")||`<tr><td colspan="${cab.length}" class="muted">Nada a mostrar.</td></tr>`}</tbody></table></div>`;
+  const nav=`<p class="small"><a href="#/robos">Todas as categorias</a> · <a href="#/robos/auditoria">Auditoria do Gemini</a></p>`;
+  if(slug==="auditoria"){
+   apiGet("/robos/auditoria").then(d=>{ if(!$("#rbBox")) return; const c=d.contagem;
+    box.innerHTML=nav+`<div class="kpis"><div class="kpi"><b>${c.pendente||0}</b><span>pendentes</span></div><div class="kpi"><b>${c.aprovada||0}</b><span>aprovadas</span></div><div class="kpi"><b>${c.descartada||0}</b><span>descartadas</span></div></div>`
+     +tabela(["Origem","Arquivo","Erro encontrado","Sugestão","Fonte citada","Confiança","Situação","Detalhe"],
+      d.itens.map(i=>`<tr><td>${esc(i.origem)}</td><td>${esc(i.arquivo)}</td><td><b>${esc(i.problema)}</b></td><td>${esc(i.sugestao||"—")}</td><td>${esc(i.fonte_citada||"—")}</td><td>${esc(i.confianca||"—")}</td><td>${esc(i.status)}</td><td class="small">${esc(i.detalhe||"")}</td></tr>`))
+     +`<p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`;
+   }).catch(()=>{ if($("#rbBox")) box.innerHTML=nav+`<div class="rbanner">Não consegui carregar a auditoria agora.</div>`; });
+  } else if(slug){
+   apiGet("/robos/"+encodeURIComponent(slug)).then(d=>{ if(!$("#rbBox")) return;
+    let extra="";
+    if(d.veiculos) extra=`<h3 style="margin-top:18px">Veículos de notícia</h3>`+tabela(["Veículo","Tema","Situação","Matérias em 7 dias","Última matéria"],d.veiculos.map(v=>`<tr><td><b>${esc(v.veiculo)}</b></td><td>${esc(v.tema)}</td><td>${RB_CHIP(v.situacao)}</td><td>${v.materias_7_dias}</td><td>${RB_DATA(v.ultima_materia)}</td></tr>`));
+    box.innerHTML=nav+`<h2>${esc(d.nome)}</h2>`+tabela(["Robô","Fonte","Situação","Última coleta","Itens","Erro"],d.bots.map(b=>`<tr><td><b>${esc(b.tarefa)}</b></td><td>${esc(b.fonte)}</td><td>${RB_CHIP(b.situacao)}</td><td>${RB_DATA(b.ultima_coleta)}</td><td>${b.itens}</td><td class="small">${esc(b.erro||"")}</td></tr>`))+extra+`<p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`;
+   }).catch(()=>{ if($("#rbBox")) box.innerHTML=nav+`<div class="rbanner">Esta categoria não existe ou não carregou.</div>`; });
+  } else {
+   apiGet("/robos").then(d=>{ if(!$("#rbBox")) return; const t=d.categorias.reduce((a,c)=>{for(const k of ["bots","captando","ok","atrasados","falhas","aguardando"])a[k]+=c[k];return a},{bots:0,captando:0,ok:0,atrasados:0,falhas:0,aguardando:0});
+    box.innerHTML=nav+`<div class="kpis"><div class="kpi"><b>${t.bots}</b><span>robôs</span></div><div class="kpi"><b>${t.captando}</b><span>captando agora</span></div><div class="kpi"><b>${t.ok}</b><span>ok</span></div><div class="kpi"><b>${t.atrasados}</b><span>atrasados</span></div><div class="kpi"><b>${t.falhas}</b><span>com falha</span></div><div class="kpi"><b>${t.aguardando}</b><span>aguardando</span></div></div>`
+     +`<div class="rb-grade">${d.categorias.map(cartao).join("")}<a class="rb-card" href="#/robos/auditoria"><b>Auditoria do Gemini</b><span class="muted small">Erros encontrados pelo corretor e pelas pessoas</span></a></div><p class="small muted" style="margin-top:14px">${esc(d.aviso)}</p>`;
+   }).catch(()=>{ if($("#rbBox")) box.innerHTML=`<div class="rbanner">Não consegui carregar os robôs agora.</div>`; });
+  }
+ }}};
 P.escandalos=()=>({html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Os principais casos de corrupção investigados no Brasil: o que aconteceu, quanto dinheiro envolveu e quanto voltou, quem foi investigado ou condenado, a situação de cada um na Justiça e os órgãos responsáveis. Cada informação tem o link da fonte.</p></div></div><div id="escL">${API.on?rload():`<div class="rbanner">Os escândalos aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/escandalos").then(d=>{const box=$("#escL");if(!box)return;
   const cards=d.itens.map(c=>{const dv=c.valores.desviado,rc=c.valores.recuperado;return`<a class="panel esc-card" href="#/escandalo/${c.slug}">

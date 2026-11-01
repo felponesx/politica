@@ -70,7 +70,7 @@ FIXAS = [
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
     "/economia?nomes=ibovespa,ipca_mes,ipca_12m,selic,salario_minimo,balanca_saldo,balanca_export,balanca_import,pib_var_anual,dolar,desemprego",
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
-    "/alertas-mapbiomas/territorio", "/alertas-mapbiomas", "/malha/status", "/caged/estoque", "/escandalos-fila", "/diarios-oficiais", "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos", "/premios", "/julgamentos", "/faccoes", "/transito",
+    "/alertas-mapbiomas/territorio", "/alertas-mapbiomas", "/malha/status", "/caged/estoque", "/escandalos-fila", "/diarios-oficiais", "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos", "/premios", "/robos", "/robos/auditoria", "/robos/congresso", "/robos/noticias", "/robos/saude", "/robos/economia", "/robos/eleicoes", "/robos/seguranca", "/robos/obras", "/robos/ambiente", "/robos/transparencia", "/robos/gemini", "/julgamentos", "/faccoes", "/transito",
 ]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
 def _slug_policia(nome: str) -> str:

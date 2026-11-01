@@ -1,0 +1,8 @@
+[
+  {"id": "relato-impostometro", "origem": "Relato do Felipe", "arquivo": "Impostômetro (/contadores)",
+   "problema": "dado do impostômetro errado", "sugestao": "", "fonte_citada": "",
+   "detalhe": "Relato sem o número exato. Falta dizer qual valor aparece e qual é o certo, com a fonte.", "status": "pendente"},
+  {"id": "relato-noticia-implantacao", "origem": "Relato do Felipe", "arquivo": "Notícias",
+   "problema": "notícia de implantação com dado errado", "sugestao": "", "fonte_citada": "",
+   "detalhe": "Relato sem o título ou o link da notícia. Falta dizer qual matéria é e o que está errado nela.", "status": "pendente"}
+]
