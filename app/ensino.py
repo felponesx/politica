@@ -18,5 +18,11 @@ def _ultimo(db: Session, tipo: str) -> dict | None:
 
 def montar(db: Session) -> dict:
     out = {k: _ultimo(db, t) for k, t in TIPOS.items()}
+    if not out.get("superior"):  # o IGC é coletado pela tarefa inep-igc (Registro tipo igc_edicao)
+        edicoes = {r.chave: r.dados for r in db.scalars(select(Registro).where(Registro.fonte == "inep", Registro.tipo == "igc_edicao"))}
+        if edicoes:
+            e = edicoes[max(edicoes)]
+            out["superior"] = {"ano": e.get("ano"), "aviso": e.get("aviso"), "instituicoes": [
+                {**x, "faixa": int(x["faixa"]) if str(x.get("faixa", "")).isdigit() else None} for x in e.get("lista", [])]}
     out["fontes"] = ["INEP — Índice de Desenvolvimento da Educação Básica (IDEB)", "INEP — Índice Geral de Cursos (IGC)"]
     return out
