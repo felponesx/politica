@@ -1914,11 +1914,17 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
  .kpis3 .kpi strong{font-size:17px;white-space:normal;text-align:right;flex:none}
  .kpis3 .kpi em{flex-basis:100%}
 }
-/* órgãos que mais gastaram (celular): sem linhas separadoras dentro de cada órgão — só o espaço entre os blocos */
+/* órgãos que mais gastaram (celular): cada órgão é um cartão suave, sem linhas divisórias; nome em destaque e os números em grade */
 @media (max-width:640px){
- .orgv table.resp tr{border-bottom:0!important;padding:14px 0!important}
- .orgv table.resp tr+tr{margin-top:6px}
- .orgv td,.orgv tr,.orgv table{border:0!important;box-shadow:none!important;background:transparent!important}
+ .orgv table.resp,.orgv table.resp tbody{display:block;width:100%}
+ .orgv table.resp tbody{display:grid;gap:10px}
+ .orgv table.resp tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 14px;padding:14px 16px;margin:0;border:0;border-radius:14px;background:var(--soft,#F4F6FA)}
+ .orgv table.resp td{border:0!important;background:transparent!important;padding:0!important;box-shadow:none!important}
+ .orgv table.resp td:nth-child(1){grid-column:1/-1;font-size:15px;font-weight:600;line-height:1.3}
+ .orgv table.resp td:nth-child(1)::before{content:none!important;display:none!important}
+ .orgv table.resp td:not(:nth-child(1))::before{font-size:11.5px;color:var(--muted);margin-bottom:2px}
+ .orgv table.resp td:not(:nth-child(1)){font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+}
 }
 </style>
 </head>
