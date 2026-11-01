@@ -1906,6 +1906,20 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 }
 /* o que está sendo votado (popout da votação): texto da ementa com boa leitura */
 .vq-t{font-size:15px;line-height:1.55;margin:4px 0 8px;color:var(--ink)}
+/* três números lado a lado (viagens, fundo, cota…) no celular: um por linha, rótulo à esquerda e valor à direita — nada passa do cartão */
+@media (max-width:640px){
+ .kpis3{grid-template-columns:minmax(0,1fr)}
+ .kpis3 .kpi{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px}
+ .kpis3 .kpi span{flex:1 1 150px;min-width:0}
+ .kpis3 .kpi strong{font-size:17px;white-space:normal;text-align:right;flex:none}
+ .kpis3 .kpi em{flex-basis:100%}
+}
+/* órgãos que mais gastaram (celular): sem linhas separadoras dentro de cada órgão — só o espaço entre os blocos */
+@media (max-width:640px){
+ .orgv table.resp tr{border-bottom:0!important;padding:14px 0!important}
+ .orgv table.resp tr+tr{margin-top:6px}
+ .orgv td,.orgv tr,.orgv table{border:0!important;box-shadow:none!important;background:transparent!important}
+}
 </style>
 </head>
 <body>
@@ -5644,7 +5658,7 @@ function mbPainel(el,D,uf){
 function telaViagens(){return{html:`<div id="vgL">${rload()}</div>`,mount(){apiGet("/viagens").then(D=>{const b=$("#vgL");if(!b)return;let ano=String(D.anos[0].ano);
  const pinta=()=>{const a=D.anos.find(x=>String(x.ano)===ano)||D.anos[0],og=(D.orgaos[ano]||[]);
   $("#vgB").innerHTML=`<div class="kpis3"><div class="kpi"><span>Gasto com viagens em ${a.ano}</span><strong>${brl(a.gasto)}</strong><em>${lacN(a.viagens)} viagens${a.ano===new Date().getFullYear()?" · ano em andamento":""}</em></div><div class="kpi"><span>Diárias</span><strong>${brl(a.diarias)}</strong></div><div class="kpi"><span>Passagens</span><strong>${brl(a.passagens)}</strong></div></div>
-   <h3 class="seg-h">Os órgãos que mais gastaram</h3>${table([["Órgão superior",x=>`<b>${esc(x.orgao)}</b>`],["Viagens",x=>lacN(x.viagens),"n"],["Diárias",x=>brl(x.diarias),"n"],["Passagens",x=>brl(x.passagens),"n"],["Gasto total",x=>brl(x.gasto),"n"]],og)}`};
+   <h3 class="seg-h">Os órgãos que mais gastaram</h3><div class="orgv">${table([["Órgão superior",x=>`<b>${esc(x.orgao)}</b>`],["Viagens",x=>lacN(x.viagens),"n"],["Diárias",x=>brl(x.diarias),"n"],["Passagens",x=>brl(x.passagens),"n"],["Gasto total",x=>brl(x.gasto),"n"]],og)}</div>`};
  b.innerHTML=`<div class="panel"><h2>Viagens a serviço do governo federal</h2><p class="small muted" style="margin:0 0 8px">Diárias e passagens pagas a servidores e colaboradores, por órgão. ${esc(D.aviso)}</p>
   <div class="pbar" style="margin-bottom:8px"><select id="vgA" data-pill="Ano">${D.anos.map(x=>`<option value="${x.ano}">${x.ano}</option>`).join("")}</select></div><div id="vgB"></div></div>${RSRC()}`;
  pinta();if(typeof pilulas==="function")pilulas();$("#vgA").onchange=e=>{ano=e.target.value;pinta()}}).catch(e=>{const b=$("#vgL");if(b)b.innerHTML=e.status===404?lacVazio("As viagens entram na próxima cópia dos dados."):rerro(e)})}}}
