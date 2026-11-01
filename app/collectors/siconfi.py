@@ -12,10 +12,25 @@ from app.utils import CODIGO_IBGE_POR_UF, UFS, hash_curto, para_float, upsert
 BASE = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
 
 
+def _pedir(url: str, params: dict) -> dict:
+    """GET com espera longa em 429: o SICONFI limita por minuto e o retry curto do http.get (~30 s) não basta."""
+    import time
+
+    import httpx
+    for tentativa in range(1, 7):
+        try:
+            return http.get_json(url, params=params) or {}
+        except httpx.HTTPStatusError as e:
+            if e.response is None or e.response.status_code != 429 or tentativa == 6:
+                raise
+            time.sleep(min(60 * tentativa, 300))
+    return {}
+
+
 def paginar(endpoint: str, params: dict):
     offset = 0
     while True:
-        resp = http.get_json(f"{BASE}/{endpoint}", params={**params, "offset": offset}) or {}
+        resp = _pedir(f"{BASE}/{endpoint}", {**params, "offset": offset})
         itens = resp.get("items", [])
         yield from itens
         if not resp.get("hasMore") or not itens:

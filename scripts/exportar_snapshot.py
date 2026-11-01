@@ -18,6 +18,7 @@ import logging
 import os
 import shutil
 import sys
+import time
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
@@ -72,7 +73,12 @@ FIXAS = [
     "/alertas-mapbiomas/territorio", "/alertas-mapbiomas", "/malha/status", "/caged/estoque", "/escandalos-fila", "/diarios-oficiais", "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos", "/premios", "/julgamentos", "/faccoes", "/transito",
 ]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
-FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))
+def _slug_policia(nome: str) -> str:
+    from app import policias
+    return policias.slug(nome)
+
+
+FIXAS += ["/policias"] + [f"/policias/{_slug_policia(arq.stem)}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))
                           if not arq.name.startswith("aisp-")]
 # quantos detalhes (popouts) guardar por tipo
 TETO_DETALHE = {"votacoes": 1500, "proposicoes": 2500, "legislacao": 2500, "contratos": 1200, "obras": 1500,
@@ -117,7 +123,11 @@ class Exportador:
         if k in self.dados:
             return self.dados[k]
         self.consultas += 1
-        r = self.cli.get(caminho, params={a: b for a, b in (params or {}).items() if b not in (None, "")})
+        for tentativa in range(6):  # 429 da própria API (limite de consultas pesadas): espera e tenta de novo
+            r = self.cli.get(caminho, params={a: b for a, b in (params or {}).items() if b not in (None, "")})
+            if r.status_code != 429:
+                break
+            time.sleep(min(10 * (tentativa + 1), 60))
         if r.status_code == 200:
             valor = r.json()
         else:
@@ -195,7 +205,8 @@ class Exportador:
         docs += [c["cnpj_fornecedor"] for c in contratos if c.get("cnpj_fornecedor")]
         docs += [e["cnpj"] for e in listas["/empresas"][0]]
         docs += [d["cnpj"] for d in listas["/dividas/devedores"][0]]
-        for doc in list(dict.fromkeys(docs))[:TETO_DETALHE["fornecedores"]]:
+        docs = [d for d in dict.fromkeys(docs) if d and len(str(d)) == 14 and str(d).isdigit()]  # só CNPJ; 11 dígitos é CPF
+        for doc in docs[:TETO_DETALHE["fornecedores"]]:
             self.get(f"/fornecedores/{doc}")
             self.get(f"/empresas/{doc}")
 
