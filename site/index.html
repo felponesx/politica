@@ -1823,6 +1823,16 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .prm-pre{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:10px 0 4px}
 .prm-sh{margin:14px 0 6px;font-size:14px}.prm-jog{display:flex;flex-wrap:wrap;gap:6px}.prm-jog span{display:flex;flex-direction:column;padding:6px 10px;border:1px solid var(--line);border-radius:10px;font-size:13px}.prm-jog small{color:var(--muted);font-size:11.5px}
 .prm-ants{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}.prm-ant{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+/* auditoria 01/11/2026 — responsividade: colunas que encolhem em vez de vazar, legenda do hemiciclo, cartões de obras e alvos de toque */
+@media (min-width:641px){
+ .hb-l{grid-template-columns:minmax(60px,1fr) minmax(70px,150px) minmax(56px,92px)!important}.hb-b{width:auto!important;min-width:0}
+ .pb-l{grid-template-columns:minmax(60px,1fr) minmax(70px,150px) minmax(48px,62px)}.pb-l .bar{width:auto}}
+.obcards{grid-template-columns:minmax(0,1fr)}.obc{min-width:0;overflow-wrap:anywhere}.obc-t b{min-width:0}
+.hp-i .hleg{min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))}.hp-i .hleg span{flex-wrap:wrap;overflow-wrap:anywhere}
+@media (pointer:coarse){
+ .hd a,.src a,a.clk,.apipill,.mlogo{position:relative}
+ .hd a::after,.src a::after,a.clk::after,.apipill::after,.mlogo::after{content:"";position:absolute;inset:-9px -6px}
+}
 </style>
 </head>
 <body>
