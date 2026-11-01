@@ -1448,10 +1448,9 @@ table.resp tbody tr[data-href]:hover{background:var(--bg)}
 .lc{width:100%;min-width:0}.lc-grade{stroke:var(--line);stroke-dasharray:3 4}.lc-grade.base{stroke:#C9D1DC;stroke-dasharray:none}.lc-eixo{fill:#667085}
 [data-theme="dark"] .lc-grade.base{stroke:#3A4660}[data-theme="dark"] .lc-eixo{fill:#98A2B3}
 .navvolta{margin:-6px 0 12px}.navvolta .btn{font-size:13.5px;padding:7px 12px}
-/* barras de porcentagem em blocos (v1.3, só nas barras de porcentagem; as de comparação .hb-b continuam lisas): 10 quadradinhos arredondados, cada um = 10%; o do meio fica parcialmente cheio */
-.bar,.rk-b,.dreg>div{height:12px!important;width:min(100%,150px);flex:none;border-radius:0!important;background:#E4E8EE!important;overflow:hidden;
- -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2212%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%223.2%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 0/10% 100% repeat-x;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2215%22%20height%3D%2212%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20rx%3D%223.2%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 0/10% 100% repeat-x}
-.bar i,.rk-b i,.dreg>div i{display:block;height:100%;border-radius:0!important}
+/* barras de porcentagem (padrão do site; substitui os quadradinhos da v1.3): barra fina e contínua, pontas arredondadas e trilho suave; a cor de cada item vem do gráfico */
+.bar,.rk-b,.dreg>div{height:8px!important;width:min(100%,160px);flex:none;border-radius:999px!important;background:#EEF1F5!important;overflow:hidden}
+.bar i,.rk-b i,.dreg>div i{display:block;height:100%;border-radius:999px!important}
 .hb-l{grid-template-columns:minmax(90px,1fr) 150px 92px!important}.hb-v{text-align:right;white-space:nowrap}.hb-b{width:150px!important}.rk-b{grid-column:2}
 [data-theme="dark"] .rk-b,[data-theme="dark"] .dreg>div{background:#2B3445!important}
 @media (max-width:640px){.hb-l{grid-template-columns:minmax(70px,1fr) 110px 84px!important}.hb-b{width:110px!important}}

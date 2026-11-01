@@ -263,8 +263,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Impostômetro (`/contadores`): federal = soma das colunas do CSV da Receita (sem subtotais preenchidos desde 2000; 2025 = R$ 2,86 tri)
   no ritmo do ano; estados e prefeituras pelo RREO Anexo 03 em 12 meses; prefeitura sem relatório estimada pela média por habitante
   das cidades do mesmo estado e da mesma faixa de tamanho. Gastômetro divide o ano incompleto pelo tempo que os bimestres cobrem.
-- Barras de porcentagem (v1.3): `.bar` vira 10 quadradinhos arredondados (cada um = 10%, o do meio parcialmente cheio) por máscara
-  CSS, 150 px de largura; as barras de comparação de `hbars` (`.hb-b`) continuam lisas. CSS no fim do `<style>` do site.
+- Barras de porcentagem (01/11/2026, substitui os quadradinhos da v1.3): `.bar` é uma barra fina e contínua de 8 px com pontas arredondadas
+  e trilho suave, até 160 px; a mesma em tabelas, listas e comparações (`hbars`, `pbars`). CSS no bloco "barra de porcentagem" do `<style>` do site.
 - Animação e período (v1.4; linhas em 2,6 s e barras em 1,8 s, para dar tempo de ver crescer; v1.7: pizzas `donut` e anéis `ring` (`.pz`) giram como ponteiro por máscara `.an-pz`, legenda `.an-f` linha a linha): gráficos (`.lc`, `svg.lr-svg`, `.hb`, `.bar`) ficam parados (`.an-pre`) até entrarem na tela
   (IntersectionObserver `AN_IO`) e então se montam (`.an-go`: linhas `.an-l` desenhadas, área `.an-a` revelada, pontos `.an-p`,
   barras crescendo); "reduzir movimento" desliga. `lineChart` reconhece anos/meses nos rótulos (ou `o.datas`) e mostra botões
