@@ -1848,6 +1848,14 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
  .nf-t td:nth-child(2) .small{font-size:12px;margin-top:2px}
  .nf-t td::before{content:none!important;display:none!important}
 }
+/* toque no celular (01/11): ao tocar numa linha, só a linha ganha a cor — as células não mostram caixas soltas nem valores cortados */
+@media (hover:none){
+ #view tbody tr:hover td,.pop-b tbody tr:hover td,tbody tr[data-href]:hover,table.resp tr:hover td{background:transparent!important}
+}
+@media (max-width:640px){
+ table.resp tr td{background:transparent!important}
+ table.resp tr[data-href]:active{background:var(--soft)}
+}
 </style>
 </head>
 <body>
