@@ -529,3 +529,36 @@ class CacheIa(Base):
     chave: Mapped[str] = mapped_column(String(64), primary_key=True)  # sha256 da pergunta
     valor: Mapped[str] = mapped_column(Text)                          # JSON da resposta
     expira: Mapped[int] = mapped_column(Integer, index=True)
+
+
+class Conta(Base):
+    """Conta de pessoa para votar nas leis. Senha só como hash (scrypt); CPF só como código HMAC (nunca em texto)."""
+    __tablename__ = "contas"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(254), unique=True)
+    senha_hash: Mapped[str] = mapped_column(String(200))
+    cpf_codigo: Mapped[str] = mapped_column(String(64), unique=True)  # HMAC-SHA256(CPF_PEPPER, CPF): impede duas contas com o mesmo CPF
+    nome: Mapped[str] = mapped_column(String(120))
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class Sessao(Base):
+    __tablename__ = "sessoes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    conta_id: Mapped[int] = mapped_column(ForeignKey("contas.id", ondelete="CASCADE"), index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)  # SHA-256 do token do cookie; o token em si não é guardado
+    expira_em: Mapped[datetime] = mapped_column(DateTime, index=True)
+
+
+class VotoLei(Base):
+    """Voto de uma conta numa lei (aprovo, nao_aprovo, indeferido). Uma linha por conta e lei: quem muda o voto substitui o anterior."""
+    __tablename__ = "votos_lei"
+    __table_args__ = (UniqueConstraint("conta_id", "proposicao_id"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    conta_id: Mapped[int] = mapped_column(ForeignKey("contas.id", ondelete="CASCADE"), index=True)
+    proposicao_id: Mapped[int] = mapped_column(ForeignKey("proposicoes.id", ondelete="CASCADE"), index=True)
+    opcao: Mapped[str] = mapped_column(String(12))
+    atualizado_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
