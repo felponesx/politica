@@ -166,3 +166,15 @@ def test_tarefa_esta_no_registro_e_na_tela_de_situacao():
     from app.collectors.registro import registro_das_tarefas
     assert "coletor-ingestao" in TAREFAS
     assert registro_das_tarefas()["coletor-ingestao"] == ("coletor", "ingestao")
+
+
+def test_nao_tenta_git_pull_quando_desligado(tmp_path, monkeypatch):
+    """No Docker do PC a imagem não tem git e a pasta é somente leitura: COLETOR_PULL=0 não pode chamar o git."""
+    (tmp_path / ".git").mkdir()
+    _publicar(tmp_path, "bcb", IPCA)
+    monkeypatch.setenv("COLETOR_PULL", "0")
+
+    def nao_deve_chamar(*a, **k):
+        raise AssertionError("git pull foi chamado")
+    monkeypatch.setattr(coletor_externo.subprocess, "run", nao_deve_chamar)
+    assert coletor_externo.coletar_ingestao(str(tmp_path)) == 3

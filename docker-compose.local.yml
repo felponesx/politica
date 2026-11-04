@@ -29,7 +29,12 @@ services:
       ALERTA_TELEGRAM_TOKEN: ${ALERTA_TELEGRAM_TOKEN:-}
       ALERTA_TELEGRAM_CHAT: ${ALERTA_TELEGRAM_CHAT:-}
       ALERTA_WEBHOOK_URL: ${ALERTA_WEBHOOK_URL:-}
-    volumes: [coletas_tmp:/tmp]
+      # dados liberados pelo coletor do celular (clone do repositório de dados, só leitura; o PC faz o git pull, veja docs/PC_LOCAL.md)
+      COLETOR_DADOS: /coletor-dados
+      COLETOR_PULL: "0"
+    volumes:
+      - coletas_tmp:/tmp
+      - ${COLETOR_DADOS_PASTA:-./coletor-dados}:/coletor-dados:ro
     depends_on:
       db: {condition: service_healthy}
 

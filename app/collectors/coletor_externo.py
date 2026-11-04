@@ -22,6 +22,7 @@ import json
 import logging
 import os
 import re
+import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -83,6 +84,9 @@ def _registrar_falha(fonte: str, erro: str):
 
 
 def _atualizar_clone(pasta: Path):
+    """git pull da pasta de dados. COLETOR_PULL=0 desliga (no Docker a imagem não tem git: quem puxa é o PC, e a pasta entra só para leitura)."""
+    if os.environ.get("COLETOR_PULL", "1") == "0" or not shutil.which("git"):
+        return
     if (pasta / ".git").exists():
         try:
             subprocess.run(["git", "-C", str(pasta), "pull", "-q", "--ff-only"], check=True, timeout=120, capture_output=True)
