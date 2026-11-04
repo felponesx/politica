@@ -232,3 +232,11 @@ def test_adaptador_declarado_e_desconhecido_nao_e_ignorado(tmp_path, linhas_limp
     _publicar(tmp_path, "teste-linhas", [{"cod": "A1"}], url="http://exemplo/x", adaptador="magico", mapa=MAPA)
     with pytest.raises(RuntimeError, match="desconhecido"):
         coletor_externo.coletar_ingestao(str(tmp_path))
+
+
+def test_adaptador_linhas_le_lista_dentro_de_um_campo(tmp_path, linhas_limpas):
+    resposta = {"dados": [{"id": 10, "nome": "Ana", "siglaUf": "MG"}], "links": []}
+    _publicar(tmp_path, "teste-linhas", resposta, url="http://exemplo/x", adaptador="linhas",
+              mapa={"tipo": "deputado", "chave": "id", "titulo": "nome", "uf": "siglaUf", "lista": "dados"})
+    assert coletor_externo.coletar_ingestao(str(tmp_path)) == 1
+    assert _registros_linhas()["10"].uf == "MG" and _registros_linhas()["10"].titulo == "Ana"

@@ -78,6 +78,8 @@ def _adaptar_linhas(db, n, caminho: Path, meta: dict):
     if not mapa.get("chave"):
         raise ValueError("mapa.chave é obrigatório")
     linhas = json.loads(caminho.read_text(encoding="utf-8"))
+    if mapa.get("lista"):   # a lista vem dentro de um campo da resposta (ex.: "dados" na API da Câmara)
+        linhas = _pega(linhas, mapa["lista"])
     if not isinstance(linhas, list) or not linhas:
         raise ValueError("lista vazia ou fora do formato (esperado: lista de objetos)")
     fonte = meta["fonte"]
