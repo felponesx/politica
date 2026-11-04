@@ -149,7 +149,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   (série do SGS pelo código no endereço da fonte).
 - Falhas de validação (hash que não confere, `meta.json` quebrado) ficam em `coletas` (fonte `coletor`, tarefa `ingestao`, parâmetro `bot`) e aparecem na tela de situação das
   fontes. Quando uma série passar a vir do celular, tire-a de `bcb-series` (`nomes=`) para não coletar duas vezes (o upsert pela mesma chave já evita linha duplicada).
-- Testes: `tests/test_coletor_externo.py` (12). Ao rodar testes de arquivos diferentes em sequência, apague `teste.db`: um banco sujo derruba `test_formatos_reais`.
+- Adaptador genérico `linhas`: a fonte declara no vínculo `adaptador = "linhas"` e um `mapa` (`tipo`, `chave`, `valor`, `titulo`, `uf`, `data`, `dados`). Assim uma fonte nova entra sem código novo. Adaptador declarado e inexistente é erro, nunca ignorado.
+- Inventário: `python -m scripts.inventario_vinculos` gera `docs/VINCULOS.md` (uma linha por tarefa, com onde grava e em que etapa está o caminho pelo celular).
+- Testes: `tests/test_coletor_externo.py` (16). Ao rodar testes de arquivos diferentes em sequência, apague `teste.db`: um banco sujo derruba `test_formatos_reais`.
 
 ## Correções de dado (29/10/2026)
 - Obras: o ObrasGov tem valores digitados a mais (dragagem de porto com R$ 403 bi, bloco de hospital com R$ 81 bi). `app/obras_valor.py` (`valor_suspeito`: ≥ R$ 100 bi sempre; Defesa fica; ≥ R$ 10 bi suspeito;

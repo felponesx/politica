@@ -30,7 +30,8 @@ from pathlib import Path
 from app.collectors import bcb
 from app.collectors.base import registrar_coleta
 from app.db import SessionLocal
-from app.models import Coleta
+from app.models import Coleta, Registro
+from app.utils import para_data, para_float, para_uf, upsert
 
 log = logging.getLogger("brasilplus.coletor_externo")
 
@@ -52,7 +53,57 @@ def _adaptar_bcb(db, n, caminho: Path, meta: dict):
         raise ValueError("nenhum ponto válido na série")
 
 
-ADAPTADORES = {"bcb": _adaptar_bcb}   # nome da fonte no coletor do celular -> função
+def _pega(obj, caminho):
+    """Lê um campo por caminho pontilhado ("a.b.c"). Devolve None se não existir."""
+    for parte in str(caminho).split("."):
+        if isinstance(obj, dict) and parte in obj:
+            obj = obj[parte]
+        else:
+            return None
+    return obj
+
+
+_TIPO_OK = re.compile(r"^[a-z0-9_:\-]{1,60}$")
+
+
+def _adaptar_linhas(db, n, caminho: Path, meta: dict):
+    """Adaptador genérico: lista de objetos JSON -> registros, pelo mapa que o vínculo declara.
+    Assim uma fonte nova entra SEM código novo: basta declarar `adaptador = "linhas"` e o `mapa` no vínculo."""
+    mapa = meta.get("mapa")
+    if not isinstance(mapa, dict):
+        raise ValueError("adaptador 'linhas' sem mapa no vínculo")
+    tipo = mapa.get("tipo")
+    if not isinstance(tipo, str) or not _TIPO_OK.match(tipo):
+        raise ValueError("mapa.tipo inválido (use letras minúsculas, números, _ : -)")
+    if not mapa.get("chave"):
+        raise ValueError("mapa.chave é obrigatório")
+    linhas = json.loads(caminho.read_text(encoding="utf-8"))
+    if not isinstance(linhas, list) or not linhas:
+        raise ValueError("lista vazia ou fora do formato (esperado: lista de objetos)")
+    fonte = meta["fonte"]
+    for r in linhas:
+        if not isinstance(r, dict):
+            continue
+        chave = _pega(r, mapa["chave"])
+        if chave is None or not str(chave).strip():
+            continue
+        valor = para_float(_pega(r, mapa["valor"])) if mapa.get("valor") else None
+        titulo = _pega(r, mapa["titulo"]) if mapa.get("titulo") else None
+        uf = para_uf(_pega(r, mapa["uf"])) if mapa.get("uf") else None
+        data = para_data(_pega(r, mapa["data"])) if mapa.get("data") else None
+        dados = {k: _pega(r, c) for k, c in (mapa.get("dados") or {}).items()}
+        upsert(db, Registro, {"fonte": fonte, "tipo": tipo, "chave": str(chave).strip()[:200]},
+               {"uf": uf, "ano": data.year if data else None,
+                "titulo": str(titulo)[:500] if titulo is not None else None, "valor": valor,
+                "dados": {"data": data.isoformat() if data else None, **dados}})
+        n += 1
+    db.commit()
+    if not n.itens:
+        raise ValueError("nenhuma linha com chave válida")
+
+
+_ADAPTADORES_GENERICOS = {"linhas": _adaptar_linhas}
+ADAPTADORES = {"bcb": _adaptar_bcb}   # fontes com adaptador próprio (nome da fonte -> função)
 
 
 def _liberado(meta: dict) -> bool:
@@ -121,7 +172,12 @@ def coletar_ingestao(pasta: str | None = None):
             if not _liberado(meta):
                 log.info("%s: não liberado pelo corretor, ignorado", fonte)
                 continue
-            adaptador = ADAPTADORES.get(fonte)
+            if meta.get("adaptador"):   # declarado pelo vínculo: se não existir, é erro (não pode ser ignorado em silêncio)
+                adaptador = _ADAPTADORES_GENERICOS.get(meta["adaptador"])
+                if adaptador is None:
+                    raise ValueError(f"adaptador desconhecido: {meta['adaptador']}")
+            else:
+                adaptador = ADAPTADORES.get(fonte)
             if adaptador is None:
                 log.info("%s: sem adaptador no BRASIL+, ignorado", fonte)
                 continue

@@ -178,3 +178,57 @@ def test_nao_tenta_git_pull_quando_desligado(tmp_path, monkeypatch):
         raise AssertionError("git pull foi chamado")
     monkeypatch.setattr(coletor_externo.subprocess, "run", nao_deve_chamar)
     assert coletor_externo.coletar_ingestao(str(tmp_path)) == 3
+
+
+@pytest.fixture
+def linhas_limpas():
+    def limpa():
+        db = SessionLocal()
+        try:
+            db.query(Registro).filter(Registro.fonte == "teste-linhas").delete()
+            db.commit()
+        finally:
+            db.close()
+    limpa()
+    yield
+    limpa()
+
+
+def _registros_linhas():
+    db = SessionLocal()
+    try:
+        return {r.chave: r for r in db.query(Registro).filter_by(fonte="teste-linhas").all()}
+    finally:
+        db.close()
+
+
+MAPA = {"tipo": "gasto", "chave": "cod", "valor": "pago", "titulo": "orgao.nome", "uf": "uf", "data": "ref",
+        "dados": {"orgao": "orgao.nome"}}
+
+
+def test_adaptador_linhas_grava_pelo_mapa_do_vinculo(tmp_path, linhas_limpas):
+    rows = [{"cod": "A1", "pago": "1.234,50", "uf": "SP", "ref": "2026-03-01", "orgao": {"nome": "Saúde"}},
+            {"cod": "A2", "pago": 0.5, "uf": "RJ", "orgao": {"nome": "Educação"}},
+            {"sem_chave": True}]
+    _publicar(tmp_path, "teste-linhas", rows, url="http://exemplo/x", adaptador="linhas", mapa=MAPA)
+    assert coletor_externo.coletar_ingestao(str(tmp_path)) == 2
+    r = _registros_linhas()
+    assert set(r) == {"A1", "A2"}
+    assert r["A1"].valor == 1234.5 and r["A1"].uf == "SP" and r["A1"].ano == 2026 and r["A1"].titulo == "Saúde"
+    assert r["A1"].tipo == "gasto" and r["A1"].dados["orgao"] == "Saúde"
+    assert r["A2"].ano is None and r["A2"].valor == 0.5
+
+
+def test_mapa_invalido_vira_erro_registrado(tmp_path, linhas_limpas):
+    _publicar(tmp_path, "teste-linhas", [{"cod": "A1"}], url="http://exemplo/x", adaptador="linhas",
+              mapa={"tipo": "Gasto Ruim!", "chave": "cod"})
+    with pytest.raises(RuntimeError, match="mapa.tipo"):
+        coletor_externo.coletar_ingestao(str(tmp_path))
+    assert _registros_linhas() == {}
+    assert [c.status for c in _coletas() if c.parametros["bot"] == "teste-linhas"] == ["erro"]
+
+
+def test_adaptador_declarado_e_desconhecido_nao_e_ignorado(tmp_path, linhas_limpas):
+    _publicar(tmp_path, "teste-linhas", [{"cod": "A1"}], url="http://exemplo/x", adaptador="magico", mapa=MAPA)
+    with pytest.raises(RuntimeError, match="desconhecido"):
+        coletor_externo.coletar_ingestao(str(tmp_path))
