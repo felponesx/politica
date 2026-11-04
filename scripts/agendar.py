@@ -53,6 +53,8 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("tesouro-capag", {}), ("ibge-malhas", {})],
         "trimestral": [("pgfn-divida-ativa", {"ano": ta, "trimestre": tt})],
     }
+    if os.environ.get("COLETOR_DADOS"):   # dados liberados pelo coletor do celular (clone do repositório de dados)
+        g["ingestao"] = [("coletor-ingestao", {})]
     if settings.tomtom_api_key:   # trânsito das 27 capitais de hora em hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500)
         g["transito"] = [("tomtom-transito", {})]
     return g
@@ -102,6 +104,8 @@ def main(argv):
                                                                       "misfire_grace_time": 3600})
     s.add_job(rodar_grupo, "cron", args=["diario"], hour=2, minute=10, id="diario")
     s.add_job(rodar_grupo, "cron", args=["agenda"], day_of_week="mon-fri", hour="8-21", minute="*/15", id="agenda")
+    if os.environ.get("COLETOR_DADOS"):
+        s.add_job(rodar_grupo, "cron", args=["ingestao"], minute="*/10", id="ingestao")
     if settings.tomtom_api_key:
         s.add_job(rodar_grupo, "cron", args=["transito"], hour="6-22", minute=7, id="transito")
     s.add_job(rodar_grupo, "cron", args=["semanal"], day_of_week="sun", hour=4, minute=0, id="semanal")

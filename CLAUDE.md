@@ -139,6 +139,18 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   em pull requests (aprovação pelo celular só com verde). Falta: passar ao `agendar.py` o que hoje só o robô do GitHub faz (eleições, segurança, notícias a cada 15 min, impostômetro,
   histórico, fotos) e adaptar `revisar_dados` ao banco local.
 
+## Coletor do celular (nov/2026)
+- Coletor separado (repositório próprio, roda no Termux/Android): guarda o bruto de cada fonte sem alterar, confere o dado novo (regras locais + Gemini), corrige só o **formato**
+  numa cópia separada (lista fechada de regras: espaços sobrando, acento quebrado, `&amp;`, vírgula decimal, data dd/mm/aaaa; nunca muda valor), retém o suspeito e publica no
+  GitHub `dados/<fonte>/atual.<ext>` + `meta.json` só o que foi liberado (ou aprovado pelo Felipe). O último dado bom continua publicado enquanto o novo está retido.
+- `coletor-ingestao` (`app/collectors/coletor_externo.py`; `COLETOR_DADOS` = clone desse repositório de dados; o agendador roda a cada 10 min quando a variável existe): lê o
+  `meta.json`, confere o hash do arquivo, ignora o que não foi liberado e o que já foi ingerido (mesmo hash) e grava em `registros` com a MESMA função do coletor próprio
+  (`bcb.gravar_pontos`), então o formato no banco é um só. Cada fonte nova precisa do seu adaptador em `ADAPTADORES`; fonte sem adaptador é ignorada. Piloto: `bcb`
+  (série do SGS pelo código no endereço da fonte).
+- Falhas de validação (hash que não confere, `meta.json` quebrado) ficam em `coletas` (fonte `coletor`, tarefa `ingestao`, parâmetro `bot`) e aparecem na tela de situação das
+  fontes. Quando uma série passar a vir do celular, tire-a de `bcb-series` (`nomes=`) para não coletar duas vezes (o upsert pela mesma chave já evita linha duplicada).
+- Testes: `tests/test_coletor_externo.py` (12). Ao rodar testes de arquivos diferentes em sequência, apague `teste.db`: um banco sujo derruba `test_formatos_reais`.
+
 ## Correções de dado (29/10/2026)
 - Obras: o ObrasGov tem valores digitados a mais (dragagem de porto com R$ 403 bi, bloco de hospital com R$ 81 bi). `app/obras_valor.py` (`valor_suspeito`: ≥ R$ 100 bi sempre; Defesa fica; ≥ R$ 10 bi suspeito;
   de R$ 1 a 10 bi só com nome de obra pequena — bloco, vestiário, delegacia, campus... — ou "estradas ... município") marca `valor_suspeito` em `/obras` e `/obras/{id}` (com `aviso_valor`), tira o valor das somas
