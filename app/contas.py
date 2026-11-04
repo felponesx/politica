@@ -11,13 +11,13 @@ import hashlib
 import hmac
 import re
 import secrets
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.models import Conta, Sessao
+from app.models import Conta, Sessao, agora_utc
 
 COOKIE = "bp_sessao"
 EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[^@\s]{2,}$")
@@ -86,10 +86,15 @@ def _hash_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
+def apagar_sessoes_vencidas(db: Session) -> None:
+    """Sessões vencidas não servem para nada: são apagadas a cada novo login (o banco não cresce sem fim)."""
+    db.query(Sessao).filter(Sessao.expira_em < agora_utc()).delete(synchronize_session=False)
+
+
 def criar_sessao(db: Session, conta: Conta) -> str:
     token = secrets.token_urlsafe(32)
     db.add(Sessao(conta_id=conta.id, token_hash=_hash_token(token),
-                  expira_em=datetime.utcnow() + timedelta(days=settings.sessao_dias)))
+                  expira_em=agora_utc() + timedelta(days=settings.sessao_dias)))
     db.flush()
     return token
 
@@ -98,7 +103,7 @@ def conta_da_sessao(db: Session, token: str | None) -> Conta | None:
     if not token:
         return None
     s = db.scalars(select(Sessao).where(Sessao.token_hash == _hash_token(token))).first()
-    if s is None or s.expira_em < datetime.utcnow():
+    if s is None or s.expira_em < agora_utc():
         return None
     return db.get(Conta, s.conta_id)
 

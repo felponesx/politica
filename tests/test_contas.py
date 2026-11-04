@@ -1,5 +1,5 @@
 """Contas e voto nas leis: CPF, senha, sessão, uma conta = um voto por lei, cookie e falha fechada sem CPF_PEPPER."""
-from datetime import datetime, timedelta
+from datetime import timedelta
 import uuid
 
 import pytest
@@ -128,7 +128,7 @@ def test_sessao_expirada_nao_vale(cli):
     db = SessionLocal()
     try:
         for s in db.query(Sessao).all():
-            s.expira_em = datetime.utcnow() - timedelta(minutes=1)
+            s.expira_em = contas.agora_utc() - timedelta(minutes=1)
         db.commit()
     finally:
         db.close()
@@ -177,3 +177,27 @@ def test_cookie_httponly_e_samesite(cli):
     r = cli.post("/contas", json={"email": "k@x.com", "senha": "senha-forte-1", "nome": "Ka", "cpf": CPF_OK})
     cookie = r.headers["set-cookie"].lower()
     assert "httponly" in cookie and "samesite=lax" in cookie
+
+
+def test_login_apaga_sessoes_vencidas(cli):
+    cli.post("/contas", json={"email": "l@x.com", "senha": "senha-forte-1", "nome": "Lu", "cpf": CPF_OK})
+    db = SessionLocal()
+    try:
+        for s in db.query(Sessao).all():
+            s.expira_em = contas.agora_utc() - timedelta(days=1)
+        db.commit()
+    finally:
+        db.close()
+    cli.cookies.clear()
+    assert cli.post("/contas/entrar", json={"email": "l@x.com", "senha": "senha-forte-1"}).status_code == 200
+    db = SessionLocal()
+    try:
+        assert db.query(Sessao).count() == 1  # só a sessão nova; as vencidas foram apagadas
+    finally:
+        db.close()
+
+
+def test_sentry_fica_desligado_sem_dsn(monkeypatch):
+    from app import observabilidade
+    monkeypatch.setattr(settings, "sentry_dsn", "")
+    assert observabilidade.iniciar() is False

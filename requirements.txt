@@ -14,3 +14,4 @@ osmium>=4,<5
 shapely>=2,<3
 apscheduler==3.10.*
 pillow==13.*
+sentry-sdk==2.*

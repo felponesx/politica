@@ -4,7 +4,7 @@ Dados legislativos (Câmara e Senado) têm tabelas próprias.
 As demais fontes entram primeiro em `registros` (staging com JSON bruto + campos-chave),
 para depois serem normalizadas em tabelas específicas conforme as telas exigirem.
 """
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
 from sqlalchemy import (JSON, BigInteger, Date, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, String, Text,
                         UniqueConstraint, func, text)
@@ -531,6 +531,11 @@ class CacheIa(Base):
     expira: Mapped[int] = mapped_column(Integer, index=True)
 
 
+def agora_utc() -> datetime:
+    """Hora UTC sem fuso (o banco guarda assim)."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
 class Conta(Base):
     """Conta de pessoa para votar nas leis. Senha só como hash (scrypt); CPF só como código HMAC (nunca em texto)."""
     __tablename__ = "contas"
@@ -540,7 +545,7 @@ class Conta(Base):
     senha_hash: Mapped[str] = mapped_column(String(200))
     cpf_codigo: Mapped[str] = mapped_column(String(64), unique=True)  # HMAC-SHA256(CPF_PEPPER, CPF): impede duas contas com o mesmo CPF
     nome: Mapped[str] = mapped_column(String(120))
-    criada_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
 
 
 class Sessao(Base):
@@ -561,4 +566,4 @@ class VotoLei(Base):
     conta_id: Mapped[int] = mapped_column(ForeignKey("contas.id", ondelete="CASCADE"), index=True)
     proposicao_id: Mapped[int] = mapped_column(ForeignKey("proposicoes.id", ondelete="CASCADE"), index=True)
     opcao: Mapped[str] = mapped_column(String(12))
-    atualizado_em: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    atualizado_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)

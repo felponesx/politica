@@ -10,6 +10,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
+from app import observabilidade
 from app.db import criar_tabelas
 from app.seguranca import LimiteCorpo, Protecao
 from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas, lacunas as lacunas_rotas, sancoes as sancoes_rotas, saude as saude_rotas, doadores as doadores_rotas, contas as contas_rotas
@@ -23,6 +24,7 @@ async def lifespan(_app):
     yield
 
 
+observabilidade.iniciar()
 _docs = settings.expor_docs  # em produção (EXPOR_DOCS=false) a documentação interativa e o esquema da API não ficam públicos
 app = FastAPI(title="BRASIL+ API", description="Transparência em um só lugar", version="0.1.0", lifespan=lifespan,
               docs_url="/docs" if _docs else None, redoc_url="/redoc" if _docs else None, openapi_url="/openapi.json" if _docs else None)

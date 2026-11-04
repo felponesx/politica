@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     tomtom_api_key: str = ""            # TOMTOM_API_KEY: só no servidor, nunca no site
     tomtom_limite_dia: int = 2000       # franquia gratuita do TomTom: 2.500 chamadas por dia
     admin_token: str = "troque-este-token"
+    sentry_dsn: str = ""                 # SENTRY_DSN: envio de erros do servidor ao Sentry. Vazio = desligado. Nunca vai ao navegador.
     cpf_pepper: str = ""                 # CPF_PEPPER: chave secreta do código do CPF (HMAC). Sem ela não há cadastro (falha fechada). Só no servidor.
     sessao_dias: int = 30                # validade do login (cookie bp_sessao)
     expor_docs: bool = True              # /docs, /redoc e /openapi.json; desligue em produção (EXPOR_DOCS=false)

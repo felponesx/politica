@@ -1,7 +1,6 @@
 """Login de pessoas e voto nas leis (uma conta = um voto por lei). Ver app/contas.py para as regras de senha, CPF e sessão."""
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -88,6 +87,7 @@ def entrar(dados: EntrarIn, request: Request, db: Session = Depends(get_db)):
     _limita(f"login-email:{limites.hash_cliente(contas.normalizar_email(dados.email))}", 5, 900)
     try:
         conta = contas.entrar(db, dados.email, dados.senha)
+        contas.apagar_sessoes_vencidas(db)
         token = contas.criar_sessao(db, conta)
         db.commit()
     except contas.ErroConta as e:
@@ -152,6 +152,6 @@ def votar_lei(pid: int, dados: VotoIn, request: Request, db: Session = Depends(g
         db.add(VotoLei(conta_id=conta.id, proposicao_id=pid, opcao=dados.opcao))
     else:
         voto.opcao = dados.opcao
-        voto.atualizado_em = datetime.utcnow()
+        voto.atualizado_em = contas.agora_utc()
     db.commit()
     return {"ok": True, "meu_voto": dados.opcao}
