@@ -2868,10 +2868,10 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  const leve=zLeve(),cl=zClone(svg,uf,leve);fx.appendChild(cl);
  cl.querySelectorAll("path.sel:not([data-uf])").forEach(p=>p.remove());
  const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");tg.style.fill=fromFill;cl.appendChild(tg);if(mgc){cl.insertBefore(mgc,tg);tg.style.fill="none"}
- document.body.appendChild(fx);svg.style.visibility="hidden";card.classList.add("unzoom");
+ document.body.appendChild(fx);svg.style.visibility="";svg.style.transition="none";svg.style.opacity="0";card.classList.add("unzoom");
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");tg.style.fill=mgc?"none":toFill;card.classList.remove("unzoom")}));
  const an=fx.animate(leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:"translate(0,0) scale(1)"}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:"translate(0,0) scale(1)",filter:"blur(0)"}],{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
- let ended=false;const done=()=>{if(ended)return;ended=true;svg.style.visibility="";requestAnimationFrame(()=>fx.remove())};an.onfinish=done;setTimeout(done,1300)}
+ let ended=false;const done=()=>{if(ended)return;ended=true;svg.style.transition="opacity .7s ease";svg.style.opacity="1";setTimeout(()=>{svg.style.transition="";svg.style.opacity=""},760);requestAnimationFrame(()=>fx.remove())};an.onfinish=done;setTimeout(done,1300)}
 let CURSEC=null;
 const HOMEZ={card:"#hmapcard",main:"#hmapmain",holder:"#hstate",map:"#hmap",back:"‹ Voltar ao mapa do Brasil",full:true,sec:null,render:uf=>P.uf(uf,HOMEZ.sec)};
 function showStateInline(uf,pathEl){return inlineZoomIn(HOMEZ,uf,pathEl)}
