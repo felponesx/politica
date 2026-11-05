@@ -2015,6 +2015,21 @@ body.mun-busca{cursor:progress}body.mun-busca #elmap{opacity:.82;transition:opac
 /* voltar do estado: o mapa do país aparece devagar, sem surgir do nada */
 @keyframes mapaEntra{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
 .mapa-entra{animation:mapaEntra .9s cubic-bezier(.2,.7,.2,1) both}
+/* zoom: o estado pousa e depois o resto do país aparece aos poucos */
+svg.voo-volta path,svg.voo-volta text{opacity:0}
+svg.voo-volta path.voo-alvo{opacity:1}
+svg.voo-fim path,svg.voo-fim text{transition:opacity .9s ease .12s}
+/* zoom: as informações do estado entram de cima para baixo (staggered fade in down) */
+@keyframes stgDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+.stg-go .ufback,.stg-go .ufhero-t>*,.stg-go .ufrest>*{animation:stgDown .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--s,0)*120ms)}
+.stg-go .ufback{--s:0}
+.stg-go .ufhero-t>*:nth-child(1){--s:1}
+.stg-go .ufhero-t>*:nth-child(2){--s:2}
+.stg-go .ufhero-t>*:nth-child(3){--s:3}
+.stg-go .ufhero-t>*:nth-child(n+4){--s:4}
+.stg-go .ufrest>*{--s:5}
+.stg-go .ufrest>*:nth-child(2){--s:6}
+@media (prefers-reduced-motion:reduce){.stg-go .ufback,.stg-go .ufhero-t>*,.stg-go .ufrest>*{animation:none}svg.voo-fim path,svg.voo-fim text{transition:none}}
 </style>
 </head>
 <body>
@@ -2838,7 +2853,7 @@ function flyState(pathEl,uf,swap){
  const tx=(t.left+t.width/2)-r.left-((s0.left+s0.width/2)-r.left)*k,ty=(t.top+t.height/2)-r.top-((s0.top+s0.height/2)-r.top)*k;
  requestAnimationFrame(()=>{fx.classList.add("go");if(tgt)tgt.style.fill=hp.getAttribute("fill")});
  const an=fx.animate(leve?[{transform:"translate(0,0) scale(1)"},{transform:`translate(${tx}px,${ty}px) scale(${k})`}]:[{transform:"translate(0,0) scale(1)",filter:"blur(0)"},{offset:.55,filter:"blur(1.2px)"},{transform:`translate(${tx}px,${ty}px) scale(${k})`,filter:"blur(0)"}],{duration:leve?560:820,easing:"cubic-bezier(.7,0,.2,1)",fill:"forwards"});
- let ended=false;const done=()=>{if(ended)return;ended=true;zone&&zone.classList.remove("zooming");requestAnimationFrame(()=>fx.remove())};
+ let ended=false;const done=()=>{if(ended)return;ended=true;zone&&zone.classList.remove("zooming");zone&&zone.dispatchEvent(new Event("zpouso"));requestAnimationFrame(()=>fx.remove())};
  an.onfinish=done;setTimeout(done,1400)}
 /* ---------- foco no estado: esconde o que não é do estado ---------- */
 function focoEstado(card,on){const view=card.closest("#popB")||$("#view");if(!view)return;
@@ -2846,7 +2861,7 @@ function focoEstado(card,on){const view=card.closest("#popB")||$("#view");if(!vi
  else{(card.closest("#popB")||document).querySelectorAll(".st-oculto").forEach(c=>c.classList.remove("st-oculto"));view.classList.remove("stfocus")}}
 function topoDoCard(card){const box=card.closest(".pop-b");if(box){box.scrollTop=Math.max(0,card.offsetTop-box.offsetTop-8);return}const t=card.getBoundingClientRect().top+scrollY-(innerWidth<=760?64:84);scrollTo({top:Math.max(0,t),behavior:"instant"})}
 /* ---------- zoom de estado na mesma área (genérico) ---------- */
-function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return false;
+function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return false;const hz=$(cfg.holder);if(hz)hz.classList.remove("stg-go");card.addEventListener("zpouso",()=>{const hh=$(cfg.holder);if(hh)hh.classList.add("stg-go")},{once:true});
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  if(!pathEl&&$(cfg.main).style.display!=="none")pathEl=$(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`);
  flyState(pathEl,uf,()=>{const r=cfg.render(uf);const h=$(cfg.holder);h.dataset.uf=uf;
@@ -2858,7 +2873,7 @@ function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return fals
 function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.dataset.uf;
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");const mg0=st.querySelector("g.uf-mun"),mgc=mg0&&mg0.cloneNode(true);if(mgc)mgc.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));
- st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";const mn=$(cfg.main);if(mn&&!semMov()){mn.classList.remove("mapa-entra");void mn.offsetWidth;mn.classList.add("mapa-entra");setTimeout(()=>mn.classList.remove("mapa-entra"),1000)}card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
+ st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
  const tp=uf&&($(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`));const reduce=semMov();
  if(reduce||!h0||!tp||!tp.animate)return;
  const svg=tp.ownerSVGElement,r=svg.getBoundingClientRect(),t=tp.getBoundingClientRect();
@@ -2867,11 +2882,11 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  const fx=document.createElement("div");fx.className="zoomfx back";fx.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
  const leve=zLeve(),cl=zClone(svg,uf,leve);fx.appendChild(cl);
  cl.querySelectorAll("path.sel:not([data-uf])").forEach(p=>p.remove());
- const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");tg.style.fill=fromFill;cl.appendChild(tg);if(mgc){cl.insertBefore(mgc,tg);tg.style.fill="none"}
- document.body.appendChild(fx);svg.style.visibility="";svg.style.transition="none";svg.style.opacity="0";card.classList.add("unzoom");
- requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");tg.style.fill=mgc?"none":toFill;card.classList.remove("unzoom")}));
+ const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");cl.appendChild(tg);if(mgc){cl.appendChild(mgc);tg.style.fill=toFill;tg.style.fillOpacity="0"}else{tg.style.fill=fromFill}
+ document.body.appendChild(fx);svg.classList.add("voo-volta");const alvo=tp.ownerSVGElement===svg?tp:null;if(alvo)alvo.classList.add("voo-alvo");card.classList.add("unzoom");
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");if(mgc){tg.style.transition="fill-opacity .6s ease";tg.style.fillOpacity="1";mgc.style.transition="opacity .6s ease";mgc.style.opacity="0"}else{tg.style.fill=toFill}card.classList.remove("unzoom")}));
  const an=fx.animate(leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:"translate(0,0) scale(1)"}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:"translate(0,0) scale(1)",filter:"blur(0)"}],{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
- let ended=false;const done=()=>{if(ended)return;ended=true;svg.style.transition="opacity .7s ease";svg.style.opacity="1";setTimeout(()=>{svg.style.transition="";svg.style.opacity=""},760);requestAnimationFrame(()=>fx.remove())};an.onfinish=done;setTimeout(done,1300)}
+ let ended=false;const done=()=>{if(ended)return;ended=true;svg.classList.remove("voo-volta");svg.classList.add("voo-fim");setTimeout(()=>{svg.classList.remove("voo-fim");if(alvo)alvo.classList.remove("voo-alvo")},1200);requestAnimationFrame(()=>fx.remove())};an.onfinish=done;setTimeout(done,1300)}
 let CURSEC=null;
 const HOMEZ={card:"#hmapcard",main:"#hmapmain",holder:"#hstate",map:"#hmap",back:"‹ Voltar ao mapa do Brasil",full:true,sec:null,render:uf=>P.uf(uf,HOMEZ.sec)};
 function showStateInline(uf,pathEl){return inlineZoomIn(HOMEZ,uf,pathEl)}
