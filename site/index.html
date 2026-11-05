@@ -2837,11 +2837,13 @@ function zClone(svg,uf,leve){const cl=svg.cloneNode(true);cl.classList.remove("h
  if(leve){cl.querySelectorAll("path,text").forEach(p=>{if(p.getAttribute("data-uf")!==uf)p.remove()})}
  else cl.querySelectorAll("path").forEach(p=>p.setAttribute("vector-effect","non-scaling-stroke"));
  cl.querySelectorAll("path").forEach(p=>p.classList.add("zf-other"));return cl}
+/* html{zoom:.8} no PC: as medidas da tela vêm em px de tela, o voo é posto em px de CSS */
+const zoomDoc=()=>{const z=parseFloat(getComputedStyle(document.documentElement).zoom);return z&&isFinite(z)&&z>0?z:1};
 function flyState(pathEl,uf,swap){
  const reduce=semMov();const svg=pathEl&&pathEl.ownerSVGElement;
  if(reduce||!svg||!svg.animate){const h=swap();const z=h&&h.closest(".zooming");z&&z.classList.remove("zooming");return}
  const r=svg.getBoundingClientRect(),s0=pathEl.getBoundingClientRect();
- const fx=document.createElement("div");fx.className="zoomfx";fx.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+ const fx=document.createElement("div");fx.className="zoomfx";fx.style.cssText=`left:${r.left/zoomDoc()}px;top:${r.top/zoomDoc()}px;width:${r.width/zoomDoc()}px;height:${r.height/zoomDoc()}px`;
  const leve=zLeve(),cl=zClone(svg,uf,leve);fx.appendChild(cl);
  const tgt=cl.querySelector(`path[data-uf="${uf}"]`);if(tgt){tgt.classList.remove("zf-other");tgt.classList.add("zf-target");cl.appendChild(tgt)}
  cl.querySelectorAll("path.sel:not(.zf-target)").forEach(p=>p.remove());
@@ -2850,7 +2852,7 @@ function flyState(pathEl,uf,swap){
  const mg=hp.ownerSVGElement&&hp.ownerSVGElement.querySelector("g.uf-mun"),mgv=mg&&tgt?mg.cloneNode(true):null;if(mgv){cl.insertBefore(mgv,tgt);tgt.style.fill="none"}
  const zone=hp.closest(".zooming");const t=hp.getBoundingClientRect();
  const k=Math.min(t.width/s0.width,t.height/s0.height);if(mgv)mgv.style.strokeWidth=(.5/k)+"px";
- const tx=(t.left+t.width/2)-r.left-((s0.left+s0.width/2)-r.left)*k,ty=(t.top+t.height/2)-r.top-((s0.top+s0.height/2)-r.top)*k;
+ const zz=zoomDoc(),tx=((t.left+t.width/2)-r.left-((s0.left+s0.width/2)-r.left)*k)/zz,ty=((t.top+t.height/2)-r.top-((s0.top+s0.height/2)-r.top)*k)/zz;
  requestAnimationFrame(()=>{fx.classList.add("go");if(tgt)tgt.style.fill=hp.getAttribute("fill")});
  const an=fx.animate(leve?[{transform:"translate(0,0) scale(1)"},{transform:`translate(${tx}px,${ty}px) scale(${k})`}]:[{transform:"translate(0,0) scale(1)",filter:"blur(0)"},{offset:.55,filter:"blur(1.2px)"},{transform:`translate(${tx}px,${ty}px) scale(${k})`,filter:"blur(0)"}],{duration:leve?560:820,easing:"cubic-bezier(.7,0,.2,1)",fill:"forwards"});
  let ended=false;const done=()=>{if(ended)return;ended=true;zone&&zone.classList.remove("zooming");zone&&zone.dispatchEvent(new Event("zpouso"));requestAnimationFrame(()=>fx.remove())};
@@ -2878,14 +2880,19 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  if(reduce||!h0||!tp||!tp.animate)return;
  const svg=tp.ownerSVGElement,r=svg.getBoundingClientRect(),t=tp.getBoundingClientRect();
  const k=Math.min(h0.width/t.width,h0.height/t.height);if(mgc)mgc.style.strokeWidth=(.5/k)+"px";
- const tx=(h0.left+h0.width/2)-r.left-((t.left+t.width/2)-r.left)*k,ty=(h0.top+h0.height/2)-r.top-((t.top+t.height/2)-r.top)*k;
- const fx=document.createElement("div");fx.className="zoomfx back";fx.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+ const zz=zoomDoc(),tx=((h0.left+h0.width/2)-r.left-((t.left+t.width/2)-r.left)*k)/zz,ty=((h0.top+h0.height/2)-r.top-((t.top+t.height/2)-r.top)*k)/zz;
+ const fx=document.createElement("div");fx.className="zoomfx back";fx.style.cssText=`left:${r.left/zoomDoc()}px;top:${r.top/zoomDoc()}px;width:${r.width/zoomDoc()}px;height:${r.height/zoomDoc()}px`;
  const leve=zLeve(),cl=zClone(svg,uf,leve);fx.appendChild(cl);
  cl.querySelectorAll("path.sel:not([data-uf])").forEach(p=>p.remove());
  const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");cl.appendChild(tg);if(mgc){cl.appendChild(mgc);tg.style.fill=toFill;tg.style.fillOpacity="0"}else{tg.style.fill=fromFill}
  document.body.appendChild(fx);svg.classList.add("voo-volta");const mainEl=$(cfg.main);if(mainEl){mainEl.style.transition="none";mainEl.style.opacity="0"}const alvo=tp.ownerSVGElement===svg?tp:null;card.classList.add("unzoom");
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");if(mgc){tg.style.transition="fill-opacity .6s ease";tg.style.fillOpacity="1";mgc.style.transition="opacity .6s ease";mgc.style.opacity="0"}else{tg.style.fill=toFill}card.classList.remove("unzoom")}));
- const an=fx.animate(leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:"translate(0,0) scale(1)"}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:"translate(0,0) scale(1)",filter:"blur(0)"}],{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
+ /* o clone pousa sobre o estado real: o layout ainda se ajusta uns 250 ms depois de começar a volta, então o destino é corrigido ao vivo */
+ const zz2=zoomDoc(),tg0=tg.getBoundingClientRect();
+ const destino=()=>{const tn=tp.getBoundingClientRect();return`translate(${((tn.left+tn.width/2)-(tg0.left+tg0.width/2))/zz2}px,${((tn.top+tn.height/2)-(tg0.top+tg0.height/2))/zz2}px) scale(1)`};
+ const quadros=(fim)=>leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:fim}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:fim,filter:"blur(0)"}];
+ const an=fx.animate(quadros(destino()),{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
+ setTimeout(()=>{try{an.effect.setKeyframes(quadros(destino()))}catch(e){}},260);
  let ended=false;const done=()=>{if(ended)return;ended=true;svg.classList.remove("voo-volta");svg.classList.add("voo-fim");if(alvo){alvo.style.transition="none";alvo.style.opacity="1"}setTimeout(()=>{svg.classList.remove("voo-fim");if(alvo){alvo.style.transition="";alvo.style.opacity=""}},2200);if(mainEl){mainEl.style.transition="opacity .9s ease";mainEl.style.opacity="1";setTimeout(()=>{mainEl.style.transition="";mainEl.style.opacity=""},950)}setTimeout(()=>fx.remove(),920)};an.onfinish=done;setTimeout(done,1300)}
 let CURSEC=null;
 const HOMEZ={card:"#hmapcard",main:"#hmapmain",holder:"#hstate",map:"#hmap",back:"‹ Voltar ao mapa do Brasil",full:true,sec:null,render:uf=>P.uf(uf,HOMEZ.sec)};
