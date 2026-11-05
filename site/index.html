@@ -1960,6 +1960,8 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .vlm-e:empty{display:none}
 .vlm-s{width:100%;justify-content:center}
 @media (max-width:640px){.vlr{grid-template-columns:minmax(0,86px) minmax(0,1fr) 40px}}
+.vlm-ok{display:flex!important;grid-template-columns:none;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink2);line-height:1.4}
+.vlm-ok input{width:auto;margin-top:2px}
 </style>
 </head>
 <body>
@@ -3184,7 +3186,15 @@ return{html:`<div class="ph"><div><h1>Relatórios e dados</h1><p>Tabelas complet
 <div class="panel">${table([["Conjunto de dados",r=>`<b style="font-weight:600">${r[0]}</b><div class="small muted">${r[1]}</div>`],["Atualização",r=>r[2]],["Última carga",r=>r[3]],["Exportar",r=>`<div style="display:flex;gap:6px"><button class="btn" data-exp>CSV</button><button class="btn" data-exp>JSON</button><a class="btn" href="#/fontes">Fonte</a></div>`]],ds)}${SRC}</div>`,
 mount(){document.querySelectorAll("[data-exp]").forEach(b=>b.onclick=()=>toast(API.snap?"Os arquivos CSV saem do servidor BRASIL+. Abra o site por ele para baixar.":"A exportação será liberada quando as fontes oficiais estiverem conectadas."))}}};
 
-P.fontes=()=>({html:`<div class="ph"><div><h1>Fontes e metodologia</h1><p>De onde vem cada número, quando foi atualizado e o que ele não mostra.</p></div></div>
+P.fontes=()=>({html:`<div class="ph"><div><h1>Fontes e metodologia</h1><p>De onde vem cada número, quando foi atualizado e o que ele não mostra.</p></div></div><div class="panel mt" id="termos"><h2>De onde vêm os dados</h2><p class="small" style="margin:0 0 8px;color:var(--ink2)">Todos os dados deste site vêm de fontes públicas, oficiais e abertas ao público (Câmara, Senado, TSE, IBGE, Tesouro, Receita, Banco Central, Portal da Transparência e outras, sempre citadas em cada tela). Não usamos fontes sem identificação. Os números podem ter atraso ou ser somados e padronizados: para decidir algo importante, confira na fonte oficial.</p>
+<h2 style="margin-top:14px">Termos de uso e de privacidade <small>versão 05/11/2026</small></h2>
+<ul class="small" style="margin:6px 0 0;padding-left:18px;color:var(--ink2);line-height:1.5">
+<li>Quem cria conta informa nome, e-mail, senha e CPF. A senha é guardada só como código irreversível. O CPF não é guardado: fica um código que impede duas contas com o mesmo CPF. Esse código não comprova identidade.</li>
+<li>As votações nas leis são uma enquete de pessoas inscritas. Não são votação oficial e não representam a população. Cada conta tem um voto por lei, que pode ser mudado.</li>
+<li>Os dados da conta só são usados para o login e para a enquete. Não são vendidos nem divulgados nominalmente. Para apagar a conta, fale com o responsável pelo site.</li>
+<li>Aparecer em uma base de dados ou em uma notícia não indica irregularidade. Quem é citado em investigação é inocente até condenação definitiva.</li>
+</ul>
+<p class="small muted" style="margin:10px 0 0">Texto preliminar: antes de divulgar amplamente, deve ser revisado por advogado especializado em proteção de dados (LGPD).</p></div>
 <div class="panel" style="border-color:var(--p3);background:color-mix(in srgb,var(--p3) 14%,var(--surface))"><b style="font-weight:600">Esta é uma versão de demonstração.</b> Todos os nomes de pessoas, partidos, empresas, contratos e valores exibidos são fictícios ou ilustrativos e servem apenas para mostrar a estrutura da plataforma. Populações estaduais aproximadas ao Censo 2022.</div>
 <div class="grid g2 mt">${[["Origem dos dados","Cada informação será obtida diretamente da instituição que a produz: portais de transparência, dados abertos das casas legislativas, diários oficiais, tribunais de contas e repositórios eleitorais."],["Data de atualização","Todo conjunto exibe a data da última carga e a frequência com que a fonte original é atualizada."],["Órgão responsável","A instituição que publica o dado é indicada em cada tela, com link para o documento original."],["Metodologia","Valores monetários em reais correntes, salvo indicação. Gasto por habitante usa a estimativa populacional oficial do mesmo ano."],["Limitações","Nem todos os municípios publicam dados no mesmo formato ou com a mesma frequência. Ausência de dado não significa ausência de gasto."],["Princípio","O BRASIL+ organiza e apresenta. A fonte primária é sempre o órgão oficial; em caso de divergência, vale o documento original."]].map(x=>`<div class="panel"><h2>${x[0]}</h2><p class="small" style="margin:0;color:var(--ink2)">${x[1]}</p></div>`).join("")}</div>`});
 
@@ -6283,13 +6293,14 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  <div class="vlm-c" hidden><label>Nome completo<input name="nome" autocomplete="name" maxlength="120"></label>
  <label>CPF<input name="cpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00"></label>
  <p class="vln">Seu CPF não aparece no site e não é guardado em texto: só um código, para impedir duas contas com o mesmo CPF. Isso não confirma sua identidade. A votação é uma enquete de pessoas inscritas, não é oficial.</p></div>
+ <label class="vlm-ok"><input type="checkbox" name="aceito"> Li e aceito os termos de uso e de privacidade (na página Fontes e metodologia).</label>
  <p class="vlm-e" role="alert"></p><button type="submit" class="btn vlm-s">Entrar</button></form></div>`;
  document.body.appendChild(m);
  const modo=x=>{m.dataset.modo=x;m.querySelectorAll("[data-m]").forEach(b=>{b.classList.toggle("on",b.dataset.m===x);b.setAttribute("aria-selected",b.dataset.m===x?"true":"false")});m.querySelector(".vlm-c").hidden=x!=="criar";m.querySelector(".vlm-s").textContent=x==="criar"?"Criar conta":"Entrar";m.querySelector(".vlm-e").textContent="";m.querySelector("[name=senha]").autocomplete=x==="criar"?"new-password":"current-password"};
  m.modo=modo;m.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>modo(b.dataset.m));
  m.querySelector(".vlm-x").onclick=()=>{m.hidden=true};m.onclick=e=>{if(e.target===m)m.hidden=true};
  m.querySelector("form").onsubmit=async e=>{e.preventDefault();const f=e.target,x=m.dataset.modo||"entrar",err=m.querySelector(".vlm-e"),bt=m.querySelector(".vlm-s");err.textContent="";
-  const corpo={email:f.email.value.trim(),senha:f.senha.value};if(x==="criar"){corpo.nome=f.nome.value.trim();corpo.cpf=f.cpf.value.trim()}
+  const corpo={email:f.email.value.trim(),senha:f.senha.value};if(x==="criar"){corpo.nome=f.nome.value.trim();corpo.cpf=f.cpf.value.trim();corpo.aceito_termos=!!f.aceito.checked}
   bt.disabled=true;try{const r=await fetch(vlUrl(x==="criar"?"/contas":"/contas/entrar"),{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},credentials:"same-origin",body:JSON.stringify(corpo)});
    if(!r.ok){let t="Não foi possível concluir. Tente de novo.";try{t=(await r.json()).detail||t}catch(_){}err.textContent=typeof t==="string"?t:"Confira os dados.";return}
    f.senha.value="";f.cpf&&(f.cpf.value="");m.hidden=true;await vlConta(true);await vlAtualizar()}catch(_){err.textContent="Sem conexão com o servidor. Tente de novo."}finally{bt.disabled=false}};

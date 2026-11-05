@@ -23,6 +23,7 @@ class CadastroIn(BaseModel):
     senha: str = Field(max_length=128)
     nome: str = Field(max_length=120)
     cpf: str = Field(max_length=20)
+    aceito_termos: bool = False
 
 
 class EntrarIn(BaseModel):
@@ -69,7 +70,7 @@ def criar_conta(dados: CadastroIn, request: Request, db: Session = Depends(get_d
     _exige_json(request)
     _limita(f"cadastro:{limites.hash_cliente(ip_cliente(request))}", 5, 900)
     try:
-        conta = contas.cadastrar(db, dados.email, dados.senha, dados.nome, dados.cpf)
+        conta = contas.cadastrar(db, dados.email, dados.senha, dados.nome, dados.cpf, dados.aceito_termos)
         token = contas.criar_sessao(db, conta)
         db.commit()
     except contas.ErroConta as e:
@@ -106,6 +107,11 @@ def sair(request: Request, db: Session = Depends(get_db)):
     resp = JSONResponse({"ok": True})
     _cookie(resp, request, None)
     return resp
+
+
+@router.get("/contas/termos")
+def termos_vigentes():
+    return {"versao": contas.TERMOS_VERSAO}
 
 
 @router.get("/contas/eu")

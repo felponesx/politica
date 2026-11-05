@@ -546,6 +546,8 @@ class Conta(Base):
     cpf_codigo: Mapped[str] = mapped_column(String(64), unique=True)  # HMAC-SHA256(CPF_PEPPER, CPF): impede duas contas com o mesmo CPF
     nome: Mapped[str] = mapped_column(String(120))
     criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+    termos_versao: Mapped[str | None] = mapped_column(String(20))   # versão dos termos aceitos no cadastro
+    termos_aceitos_em: Mapped[datetime | None] = mapped_column(DateTime)
 
 
 class Sessao(Base):

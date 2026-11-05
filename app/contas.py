@@ -20,6 +20,7 @@ from app.config import settings
 from app.models import Conta, Sessao, agora_utc
 
 COOKIE = "bp_sessao"
+TERMOS_VERSAO = "2026-11-05"  # troque quando os termos mudarem: quem já aceitou continua registrado com a versão antiga
 EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[^@\s]{2,}$")
 OPCOES = ("aprovo", "nao_aprovo", "indeferido")
 ROTULOS = {"aprovo": "Aprovo", "nao_aprovo": "Não aprovo", "indeferido": "Indeferido"}
@@ -120,7 +121,9 @@ def email_mascarado(email: str) -> str:
     return f"{usuario[:1]}***@{dominio[:1]}***"
 
 
-def cadastrar(db: Session, email: str, senha: str, nome: str, cpf: str) -> Conta:
+def cadastrar(db: Session, email: str, senha: str, nome: str, cpf: str, aceite_termos: bool = False) -> Conta:
+    if aceite_termos is not True:
+        raise ErroConta("Para criar a conta, leia e aceite os termos de uso e de privacidade.")
     email = normalizar_email(email)
     if not email_valido(email):
         raise ErroConta("E-mail inválido.")
@@ -135,7 +138,8 @@ def cadastrar(db: Session, email: str, senha: str, nome: str, cpf: str) -> Conta
     if db.scalars(select(Conta).where((Conta.email == email) | (Conta.cpf_codigo == codigo))).first() is not None:
         # mensagem genérica: não revela se o e-mail ou o CPF já têm conta
         raise ErroConta("Não foi possível criar a conta. Confira os dados ou entre na conta existente.", 409)
-    conta = Conta(email=email, senha_hash=hash_senha(senha), cpf_codigo=codigo, nome=nome)
+    conta = Conta(email=email, senha_hash=hash_senha(senha), cpf_codigo=codigo, nome=nome,
+                  termos_versao=TERMOS_VERSAO, termos_aceitos_em=agora_utc())
     db.add(conta)
     db.flush()
     return conta
