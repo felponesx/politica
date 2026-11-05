@@ -1995,6 +1995,12 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 #smtt.on{opacity:1;transform:none}
 #smtt small{display:block;opacity:.7;font-size:11px;margin-bottom:2px}
 @media (prefers-reduced-motion:reduce){#smtt,.pj-c,.prm-c,.obc,.esc-card,.ncard,.pcard2,.kpi{transition:none!important}}
+/* barra de seleção: a pílula desliza até o botão escolhido (JS segAjusta) */
+.seg.sw.seg-anima{position:relative}
+.seg.sw.seg-anima>button{position:relative;z-index:1}
+.seg.sw.seg-anima>button.on{background:transparent!important;box-shadow:none!important}
+.seg.sw .seg-ind{position:absolute;top:3px;bottom:3px;left:0;width:0;z-index:0;pointer-events:none;border-radius:9px;transition:transform .42s cubic-bezier(.22,.8,.25,1),width .42s cubic-bezier(.22,.8,.25,1)}
+@media (prefers-reduced-motion:reduce){.seg.sw .seg-ind{transition:none!important}}
 </style>
 </head>
 <body>
@@ -6598,6 +6604,41 @@ addEventListener("hashchange",route);detectarAPI().finally(route);
  const procura=raiz=>{if(raiz.nodeType!==1&&raiz.nodeType!==9)return;if(raiz.matches&&raiz.matches(SEL))observa(raiz);(raiz.querySelectorAll?raiz:document).querySelectorAll(SEL).forEach(observa)};
  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)procura(n)}))).observe(document.body,{childList:true,subtree:true});
  procura(document);
+})();
+</script>
+<script>
+/* barra de seleção que desliza: a pílula branca anda até o botão escolhido, também quando a tela é refeita */
+(()=>{
+ const MEM={};const reduz=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const chave=el=>[...el.children].filter(b=>b.tagName==="BUTTON").map(b=>b.textContent.trim()).join("|");
+ const ponha=(ind,b,anim)=>{ind.style.transition=anim?"":"none";ind.style.transform="translateX("+b.offsetLeft+"px)";ind.style.width=b.offsetWidth+"px"};
+ const ajusta=el=>{
+  if(!el.isConnected||el.offsetWidth===0)return;
+  const vis=[...el.children].filter(b=>b.tagName==="BUTTON"&&b.offsetParent!==null);
+  const on=vis.findIndex(b=>b.classList.contains("on"));
+  let ind=el.querySelector(":scope>.seg-ind");
+  if(vis.length<2||on<0||vis.some(b=>b.offsetTop!==vis[0].offsetTop)){el.classList.remove("seg-anima");if(ind)ind.remove();return}
+  if(!ind){ind=document.createElement("i");ind.className="seg-ind";ind.setAttribute("aria-hidden","true");el.insertBefore(ind,el.firstChild)}
+  el.classList.remove("seg-anima");
+  const cs=getComputedStyle(vis[on]);
+  ind.style.background=cs.backgroundColor;ind.style.boxShadow=cs.boxShadow;ind.style.borderRadius=cs.borderRadius;
+  el.classList.add("seg-anima");
+  const k=chave(el),ant=MEM[k],alvo=vis[on];
+  if(ant!==undefined&&ant!==on&&ant<vis.length&&!reduz){ponha(ind,vis[ant],false);void ind.offsetWidth;ponha(ind,alvo,true)}
+  else ponha(ind,alvo,false);
+  MEM[k]=on;
+ };
+ const fila=new Set();let agendado=false;
+ const agenda=el=>{fila.add(el);if(agendado)return;agendado=true;requestAnimationFrame(()=>{agendado=false;[...fila].forEach(e=>ajusta(e));fila.clear();mo.takeRecords()})};
+ const do_=n=>{if(n.nodeType!==1)return;if(n.matches&&n.matches(".seg.sw"))agenda(n);if(n.querySelectorAll)n.querySelectorAll(".seg.sw").forEach(agenda)};
+ const mo=new MutationObserver(ms=>ms.forEach(m=>{
+  const e=m.target.nodeType===1?m.target.closest(".seg.sw"):(m.target.parentElement&&m.target.parentElement.closest(".seg.sw"));
+  if(e)agenda(e);
+  m.addedNodes.forEach(do_);
+ }));
+ mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+ addEventListener("resize",()=>document.querySelectorAll(".seg.sw").forEach(agenda));
+ document.querySelectorAll(".seg.sw").forEach(agenda);
 })();
 </script>
 </body>
