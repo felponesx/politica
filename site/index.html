@@ -444,7 +444,7 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .zoomfx.go path.zf-other{opacity:0}
 .zoomfx path.zf-target{transition:fill .6s;stroke:#fff}
 @media (max-width:760px),(pointer:coarse){.zoomfx path.zf-target{transition:none}}
-.zleve .ufrest,.zleve .ufhero-t,.zleve .ufback{display:none}
+.zleve .ufrest,.zleve .ufhero-t{display:none}
 .pop.zooming{animation:popfade .3s ease-out}
 @keyframes popfade{from{opacity:0}}
 .pop.zooming #ufHeroPath{opacity:0}
@@ -2003,6 +2003,15 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 @media (prefers-reduced-motion:reduce){.seg.sw .seg-ind{transition:none!important}}
 /* eleições por estado: só o mapa das cidades (a silhueta do estado repetia o mesmo desenho) */
 #elstate:has(#elmapaC svg.mmun) .ufhero-svg{display:none!important}
+/* eleições: mapa do estado com as cidades (o mesmo desenho do voo) */
+.ufhero-svg.mun{height:auto!important;width:100%;max-height:min(72vh,640px)}
+.uf-mun path{stroke:var(--surface);stroke-width:.5;vector-effect:non-scaling-stroke;cursor:pointer}
+.uf-mun path.on{stroke:var(--ink);stroke-width:2}
+@media (hover:hover) and (pointer:fine){.ufhero-svg.mun .uf-mun path:hover{filter:brightness(1.12)}}
+.zooming .uf-mun{opacity:0}
+.zoomfx .uf-mun path{stroke-width:inherit}
+.mun-sob{margin-top:12px}
+body.mun-busca{cursor:progress}body.mun-busca #elmap{opacity:.82;transition:opacity .2s}
 </style>
 </head>
 <body>
@@ -2820,8 +2829,9 @@ function flyState(pathEl,uf,swap){
  cl.querySelectorAll("path.sel:not(.zf-target)").forEach(p=>p.remove());
  document.body.appendChild(fx);
  const hp=swap();if(!hp){fx.remove();return}
+ const mg=hp.ownerSVGElement&&hp.ownerSVGElement.querySelector("g.uf-mun"),mgv=mg&&tgt?mg.cloneNode(true):null;if(mgv){cl.insertBefore(mgv,tgt);tgt.style.fill="none"}
  const zone=hp.closest(".zooming");const t=hp.getBoundingClientRect();
- const k=Math.min(t.width/s0.width,t.height/s0.height);
+ const k=Math.min(t.width/s0.width,t.height/s0.height);if(mgv)mgv.style.strokeWidth=(.5/k)+"px";
  const tx=(t.left+t.width/2)-r.left-((s0.left+s0.width/2)-r.left)*k,ty=(t.top+t.height/2)-r.top-((s0.top+s0.height/2)-r.top)*k;
  requestAnimationFrame(()=>{fx.classList.add("go");if(tgt)tgt.style.fill=hp.getAttribute("fill")});
  const an=fx.animate(leve?[{transform:"translate(0,0) scale(1)"},{transform:`translate(${tx}px,${ty}px) scale(${k})`}]:[{transform:"translate(0,0) scale(1)",filter:"blur(0)"},{offset:.55,filter:"blur(1.2px)"},{transform:`translate(${tx}px,${ty}px) scale(${k})`,filter:"blur(0)"}],{duration:leve?560:820,easing:"cubic-bezier(.7,0,.2,1)",fill:"forwards"});
@@ -2844,19 +2854,19 @@ function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return fals
   h.querySelector(".zback").onclick=()=>inlineZoomOut(cfg);return h.querySelector("#ufHeroPath")});return true}
 function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.dataset.uf;
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
- const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");
+ const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");const mg0=st.querySelector("g.uf-mun"),mgc=mg0&&mg0.cloneNode(true);if(mgc)mgc.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));
  st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
  const tp=uf&&$(`${cfg.map} path[data-uf="${uf}"]`);const reduce=semMov();
  if(reduce||!h0||!tp||!tp.animate)return;
  const svg=tp.ownerSVGElement,r=svg.getBoundingClientRect(),t=tp.getBoundingClientRect();
- const k=Math.min(h0.width/t.width,h0.height/t.height);
+ const k=Math.min(h0.width/t.width,h0.height/t.height);if(mgc)mgc.style.strokeWidth=(.5/k)+"px";
  const tx=(h0.left+h0.width/2)-r.left-((t.left+t.width/2)-r.left)*k,ty=(h0.top+h0.height/2)-r.top-((t.top+t.height/2)-r.top)*k;
  const fx=document.createElement("div");fx.className="zoomfx back";fx.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
  const leve=zLeve(),cl=zClone(svg,uf,leve);fx.appendChild(cl);
  cl.querySelectorAll("path.sel:not([data-uf])").forEach(p=>p.remove());
- const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");tg.style.fill=fromFill;cl.appendChild(tg);
+ const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");tg.style.fill=fromFill;cl.appendChild(tg);if(mgc){cl.insertBefore(mgc,tg);tg.style.fill="none"}
  document.body.appendChild(fx);svg.style.visibility="hidden";card.classList.add("unzoom");
- requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");tg.style.fill=toFill;card.classList.remove("unzoom")}));
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");tg.style.fill=mgc?"none":toFill;card.classList.remove("unzoom")}));
  const an=fx.animate(leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:"translate(0,0) scale(1)"}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:"translate(0,0) scale(1)",filter:"blur(0)"}],{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
  let ended=false;const done=()=>{if(ended)return;ended=true;svg.style.visibility="";requestAnimationFrame(()=>fx.remove())};an.onfinish=done;setTimeout(done,1300)}
 let CURSEC=null;
@@ -4746,6 +4756,33 @@ return{html:`<div class="ph"><div><h1>Eleições</h1><p>Resultados oficiais do T
 <div class="mapwrap mapbig"><div id="elmap">${rload()}</div><div class="zside" id="elside"></div></div><div id="elreg" class="elreg"></div></div><div id="elstate" style="display:none"></div></div>
 <div class="panel mt" id="elbr"></div>${RSRC("Tribunal Superior Eleitoral (votação nominal por município e zona)")}`,
 mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",back:"‹ Voltar ao mapa do Brasil",render:uf=>estadoEleicao(uf)};
+ /* mapa do estado com as cidades: os dados vêm ANTES do voo, o estado voa já dividido e colorido e pousa no mesmo desenho */
+ let ELMUN=null,munOcup=false;
+ const munChave=uf=>`${f.ano}|${f.cargo}|${f.turno}|${uf}`;
+ const munEstado=uf=>{if(!ELMUN||ELMUN.k!==munChave(uf))return null;const b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04,{m,v}=ELMUN;
+  const por={},cont={};v.forEach(x=>{if(x.codigo_ibge)por[x.codigo_ibge]=x;const p=x.vencedor&&x.vencedor.partido;if(p)cont[p]=(cont[p]||0)+1});
+  const paths=m.ms.map(c=>{const x=por[c.codigo],p=x&&x.vencedor&&x.vencedor.partido,cr=p?corVoto(corPart(p),x.vencedor.percentual):"#E3E7ED";
+   return`<path d="${c.d}" fill="${cr}" data-c="${c.codigo}"><title>${esc(x?x.municipio+": "+tit(x.vencedor.nome)+" ("+p+") "+pctN(x.vencedor.percentual):"Sem dados")}</title></path>`}).join("");
+  const W=b.w+2*pad,H=b.h+2*pad;
+  return{por,
+   svg:`<svg class="ufhero-svg mun" viewBox="${b.x-pad} ${b.y-pad} ${W} ${H}" style="aspect-ratio:${W.toFixed(3)}/${H.toFixed(3)}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Quem venceu em cada município"><g class="uf-mun" transform="${m.t}">${paths}</g><path id="ufHeroPath" d="${GEO.p[uf]}" fill="none" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`,
+   sob:`<div class="panel mun-sob"><h2>Quem venceu em cada município</h2><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><div class="mun-info" id="elmunInfo">Toque em uma cidade no mapa para ver os votos.</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Fonte: TSE e malhas do IBGE.</p></div>`}};
+ const ligaMun=MU=>{const svg=document.querySelector("#elstate .ufhero-svg.mun"),dv=$("#elmunInfo");if(!svg||!dv)return;const cds=(dados&&dados.brasil&&dados.brasil.candidatos)||[];
+  const achar=sq=>cds.find(x=>x.sq_candidato===sq)||{};
+  svg.addEventListener("click",e=>{const p=e.target.closest("path[data-c]"),x=p&&MU.por[p.dataset.c];if(!x)return;
+   svg.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));p.classList.add("on");p.parentNode.appendChild(p);
+   const lin=(c,pct)=>{const part=c.partido||achar(c.sq_candidato).partido||"",nome=c.nome||achar(c.sq_candidato).nome||"";
+    return`<div class="ht-bar"><span>${esc(tit(nome))} <small>${esc(part)}</small></span><b>${nf(Math.round((x.total||0)*pct/100))} · ${pctN(pct)}</b><i style="width:${Math.min(100,pct)}%;background:${corPart(part)}"></i></div>`};
+   dv.innerHTML=`<b>${esc(x.municipio)}</b> <span class="muted">${nf(x.total)} votos válidos</span>${lin(x.vencedor,x.vencedor.percentual)}${x.segundo?lin(x.segundo,x.segundo.percentual):""}`;
+   const r=dv.getBoundingClientRect();if(r.top>innerHeight-90||r.bottom<70)dv.scrollIntoView({block:"nearest",behavior:"smooth"})})};
+ const zoomEl=async(u,el)=>{if(!dados||!dados.estados[u]||munOcup)return;
+  if(MAJ.includes(f.cargo)&&!(ELMUN&&ELMUN.k===munChave(u))){munOcup=true;document.body.classList.add("mun-busca");
+   try{const r=await Promise.race([Promise.all([malhaUF(u),apiGet(`/eleicoes/${f.ano}/${u}/mapa`+qs({cargo:f.cargo,turno:f.turno}))]),new Promise((_,rej)=>setTimeout(()=>rej(new Error("demorou")),4000))]);
+    if(r[0]&&r[0].ms&&r[0].ms.length&&Array.isArray(r[1])&&r[1].length)ELMUN={k:munChave(u),m:r[0],v:r[1]}}catch(e){}
+   finally{munOcup=false;document.body.classList.remove("mun-busca")}}
+  if(!$("#elmap"))return;
+  if(!el||!el.isConnected)el=$(`#elmap path.st[data-uf="${u}"]`)||$(`#elmap path[data-uf="${u}"]`);
+  inlineZoomIn(ELZ,u,el)};
  const chave=()=>f.modo==="cand";
  const corDe=k=>cores[k]||"#B9C0CA";
  const forte=corVoto;
@@ -4777,8 +4814,8 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   else fillEl=u=>{const v=venc(d.estados[u.uf]);return v?forte(corDe(v[0]),v[1]):"var(--mapa-vazio)"};
   XF("#elmap").innerHTML=brMap(null,null,null,{fillFn:fillEl,legend:false})+legEl;
   if(chave()&&f.cargo==="PRESIDENTE"&&f.ano>=2018){const em=$("#elmap");if(em&&!f._visto){f._visto=1;em.classList.add("mun-espera");clearTimeout(em._me);em._me=setTimeout(()=>em.classList.remove("mun-espera"),15000)}
-   camadaMunPais({f,corDe,forte,cands,modo:f.mapa==="venc"?"venc":"outro",onZoom:(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)}}).catch(()=>{}).finally(()=>{const e2=$("#elmap");if(e2)e2.classList.remove("mun-espera")})}
-  bindMap($("#elmap"),null,null,(u,el)=>{if(d.estados[u])inlineZoomIn(ELZ,u,el)});
+   camadaMunPais({f,corDe,forte,cands,modo:f.mapa==="venc"?"venc":"outro",onZoom:(u,el)=>zoomEl(u,el)}).catch(()=>{}).finally(()=>{const e2=$("#elmap");if(e2)e2.classList.remove("mun-espera")})}
+  bindMap($("#elmap"),null,null,(u,el)=>zoomEl(u,el));
   // dica ao passar o mouse em cada estado
   const tip=dicaFlutuante();$("#elmap").querySelectorAll("path[data-uf]").forEach(p=>{const t=p.querySelector("title");if(t)t.remove();
    p.addEventListener("mouseenter",e=>{if(!ehMouse())return;const s=d.estados[p.dataset.uf];fecharDica();V5.fechar=()=>tip.classList.remove("on");
@@ -4803,15 +4840,15 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   if(!cs.includes(f.cargo))f.cargo=cs[0];$("#elcargos").innerHTML=cs.map(c=>`<button data-c="${esc(c)}" class="${c===f.cargo?"on":""}">${esc(ELN[c]||tit(c))}</button>`).join("");
   document.querySelectorAll("#elcargos button").forEach(b=>b.onclick=()=>{f.cargo=b.dataset.c;document.querySelectorAll("#elcargos button").forEach(x=>x.classList.toggle("on",x===b));carregar()});carregar()};
  /* estado aberto: só os candidatos e o mapa das cidades daquele estado */
- const estadoEleicao=uf=>{const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;const s=dados&&dados.estados[uf];const v=venc(s);const c0=s&&MAJ.includes(f.cargo)?s.candidatos[0]:null;
-  return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${v?forte(corDe(v[0]),v[1]):REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">${ELN[f.cargo]||f.cargo} · ${f.turno}º turno de ${f.ano}</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${s?`${nf(s.votos_validos_nominais)} votos válidos nominais.${c0?` Mais votado: <b>${esc(tit(c0.nome))}</b> (${esc(c0.partido||"")}), ${pctN(c0.percentual)}.`:v?` Partido mais votado: <b>${esc(v[0])}</b> (${pctN(v[1])}).`:""}`:"Sem resultados."}</p></div></div>
-  <div class="ufrest"><div id="elmapa"></div><div id="elufres">${rload()}</div></div>`,
-  mount(){if(MAJ.includes(f.cargo)){const esconde=()=>{const hs=document.querySelector("#elstate .ufhero-svg");if(!hs)return;if(document.querySelector(".zoomfx")){setTimeout(esconde,30);return}hs.style.display="none"};esconde()}
+ const estadoEleicao=uf=>{const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;const s=dados&&dados.estados[uf];const v=venc(s);const c0=s&&MAJ.includes(f.cargo)?s.candidatos[0]:null;const MU=munEstado(uf);
+  return{html:`<div class="ufhero">${MU?MU.svg:`<svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${v?forte(corDe(v[0]),v[1]):REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`}<div class="ufhero-t"><div class="small muted">${ELN[f.cargo]||f.cargo} · ${f.turno}º turno de ${f.ano}</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>${s?`${nf(s.votos_validos_nominais)} votos válidos nominais.${c0?` Mais votado: <b>${esc(tit(c0.nome))}</b> (${esc(c0.partido||"")}), ${pctN(c0.percentual)}.`:v?` Partido mais votado: <b>${esc(v[0])}</b> (${pctN(v[1])}).`:""}`:"Sem resultados."}</p></div></div>
+  <div class="ufrest"><div id="elmapa">${MU?MU.sob:""}</div><div id="elufres">${rload()}</div></div>`,
+  mount(){if(MU)ligaMun(MU);if(MAJ.includes(f.cargo)&&!MU){const esconde=()=>{const hs=document.querySelector("#elstate .ufhero-svg");if(!hs)return;if(document.querySelector(".zoomfx")){setTimeout(esconde,30);return}hs.style.display="none"};esconde()}
   apiGet(`/eleicoes/${f.ano}/${uf}`+qs({cargo:f.cargo,turno:f.turno})).then(d=>{const box=$("#elufres");if(!box)return;const pp=Object.entries(d.por_partido);const L=(d.eleitos_total??d.eleitos.length)&&!MAJ.includes(f.cargo)?d.eleitos:d.mais_votados;
     box.innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Votos válidos nominais</span><strong>${nf(d.votos_validos_nominais)}</strong></div><div class="kpi"><span>${MAJ.includes(f.cargo)?"Candidatos":"Eleitos"}</span><strong>${MAJ.includes(f.cargo)?nf(d.mais_votados.length):nf((d.eleitos_total??d.eleitos.length))}</strong></div><div class="kpi"><span>Partidos com votos</span><strong>${pp.length}</strong></div></div>
     <div class="grid g2 mt"><div class="panel"><h2>${MAJ.includes(f.cargo)?"Candidatos neste estado":(d.eleitos_total??d.eleitos.length)?"Eleitos neste estado":"Mais votados neste estado"}</h2>${L.slice(0,MAJ.includes(f.cargo)?20:80).map(c=>`<div class="elrow"><i style="background:${chave()?corDe(c.sq_candidato):corSigla(c.partido)}"></i><span><b style="font-weight:600">${lcand({...c,uf},f.ano,f.cargo)}</b> ${sigla(c.partido)}${f.cargo==="PREFEITO"&&c.unidade?` <small>${esc(tit(c.unidade))}</small>`:""}${/^ELEITO/.test(c.situacao||"")?' <em class="tag sit-ex">eleito</em>':/2º TURNO/.test(c.situacao||"")?' <em class="tag">2º turno</em>':""}</span><b>${pctN(c.percentual)}</b><div class="bar"><i style="width:${Math.min(100,c.percentual*(MAJ.includes(f.cargo)?1:4))}%;background:${chave()?corDe(c.sq_candidato):corSigla(c.partido)}"></i></div><small class="muted">${nf(c.votos)} votos</small></div>`).join("")}</div>
     <div class="panel"><h2>Votos por partido neste estado</h2>${pbars(pp.slice(0,12).map(([p,o])=>[p,o.percentual]),{fmt:pctN})}${d.comparativo_eleicao_anterior?`<p class="small muted" style="margin:10px 0 0">Comparação com ${d.comparativo_eleicao_anterior.ano}: ${Object.entries(d.comparativo_eleicao_anterior.partidos).sort((a,b)=>b[1].percentual_atual-a[1].percentual_atual).slice(0,5).map(([p,o])=>`${esc(p)} ${o.variacao_pp>0?"+":""}${o.variacao_pp.toLocaleString("pt-BR")} p.p.`).join(" · ")}</p>`:""}</div></div>`;
-    if(MAJ.includes(f.cargo))mapaMunicipal({ano:f.ano,uf,cargo:f.cargo,turno:f.turno,nomes:(dados&&dados.brasil&&dados.brasil.candidatos)||[]})}).catch(e=>{const box=$("#elufres");if(box)box.innerHTML=e.status===404?rvazio("Sem resultados deste cargo neste estado."):rerro(e)})}}};
+    if(MAJ.includes(f.cargo)&&!MU)mapaMunicipal({ano:f.ano,uf,cargo:f.cargo,turno:f.turno,nomes:(dados&&dados.brasil&&dados.brasil.candidatos)||[]})}).catch(e=>{const box=$("#elufres");if(box)box.innerHTML=e.status===404?rvazio("Sem resultados deste cargo neste estado."):rerro(e)})}}};
  apiGet("/eleicoes/anos").then(l=>{anos=l||[];if(!anos.length){demoComAviso(_eleicoes,a,"Nenhum resultado do TSE coletado ainda.");return}f.ano=anos[0];
   $("#elanos").innerHTML=anos.map(x=>`<button data-a="${x}" class="${x===f.ano?"on":""}">${x}</button>`).join("");
   document.querySelectorAll("#elanos button").forEach(b=>b.onclick=()=>{f.ano=+b.dataset.a;f.turno=1;document.querySelectorAll("#elanos button").forEach(x=>x.classList.toggle("on",x===b));document.querySelectorAll("#elturnos button").forEach(x=>x.classList.toggle("on",x.dataset.t==="1"));segs()});
