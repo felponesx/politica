@@ -2883,10 +2883,10 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  const leve=zLeve(),cl=zClone(svg,uf,leve);fx.appendChild(cl);
  cl.querySelectorAll("path.sel:not([data-uf])").forEach(p=>p.remove());
  const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");cl.appendChild(tg);if(mgc){cl.appendChild(mgc);tg.style.fill=toFill;tg.style.fillOpacity="0"}else{tg.style.fill=fromFill}
- document.body.appendChild(fx);svg.classList.add("voo-volta");const alvo=tp.ownerSVGElement===svg?tp:null;if(alvo)alvo.classList.add("voo-alvo");card.classList.add("unzoom");
+ document.body.appendChild(fx);svg.classList.add("voo-volta");const mainEl=$(cfg.main);if(mainEl){mainEl.style.transition="none";mainEl.style.opacity="0"}const alvo=tp.ownerSVGElement===svg?tp:null;if(alvo)alvo.classList.add("voo-alvo");card.classList.add("unzoom");
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");if(mgc){tg.style.transition="fill-opacity .6s ease";tg.style.fillOpacity="1";mgc.style.transition="opacity .6s ease";mgc.style.opacity="0"}else{tg.style.fill=toFill}card.classList.remove("unzoom")}));
  const an=fx.animate(leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:"translate(0,0) scale(1)"}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:"translate(0,0) scale(1)",filter:"blur(0)"}],{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
- let ended=false;const done=()=>{if(ended)return;ended=true;svg.classList.remove("voo-volta");svg.classList.add("voo-fim");setTimeout(()=>{svg.classList.remove("voo-fim");if(alvo)alvo.classList.remove("voo-alvo")},1200);requestAnimationFrame(()=>fx.remove())};an.onfinish=done;setTimeout(done,1300)}
+ let ended=false;const done=()=>{if(ended)return;ended=true;svg.classList.remove("voo-volta");svg.classList.add("voo-fim");setTimeout(()=>{svg.classList.remove("voo-fim");if(alvo)alvo.classList.remove("voo-alvo")},1200);if(mainEl){mainEl.style.transition="opacity .35s ease";mainEl.style.opacity="1";setTimeout(()=>{mainEl.style.transition="";mainEl.style.opacity=""},420)}setTimeout(()=>fx.remove(),380)};an.onfinish=done;setTimeout(done,1300)}
 let CURSEC=null;
 const HOMEZ={card:"#hmapcard",main:"#hmapmain",holder:"#hstate",map:"#hmap",back:"‹ Voltar ao mapa do Brasil",full:true,sec:null,render:uf=>P.uf(uf,HOMEZ.sec)};
 function showStateInline(uf,pathEl){return inlineZoomIn(HOMEZ,uf,pathEl)}
