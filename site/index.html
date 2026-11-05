@@ -2845,7 +2845,7 @@ function topoDoCard(card){const box=card.closest(".pop-b");if(box){box.scrollTop
 /* ---------- zoom de estado na mesma área (genérico) ---------- */
 function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return false;
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
- if(!pathEl&&$(cfg.main).style.display!=="none")pathEl=$(`${cfg.map} path[data-uf="${uf}"]`);
+ if(!pathEl&&$(cfg.main).style.display!=="none")pathEl=$(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`);
  flyState(pathEl,uf,()=>{const r=cfg.render(uf);const h=$(cfg.holder);h.dataset.uf=uf;
   h.innerHTML=`<div class="ufback"><button class="btn zback">${cfg.back}</button>${cfg.full?`<a class="small" href="#/uf/${uf}" data-full>Abrir em página própria</a>`:""}</div>`+r.html;
   $(cfg.main).style.display="none";h.style.display="block";card.classList.add("zooming","stmode");focoEstado(card,true);topoDoCard(card);
@@ -2856,7 +2856,7 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");const mg0=st.querySelector("g.uf-mun"),mgc=mg0&&mg0.cloneNode(true);if(mgc)mgc.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));
  st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
- const tp=uf&&$(`${cfg.map} path[data-uf="${uf}"]`);const reduce=semMov();
+ const tp=uf&&($(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`));const reduce=semMov();
  if(reduce||!h0||!tp||!tp.animate)return;
  const svg=tp.ownerSVGElement,r=svg.getBoundingClientRect(),t=tp.getBoundingClientRect();
  const k=Math.min(h0.width/t.width,h0.height/t.height);if(mgc)mgc.style.strokeWidth=(.5/k)+"px";
