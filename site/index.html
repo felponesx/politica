@@ -1984,6 +1984,17 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 #elmap.mun-espera::before{content:"";position:absolute;inset:8px;border-radius:16px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:skBrilho 1.4s ease-in-out infinite;z-index:1}
 [data-theme="dark"] #elmap.mun-espera::before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
 @media (prefers-reduced-motion:reduce){#elmap.mun-espera::before{animation:none;transform:none}}
+/* ---- efeitos: hover nos cards, dica inteligente nas tabelas, contagem animada ---- */
+.pj-c,.prm-c,.obc,.esc-card,.ncard,.pcard2,.kpi,.sig,.prm-ant,.vlw,.rcard,.lk,.facts>div{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease}
+@media (hover:hover) and (pointer:fine){
+ .pj-c:hover,.prm-c:hover,.obc:hover,.esc-card:hover,.ncard:hover,.pcard2:hover,.rcard:hover,.prm-ant:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,25,45,.10);border-color:#8FBBF0}
+ .kpi:hover,.facts>div:hover,.sig:hover{background:color-mix(in srgb,var(--blue) 6%,var(--surface))}
+}
+[data-theme="dark"] .pj-c:hover,[data-theme="dark"] .prm-c:hover,[data-theme="dark"] .obc:hover,[data-theme="dark"] .esc-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.35)}
+#smtt{position:fixed;z-index:400;max-width:min(360px,calc(100vw - 24px));padding:8px 10px;border-radius:10px;background:var(--ink,#1D2939);color:var(--surface,#fff);font-size:12.5px;line-height:1.4;box-shadow:0 8px 20px rgba(15,25,45,.25);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s ease,transform .15s ease}
+#smtt.on{opacity:1;transform:none}
+#smtt small{display:block;opacity:.7;font-size:11px;margin-bottom:2px}
+@media (prefers-reduced-motion:reduce){#smtt,.pj-c,.prm-c,.obc,.esc-card,.ncard,.pcard2,.kpi{transition:none!important}}
 </style>
 </head>
 <body>
@@ -6549,6 +6560,41 @@ function telaPunidas(){return{html:`<div id="punL">${rload()}</div>`,mount(){Pro
  const r=_esc6(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasEsc"))ph.insertAdjacentHTML("afterend",ABAS_ESC("esc"))}}}}
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
 addEventListener("hashchange",route);detectarAPI().finally(route);
+</script>
+<script>
+/* dica inteligente nas tabelas: ao passar sobre uma célula cortada, mostra o texto inteiro e o nome da coluna.
+   Contagem animada: os números dos cartões de resumo sobem até o valor final quando entram na tela. */
+(()=>{
+ const tip=document.createElement("div");tip.id="smtt";tip.setAttribute("role","tooltip");document.body.appendChild(tip);
+ const cortada=el=>el.scrollWidth>el.clientWidth+1||el.scrollHeight>el.clientHeight+1;
+ const colunaDe=td=>{const t=td.closest("table");if(!t)return"";const i=td.cellIndex;const th=t.tHead&&t.tHead.rows[0]&&t.tHead.rows[0].cells[i];return th?th.textContent.trim():""};
+ const mostra=(td,x,y)=>{const texto=td.textContent.replace(/\s+/g," ").trim();if(!texto)return;
+  const alvo=td.firstElementChild&&td.firstElementChild.matches("a,span,div")&&cortada(td.firstElementChild)?td.firstElementChild:td;
+  if(!cortada(alvo))return;const col=colunaDe(td);
+  tip.innerHTML=(col?`<small>${col.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]))}</small>`:"")+texto.replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+  tip.classList.add("on");pos(x,y)};
+ const pos=(x,y)=>{const w=tip.offsetWidth,h=tip.offsetHeight;let L=x+14,T=y+18;if(L+w>innerWidth-8)L=innerWidth-w-8;if(T+h>innerHeight-8)T=y-h-12;tip.style.left=Math.max(8,L)+"px";tip.style.top=Math.max(8,T)+"px"};
+ document.addEventListener("mouseover",e=>{const td=e.target.closest&&e.target.closest("td");if(td&&td.closest("table"))mostra(td,e.clientX,e.clientY);else tip.classList.remove("on")});
+ document.addEventListener("mousemove",e=>{if(tip.classList.contains("on"))pos(e.clientX,e.clientY)});
+ document.addEventListener("mouseout",e=>{const td=e.target.closest&&e.target.closest("td");if(td)tip.classList.remove("on")});
+ document.addEventListener("scroll",()=>tip.classList.remove("on"),true);
+
+ const reduz=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const SEL="#view .kpi strong,#view .kpis strong,#view .facts b,#view .kpi b";
+ const ano=t=>/^\d{4}$/.test(t)&&+t>=1900&&+t<=2100;
+ const parse=t=>{const m=t.match(/-?\d[\d.]*(?:,\d+)?/);if(!m)return null;const num=m[0];if(/[\/:]/.test(t)||ano(num))return null;
+  const dec=(num.split(",")[1]||"").length;const v=parseFloat(num.replace(/\./g,"").replace(",","."));if(!isFinite(v))return null;return{m,dec,v}};
+ const fmt=(v,dec)=>v.toLocaleString("pt-BR",{minimumFractionDigits:dec,maximumFractionDigits:dec});
+ const anima=el=>{if(el.dataset.cu)return;el.dataset.cu=1;const txt=el.textContent;const p=parse(txt);if(!p||reduz||Math.abs(p.v)<2)return;
+  const dur=900,t0=performance.now(),de=0,para=p.v;
+  const passo=t=>{const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3),v=de+(para-de)*e;
+   el.textContent=txt.slice(0,p.m.index)+fmt(v,p.dec)+txt.slice(p.m.index+p.m[0].length);if(k<1)requestAnimationFrame(passo)};
+  requestAnimationFrame(passo)};
+ const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){anima(en.target);io.unobserve(en.target)}}),{threshold:.35});
+ const procura=raiz=>{(raiz.querySelectorAll?raiz:document).querySelectorAll(SEL).forEach(el=>{if(!el.dataset.cu)io.observe(el)})};
+ new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)procura(n)}))).observe(document.body,{childList:true,subtree:true});
+ procura(document);
+})();
 </script>
 </body>
 </html>
