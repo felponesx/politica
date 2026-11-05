@@ -6580,8 +6580,11 @@ addEventListener("hashchange",route);detectarAPI().finally(route);
  document.addEventListener("scroll",()=>tip.classList.remove("on"),true);
 
  const reduz=matchMedia("(prefers-reduced-motion: reduce)").matches;
- const SEL="#view .kpi strong,#view .kpis strong,#view .facts b,#view .kpi b";
+ const SEL="#view :is(td,th,b,strong,span,div,p,small,li,a,em,dd,dt,h1,h2,h3,h4,h5,h6,label)";
  const ano=t=>/^\d{4}$/.test(t)&&+t>=1900&&+t<=2100;
+ /* só o que começa com número (ou R$ número) e é curto; sem CPF/CNPJ/documentos, datas, horas nem anos */
+ const cabe=t=>t.length<=40&&/^\s*(R\$\s*)?[-+−]?\d/.test(t)&&!/\d{11,}/.test(t)&&!/\d{2}\.\d{3}\.\d{3}[\/]\d{4}-\d{2}|\d{3}\.\d{3}\.\d{3}-\d{2}/.test(t);
+ const folha=el=>!el.children.length&&!el.closest("[data-nocount],select,option,script,style,svg,textarea")&&cabe(el.textContent.trim());
  const parse=t=>{const m=t.match(/-?\d[\d.]*(?:,\d+)?/);if(!m)return null;const num=m[0];if(/[\/:]/.test(t)||ano(num))return null;
   const dec=(num.split(",")[1]||"").length;const v=parseFloat(num.replace(/\./g,"").replace(",","."));if(!isFinite(v))return null;return{m,dec,v}};
  const fmt=(v,dec)=>v.toLocaleString("pt-BR",{minimumFractionDigits:dec,maximumFractionDigits:dec});
@@ -6591,7 +6594,8 @@ addEventListener("hashchange",route);detectarAPI().finally(route);
    el.textContent=txt.slice(0,p.m.index)+fmt(v,p.dec)+txt.slice(p.m.index+p.m[0].length);if(k<1)requestAnimationFrame(passo)};
   requestAnimationFrame(passo)};
  const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){anima(en.target);io.unobserve(en.target)}}),{threshold:.35});
- const procura=raiz=>{(raiz.querySelectorAll?raiz:document).querySelectorAll(SEL).forEach(el=>{if(!el.dataset.cu)io.observe(el)})};
+ const observa=el=>{if(!el.dataset.cu&&folha(el))io.observe(el)};
+ const procura=raiz=>{if(raiz.nodeType!==1&&raiz.nodeType!==9)return;if(raiz.matches&&raiz.matches(SEL))observa(raiz);(raiz.querySelectorAll?raiz:document).querySelectorAll(SEL).forEach(observa)};
  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)procura(n)}))).observe(document.body,{childList:true,subtree:true});
  procura(document);
 })();
