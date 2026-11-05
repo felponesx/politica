@@ -1962,6 +1962,7 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 @media (max-width:640px){.vlr{grid-template-columns:minmax(0,86px) minmax(0,1fr) 40px}}
 .vlm-ok{display:flex!important;grid-template-columns:none;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink2);line-height:1.4}
 .vlm-ok input{width:auto;margin-top:2px}
+.sig{padding:12px 0;border-top:1px solid var(--line2)}.sig:first-of-type{border-top:0}.sig-t{margin:0 0 4px;font-size:15px}.sig-s{margin:0;font-size:14px;line-height:1.5;color:var(--ink2)}.sig-c{margin:8px 0 0;font-size:14px}
 </style>
 </head>
 <body>
@@ -4009,10 +4010,25 @@ const curto=v=>{const a=Math.abs(v);return a>=1e12?(v/1e12).toLocaleString("pt-B
 function anosChart(pts,fmt=curto){return pts.length>=2?lineChart([{n:"Valor",v:pts.map(p=>p[1])}],pts.map(p=>String(p[0])),{h:180,fmt}):rvazio("A evolução aparece quando houver mais de um ano coletado.")}
 
 /* cartão corporativo do governo federal (Portal da Transparência), no alto de Gastos públicos da União */
-function cartaoHtml(c,ano){const D=c&&c.detalhe&&c.detalhe[String(ano)];if(!D||!D.total)return"";
+/* sigilos de 100 anos (informações pessoais, Lei 12.527/2011, art. 31). Só entra o que tem fonte oficial ou reportagem verificada.
+   "vigor": true = sigilo ainda valendo, com data de início comprovada: mostra o tempo que falta (início + 100 anos).
+   Os demais aparecem com a situação real, sem contagem. */
+const SIGILOS=[
+ {titulo:"Cartão de vacinação do presidente Jair Bolsonaro",quem:"Palácio do Planalto (2021); decisão da CGU em 13/03/2023",
+  situacao:"Sigilo retirado por decisão da CGU, com divulgação condicionada ao fim de uma apuração sobre dados inseridos nos sistemas do Ministério da Saúde. Não há contagem: o sigilo não está mais em vigor.",
+  fontes:[["Correio Braziliense","https://www.correiobraziliense.com.br/politica/2023/02/amp/5074046-cgu-retirara-sigilo-de-cartao-de-vacina-de-bolsonaro.html"],["Agência Brasil / Reuters (via Poder360)","https://www.poder360.com.br/governo/cgu-decide-tirar-sigilo-de-cartao-de-vacinacao-de-bolsonaro/"]]},
+ {titulo:"Cartão corporativo da Presidência (governo Lula)",quem:"Declaração do presidente Lula em entrevista (agosto de 2022)",
+  situacao:"Não confirmado. Não encontramos decreto ou ato que imponha sigilo de 100 anos ao cartão corporativo. A declaração foi contestada em checagens da imprensa. Por isso não há contagem.",
+  fontes:[["O Antagonista (checagem da declaração)","https://oantagonista.com.br/brasil/lula-mente-sobre-cartao-corporativo/"]]}
+];
+function sigilosContagem(inicio){const fim=new Date(inicio);fim.setFullYear(fim.getFullYear()+100);let t=Math.max(0,fim-new Date());const d=Math.floor(t/864e5);const a=Math.floor(d/365.25),m0=d-Math.floor(a*365.25);const m=Math.floor(m0/30.44),dd=Math.floor(m0-m*30.44);const h=Math.floor(t%864e5/36e5);return`${a} ${a===1?"ano":"anos"}, ${m} ${m===1?"mês":"meses"}, ${dd} ${dd===1?"dia":"dias"} e ${h} ${h===1?"hora":"horas"}`}
+function sigilosHtml(){return`<div class="panel mt"><div class="hd"><div><h2>Sigilos de 100 anos</h2><p>Documentos públicos colocados em sigilo por até 100 anos, por serem informações pessoais. Mostramos só o que foi confirmado e a situação real de cada um.</p></div></div>
+ ${SIGILOS.map(x=>`<div class="sig"><h3 class="sig-t">${esc(x.titulo)}</h3><p class="small muted" style="margin:0 0 4px">Quem decidiu: ${esc(x.quem)}</p><p class="sig-s">${esc(x.situacao)}</p>${x.inicio&&x.vigor?`<p class="sig-c"><b>Faltam</b> ${sigilosContagem(x.inicio)} para o fim do sigilo</p>`:""}<p class="small" style="margin:6px 0 0">${x.fontes.map(f=>`<a href="${esc(f[1])}" target="_blank" rel="noopener">${esc(f[0])}</a>`).join(" · ")}</p></div>`).join("")}
+ <p class="small muted" style="margin:10px 0 0">Sigilo não prova irregularidade. A lei prevê o sigilo de informações pessoais, e a decisão pode ser revista.</p></div>`}
+function cartaoHtml(c,ano){const sig=sigilosHtml();const D=c&&c.detalhe&&c.detalhe[String(ano)];if(!D||!D.total)return sig;
  const nome=t=>{t=tit(t);return t.length>34?t.slice(0,33)+"…":t},k=(t,v,e="")=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${e?`<em>${e}</em>`:""}</div>`;
  const parcial=D.meses<12&&+ano===new Date().getFullYear()?`até ${["","janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"][D.por_mes[D.por_mes.length-1].mes]}`:"";
- return`<div class="panel mt"><div class="hd"><div><h2>Cartão corporativo</h2><p>Gastos de servidores do governo federal com o cartão de pagamento, em ${ano}${parcial?" ("+parcial+")":""}</p></div></div>
+ return sig+`<div class="panel mt"><div class="hd"><div><h2>Cartão corporativo</h2><p>Gastos de servidores do governo federal com o cartão de pagamento, em ${ano}${parcial?" ("+parcial+")":""}</p></div></div>
  <div class="kpis kpis-c">${k("Gasto no ano",brl(D.total))}${k("Compras",brl(D.compras),pctR(D.compras,D.total)+" do total")}${k("Saques",brl(D.saques),pctR(D.saques,D.total)+" do total")}${k("Operações",nf(D.transacoes))}</div>
  <div class="grid g2 mt"><div class="panel"><h2>Quem mais gastou</h2>${hbars(D.orgaos.slice(0,6).map(o=>[nome(o.nome),o.valor]),{fmt:brlR})}</div><div class="panel"><h2>Onde mais gastaram</h2>${D.favorecidos.length?hbars(D.favorecidos.slice(0,6).map(o=>[nome(o.nome),o.valor]),{fmt:brlR}):rvazio("Sem empresas identificadas.")}</div></div>
  <p class="small muted" style="margin:10px 0 0">Fonte: Portal da Transparência (CGU). Saque e compra com cartão de pagamento do governo federal; nome e CPF de quem usou o cartão não entram aqui.</p></div>`}
