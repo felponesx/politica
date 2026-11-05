@@ -6619,10 +6619,12 @@ addEventListener("hashchange",route);detectarAPI().finally(route);
   let ind=el.querySelector(":scope>.seg-ind");
   if(vis.length<2||on<0||vis.some(b=>b.offsetTop!==vis[0].offsetTop)){el.classList.remove("seg-anima");if(ind)ind.remove();return}
   if(!ind){ind=document.createElement("i");ind.className="seg-ind";ind.setAttribute("aria-hidden","true");el.insertBefore(ind,el.firstChild)}
+  /* lê a cor final: sem transição, senão o navegador devolve o meio do efeito (transparente) */
+  const btn=vis[on],trans=btn.style.transition;btn.style.transition="none";
   el.classList.remove("seg-anima");
-  const cs=getComputedStyle(vis[on]);
+  const cs=getComputedStyle(btn);
   ind.style.background=cs.backgroundColor;ind.style.boxShadow=cs.boxShadow;ind.style.borderRadius=cs.borderRadius;
-  el.classList.add("seg-anima");
+  el.classList.add("seg-anima");btn.style.transition=trans;
   const k=chave(el),ant=MEM[k],alvo=vis[on];
   if(ant!==undefined&&ant!==on&&ant<vis.length&&!reduz){ponha(ind,vis[ant],false);void ind.offsetWidth;ponha(ind,alvo,true)}
   else ponha(ind,alvo,false);
@@ -6637,6 +6639,7 @@ addEventListener("hashchange",route);detectarAPI().finally(route);
   m.addedNodes.forEach(do_);
  }));
  mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+ new MutationObserver(()=>document.querySelectorAll(".seg.sw").forEach(agenda)).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
  addEventListener("resize",()=>document.querySelectorAll(".seg.sw").forEach(agenda));
  document.querySelectorAll(".seg.sw").forEach(agenda);
 })();
