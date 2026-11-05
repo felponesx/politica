@@ -1682,7 +1682,7 @@ img.emp-img{object-fit:contain;background:#fff;border-radius:10px;border:1px sol
 .ap-b::after{content:"";float:none;width:15px;height:15px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A94A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;margin:0}.ap-b{display:inline-flex;align-items:center;justify-content:space-between;gap:8px}
 /* Eleições (presidente): o mapa por estado fica escondido até o mapa por cidade ficar pronto; aparece de uma vez, sem trocar na frente do usuário */
 #elmap{position:relative}#elmap svg.geo{transition:opacity .45s ease}#elmap.mun-espera svg.geo{opacity:0;transition:none}
-#elmap.mun-espera::after{content:"Carregando o mapa por cidade…";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+
 #hloc:empty{display:none}
 /* segurança: tabelas mais limpas (nome com detalhe embaixo, valor à direita) */
 .sd-g{padding:16px 18px}.sd-g h4{margin:0 0 6px;font-size:15px;font-weight:650}.sd-g h4 small{font-weight:500}
@@ -1964,6 +1964,26 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .vlm-ok input{width:auto;margin-top:2px}
 .sig{padding:12px 0;border-top:1px solid var(--line2)}.sig:first-of-type{border-top:0}.sig-t{margin:0 0 4px;font-size:15px}.sig-s{margin:0;font-size:14px;line-height:1.5;color:var(--ink2)}.sig-c{margin:8px 0 0;font-size:14px}
 .vot-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px}.vot-n select{margin:0 4px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;font:inherit}
+/* ---- esqueleto de carregamento (skeleton) ---- */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rload.sk{display:block;padding:14px 0;color:transparent}
+.sk-linha,.sk-bloco,.sk-map{position:relative;overflow:hidden;background:var(--line2);border-radius:8px}
+.sk-linha::after,.sk-bloco::after,.sk-map::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:skBrilho 1.4s ease-in-out infinite}
+[data-theme="dark"] .sk-linha::after,[data-theme="dark"] .sk-bloco::after,[data-theme="dark"] .sk-map::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
+.sk-t{height:22px;width:45%;margin-bottom:12px}
+.sk-c{height:12px;width:75%;margin-bottom:18px}
+.sk-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.sk-bloco{height:84px}
+.sk-p{height:12px;width:92%;margin-bottom:8px}
+.sk-p2{height:12px;width:60%}
+.sk-map{width:100%;height:100%;min-height:220px;border-radius:16px}
+@keyframes skBrilho{to{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){.sk-linha::after,.sk-bloco::after,.sk-map::after{animation:none;transform:none}}
+/* mapa por cidade carregando: esqueleto no formato do mapa (com brilho) no lugar do texto */
+#elmap.mun-espera::after{content:"";position:absolute;inset:8px;border-radius:16px;background:var(--line2);overflow:hidden}
+#elmap.mun-espera::before{content:"";position:absolute;inset:8px;border-radius:16px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:skBrilho 1.4s ease-in-out infinite;z-index:1}
+[data-theme="dark"] #elmap.mun-espera::before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
+@media (prefers-reduced-motion:reduce){#elmap.mun-espera::before{animation:none;transform:none}}
 </style>
 </head>
 <body>
@@ -3529,7 +3549,8 @@ async function detectarAPI(){API.on=false;API.snap=false;API.erro="";const cand=
 
 /* utilidades */
 const RSRC=()=>`<div class="src"><a href="#/fontes">Fontes</a></div>`;
-const rload=(t="Carregando dados oficiais…")=>`<div class="rload" role="status"><i></i>${t}</div>`;
+/* carregamento com esqueleto (skeleton): blocos que imitam o conteúdo, com brilho passando. Usado em todas as telas e nos mapas. */
+const rload=(t="Carregando dados oficiais…")=>`<div class="rload sk" role="status" aria-busy="true"><span class="sr-only">${esc(t)}</span><div class="sk-linha sk-t"></div><div class="sk-linha sk-c"></div><div class="sk-grade"><div class="sk-bloco"></div><div class="sk-bloco"></div><div class="sk-bloco"></div></div><div class="sk-linha sk-p"></div><div class="sk-linha sk-p2"></div></div>`;
 const rvazio=t=>`<p class="muted small" style="margin:0">${t}</p>`;
 const rerro=e=>`<div class="rbanner warn">Não foi possível carregar: ${esc(e.message||e)}.</div>`;
 const fdr=d=>d?fd(String(d).slice(0,10)):"—";
