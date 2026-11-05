@@ -12,7 +12,12 @@ Uso:
 Configuração: vinculos/*.toml (um por produto, com várias [[fonte]]), destinos.toml, .env (chaves).
 Só biblioteca padrão (Python 3.11+).
 """
-import fcntl, hashlib, html as _html, json, os, re, shutil, sqlite3, subprocess, sys, time, tomllib, urllib.request
+import hashlib, html as _html, json, os, re, shutil, sqlite3, subprocess, sys, time, tomllib, urllib.request
+try:
+    import fcntl          # Linux/Termux
+except ImportError:       # Windows
+    fcntl = None
+    import msvcrt
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -709,6 +714,16 @@ def enviar_git(db, d, novo, corpo):
     print("  git: enviado")
 
 
+def enviar_pasta(db, d, novo, corpo):
+    """Destino local (ex.: a pasta de dados do próprio PC). Sem git: grava status, painel e os dados liberados."""
+    pasta = Path(d["pasta"])
+    pasta.mkdir(parents=True, exist_ok=True)
+    (pasta / "status.json").write_text(corpo, encoding="utf-8")
+    shutil.copyfile(RAIZ / "painel.html", pasta / "painel.html")
+    exportar_dados(db, pasta)
+    print(f"  pasta: gravado em {pasta}")
+
+
 def enviar_http(db, d, novo, corpo):
     cab = {"Content-Type": "application/json", "User-Agent": UA}
     if d.get("token_env"):
@@ -731,7 +746,7 @@ def enviar_tudo(db, silencioso=False):
     for d in tomllib.loads(cfg.read_text()).get("destino", []):
         n = nome_destino(d)
         try:
-            {"git": enviar_git, "http": enviar_http}[d["tipo"]](db, d, novo, corpo)
+            {"git": enviar_git, "http": enviar_http, "pasta": enviar_pasta}[d["tipo"]](db, d, novo, corpo)
             registrar_envio(db, n, d["tipo"], True)
         except Exception as e:
             falhas += 1
@@ -742,13 +757,23 @@ def enviar_tudo(db, silencioso=False):
 
 # ---------- execução ----------
 
+def _trava_do_sistema(f):
+    """Trava de execução: flock no Linux/Termux, locking no Windows. Devolve False se outra execução já está rodando."""
+    try:
+        if fcntl is not None:
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        else:
+            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+        return True
+    except OSError:
+        return False
+
+
 def travar():
     """Só uma execução por vez: um download longo não pode ser atropelado pela próxima verificação."""
     DADOS.mkdir(exist_ok=True)
     f = open(DADOS / ".trava", "w")
-    try:
-        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
+    if not _trava_do_sistema(f):
         print("  outra execução em andamento")
         sys.exit(0)
     return f

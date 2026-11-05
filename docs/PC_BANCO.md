@@ -1,14 +1,15 @@
-# Banco do BRASIL+ no PC (Windows)
+# O PC capta, guarda e mostra (Windows)
 
-O PC guarda o banco, roda a API e o site, e faz as coletas. O celular só acessa, pelo Tailscale.
+O PC faz tudo: coleta as fontes, confere com o Gemini, guarda no banco e roda o site.
+O celular só acessa o sistema, pelo Tailscale.
 
 ## 1. Instalar (uma vez)
-1. **Docker Desktop** (docker.com) e reinicie o PC quando pedir.
-2. **Git for Windows** (git-scm.com).
-3. **Tailscale** (tailscale.com), entrando com a mesma conta no PC e no celular.
+1. **Docker Desktop** (docker.com). Reinicie o PC quando pedir.
+2. **Python 3.12** (python.org). Marque "Add python.exe to PATH".
+3. **Git for Windows** (git-scm.com).
+4. **Tailscale** (tailscale.com), com a mesma conta no PC e no celular.
 
 ## 2. Baixar o projeto
-Abra o PowerShell e rode:
 ```powershell
 cd $HOME\Documents
 git clone https://github.com/felponesx/politica brasilmais
@@ -16,38 +17,44 @@ cd brasilmais
 git checkout ingestao-coletor-celular
 ```
 
-## 3. Configurar as senhas
-```powershell
-copy .env.local.example .env.local
-notepad .env.local
-```
-Preencha `DB_SENHA` e `DB_LEITURA_SENHA` com duas frases longas e diferentes.
-**Nunca** coloque `API_BIND=0.0.0.0`.
+## 3. Chaves e senhas
+- `copy .env.local.example .env.local` e preencha `DB_SENHA` e `DB_LEITURA_SENHA` (frases longas e diferentes).
+- `copy coletor\.env.exemplo coletor\.env` e preencha `GEMINI_API_KEY`.
+- Nunca use `API_BIND=0.0.0.0`.
 
-## 4. Subir o banco, a API e o agendador
+## 4. Subir o banco, a API e o site
 ```powershell
 docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
 ```
 O site abre em http://127.0.0.1:8000 no próprio PC.
 
-## 5. Acessar pelo celular
-No PC:
+## 5. Coleta automática (a cada 5 minutos)
 ```powershell
-tailscale serve --bg 8000
+cd coletor
+copy destinos.exemplo.toml destinos.toml
+notepad destinos.toml
 ```
-O Tailscale mostra um endereço `https://...ts.net`. Abra esse endereço no navegador do celular, com o Tailscale ligado.
-
-## 6. Dados do celular
-Clone o ramo de dados numa pasta do PC, para o BRASIL+ ler:
-```powershell
-git clone --branch dados-coletor --single-branch https://github.com/felponesx/politica coletor-dados
+No `destinos.toml`, deixe só o destino de pasta, apontando para a pasta de dados do BRASIL+:
+```toml
+[[destino]]
+nome = "PC"
+tipo = "pasta"
+pasta = "C:\\Users\\<seu-usuario>\\Documents\\brasilmais\\dados-pc"
 ```
-No `.env.local`, defina `COLETOR_DADOS_PASTA=coletor-dados`.
+Depois, no Agendador de Tarefas do Windows, crie uma tarefa a cada 5 minutos com o programa:
+`python` e o argumento `coletor.py coletar`, com "Iniciar em" na pasta `coletor`. Crie outra tarefa, a cada 5 minutos,
+com `coletor.py verificar` e outra com `coletor.py publicar` (ou troque o argumento para `coletar ; verificar ; publicar`).
 
-## 7. Atualização automática
-Mantenha o `coletor-dados` atualizado com um agendamento a cada 5 minutos (Agendador de Tarefas do Windows):
-`git -C coletor-dados pull -q --ff-only`
+## 6. BRASIL+ lendo os dados do PC
+No `.env.local` (na pasta `brasilmais`), defina:
+```
+COLETOR_DADOS_PASTA=../coletor/dados-pc
+```
+Reinicie com o `docker compose ... up -d`. A ingestão roda sozinha a cada 10 minutos.
+
+## 7. Acessar pelo celular
+No PC: `tailscale serve --bg 8000`. Abra o endereço `https://...ts.net` no navegador do celular.
 
 ## Cuidados
-- O PC precisa ficar ligado e sem suspensão. Se desligar, o site sai do ar, mas o celular continua captando e guardando no GitHub.
+- O PC precisa ficar ligado e sem suspensão (Configurações → Energia → "Nunca" para suspender quando conectado).
 - Faça backup: a pasta `backups` guarda o banco todo dia. Copie para fora do PC de vez em quando.
