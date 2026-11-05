@@ -2012,6 +2012,9 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .zoomfx .uf-mun path{stroke-width:inherit}
 .mun-sob{margin-top:12px}
 body.mun-busca{cursor:progress}body.mun-busca #elmap{opacity:.82;transition:opacity .2s}
+/* voltar do estado: o mapa do país aparece devagar, sem surgir do nada */
+@keyframes mapaEntra{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+.mapa-entra{animation:mapaEntra .9s cubic-bezier(.2,.7,.2,1) both}
 </style>
 </head>
 <body>
@@ -2855,7 +2858,7 @@ function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return fals
 function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.dataset.uf;
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");const mg0=st.querySelector("g.uf-mun"),mgc=mg0&&mg0.cloneNode(true);if(mgc)mgc.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));
- st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
+ st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";const mn=$(cfg.main);if(mn&&!semMov()){mn.classList.remove("mapa-entra");void mn.offsetWidth;mn.classList.add("mapa-entra");setTimeout(()=>mn.classList.remove("mapa-entra"),1000)}card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
  const tp=uf&&($(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`));const reduce=semMov();
  if(reduce||!h0||!tp||!tp.animate)return;
  const svg=tp.ownerSVGElement,r=svg.getBoundingClientRect(),t=tp.getBoundingClientRect();
@@ -3991,7 +3994,7 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const saldo=e=>{const v=e.retornado-e.arrecadado;return v>=0?`<span class="sd sd-mais">+${brl(v)}</span><div class="small muted">recebeu mais do que pagou</div>`:`<span class="sd sd-menos">−${brl(-v)}</span><div class="small muted">foi para outros estados</div>`};
  $("#flBody").innerHTML=`<p class="small muted" style="margin:0 0 12px">Quanto cada estado pagou de tributos federais em ${d.ano} e quanto voltou para ele em transferências obrigatórias da União (governo do estado e prefeituras). Toque em um estado para abrir a ficha.</p>
  <div class="kpis">${kp("Brasil pagou de tributos federais",brl(TA),`em ${d.ano}`)}${kp("Voltou aos estados",brl(TR),`${pct(TR/TA*100)} do que foi pago`)}${kp("Em média, para cada R$ 1",rs(TR/TA),"voltaram ao estado")}${kp("Recebem mais do que pagam",`${ganham.length} de ${es.length}`,"estados")}</div>
- <div class="mapwrap mapbig mt"><div class="flm"><div class="seg sw" id="flModo"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:0 0 6px"></p><div id="flMapa"></div></div><div class="zside" id="flLados"></div></div>
+ <div class="mapwrap mapbig mt"><div class="flm" id="flcard"><div id="flmain"><div class="seg sw" id="flModo"><button type="button" data-m="arr" class="on">Arrecadação</button><button type="button" data-m="ret">Repasses</button></div><p class="small muted" id="flModoT" style="margin:0 0 6px"></p><div id="flMapa"></div></div><div id="flstate" style="display:none"></div></div><div class="zside" id="flLados"></div></div>
  <h3 class="seg-h">Todos os estados <small>quanto voltou para cada R$ 1 pago de impostos</small></h3><div id="flTab"></div>
  <p class="small muted" style="margin:8px 0 0">Verde: o estado recebeu de volta mais do que pagou. Laranja: parte do que pagou ajudou outros estados. A Receita registra o tributo onde fica a sede da empresa, por isso estados com grandes sedes (como São Paulo) aparecem pagando mais.</p>
  <details class="small" style="margin-top:12px"><summary>Metodologia e limitações</summary><ul>${Object.entries(d.metodologia).filter(([k])=>k!=="limitacoes").map(([k,v])=>`<li><b>${esc(k.replace(/_/g," "))}:</b> ${esc(v)}</li>`).join("")}${d.metodologia.limitacoes.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>${RSRC("Receita Federal e Tesouro Nacional")}`;
@@ -4001,10 +4004,12 @@ mount(){r.mount&&r.mount();apiGet("/fluxo-federativo").then(d=>{const es=d.estad
  const arrV={},retV={};es.forEach(e=>{arrV[e.uf]=e.arrecadado;retV[e.uf]=e.retornado});let H0=null,modo="arr";
  const MD={arr:{v:arrV,alto:"Mais arrecadam",baixo:"Menos arrecadam",ch:"arrecadacao",t:`Tributos federais pagos em cada estado em ${d.ano}.`,nota:"Tributos federais arrecadados em cada estado, ano a ano. Valores nominais."},
   ret:{v:retV,alto:"Mais recebem",baixo:"Menos recebem",ch:"repasses",t:`Transferências da União ao governo do estado e às prefeituras em ${d.ano}.`,nota:"Repasses da União a cada estado, ano a ano. Valores nominais."}};
+ const FZ={card:"#flcard",main:"#flmain",holder:"#flstate",map:"#flMapa",back:"‹ Voltar ao mapa do Brasil",render:uf=>{const u=UF[uf],b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04,a=arrV[uf],r=retV[uf];
+   return{html:`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Tributos federais e repasses · ${d.ano}</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${u.nome}</h1><p>Arrecadou <b>${a==null?"sem dado":brl(a)}</b> em tributos federais e recebeu <b>${r==null?"sem dado":brl(r)}</b> em repasses da União.</p><p class="small"><a href="#/uf/${uf}">Ver a ficha completa do estado</a></p></div></div>`,mount(){}}}};
  const pinta=troca=>{const m=MD[modo],h=H0&&H0[m.ch],ok=h&&h.anos&&h.anos.length>=2;$("#flModoT").textContent=m.t;
   const mapa=mapaValores(m.v,brl),lados=linhasDuplo(ok?h.estados:null,ok?h.anos:null,m.v,brl,{alto:m.alto,baixo:m.baixo,coresAlto:LIN_AZUL,coresBaixo:LIN_BAIXO,nota:ok?m.nota:""});
   if(troca){trocaSuave($("#flMapa"),mapa);trocaSuave($("#flLados"),lados)}else{$("#flMapa").innerHTML=mapa;$("#flLados").innerHTML=lados}
-  bindMap($("#flMapa"),null,null,u=>{location.hash="#/uf/"+u})};
+  bindMap($("#flMapa"),null,null,(u,el)=>inlineZoomIn(FZ,u,el))};
  pinta(false);document.querySelectorAll("#flModo button").forEach(b=>b.onclick=()=>{modo=b.dataset.m;document.querySelectorAll("#flModo button").forEach(x=>x.classList.toggle("on",x===b));pinta(true)});
  histUF().then(H=>{H0=H;if($("#flLados"))pinta(false)})}).catch(e=>{$("#flBody").innerHTML=`<p class="muted small" style="margin:0">Arrecadação ainda indisponível no servidor. ${esc(e.message)}</p>`})}}};
 
