@@ -2016,9 +2016,9 @@ body.mun-busca{cursor:progress}body.mun-busca #elmap{opacity:.82;transition:opac
 @keyframes mapaEntra{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
 .mapa-entra{animation:mapaEntra .9s cubic-bezier(.2,.7,.2,1) both}
 /* zoom: o estado pousa e depois o resto do país aparece aos poucos */
-svg.voo-volta path,svg.voo-volta text{opacity:0}
+svg.voo-volta path,svg.voo-volta text{opacity:0!important}
 svg.voo-volta path.voo-alvo{opacity:1}
-svg.voo-fim path,svg.voo-fim text{transition:opacity .9s ease .12s}
+svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 /* zoom: as informações do estado entram de cima para baixo (staggered fade in down) */
 @keyframes stgDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 .stg-go .ufback,.stg-go .ufhero-t>*,.stg-go .ufrest>*{animation:stgDown .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--s,0)*120ms)}
@@ -2886,7 +2886,7 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  document.body.appendChild(fx);svg.classList.add("voo-volta");const mainEl=$(cfg.main);if(mainEl){mainEl.style.transition="none";mainEl.style.opacity="0"}const alvo=tp.ownerSVGElement===svg?tp:null;card.classList.add("unzoom");
  requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");if(mgc){tg.style.transition="fill-opacity .6s ease";tg.style.fillOpacity="1";mgc.style.transition="opacity .6s ease";mgc.style.opacity="0"}else{tg.style.fill=toFill}card.classList.remove("unzoom")}));
  const an=fx.animate(leve?[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{transform:"translate(0,0) scale(1)"}]:[{transform:`translate(${tx}px,${ty}px) scale(${k})`},{offset:.45,filter:"blur(1px)"},{transform:"translate(0,0) scale(1)",filter:"blur(0)"}],{duration:leve?540:780,easing:"cubic-bezier(.6,0,.25,1)",fill:"forwards"});
- let ended=false;const done=()=>{if(ended)return;ended=true;svg.classList.remove("voo-volta");svg.classList.add("voo-fim");if(alvo){alvo.style.transition="none";alvo.style.opacity="1"}setTimeout(()=>{svg.classList.remove("voo-fim");if(alvo){alvo.style.transition="";alvo.style.opacity=""}},1200);if(mainEl){mainEl.style.transition="opacity .35s ease";mainEl.style.opacity="1";setTimeout(()=>{mainEl.style.transition="";mainEl.style.opacity=""},420)}setTimeout(()=>fx.remove(),380)};an.onfinish=done;setTimeout(done,1300)}
+ let ended=false;const done=()=>{if(ended)return;ended=true;svg.classList.remove("voo-volta");svg.classList.add("voo-fim");if(alvo){alvo.style.transition="none";alvo.style.opacity="1"}setTimeout(()=>{svg.classList.remove("voo-fim");if(alvo){alvo.style.transition="";alvo.style.opacity=""}},2200);if(mainEl){mainEl.style.transition="opacity .9s ease";mainEl.style.opacity="1";setTimeout(()=>{mainEl.style.transition="";mainEl.style.opacity=""},950)}setTimeout(()=>fx.remove(),920)};an.onfinish=done;setTimeout(done,1300)}
 let CURSEC=null;
 const HOMEZ={card:"#hmapcard",main:"#hmapmain",holder:"#hstate",map:"#hmap",back:"‹ Voltar ao mapa do Brasil",full:true,sec:null,render:uf=>P.uf(uf,HOMEZ.sec)};
 function showStateInline(uf,pathEl){return inlineZoomIn(HOMEZ,uf,pathEl)}
