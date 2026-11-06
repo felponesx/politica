@@ -50,7 +50,7 @@ def detalhe_parlamentar(pid: int, votos: int = Query(20, ge=1, le=100), db: Sess
         .order_by(Despesa.ano.desc(), func.sum(Despesa.valor).desc())).all()
     return {
         "perfil": ParlamentarOut.model_validate(p),
-        "ultimos_votos": [{"voto": v, "votacao": VotacaoOut.model_validate(vt)} for v, vt in votos],
+        "ultimos_votos": [{"voto": v, "votacao": VotacaoOut.model_validate(vt), "proposicao": _proposicao_da_votacao(db, vt)} for v, vt in votos],
         "gastos_por_tipo": [{"ano": a, "tipo": t, "total": round(s or 0, 2)} for a, t, s in gastos],
         "total_gasto": round(sum(s or 0 for _, _, s in gastos), 2),
     }
