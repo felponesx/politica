@@ -1,6 +1,7 @@
 """Login de pessoas e voto nas leis (uma conta = um voto por lei). Ver app/contas.py para as regras de senha, CPF e sessão."""
 from __future__ import annotations
 
+from datetime import date
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -36,6 +37,14 @@ class GoogleIn(BaseModel):
     cpf: str | None = Field(default=None, max_length=20)   # só no primeiro acesso (conta nova)
     nome: str | None = Field(default=None, max_length=120)
     aceito_termos: bool = False
+
+
+class PerfilIn(BaseModel):
+    nome: str | None = Field(default=None, max_length=120)
+    data_nascimento: date | None = None
+    uf: str | None = Field(default=None, max_length=2)
+    cidade: str | None = Field(default=None, max_length=80)
+    interesses: list[str] | None = Field(default=None, max_length=10)
 
 
 class VotoIn(BaseModel):
@@ -192,7 +201,24 @@ def eu(request: Request, db: Session = Depends(get_db)):
     conta = contas.conta_da_sessao(db, request.cookies.get(contas.COOKIE))
     if conta is None:
         return {"conta": None}
-    return {"conta": _resumo_conta(conta), "admin": contas.e_admin(conta)}
+    return {"conta": _resumo_conta(conta), "perfil": contas.perfil_de(conta), "admin": contas.e_admin(conta)}
+
+
+@router.post("/contas/perfil")
+def salvar_perfil(dados: PerfilIn, request: Request, db: Session = Depends(get_db)):
+    """Completa ou muda os dados da própria conta. Só campos enviados são alterados."""
+    _exige_json(request)
+    conta = contas.conta_da_sessao(db, request.cookies.get(contas.COOKIE))
+    if conta is None:
+        raise HTTPException(401, "Entre na sua conta.")
+    _limita(f"perfil:{conta.id}", 30, 3600)
+    try:
+        contas.salva_perfil(conta, dados.nome, dados.data_nascimento, dados.uf, dados.cidade, dados.interesses)
+        db.commit()
+    except contas.ErroConta as e:
+        db.rollback()
+        raise _erro(e)
+    return {"conta": _resumo_conta(conta), "perfil": contas.perfil_de(conta)}
 
 
 @router.get("/votos-leis")

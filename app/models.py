@@ -550,6 +550,11 @@ class Conta(Base):
     criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
     termos_versao: Mapped[str | None] = mapped_column(String(20))   # versão dos termos aceitos no cadastro
     termos_aceitos_em: Mapped[datetime | None] = mapped_column(DateTime)
+    # perfil (opcional, a pessoa completa em "Minha conta"; ver app/contas.py PERFIL_CAMPOS)
+    data_nascimento: Mapped[date | None] = mapped_column(Date)
+    uf: Mapped[str | None] = mapped_column(String(2))
+    cidade: Mapped[str | None] = mapped_column(String(80))
+    interesses: Mapped[str | None] = mapped_column(String(300))  # chaves separadas por vírgula
 
 
 class Sessao(Base):

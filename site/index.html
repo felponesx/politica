@@ -2064,6 +2064,19 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 .vlm-wide{max-width:760px}
 .vlm-adm .kpis{margin-bottom:12px}
 .vlm-cred[hidden],.vlm-nome[hidden]{display:none}
+/* barra de cima: ícone de conta e tela "Minha conta" */
+.ibtn-conta svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.vlm-perf{display:block}
+.vlm-perf label{display:block;margin:0 0 10px}
+.vlm-perf input,.vlm-perf select{width:100%;margin-top:4px}
+.pf-duas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pf-int{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+.pf-int legend{padding:0 6px;font-size:13px;color:var(--ink2)}
+.pf-chk{display:inline-flex!important;align-items:center;gap:6px;margin:0 14px 6px 0!important;font-size:13px}
+.pf-chk input{width:auto;margin:0}
+.pf-acoes{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pf-links{font-size:13px}
+@media (max-width:560px){.pf-duas{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2090,6 +2103,7 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
       </div>
       <div class="spacer"></div>
       <a class="apipill" id="apiPill" href="#/fontes" hidden><i></i><span>Demonstração</span></a><span class="dolar-pill" id="dolarPill" hidden></span>
+      <button class="ibtn ibtn-conta" id="btnConta" type="button" aria-label="Minha conta" title="Minha conta"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></button>
       <button class="ibtn" id="btnTheme" aria-label="Ativar o modo escuro" title="Ativar o modo escuro"></button>
     </header>
     <div class="demo-faixa" id="demoFaixa" role="status" hidden><b>Modo de demonstração.</b> Nomes, números e gráficos desta tela são exemplos, <u>não são dados oficiais</u>. <a href="#/fontes">Saiba mais</a></div>
@@ -6493,6 +6507,36 @@ function vlAdmin(){let m=document.getElementById("vlAdm");if(!m){m=document.crea
   box.innerHTML=`<div class="kpis"><div class="kpi"><span>Contas</span><strong>${nf(d.contas)}</strong></div><div class="kpi"><span>Administradores</span><strong>${nf(d.administradores)}</strong></div><div class="kpi"><span>Entram com Google</span><strong>${nf(d.com_google)}</strong></div><div class="kpi"><span>Votos nas leis</span><strong>${nf(d.votos_total)}</strong></div></div>`+
    table([["Nome",c=>esc(c.nome)],["E-mail",c=>esc(c.email)],["Papel",c=>c.papel==="admin"?"Admin":"Pessoa"],["Entra com",c=>c.entra_com==="google"?"Google":"Senha"],["Criada em",c=>c.criada_em?fdr(c.criada_em.slice(0,10)):"—"]],d.ultimas_contas)+
    `<p class="small muted" style="margin-top:10px">Votos por opção: ${esc(JSON.stringify(d.votos_por_opcao))}. Dados das contas: só para administração.</p>`}).catch(e=>{box.textContent=e.message})}
+/* ---------- Minha conta: ícone na barra de cima, dados do perfil (todos opcionais, salvos no servidor) ---------- */
+const PERF_INTERESSES=[["saude","Saúde"],["educacao","Educação"],["seguranca","Segurança pública"],["economia","Economia e impostos"],["meio_ambiente","Meio ambiente"],["transporte","Transporte"],["moradia","Moradia"],["trabalho","Trabalho e renda"],["direitos","Direitos humanos"],["politica","Política e eleições"]];
+const PERF_UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
+async function perfilCarregar(){try{const r=await fetch(vlUrl("/contas/eu"),{headers:{Accept:"application/json"},credentials:"same-origin"});return r.ok?await r.json():{conta:null}}catch(_){return{conta:null}}}
+function perfilModal(){let m=document.getElementById("vlPerf");if(m)return m;m=document.createElement("div");m.id="vlPerf";m.className="vlm";m.hidden=true;
+ m.innerHTML=`<div class="vlm-p vlm-wide" role="dialog" aria-modal="true" aria-labelledby="vlPT"><div class="vlm-h"><h2 id="vlPT">Minha conta</h2><button type="button" class="vlm-x" aria-label="Fechar">×</button></div>
+ <form class="vlm-f vlm-perf" novalidate><p class="vln" style="margin:0 0 8px"><b class="pf-nome"></b> · <span class="pf-mail"></span> · CPF cadastrado (só o código fica guardado).</p>
+  <label>Nome completo<input name="nome" maxlength="120" autocomplete="name"></label>
+  <div class="pf-duas"><label>Data de nascimento<input name="nasc" type="date"></label>
+  <label>Estado<select name="uf"><option value="">—</option>${PERF_UFS.map(u=>`<option>${u}</option>`).join("")}</select></label></div>
+  <label>Cidade<input name="cidade" maxlength="80"></label>
+  <fieldset class="pf-int"><legend>Temas que você acompanha</legend>${PERF_INTERESSES.map(([k,t])=>`<label class="pf-chk"><input type="checkbox" name="int" value="${k}"> ${t}</label>`).join("")}</fieldset>
+  <p class="vln">Esses dados são opcionais e servem só para personalizar o que você vê. Não são enviados a ninguém.</p>
+  <p class="vlm-e" role="alert"></p><p class="pf-ok small" hidden>Dados salvos.</p>
+  <div class="pf-acoes"><button type="submit" class="btn vlm-s">Salvar</button><span class="pf-links"></span></div></form></div>`;
+ document.body.appendChild(m);m.querySelector(".vlm-x").onclick=()=>{m.hidden=true};m.onclick=e=>{if(e.target===m)m.hidden=true};
+ m.querySelector("form").onsubmit=async e=>{e.preventDefault();const f=e.target,err=m.querySelector(".vlm-e"),ok=m.querySelector(".pf-ok");err.textContent="";ok.hidden=true;
+  const corpo={nome:f.nome.value.trim(),data_nascimento:f.nasc.value||null,uf:f.uf.value||"",cidade:f.cidade.value.trim(),interesses:[...f.querySelectorAll("[name=int]:checked")].map(x=>x.value)};
+  const bt=m.querySelector(".vlm-s");bt.disabled=true;
+  try{const r=await fetch(vlUrl("/contas/perfil"),{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},credentials:"same-origin",body:JSON.stringify(corpo)});
+   if(!r.ok){let t="Não foi possível salvar.";try{t=(await r.json()).detail||t}catch(_){}err.textContent=t;return}
+   VL_CONTA=(await r.json()).conta;ok.hidden=false;await vlAtualizar()}catch(_){err.textContent="Sem conexão com o servidor. Tente de novo."}finally{bt.disabled=false}};
+ return m}
+async function perfilAbrir(){const d=await perfilCarregar();if(!d.conta){vlAbrirLogin("entrar");return}
+ const m=perfilModal(),p=d.perfil||{};m.querySelector(".pf-nome").textContent=d.conta.nome;m.querySelector(".pf-mail").textContent=d.conta.email;
+ const f=m.querySelector("form");f.nome.value=d.conta.nome||"";f.nasc.value=p.data_nascimento||"";f.uf.value=p.uf||"";f.cidade.value=p.cidade||"";
+ f.querySelectorAll("[name=int]").forEach(c=>c.checked=(p.interesses||[]).includes(c.value));
+ m.querySelector(".pf-links").innerHTML=(d.admin?'<a href="#" class="vladm">Painel do administrador</a> · ':"")+'<a href="#" class="vlsair">Sair</a>';
+ m.querySelector(".pf-ok").hidden=true;m.querySelector(".vlm-e").textContent="";m.hidden=false}
+document.getElementById("btnConta")?.addEventListener("click",e=>{e.preventDefault();perfilAbrir()});
 function vlAbrirLogin(modo="entrar"){const m=vlModal();m.modo(modo);m.hidden=false;setTimeout(()=>m.querySelector("[name=email]").focus(),30)}
 document.addEventListener("click",async e=>{const sair=e.target.closest(".vlsair"),ent=e.target.closest(".vlentrar"),adm=e.target.closest(".vladm");
  if(adm){e.preventDefault();vlAdmin();return}

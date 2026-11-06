@@ -296,3 +296,25 @@ def test_admin_por_lista_e_area_so_para_admin(cli, google_ok):
     assert eu["admin"] is True and eu["conta"]["papel"] == "admin"
     r = cli.get("/admin/resumo")
     assert r.status_code == 200 and r.json()["administradores"] >= 1 and "ultimas_contas" in r.json()
+
+
+def test_perfil_salva_e_valida(cli):
+    cli.post("/contas", json={"email": "perfil@exemplo.com", "senha": "senha-forte-1", "nome": "Lia Souza", "cpf": CPF_OK, "aceito_termos": True},
+             headers={"content-type": "application/json"})
+    h = {"content-type": "application/json"}
+    r = cli.post("/contas/perfil", json={"data_nascimento": "1990-05-10", "uf": "pr", "cidade": " Curitiba ", "interesses": ["saude", "seguranca"]}, headers=h)
+    assert r.status_code == 200
+    assert r.json()["perfil"] == {"data_nascimento": "1990-05-10", "uf": "PR", "cidade": "Curitiba", "interesses": ["saude", "seguranca"]}
+    eu = cli.get("/contas/eu").json()
+    assert eu["perfil"]["uf"] == "PR" and eu["perfil"]["interesses"] == ["saude", "seguranca"]
+
+
+def test_perfil_recusa_dados_invalidos(cli):
+    cli.post("/contas", json={"email": "perfil2@exemplo.com", "senha": "senha-forte-1", "nome": "Rui Lima", "cpf": CPF_OK2, "aceito_termos": True},
+             headers={"content-type": "application/json"})
+    h = {"content-type": "application/json"}
+    assert cli.post("/contas/perfil", json={"uf": "XX"}, headers=h).status_code == 400
+    assert cli.post("/contas/perfil", json={"interesses": ["inventado"]}, headers=h).status_code == 400
+    assert cli.post("/contas/perfil", json={"data_nascimento": "2020-01-01"}, headers=h).status_code == 400  # menor de 16
+    cli.cookies.clear()
+    assert cli.post("/contas/perfil", json={"uf": "SP"}, headers=h).status_code == 401

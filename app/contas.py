@@ -195,6 +195,46 @@ def cadastrar_google(db: Session, claims: dict, cpf: str, aceite_termos: bool) -
     return conta
 
 
+UFS_SIGLA = ("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO").split()
+INTERESSES = {"saude": "Saúde", "educacao": "Educação", "seguranca": "Segurança pública", "economia": "Economia e impostos",
+              "meio_ambiente": "Meio ambiente", "transporte": "Transporte", "moradia": "Moradia", "trabalho": "Trabalho e renda",
+              "direitos": "Direitos humanos", "politica": "Política e eleições"}
+
+
+def perfil_de(conta: Conta) -> dict:
+    return {"data_nascimento": conta.data_nascimento.isoformat() if conta.data_nascimento else None,
+            "uf": conta.uf, "cidade": conta.cidade,
+            "interesses": [k for k in (conta.interesses or "").split(",") if k in INTERESSES]}
+
+
+def salva_perfil(conta: Conta, nome: str | None, data_nascimento, uf: str | None, cidade: str | None, interesses: list[str]) -> None:
+    if nome is not None:
+        nome = " ".join(nome.split())
+        if not (2 <= len(nome) <= 120):
+            raise ErroConta("Informe o nome completo.")
+        conta.nome = nome
+    if data_nascimento is not None:
+        hoje = agora_utc().date()
+        idade = (hoje - data_nascimento).days // 365
+        if data_nascimento > hoje or idade > 120:
+            raise ErroConta("Data de nascimento inválida.")
+        if idade < 16:
+            raise ErroConta("Esta conta é para maiores de 16 anos.")
+        conta.data_nascimento = data_nascimento
+    if uf is not None:
+        if uf and uf.upper() not in UFS_SIGLA:
+            raise ErroConta("Estado (UF) inválido.")
+        conta.uf = uf.upper() or None
+    if cidade is not None:
+        cidade = " ".join(cidade.split())[:80]
+        conta.cidade = cidade or None
+    if interesses is not None:
+        escolhidos = [k for k in dict.fromkeys(interesses) if k in INTERESSES]
+        if len(escolhidos) != len(interesses):
+            raise ErroConta("Há um interesse inválido na lista.")
+        conta.interesses = ",".join(escolhidos) or None
+
+
 def email_mascarado(email: str) -> str:
     usuario, _, dominio = email.partition("@")
     return f"{usuario[:1]}***@{dominio[:1]}***"
