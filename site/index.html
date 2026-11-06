@@ -375,7 +375,7 @@ svg.geo{overflow:visible;filter:drop-shadow(0 1px 1.5px var(--sombra1)) drop-sha
 .up div span{display:block;color:var(--muted);font-size:12px}
 @media (max-width:1400px){.home{grid-template-columns:1fr}.hr{grid-template-columns:1fr 1fr}}
 @media (max-width:1180px){.r1{grid-template-columns:1fr}.quick{grid-template-columns:1fr}}
-@media (max-width:1080px){.app{grid-template-columns:72px 1fr}.brand div,.side-foot{display:none}.brand{justify-content:center;padding:0 0 18px}}
+@media (max-width:1080px){.app{grid-template-columns:72px 1fr}.brand .brand-txt,.side-foot{display:none}.brand{justify-content:center;padding:0 0 18px}}
 @media (max-width:760px){
  .app{display:block}.side{display:none}
  .hero2{grid-template-columns:1fr}.hero2 .outline{display:none}.hstats{border-left:0;padding-left:0;grid-template-columns:repeat(3,1fr);gap:8px}.hstat{flex-direction:column;align-items:flex-start;gap:4px;font-size:12px}
@@ -765,7 +765,7 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 @media (max-height:860px){.ia{font-size:0}.ia b{font-size:13px;margin:0}.ia button,.ia input{font-size:12.5px}}
 @media (max-height:760px){.trust{display:none}}
 @media (max-height:660px){.side-foot{display:none}}
-@media (max-height:560px){.nav a{padding:3px 12px;font-size:12.5px}.brand small{display:none}}
+@media (max-height:560px){.nav a{padding:3px 12px;font-size:12.5px}.brand .brand-sub{display:none}}
 
 /* ===== logo e topo da Início no celular ===== */
 .top .mlogo{text-decoration:none!important;align-items:center;gap:8px;color:var(--ink)}
@@ -2041,6 +2041,18 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 @media (max-width:760px){.dolar-pill .dp-txt{display:none}}
 /* título simples do projeto */
 .pj-tema{font-weight:700;font-size:15px;color:var(--navy,#1D2939);margin:4px 0 4px}
+/* marca: "dados" pequeno em cima, BRASIL+ embaixo, e o desenho do mapa atrás do texto */
+.brand-stack{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:0}
+.brand-txt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;line-height:1;white-space:nowrap}
+.brand .brand-fundo,.top .mlogo .brand-fundo{position:absolute!important;left:50%;top:50%;transform:translate(-50%,-50%);width:84px;height:84px;opacity:.2;z-index:0;pointer-events:none}
+.brand .brand-dados,.top .mlogo .brand-dados{display:block;font-size:10px;font-weight:600;letter-spacing:.05em;color:var(--navy);line-height:1;margin:0 0 2px 1px}
+.brand .brand-sub{font-size:11.5px;color:var(--ink2);margin-top:3px}
+.brand .brand-txt b,.top .mlogo .mlogo-t{font-size:21px;font-weight:700;color:var(--navy);line-height:1.05;letter-spacing:.01em}
+.brand .brand-txt b em,.top .mlogo .mlogo-t b{font-style:normal;color:var(--blue)}
+.top .mlogo .brand-fundo{width:64px;height:64px;opacity:.2}
+.top .mlogo .mlogo-t{font-size:18px;color:var(--ink)}
+.top .mlogo .brand-dados{font-size:8.5px;margin-bottom:1px}
+@media (max-width:1080px){.brand .brand-stack{width:40px;height:40px}.brand .brand-fundo{position:static!important;transform:none;width:40px;height:40px;opacity:1}}
 </style>
 </head>
 <body>
@@ -2050,7 +2062,7 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
  <div class="pop-b" id="popB"></div></div></div>
 <div class="app">
   <aside class="side" aria-label="Navegação principal">
-    <a class="brand" href="#/inicio" style="text-decoration:none"><i class="lgmark" aria-hidden="true"></i><div><small class="brand-dados">dados</small><b>BRASIL<em>+</em></b><small>Transparência em um só lugar</small></div></a>
+    <a class="brand" href="#/inicio" style="text-decoration:none"><span class="brand-stack"><i class="lgmark brand-fundo" aria-hidden="true"></i><span class="brand-txt"><small class="brand-dados">dados</small><b>BRASIL<em>+</em></b><small class="brand-sub">Transparência em um só lugar</small></span></span></a>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <div class="ia"><b><a href="#" data-ia-abrir>IA do Brasil+</a></b>Pergunte sobre gastos, votos, mandatos e notícias de qualquer político. Sempre indica a fonte.<form data-ia-mini><input type="text" placeholder="Digite sua pergunta…" aria-label="Pergunta para a IA do Brasil+" enterkeyhint="send"></form></div>
@@ -2059,7 +2071,7 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
   </aside>
   <div class="main">
     <header class="top">
-      <a class="mlogo" href="#/inicio" aria-label="Dados BRASIL+ início"><i class="lgmark" aria-hidden="true"></i><span class="mlogo-n"><small>dados</small>BRASIL<b>+</b></span></a>
+      <a class="mlogo" href="#/inicio" aria-label="Dados BRASIL+ início"><span class="brand-stack"><i class="lgmark brand-fundo" aria-hidden="true"></i><span class="brand-txt"><small class="brand-dados">dados</small><span class="mlogo-t">BRASIL<b>+</b></span></span></span></a>
       <div class="gsearch" role="button" tabindex="0" id="openSearch">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <span class="gs-t">Pesquise por pessoa, órgão, empresa, projeto, contrato, município, estado…</span>
