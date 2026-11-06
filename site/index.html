@@ -2053,6 +2053,11 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 .top .mlogo .mlogo-t{font-size:18px;color:var(--ink)}
 .top .mlogo .brand-dados{font-size:8.5px;margin-bottom:1px}
 @media (max-width:1080px){.brand .brand-stack{width:40px;height:40px}.brand .brand-fundo{position:static!important;transform:none;width:40px;height:40px;opacity:1}}
+/* logo à esquerda e o nome depois dela (sem o desenho atrás do texto) */
+.brand .brand-stack,.top .mlogo .brand-stack{display:flex;align-items:center;gap:10px;width:auto;height:auto}
+.brand .brand-fundo,.top .mlogo .brand-fundo{position:static!important;transform:none;left:auto;top:auto;width:40px;height:40px;opacity:1;flex:none}
+.top .mlogo .brand-fundo{width:30px;height:30px}
+@media (max-width:1080px){.brand .brand-stack{width:auto;height:auto}.brand .brand-fundo{width:40px;height:40px}}
 </style>
 </head>
 <body>
