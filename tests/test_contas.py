@@ -214,3 +214,85 @@ def test_cadastro_exige_aceite_dos_termos(cli):
         assert c.termos_versao == contas.TERMOS_VERSAO and c.termos_aceitos_em is not None
     finally:
         db.close()
+
+
+# ---------- conta Google e área do administrador ----------
+
+GOOGLE_ID = "123.apps.googleusercontent.com"
+
+
+@pytest.fixture
+def google_ok(monkeypatch):
+    """Simula o Google: o token 'bom|<sub>|<email>|<nome>' é aceito; qualquer outro é recusado."""
+    monkeypatch.setattr(settings, "google_client_id", GOOGLE_ID)
+    monkeypatch.setattr(settings, "admin_emails", "dona@exemplo.com")
+
+    def falso(credencial):
+        if not credencial.startswith("bom|"):
+            raise contas.ErroConta("Login do Google recusado. Entre de novo.", 401)
+        _, sub, email, nome = credencial.split("|")
+        return {"sub": sub, "email": email, "nome": nome}
+    monkeypatch.setattr(contas, "verificar_google", falso)
+    yield
+
+
+def test_google_config_e_desligado_sem_client_id(cli, monkeypatch):
+    monkeypatch.setattr(settings, "google_client_id", "")
+    assert cli.get("/contas/google-config").json() == {"client_id": None}
+
+
+def test_google_primeiro_acesso_pede_cpf_e_depois_cria(cli, google_ok):
+    cred = "bom|sub-1|ana@exemplo.com|Ana Silva"
+    r = cli.post("/contas/google", json={"credential": cred}, headers={"content-type": "application/json"})
+    assert r.status_code == 409 and r.json()["precisa_cadastro"] is True
+    r2 = cli.post("/contas/google", json={"credential": cred, "cpf": CPF_OK, "aceito_termos": True},
+                  headers={"content-type": "application/json"})
+    assert r2.status_code == 201 and r2.json()["conta"]["nome"] == "Ana Silva"
+    assert "bp_sessao" in r2.headers.get("set-cookie", "")
+    db = SessionLocal()
+    try:
+        c = db.query(Conta).filter(Conta.google_sub == "sub-1").one()
+        assert c.senha_hash is None and c.cpf_codigo != CPF_OK and c.papel == "usuario"
+    finally:
+        db.close()
+
+
+def test_google_recusa_token_invalido_e_sem_aceite(cli, google_ok):
+    assert cli.post("/contas/google", json={"credential": "lixo"}, headers={"content-type": "application/json"}).status_code == 401
+    r = cli.post("/contas/google", json={"credential": "bom|sub-2|bia@exemplo.com|Bia", "cpf": CPF_OK, "aceito_termos": False},
+                 headers={"content-type": "application/json"})
+    assert r.status_code == 400
+
+
+def test_conta_so_google_nao_entra_com_senha(cli, google_ok):
+    cli.post("/contas/google", json={"credential": "bom|sub-3|caio@exemplo.com|Caio", "cpf": CPF_OK, "aceito_termos": True},
+             headers={"content-type": "application/json"})
+    cli.cookies.clear()
+    r = cli.post("/contas/entrar", json={"email": "caio@exemplo.com", "senha": "qualquer-senha"}, headers={"content-type": "application/json"})
+    assert r.status_code == 401
+
+
+def test_google_com_email_de_conta_existente_liga_a_mesma_conta(cli, google_ok):
+    cli.post("/contas", json={"email": "dani@exemplo.com", "senha": "senha-forte-1", "nome": "Dani", "cpf": CPF_OK2, "aceito_termos": True},
+             headers={"content-type": "application/json"})
+    cli.cookies.clear()
+    r = cli.post("/contas/google", json={"credential": "bom|sub-4|dani@exemplo.com|Dani"}, headers={"content-type": "application/json"})
+    assert r.status_code == 200
+    cli.cookies.clear()
+    assert cli.post("/contas/entrar", json={"email": "dani@exemplo.com", "senha": "senha-forte-1"}, headers={"content-type": "application/json"}).status_code == 200
+
+
+def test_admin_por_lista_e_area_so_para_admin(cli, google_ok):
+    # quem não é admin não entra na área
+    cli.post("/contas", json={"email": "comum@exemplo.com", "senha": "senha-forte-1", "nome": "Comum", "cpf": CPF_OK2, "aceito_termos": True},
+             headers={"content-type": "application/json"})
+    assert cli.get("/admin/resumo").status_code == 403
+    cli.cookies.clear()
+    assert cli.get("/admin/resumo").status_code == 401
+    # a dona (em ADMIN_EMAILS) entra e vira administradora
+    cli.post("/contas", json={"email": "dona@exemplo.com", "senha": "senha-forte-1", "nome": "Dona", "cpf": CPF_OK, "aceito_termos": True},
+             headers={"content-type": "application/json"})
+    eu = cli.get("/contas/eu").json()
+    assert eu["admin"] is True and eu["conta"]["papel"] == "admin"
+    r = cli.get("/admin/resumo")
+    assert r.status_code == 200 and r.json()["administradores"] >= 1 and "ultimas_contas" in r.json()

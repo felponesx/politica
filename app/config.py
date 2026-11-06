@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     sentry_dsn: str = ""                 # SENTRY_DSN: envio de erros do servidor ao Sentry. Vazio = desligado. Nunca vai ao navegador.
     cpf_pepper: str = ""                 # CPF_PEPPER: chave secreta do código do CPF (HMAC). Sem ela não há cadastro (falha fechada). Só no servidor.
     sessao_dias: int = 30                # validade do login (cookie bp_sessao)
+    google_client_id: str = ""           # GOOGLE_CLIENT_ID: cliente OAuth (Aplicativo da Web) do Google Cloud. Vazio = botão do Google desligado.
+    admin_emails: str = ""               # ADMIN_EMAILS: e-mails (separados por vírgula) que viram administradores ao entrar. Só no servidor.
     expor_docs: bool = True              # /docs, /redoc e /openapi.json; desligue em produção (EXPOR_DOCS=false)
     # CSV "Arrecadação por Estado" da Receita Federal (dataset "Resultado da Arrecadação" no dados.gov.br).
     # Se o link mudar, troque aqui ou baixe o arquivo e use arquivo_local=...

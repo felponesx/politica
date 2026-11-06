@@ -13,6 +13,8 @@ import re
 import secrets
 from datetime import timedelta
 
+import httpx
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -116,6 +118,83 @@ def encerrar_sessao(db: Session, token: str | None) -> None:
             db.delete(s)
 
 
+GOOGLE_TOKENINFO = "https://oauth2.googleapis.com/tokeninfo"
+GOOGLE_EMISSORES = ("accounts.google.com", "https://accounts.google.com")
+
+
+def admins_configurados() -> set[str]:
+    return {normalizar_email(e) for e in (settings.admin_emails or "").split(",") if normalizar_email(e)}
+
+
+def aplica_papel(conta: Conta) -> None:
+    """Quem está em ADMIN_EMAILS vira administrador ao entrar. Tirar o e-mail da lista não rebaixa sozinho (fica a decisão no banco)."""
+    if conta.email in admins_configurados() and conta.papel != "admin":
+        conta.papel = "admin"
+
+
+def e_admin(conta: Conta | None) -> bool:
+    return conta is not None and conta.papel == "admin"
+
+
+def verificar_google(credencial: str) -> dict:
+    """Confere o ID token do Google com o próprio Google (tokeninfo, por HTTPS): emissor, público (nosso cliente), validade e e-mail confirmado."""
+    if not settings.google_client_id:
+        raise ErroConta("Entrar com o Google não está configurado neste servidor.", 503)
+    if not credencial or len(credencial) > 4096:
+        raise ErroConta("Login do Google inválido.", 401)
+    try:
+        r = httpx.get(GOOGLE_TOKENINFO, params={"id_token": credencial}, timeout=8)
+    except httpx.HTTPError:
+        raise ErroConta("Não foi possível falar com o Google agora. Tente de novo.", 503)
+    if r.status_code != 200:
+        raise ErroConta("Login do Google recusado. Entre de novo.", 401)
+    c = r.json()
+    if c.get("aud") != settings.google_client_id or c.get("iss") not in GOOGLE_EMISSORES:
+        raise ErroConta("Login do Google recusado. Entre de novo.", 401)
+    if str(c.get("email_verified", "")).lower() != "true" or not c.get("sub") or not c.get("email"):
+        raise ErroConta("Use uma conta Google com e-mail confirmado.", 401)
+    try:
+        if int(c.get("exp", 0)) < int(agora_utc().timestamp()):
+            raise ErroConta("Login do Google expirou. Entre de novo.", 401)
+    except (TypeError, ValueError):
+        raise ErroConta("Login do Google recusado. Entre de novo.", 401)
+    return {"sub": str(c["sub"]), "email": normalizar_email(c["email"]), "nome": " ".join(str(c.get("name") or "").split())}
+
+
+def conta_do_google(db: Session, claims: dict) -> Conta | None:
+    """Conta já ligada a este Google; se não houver, a conta com o mesmo e-mail (já confirmado pelo Google) passa a usar o Google."""
+    conta = db.scalars(select(Conta).where(Conta.google_sub == claims["sub"])).first()
+    if conta is None:
+        conta = db.scalars(select(Conta).where(Conta.email == claims["email"])).first()
+        if conta is not None:
+            if conta.google_sub and conta.google_sub != claims["sub"]:
+                raise ErroConta("Este e-mail já está ligado a outra conta Google.", 409)
+            conta.google_sub = claims["sub"]
+    if conta is not None:
+        aplica_papel(conta)
+    return conta
+
+
+def cadastrar_google(db: Session, claims: dict, cpf: str, aceite_termos: bool) -> Conta:
+    if aceite_termos is not True:
+        raise ErroConta("Para criar a conta, leia e aceite os termos de uso e de privacidade.")
+    if not cpf_valido(cpf):
+        raise ErroConta("CPF inválido. Confira os números.")
+    codigo = codigo_cpf(cpf)
+    nome = claims.get("nome") or claims["email"].split("@")[0]
+    nome = " ".join(nome.split())[:120]
+    if len(nome) < 2:
+        raise ErroConta("Informe o nome completo.")
+    if db.scalars(select(Conta).where((Conta.email == claims["email"]) | (Conta.cpf_codigo == codigo) | (Conta.google_sub == claims["sub"]))).first() is not None:
+        raise ErroConta("Não foi possível criar a conta. Confira os dados ou entre na conta existente.", 409)
+    conta = Conta(email=claims["email"], senha_hash=None, google_sub=claims["sub"], cpf_codigo=codigo, nome=nome,
+                  termos_versao=TERMOS_VERSAO, termos_aceitos_em=agora_utc())
+    aplica_papel(conta)
+    db.add(conta)
+    db.flush()
+    return conta
+
+
 def email_mascarado(email: str) -> str:
     usuario, _, dominio = email.partition("@")
     return f"{usuario[:1]}***@{dominio[:1]}***"
@@ -140,6 +219,7 @@ def cadastrar(db: Session, email: str, senha: str, nome: str, cpf: str, aceite_t
         raise ErroConta("Não foi possível criar a conta. Confira os dados ou entre na conta existente.", 409)
     conta = Conta(email=email, senha_hash=hash_senha(senha), cpf_codigo=codigo, nome=nome,
                   termos_versao=TERMOS_VERSAO, termos_aceitos_em=agora_utc())
+    aplica_papel(conta)
     db.add(conta)
     db.flush()
     return conta
@@ -151,7 +231,8 @@ _HASH_REFERENCIA = hash_senha("referencia-sem-conta")
 def entrar(db: Session, email: str, senha: str) -> Conta:
     conta = db.scalars(select(Conta).where(Conta.email == normalizar_email(email))).first()
     # sem conta, confere contra um hash de referência: o tempo de resposta não revela se o e-mail existe
-    ok = confere_senha(senha, conta.senha_hash if conta else _HASH_REFERENCIA)
-    if conta is None or not ok:
+    ok = confere_senha(senha, conta.senha_hash if conta and conta.senha_hash else _HASH_REFERENCIA)
+    if conta is None or conta.senha_hash is None or not ok:
         raise ErroConta("E-mail ou senha incorretos.", 401)
+    aplica_papel(conta)
     return conta

@@ -542,7 +542,9 @@ class Conta(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(254), unique=True)
-    senha_hash: Mapped[str] = mapped_column(String(200))
+    senha_hash: Mapped[str | None] = mapped_column(String(200))  # vazio nas contas que entram só pelo Google
+    google_sub: Mapped[str | None] = mapped_column(String(64), unique=True)  # id da conta Google (claim "sub")
+    papel: Mapped[str] = mapped_column(String(12), default="usuario")       # "usuario" ou "admin"
     cpf_codigo: Mapped[str] = mapped_column(String(64), unique=True)  # HMAC-SHA256(CPF_PEPPER, CPF): impede duas contas com o mesmo CPF
     nome: Mapped[str] = mapped_column(String(120))
     criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
