@@ -64,3 +64,20 @@ def test_deixa_de_valer_quando_existe_outro_administrador(cli, monkeypatch):
     cli.cookies.clear()
     assert _entrar(cli).status_code == 401  # login de teste fechado
     assert cli.get("/admin/resumo").status_code == 401
+
+
+def test_email_e_senha_de_teste_vem_do_servidor(cli, monkeypatch):
+    monkeypatch.setattr(settings, "admin_teste_email", "dono-teste@exemplo.com")
+    monkeypatch.setattr(settings, "admin_teste_senha", "senha-do-servidor")
+    assert _entrar(cli, email="admin", senha="admin").status_code == 401
+    assert _entrar(cli, email="dono-teste@exemplo.com", senha="senha-do-servidor").status_code == 200
+    assert cli.get("/contas/eu").json()["admin"] is True
+
+
+def test_conta_real_com_o_mesmo_email_nao_e_assumida(cli, monkeypatch):
+    monkeypatch.setattr(settings, "admin_teste_email", "dono-teste@exemplo.com")
+    monkeypatch.setattr(settings, "admin_teste_senha", "senha-do-servidor")
+    cli.post("/contas", json={"email": "dono-teste@exemplo.com", "senha": "senha-propria-1", "nome": "Dona", "cpf": "529.982.247-25", "aceito_termos": True}, headers=JSON)
+    cli.cookies.clear()
+    assert _entrar(cli, email="dono-teste@exemplo.com", senha="senha-do-servidor").status_code == 401
+    assert _entrar(cli, email="dono-teste@exemplo.com", senha="senha-propria-1").status_code == 200

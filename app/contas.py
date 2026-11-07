@@ -109,7 +109,7 @@ def conta_da_sessao(db: Session, token: str | None) -> Conta | None:
     if s is None or s.expira_em < agora_utc():
         return None
     conta = db.get(Conta, s.conta_id)
-    if conta is not None and conta.email == ADMIN_TESTE and not admin_teste_ativo(db):
+    if conta is not None and conta.cpf_codigo == CODIGO_TESTE and not admin_teste_ativo(db):
         return None  # a conta de teste deixa de valer assim que existir outro administrador (ou ADMIN_PADRAO=false)
     return conta
 
@@ -135,14 +135,19 @@ def aplica_papel(conta: Conta) -> None:
         conta.papel = "admin"
 
 
-ADMIN_TESTE = "admin"  # login da conta de teste (senha igual); vale só em desenvolvimento, ver admin_teste_ativo()
+CODIGO_TESTE = hashlib.sha256(b"admin-teste").hexdigest()  # marca a conta criada pelo login de teste
+
+
+def admin_teste_email() -> str:
+    """E-mail da conta de teste, vindo de ADMIN_TESTE_EMAIL (padrão: admin). Nunca fica escrito no código."""
+    return normalizar_email(settings.admin_teste_email or "admin")
 
 
 def _outro_admin_existe(db: Session) -> bool:
     """Existe um administrador de verdade (papel admin ou e-mail em ADMIN_EMAILS) além da conta de teste?"""
-    if db.scalars(select(Conta.id).where(Conta.papel == "admin", Conta.email != ADMIN_TESTE)).first() is not None:
+    if db.scalars(select(Conta.id).where(Conta.papel == "admin", Conta.email != admin_teste_email())).first() is not None:
         return True
-    lista = admins_configurados() - {ADMIN_TESTE}
+    lista = admins_configurados() - {admin_teste_email()}
     return bool(lista) and db.scalars(select(Conta.id).where(Conta.email.in_(lista))).first() is not None
 
 
@@ -289,12 +294,17 @@ _HASH_REFERENCIA = hash_senha("referencia-sem-conta")
 
 
 def entrar(db: Session, email: str, senha: str) -> Conta:
-    if normalizar_email(email) == ADMIN_TESTE:
-        if senha != ADMIN_TESTE or not admin_teste_ativo(db):
-            raise ErroConta("E-mail ou senha incorretos.", 401)
-        conta = db.scalars(select(Conta).where(Conta.email == ADMIN_TESTE)).first()
+    teste = admin_teste_email()
+    if normalizar_email(email) == teste:
+        existente = db.scalars(select(Conta).where(Conta.email == teste)).first()
+        # só a conta criada pelo login de teste aceita a senha de teste; uma conta real segue a regra normal (senha própria)
+        if existente is None or existente.cpf_codigo == CODIGO_TESTE:
+            if senha != settings.admin_teste_senha or not admin_teste_ativo(db):
+                raise ErroConta("E-mail ou senha incorretos.", 401)
+    if normalizar_email(email) == teste and (existente is None or existente.cpf_codigo == CODIGO_TESTE):
+        conta = existente
         if conta is None:
-            conta = Conta(email=ADMIN_TESTE, senha_hash=hash_senha(ADMIN_TESTE), cpf_codigo=hashlib.sha256(b"admin-teste").hexdigest(),
+            conta = Conta(email=teste, senha_hash=hash_senha(settings.admin_teste_senha), cpf_codigo=CODIGO_TESTE,
                           nome="Administrador (conta de teste)", papel="admin", termos_versao=TERMOS_VERSAO, termos_aceitos_em=agora_utc())
             db.add(conta)
             db.flush()
