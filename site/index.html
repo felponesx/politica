@@ -1944,7 +1944,7 @@ a.fl-l[href^="#/orgao/"] .fl-c{display:inline-block;justify-self:start;margin-to
 .vln a{color:var(--blue);text-decoration:none;font-weight:600}
 .vlm{position:fixed;inset:0;z-index:300;background:rgba(15,25,45,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 .vlm[hidden]{display:none}
-.vlm-p{width:min(420px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--surface,#fff);border-radius:16px;padding:18px;box-shadow:0 20px 50px rgba(15,25,45,.25)}
+.vlm-p{width:min(420px,100%);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;touch-action:pan-y;background:var(--surface,#fff);border-radius:16px;padding:18px;box-shadow:0 20px 50px rgba(15,25,45,.25)}
 .vlm-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .vlm-h h2{margin:0;font-size:18px}
 .vlm-x{border:0;background:transparent;font-size:24px;line-height:1;cursor:pointer;color:var(--muted);padding:2px 8px}
@@ -2137,7 +2137,7 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 .pf-links{font-size:13px;color:var(--ink2)}
 @media (max-width:560px){.pf-grade{grid-template-columns:1fr}.pf-form{padding:4px 16px 18px}.pf-cab{padding:18px 48px 16px 16px}}
 /* login e cadastro: tela limpa, com aviso quando o site não está no servidor */
-.vl2{padding:0;max-width:440px;border-radius:20px;overflow:hidden}
+.vl2{padding:0;max-width:440px;border-radius:20px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 .vl2-top{display:flex;align-items:flex-start;gap:14px;padding:22px 52px 4px 22px;position:relative}
 .vl2-logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#2F6FED,#5B8DEF);display:flex;align-items:center;justify-content:center;flex:none}
 .vl2-logo svg{width:24px;height:24px;fill:#fff}
@@ -2171,6 +2171,8 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 .vl2-enviar:disabled{opacity:.6;cursor:progress}
 .vl2-rodape{font-size:11.5px;color:var(--muted);text-align:center;margin:12px 0 0;line-height:1.4}
 .vl2 [hidden]{display:none!important}
+/* logo do app no topo do login */
+.vl2-logo{width:44px;height:44px;border-radius:12px;flex:none;object-fit:cover;background:none!important}
 </style>
 </head>
 <body>
@@ -6625,7 +6627,7 @@ let VL_IO=null;
 function vlObservar(){if(VL_IO)return;let t=null;VL_IO=new MutationObserver(ms=>{if(!ms.some(m=>[...m.addedNodes].some(n=>n.nodeType===1&&(n.matches?.(".vlw")||n.querySelector?.(".vlw")))))return;clearTimeout(t);t=setTimeout(vlAtualizar,80)});VL_IO.observe(document.body,{childList:true,subtree:true})}
 function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document.createElement("div");m.id="vlM";m.className="vlm";m.hidden=true;
  m.innerHTML=`<div class="vlm-p vl2" role="dialog" aria-modal="true" aria-labelledby="vlMT">
- <div class="vl2-top"><div class="vl2-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 0 0-4 4v2H6v4h2v4a4 4 0 0 0 8 0v-4h2V9h-2V7a4 4 0 0 0-4-4z"/></svg></div>
+ <div class="vl2-top"><img class="vl2-logo" alt="" src="${esc((document.querySelector('link[rel=icon]')||{}).href||"")}">
   <div class="vl2-tit"><h2 id="vlMT">Entrar no BRASIL+</h2><p class="vl2-sub">Acesse para votar nas leis e acompanhar seus temas.</p></div>
   <button type="button" class="vlm-x" aria-label="Fechar">×</button></div>
  <div class="vl2-aviso" hidden>Para entrar ou criar conta, o BRASIL+ precisa estar no ar no servidor. Esta cópia do site é só para leitura.</div>
@@ -6634,6 +6636,7 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  <form class="vlm-f vl2-f" novalidate>
   <label class="vlm-cred">E-mail<input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="voce@exemplo.com"></label>
   <label class="vlm-cred">Senha<span class="vl2-campo"><input name="senha" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="Mínimo de 8 caracteres"><button type="button" class="vl2-olho" aria-label="Mostrar senha">Mostrar</button></span></label>
+  <label class="vlm-cred vlm-criar">Repita a senha<input name="senha2" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Digite a mesma senha"></label>
   <div class="vlm-c" hidden>
    <p class="vl2-bloco">Pedimos só o necessário: nome, e-mail, senha e CPF. Você pode completar o resto depois, em <b>Minha conta</b>.</p>
    <label class="vlm-nome">Nome completo<input name="nome" autocomplete="name" maxlength="120" placeholder="Nome e sobrenome"></label>
@@ -6649,15 +6652,16 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  m.querySelector(".vl2-aviso").hidden=!!API.on;
  const olho=m.querySelector(".vl2-olho"),senhaEl=m.querySelector("[name=senha]");olho.onclick=()=>{const v=senhaEl.type==="password";senhaEl.type=v?"text":"password";olho.textContent=v?"Ocultar":"Mostrar";olho.setAttribute("aria-label",v?"Ocultar senha":"Mostrar senha")};
  const cpfEl=m.querySelector("[name=cpf]");cpfEl.addEventListener("input",()=>{const d=cpfEl.value.replace(/\D/g,"").slice(0,11);cpfEl.value=d.replace(/^(\d{3})(\d)/,"$1.$2").replace(/^(\d{3})\.(\d{3})(\d)/,"$1.$2.$3").replace(/\.(\d{3})(\d)/,".$1-$2")});
- const modo=x=>{m.dataset.modo=x;m.querySelector(".vl2-termos").hidden=x==="entrar";m.querySelector(".vl2-sub").textContent=x==="criar"?"Crie sua conta em um minuto para votar nas leis.":x==="googlecpf"?"Falta só o CPF para concluir seu cadastro.":"Acesse para votar nas leis e acompanhar seus temas.";m.querySelectorAll("[data-m]").forEach(b=>{b.classList.toggle("on",b.dataset.m===x);b.setAttribute("aria-selected",b.dataset.m===x?"true":"false")});m.querySelector(".vlm-c").hidden=x!=="criar"&&x!=="googlecpf";m.querySelector(".vlm-s").textContent=x==="criar"?"Criar conta":x==="googlecpf"?"Concluir cadastro":"Entrar";m.querySelectorAll(".vlm-cred,.vlm-nome").forEach(l=>l.hidden=x==="googlecpf");m.querySelector(".vlm-tabs").hidden=x==="googlecpf";m.querySelector(".vlm-gbox").hidden=x==="googlecpf"||!m.querySelector("#vlGoogle").childElementCount;m.querySelector(".vlm-e").textContent="";m.querySelector("[name=senha]").autocomplete=x==="criar"?"new-password":"current-password"};
+ const modo=x=>{m.dataset.modo=x;m.querySelector(".vl2-termos").hidden=x==="entrar";m.querySelector(".vl2-sub").textContent=x==="criar"?"Crie sua conta em um minuto para votar nas leis.":x==="googlecpf"?"Falta só o CPF para concluir seu cadastro.":"Acesse para votar nas leis e acompanhar seus temas.";m.querySelectorAll("[data-m]").forEach(b=>{b.classList.toggle("on",b.dataset.m===x);b.setAttribute("aria-selected",b.dataset.m===x?"true":"false")});m.querySelector(".vlm-c").hidden=x!=="criar"&&x!=="googlecpf";m.querySelector(".vlm-s").textContent=x==="criar"?"Criar conta":x==="googlecpf"?"Concluir cadastro":"Entrar";m.querySelectorAll(".vlm-cred,.vlm-nome").forEach(l=>l.hidden=x==="googlecpf");m.querySelectorAll(".vlm-criar").forEach(l=>l.hidden=x!=="criar");m.querySelector(".vlm-tabs").hidden=x==="googlecpf";m.querySelector(".vlm-gbox").hidden=x==="googlecpf"||!m.querySelector("#vlGoogle").childElementCount;m.querySelector(".vlm-e").textContent="";m.querySelector("[name=senha]").autocomplete=x==="criar"?"new-password":"current-password"};
  m.modo=modo;m.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>modo(b.dataset.m));
  m.querySelector(".vlm-x").onclick=()=>{m.hidden=true};m.onclick=e=>{if(e.target===m)m.hidden=true};
  m.querySelector("form").onsubmit=async e=>{e.preventDefault();const f=e.target,x=m.dataset.modo||"entrar",err=m.querySelector(".vlm-e"),bt=m.querySelector(".vlm-s");err.textContent="";
+  if(x==="criar"&&f.senha.value!==f.senha2.value){err.textContent="As senhas não são iguais. Digite a mesma senha nos dois campos.";return}
   let corpo={email:f.email.value.trim(),senha:f.senha.value};if(x==="criar"){corpo.nome=f.nome.value.trim();corpo.cpf=f.cpf.value.trim();corpo.aceito_termos=!!f.aceito.checked}
   if(x==="googlecpf"){corpo={credential:m.gcred,cpf:f.cpf.value.trim(),aceito_termos:!!f.aceito.checked}}
   bt.disabled=true;try{const r=await fetch(vlUrl(x==="criar"?"/contas":x==="googlecpf"?"/contas/google":"/contas/entrar"),{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},credentials:"same-origin",body:JSON.stringify(corpo)});
    if(!r.ok){let t="Não foi possível concluir. Tente de novo.";try{t=(await r.json()).detail||t}catch(_){}err.textContent=typeof t==="string"?t:"Confira os dados.";return}
-   f.senha.value="";f.cpf&&(f.cpf.value="");m.hidden=true;await vlConta(true);await vlAtualizar()}catch(_){err.textContent="Sem conexão com o servidor. Tente de novo."}finally{bt.disabled=false}};
+   f.senha.value="";f.senha2&&(f.senha2.value="");f.cpf&&(f.cpf.value="");m.hidden=true;await vlConta(true);await vlAtualizar()}catch(_){err.textContent="Sem conexão com o servidor. Tente de novo."}finally{bt.disabled=false}};
  modo("entrar");vlGoogleBotao(m);return m}
 /* Entrar com o Google: o botão oficial (Google Identity Services) só aparece se o servidor tiver GOOGLE_CLIENT_ID */
 let VL_GOOGLE=null;
