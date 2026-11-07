@@ -6673,10 +6673,11 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  m.querySelector(".vlm-x").onclick=()=>{m.hidden=true};m.onclick=e=>{if(e.target===m)m.hidden=true};
  m.querySelector("form").onsubmit=async e=>{e.preventDefault();const f=e.target,x=m.dataset.modo||"entrar",err=m.querySelector(".vlm-e"),bt=m.querySelector(".vlm-s");err.textContent="";
   if(x==="criar"&&f.senha.value!==f.senha2.value){err.textContent="As senhas não são iguais. Digite a mesma senha nos dois campos.";return}
+  if(x!=="googlecpf"&&!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(f.email.value.trim())){err.textContent="Digite um e-mail válido, por exemplo: nome@gmail.com";return}
   let corpo={email:f.email.value.trim(),senha:f.senha.value};if(x==="criar"){corpo.nome=f.nome.value.trim();corpo.cpf=f.cpf.value.trim();corpo.aceito_termos=!!f.aceito.checked}
   if(x==="googlecpf"){corpo={credential:m.gcred,cpf:f.cpf.value.trim(),aceito_termos:!!f.aceito.checked}}
   bt.disabled=true;try{const r=await fetch(vlUrl(x==="criar"?"/contas":x==="googlecpf"?"/contas/google":"/contas/entrar"),{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},credentials:"same-origin",body:JSON.stringify(corpo)});
-   if(!r.ok){let t="Não foi possível concluir. Tente de novo.";try{t=(await r.json()).detail||t}catch(_){}err.textContent=typeof t==="string"?t:"Confira os dados.";return}
+   if(!r.ok){let t=null;try{const d=await r.json();if(typeof d.detail==="string")t=d.detail}catch(_){}err.textContent=t||(r.status===404||r.status===405||r.status===0?"Não encontramos o servidor do BRASIL+ neste endereço. Abra o site pelo link do servidor para entrar.":"O servidor respondeu com erro ("+r.status+"). Tente de novo em instantes.");return}
    f.senha.value="";f.senha2&&(f.senha2.value="");f.cpf&&(f.cpf.value="");m.hidden=true;await vlConta(true);await vlAtualizar()}catch(_){err.textContent="Sem conexão com o servidor. Tente de novo."}finally{bt.disabled=false}};
  modo("entrar");vlGoogleBotao(m);return m}
 /* Entrar com o Google: o botão oficial (Google Identity Services) só aparece se o servidor tiver GOOGLE_CLIENT_ID */
