@@ -6975,11 +6975,16 @@ async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
   return artAdmResumo(b,pubs)}
  catch(e){b.innerHTML=rerro(e)}}
 function artAdmResumo(b,pubs){const pub=pubs.filter(p=>p.publicada).length;
+ const cat=window.ART_CATF||"todas";const lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat);
+ const n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
+ const chips=[["todas","Todas"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="chip${cat===k?" on":""}" data-cat="${k}">${t} <small class="muted">${n(k)}</small></button>`).join("");
  b.innerHTML=`<div class="kpis"><div class="kpi"><span>Publicações</span><strong>${nf(pubs.length)}</strong></div><div class="kpi"><span>Publicadas</span><strong>${nf(pub)}</strong></div><div class="kpi"><span>Rascunhos</span><strong>${nf(pubs.length-pub)}</strong></div></div>
- <div class="adm-topo"><p class="muted small" style="margin:0">Toque no título para editar, trocar ou apagar. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/resumo/novo">Nova publicação</a></div>
- <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${pubs.map(p=>`<tr><td><a href="#/admin/resumo/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicada</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhum registro ainda.</td></tr>'}</tbody></table></div>`}
+ <div class="chips" role="group" aria-label="Categoria">${chips}</div>
+ <div class="adm-topo"><p class="muted small" style="margin:0">Toque no título para ver todas as informações, editar ou apagar. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/resumo/novo">Nova publicação</a></div>
+ <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${lista.map(p=>`<tr><td><a href="#/admin/resumo/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicada</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhum registro nesta categoria.</td></tr>'}</tbody></table></div>`;
+ b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
 function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
- b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/resumo">‹ Voltar à lista</a></div>
+ b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/resumo">‹ Voltar à lista</a>${p?`<span class="muted small">ID ${esc(p.id)} · última alteração: ${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</span>`:""}</div>
  <div class="pf-grade"><label>Título<input name="titulo" maxlength="200" value="${esc(v.titulo)}" required></label>
  <label>Categoria<select name="categoria">${Object.entries(ART_CAT).map(([k,t])=>`<option value="${k}"${v.categoria===k?" selected":""}>${t}</option>`).join("")}</select></label></div>
  <label>Resumo (aparece nas listas)<input name="resumo" maxlength="400" value="${esc(v.resumo||"")}"></label>
