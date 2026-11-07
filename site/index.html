@@ -4207,19 +4207,18 @@ renderSearch=function(q){_renderSearch(q);if(!API.on||q.trim().length<2)return;c
   $("#sRes").insertAdjacentHTML("afterbegin",html);$("#sRes").querySelectorAll("a.sitem").forEach(a=>{if(!a.dataset.sq)a.addEventListener("click",()=>closeSearch())})}).catch(()=>{})},300)};
 
 /* ---------- Fontes: conexão com o servidor e registro de coletas ---------- */
-const _fontes=P.fontes;
-P.fontes=(...a)=>{const r=_fontes(...a);
-return{html:`<div class="panel" style="margin-bottom:18px" id="srvPanel"><h2>Servidor de dados</h2>
+function admServidor(){return{html:`<div class="panel" style="margin-bottom:18px" id="srvPanel"><h2>Servidor de dados</h2>
 <p class="small muted" style="margin:0 0 10px">O BRASIL+ busca os dados oficiais no seu servidor (o backend em FastAPI). Abrindo o site pelo próprio servidor, a conexão é automática. Para usar um servidor em outro endereço, informe-o aqui.</p>
 <form class="filters" id="srvForm" style="margin:0"><input id="srvUrl" placeholder="https://api.seudominio.com.br" style="flex:1;min-width:200px" autocomplete="off" value="${esc(lerApiSalva().replace(/^demo$/,""))}"><button class="btn pri" type="submit">Conectar</button><button class="btn" type="button" id="srvLimpar">Usar demonstração</button></form>
-<div id="srvSt" class="mt small"></div><div id="srvCol" class="mt"></div></div>`+r.html,
-mount(){r.mount&&r.mount();
+<div id="srvSt" class="mt small"></div><div id="srvCol" class="mt"></div></div>`,
+mount(){
  const tetos=()=>{const m=new Map();Object.entries(SNAP.m.totais||{}).forEach(([k,t])=>{const c=k.split("?")[0].slice(1);if(t.no_banco>t.na_copia&&!/despesas/.test(k)&&!m.has(c))m.set(c,t)});
   return[...m].map(([c,t])=>`${esc(c)} (${nf(t.na_copia)} de ${nf(t.no_banco)})`).join(", ")};
  const st=()=>{$("#srvSt").innerHTML=API.snap?`<span class="rdot on"></span> Usando a cópia dos dados oficiais gerada em <b>${esc(dataCopia())}</b> pelo robô de coleta (GitHub Actions). As telas usam dados oficiais; filtros que não cabem na cópia avisam e pedem o servidor.${tetos()?" Listas com os itens mais recentes ou de maior valor: "+tetos()+".":""}`:API.on?`<span class="rdot on"></span> Conectado${API.base?" a <b>"+esc(API.base)+"</b>":" ao servidor que abriu esta página"}. As telas usam dados oficiais.`:`<span class="rdot"></span> Sem servidor conectado. As telas mostram a demonstração.${API.erro?" ("+esc(API.erro)+")":""}`;
   if(API.on)apiGet("/coletas?limit=30").then(c=>{$("#srvCol").innerHTML=c.length?`<h3 style="font-size:15px;margin:0 0 6px">Últimas coletas</h3>`+table([["Fonte",x=>esc(x.fonte)],["Tarefa",x=>esc(x.tarefa)],["Início",x=>x.inicio?new Date(x.inicio).toLocaleString("pt-BR"):"—"],["Situação",x=>`<span class="tag" style="background:${x.status==="ok"?"var(--p2)":x.status==="erro"?"var(--p6)":"var(--p3)"}">${esc(x.status)}</span>${x.erro?`<div class="small muted rclamp">${esc(x.erro)}</div>`:""}`],["Itens",x=>nf(x.itens),"n"]],c):rvazio("Nenhuma coleta registrada. Rode python -m scripts.coletar inicial no servidor.")}).catch(e=>{$("#srvCol").innerHTML=rerro(e)});else $("#srvCol").innerHTML=""};
  st();$("#srvForm").onsubmit=async e=>{e.preventDefault();const v=$("#srvUrl").value.trim().replace(/\/+$/,"");if(v&&!/^https?:\/\//.test(v)){$("#srvSt").innerHTML=`<span class="rdot"></span> Use um endereço começando com http:// ou https://.`;return}salvarApi(v);$("#srvSt").innerHTML=rload("Testando a conexão…");await detectarAPI();st()};
  $("#srvLimpar").onclick=async()=>{salvarApi("demo");$("#srvUrl").value="";await detectarAPI();st()}}}};
+/* a aba de Fontes volta ao que era: o servidor fica só na área do administrador */
 
 DETAIL.parlamentar="Parlamentar";DETAIL.fornecedor="Fornecedor";
 
@@ -6207,7 +6206,7 @@ P.publicacoes=(cat)=>({html:`<div class="ph"><div><h1>Publicações</h1><p>Notí
 P.publicacao=(slug)=>({html:`<div class="crumb"><a href="#/publicacoes">Publicações</a> / ${esc(slug||"")}</div><article id="pubArt" class="pub-art">${rload()}</article>`,
  mount(){apiGet("/publicacoes/"+encodeURIComponent(slug||"")).then(p=>{const a=$("#pubArt");if(!a)return;a.innerHTML=`<span class="pub-cat">${esc(PUB_CAT[p.categoria]||"")}</span><h1>${esc(p.titulo)}</h1><p class="muted small">${p.publicada_em?fdr(p.publicada_em.slice(0,10)):""}${p.fonte?` · Fonte: ${esc(p.fonte)}`:""}</p>${p.video?`<div class="pub-video"><iframe src="${esc(p.video)}" title="Vídeo da publicação" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`:""}${p.capa?`<img class="pub-capa" src="${esc(p.capa)}" alt="">`:""}${p.resumo?`<p class="pub-res">${esc(p.resumo)}</p>`:""}<div class="pub-corpo">${pubCorpo(p.corpo)}</div>`}).catch(()=>{const a=$("#pubArt");if(a)a.innerHTML=rvazio("Esta publicação não existe ou ainda não foi publicada.")})}});
 /* área do administrador: visão geral, publicações (escrever e publicar) e banco (só leitura) */
-const ADM_ABAS=[["resumo","Visão geral"],["publicacoes","Publicações"],["banco","Banco de dados"]];
+const ADM_ABAS=[["resumo","Visão geral"],["publicacoes","Publicações"],["banco","Banco de dados"],["servidor","Servidor e coletas"]];
 function admFetch(path,corpo){const opt={credentials:"same-origin",headers:{Accept:"application/json"}};if(corpo!==undefined){opt.method="POST";opt.headers["Content-Type"]="application/json";opt.body=JSON.stringify(corpo)}
  return fetch(vlUrl(path),opt).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.detail||"Não foi possível concluir.");e.status=r.status;throw e}return d})}
 P.admin=(aba,sub)=>({html:`<div class="ph"><div><h1>Administração</h1><p>Área só para administradores. O que você publicar aqui aparece no site.</p></div></div><div id="admC">${rload()}</div>`,
@@ -6215,7 +6214,7 @@ P.admin=(aba,sub)=>({html:`<div class="ph"><div><h1>Administração</h1><p>Área
 async function admMontar(aba,sub){const c=$("#admC");if(!c)return;
  try{await admFetch("/admin/resumo")}catch(e){c.innerHTML=rvazio(e.status===403?"Esta área é só para administradores.":e.status===401?"Entre na sua conta para acessar.":"Não foi possível abrir a administração agora.");return}
  c.innerHTML=`<div class="tabs keep adm-abas">${ADM_ABAS.map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}</a>`).join("")}</div><div id="admCorpo">${rload()}</div>`;
- if(aba==="publicacoes")return admPublicacoes(sub);if(aba==="banco")return admBanco(sub);return admResumo()}
+ if(aba==="publicacoes")return admPublicacoes(sub);if(aba==="banco")return admBanco(sub);if(aba==="servidor"){const r=admServidor();$("#admCorpo").innerHTML=r.html;r.mount();return}return admResumo()}
 async function admResumo(){const b=$("#admCorpo");try{const d=await admFetch("/admin/resumo");
  b.innerHTML=`<div class="kpis"><div class="kpi"><span>Contas</span><strong>${nf(d.contas)}</strong></div><div class="kpi"><span>Administradores</span><strong>${nf(d.administradores)}</strong></div><div class="kpi"><span>Entram com Google</span><strong>${nf(d.com_google)}</strong></div><div class="kpi"><span>Votos nas leis</span><strong>${nf(d.votos_total)}</strong></div></div>
  <div class="panel mt"><h2>Últimas contas</h2>${table([["Nome",c=>esc(c.nome)],["E-mail",c=>esc(c.email)],["Papel",c=>c.papel==="admin"?"Administrador":"Pessoa"],["Entra com",c=>c.entra_com==="google"?"Google":"Senha"],["Criada em",c=>c.criada_em?fdr(c.criada_em.slice(0,10)):"—"]],d.ultimas_contas)}</div>
