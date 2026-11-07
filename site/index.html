@@ -3695,7 +3695,7 @@ function dadoLimpo(v){if(typeof v==="string"){if(v.length>3&&(RE_URL_MAL.test(v)
  if(!v||typeof v!=="object"||DADO_OK.has(v))return v;DADO_OK.add(v);
  if(Array.isArray(v)){for(let i=0;i<v.length;i++){const x=v[i];if(typeof x==="string"||(x&&typeof x==="object"))v[i]=dadoLimpo(x)}return v}
  for(const k in v){const x=v[k];if(typeof x==="string"||(x&&typeof x==="object"))v[k]=dadoLimpo(x)}return v}
-async function apiGet(p,o){return dadoLimpo(await apiGet0(p,o))}
+async function apiGet(p,o){const ov=window.ART_OVR?artOvr(p):undefined;if(ov!==undefined)return dadoLimpo(structuredClone(ov));return dadoLimpo(await apiGet0(p,o))}
 async function apiGet0(p,{timeout=9000}={}){if(API.snap)return snapGet(p);const c=new AbortController();const t=setTimeout(()=>c.abort(),timeout);
  try{const r=await fetch(API.base+p,{signal:c.signal,headers:{Accept:"application/json"}});
   if(!r.ok){let m="";try{m=(await r.json()).detail||""}catch(e){}const er=new Error(m||("Erro "+r.status));er.status=r.status;throw er}
@@ -6964,7 +6964,117 @@ const ART_CAT={noticia:"Notícia",premio:"Prêmio autoral",dados:"Dados",explica
 const ART_ERR={invalid_argument:"Não foi possível salvar. Confira os campos.",quota_exceeded:"Limite de publicações atingido. Apague alguma para criar outra.",resource_exhausted:"Muitas ações seguidas. Espere um pouco e tente de novo.",unavailable:"Serviço indisponível agora. Tente de novo em instantes.",revoked:"Seu acesso a esta área foi retirado."};
 const artMsg=e=>(e&&ART_ERR[e.code])||"Não foi possível concluir. Tente de novo.";
 async function artPubs(){const s=await ARTDB.collection("publicacoes").orderBy("atualizada_em","desc").limit(500).get();return s.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}
-const ART_ABAS=[["resumo","Notícias e prêmios"],["dados","Dados do sistema"],["banco","Banco de dados"],["servidor","Servidor e coletas"]];
+const ART_ABAS=[["resumo","Notícias e prêmios"],["telas","Telas do sistema"],["dados","Listas do site"],["banco","Banco de dados"],["servidor","Servidor e coletas"]];
+const ART_EPS=["/aeroportos", "/agora/eventos", "/alertas-mapbiomas/territorio", "/ambiente", "/assembleias", "/cartao-corporativo", "/coletas", "/contadores", "/contratos", "/contratos/:id", "/cortes", "/cpis", "/crimes-politicos", "/dividas/devedores", "/dividas/empresas", "/dividas/estados", "/dividas/familias-estados", "/dividas/municipios", "/economia", "/economia-empresas", "/eleicoes/:x/:x", "/eleicoes/:x/:x/cargos", "/eleicoes/:x/:x/mapa", "/eleicoes/:x/cargos", "/eleicoes/:x/estados", "/eleicoes/anos", "/eleicoes/candidato/:id", "/emendas", "/empresas/:id", "/energia-tarifas", "/ensino", "/escandalos", "/escandalos/:id", "/estados/:id", "/estados/:x/fluxo", "/estados/:x/resumo", "/faccoes", "/fluxo-federativo", "/fontes/status", "/fornecedores-cruzados", "/fornecedores/:id", "/fundos", "/gastos/entes", "/gastos/evolucao", "/gastos/funcao", "/historico-estados", "/igc", "/indicadores", "/indicadores-sociais", "/indicadores-sociais/nomes", "/iva", "/julgamentos", "/justica", "/legislacao", "/legislacao-resumo", "/legislacao/:id", "/lista-suja", "/malhas/:id", "/mapa/estados", "/multas-ambientais", "/municipios", "/municipios/:id", "/noticias", "/obras", "/obras-gestao", "/obras-gestao/lista", "/obras-resumo/:id", "/obras/:id", "/orgaos", "/orgaos/:id", "/parlamentares", "/parlamentares/:id", "/parlamentares/:x/atuacao", "/partidos/composicao", "/policias", "/policias/:id", "/premios", "/proposicoes", "/proposicoes/:id", "/recuperacao-judicial/resumo", "/renuncia-fiscal", "/resumo-contratos", "/riscos", "/sancoes", "/sancoes/contratos", "/saneamento", "/saude", "/saude/municipios", "/saude/painel", "/seguranca", "/social", "/social/municipios", "/tcu-inabilitados", "/tcu-irregulares", "/trabalho", "/transito", "/transito/agora", "/transito/malha", "/viagens", "/votacoes", "/votacoes/:id"];
+/* ===== Telas do sistema: os dados que cada tela lê (cópia dos dados do Artifact), como tabela, com edição guardada no Artifact ===== */
+const ART_SEC=[
+ ["inicio","Início",["/estados","/fluxo-federativo","/contadores","/mapa","/agora","/malhas","/municipios","/saneamento","/riscos"]],
+ ["gastos","Gastos Públicos",["/gastos","/cartao-corporativo"]],
+ ["arrecadacao","Arrecadação",["/historico-estados"]],
+ ["dividas","Dívidas",["/dividas","/recuperacao-judicial","/emendas"]],
+ ["orgaos","Órgãos",["/orgaos","/cortes","/viagens","/fundos","/servidores"]],
+ ["pessoas","Candidatos e Indicações",["/parlamentares","/candidatos","/partidos","/assembleias","/faccoes"]],
+ ["eleicoes","Eleições",["/eleicoes"]],
+ ["seguranca","Segurança Pública",["/seguranca","/policias"]],
+ ["saude","Saúde",["/saude"]],
+ ["social","Social e Trabalho",["/social","/trabalho","/indicadores-sociais"]],
+ ["ambiente","Meio ambiente",["/ambiente","/alertas-mapbiomas","/multas-ambientais"]],
+ ["empresas","Empresas e Contratos",["/empresas","/contratos","/economia-empresas","/resumo-contratos","/fornecedores","/fornecedores-cruzados","/sancoes"]],
+ ["obras","Obras",["/obras","/obras-gestao","/obras-resumo"]],
+ ["leis","Leis e Projetos",["/proposicoes","/legislacao","/legislacao-resumo","/votacoes","/julgamentos","/justica","/cpis"]],
+ ["escandalos","Escândalos e crimes",["/escandalos","/crimes-politicos","/lista-suja","/tcu-inabilitados","/tcu-irregulares"]],
+ ["noticias","Notícias",["/noticias"]],
+ ["ensino","Ensino",["/ensino","/igc"]],
+ ["premios","Prêmios",["/premios"]],
+ ["indicadores","Indicadores",["/indicadores","/economia","/aeroportos","/energia-tarifas","/iva","/renuncia-fiscal","/transito"]],
+ ["relatorios","Relatórios e Dados",["/fontes","/coletas","/exportar","/ia","/busca"]],
+ ["outros","Outros dados",[]]
+];
+function artSecDe(p){const s=ART_SEC.find(x=>x[2].some(q=>p===q||p.startsWith(q+"/")));return s?s[0]:"outros"}
+window.ART_OVR={};const ART_OVRDOCS={};
+function artKey(p){const [c,q]=String(p).split("?");if(!q)return c;const ps=q.split("&").filter(Boolean).map(x=>x.split("=")).filter(a=>a[1]!==undefined&&a[1]!=="").map(a=>a[0]+"="+a[1]).sort();return c+(ps.length?"?"+ps.join("&"):"")}
+function artOvr(p){return window.ART_OVR[artKey(p)]}
+const artH=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)};
+async function artOvrAplicar(){try{const db=await usarCap("db");if(!db)return;
+ const snap=await Promise.race([db.collection("api").limit(1000).get(),new Promise(r=>setTimeout(()=>r(null),3000))]);if(!snap)return;
+ const g={};snap.docs.forEach(d=>{if(!d.exists)return;const x=d.data();if(!x||typeof x.k!=="string")return;const e=(g[x.k]=g[x.k]||{n:x.n,p:[],ids:[]});e.p[x.i]=x.json;e.ids.push(d.id)});
+ Object.entries(g).forEach(([k,v])=>{if(v.p.length===v.n&&v.p.every(s=>typeof s==="string")){try{window.ART_OVR[k]=JSON.parse(v.p.join(""));ART_OVRDOCS[k]=v.ids}catch(e){}}})}catch(e){}}
+async function artOvrSalvar(key,data){const j=JSON.stringify(data);if(j.length>3000000){const e=new Error("grande");e.code="grande";throw e}
+ const N=80000,n=Math.max(1,Math.ceil(j.length/N)),h=artH(key),velhos=(ART_OVRDOCS[key]||[]).slice(),ids=[];
+ for(let i=0;i<n;i++){const id=h+"-"+i;ids.push(id);await ARTDB.collection("api").doc(id).set({k:key,i,n,json:j.slice(i*N,(i+1)*N),atualizada_em:new Date().toISOString()})}
+ for(const id of velhos)if(!ids.includes(id))await ARTDB.collection("api").doc(id).delete();
+ ART_OVRDOCS[key]=ids;window.ART_OVR[key]=JSON.parse(j)}
+async function artOvrApagar(key){for(const id of (ART_OVRDOCS[key]||[]))await ARTDB.collection("api").doc(id).delete();delete ART_OVRDOCS[key];delete window.ART_OVR[key]}
+const artTipo=v=>v&&typeof v==="object"?"json":typeof v==="number"?"num":typeof v==="boolean"?"bool":"txt";
+const artValTxt=v=>v==null?"":typeof v==="object"?JSON.stringify(v,null,1):String(v);
+function artLeCampo(txt,tipo,nome,orig){
+ if(tipo==="json"){if(txt.trim()==="")return{v:[]};try{return{v:JSON.parse(txt)}}catch(e){return{err:"O campo "+nome+" precisa estar em formato JSON válido."}}}
+ if(tipo==="num"){if(txt.trim()==="")return{v:null};const n=Number(txt.replace(",","."));return Number.isNaN(n)?{err:"O campo "+nome+" precisa ser um número."}:{v:n}}
+ if(tipo==="bool")return{v:txt.trim().toLowerCase()==="true"};
+ if(orig===null&&txt==="")return{v:null};
+ return{v:txt}}
+function artSpec(entry,ref){
+ if(Array.isArray(entry))return entry.map((v,i)=>({k:i,l:"Posição "+(i+1),v,t:artTipo(ref?ref[i]:v)}));
+ if(entry&&typeof entry==="object")return Object.keys(entry).map(k=>({k,l:k,v:entry[k],t:artTipo(ref?ref[k]:entry[k])}));
+ return[{k:null,l:"Valor",v:entry,t:artTipo(ref!==undefined?ref:entry)}]}
+function artGet(r,nav){let x=r;for(const k of nav)x=x==null?undefined:x[k];return x}
+function artFormHtml(T,x){const novo=T.edit==="novo";let entry,ref;
+ if(Array.isArray(x)){const p=x[0];ref=p;entry=novo?(Array.isArray(p)?p.map(()=>""):(p&&typeof p==="object"?Object.fromEntries(Object.keys(p).map(k=>[k,""])):"")):x[T.edit]}else{entry=x}
+ if(!novo)ref=undefined;
+ const spec=artSpec(entry,ref);T.spec=spec;T.entry=entry;
+ const extra=(!Array.isArray(entry)&&entry&&typeof entry==="object")?'<div class="pf-grade"><label>Novo campo (nome, opcional)<input name="nk"></label><label>Valor do novo campo<input name="nv"></label></div>':"";
+ return `<form class="adm-form" id="artForm" novalidate><div class="adm-topo"><a href="#" id="artVolta">‹ Voltar</a></div>${spec.map((s,i)=>{const v=artValTxt(s.v);return `<label>${esc(String(s.l))}${s.t==="json"?' <small class="muted">(formato JSON)</small>':""}<textarea name="f${i}" rows="${s.t==="json"?6:(v.length>120?4:2)}">${esc(v)}</textarea></label>`}).join("")}${extra}<p class="vlm-e" id="artFErr" role="alert"></p><div class="pf-acoes"><div>${novo||T.edit==="campos"?"":'<button type="button" class="btn adm-apagar" id="artDel">Apagar linha</button>'}</div><button class="btn vlm-s" type="submit">Aplicar</button></div></form>`}
+function artArrHtml(T,x){
+ const ehObj=x.length&&x.every(r=>r&&typeof r==="object"&&!Array.isArray(r)),ehArr=x.length&&x.every(Array.isArray);let cols;
+ if(ehObj){cols=[];x.slice(0,300).forEach(r=>Object.keys(r).forEach(k=>{if(!cols.includes(k))cols.push(k)}))}
+ else if(ehArr){const n=Math.max(...x.slice(0,300).map(r=>r.length));cols=Array.from({length:n},(_,i)=>i)}
+ else cols=[null];
+ const mostra=cols.slice(0,7),lim=T.pag*100,cel=(r,c)=>c===null?r:(r==null?"":r[c]);
+ return `<div class="adm-topo"><span class="muted small">${x.length} linhas</span><button class="btn" id="artNovo" type="button">Adicionar linha</button></div><div class="tw"><table class="tab"><thead><tr>${mostra.map(c=>`<th>${esc(c===null?"Valor":typeof c==="number"?"Coluna "+(c+1):c)}</th>`).join("")}<th></th><th></th></tr></thead><tbody>${x.slice(0,lim).map((r,i)=>`<tr>${mostra.map(c=>`<td class="art-cel">${esc(artTxt(cel(r,c)))}</td>`).join("")}<td><button class="link" type="button" data-ed="${esc(JSON.stringify(i))}">Editar</button></td><td>${r&&typeof r==="object"?`<button class="link" type="button" data-abrir="${esc(JSON.stringify(i))}">Abrir</button>`:""}</td></tr>`).join("")||'<tr><td colspan="9">Nenhuma linha.</td></tr>'}</tbody></table></div>${x.length>lim?'<p><button class="btn sec" id="artMais" type="button">Mostrar mais</button></p>':""}`}
+function artObjHtml(T,x){const ks=Object.keys(x);
+ return `<div class="adm-topo"><span class="muted small">${ks.length} campos</span><button class="btn" type="button" data-ed="${esc(JSON.stringify("campos"))}">Editar campos</button></div><div class="tw"><table class="tab"><thead><tr><th>Campo</th><th>Valor</th><th></th></tr></thead><tbody>${ks.map(k=>{const v=x[k],n=v&&typeof v==="object";return `<tr><td>${esc(k)}</td><td class="art-cel">${esc(n?(Array.isArray(v)?"lista ("+v.length+")":"objeto ("+Object.keys(v).length+")"):artTxt(v))}</td><td>${n?`<button class="link" type="button" data-abrir="${esc(JSON.stringify(k))}">Abrir</button>`:""}</td></tr>`}).join("")}</tbody></table></div>`}
+function artDesenhaNo(){const T=window.ART_T,box=$("#artEd");if(!T||!box)return;
+ const x=artGet(T.ED,T.nav);
+ const crumbs=['<a href="#" data-n="-1">Dado</a>',...T.nav.map((k,i)=>`<a href="#" data-n="${i}">${esc(String(k))}</a>`)].join(" › ");
+ let corpo;
+ if(T.edit!==null)corpo=artFormHtml(T,x);
+ else if(Array.isArray(x))corpo=artArrHtml(T,x);
+ else if(x&&typeof x==="object")corpo=artObjHtml(T,x);
+ else corpo=`<p>${esc(artValTxt(x))}</p>`;
+ box.innerHTML=`<style>.art-cel{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#artEd button.link{background:none;border:0;padding:0;color:var(--accent,#2F6FED);font:inherit;cursor:pointer}</style><div class="adm-topo"><span class="small">${crumbs}</span><span>${T.custom?'<button class="btn" id="artRest" type="button" style="background:none;color:inherit;border:1px solid var(--line,#ccc)">Restaurar original</button> ':""}<button class="btn" id="artSalva" type="button">Salvar alterações</button></span></div><p class="vlm-e" id="artMsg" role="alert"></p>${corpo}`;
+ const msg=$("#artMsg");
+ box.querySelectorAll("[data-n]").forEach(a=>a.onclick=e=>{e.preventDefault();T.nav=T.nav.slice(0,+a.dataset.n+1);T.edit=null;T.pag=1;artDesenhaNo()});
+ box.querySelectorAll("[data-abrir]").forEach(a=>a.onclick=()=>{T.nav.push(JSON.parse(a.dataset.abrir));T.pag=1;artDesenhaNo()});
+ box.querySelectorAll("[data-ed]").forEach(a=>a.onclick=()=>{T.edit=JSON.parse(a.dataset.ed);artDesenhaNo()});
+ const nv=$("#artNovo");if(nv)nv.onclick=()=>{T.edit="novo";artDesenhaNo()};
+ const mais=$("#artMais");if(mais)mais.onclick=()=>{T.pag++;artDesenhaNo()};
+ $("#artSalva").onclick=async()=>{msg.textContent="";try{await artOvrSalvar(artKey(T.path),T.ED);T.custom=true;artDesenhaNo();$("#artMsg").textContent="Salvo. A tela do site passa a mostrar estes dados."}catch(e){msg.textContent=e&&e.code==="grande"?"Este dado ficou grande demais para guardar aqui (limite de 3 MB).":artMsg(e)}};
+ const rs=$("#artRest");if(rs)rs.onclick=async()=>{try{await artOvrApagar(artKey(T.path));artAbrir(T.path,T.sec)}catch(e){msg.textContent=artMsg(e)}};
+ const f=$("#artForm");if(!f)return;
+ const err=$("#artFErr");
+ $("#artVolta").onclick=e=>{e.preventDefault();T.edit=null;artDesenhaNo()};
+ f.onsubmit=e=>{e.preventDefault();err.textContent="";const vals=[];
+  for(let i=0;i<T.spec.length;i++){const s=T.spec[i],r=artLeCampo(f["f"+i].value,s.t,String(s.l),s.v);if(r.err){err.textContent=r.err;return}vals.push(r.v)}
+  let ne;const en=T.entry;
+  if(Array.isArray(en))ne=vals;else if(en&&typeof en==="object"){ne={};T.spec.forEach((s,i)=>{ne[s.k]=vals[i]});const nk=f.nk&&f.nk.value.trim();if(nk)ne[nk]=f.nv.value}else ne=vals[0];
+  if(Array.isArray(x)){if(T.edit==="novo")x.push(ne);else x[T.edit]=ne}
+  else{Object.keys(x).forEach(k=>{delete x[k]});Object.assign(x,ne)}
+  T.edit=null;artDesenhaNo()};
+ const del=$("#artDel");let c2=false;
+ if(del)del.onclick=()=>{if(!c2){c2=true;del.textContent="Confirmar exclusão";return}x.splice(T.edit,1);T.edit=null;artDesenhaNo()}}
+async function artAbrir(path,sec){const box=$("#artEd");if(!box)return;box.innerHTML=rload();
+ try{const d=await apiGet(path);window.ART_T={path,sec,ED:JSON.parse(JSON.stringify(d)),nav:[],edit:null,pag:1,custom:artOvr(path)!==undefined};artDesenhaNo()}
+ catch(e){box.innerHTML='<p class="vlm-e">Este dado não está disponível na cópia do sistema.</p>'}}
+async function artTelasMontar(b,sub){
+ if(!sub){b.innerHTML=`<p class="muted small">Cada seção é uma tela do site, na mesma ordem do menu. Escolha uma para ver os dados que ela mostra, em tabela, e alterar, adicionar ou tirar informações.</p><div class="panel mt"><div class="chips">${ART_SEC.filter(s=>ART_EPS.some(p=>artSecDe(p)===s[0])).map(([k,t])=>`<a class="chip" href="#/admin/telas/${k}">${esc(t)} <small class="muted">${ART_EPS.filter(p=>artSecDe(p)===k).length}</small></a>`).join("")}</div></div>`;return}
+ const sec=ART_SEC.find(x=>x[0]===sub);if(!sec){b.innerHTML=rvazio("Seção não encontrada.");return}
+ const eps=ART_EPS.filter(p=>artSecDe(p)===sub);
+ b.innerHTML=`<div class="adm-topo"><a href="#/admin/telas">‹ Todas as telas</a></div><h2>${esc(sec[1])}</h2><p class="muted small">Dados que esta tela lê do sistema. Escolha um ou digite o endereço (troque :x pelo valor real, por exemplo /eleicoes/2022/SP/cargos; pode acrescentar ?uf=SP).</p><div class="chips">${eps.map(p=>`<button type="button" class="chip" data-ep="${esc(p)}">${esc(p)}</button>`).join("")||'<span class="muted small">Esta tela não lê dados do servidor.</span>'}</div><form id="artEpF" class="adm-form" novalidate><label>Endereço do dado<input name="ep" placeholder="/saude/painel"></label><div class="pf-acoes"><div></div><button class="btn vlm-s" type="submit">Abrir</button></div></form><div id="artEd"></div>`;
+ const f=b.querySelector("#artEpF");
+ b.querySelectorAll("[data-ep]").forEach(x=>x.onclick=()=>{f.ep.value=x.dataset.ep;if(!x.dataset.ep.includes(":"))artAbrir(x.dataset.ep,sub)});
+ f.onsubmit=e=>{e.preventDefault();const p=f.ep.value.trim();if(!p.startsWith("/")||p.includes(":")){$("#artEd").innerHTML='<p class="vlm-e">Informe um endereço começando com / e sem :x.</p>';return}artAbrir(p,sub)};
+ if(window.ART_T&&window.ART_T.sec===sub){f.ep.value=window.ART_T.path;artDesenhaNo()}}
+
 /* listas do sistema que o administrador pode ver como tabela e alterar (guardadas no Artifact e aplicadas nas telas ao abrir) */
 const ART_DS=[
  {k:"normas",g:"Leis e Projetos",t:"Leis e normas",r:()=>typeof NORMAS==="undefined"?null:NORMAS},
@@ -7044,6 +7154,7 @@ async function artAdmMontar(aba,sub,sub2){const c=$("#admC");if(!c)return;
  const b=$("#admCorpo");
  if(aba==="banco"||aba==="servidor"){b.innerHTML=rvazio("Esta seção depende do servidor do BRASIL+ (banco de dados, contas e coletas). Ainda não está ligada neste Artifact.");return}
  try{
+  if(aba==="telas")return artTelasMontar(b,sub);
   if(aba==="dados")return artDadosMontar(b,sub,sub2);
   const pubs=await artPubs();
   if(sub==="novo")return artAdmEditor(b,null,pubs);
@@ -7086,7 +7197,7 @@ function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo
 const _pn=P.noticias,_pp=P.premios;
 P.noticias=(...a)=>{const r=_pn(...a);return{...r,html:'<div id="artVitN"></div>'+r.html,mount(){artVitrine("noticia","#artVitN","Notícias do BRASIL+");return r.mount&&r.mount()}}};
 P.premios=(...a)=>{const r=_pp(...a);return{...r,html:'<div id="artVitP"></div>'+r.html,mount(){artVitrine("premio","#artVitP","Prêmios autorais do BRASIL+");return r.mount&&r.mount()}}};
-addEventListener("hashchange",route);detectarAPI().finally(async()=>{window.API_ON=!!API.on;if(!API.on||API.snap){await artAdmIniciar();await artDadosAplicar()}navAtualizar();route()});
+addEventListener("hashchange",route);detectarAPI().finally(async()=>{window.API_ON=!!API.on;if(!API.on||API.snap){await artAdmIniciar();await Promise.all([artDadosAplicar(),artOvrAplicar()])}navAtualizar();route()});
 </script>
 <script>
 /* dica inteligente nas tabelas: ao passar sobre uma célula cortada, mostra o texto inteiro e o nome da coluna.
