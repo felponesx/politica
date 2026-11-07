@@ -2173,6 +2173,10 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 .vl2 [hidden]{display:none!important}
 /* logo do app no topo do login */
 .vl2-logo{width:44px;height:44px;border-radius:12px;flex:none;object-fit:cover;background:none!important}
+/* troca de tema: a tela escurece (ou clareia) devagar */
+html.tema-troca,html.tema-troca *{transition:background-color .9s ease,color .9s ease,border-color .9s ease,fill .9s ease,stroke .9s ease,box-shadow .9s ease!important}
+#btnTheme svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#btnTheme .tm-sol{fill:currentColor;stroke:none}
 </style>
 </head>
 <body>
@@ -3458,7 +3462,18 @@ document.addEventListener("keydown",e=>{if(((e.ctrlKey||e.metaKey)&&e.key.toLowe
 function closeAll(){$("#sheet").classList.remove("open");$("#sheetOv").classList.remove("open");travar("menu",false)}
 function toggleTheme(){const q=prefs();q.tema=document.documentElement.dataset.theme==="dark"?"claro":"escuro";salvarPrefs(q)}
 
-$("#btnTheme").onclick=toggleTheme;
+/* troca de tema: o sol vira lua (o recorte desliza e os raios somem) e as cores da tela mudam devagar */
+function tmEstado(b,lua){const svg=b.querySelector(".tm-svg");if(!svg)return;const rec=svg.querySelector(".tm-recorte"),raios=svg.querySelector(".tm-raios");
+ rec.setAttribute("cx",lua?17:26);rec.setAttribute("cy",lua?7:4);raios.style.opacity=lua?0:1;svg.style.transition="none";svg.style.transform=`rotate(${lua?-180:0}deg)`}
+function tmAnima(b,lua){const svg=b.querySelector(".tm-svg");if(!svg)return;const rec=svg.querySelector(".tm-recorte"),raios=svg.querySelector(".tm-raios");
+ const [x0,y0,x1,y1]=lua?[26,4,17,7]:[17,7,26,4];const t0=performance.now(),D=900;
+ svg.style.transition="transform .9s cubic-bezier(.4,0,.2,1)";svg.style.transform=`rotate(${lua?-180:0}deg)`;
+ const f=t=>{const k=Math.min(1,(t-t0)/D),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;rec.setAttribute("cx",x0+(x1-x0)*e);rec.setAttribute("cy",y0+(y1-y0)*e);raios.style.opacity=lua?1-e:e;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+function temaComAnimacao(){const h=document.documentElement,b=document.getElementById("btnTheme");const vaiEscuro=h.dataset.theme!=="dark";
+ if(matchMedia("(prefers-reduced-motion: reduce)").matches){toggleTheme();return}
+ window.TM_ANIM=true;h.classList.add("tema-troca");if(b)tmAnima(b,vaiEscuro);toggleTheme();
+ setTimeout(()=>{h.classList.remove("tema-troca");window.TM_ANIM=false},1000)}
+$("#btnTheme").onclick=temaComAnimacao;
 $("#bMore").onclick=()=>{closeSearch();closeAll();$("#sheet").classList.add("open");$("#sheetOv").classList.add("open");travar("menu",true)};
 $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEventListener("click",e=>{if(e.target.closest("a"))closeAll()});
 
@@ -3524,9 +3539,10 @@ function cardVisto(p){return`<a class="rcard" href="#/pessoa/${p.id}"><div class
 const PREF_PADRAO={tema:"claro"};
 function prefs(){let p={};try{p=JSON.parse(localStorage.getItem("bm-prefs")||"{}");if(!localStorage.getItem("bm-prefs")&&localStorage.getItem("bm-theme")==="dark")p.tema="escuro"}catch(e){}return{...PREF_PADRAO,...p}}
 function salvarPrefs(p){try{localStorage.setItem("bm-prefs",JSON.stringify(p))}catch(e){}aplicarPrefs()}
+const ICO_TEMA='<svg class="tm-svg" viewBox="0 0 24 24"><defs><mask id="tmMascara"><rect x="-4" y="-4" width="32" height="32" fill="#fff"/><circle class="tm-recorte" cx="26" cy="4" r="6.6" fill="#000"/></mask></defs><circle class="tm-sol" cx="12" cy="12" r="4.6" mask="url(#tmMascara)"/><g class="tm-raios" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>';
 const ICO_LUA='<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',ICO_SOL='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
 function aplicarPrefs(){const p=prefs(),r=document.documentElement;const esc=p.tema==="escuro"||(p.tema==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=esc?"dark":"light";r.classList.remove("fonte-grande","sem-animacao");
- const b=document.getElementById("btnTheme");if(b){const t=esc?"Ativar o modo claro":"Ativar o modo escuro";b.innerHTML=esc?ICO_SOL:ICO_LUA;b.setAttribute("aria-label",t);b.title=t}}
+ const b=document.getElementById("btnTheme");if(b){const t=esc?"Ativar o modo claro":"Ativar o modo escuro";if(!b.querySelector(".tm-svg"))b.innerHTML=ICO_TEMA;if(!window.TM_ANIM)tmEstado(b,esc);b.setAttribute("aria-label",t);b.title=t}}
 const semMov=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 const iniciais=n=>{const w=n.trim().split(/\s+/);return(w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase()};
 
