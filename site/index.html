@@ -6965,25 +6965,21 @@ const ART_ERR={invalid_argument:"Não foi possível salvar. Confira os campos.",
 const artMsg=e=>(e&&ART_ERR[e.code])||"Não foi possível concluir. Tente de novo.";
 async function artPubs(){const s=await ARTDB.collection("publicacoes").orderBy("atualizada_em","desc").limit(500).get();return s.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}
 async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
- const abas=ADM_ABAS.map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}${k==="banco"||k==="servidor"?' <small class="muted">(só no servidor)</small>':""}</a>`).join("");
- c.innerHTML=`<div class="adm-aviso"><b>Administração neste Artifact.</b> As publicações ficam no armazenamento deste Artifact, separado do banco do servidor: o que você grava aqui não aparece automaticamente no site.</div><div class="tabs keep adm-abas">${abas}</div><div id="admCorpo">${rload()}</div>`;
+ const abas=ADM_ABAS.filter(([k])=>k!=="publicacoes").map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}${k==="banco"||k==="servidor"?' <small class="muted">(só no servidor)</small>':""}</a>`).join("");
+ c.innerHTML=`<div class="adm-aviso"><b>Administração neste Artifact.</b> Os dados editáveis ficam no armazenamento deste Artifact, separado do banco do servidor: o que você grava aqui não aparece automaticamente no site.</div><div class="tabs keep adm-abas">${abas}</div><div id="admCorpo">${rload()}</div>`;
  const b=$("#admCorpo");
- if(aba==="banco"||aba==="servidor"){b.innerHTML=rvazio("Esta seção depende do servidor do BRASIL+ (banco de dados, contas e coletas). Não está disponível neste Artifact.");return}
+ if(aba==="banco"||aba==="servidor"){b.innerHTML=rvazio("Esta seção depende do servidor do BRASIL+ (banco de dados, contas e coletas). Não pode ser editada neste Artifact.");return}
  try{const pubs=await artPubs();
-  if(aba==="publicacoes"){
-   if(sub==="novo")return artAdmEditor(b,null,pubs);
-   if(sub){const p=pubs.find(x=>x.id===sub);return p?artAdmEditor(b,p,pubs):(b.innerHTML=rvazio("Esta publicação não existe mais."))}
-   return artAdmLista(b,pubs)}
+  if(sub==="novo")return artAdmEditor(b,null,pubs);
+  if(sub){const p=pubs.find(x=>x.id===sub);return p?artAdmEditor(b,p,pubs):(b.innerHTML=rvazio("Este registro não existe mais."))}
   return artAdmResumo(b,pubs)}
  catch(e){b.innerHTML=rerro(e)}}
 function artAdmResumo(b,pubs){const pub=pubs.filter(p=>p.publicada).length;
  b.innerHTML=`<div class="kpis"><div class="kpi"><span>Publicações</span><strong>${nf(pubs.length)}</strong></div><div class="kpi"><span>Publicadas</span><strong>${nf(pub)}</strong></div><div class="kpi"><span>Rascunhos</span><strong>${nf(pubs.length-pub)}</strong></div></div>
- <div class="panel mt"><h2>Últimas alterações</h2>${pubs.length?table([["Título",p=>esc(p.titulo||"(sem título)")],["Situação",p=>p.publicada?"Publicada":"Rascunho"],["Atualizada",p=>p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"]],pubs.slice(0,5)):'<p class="muted">Nenhuma publicação ainda. Crie a primeira na aba Publicações.</p>'}</div>`}
-function artAdmLista(b,pubs){
- b.innerHTML=`<div class="adm-topo"><p class="muted small" style="margin:0">${pubs.length} ${pubs.length===1?"publicação":"publicações"}. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/publicacoes/novo">Nova publicação</a></div>
- <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${pubs.map(p=>`<tr><td><a href="#/admin/publicacoes/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicada</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhuma publicação ainda.</td></tr>'}</tbody></table></div>`}
+ <div class="adm-topo"><p class="muted small" style="margin:0">Toque no título para editar, trocar ou apagar. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/resumo/novo">Nova publicação</a></div>
+ <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${pubs.map(p=>`<tr><td><a href="#/admin/resumo/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicada</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhum registro ainda.</td></tr>'}</tbody></table></div>`}
 function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
- b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/publicacoes">‹ Voltar às publicações</a></div>
+ b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/resumo">‹ Voltar à lista</a></div>
  <div class="pf-grade"><label>Título<input name="titulo" maxlength="200" value="${esc(v.titulo)}" required></label>
  <label>Categoria<select name="categoria">${Object.entries(ART_CAT).map(([k,t])=>`<option value="${k}"${v.categoria===k?" selected":""}>${t}</option>`).join("")}</select></label></div>
  <label>Resumo (aparece nas listas)<input name="resumo" maxlength="400" value="${esc(v.resumo||"")}"></label>
@@ -7000,11 +6996,11 @@ function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo
   if(d.video&&!/^https:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//.test(d.video)){msg.textContent="O vídeo precisa ser um link https do YouTube ou do Vimeo.";return}
   bt.disabled=true;
   try{if(p){await ARTDB.collection("publicacoes").doc(p.id).set(d);ok.hidden=false}
-   else{const r=await ARTDB.collection("publicacoes").add(d);location.hash="#/admin/publicacoes/"+r.id;return}}
+   else{const r=await ARTDB.collection("publicacoes").add(d);location.hash="#/admin/resumo/"+r.id;return}}
   catch(err){msg.textContent=artMsg(err)}finally{bt.disabled=false}};
  const ap=b.querySelector(".adm-apagar");let confirmou=false;
  if(ap)ap.onclick=async()=>{if(!confirmou){confirmou=true;ap.textContent="Confirmar exclusão";return}
-  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();location.hash="#/admin/publicacoes"}
+  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();location.hash="#/admin/resumo"}
   catch(err){msg.textContent=artMsg(err);ap.disabled=false;confirmou=false;ap.textContent="Apagar"}}}
 addEventListener("hashchange",route);detectarAPI().finally(async()=>{window.API_ON=!!API.on;if(!API.on||API.snap)await artAdmIniciar();navAtualizar();route()});
 </script>
