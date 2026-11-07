@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     cpf_pepper: str = ""                 # CPF_PEPPER: chave secreta do código do CPF (HMAC). Sem ela não há cadastro (falha fechada). Só no servidor.
     sessao_dias: int = 30                # validade do login (cookie bp_sessao)
     google_client_id: str = ""           # GOOGLE_CLIENT_ID: cliente OAuth (Aplicativo da Web) do Google Cloud. Vazio = botão do Google desligado.
+    admin_padrao: bool = True            # ADMIN_PADRAO: conta de teste admin/admin, só enquanto não houver outro administrador. Ponha false antes de publicar.
     setup_admin_token: str = ""          # SETUP_ADMIN_TOKEN: chave (32+ caracteres) para a página /admin/configurar, que torna admin uma conta já criada. Vazio = página desligada. Apague depois de usar.
     admin_emails: str = ""               # ADMIN_EMAILS: e-mails (separados por vírgula) que viram administradores ao entrar. Só no servidor.
     expor_docs: bool = True              # /docs, /redoc e /openapi.json; desligue em produção (EXPOR_DOCS=false)

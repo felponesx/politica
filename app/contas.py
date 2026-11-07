@@ -108,7 +108,10 @@ def conta_da_sessao(db: Session, token: str | None) -> Conta | None:
     s = db.scalars(select(Sessao).where(Sessao.token_hash == _hash_token(token))).first()
     if s is None or s.expira_em < agora_utc():
         return None
-    return db.get(Conta, s.conta_id)
+    conta = db.get(Conta, s.conta_id)
+    if conta is not None and conta.email == ADMIN_TESTE and not admin_teste_ativo(db):
+        return None  # a conta de teste deixa de valer assim que existir outro administrador (ou ADMIN_PADRAO=false)
+    return conta
 
 
 def encerrar_sessao(db: Session, token: str | None) -> None:
@@ -130,6 +133,22 @@ def aplica_papel(conta: Conta) -> None:
     """Quem está em ADMIN_EMAILS vira administrador ao entrar. Tirar o e-mail da lista não rebaixa sozinho (fica a decisão no banco)."""
     if conta.email in admins_configurados() and conta.papel != "admin":
         conta.papel = "admin"
+
+
+ADMIN_TESTE = "admin"  # login da conta de teste (senha igual); vale só em desenvolvimento, ver admin_teste_ativo()
+
+
+def _outro_admin_existe(db: Session) -> bool:
+    """Existe um administrador de verdade (papel admin ou e-mail em ADMIN_EMAILS) além da conta de teste?"""
+    if db.scalars(select(Conta.id).where(Conta.papel == "admin", Conta.email != ADMIN_TESTE)).first() is not None:
+        return True
+    lista = admins_configurados() - {ADMIN_TESTE}
+    return bool(lista) and db.scalars(select(Conta.id).where(Conta.email.in_(lista))).first() is not None
+
+
+def admin_teste_ativo(db: Session) -> bool:
+    """A conta admin/admin só funciona com ADMIN_PADRAO ligado e enquanto não houver outro administrador."""
+    return bool(settings.admin_padrao) and not _outro_admin_existe(db)
 
 
 def e_admin(conta: Conta | None) -> bool:
@@ -270,6 +289,17 @@ _HASH_REFERENCIA = hash_senha("referencia-sem-conta")
 
 
 def entrar(db: Session, email: str, senha: str) -> Conta:
+    if normalizar_email(email) == ADMIN_TESTE:
+        if senha != ADMIN_TESTE or not admin_teste_ativo(db):
+            raise ErroConta("E-mail ou senha incorretos.", 401)
+        conta = db.scalars(select(Conta).where(Conta.email == ADMIN_TESTE)).first()
+        if conta is None:
+            conta = Conta(email=ADMIN_TESTE, senha_hash=hash_senha(ADMIN_TESTE), cpf_codigo=hashlib.sha256(b"admin-teste").hexdigest(),
+                          nome="Administrador (conta de teste)", papel="admin", termos_versao=TERMOS_VERSAO, termos_aceitos_em=agora_utc())
+            db.add(conta)
+            db.flush()
+        conta.papel = "admin"
+        return conta
     conta = db.scalars(select(Conta).where(Conta.email == normalizar_email(email))).first()
     # sem conta, confere contra um hash de referência: o tempo de resposta não revela se o e-mail existe
     ok = confere_senha(senha, conta.senha_hash if conta and conta.senha_hash else _HASH_REFERENCIA)

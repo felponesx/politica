@@ -2177,6 +2177,7 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 html.tema-troca,html.tema-troca *{transition:background-color .9s ease,color .9s ease,border-color .9s ease,fill .9s ease,stroke .9s ease,box-shadow .9s ease!important}
 #btnTheme svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #btnTheme .tm-sol{fill:currentColor;stroke:none}
+.adm-aviso{background:#FFF6E5;color:#8A5A00;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;margin:0 0 12px}
 </style>
 </head>
 <body>
@@ -6231,7 +6232,8 @@ P.admin=(aba,sub)=>({html:`<div class="ph"><div><h1>Administração</h1><p>Área
  mount(){admMontar(aba||"resumo",sub)}});
 async function admMontar(aba,sub){const c=$("#admC");if(!c)return;
  try{await admFetch("/admin/resumo")}catch(e){c.innerHTML=rvazio(e.status===403?"Esta área é só para administradores.":e.status===401?"Entre na sua conta para acessar.":"Não foi possível abrir a administração agora.");return}
- c.innerHTML=`<div class="tabs keep adm-abas">${ADM_ABAS.map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}</a>`).join("")}</div><div id="admCorpo">${rload()}</div>`;
+ const teste=VL_CONTA&&VL_CONTA.conta_teste?`<div class="adm-aviso"><b>Conta de teste ativa (admin).</b> Ela deixa de funcionar assim que existir outro administrador ou com <code>ADMIN_PADRAO=false</code>. Desligue antes de publicar o site.</div>`:"";
+ c.innerHTML=teste+`<div class="tabs keep adm-abas">${ADM_ABAS.map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}</a>`).join("")}</div><div id="admCorpo">${rload()}</div>`;
  if(aba==="publicacoes")return admPublicacoes(sub);if(aba==="banco")return admBanco(sub);if(aba==="servidor"){const r=admServidor();$("#admCorpo").innerHTML=r.html;r.mount();return}return admResumo()}
 async function admResumo(){const b=$("#admCorpo");try{const d=await admFetch("/admin/resumo");
  b.innerHTML=`<div class="kpis"><div class="kpi"><span>Contas</span><strong>${nf(d.contas)}</strong></div><div class="kpi"><span>Administradores</span><strong>${nf(d.administradores)}</strong></div><div class="kpi"><span>Entram com Google</span><strong>${nf(d.com_google)}</strong></div><div class="kpi"><span>Votos nas leis</span><strong>${nf(d.votos_total)}</strong></div></div>
@@ -6673,7 +6675,7 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  m.querySelector(".vlm-x").onclick=()=>{m.hidden=true};m.onclick=e=>{if(e.target===m)m.hidden=true};
  m.querySelector("form").onsubmit=async e=>{e.preventDefault();const f=e.target,x=m.dataset.modo||"entrar",err=m.querySelector(".vlm-e"),bt=m.querySelector(".vlm-s");err.textContent="";
   if(x==="criar"&&f.senha.value!==f.senha2.value){err.textContent="As senhas não são iguais. Digite a mesma senha nos dois campos.";return}
-  if(x!=="googlecpf"&&!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(f.email.value.trim())){err.textContent="Digite um e-mail válido, por exemplo: nome@gmail.com";return}
+  if(x!=="googlecpf"&&f.email.value.trim().toLowerCase()!=="admin"&&!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(f.email.value.trim())){err.textContent="Digite um e-mail válido, por exemplo: nome@gmail.com";return}
   let corpo={email:f.email.value.trim(),senha:f.senha.value};if(x==="criar"){corpo.nome=f.nome.value.trim();corpo.cpf=f.cpf.value.trim();corpo.aceito_termos=!!f.aceito.checked}
   if(x==="googlecpf"){corpo={credential:m.gcred,cpf:f.cpf.value.trim(),aceito_termos:!!f.aceito.checked}}
   bt.disabled=true;try{const r=await fetch(vlUrl(x==="criar"?"/contas":x==="googlecpf"?"/contas/google":"/contas/entrar"),{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},credentials:"same-origin",body:JSON.stringify(corpo)});

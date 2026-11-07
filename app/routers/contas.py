@@ -79,7 +79,8 @@ def _erro(e: contas.ErroConta) -> HTTPException:
 
 def _resumo_conta(conta) -> dict:
     return {"nome": conta.nome, "email": contas.email_mascarado(conta.email), "papel": "admin" if contas.e_admin(conta) else conta.papel,
-            "tem_google": bool(conta.google_sub), "tem_senha": bool(conta.senha_hash)}
+            "tem_google": bool(conta.google_sub), "tem_senha": bool(conta.senha_hash),
+            "conta_teste": conta.email == contas.ADMIN_TESTE}
 
 
 def _sessao_de(request: Request, db: Session) -> object | None:
