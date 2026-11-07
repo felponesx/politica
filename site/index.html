@@ -3054,7 +3054,7 @@ function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.datase
  cl.querySelectorAll("path.sel:not([data-uf])").forEach(p=>p.remove());
  const tg=cl.querySelector(`path[data-uf="${uf}"]`);const toFill=tg.getAttribute("fill");tg.classList.remove("zf-other");tg.classList.add("zf-target");cl.appendChild(tg);if(mgc){cl.appendChild(mgc);tg.style.fill=toFill;tg.style.fillOpacity="0"}else{tg.style.fill=fromFill}
  document.body.appendChild(fx);svg.classList.add("voo-volta");const mainEl=$(cfg.main);if(mainEl){mainEl.style.transition="none";mainEl.style.opacity="0"}const alvo=tp.ownerSVGElement===svg?tp:null;card.classList.add("unzoom");
- requestAnimationFrame(()=>requestAnimationFrame(()=>{fx.classList.remove("back");if(mgc){tg.style.transition="fill-opacity .6s ease";tg.style.fillOpacity="1";mgc.style.transition="opacity .6s ease";mgc.style.opacity="0"}else{tg.style.fill=toFill}card.classList.remove("unzoom")}));
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{if(mgc){tg.style.transition="fill-opacity .6s ease";tg.style.fillOpacity="1";mgc.style.transition="opacity .6s ease";mgc.style.opacity="0"}else{tg.style.fill=toFill}card.classList.remove("unzoom")}));
  /* o clone pousa sobre o estado real: o layout ainda se ajusta uns 250 ms depois de começar a volta, então o destino é corrigido ao vivo */
  const zz2=zoomDoc(),tg0=tg.getBoundingClientRect();
  const destino=()=>{const tn=tp.getBoundingClientRect();return`translate(${((tn.left+tn.width/2)-(tg0.left+tg0.width/2))/zz2}px,${((tn.top+tn.height/2)-(tg0.top+tg0.height/2))/zz2}px) scale(1)`};
