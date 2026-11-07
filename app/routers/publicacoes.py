@@ -1,10 +1,12 @@
 """Publicações do BRASIL+ (notícias, dados próprios, destaques) e a área do administrador: escrever, enviar fotos e ver o banco."""
 from __future__ import annotations
 
+import hmac
 from datetime import datetime
+from html import escape
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import Response
+from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -12,7 +14,10 @@ from sqlalchemy.orm import Session
 from app import contas, publicacoes as pub
 from app.db import get_db
 from app.models import Conta, Midia, Parlamentar, Proposicao, Publicacao, Votacao, VotoLei, agora_utc
+from app import limites
+from app.config import settings
 from app.routers.contas import _exige_json
+from app.seguranca import ip_cliente
 
 router = APIRouter(tags=["Publicações e administração"])
 
@@ -244,3 +249,65 @@ def admin_banco_tabela(tabela: str, request: Request, pagina: int = Query(1, ge=
     return {"tabela": tabela, "descricao": descr, "colunas": [c.name for c in colunas], "total": total,
             "pagina": pagina, "paginas": max(1, -(-total // POR_PAGINA)),
             "linhas": [[_valor(getattr(l, c.name)) for c in colunas] for l in linhas]}
+
+
+# ---------- configuração inicial do administrador (sem terminal, pelo celular) ----------
+
+class ConfigurarIn(BaseModel):
+    chave: str = Field(max_length=200)
+    email: str = Field(max_length=254)
+
+
+def _setup_ativo() -> bool:
+    return len(settings.setup_admin_token or "") >= 32
+
+
+@router.get("/admin/configurar", response_class=HTMLResponse)
+def pagina_configurar():
+    """Página que torna administrador uma conta JÁ criada pelo site. Desligada (404) sem SETUP_ADMIN_TOKEN de 32+ caracteres."""
+    if not _setup_ativo():
+        raise HTTPException(404)
+    return HTMLResponse("""<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Configurar administrador</title>
+<style>body{font-family:system-ui,sans-serif;background:#F5F7FA;color:#1D2939;margin:0;padding:20px}main{max-width:420px;margin:24px auto;background:#fff;border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(15,25,45,.08)}
+h1{font-size:20px;margin:0 0 6px}p{font-size:14px;line-height:1.5;color:#475467}label{display:block;font-size:13px;margin:12px 0 4px;color:#344054}
+input{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #D0D5DD;border-radius:10px;font-size:16px}button{width:100%;margin-top:16px;padding:12px;border:0;border-radius:12px;background:#2F6FED;color:#fff;font-size:15px;font-weight:600}
+#res{margin-top:14px;font-size:14px;line-height:1.5}.ok{color:#067647}.erro{color:#B42318}</style></head><body><main>
+<h1>Configurar administrador</h1>
+<p>Esta página torna administradora uma conta que você <b>já criou</b> pelo site (Criar conta). Ela não pede senha.</p>
+<label for="chave">Chave de configuração</label><input id="chave" type="password" autocomplete="off">
+<label for="email">E-mail da conta</label><input id="email" type="email" autocomplete="off" placeholder="voce@gmail.com">
+<button id="ir" type="button">Tornar administrador</button>
+<div id="res" role="status"></div></main>
+<script>
+document.getElementById("ir").onclick=async()=>{const r=document.getElementById("res");r.className="";r.textContent="Enviando…";
+ try{const x=await fetch("/admin/configurar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chave:document.getElementById("chave").value,email:document.getElementById("email").value.trim()})});
+  const d=await x.json().catch(()=>({}));if(!x.ok){r.className="erro";r.textContent=d.detail||"Não foi possível concluir ("+x.status+")."}else{r.className="ok";r.textContent=d.mensagem}}
+ catch(e){r.className="erro";r.textContent="Sem conexão com o servidor."}};
+</script></body></html>""")
+
+
+@router.post("/admin/configurar")
+def configurar_admin(dados: ConfigurarIn, request: Request, db: Session = Depends(get_db)):
+    _exige_json(request)
+    if not _setup_ativo():
+        raise HTTPException(404)
+    _limita_setup(request)
+    if not hmac.compare_digest(dados.chave.encode(), settings.setup_admin_token.encode()):
+        raise HTTPException(403, "Chave incorreta.")
+    email = contas.normalizar_email(dados.email)
+    conta = db.scalars(select(Conta).where(Conta.email == email)).first() if contas.email_valido(email) else None
+    if conta is None:
+        raise HTTPException(404, "Não há conta com este e-mail. Crie a conta primeiro pelo site (Criar conta) e tente de novo.")
+    conta.papel = "admin"
+    db.commit()
+    return {"ok": True, "mensagem": "Pronto: esta conta agora é administradora. Saia e entre de novo no site. Depois, apague SETUP_ADMIN_TOKEN no servidor."}
+
+
+def _limita_setup(request: Request) -> None:
+    try:
+        r = limites.consumir(f"setup:{limites.hash_cliente(ip_cliente(request))}", 10, 900)
+    except limites.LimiteIndisponivel:
+        raise HTTPException(503, "Serviço indisponível. Tente de novo em instantes.")
+    if not r.ok:
+        raise HTTPException(429, "Muitas tentativas. Espere alguns minutos.")
