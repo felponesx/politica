@@ -6,7 +6,7 @@ para depois serem normalizadas em tabelas específicas conforme as telas exigire
 """
 from datetime import date, datetime, timezone
 
-from sqlalchemy import (JSON, BigInteger, Date, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, String, Text,
+from sqlalchemy import (JSON, BigInteger, Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, String, Text,
                         UniqueConstraint, func, text)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -576,3 +576,36 @@ class VotoLei(Base):
     proposicao_id: Mapped[int] = mapped_column(ForeignKey("proposicoes.id", ondelete="CASCADE"), index=True)
     opcao: Mapped[str] = mapped_column(String(12))
     atualizado_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+
+
+class Midia(Base):
+    """Foto enviada pelo administrador (guardada no banco, até 3 MB). Serve as capas e imagens das publicações."""
+    __tablename__ = "midias"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nome: Mapped[str] = mapped_column(String(120))
+    tipo: Mapped[str] = mapped_column(String(20))  # image/jpeg, image/png, image/webp
+    tamanho: Mapped[int] = mapped_column(Integer)
+    dados: Mapped[bytes] = mapped_column(LargeBinary)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+
+
+class Publicacao(Base):
+    """Notícia ou publicação própria do BRASIL+ (escrita pelo administrador). Só aparece no site quando 'publicada' é verdadeiro."""
+    __tablename__ = "publicacoes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(160), unique=True)
+    titulo: Mapped[str] = mapped_column(String(200))
+    resumo: Mapped[str | None] = mapped_column(String(400))
+    corpo: Mapped[str] = mapped_column(Text)            # texto puro; linha em branco separa parágrafos
+    categoria: Mapped[str] = mapped_column(String(40), default="noticia")
+    capa_midia_id: Mapped[int | None] = mapped_column(ForeignKey("midias.id", ondelete="SET NULL"))
+    capa_url: Mapped[str | None] = mapped_column(String(500))  # ou um link https de imagem
+    video_url: Mapped[str | None] = mapped_column(String(300))  # só YouTube ou Vimeo, guardado como link de incorporação
+    fonte: Mapped[str | None] = mapped_column(String(300))
+    publicada: Mapped[bool] = mapped_column(Boolean, default=False)
+    publicada_em: Mapped[datetime | None] = mapped_column(DateTime)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+    atualizada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+
