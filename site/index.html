@@ -6955,18 +6955,16 @@ function telaPunidas(){return{html:`<div id="punL">${rload()}</div>`,mount(){Pro
  if(t==="crimes"){const c=telaCrimes();return{html:`<div class="ph"><div><h1>Escândalos e crimes</h1><p>Casos de corrupção investigados no Brasil e os políticos condenados neles. Cada informação tem o link da fonte.</p></div></div>${ABAS_ESC("crimes")}${c.html}`,mount:c.mount}}
  const r=_esc6(t,...a);return{html:r.html,mount(){r.mount&&r.mount();const ph=document.querySelector("#view .ph");if(ph&&!document.getElementById("abasEsc"))ph.insertAdjacentHTML("afterend",ABAS_ESC("esc"))}}}}
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
-/* ===== Administração dentro do Artifact (sem servidor): publicações no armazenamento do próprio Artifact =====
-   Só ativa para quem pode editar (canEdit). Sem servidor, as telas do servidor (contas, banco, coletas) ficam indisponíveis. */
+/* ===== Administração dentro do Artifact (sem servidor) =====
+   Só ativa para quem pode editar (canEdit). O que é alterado fica guardado no armazenamento do Artifact e é aplicado nas telas. */
 window.ART_ADM=false;let ARTDB=null;
 const usarCap=n=>(window.claude&&window.claude.use)?window.claude.use(n).catch(()=>null):Promise.resolve(null);
 async function artAdmIniciar(){try{const [u,d]=await Promise.all([usarCap("user"),usarCap("db")]);if(!d||!u)return;if(!(await u.canEdit()))return;ARTDB=d;window.ART_ADM=true}catch(e){}}
 const ART_CAT={noticia:"Notícia",premio:"Prêmio autoral",dados:"Dados",explicacao:"Explicação"};
-const ART_ERR={invalid_argument:"Não foi possível salvar. Confira os campos.",quota_exceeded:"Limite de publicações atingido. Apague alguma para criar outra.",resource_exhausted:"Muitas ações seguidas. Espere um pouco e tente de novo.",unavailable:"Serviço indisponível agora. Tente de novo em instantes.",revoked:"Seu acesso a esta área foi retirado."};
+const ART_ERR={invalid_argument:"Não foi possível salvar. Confira os campos.",quota_exceeded:"Limite de itens atingido. Apague algum para criar outro.",resource_exhausted:"Muitas ações seguidas. Espere um pouco e tente de novo.",unavailable:"Serviço indisponível agora. Tente de novo em instantes.",revoked:"Seu acesso a esta área foi retirado."};
 const artMsg=e=>(e&&ART_ERR[e.code])||"Não foi possível concluir. Tente de novo.";
 async function artPubs(){const s=await ARTDB.collection("publicacoes").orderBy("atualizada_em","desc").limit(500).get();return s.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}
-const ART_ABAS=[["resumo","Notícias e prêmios"],["telas","Telas do sistema"],["dados","Listas do site"],["banco","Banco de dados"],["servidor","Servidor e coletas"]];
 const ART_EPS=["/aeroportos", "/agora/eventos", "/alertas-mapbiomas/territorio", "/ambiente", "/assembleias", "/cartao-corporativo", "/coletas", "/contadores", "/contratos", "/contratos/:id", "/cortes", "/cpis", "/crimes-politicos", "/dividas/devedores", "/dividas/empresas", "/dividas/estados", "/dividas/familias-estados", "/dividas/municipios", "/economia", "/economia-empresas", "/eleicoes/:x/:x", "/eleicoes/:x/:x/cargos", "/eleicoes/:x/:x/mapa", "/eleicoes/:x/cargos", "/eleicoes/:x/estados", "/eleicoes/anos", "/eleicoes/candidato/:id", "/emendas", "/empresas/:id", "/energia-tarifas", "/ensino", "/escandalos", "/escandalos/:id", "/estados/:id", "/estados/:x/fluxo", "/estados/:x/resumo", "/faccoes", "/fluxo-federativo", "/fontes/status", "/fornecedores-cruzados", "/fornecedores/:id", "/fundos", "/gastos/entes", "/gastos/evolucao", "/gastos/funcao", "/historico-estados", "/igc", "/indicadores", "/indicadores-sociais", "/indicadores-sociais/nomes", "/iva", "/julgamentos", "/justica", "/legislacao", "/legislacao-resumo", "/legislacao/:id", "/lista-suja", "/malhas/:id", "/mapa/estados", "/multas-ambientais", "/municipios", "/municipios/:id", "/noticias", "/obras", "/obras-gestao", "/obras-gestao/lista", "/obras-resumo/:id", "/obras/:id", "/orgaos", "/orgaos/:id", "/parlamentares", "/parlamentares/:id", "/parlamentares/:x/atuacao", "/partidos/composicao", "/policias", "/policias/:id", "/premios", "/proposicoes", "/proposicoes/:id", "/recuperacao-judicial/resumo", "/renuncia-fiscal", "/resumo-contratos", "/riscos", "/sancoes", "/sancoes/contratos", "/saneamento", "/saude", "/saude/municipios", "/saude/painel", "/seguranca", "/social", "/social/municipios", "/tcu-inabilitados", "/tcu-irregulares", "/trabalho", "/transito", "/transito/agora", "/transito/malha", "/viagens", "/votacoes", "/votacoes/:id"];
-/* ===== Telas do sistema: os dados que cada tela lê (cópia dos dados do Artifact), como tabela, com edição guardada no Artifact ===== */
 const ART_SEC=[
  ["inicio","Início",["/estados","/fluxo-federativo","/contadores","/mapa","/agora","/malhas","/municipios","/saneamento","/riscos"]],
  ["gastos","Gastos Públicos",["/gastos","/cartao-corporativo"]],
@@ -6991,6 +6989,89 @@ const ART_SEC=[
  ["outros","Outros dados",[]]
 ];
 function artSecDe(p){const s=ART_SEC.find(x=>x[2].some(q=>p===q||p.startsWith(q+"/")));return s?s[0]:"outros"}
+const ART_NOMES={"/aeroportos":"Aeroportos","/agora/eventos":"Agenda de hoje","/alertas-mapbiomas/territorio":"Alertas de desmatamento (MapBiomas)","/ambiente":"Meio ambiente por estado","/assembleias":"Assembleias legislativas","/cartao-corporativo":"Cartão corporativo","/contadores":"Impostômetro e gastômetro","/contratos":"Contratos públicos","/cortes":"Cortes de gastos","/cpis":"CPIs","/crimes-politicos":"Crimes de políticos","/dividas/devedores":"Maiores devedores","/dividas/empresas":"Dívidas das empresas","/dividas/estados":"Dívidas dos estados","/dividas/familias-estados":"Dívidas das famílias por estado","/dividas/municipios":"Dívidas das cidades","/economia":"Economia","/economia-empresas":"Economia das empresas","/eleicoes/anos":"Anos de eleição","/emendas":"Emendas parlamentares","/energia-tarifas":"Tarifas de energia","/ensino":"Ensino (IDEB)","/escandalos":"Escândalos","/faccoes":"Facções","/fluxo-federativo":"Fluxo federativo","/fundos":"Fundo eleitoral","/gastos/entes":"Gastos por ente","/gastos/evolucao":"Evolução dos gastos","/gastos/funcao":"Gastos por função","/historico-estados":"Histórico dos estados","/igc":"Faculdades (IGC)","/indicadores":"Indicadores","/indicadores-sociais":"Indicadores sociais","/iva":"Reforma tributária (IVA)","/julgamentos":"Julgamentos dos tribunais","/justica":"Fila dos tribunais","/legislacao":"Leis e normas","/lista-suja":"Lista suja do trabalho escravo","/mapa/estados":"Mapa dos estados","/multas-ambientais":"Multas ambientais","/municipios":"Municípios","/noticias":"Notícias","/obras":"Obras","/obras-gestao":"Andamento das obras","/orgaos":"Órgãos","/parlamentares":"Parlamentares","/partidos/composicao":"Composição dos partidos","/policias":"Polícias","/premios":"Prêmios","/proposicoes":"Projetos de lei","/recuperacao-judicial/resumo":"Recuperação judicial","/renuncia-fiscal":"Renúncia fiscal","/resumo-contratos":"Resumo dos contratos","/riscos":"Desastres e riscos","/sancoes":"Empresas punidas","/saneamento":"Saneamento","/saude":"Saúde (resumo)","/saude/municipios":"Saúde por município","/saude/painel":"Painel de saúde","/seguranca":"Segurança pública","/social":"Social por estado","/social/municipios":"Social por município","/tcu-inabilitados":"Inabilitados pelo TCU","/tcu-irregulares":"Contas irregulares (TCU)","/trabalho":"Trabalho e renda","/transito":"Trânsito","/transito/agora":"Trânsito agora","/transito/malha":"Malha viária","/viagens":"Viagens a serviço","/votacoes":"Votações"};
+function artNome(p){if(ART_NOMES[p])return ART_NOMES[p];const t=p.replace(/^\//,"").split("/").map(x=>x.startsWith(":")?"(escolha)":x.replace(/-/g," ")).join(" › ");return t.charAt(0).toUpperCase()+t.slice(1)}
+const artRot=k=>{if(typeof k==="number")return "Coluna "+(k+1);const t=String(k).replace(/[_-]+/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)};
+const artTxt=(v,n)=>{const t=v==null?"":typeof v==="object"?JSON.stringify(v):String(v);return t.length>(n||90)?t.slice(0,n||90)+"…":t};
+const artTipo=v=>v&&typeof v==="object"?"json":typeof v==="number"?"num":typeof v==="boolean"?"bool":"txt";
+const artValTxt=v=>v==null?"":typeof v==="object"?JSON.stringify(v,null,1):String(v);
+function artLeCampo(txt,tipo,nome,orig){
+ if(tipo==="json"){if(txt.trim()==="")return{v:[]};try{return{v:JSON.parse(txt)}}catch(e){return{err:"O campo "+nome+" precisa estar em formato JSON válido."}}}
+ if(tipo==="num"){if(txt.trim()==="")return{v:null};const n=Number(txt.replace(",","."));return Number.isNaN(n)?{err:"O campo "+nome+" precisa ser um número."}:{v:n}}
+ if(tipo==="bool")return{v:txt.trim().toLowerCase()==="true"};
+ if(orig===null&&txt==="")return{v:null};
+ return{v:txt}}
+const AD_CSS=`
+.ad{display:grid;gap:18px;color:var(--ink)}
+.ad a{text-decoration:none}
+.ad-tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line)}
+.ad-tabs a{padding:11px 14px;color:var(--ink2);font-weight:500;white-space:nowrap;border-radius:8px 8px 0 0}
+.ad-tabs a:hover{background:var(--soft)}
+.ad-tabs a.on{color:var(--blue);font-weight:600;box-shadow:inset 0 -2px 0 var(--blue)}
+.ad h2{margin:0;font-size:19px}
+.ad h3{margin:0;font-size:15px}
+.ad .mut{color:var(--muted);font-size:13px}
+.ad-note{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:11px 14px;color:var(--ink2);font-size:13px}
+.ad-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.ad-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+a.ad-card:hover{border-color:var(--blue);box-shadow:0 3px 14px rgba(47,85,151,.12)}
+.ad-card p{margin:0;color:var(--ink2);font-size:13px}
+.ad-card .go{margin-top:auto;padding-top:8px;color:var(--blue);font-weight:600;font-size:13px}
+.ad-card .n{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.ad-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ad-step{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink2)}
+.ad-step>b{flex:0 0 26px;height:26px;border-radius:50%;background:var(--tint);color:var(--blue);display:grid;place-items:center;font-size:13px}
+.ad-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px}
+.ad-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ad-back{color:var(--blue);font-weight:500;font-size:13.5px}
+.ad label{display:grid;gap:5px;font-size:13px;color:var(--ink2);font-weight:500;min-width:0}
+.ad label small{color:var(--muted);font-weight:400}
+.ad input,.ad select,.ad textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+.ad textarea{resize:vertical;line-height:1.45}
+.ad input:focus,.ad select:focus,.ad textarea:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.ad .b{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;padding:9px 16px;font:inherit;font-weight:600;font-size:13.5px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap}
+.ad .b:hover{background:var(--soft)}
+.ad .b.p{background:var(--blue);border-color:var(--blue);color:#fff}
+.ad .b.p:hover{filter:brightness(1.08)}
+.ad .b.d{color:#B42318;border-color:#F0C4BE}
+.ad .b.s{padding:6px 12px;font-size:13px}
+.ad .b[disabled]{opacity:.55;cursor:default}
+.ad .l{background:none;border:0;padding:0;color:var(--blue);font:inherit;font-weight:500;cursor:pointer}
+.ad-grid2{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:720px){.ad-grid2{grid-template-columns:1fr 1fr}}
+.ad-list{display:grid;gap:8px}
+.ad-li{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.ad-li div{min-width:0}
+.ad-li b{display:block;font-size:14px}
+.ad-li small{color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.ad-tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;background:var(--tint);color:var(--ink2)}
+.ad-tag.ok{background:#E3F4EC;color:#1E7A53}
+.ad-tag.mod{background:#FFF1D6;color:#8A5300}
+.ad-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ad-chip{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer}
+.ad-chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.ad-tw{overflow:auto;max-height:calc(100vh - 300px);min-height:200px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.ad-t{width:100%;border-collapse:collapse;font-size:12.5px}
+.ad-t th{position:sticky;top:0;z-index:1;background:var(--soft);color:var(--ink2);font-weight:600;text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ad-t td{padding:6px 10px;border-bottom:1px solid var(--line2);vertical-align:middle;line-height:1.3}
+.ad-t tr:last-child td{border-bottom:0}
+.ad-t td.c{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-t td.a{white-space:nowrap;text-align:left}
+.ad-crumbs{display:flex;flex-wrap:wrap;gap:4px;font-size:13px;color:var(--muted);margin-top:4px}
+.ad-crumbs a{color:var(--blue)}
+.ad-err{color:#B42318;font-size:13px;min-height:1em;margin:0}
+.ad-bar{position:fixed;left:50%;transform:translate(-50%,160%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--surface);border-radius:14px;padding:10px 12px 10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(0,0,0,.28);width:min(560px,calc(100vw - 32px));transition:transform .2s}
+.ad-bar.on{transform:translate(-50%,0)}
+.ad-bar span{flex:1;font-size:13px}
+.ad-bar .b{border-color:transparent}
+@media(max-width:900px){.ad-bar{bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
+.ad-toast{position:fixed;left:50%;transform:translate(-50%,-200%);top:calc(16px + env(safe-area-inset-top,0px));z-index:40;background:#1E7A53;color:#fff;border-radius:12px;padding:10px 18px;font-size:13.5px;font-weight:600;transition:transform .2s;box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:calc(100vw - 32px)}
+.ad-toast.on{transform:translate(-50%,0)}
+details.ad-more summary{cursor:pointer;color:var(--blue);font-weight:500;font-size:13.5px}
+@media(prefers-reduced-motion:reduce){.ad-bar,.ad-toast{transition:none}}
+`;
+function artToast(t){const e=$("#adToast");if(!e)return;e.textContent=t;e.classList.add("on");clearTimeout(window.ART_TT);window.ART_TT=setTimeout(()=>e.classList.remove("on"),3800)}
+/* ----- guardar e aplicar alterações ----- */
 window.ART_OVR={};const ART_OVRDOCS={};
 function artKey(p){const [c,q]=String(p).split("?");if(!q)return c;const ps=q.split("&").filter(Boolean).map(x=>x.split("=")).filter(a=>a[1]!==undefined&&a[1]!=="").map(a=>a[0]+"="+a[1]).sort();return c+(ps.length?"?"+ps.join("&"):"")}
 function artOvr(p){return window.ART_OVR[artKey(p)]}
@@ -7005,77 +7086,6 @@ async function artOvrSalvar(key,data){const j=JSON.stringify(data);if(j.length>3
  for(const id of velhos)if(!ids.includes(id))await ARTDB.collection("api").doc(id).delete();
  ART_OVRDOCS[key]=ids;window.ART_OVR[key]=JSON.parse(j)}
 async function artOvrApagar(key){for(const id of (ART_OVRDOCS[key]||[]))await ARTDB.collection("api").doc(id).delete();delete ART_OVRDOCS[key];delete window.ART_OVR[key]}
-const artTipo=v=>v&&typeof v==="object"?"json":typeof v==="number"?"num":typeof v==="boolean"?"bool":"txt";
-const artValTxt=v=>v==null?"":typeof v==="object"?JSON.stringify(v,null,1):String(v);
-function artLeCampo(txt,tipo,nome,orig){
- if(tipo==="json"){if(txt.trim()==="")return{v:[]};try{return{v:JSON.parse(txt)}}catch(e){return{err:"O campo "+nome+" precisa estar em formato JSON válido."}}}
- if(tipo==="num"){if(txt.trim()==="")return{v:null};const n=Number(txt.replace(",","."));return Number.isNaN(n)?{err:"O campo "+nome+" precisa ser um número."}:{v:n}}
- if(tipo==="bool")return{v:txt.trim().toLowerCase()==="true"};
- if(orig===null&&txt==="")return{v:null};
- return{v:txt}}
-function artSpec(entry,ref){
- if(Array.isArray(entry))return entry.map((v,i)=>({k:i,l:"Posição "+(i+1),v,t:artTipo(ref?ref[i]:v)}));
- if(entry&&typeof entry==="object")return Object.keys(entry).map(k=>({k,l:k,v:entry[k],t:artTipo(ref?ref[k]:entry[k])}));
- return[{k:null,l:"Valor",v:entry,t:artTipo(ref!==undefined?ref:entry)}]}
-function artGet(r,nav){let x=r;for(const k of nav)x=x==null?undefined:x[k];return x}
-function artFormHtml(T,x){const novo=T.edit==="novo";let entry,ref;
- if(Array.isArray(x)){const p=x[0];ref=p;entry=novo?(Array.isArray(p)?p.map(()=>""):(p&&typeof p==="object"?Object.fromEntries(Object.keys(p).map(k=>[k,""])):"")):x[T.edit]}else{entry=x}
- if(!novo)ref=undefined;
- const spec=artSpec(entry,ref);T.spec=spec;T.entry=entry;
- const extra=(!Array.isArray(entry)&&entry&&typeof entry==="object")?'<div class="pf-grade"><label>Novo campo (nome, opcional)<input name="nk"></label><label>Valor do novo campo<input name="nv"></label></div>':"";
- return `<form class="adm-form" id="artForm" novalidate><div class="adm-topo"><a href="#" id="artVolta">‹ Voltar</a></div>${spec.map((s,i)=>{const v=artValTxt(s.v);return `<label>${esc(String(s.l))}${s.t==="json"?' <small class="muted">(formato JSON)</small>':""}<textarea name="f${i}" rows="${s.t==="json"?6:(v.length>120?4:2)}">${esc(v)}</textarea></label>`}).join("")}${extra}<p class="vlm-e" id="artFErr" role="alert"></p><div class="pf-acoes"><div>${novo||T.edit==="campos"?"":'<button type="button" class="btn adm-apagar" id="artDel">Apagar linha</button>'}</div><button class="btn vlm-s" type="submit">Aplicar</button></div></form>`}
-function artArrHtml(T,x){
- const ehObj=x.length&&x.every(r=>r&&typeof r==="object"&&!Array.isArray(r)),ehArr=x.length&&x.every(Array.isArray);let cols;
- if(ehObj){cols=[];x.slice(0,300).forEach(r=>Object.keys(r).forEach(k=>{if(!cols.includes(k))cols.push(k)}))}
- else if(ehArr){const n=Math.max(...x.slice(0,300).map(r=>r.length));cols=Array.from({length:n},(_,i)=>i)}
- else cols=[null];
- const mostra=cols.slice(0,7),lim=T.pag*100,cel=(r,c)=>c===null?r:(r==null?"":r[c]);
- return `<div class="adm-topo"><span class="muted small">${x.length} linhas</span><button class="btn" id="artNovo" type="button">Adicionar linha</button></div><div class="tw"><table class="tab"><thead><tr>${mostra.map(c=>`<th>${esc(c===null?"Valor":typeof c==="number"?"Coluna "+(c+1):c)}</th>`).join("")}<th></th><th></th></tr></thead><tbody>${x.slice(0,lim).map((r,i)=>`<tr>${mostra.map(c=>`<td class="art-cel">${esc(artTxt(cel(r,c)))}</td>`).join("")}<td><button class="link" type="button" data-ed="${esc(JSON.stringify(i))}">Editar</button></td><td>${r&&typeof r==="object"?`<button class="link" type="button" data-abrir="${esc(JSON.stringify(i))}">Abrir</button>`:""}</td></tr>`).join("")||'<tr><td colspan="9">Nenhuma linha.</td></tr>'}</tbody></table></div>${x.length>lim?'<p><button class="btn sec" id="artMais" type="button">Mostrar mais</button></p>':""}`}
-function artObjHtml(T,x){const ks=Object.keys(x);
- return `<div class="adm-topo"><span class="muted small">${ks.length} campos</span><button class="btn" type="button" data-ed="${esc(JSON.stringify("campos"))}">Editar campos</button></div><div class="tw"><table class="tab"><thead><tr><th>Campo</th><th>Valor</th><th></th></tr></thead><tbody>${ks.map(k=>{const v=x[k],n=v&&typeof v==="object";return `<tr><td>${esc(k)}</td><td class="art-cel">${esc(n?(Array.isArray(v)?"lista ("+v.length+")":"objeto ("+Object.keys(v).length+")"):artTxt(v))}</td><td>${n?`<button class="link" type="button" data-abrir="${esc(JSON.stringify(k))}">Abrir</button>`:""}</td></tr>`}).join("")}</tbody></table></div>`}
-function artDesenhaNo(){const T=window.ART_T,box=$("#artEd");if(!T||!box)return;
- const x=artGet(T.ED,T.nav);
- const crumbs=['<a href="#" data-n="-1">Dado</a>',...T.nav.map((k,i)=>`<a href="#" data-n="${i}">${esc(String(k))}</a>`)].join(" › ");
- let corpo;
- if(T.edit!==null)corpo=artFormHtml(T,x);
- else if(Array.isArray(x))corpo=artArrHtml(T,x);
- else if(x&&typeof x==="object")corpo=artObjHtml(T,x);
- else corpo=`<p>${esc(artValTxt(x))}</p>`;
- box.innerHTML=`<style>.art-cel{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#artEd button.link{background:none;border:0;padding:0;color:var(--accent,#2F6FED);font:inherit;cursor:pointer}</style><div class="adm-topo"><span class="small">${crumbs}</span><span>${T.custom?'<button class="btn" id="artRest" type="button" style="background:none;color:inherit;border:1px solid var(--line,#ccc)">Restaurar original</button> ':""}<button class="btn" id="artSalva" type="button">Salvar alterações</button></span></div><p class="vlm-e" id="artMsg" role="alert"></p>${corpo}`;
- const msg=$("#artMsg");
- box.querySelectorAll("[data-n]").forEach(a=>a.onclick=e=>{e.preventDefault();T.nav=T.nav.slice(0,+a.dataset.n+1);T.edit=null;T.pag=1;artDesenhaNo()});
- box.querySelectorAll("[data-abrir]").forEach(a=>a.onclick=()=>{T.nav.push(JSON.parse(a.dataset.abrir));T.pag=1;artDesenhaNo()});
- box.querySelectorAll("[data-ed]").forEach(a=>a.onclick=()=>{T.edit=JSON.parse(a.dataset.ed);artDesenhaNo()});
- const nv=$("#artNovo");if(nv)nv.onclick=()=>{T.edit="novo";artDesenhaNo()};
- const mais=$("#artMais");if(mais)mais.onclick=()=>{T.pag++;artDesenhaNo()};
- $("#artSalva").onclick=async()=>{msg.textContent="";try{await artOvrSalvar(artKey(T.path),T.ED);T.custom=true;artDesenhaNo();$("#artMsg").textContent="Salvo. A tela do site passa a mostrar estes dados."}catch(e){msg.textContent=e&&e.code==="grande"?"Este dado ficou grande demais para guardar aqui (limite de 3 MB).":artMsg(e)}};
- const rs=$("#artRest");if(rs)rs.onclick=async()=>{try{await artOvrApagar(artKey(T.path));artAbrir(T.path,T.sec)}catch(e){msg.textContent=artMsg(e)}};
- const f=$("#artForm");if(!f)return;
- const err=$("#artFErr");
- $("#artVolta").onclick=e=>{e.preventDefault();T.edit=null;artDesenhaNo()};
- f.onsubmit=e=>{e.preventDefault();err.textContent="";const vals=[];
-  for(let i=0;i<T.spec.length;i++){const s=T.spec[i],r=artLeCampo(f["f"+i].value,s.t,String(s.l),s.v);if(r.err){err.textContent=r.err;return}vals.push(r.v)}
-  let ne;const en=T.entry;
-  if(Array.isArray(en))ne=vals;else if(en&&typeof en==="object"){ne={};T.spec.forEach((s,i)=>{ne[s.k]=vals[i]});const nk=f.nk&&f.nk.value.trim();if(nk)ne[nk]=f.nv.value}else ne=vals[0];
-  if(Array.isArray(x)){if(T.edit==="novo")x.push(ne);else x[T.edit]=ne}
-  else{Object.keys(x).forEach(k=>{delete x[k]});Object.assign(x,ne)}
-  T.edit=null;artDesenhaNo()};
- const del=$("#artDel");let c2=false;
- if(del)del.onclick=()=>{if(!c2){c2=true;del.textContent="Confirmar exclusão";return}x.splice(T.edit,1);T.edit=null;artDesenhaNo()}}
-async function artAbrir(path,sec){const box=$("#artEd");if(!box)return;box.innerHTML=rload();
- try{const d=await apiGet(path);window.ART_T={path,sec,ED:JSON.parse(JSON.stringify(d)),nav:[],edit:null,pag:1,custom:artOvr(path)!==undefined};artDesenhaNo()}
- catch(e){box.innerHTML='<p class="vlm-e">Este dado não está disponível na cópia do sistema.</p>'}}
-async function artTelasMontar(b,sub){
- if(!sub){b.innerHTML=`<p class="muted small">Cada seção é uma tela do site, na mesma ordem do menu. Escolha uma para ver os dados que ela mostra, em tabela, e alterar, adicionar ou tirar informações.</p><div class="panel mt"><div class="chips">${ART_SEC.filter(s=>ART_EPS.some(p=>artSecDe(p)===s[0])).map(([k,t])=>`<a class="chip" href="#/admin/telas/${k}">${esc(t)} <small class="muted">${ART_EPS.filter(p=>artSecDe(p)===k).length}</small></a>`).join("")}</div></div>`;return}
- const sec=ART_SEC.find(x=>x[0]===sub);if(!sec){b.innerHTML=rvazio("Seção não encontrada.");return}
- const eps=ART_EPS.filter(p=>artSecDe(p)===sub);
- b.innerHTML=`<div class="adm-topo"><a href="#/admin/telas">‹ Todas as telas</a></div><h2>${esc(sec[1])}</h2><p class="muted small">Dados que esta tela lê do sistema. Escolha um ou digite o endereço (troque :x pelo valor real, por exemplo /eleicoes/2022/SP/cargos; pode acrescentar ?uf=SP).</p><div class="chips">${eps.map(p=>`<button type="button" class="chip" data-ep="${esc(p)}">${esc(p)}</button>`).join("")||'<span class="muted small">Esta tela não lê dados do servidor.</span>'}</div><form id="artEpF" class="adm-form" novalidate><label>Endereço do dado<input name="ep" placeholder="/saude/painel"></label><div class="pf-acoes"><div></div><button class="btn vlm-s" type="submit">Abrir</button></div></form><div id="artEd"></div>`;
- const f=b.querySelector("#artEpF");
- b.querySelectorAll("[data-ep]").forEach(x=>x.onclick=()=>{f.ep.value=x.dataset.ep;if(!x.dataset.ep.includes(":"))artAbrir(x.dataset.ep,sub)});
- f.onsubmit=e=>{e.preventDefault();const p=f.ep.value.trim();if(!p.startsWith("/")||p.includes(":")){$("#artEd").innerHTML='<p class="vlm-e">Informe um endereço começando com / e sem :x.</p>';return}artAbrir(p,sub)};
- if(window.ART_T&&window.ART_T.sec===sub){f.ep.value=window.ART_T.path;artDesenhaNo()}}
-
-/* listas do sistema que o administrador pode ver como tabela e alterar (guardadas no Artifact e aplicadas nas telas ao abrir) */
 const ART_DS=[
  {k:"normas",g:"Leis e Projetos",t:"Leis e normas",r:()=>typeof NORMAS==="undefined"?null:NORMAS},
  {k:"leis-federais",g:"Leis e Projetos",t:"Principais leis federais",c:["Grupo","Nome","Norma","Para que serve"],r:()=>typeof LEIS_FED==="undefined"?null:LEIS_FED},
@@ -7096,104 +7106,175 @@ const ART_DS=[
 async function artDadosAplicar(){try{const db=await usarCap("db");if(!db)return;
  const snap=await Promise.race([db.collection("dados").limit(100).get(),new Promise(r=>setTimeout(()=>r(null),3000))]);if(!snap)return;
  snap.docs.forEach(d=>{if(!d.exists)return;const ds=ART_DS.find(x=>x.k===d.id);if(!ds)return;const arr=ds.r();if(!Array.isArray(arr))return;
-  try{const l=JSON.parse(d.data().json);if(Array.isArray(l))arr.splice(0,arr.length,...l)}catch(e){}})}catch(e){}}
-function artDsLinhas(ds){const a=ds.r();return Array.isArray(a)?JSON.parse(JSON.stringify(a)):null}
-async function artDsSalvar(ds,linhas){await ARTDB.collection("dados").doc(ds.k).set({json:JSON.stringify(linhas),atualizada_em:new Date().toISOString()});const a=ds.r();if(Array.isArray(a))a.splice(0,a.length,...linhas)}
-function artCols(ds,linhas){const ehArr=linhas.some(r=>Array.isArray(r));
- if(ehArr){const n=Math.max(0,...linhas.map(r=>Array.isArray(r)?r.length:0));const base=ds.c?ds.c.slice():[];while(base.length<n)base.push("Coluna "+(base.length+1));return base}
- const ks=[];linhas.forEach(r=>Object.keys(r||{}).forEach(k=>{if(!ks.includes(k))ks.push(k)}));return ks}
-const artTxt=(v,n)=>{const t=v==null?"":typeof v==="object"?JSON.stringify(v):String(v);return t.length>(n||90)?t.slice(0,n||90)+"…":t};
-function artDadosMontar(b,sub,sub2){
+  try{const l=JSON.parse(d.data().json);if(Array.isArray(l)){ds.orig=ds.orig||JSON.parse(JSON.stringify(arr));arr.splice(0,arr.length,...l);ds.alt=true}}catch(e){}})}catch(e){}}
+async function artDsSalvar(ds,linhas){await ARTDB.collection("dados").doc(ds.k).set({json:JSON.stringify(linhas),atualizada_em:new Date().toISOString()});const a=ds.r();if(Array.isArray(a)){ds.orig=ds.orig||JSON.parse(JSON.stringify(a));a.splice(0,a.length,...linhas)}ds.alt=true}
+/* ----- editor único (serve para os dados das telas e para as listas do site) ----- */
+function artGet(r,nav){let x=r;for(const k of nav)x=x==null?undefined:x[k];return x}
+function artSpec(entry,ref,cols){
+ if(Array.isArray(entry))return entry.map((v,i)=>({k:i,l:(cols&&cols[i])||artRot(i),v,t:artTipo(ref?ref[i]:v)}));
+ if(entry&&typeof entry==="object")return Object.keys(entry).map(k=>({k,l:artRot(k),raw:k,v:entry[k],t:artTipo(ref?ref[k]:entry[k])}));
+ return[{k:null,l:"Valor",v:entry,t:artTipo(ref!==undefined?ref:entry)}]}
+function artFormHtml(T,x){const novo=T.edit==="novo";let entry,ref;
+ if(Array.isArray(x)){const p=x[0];ref=p;entry=novo?(Array.isArray(p)?p.map(()=>""):(p&&typeof p==="object"?Object.fromEntries(Object.keys(p).map(k=>[k,""])):"")):x[T.edit]}else{entry=x}
+ if(!novo)ref=undefined;
+ const spec=artSpec(entry,ref,T.cols);T.spec=spec;T.entry=entry;
+ const objeto=!Array.isArray(entry)&&entry&&typeof entry==="object";
+ const extra=objeto?'<div class="ad-grid2"><label>Adicionar um campo novo (nome)<input name="nk" placeholder="opcional"></label><label>Valor do campo novo<input name="nv" placeholder="opcional"></label></div>':"";
+ const tit=novo?"Nova linha":(T.edit==="campos"?"Editar campos":"Editar linha "+(T.edit+1));
+ return `<form id="artForm" class="ad-box" novalidate><div class="ad-top"><h3>${tit}</h3><a href="#" id="artVolta" class="ad-back">‹ Cancelar</a></div><p class="mut" style="margin:0">Altere o que precisar e clique em <b>Concluir</b>. Depois clique em <b>Salvar alterações</b> para valer no site.</p>${spec.map((s,i)=>{const v=artValTxt(s.v);return `<label>${esc(String(s.l))}${s.raw&&s.raw!==s.l?` <small>(${esc(s.raw)})</small>`:""}${s.t==="json"?' <small>lista ou objeto em formato JSON</small>':""}<textarea name="f${i}" rows="${s.t==="json"?6:(v.length>110?4:2)}">${esc(v)}</textarea></label>`}).join("")}${extra}<p class="ad-err" id="artFErr" role="alert"></p><div class="ad-top"><div>${novo||T.edit==="campos"?"":'<button type="button" class="b d" id="artDel">Apagar esta linha</button>'}</div><button class="b p" type="submit">Concluir</button></div></form>`}
+function artLinhasHtml(T,x){
+ const ehObj=x.length&&x.every(r=>r&&typeof r==="object"&&!Array.isArray(r)),ehArr=x.length&&x.every(Array.isArray);let cols;
+ if(ehObj){cols=[];x.slice(0,300).forEach(r=>Object.keys(r).forEach(k=>{if(!cols.includes(k))cols.push(k)}))}
+ else if(ehArr){const n=Math.max(...x.slice(0,300).map(r=>r.length));cols=Array.from({length:n},(_,i)=>i)}
+ else cols=[null];
+ const mostra=cols.slice(0,6),q=(T.q||"").toLowerCase().trim(),lim=T.pag*100,cel=(r,c)=>c===null?r:(r==null?"":r[c]);
+ const idx=x.map((_,i)=>i).filter(i=>!q||JSON.stringify(x[i]).toLowerCase().includes(q));
+ const rot=c=>c===null?"Valor":(typeof c==="number"?((T.cols&&T.cols[c])||artRot(c)):artRot(c));
+ return {cab:"<th></th>"+mostra.map(c=>`<th>${esc(rot(c))}</th>`).join(""),
+  corpo:idx.slice(0,lim).map(i=>{const r=x[i];return `<tr><td class="a"><button class="l" type="button" data-ed="${i}">Editar</button>${r&&typeof r==="object"&&Object.values(r).some(v=>v&&typeof v==="object")?` · <button class="l" type="button" data-abrir="${i}">Ver itens ›</button>`:""}</td>${mostra.map(c=>`<td class="c">${esc(artTxt(cel(r,c)))}</td>`).join("")}</tr>`}).join("")||`<tr><td colspan="8" class="mut">${q?"Nada encontrado para esta busca.":"Nenhuma linha."}</td></tr>`,
+  info:idx.length===x.length?`${x.length} linhas`:`${idx.length} de ${x.length} linhas`,mais:idx.length>lim}}
+function artArrHtml(T,x){const L=artLinhasHtml(T,x);
+ return `<div class="ad-top"><input id="adQ" type="search" placeholder="Buscar nesta lista…" value="${esc(T.q||"")}" style="max-width:320px"><button class="b p" id="artNovo" type="button">+ Adicionar linha</button></div><div class="mut" id="adInfo">${L.info}</div><div class="ad-tw"><table class="ad-t"><thead><tr id="adCab">${L.cab}</tr></thead><tbody id="adTb">${L.corpo}</tbody></table></div><div id="adMais">${L.mais?'<button class="b" id="artMais" type="button">Mostrar mais linhas</button>':""}</div>`}
+function artObjHtml(T,x){const ks=Object.keys(x);
+ return `<div class="ad-top"><span class="mut">${ks.length} campos</span><button class="b p" type="button" data-ed="campos">Editar campos</button></div><div class="ad-tw"><table class="ad-t"><thead><tr><th>Campo</th><th>Valor</th><th></th></tr></thead><tbody>${ks.map(k=>{const v=x[k],n=v&&typeof v==="object";return `<tr><td>${esc(artRot(k))} <small class="mut">${esc(k)}</small></td><td class="c">${esc(n?(Array.isArray(v)?"lista com "+v.length+" itens":"grupo com "+Object.keys(v).length+" campos"):artTxt(v))}</td><td class="a">${n?`<button class="l" type="button" data-abrir="${esc(JSON.stringify(k))}">Ver itens ›</button>`:""}</td></tr>`}).join("")}</tbody></table></div>`}
+function artEditor(){const T=window.ART_T,box=$("#artEd");if(!T||!box)return;
+ const x=artGet(T.ED,T.nav);
+ const crumbs=[`<a href="#" data-n="-1">Início</a>`,...T.nav.map((k,i)=>`<a href="#" data-n="${i}">${esc(artRot(k))}</a>`)].join(" › ");
+ let corpo;
+ if(T.edit!==null)corpo=artFormHtml(T,x);
+ else if(Array.isArray(x))corpo=artArrHtml(T,x);
+ else if(x&&typeof x==="object")corpo=artObjHtml(T,x);
+ else corpo=`<p>${esc(artValTxt(x))}</p>`;
+ box.innerHTML=`<div class="ad-box"><div class="ad-top"><div><h2>${esc(T.titulo)}</h2><div class="ad-crumbs">${crumbs}</div></div><div>${T.custom?'<span class="ad-tag mod">Alterado</span> <button class="b s d" id="artRest" type="button">Voltar ao original</button>':'<span class="ad-tag">Original</span>'}</div></div>${corpo}</div><div class="ad-bar${T.dirty?" on":""}" id="adBar" role="status"><span>Você tem alterações que ainda não foram salvas.</span><button class="b s" id="adDesc" type="button">Descartar</button><button class="b p s" id="artSalva" type="button">Salvar alterações</button></div>`;
+ artWire();
+ const f=$("#artForm");if(f)artWireForm(f,x)}
+function artWire(){const T=window.ART_T,box=$("#artEd");
+ box.querySelectorAll("[data-n]").forEach(a=>a.onclick=e=>{e.preventDefault();T.nav=T.nav.slice(0,+a.dataset.n+1);T.edit=null;T.pag=1;T.q="";artEditor()});
+ artWireLinhas();
+ const nv=$("#artNovo");if(nv)nv.onclick=()=>{T.edit="novo";artEditor()};
+ box.querySelectorAll("[data-ed='campos']").forEach(a=>a.onclick=()=>{T.edit="campos";artEditor()});
+ const q=$("#adQ");if(q)q.oninput=()=>{T.q=q.value;T.pag=1;artAtualizaLinhas()};
+ $("#artSalva").onclick=async()=>{const bt=$("#artSalva");bt.disabled=true;try{await T.save();T.dirty=false;T.custom=true;artEditor();artToast("Salvo. As telas do site já mostram os novos dados.")}catch(e){bt.disabled=false;artToast(e&&e.code==="grande"?"Ficou grande demais para guardar aqui (limite de 3 MB).":artMsg(e))}};
+ $("#adDesc").onclick=()=>T.reabrir();
+ const rs=$("#artRest");if(rs){let c=false;rs.onclick=async()=>{if(!c){c=true;rs.textContent="Confirmar: voltar ao original";return}rs.disabled=true;try{await T.restore();T.reabrir();artToast("Voltou ao original.")}catch(e){rs.disabled=false;artToast(artMsg(e))}}}}
+function artWireLinhas(){const T=window.ART_T,box=$("#artEd");
+ box.querySelectorAll("[data-abrir]").forEach(a=>a.onclick=()=>{T.nav.push(JSON.parse(a.dataset.abrir));T.pag=1;T.q="";artEditor()});
+ box.querySelectorAll("[data-ed]:not([data-ed='campos'])").forEach(a=>a.onclick=()=>{T.edit=JSON.parse(a.dataset.ed);artEditor()});
+ const mais=$("#artMais");if(mais)mais.onclick=()=>{T.pag++;artAtualizaLinhas()}}
+function artAtualizaLinhas(){const T=window.ART_T,x=artGet(T.ED,T.nav),L=artLinhasHtml(T,x);
+ $("#adCab").innerHTML=L.cab;$("#adTb").innerHTML=L.corpo;const inf=document.createElement("div");inf.id="adInfo";inf.className="mut";inf.textContent=L.info;$("#adInfo").replaceWith(inf);$("#adMais").innerHTML=L.mais?'<button class="b" id="artMais" type="button">Mostrar mais linhas</button>':"";artWireLinhas()}
+function artWireForm(f,x){const T=window.ART_T,err=$("#artFErr");
+ $("#artVolta").onclick=e=>{e.preventDefault();T.edit=null;artEditor()};
+ f.onsubmit=e=>{e.preventDefault();err.textContent="";const vals=[];
+  for(let i=0;i<T.spec.length;i++){const s=T.spec[i],r=artLeCampo(f["f"+i].value,s.t,String(s.l),s.v);if(r.err){err.textContent=r.err;return}vals.push(r.v)}
+  let ne;const en=T.entry;
+  if(Array.isArray(en))ne=vals;else if(en&&typeof en==="object"){ne={};T.spec.forEach((s,i)=>{ne[s.k]=vals[i]});const nk=f.nk&&f.nk.value.trim();if(nk)ne[nk]=f.nv.value}else ne=vals[0];
+  if(Array.isArray(x)){if(T.edit==="novo")x.push(ne);else x[T.edit]=ne}
+  else{Object.keys(x).forEach(k=>{delete x[k]});Object.assign(x,ne)}
+  T.edit=null;T.dirty=true;artEditor()};
+ const del=$("#artDel");let c2=false;
+ if(del)del.onclick=()=>{if(!c2){c2=true;del.textContent="Confirmar: apagar";return}x.splice(T.edit,1);T.edit=null;T.dirty=true;artEditor()}}
+/* ----- telas do sistema ----- */
+async function artAbrir(path,sec){const box=$("#artEd");if(!box)return;box.innerHTML=rload();
+ try{const d=await apiGet(path),key=artKey(path),clone=JSON.parse(JSON.stringify(d));
+  window.ART_T={titulo:artNome(path.split("?")[0])+(path.includes("?")?" ("+path.split("?")[1]+")":""),ED:clone,nav:[],edit:null,pag:1,q:"",dirty:false,custom:artOvr(path)!==undefined,
+   save:()=>artOvrSalvar(key,window.ART_T.ED),restore:()=>artOvrApagar(key),reabrir:()=>artAbrir(path,sec)};
+  artEditor();box.scrollIntoView({behavior:"smooth",block:"start"})}
+ catch(e){box.innerHTML='<div class="ad-note">Este dado não está na cópia do sistema que veio com o site.</div>'}}
+async function artTelasMontar(b,sub){
+ if(!sub){const secs=ART_SEC.filter(s=>ART_EPS.some(p=>artSecDe(p)===s[0]));
+  b.innerHTML=`<div><h2>Dados das telas</h2><p class="mut" style="margin:4px 0 0">Escolha a tela do site que você quer corrigir. As seções seguem a ordem do menu.</p></div><div class="ad-cards">${secs.map(([k,t])=>{const n=ART_EPS.filter(p=>artSecDe(p)===k).length,alt=ART_EPS.filter(p=>artSecDe(p)===k&&window.ART_OVR[p]!==undefined).length;return `<a class="ad-card" href="#/admin/telas/${k}"><h3>${esc(t)}</h3><p>${n} ${n===1?"conjunto de dados":"conjuntos de dados"}${alt?` · <b>${alt} alterado${alt>1?"s":""}</b>`:""}</p><span class="go">Abrir ›</span></a>`}).join("")}</div>`;return}
+ const sec=ART_SEC.find(x=>x[0]===sub);if(!sec){b.innerHTML=rvazio("Seção não encontrada.");return}
+ const eps=ART_EPS.filter(p=>artSecDe(p)===sub);
+ b.innerHTML=`<div><a class="ad-back" href="#/admin/telas">‹ Todas as telas</a><h2 style="margin-top:6px">${esc(sec[1])}</h2><p class="mut" style="margin:4px 0 0">Escolha o conjunto de dados que a tela usa, altere em tabela e salve.</p></div><div class="ad-list">${eps.map(p=>`<div class="ad-li"><div><b>${esc(artNome(p))}</b><small>${esc(p)}</small></div><span>${window.ART_OVR[p]!==undefined?'<span class="ad-tag mod">Alterado</span> ':""}<button class="b s" type="button" data-ep="${esc(p)}">Abrir</button></span></div>`).join("")||'<div class="ad-note">Esta tela não usa dados do servidor.</div>'}</div><details class="ad-more"><summary>Abrir outro endereço (por exemplo, de um estado ou ano)</summary><form id="artEpF" class="ad-box" novalidate style="margin-top:10px"><label>Endereço do dado<input name="ep" placeholder="/eleicoes/2022/SP/cargos"><small>Pode acrescentar filtros no fim, como ?uf=SP</small></label><p class="ad-err" id="artEpE"></p><div><button class="b p" type="submit">Abrir</button></div></form></details><div id="artEd"></div>`;
+ const f=b.querySelector("#artEpF"),det=b.querySelector("details");
+ b.querySelectorAll("[data-ep]").forEach(x=>x.onclick=()=>{const p=x.dataset.ep;if(p.includes(":")){f.ep.value=p;det.open=true;$("#artEpE").textContent="Troque :x pelo valor real (por exemplo o ano ou a sigla do estado) e clique em Abrir.";f.ep.focus();return}artAbrir(p,sub)});
+ f.onsubmit=e=>{e.preventDefault();const p=f.ep.value.trim();if(!p.startsWith("/")||p.includes(":")){$("#artEpE").textContent="Informe um endereço que comece com / e sem :x.";return}$("#artEpE").textContent="";artAbrir(p,sub)};
+ const a=window.ART_ABRIR;window.ART_ABRIR=null;if(a)artAbrir(a,sub)}
+/* ----- textos e listas do site ----- */
+function artListaAbrir(ds){const box=$("#artEd");const a=ds.r();if(!Array.isArray(a)){box.innerHTML='<div class="ad-note">Esta lista não está disponível nesta versão.</div>';return}
+ window.ART_T={titulo:ds.t,ED:JSON.parse(JSON.stringify(a)),nav:[],edit:null,pag:1,q:"",dirty:false,custom:!!ds.alt,cols:ds.c,
+  save:()=>artDsSalvar(ds,window.ART_T.ED),
+  restore:async()=>{await ARTDB.collection("dados").doc(ds.k).delete();if(ds.orig){a.splice(0,a.length,...JSON.parse(JSON.stringify(ds.orig)))}ds.alt=false},
+  reabrir:()=>artListaAbrir(ds)};
+ artEditor()}
+function artDadosMontar(b,sub){
  if(!sub){const grupos={};ART_DS.forEach(d=>{(grupos[d.g]=grupos[d.g]||[]).push(d)});
-  b.innerHTML=`<p class="muted small">Cada categoria é uma lista que alimenta as telas do site. Escolha uma para ver todas as linhas, adicionar, alterar ou apagar.</p>`+Object.entries(grupos).map(([g,ds])=>`<div class="panel mt"><h2>${esc(g)}</h2><div class="chips">${ds.map(d=>{const a=d.r();return `<a class="chip" href="#/admin/dados/${d.k}">${esc(d.t)} <small class="muted">${Array.isArray(a)?a.length:"—"}</small></a>`}).join("")}</div></div>`).join("");return}
- const ds=ART_DS.find(x=>x.k===sub);if(!ds){b.innerHTML=rvazio("Categoria não encontrada.");return}
- const linhas=artDsLinhas(ds);if(!linhas){b.innerHTML=rvazio("Esta lista não está disponível nesta versão.");return}
- if(sub2!==undefined)return artDadosEditor(b,ds,linhas,sub2);
- const cols=artCols(ds,linhas),ehArr=linhas.some(r=>Array.isArray(r)),mostra=cols.slice(0,6).map(c=>[c,cols.indexOf(c)]);
- b.innerHTML=`<style>.art-cel{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}</style>
- <div class="adm-topo"><a href="#/admin/dados">‹ Todas as categorias</a><a class="btn" href="#/admin/dados/${ds.k}/novo">Adicionar linha</a></div>
- <h2>${esc(ds.t)}</h2><p class="muted small">${linhas.length} linhas. Toque em Editar para ver todas as informações, alterar ou apagar.</p>
- <div class="tw"><table class="tab"><thead><tr>${mostra.map(([c])=>`<th>${esc(String(c))}</th>`).join("")}<th></th></tr></thead><tbody>${linhas.map((r,i)=>`<tr>${mostra.map(([c,j])=>`<td class="art-cel">${esc(artTxt(ehArr?(Array.isArray(r)?r[j]:""):(r||{})[c]))}</td>`).join("")}<td><a href="#/admin/dados/${ds.k}/${i}">Editar</a></td></tr>`).join("")||'<tr><td colspan="7">Nenhuma linha.</td></tr>'}</tbody></table></div>`}
-function artDadosEditor(b,ds,linhas,sub2){
- const novo=sub2==="novo",idx=novo?-1:parseInt(sub2,10);
- if(!novo&&!(idx>=0&&idx<linhas.length)){b.innerHTML=rvazio("Esta linha não existe mais.");return}
- const ehArr=linhas.some(r=>Array.isArray(r)),cols=artCols(ds,linhas),molde=linhas[0];
- const linha=novo?(ehArr?cols.map(()=>""):Object.fromEntries(cols.map(c=>[c,""]))):linhas[idx];
- if(novo&&!ehArr&&cols.includes("id"))linha.id=Math.max(0,...linhas.map(r=>Number((r||{}).id)||0))+1;
- const ref=novo?molde:linha;
- const pega=(r,c,i)=>r==null?undefined:(ehArr?r[i]:r[c]);
- const tipoDe=(c,i)=>{const v=pega(ref,c,i);return v&&typeof v==="object"?"json":typeof v==="number"?"num":typeof v==="boolean"?"bool":"txt"};
- const valor=(c,i)=>{const v=pega(linha,c,i);return v==null?"":typeof v==="object"?JSON.stringify(v,null,1):String(v)};
- b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/dados/${ds.k}">‹ Voltar a ${esc(ds.t)}</a><span class="muted small">${novo?"Nova linha":"Linha "+(idx+1)+" de "+linhas.length}</span></div>
- ${cols.map((c,i)=>{const t=tipoDe(c,i),v=valor(c,i);return `<label>${esc(String(c))}${t==="json"?' <small class="muted">(lista ou objeto em formato JSON)</small>':""}<textarea name="f${i}" rows="${t==="json"?6:(v.length>120?4:2)}">${esc(v)}</textarea></label>`}).join("")}
- <p class="vlm-e" role="alert"></p><p class="pf-ok small" hidden>Salvo.</p>
- <div class="pf-acoes"><div>${novo?"":'<button type="button" class="btn adm-apagar">Apagar</button>'}</div><button type="submit" class="btn vlm-s">Salvar</button></div></form>`;
- const f=b.querySelector("form"),msg=b.querySelector(".vlm-e"),bt=f.querySelector(".vlm-s");
- f.onsubmit=async e=>{e.preventDefault();msg.textContent="";const vals=[];
-  for(let i=0;i<cols.length;i++){const txt=f["f"+i].value,t=tipoDe(cols[i],i);let v=txt;
-   if(t==="json"){if(txt.trim()==="")v=[];else try{v=JSON.parse(txt)}catch(er){msg.textContent="O campo "+cols[i]+" precisa estar em formato JSON válido.";return}}
-   else if(t==="num"){if(txt.trim()==="")v=null;else{v=Number(txt.replace(",","."));if(Number.isNaN(v)){msg.textContent="O campo "+cols[i]+" precisa ser um número.";return}}}
-   else if(t==="bool")v=txt.trim().toLowerCase()==="true";
-   vals.push(v)}
-  const row=ehArr?vals:Object.fromEntries(cols.map((c,i)=>[c,vals[i]]));
-  const copia=linhas.slice();if(novo)copia.push(row);else copia[idx]=row;
-  bt.disabled=true;try{await artDsSalvar(ds,copia);location.hash="#/admin/dados/"+ds.k}catch(er){msg.textContent=artMsg(er)}finally{bt.disabled=false}};
- const ap=b.querySelector(".adm-apagar");let c2=false;
- if(ap)ap.onclick=async()=>{if(!c2){c2=true;ap.textContent="Confirmar exclusão";return}
-  ap.disabled=true;try{const copia=linhas.slice();copia.splice(idx,1);await artDsSalvar(ds,copia);location.hash="#/admin/dados/"+ds.k}
-  catch(er){msg.textContent=artMsg(er);ap.disabled=false;c2=false;ap.textContent="Apagar"}}}
+  b.innerHTML=`<div><h2>Textos e listas do site</h2><p class="mut" style="margin:4px 0 0">Listas escritas no próprio site, como Constituição, ministros, leis e unidades policiais. Escolha uma para ver e alterar.</p></div>`+Object.entries(grupos).map(([g,ds])=>`<div class="ad-box"><h3>${esc(g)}</h3><div class="ad-list">${ds.map(d=>{const a=d.r();return `<div class="ad-li"><div><b>${esc(d.t)}</b><small>${Array.isArray(a)?a.length+" linhas":"indisponível"}</small></div><span>${d.alt?'<span class="ad-tag mod">Alterado</span> ':""}<a class="b s" href="#/admin/dados/${d.k}">Abrir</a></span></div>`}).join("")}</div></div>`).join("");return}
+ const ds=ART_DS.find(x=>x.k===sub);if(!ds){b.innerHTML=rvazio("Lista não encontrada.");return}
+ b.innerHTML=`<div><a class="ad-back" href="#/admin/dados">‹ Todas as listas</a></div><div id="artEd"></div>`;artListaAbrir(ds)}
+/* ----- notícias e prêmios autorais ----- */
 async function artVit(id,d){const ref=ARTDB.collection("vitrine").doc(id);
  if(d&&d.publicada)await ref.set({titulo:d.titulo,categoria:d.categoria,resumo:d.resumo,corpo:d.corpo,fonte:d.fonte,video:d.video,atualizada_em:d.atualizada_em});else await ref.delete()}
 async function artVitrine(cat,sel,titulo){try{const db=await usarCap("db");const box=$(sel);if(!db||!box)return;
  const s=await db.collection("vitrine").orderBy("atualizada_em","desc").limit(50).get();
  const l=s.docs.filter(d=>d.exists&&d.data().categoria===cat).map(d=>d.data());if(!l.length)return;
  box.innerHTML=`<div class="panel mt"><h2>${esc(titulo)}</h2>${l.map(p=>`<details><summary><b>${esc(p.titulo)}</b>${p.resumo?" — "+esc(p.resumo):""}</summary><div class="pub-corpo">${pubCorpo(p.corpo||"")}</div>${p.fonte?`<p class="muted small">Fonte: ${esc(p.fonte)}</p>`:""}${p.video?`<p class="small"><a href="${esc(p.video)}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>`:""}</details>`).join("")}</div>`}catch(e){}}
-async function artAdmMontar(aba,sub,sub2){const c=$("#admC");if(!c)return;
- const abas=ART_ABAS.map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}${k==="banco"||k==="servidor"?' <small class="muted">(só no servidor)</small>':""}</a>`).join("");
- c.innerHTML=`<div class="adm-aviso"><b>Administração neste Artifact.</b> O que você alterar aqui fica guardado neste Artifact, separado do banco do servidor. Depois ligamos ao banco.</div><div class="tabs keep adm-abas">${abas}</div><div id="admCorpo">${rload()}</div>`;
+function artPostsLista(b,pubs){
+ const cat=window.ART_CATF||"todas",lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat),n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
+ b.innerHTML=`<div class="ad-top"><div><h2>Notícias e prêmios</h2><p class="mut" style="margin:4px 0 0">Textos seus. Os publicados aparecem nas abas Notícias e Prêmios do site.</p></div><a class="b p" href="#/admin/posts/novo">+ Novo texto</a></div>
+ <div class="ad-chips" role="group" aria-label="Tipo">${[["todas","Todos"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="ad-chip${cat===k?" on":""}" data-cat="${k}">${t} (${n(k)})</button>`).join("")}</div>
+ <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} <a class="b s" href="#/admin/posts/${esc(p.id)}">Editar</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
+ b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
+function artPostEditor(b,p){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
+ b.innerHTML=`<div><a class="ad-back" href="#/admin/posts">‹ Voltar</a></div><form class="ad-box" novalidate><h2>${p?"Editar texto":"Novo texto"}</h2>
+ <div class="ad-grid2"><label>Título<input name="titulo" maxlength="200" value="${esc(v.titulo)}" placeholder="Ex.: Quanto cada estado recebeu em 2026"></label>
+ <label>Onde vai aparecer<select name="categoria">${Object.entries(ART_CAT).map(([k,t])=>`<option value="${k}"${v.categoria===k?" selected":""}>${t}${k==="noticia"?" (aba Notícias)":k==="premio"?" (aba Prêmios)":""}</option>`).join("")}</select></label></div>
+ <label>Resumo <small>aparece ao lado do título</small><input name="resumo" maxlength="400" value="${esc(v.resumo||"")}"></label>
+ <label>Texto <small>uma linha em branco separa os parágrafos</small><textarea name="corpo" rows="12" maxlength="25000">${esc(v.corpo||"")}</textarea></label>
+ <div class="ad-grid2"><label>Fonte <small>opcional</small><input name="fonte" maxlength="300" value="${esc(v.fonte||"")}"></label>
+ <label>Link de vídeo <small>YouTube ou Vimeo, opcional</small><input name="video" maxlength="300" value="${esc(v.video||"")}" placeholder="https://youtu.be/…"></label></div>
+ <label style="grid-template-columns:auto 1fr;align-items:center;gap:10px;color:var(--ink)"><input type="checkbox" name="publicada" style="width:18px;height:18px"${v.publicada?" checked":""}><span><b>Publicar no site</b><br><small>Desligado = rascunho, só você vê.</small></span></label>
+ <p class="ad-err" role="alert"></p>
+ <div class="ad-top"><div>${p?'<button type="button" class="b d" id="adApaga">Apagar este texto</button>':""}</div><button class="b p" type="submit">Salvar</button></div></form>`;
+ const f=b.querySelector("form"),err=b.querySelector(".ad-err"),bt=f.querySelector("button[type=submit]");
+ f.onsubmit=async e=>{e.preventDefault();err.textContent="";
+  const d={titulo:f.titulo.value.trim(),categoria:f.categoria.value,resumo:f.resumo.value.trim(),corpo:f.corpo.value,fonte:f.fonte.value.trim(),video:f.video.value.trim(),publicada:f.publicada.checked,atualizada_em:new Date().toISOString()};
+  if(!d.titulo){err.textContent="Informe o título.";return}
+  if(d.video&&!/^https:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//.test(d.video)){err.textContent="O vídeo precisa ser um link https do YouTube ou do Vimeo.";return}
+  bt.disabled=true;
+  try{let id;if(p){id=p.id;await ARTDB.collection("publicacoes").doc(id).set(d)}else{const r=await ARTDB.collection("publicacoes").add(d);id=r.id}
+   await artVit(id,d);artToast(d.publicada?"Salvo e publicado no site.":"Salvo como rascunho.");location.hash="#/admin/posts"}
+  catch(er){err.textContent=artMsg(er);bt.disabled=false}};
+ const ap=b.querySelector("#adApaga");let c=false;
+ if(ap)ap.onclick=async()=>{if(!c){c=true;ap.textContent="Confirmar: apagar";return}
+  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();await artVit(p.id,null);artToast("Texto apagado.");location.hash="#/admin/posts"}
+  catch(er){err.textContent=artMsg(er);ap.disabled=false;c=false;ap.textContent="Apagar este texto"}}}
+/* ----- início da administração e estrutura ----- */
+async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
+ const pub=pubs.filter(p=>p.publicada).length,telas=Object.keys(window.ART_OVR),listas=ART_DS.filter(d=>d.alt);
+ const itens=[...telas.map(k=>{const p=k.split("?")[0];return {t:artNome(p),sub:k,h:"#/admin/telas/"+artSecDe(p),a:k}}),...listas.map(d=>({t:d.t,sub:"Lista do site",h:"#/admin/dados/"+d.k}))];
+ b.innerHTML=`<div><h2>O que você quer fazer?</h2><p class="mut" style="margin:4px 0 0">Escolha uma opção. Tudo o que você alterar fica guardado neste Artifact e já aparece nas telas do site.</p></div>
+ <div class="ad-cards">
+  <a class="ad-card" href="#/admin/posts/novo"><h3>Publicar notícia ou prêmio</h3><p>Escreva um texto seu e publique nas abas Notícias ou Prêmios.</p><span class="go">Escrever ›</span></a>
+  <a class="ad-card" href="#/admin/telas"><h3>Corrigir dados de uma tela</h3><p>Escolha a tela (Saúde, Eleições, Segurança…) e altere os números e textos em tabela.</p><span class="go">Escolher a tela ›</span></a>
+  <a class="ad-card" href="#/admin/dados"><h3>Editar textos e listas</h3><p>Constituição, ministros, leis, unidades policiais e outras listas escritas no site.</p><span class="go">Ver listas ›</span></a>
+ </div>
+ <div class="ad-box"><h3>Como funciona</h3><div class="ad-steps"><div class="ad-step"><b>1</b><span>Escolha o que quer mexer.</span></div><div class="ad-step"><b>2</b><span>Altere, adicione ou apague linhas na tabela.</span></div><div class="ad-step"><b>3</b><span>Clique em <b>Salvar alterações</b>. Para desfazer, use <b>Voltar ao original</b>.</span></div></div></div>
+ <div class="ad-cards">
+  <div class="ad-card"><span class="mut">Textos publicados</span><span class="n">${nf(pub)}</span><p>${nf(pubs.length-pub)} em rascunho</p></div>
+  <div class="ad-card"><span class="mut">Dados de telas alterados</span><span class="n">${nf(telas.length)}</span></div>
+  <div class="ad-card"><span class="mut">Listas alteradas</span><span class="n">${nf(listas.length)}</span></div>
+ </div>
+ ${itens.length?`<div class="ad-box"><h3>O que você já alterou</h3><div class="ad-list">${itens.map(i=>`<div class="ad-li"><div><b>${esc(i.t)}</b><small>${esc(i.sub)}</small></div><a class="b s" href="${i.h}"${i.a?` data-abrir-ep="${esc(i.a)}"`:""}>Abrir</a></div>`).join("")}</div></div>`:""}`;
+ b.querySelectorAll("[data-abrir-ep]").forEach(a=>a.addEventListener("click",()=>{window.ART_ABRIR=a.dataset.abrirEp}))}
+function artServidor(b){
+ b.innerHTML=`<div><h2>Servidor e banco de dados</h2><p class="mut" style="margin:4px 0 0">Ainda não ligados a este Artifact.</p></div>
+ <div class="ad-box"><h3>O que vem depois</h3><p class="mut" style="margin:0">Quando o servidor do BRASIL+ estiver no ar, esta área passa a mostrar também:</p><div class="ad-list"><div class="ad-li"><div><b>Contas e acessos</b><small>quem entrou, papéis e administradores</small></div><span class="ad-tag">Em breve</span></div><div class="ad-li"><div><b>Banco de dados</b><small>todas as tabelas, com busca e edição</small></div><span class="ad-tag">Em breve</span></div><div class="ad-li"><div><b>Coletas das fontes</b><small>quando cada fonte foi atualizada e se deu erro</small></div><span class="ad-tag">Em breve</span></div></div></div>`}
+const ART_ABAS=[["resumo","Início"],["posts","Notícias e prêmios"],["telas","Dados das telas"],["dados","Textos e listas"],["servidor","Servidor"]];
+async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
+ c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.map(([k,t])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${t}</a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;
  const b=$("#admCorpo");
- if(aba==="banco"||aba==="servidor"){b.innerHTML=rvazio("Esta seção depende do servidor do BRASIL+ (banco de dados, contas e coletas). Ainda não está ligada neste Artifact.");return}
  try{
   if(aba==="telas")return artTelasMontar(b,sub);
-  if(aba==="dados")return artDadosMontar(b,sub,sub2);
-  const pubs=await artPubs();
-  if(sub==="novo")return artAdmEditor(b,null,pubs);
-  if(sub){const p=pubs.find(x=>x.id===sub);return p?artAdmEditor(b,p,pubs):(b.innerHTML=rvazio("Este registro não existe mais."))}
-  return artAdmResumo(b,pubs)}
+  if(aba==="dados")return artDadosMontar(b,sub);
+  if(aba==="servidor")return artServidor(b);
+  if(aba==="posts"){const pubs=await artPubs();
+   if(sub==="novo")return artPostEditor(b,null);
+   if(sub){const p=pubs.find(x=>x.id===sub);return p?artPostEditor(b,p):(b.innerHTML=rvazio("Este texto não existe mais."))}
+   return artPostsLista(b,pubs)}
+  return artHome(b)}
  catch(e){b.innerHTML=rerro(e)}}
-function artAdmResumo(b,pubs){const pub=pubs.filter(p=>p.publicada).length;
- const cat=window.ART_CATF||"todas";const lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat);
- const n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
- const chips=[["todas","Todas"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="chip${cat===k?" on":""}" data-cat="${k}">${t} <small class="muted">${n(k)}</small></button>`).join("");
- b.innerHTML=`<div class="kpis"><div class="kpi"><span>Posts</span><strong>${nf(pubs.length)}</strong></div><div class="kpi"><span>Publicados</span><strong>${nf(pub)}</strong></div><div class="kpi"><span>Rascunhos</span><strong>${nf(pubs.length-pub)}</strong></div></div>
- <div class="chips" role="group" aria-label="Categoria">${chips}</div>
- <div class="adm-topo"><p class="muted small" style="margin:0">Notícias e prêmios autorais aparecem nas abas Notícias e Prêmios do site quando publicados. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/resumo/novo">Novo post</a></div>
- <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${lista.map(p=>`<tr><td><a href="#/admin/resumo/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicado</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhum registro nesta categoria.</td></tr>'}</tbody></table></div>`;
- b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
-function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
- b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/resumo">‹ Voltar à lista</a>${p?`<span class="muted small">ID ${esc(p.id)} · última alteração: ${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</span>`:""}</div>
- <div class="pf-grade"><label>Título<input name="titulo" maxlength="200" value="${esc(v.titulo)}" required></label>
- <label>Categoria<select name="categoria">${Object.entries(ART_CAT).map(([k,t])=>`<option value="${k}"${v.categoria===k?" selected":""}>${t}</option>`).join("")}</select></label></div>
- <label>Resumo (aparece nas listas)<input name="resumo" maxlength="400" value="${esc(v.resumo||"")}"></label>
- <label>Texto (linha em branco separa parágrafos)<textarea name="corpo" rows="12" maxlength="25000">${esc(v.corpo||"")}</textarea></label>
- <div class="pf-grade"><label>Fonte (opcional)<input name="fonte" maxlength="300" value="${esc(v.fonte||"")}"></label>
- <label>Link de vídeo (YouTube ou Vimeo, opcional)<input name="video" maxlength="300" value="${esc(v.video||"")}" placeholder="https://youtu.be/…"></label></div>
- <label class="adm-pub"><input type="checkbox" name="publicada"${v.publicada?" checked":""}> Publicar (aparece na lista de publicações)</label>
- <p class="vlm-e" role="alert"></p><p class="pf-ok small" hidden>Salvo.</p>
- <div class="pf-acoes"><div>${p?'<button type="button" class="btn adm-apagar">Apagar</button>':""}</div><button type="submit" class="btn vlm-s">Salvar</button></div></form>`;
- const f=b.querySelector("form"),msg=b.querySelector(".vlm-e"),ok=b.querySelector(".pf-ok"),bt=f.querySelector(".vlm-s");
- f.onsubmit=async e=>{e.preventDefault();msg.textContent="";ok.hidden=true;
-  const d={titulo:f.titulo.value.trim(),categoria:f.categoria.value,resumo:f.resumo.value.trim(),corpo:f.corpo.value,fonte:f.fonte.value.trim(),video:f.video.value.trim(),publicada:f.publicada.checked,atualizada_em:new Date().toISOString()};
-  if(!d.titulo){msg.textContent="Informe o título.";return}
-  if(d.video&&!/^https:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//.test(d.video)){msg.textContent="O vídeo precisa ser um link https do YouTube ou do Vimeo.";return}
-  bt.disabled=true;
-  try{if(p){await ARTDB.collection("publicacoes").doc(p.id).set(d);await artVit(p.id,d);ok.hidden=false}
-   else{const r=await ARTDB.collection("publicacoes").add(d);await artVit(r.id,d);location.hash="#/admin/resumo/"+r.id;return}}
-  catch(err){msg.textContent=artMsg(err)}finally{bt.disabled=false}};
- const ap=b.querySelector(".adm-apagar");let confirmou=false;
- if(ap)ap.onclick=async()=>{if(!confirmou){confirmou=true;ap.textContent="Confirmar exclusão";return}
-  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();await artVit(p.id,null);location.hash="#/admin/resumo"}
-  catch(err){msg.textContent=artMsg(err);ap.disabled=false;confirmou=false;ap.textContent="Apagar"}}}
 const _pn=P.noticias,_pp=P.premios;
 P.noticias=(...a)=>{const r=_pn(...a);return{...r,html:'<div id="artVitN"></div>'+r.html,mount(){artVitrine("noticia","#artVitN","Notícias do BRASIL+");return r.mount&&r.mount()}}};
 P.premios=(...a)=>{const r=_pp(...a);return{...r,html:'<div id="artVitP"></div>'+r.html,mount(){artVitrine("premio","#artVitP","Prêmios autorais do BRASIL+");return r.mount&&r.mount()}}};
