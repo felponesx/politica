@@ -2259,6 +2259,7 @@ html.tema-troca,html.tema-troca *{transition:background-color .9s ease,color .9s
 const I={
 publicacoes:'<path d="M5 5h11a3 3 0 0 1 3 3v11H8a3 3 0 0 1-3-3z"/><path d="M8 9h6M8 12h6M8 15h4"/>',
 admin:'<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+atividade:'<circle cx="9" cy="8" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M16 5.5a3 3 0 0 1 0 5.5M17.5 14.7c1.8.6 3 2 3.5 4.3"/>',
 banco:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
 inicio:'<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
 ia:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
@@ -2294,7 +2295,8 @@ fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v
 const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["publicacoes","Publicações"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;if(n[0]==="publicacoes")return window.API_ON===true;return true}
-function navHTML(){return NAV.filter(navVisivel).map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}"${n[0]==="admin"?' class="nav-adm"':""}>${svgI(n[0])}<span>${n[1]}</span></a>`+(n[0]==="admin"?`<div class="nav-sub"><a href="#/admin/posts" data-k="admin-posts" data-sub="#/admin/posts">${svgI("noticias")}<span>Notícias</span></a><a href="#/admin/banco" data-k="admin-banco" data-sub="#/admin/banco">${svgI("banco")}<span>Banco de dados</span></a></div>`:"")).join("")}
+function navSubAdmin(){return [["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["atividade","atividade","Controle de atividade"]].filter(x=>artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
+function navHTML(){return NAV.filter(navVisivel).map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}"${n[0]==="admin"?' class="nav-adm"':""}>${svgI(n[0])}<span>${n[1]}</span></a>`+(n[0]==="admin"?`<div class="nav-sub">${navSubAdmin()}</div>`:"")).join("")}
 function navAtualizar(){document.getElementById("nav").innerHTML=navHTML();document.getElementById("sheetNav").innerHTML=navHTML();const ba=document.getElementById("btnAdmin");if(ba)ba.hidden=!window.VL_ADMIN}
 navAtualizar();
 
@@ -6973,11 +6975,20 @@ function telaPunidas(){return{html:`<div id="punL">${rload()}</div>`,mount(){Pro
 aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(prefs().tema==="auto")aplicarPrefs()});
 /* ===== Administração dentro do Artifact (sem servidor) =====
    Só ativa para quem pode editar (canEdit). O que é alterado fica guardado no armazenamento do Artifact e é aplicado nas telas. */
-window.ART_ADM=false;let ARTDB=null;
+window.ART_ADM=false;let ARTDB=null;let ART_ME={id:null,email:"",nome:"",dono:false},ART_ASSETS=null;window.ART_PERM=null;
+const ART_PERM_TODAS={ver:{posts:true,banco:true,atividade:true},alt:{posts:true,telas:true,listas:true,imagens:true}};
+const artVer=k=>!!(window.ART_PERM&&window.ART_PERM.ver&&window.ART_PERM.ver[k]);
+const artAlt=k=>!!(window.ART_PERM&&window.ART_PERM.alt&&window.ART_PERM.alt[k]);
 const usarCap=n=>(window.claude&&window.claude.use)?window.claude.use(n).catch(()=>null):Promise.resolve(null);
-async function artAdmIniciar(){try{const [u,d]=await Promise.all([usarCap("user"),usarCap("db")]);if(!d||!u)return;if(!(await u.canEdit()))return;ARTDB=d;window.ART_ADM=true}catch(e){}}
+async function artAdmIniciar(){try{const [u,d,as]=await Promise.all([usarCap("user"),usarCap("db"),usarCap("assets")]);if(!d||!u)return;
+ const edit=await u.canEdit(),dono=await u.isOwner();if(!edit&&!dono)return;
+ const me=await u.me();let perm=null;
+ if(dono)perm=ART_PERM_TODAS;
+ else if(me.email){const doc=await d.collection("acessos").doc(String(me.email).trim().toLowerCase()).get();if(doc.exists){const x=doc.data();if(x.ativo!==false&&x.perm)perm=x.perm}}
+ if(!perm)return;
+ ARTDB=d;ART_ASSETS=as;ART_ME={id:me.id,email:me.email||"",nome:me.name||"",dono};window.ART_PERM=perm;window.ART_ADM=true}catch(e){}}
 const ART_CAT={noticia:"Notícia",premio:"Prêmio autoral",dados:"Dados",explicacao:"Explicação"};
-const ART_ERR={invalid_argument:"Não foi possível salvar. Confira os campos.",quota_exceeded:"Limite de itens atingido. Apague algum para criar outro.",resource_exhausted:"Muitas ações seguidas. Espere um pouco e tente de novo.",unavailable:"Serviço indisponível agora. Tente de novo em instantes.",revoked:"Seu acesso a esta área foi retirado."};
+const ART_ERR={too_large:"A imagem é grande demais.",unsupported_type:"Tipo de imagem não aceito.",quota_or_state:"O espaço de arquivos do Artifact acabou.",invalid_argument:"Não foi possível salvar. Confira os campos.",quota_exceeded:"Limite de itens atingido. Apague algum para criar outro.",resource_exhausted:"Muitas ações seguidas. Espere um pouco e tente de novo.",unavailable:"Serviço indisponível agora. Tente de novo em instantes.",revoked:"Seu acesso a esta área foi retirado."};
 const artMsg=e=>(e&&ART_ERR[e.code])||"Não foi possível concluir. Tente de novo.";
 async function artPubs(){const s=await ARTDB.collection("publicacoes").orderBy("atualizada_em","desc").limit(500).get();return s.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}
 const ART_EPS=["/aeroportos", "/agora/eventos", "/alertas-mapbiomas/territorio", "/ambiente", "/assembleias", "/cartao-corporativo", "/coletas", "/contadores", "/contratos", "/contratos/:id", "/cortes", "/cpis", "/crimes-politicos", "/dividas/devedores", "/dividas/empresas", "/dividas/estados", "/dividas/familias-estados", "/dividas/municipios", "/economia", "/economia-empresas", "/eleicoes/:x/:x", "/eleicoes/:x/:x/cargos", "/eleicoes/:x/:x/mapa", "/eleicoes/:x/cargos", "/eleicoes/:x/estados", "/eleicoes/anos", "/eleicoes/candidato/:id", "/emendas", "/empresas/:id", "/energia-tarifas", "/ensino", "/escandalos", "/escandalos/:id", "/estados/:id", "/estados/:x/fluxo", "/estados/:x/resumo", "/faccoes", "/fluxo-federativo", "/fontes/status", "/fornecedores-cruzados", "/fornecedores/:id", "/fundos", "/gastos/entes", "/gastos/evolucao", "/gastos/funcao", "/historico-estados", "/igc", "/indicadores", "/indicadores-sociais", "/indicadores-sociais/nomes", "/iva", "/julgamentos", "/justica", "/legislacao", "/legislacao-resumo", "/legislacao/:id", "/lista-suja", "/malhas/:id", "/mapa/estados", "/multas-ambientais", "/municipios", "/municipios/:id", "/noticias", "/obras", "/obras-gestao", "/obras-gestao/lista", "/obras-resumo/:id", "/obras/:id", "/orgaos", "/orgaos/:id", "/parlamentares", "/parlamentares/:id", "/parlamentares/:x/atuacao", "/partidos/composicao", "/policias", "/policias/:id", "/premios", "/proposicoes", "/proposicoes/:id", "/recuperacao-judicial/resumo", "/renuncia-fiscal", "/resumo-contratos", "/riscos", "/sancoes", "/sancoes/contratos", "/saneamento", "/saude", "/saude/municipios", "/saude/painel", "/seguranca", "/social", "/social/municipios", "/tcu-inabilitados", "/tcu-irregulares", "/trabalho", "/transito", "/transito/agora", "/transito/malha", "/viagens", "/votacoes", "/votacoes/:id"];
@@ -7086,6 +7097,10 @@ a.ad-card:hover{border-color:var(--blue);box-shadow:0 3px 14px rgba(47,85,151,.1
 details.ad-more summary{cursor:pointer;color:var(--blue);font-weight:500;font-size:13.5px}
 @media(prefers-reduced-motion:reduce){.ad-bar,.ad-toast{transition:none}}
 .ad [hidden]{display:none!important}
+.ad .chk{display:flex;gap:8px;align-items:center;color:var(--ink);font-weight:400}
+.ad .chk input{width:18px;height:18px;flex:0 0 auto}
+.ad-fs{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;gap:8px;min-width:0}
+.ad-fs legend{padding:0 6px;color:var(--ink2);font-weight:600;font-size:13px}
 .ad-ic{flex:0 0 auto;display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--tint);color:var(--blue)}
 .ad-ic.y{background:#FFF1B8;color:#7A5200}
 .ad-ic svg,.ad-tabs svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -7170,8 +7185,10 @@ function artEditor(){const T=window.ART_T,box=$("#artEd");if(!T||!box)return;
  else if(Array.isArray(x))corpo=artArrHtml(T,x);
  else if(x&&typeof x==="object")corpo=artObjHtml(T,x);
  else corpo=`<p>${esc(artValTxt(x))}</p>`;
- box.innerHTML=`<div class="ad-box"><div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc(T.ic||"relatorios")}<div><h2>${esc(T.titulo)}</h2><div class="ad-crumbs">${crumbs}</div></div></div><div>${T.custom?'<span class="ad-tag mod">Alterado</span> <button class="b s d" id="artRest" type="button">Voltar ao original</button>':'<span class="ad-tag">Original</span>'}</div></div>${corpo}</div><div class="ad-bar${T.dirty?" on":""}" id="adBar" role="status"><span>Você tem alterações que ainda não foram salvas.</span><button class="b s" id="adDesc" type="button">Descartar</button><button class="b p s" id="artSalva" type="button">Salvar alterações</button></div>`;
+ box.innerHTML=`<div class="ad-box"><div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc(T.ic||"relatorios")}<div><h2>${esc(T.titulo)}</h2><div class="ad-crumbs">${crumbs}</div></div></div><div>${T.custom?'<span class="ad-tag mod">Alterado</span> <button class="b s d" id="artRest" type="button">Voltar ao original</button>':'<span class="ad-tag">Original</span>'}</div></div>${T.ro?'<div class="ad-note">Você pode ver esta base, mas não tem permissão para alterar.</div>':""}${corpo}</div><div class="ad-bar${T.dirty?" on":""}" id="adBar" role="status"><span>Você tem alterações que ainda não foram salvas.</span><button class="b s" id="adDesc" type="button">Descartar</button><button class="b p s" id="artSalva" type="button">Salvar alterações</button></div>`;
+ if(T.ro)box.querySelectorAll("#artNovo,#artRest").forEach(x=>x.remove());
  artWire();
+ if(T.ro)box.querySelectorAll("[data-ed]").forEach(x=>{if(x.textContent==="Editar")x.textContent="Ver"});
  const f=$("#artForm");if(f)artWireForm(f,x)}
 function artWire(){const T=window.ART_T,box=$("#artEd");
  box.querySelectorAll("[data-n]").forEach(a=>a.onclick=e=>{e.preventDefault();T.nav=T.nav.slice(0,+a.dataset.n+1);T.edit=null;T.pag=1;T.q="";artEditor()});
@@ -7179,9 +7196,9 @@ function artWire(){const T=window.ART_T,box=$("#artEd");
  const nv=$("#artNovo");if(nv)nv.onclick=()=>{T.edit="novo";artEditor()};
  box.querySelectorAll("[data-ed='campos']").forEach(a=>a.onclick=()=>{T.edit="campos";artEditor()});
  const q=$("#adQ");if(q)q.oninput=()=>{T.q=q.value;T.pag=1;artAtualizaLinhas()};
- $("#artSalva").onclick=async()=>{const bt=$("#artSalva");bt.disabled=true;try{await T.save();T.dirty=false;T.custom=true;artEditor();artToast("Salvo. As telas do site já mostram os novos dados.")}catch(e){bt.disabled=false;artToast(e&&e.code==="grande"?"Ficou grande demais para guardar aqui (limite de 3 MB).":artMsg(e))}};
+ $("#artSalva").onclick=async()=>{const bt=$("#artSalva");bt.disabled=true;try{await T.save();artLog("salvou alterações",T.titulo);T.dirty=false;T.custom=true;artEditor();artToast("Salvo. As telas do site já mostram os novos dados.")}catch(e){bt.disabled=false;artToast(e&&e.code==="grande"?"Ficou grande demais para guardar aqui (limite de 3 MB).":artMsg(e))}};
  $("#adDesc").onclick=()=>T.reabrir();
- const rs=$("#artRest");if(rs){let c=false;rs.onclick=async()=>{if(!c){c=true;rs.textContent="Confirmar: voltar ao original";return}rs.disabled=true;try{await T.restore();T.reabrir();artToast("Voltou ao original.")}catch(e){rs.disabled=false;artToast(artMsg(e))}}}}
+ const rs=$("#artRest");if(rs){let c=false;rs.onclick=async()=>{if(!c){c=true;rs.textContent="Confirmar: voltar ao original";return}rs.disabled=true;try{await T.restore();artLog("voltou ao original",T.titulo);T.reabrir();artToast("Voltou ao original.")}catch(e){rs.disabled=false;artToast(artMsg(e))}}}}
 function artWireLinhas(){const T=window.ART_T,box=$("#artEd");
  box.querySelectorAll("[data-abrir]").forEach(a=>a.onclick=()=>{T.nav.push(JSON.parse(a.dataset.abrir));T.pag=1;T.q="";artEditor()});
  box.querySelectorAll("[data-ed]:not([data-ed='campos'])").forEach(a=>a.onclick=()=>{T.edit=JSON.parse(a.dataset.ed);artEditor()});
@@ -7189,6 +7206,7 @@ function artWireLinhas(){const T=window.ART_T,box=$("#artEd");
 function artAtualizaLinhas(){const T=window.ART_T,x=artGet(T.ED,T.nav),L=artLinhasHtml(T,x);
  $("#adCab").innerHTML=L.cab;$("#adTb").innerHTML=L.corpo;const inf=document.createElement("div");inf.id="adInfo";inf.className="mut";inf.textContent=L.info;$("#adInfo").replaceWith(inf);$("#adMais").innerHTML=L.mais?'<button class="b" id="artMais" type="button">Mostrar mais linhas</button>':"";artWireLinhas()}
 function artWireForm(f,x){const T=window.ART_T,err=$("#artFErr");
+ if(T.ro){f.querySelectorAll("textarea,input").forEach(y=>{y.disabled=true});f.querySelectorAll("button[type=submit],#artDel").forEach(y=>y.remove())}
  $("#artVolta").onclick=e=>{e.preventDefault();T.edit=null;artEditor()};
  f.onsubmit=e=>{e.preventDefault();err.textContent="";const vals=[];
   for(let i=0;i<T.spec.length;i++){const s=T.spec[i],r=artLeCampo(f["f"+i].value,s.t,String(s.l),s.v);if(r.err){err.textContent=r.err;return}vals.push(r.v)}
@@ -7205,12 +7223,12 @@ const ART_CIC={noticia:"noticias",premio:"premios",dados:"indicadores",explicaca
 const adIc=(k,y)=>`<span class="ad-ic${y?" y":""}">${svgI(I[k]?k:"relatorios")}</span>`;
 async function artAbrir(path,sec){const box=$("#artEd");if(!box)return;box.innerHTML=rload();
  try{const d=await apiGet(path),key=artKey(path),clone=JSON.parse(JSON.stringify(d));
-  window.ART_T={titulo:artNome(path.split("?")[0])+(path.includes("?")?" ("+path.split("?")[1]+")":""),ic:sec,ED:clone,nav:[],edit:null,pag:1,q:"",dirty:false,custom:artOvr(path)!==undefined,
+  window.ART_T={titulo:artNome(path.split("?")[0])+(path.includes("?")?" ("+path.split("?")[1]+")":""),ic:sec,ro:!artAlt("telas"),ED:clone,nav:[],edit:null,pag:1,q:"",dirty:false,custom:artOvr(path)!==undefined,
    save:()=>artOvrSalvar(key,window.ART_T.ED),restore:()=>artOvrApagar(key),reabrir:()=>artAbrir(path,sec)};
   artEditor();box.scrollIntoView({behavior:"smooth",block:"start"})}
  catch(e){box.innerHTML='<div class="ad-note">Este dado não está na cópia do sistema que veio com o site.</div>'}}
 function artListaAbrir(ds){const box=$("#artEd");const a=ds.r();if(!Array.isArray(a)){box.innerHTML='<div class="ad-note">Esta lista não está disponível nesta versão.</div>';return}
- window.ART_T={titulo:ds.t,ic:ART_GIC[ds.g]||"relatorios",ED:JSON.parse(JSON.stringify(a)),nav:[],edit:null,pag:1,q:"",dirty:false,custom:!!ds.alt,cols:ds.c,
+ window.ART_T={titulo:ds.t,ic:ART_GIC[ds.g]||"relatorios",ro:!artAlt("listas"),ED:JSON.parse(JSON.stringify(a)),nav:[],edit:null,pag:1,q:"",dirty:false,custom:!!ds.alt,cols:ds.c,
   save:()=>artDsSalvar(ds,window.ART_T.ED),
   restore:async()=>{await ARTDB.collection("dados").doc(ds.k).delete();if(ds.orig){a.splice(0,a.length,...JSON.parse(JSON.stringify(ds.orig)))}ds.alt=false},
   reabrir:()=>artListaAbrir(ds)};
@@ -7243,41 +7261,94 @@ function artBancoMontar(b,sub){
  box.innerHTML='<div class="ad-note">Base não encontrada.</div>'}
 /* ----- notícias e prêmios autorais ----- */
 async function artVit(id,d){const ref=ARTDB.collection("vitrine").doc(id);
- if(d&&d.publicada)await ref.set({titulo:d.titulo,categoria:d.categoria,resumo:d.resumo,corpo:d.corpo,fonte:d.fonte,video:d.video,atualizada_em:d.atualizada_em});else await ref.delete()}
+ if(d&&d.publicada)await ref.set({titulo:d.titulo,categoria:d.categoria,resumo:d.resumo,corpo:d.corpo,fonte:d.fonte,video:d.video,capa_id:d.capa_id||"",atualizada_em:d.atualizada_em});else await ref.delete()}
 async function artVitrine(cat,sel,titulo){try{const db=await usarCap("db");const box=$(sel);if(!db||!box)return;
  const s=await db.collection("vitrine").orderBy("atualizada_em","desc").limit(50).get();
  const l=s.docs.filter(d=>d.exists&&d.data().categoria===cat).map(d=>d.data());if(!l.length)return;
- box.innerHTML=`<div class="panel mt"><h2>${esc(titulo)}</h2>${l.map(p=>`<details><summary><b>${esc(p.titulo)}</b>${p.resumo?" — "+esc(p.resumo):""}</summary><div class="pub-corpo">${pubCorpo(p.corpo||"")}</div>${p.fonte?`<p class="muted small">Fonte: ${esc(p.fonte)}</p>`:""}${p.video?`<p class="small"><a href="${esc(p.video)}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>`:""}</details>`).join("")}</div>`}catch(e){}}
+ box.innerHTML=`<div class="panel mt"><h2>${esc(titulo)}</h2>${l.map(p=>`<details><summary><b>${esc(p.titulo)}</b>${p.resumo?" — "+esc(p.resumo):""}</summary>${p.capa_id?`<img src="/_blob/${esc(p.capa_id)}" alt="" style="max-width:100%;border-radius:10px;margin:8px 0">`:""}<div class="pub-corpo">${pubCorpo(p.corpo||"")}</div>${p.fonte?`<p class="muted small">Fonte: ${esc(p.fonte)}</p>`:""}${p.video?`<p class="small"><a href="${esc(p.video)}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>`:""}</details>`).join("")}</div>`}catch(e){}}
 function artPostsLista(b,pubs){
  const cat=window.ART_CATF||"todas",lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat),n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
- b.innerHTML=`<div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc("noticias",true)}<div><h2>Notícias</h2><p class="mut" style="margin:2px 0 0">Textos seus (notícias e prêmios autorais). Os publicados aparecem nas abas Notícias e Prêmios do site.</p></div></div><a class="b p" href="#/admin/posts/novo">+ Novo texto</a></div>
+ b.innerHTML=`<div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc("noticias",true)}<div><h2>Notícias</h2><p class="mut" style="margin:2px 0 0">Textos seus (notícias e prêmios autorais). Os publicados aparecem nas abas Notícias e Prêmios do site.</p></div></div>${artAlt("posts")?'<a class="b p" href="#/admin/posts/novo">+ Novo texto</a>':""}</div>
  <div class="ad-chips" role="group" aria-label="Tipo">${[["todas","Todos"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="ad-chip${cat===k?" on":""}" data-cat="${k}">${t} (${n(k)})</button>`).join("")}</div>
- <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(ART_CIC[p.categoria]||"noticias")}<div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} <a class="b s" href="#/admin/posts/${esc(p.id)}">Editar</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
+ <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(ART_CIC[p.categoria]||"noticias")}<div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} <a class="b s" href="#/admin/posts/${esc(p.id)}">${artAlt("posts")?"Editar":"Ver"}</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
  b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
 function artPostEditor(b,p){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
+ const imgBox=artAlt("imagens")&&ART_ASSETS?`<div class="ad-box" style="gap:8px"><b>Imagem de capa</b>${v.capa_id?`<img src="/_blob/${esc(v.capa_id)}" alt="" style="max-width:260px;border-radius:10px">`:""}<input type="file" name="foto" accept="image/jpeg,image/png,image/webp"><small class="mut">JPEG, PNG ou WebP, até 3 MB.${v.capa_id?" Escolha outro arquivo para trocar.":""}</small>${v.capa_id?'<label class="chk"><input type="checkbox" name="semfoto"> <span>Tirar a imagem atual</span></label>':""}</div>`:(v.capa_id?`<img src="/_blob/${esc(v.capa_id)}" alt="" style="max-width:260px;border-radius:10px">`:"");
  b.innerHTML=`<div><a class="ad-back" href="#/admin/posts">‹ Voltar</a></div><form class="ad-box" novalidate><h2>${p?"Editar texto":"Novo texto"}</h2>
  <div class="ad-grid2"><label>Título<input name="titulo" maxlength="200" value="${esc(v.titulo)}" placeholder="Ex.: Quanto cada estado recebeu em 2026"></label>
  <label>Onde vai aparecer<select name="categoria">${Object.entries(ART_CAT).map(([k,t])=>`<option value="${k}"${v.categoria===k?" selected":""}>${t}${k==="noticia"?" (aba Notícias)":k==="premio"?" (aba Prêmios)":""}</option>`).join("")}</select></label></div>
  <label>Resumo <small>aparece ao lado do título</small><input name="resumo" maxlength="400" value="${esc(v.resumo||"")}"></label>
  <label>Texto <small>uma linha em branco separa os parágrafos</small><textarea name="corpo" rows="12" maxlength="25000">${esc(v.corpo||"")}</textarea></label>
+ ${imgBox}
  <div class="ad-grid2"><label>Fonte <small>opcional</small><input name="fonte" maxlength="300" value="${esc(v.fonte||"")}"></label>
  <label>Link de vídeo <small>YouTube ou Vimeo, opcional</small><input name="video" maxlength="300" value="${esc(v.video||"")}" placeholder="https://youtu.be/…"></label></div>
  <label style="grid-template-columns:auto 1fr;align-items:center;gap:10px;color:var(--ink)"><input type="checkbox" name="publicada" style="width:18px;height:18px"${v.publicada?" checked":""}><span><b>Publicar no site</b><br><small>Desligado = rascunho, só você vê.</small></span></label>
  <p class="ad-err" role="alert"></p>
  <div class="ad-top"><div>${p?'<button type="button" class="b d" id="adApaga">Apagar este texto</button>':""}</div><button class="b p" type="submit">Salvar</button></div></form>`;
  const f=b.querySelector("form"),err=b.querySelector(".ad-err"),bt=f.querySelector("button[type=submit]");
+ if(!artAlt("posts")){f.querySelectorAll("input,textarea,select").forEach(y=>{y.disabled=true});bt.remove();const a0=b.querySelector("#adApaga");if(a0)a0.remove()}
  f.onsubmit=async e=>{e.preventDefault();err.textContent="";
   const d={titulo:f.titulo.value.trim(),categoria:f.categoria.value,resumo:f.resumo.value.trim(),corpo:f.corpo.value,fonte:f.fonte.value.trim(),video:f.video.value.trim(),publicada:f.publicada.checked,atualizada_em:new Date().toISOString()};
   if(!d.titulo){err.textContent="Informe o título.";return}
   if(d.video&&!/^https:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//.test(d.video)){err.textContent="O vídeo precisa ser um link https do YouTube ou do Vimeo.";return}
   bt.disabled=true;
-  try{let id;if(p){id=p.id;await ARTDB.collection("publicacoes").doc(id).set(d)}else{const r=await ARTDB.collection("publicacoes").add(d);id=r.id}
-   await artVit(id,d);artToast(d.publicada?"Salvo e publicado no site.":"Salvo como rascunho.");location.hash="#/admin/posts"}
+  try{d.capa_id=v.capa_id||"";const arq=f.foto&&f.foto.files[0];
+   if(arq){if(!/^image\/(jpeg|png|webp)$/.test(arq.type)){err.textContent="A imagem precisa ser JPEG, PNG ou WebP.";bt.disabled=false;return}if(arq.size>3*1024*1024){err.textContent="A imagem precisa ter até 3 MB.";bt.disabled=false;return}const up=await ART_ASSETS.upload(arq);d.capa_id=up.id;artLog("inseriu imagem",d.titulo,arq.name)}
+   if(f.semfoto&&f.semfoto.checked)d.capa_id="";
+   let id;if(p){id=p.id;await ARTDB.collection("publicacoes").doc(id).set(d)}else{const r=await ARTDB.collection("publicacoes").add(d);id=r.id}
+   await artVit(id,d);artLog(p?"editou texto":"criou texto",d.titulo,d.publicada?"publicado":"rascunho");artToast(d.publicada?"Salvo e publicado no site.":"Salvo como rascunho.");location.hash="#/admin/posts"}
   catch(er){err.textContent=artMsg(er);bt.disabled=false}};
  const ap=b.querySelector("#adApaga");let c=false;
  if(ap)ap.onclick=async()=>{if(!c){c=true;ap.textContent="Confirmar: apagar";return}
-  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();await artVit(p.id,null);artToast("Texto apagado.");location.hash="#/admin/posts"}
+  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();await artVit(p.id,null);artLog("apagou texto",p.titulo);artToast("Texto apagado.");location.hash="#/admin/posts"}
   catch(er){err.textContent=artMsg(er);ap.disabled=false;c=false;ap.textContent="Apagar este texto"}}}
+/* ----- controle de atividade: quem fez o quê e quem tem acesso ----- */
+async function artLog(acao,onde,detalhe){try{if(!ARTDB)return;await ARTDB.collection("atividade").add({quando:new Date().toISOString(),quem:ART_ME.id||"",email:ART_ME.email||"",acao,onde:onde||"",detalhe:detalhe||""})}catch(e){}}
+const ART_ROT_VER=[["posts","Notícias e prêmios"],["banco","Banco de dados"],["atividade","Controle de atividade"]];
+const ART_ROT_ALT=[["posts","Criar e editar notícias e prêmios"],["telas","Alterar dados das telas"],["listas","Alterar textos e listas do site"],["imagens","Inserir imagens"]];
+const artQuando=i=>{try{return new Date(i).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}catch(e){return i||""}};
+function artResumoPerm(pm){const v=ART_ROT_VER.filter(([k])=>pm&&pm.ver&&pm.ver[k]).map(x=>x[1]),a=ART_ROT_ALT.filter(([k])=>pm&&pm.alt&&pm.alt[k]).map(x=>x[1]);
+ return `Vê: ${v.join(", ")||"nada"} · Altera: ${a.join(", ")||"nada"}`}
+async function artAtividade(b){
+ const db=ARTDB,dono=ART_ME.dono;
+ const [ativ,acc]=await Promise.all([db.collection("atividade").orderBy("quando","desc").limit(150).get(),db.collection("acessos").get()]);
+ const logs=ativ.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}));
+ const pessoas=acc.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()})).sort((x,y)=>String(x.email).localeCompare(String(y.email)));
+ let nomes={};try{const u=await usarCap("user"),ids=[...new Set(logs.map(l=>l.quem).filter(Boolean))];if(u&&ids.length)nomes=await u.profiles(ids)}catch(e){}
+ const nomeDe=l=>(nomes[l.quem]&&nomes[l.quem].name)||l.email||"Alguém";
+ const quem=[...new Set(logs.map(nomeDe))].sort();
+ const chk=(g,k,t)=>`<label class="chk"><input type="checkbox" name="${g}-${k}"> <span>${esc(t)}</span></label>`;
+ b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("atividade",true)}<div><h2>Controle de atividade</h2><p class="mut" style="margin:2px 0 0">Veja quem alterou o quê e escolha quem pode ver e alterar a administração.</p></div></div>
+ <div class="ad-box"><div class="ad-top"><h3>Atividade recente</h3>${quem.length>1?`<select id="adQuem" style="max-width:240px"><option value="">Todas as pessoas</option>${quem.map(n=>`<option>${esc(n)}</option>`).join("")}</select>`:""}</div>
+  <div class="ad-tw" style="max-height:340px"><table class="ad-t"><thead><tr><th>Quando</th><th>Quem</th><th>O que fez</th><th>Onde</th></tr></thead><tbody id="adLog">${logs.map(l=>`<tr data-n="${esc(nomeDe(l))}"><td>${esc(artQuando(l.quando))}</td><td>${esc(nomeDe(l))}</td><td>${esc(l.acao||"")}</td><td class="c">${esc(l.onde||"")}${l.detalhe?` <small class="mut">${esc(l.detalhe)}</small>`:""}</td></tr>`).join("")||'<tr><td colspan="4" class="mut">Nenhuma atividade registrada ainda. Cada alteração feita na administração aparece aqui.</td></tr>'}</tbody></table></div></div>
+ <div class="ad-box"><h3>Pessoas com acesso</h3><div class="ad-list">
+  <div class="ad-li"><div><b>${esc(dono?(ART_ME.nome||ART_ME.email||"Você"):"Dono do Artifact")}</b><small>Dono · vê e altera tudo</small></div><span class="ad-tag ok">Dono</span></div>
+  ${pessoas.map(x=>`<div class="ad-li"><div><b>${esc(x.email)}</b><small>${esc(artResumoPerm(x.perm))}</small></div><span>${x.ativo===false?'<span class="ad-tag">Pausado</span>':'<span class="ad-tag ok">Ativo</span>'}${dono?` <button class="b s" type="button" data-ed-acc="${esc(x.id)}">Editar</button> <button class="b s" type="button" data-pausa="${esc(x.id)}">${x.ativo===false?"Reativar":"Pausar"}</button> <button class="b s d" type="button" data-rem="${esc(x.id)}">Remover</button>`:""}</span></div>`).join("")}
+  ${pessoas.length?"":'<div class="ad-note">Ninguém foi adicionado ainda.</div>'}</div></div>
+ ${dono?`<form id="adAcesso" class="ad-box" novalidate><h3 id="adAcTit">Adicionar pessoa como administrador</h3>
+  <label>E-mail da pessoa<input name="email" type="email" placeholder="nome@exemplo.com" autocomplete="off"></label>
+  <div class="ad-grid2"><fieldset class="ad-fs"><legend>Pode ver</legend>${ART_ROT_VER.map(([k,t])=>chk("ver",k,t)).join("")}</fieldset><fieldset class="ad-fs"><legend>Pode alterar</legend>${ART_ROT_ALT.map(([k,t])=>chk("alt",k,t)).join("")}</fieldset></div>
+  <div class="ad-chips"><button type="button" class="ad-chip" data-pre="ver">Só ver tudo</button><button type="button" class="ad-chip" data-pre="tudo">Ver e alterar tudo</button><button type="button" class="ad-chip" data-pre="nada">Limpar</button></div>
+  <div class="ad-note"><b>Para a pessoa abrir o painel</b>, compartilhe este Artifact com o mesmo e-mail como <b>Editor</b>, no botão Compartilhar do Artifact. Aqui você escolhe o que ela vê e altera dentro da administração; essas regras valem na tela de administração.</div>
+  <p class="ad-err" id="adAcErr" role="alert"></p><div class="ad-top"><span></span><button class="b p" type="submit">Salvar acesso</button></div></form>`:""}`;
+ const sel=$("#adQuem");if(sel)sel.onchange=()=>{b.querySelectorAll("#adLog tr[data-n]").forEach(tr=>{tr.hidden=!!sel.value&&tr.dataset.n!==sel.value})};
+ const f=$("#adAcesso");if(!f)return;
+ const marca=(ver,alt)=>{ART_ROT_VER.forEach(([k])=>{f["ver-"+k].checked=!!ver[k]});ART_ROT_ALT.forEach(([k])=>{f["alt-"+k].checked=!!alt[k]})};
+ const todos=o=>Object.fromEntries(o.map(([k])=>[k,true]));
+ b.querySelectorAll("[data-pre]").forEach(x=>x.onclick=()=>{const p=x.dataset.pre;marca(p==="nada"?{}:todos(ART_ROT_VER),p==="tudo"?todos(ART_ROT_ALT):{})});
+ b.querySelectorAll("[data-ed-acc]").forEach(x=>x.onclick=()=>{const q=pessoas.find(y=>y.id===x.dataset.edAcc);if(!q)return;f.email.value=q.email;f.email.readOnly=true;marca((q.perm&&q.perm.ver)||{},(q.perm&&q.perm.alt)||{});$("#adAcTit").textContent="Editar permissões de "+q.email;f.scrollIntoView({behavior:"smooth",block:"center"})});
+ b.querySelectorAll("[data-pausa]").forEach(x=>x.onclick=async()=>{const q=pessoas.find(y=>y.id===x.dataset.pausa);if(!q)return;x.disabled=true;try{await db.collection("acessos").doc(q.id).set({...q,id:undefined,ativo:q.ativo===false,atualizado_em:new Date().toISOString()});artLog(q.ativo===false?"reativou acesso":"pausou acesso",q.email);artToast(q.ativo===false?"Acesso reativado.":"Acesso pausado.");route()}catch(e){x.disabled=false;artToast(artMsg(e))}});
+ b.querySelectorAll("[data-rem]").forEach(x=>{let c=false;x.onclick=async()=>{const q=pessoas.find(y=>y.id===x.dataset.rem);if(!q)return;if(!c){c=true;x.textContent="Confirmar: remover";return}x.disabled=true;try{await db.collection("acessos").doc(q.id).delete();artLog("removeu acesso",q.email);artToast("Acesso removido.");route()}catch(e){x.disabled=false;artToast(artMsg(e))}}});
+ f.onsubmit=async e=>{e.preventDefault();const err=$("#adAcErr");err.textContent="";
+  const email=f.email.value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[a-z0-9._@+-]+$/.test(email)){err.textContent="Digite um e-mail válido (letras, números, ponto, + ou -).";return}
+  const ver={},alt={};ART_ROT_VER.forEach(([k])=>{if(f["ver-"+k].checked)ver[k]=true});ART_ROT_ALT.forEach(([k])=>{if(f["alt-"+k].checked)alt[k]=true});
+  if(alt.posts||alt.imagens)ver.posts=true;if(alt.telas||alt.listas)ver.banco=true;
+  if(!Object.keys(ver).length){err.textContent="Escolha pelo menos uma coisa que a pessoa pode ver.";return}
+  const bt=f.querySelector("button[type=submit]");bt.disabled=true;
+  try{const ex=pessoas.find(y=>y.id===email);await db.collection("acessos").doc(email).set({email,perm:{ver,alt},ativo:ex?ex.ativo!==false:true,criado_em:(ex&&ex.criado_em)||new Date().toISOString(),atualizado_em:new Date().toISOString(),por:ART_ME.id||""});
+   artLog(ex?"alterou permissões":"liberou acesso",email,artResumoPerm({ver,alt}));artToast("Acesso salvo.");route()}
+  catch(er){err.textContent=artMsg(er);bt.disabled=false}}}
 /* ----- início da administração e estrutura ----- */
 async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
  const pub=pubs.filter(p=>p.publicada).length,telas=Object.keys(window.ART_OVR),listas=ART_DS.filter(d=>d.alt);
@@ -7294,12 +7365,14 @@ async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
   <div class="ad-card"><span class="mut">Listas alteradas</span><span class="n">${nf(listas.length)}</span></div>
  </div>
  ${itens.length?`<div class="ad-box"><h3>O que você já alterou</h3><div class="ad-list">${itens.map(i=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(i.ic)}<div><b>${esc(i.t)}</b><small>${esc(i.sub)}</small></div></div><a class="b s" href="${i.h}">Abrir</a></div>`).join("")}</div></div>`:""}`}
-const ART_ABAS=[["resumo","Início","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"]];
+const ART_ABAS=[["resumo","Início","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"],["atividade","Controle de atividade","atividade"]];
 async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
  if(aba==="telas"||aba==="dados"||aba==="servidor"){aba="banco";sub=undefined}
- c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.map(([k,t,ic])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${svgI(ic)}<span>${t}</span></a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;
+ c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.filter(x=>x[0]==="resumo"||artVer(x[0])).map(([k,t,ic])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${svgI(ic)}<span>${t}</span></a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;
  const b=$("#admCorpo");
  try{
+  if(aba!=="resumo"&&!artVer(aba)){b.innerHTML='<div class="ad-note">Você não tem permissão para ver esta área.</div>';return}
+  if(aba==="atividade")return artAtividade(b);
   if(aba==="banco")return artBancoMontar(b,sub);
   if(aba==="posts"){const pubs=await artPubs();
    if(sub==="novo")return artPostEditor(b,null);
