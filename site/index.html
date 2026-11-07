@@ -6636,7 +6636,7 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  <form class="vlm-f vl2-f" novalidate>
   <label class="vlm-cred">E-mail<input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="voce@exemplo.com"></label>
   <label class="vlm-cred">Senha<span class="vl2-campo"><input name="senha" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="Mínimo de 8 caracteres"><button type="button" class="vl2-olho" aria-label="Mostrar senha">Mostrar</button></span></label>
-  <label class="vlm-cred vlm-criar">Repita a senha<input name="senha2" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Digite a mesma senha"></label>
+  <label class="vlm-cred vlm-criar">Repita a senha<span class="vl2-campo"><input name="senha2" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Digite a mesma senha"><button type="button" class="vl2-olho" aria-label="Mostrar senha">Mostrar</button></span></label>
   <div class="vlm-c" hidden>
    <p class="vl2-bloco">Pedimos só o necessário: nome, e-mail, senha e CPF. Você pode completar o resto depois, em <b>Minha conta</b>.</p>
    <label class="vlm-nome">Nome completo<input name="nome" autocomplete="name" maxlength="120" placeholder="Nome e sobrenome"></label>
@@ -6650,7 +6650,7 @@ function vlModal(){let m=document.getElementById("vlM");if(m)return m;m=document
  </form></div>`;
  document.body.appendChild(m);
  m.querySelector(".vl2-aviso").hidden=!!API.on;
- const olho=m.querySelector(".vl2-olho"),senhaEl=m.querySelector("[name=senha]");olho.onclick=()=>{const v=senhaEl.type==="password";senhaEl.type=v?"text":"password";olho.textContent=v?"Ocultar":"Mostrar";olho.setAttribute("aria-label",v?"Ocultar senha":"Mostrar senha")};
+ m.querySelectorAll(".vl2-campo").forEach(c=>{const olho=c.querySelector(".vl2-olho"),campo=c.querySelector("input");if(!olho||!campo)return;olho.onclick=()=>{const v=campo.type==="password";campo.type=v?"text":"password";olho.textContent=v?"Ocultar":"Mostrar";olho.setAttribute("aria-label",v?"Ocultar senha":"Mostrar senha")}});
  const cpfEl=m.querySelector("[name=cpf]");cpfEl.addEventListener("input",()=>{const d=cpfEl.value.replace(/\D/g,"").slice(0,11);cpfEl.value=d.replace(/^(\d{3})(\d)/,"$1.$2").replace(/^(\d{3})\.(\d{3})(\d)/,"$1.$2.$3").replace(/\.(\d{3})(\d)/,".$1-$2")});
  const modo=x=>{m.dataset.modo=x;m.querySelector(".vl2-termos").hidden=x==="entrar";m.querySelector(".vl2-sub").textContent=x==="criar"?"Crie sua conta em um minuto para votar nas leis.":x==="googlecpf"?"Falta só o CPF para concluir seu cadastro.":"Acesse para votar nas leis e acompanhar seus temas.";m.querySelectorAll("[data-m]").forEach(b=>{b.classList.toggle("on",b.dataset.m===x);b.setAttribute("aria-selected",b.dataset.m===x?"true":"false")});m.querySelector(".vlm-c").hidden=x!=="criar"&&x!=="googlecpf";m.querySelector(".vlm-s").textContent=x==="criar"?"Criar conta":x==="googlecpf"?"Concluir cadastro":"Entrar";m.querySelectorAll(".vlm-cred,.vlm-nome").forEach(l=>l.hidden=x==="googlecpf");m.querySelectorAll(".vlm-criar").forEach(l=>l.hidden=x!=="criar");m.querySelector(".vlm-tabs").hidden=x==="googlecpf";m.querySelector(".vlm-gbox").hidden=x==="googlecpf"||!m.querySelector("#vlGoogle").childElementCount;m.querySelector(".vlm-e").textContent="";m.querySelector("[name=senha]").autocomplete=x==="criar"?"new-password":"current-password"};
  m.modo=modo;m.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>modo(b.dataset.m));
@@ -6729,7 +6729,12 @@ async function perfilAbrir(){const d=await perfilCarregar();if(!d.conta){vlAbrir
  m.querySelector(".pf-ok").hidden=true;m.querySelector(".vlm-e").textContent="";m.hidden=false}
 document.getElementById("btnConta")?.addEventListener("click",e=>{e.preventDefault();perfilAbrir()});
 setTimeout(()=>vlConta(true),900);
-function vlAbrirLogin(modo="entrar"){const m=vlModal();m.modo(modo);m.hidden=false;setTimeout(()=>m.querySelector("[name=email]").focus(),30)}
+function vlAnimaEntrada(m){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const p=m.querySelector(".vl2"),b=document.getElementById("btnConta");if(!p||!b)return;
+ const rb=b.getBoundingClientRect(),rp=p.getBoundingClientRect();if(!rb.width||!rp.width)return;
+ const dx=(rb.left+rb.width/2)-(rp.left+rp.width/2),dy=(rb.top+rb.height/2)-(rp.top+rp.height/2);
+ p.animate([{transform:`translate(${dx}px,${dy}px) scale(.08)`,filter:"blur(10px)",opacity:0},{transform:"translate(0,0) scale(1)",filter:"blur(0)",opacity:1}],{duration:720,easing:"cubic-bezier(.7,0,.2,1)"});
+ m.animate([{opacity:0},{opacity:1}],{duration:380,easing:"ease-out"})}
+function vlAbrirLogin(modo="entrar"){const m=vlModal();m.modo(modo);const abrindo=m.hidden;m.hidden=false;if(abrindo)vlAnimaEntrada(m);setTimeout(()=>m.querySelector("[name=email]").focus(),30)}
 document.addEventListener("click",async e=>{const sair=e.target.closest(".vlsair"),ent=e.target.closest(".vlentrar"),adm=e.target.closest(".vladm");
  if(adm){e.preventDefault();vlAdmin();return}
  if(sair){e.preventDefault();await fetch(vlUrl("/contas/sair"),{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:"{}"});VL_CONTA=null;await vlAtualizar();return}

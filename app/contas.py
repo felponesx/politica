@@ -133,7 +133,8 @@ def aplica_papel(conta: Conta) -> None:
 
 
 def e_admin(conta: Conta | None) -> bool:
-    return conta is not None and conta.papel == "admin"
+    """Admin = papel "admin" no banco OU e-mail em ADMIN_EMAILS (conferido a cada pedido, então vale também para sessões antigas)."""
+    return conta is not None and (conta.papel == "admin" or conta.email in admins_configurados())
 
 
 def verificar_google(credencial: str) -> dict:
