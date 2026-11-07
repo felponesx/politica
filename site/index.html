@@ -757,6 +757,19 @@ tbody tr[data-href]:hover,.lk:hover{background:var(--soft)}
 .nav a{padding:clamp(5px,.95vh,10px) 12px;font-size:13.5px;margin-bottom:1px;line-height:1.25}
 .nav svg{width:18px;height:18px}
 .side .nav{flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.nav a.nav-adm{background:#FFF1B8;color:#6B4E00;font-weight:600;margin-bottom:4px}
+.nav a.nav-adm svg{stroke:#8A6100}
+.nav a.nav-adm:hover{background:#FFE98F}
+.nav a.nav-adm.on{background:#FFE48A;color:#5A4000}
+.nav a.nav-adm.on svg{stroke:#6B4E00}
+.nav-sub{margin:2px 0 8px 18px;padding-left:8px;border-left:2px solid #F2DC8A;display:grid;gap:1px}
+.nav-sub a{padding:6px 10px!important;font-size:13px!important}
+.sheet .nav-sub{grid-column:1/-1;margin:2px 0 6px;grid-template-columns:1fr 1fr}
+[data-theme="dark"] .nav a.nav-adm{background:#3A3217;color:#F5D77A}
+[data-theme="dark"] .nav a.nav-adm svg{stroke:#F5D77A}
+[data-theme="dark"] .nav a.nav-adm:hover,[data-theme="dark"] .nav a.nav-adm.on{background:#4A4020;color:#FBE5A0}
+[data-theme="dark"] .nav-sub{border-left-color:#5A4D22}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nav a.nav-adm{background:#3A3217;color:#F5D77A}:root:not([data-theme="light"]) .nav a.nav-adm svg{stroke:#F5D77A}:root:not([data-theme="light"]) .nav a.nav-adm:hover,:root:not([data-theme="light"]) .nav a.nav-adm.on{background:#4A4020;color:#FBE5A0}:root:not([data-theme="light"]) .nav-sub{border-left-color:#5A4D22}}
 .side-foot{padding-top:10px;gap:8px}
 .ia{padding:10px 12px;font-size:12px}
 .ia b{font-size:13px}
@@ -2246,6 +2259,7 @@ html.tema-troca,html.tema-troca *{transition:background-color .9s ease,color .9s
 const I={
 publicacoes:'<path d="M5 5h11a3 3 0 0 1 3 3v11H8a3 3 0 0 1-3-3z"/><path d="M8 9h6M8 12h6M8 15h4"/>',
 admin:'<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+banco:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
 inicio:'<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
 ia:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
 agora:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
@@ -2277,10 +2291,10 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["publicacoes","Publicações"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"],["admin","Administração"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["publicacoes","Publicações"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;if(n[0]==="publicacoes")return window.API_ON===true;return true}
-function navHTML(){return NAV.filter(navVisivel).map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}">${svgI(n[0])}<span>${n[1]}</span></a>`).join("")}
+function navHTML(){return NAV.filter(navVisivel).map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}"${n[0]==="admin"?' class="nav-adm"':""}>${svgI(n[0])}<span>${n[1]}</span></a>`+(n[0]==="admin"?`<div class="nav-sub"><a href="#/admin/posts" data-k="admin-posts" data-sub="#/admin/posts">${svgI("noticias")}<span>Notícias</span></a><a href="#/admin/banco" data-k="admin-banco" data-sub="#/admin/banco">${svgI("banco")}<span>Banco de dados</span></a></div>`:"")).join("")}
 function navAtualizar(){document.getElementById("nav").innerHTML=navHTML();document.getElementById("sheetNav").innerHTML=navHTML();const ba=document.getElementById("btnAdmin");if(ba)ba.hidden=!window.VL_ADMIN}
 navAtualizar();
 
@@ -6608,7 +6622,7 @@ V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classL
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",leis:"projetos",pessoas:"pessoas"}[k]||null;
 const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
-document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));
+document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));document.querySelectorAll(".nav a[data-sub]").forEach(a=>a.classList.toggle("on",location.hash.indexOf(a.dataset.sub)===0));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
 /* ---------- Leis e Projetos: Constituição, leis e projetos numa área só (as telas antigas viram abas; o que se repetia saiu) ---------- */
@@ -6991,7 +7005,7 @@ const ART_SEC=[
  ["outros","Outros dados",[]]
 ];
 function artSecDe(p){const s=ART_SEC.find(x=>x[2].some(q=>p===q||p.startsWith(q+"/")));return s?s[0]:"outros"}
-const ART_NOMES={"/aeroportos":"Aeroportos","/agora/eventos":"Agenda de hoje","/alertas-mapbiomas/territorio":"Alertas de desmatamento (MapBiomas)","/ambiente":"Meio ambiente por estado","/assembleias":"Assembleias legislativas","/cartao-corporativo":"Cartão corporativo","/contadores":"Impostômetro e gastômetro","/contratos":"Contratos públicos","/cortes":"Cortes de gastos","/cpis":"CPIs","/crimes-politicos":"Crimes de políticos","/dividas/devedores":"Maiores devedores","/dividas/empresas":"Dívidas das empresas","/dividas/estados":"Dívidas dos estados","/dividas/familias-estados":"Dívidas das famílias por estado","/dividas/municipios":"Dívidas das cidades","/economia":"Economia","/economia-empresas":"Economia das empresas","/eleicoes/anos":"Anos de eleição","/emendas":"Emendas parlamentares","/energia-tarifas":"Tarifas de energia","/ensino":"Ensino (IDEB)","/escandalos":"Escândalos","/faccoes":"Facções","/fluxo-federativo":"Fluxo federativo","/fundos":"Fundo eleitoral","/gastos/entes":"Gastos por ente","/gastos/evolucao":"Evolução dos gastos","/gastos/funcao":"Gastos por função","/historico-estados":"Histórico dos estados","/igc":"Faculdades (IGC)","/indicadores":"Indicadores","/indicadores-sociais":"Indicadores sociais","/iva":"Reforma tributária (IVA)","/julgamentos":"Julgamentos dos tribunais","/justica":"Fila dos tribunais","/legislacao":"Leis e normas","/lista-suja":"Lista suja do trabalho escravo","/mapa/estados":"Mapa dos estados","/multas-ambientais":"Multas ambientais","/municipios":"Municípios","/noticias":"Notícias","/obras":"Obras","/obras-gestao":"Andamento das obras","/orgaos":"Órgãos","/parlamentares":"Parlamentares","/partidos/composicao":"Composição dos partidos","/policias":"Polícias","/premios":"Prêmios","/proposicoes":"Projetos de lei","/recuperacao-judicial/resumo":"Recuperação judicial","/renuncia-fiscal":"Renúncia fiscal","/resumo-contratos":"Resumo dos contratos","/riscos":"Desastres e riscos","/sancoes":"Empresas punidas","/saneamento":"Saneamento","/saude":"Saúde (resumo)","/saude/municipios":"Saúde por município","/saude/painel":"Painel de saúde","/seguranca":"Segurança pública","/social":"Social por estado","/social/municipios":"Social por município","/tcu-inabilitados":"Inabilitados pelo TCU","/tcu-irregulares":"Contas irregulares (TCU)","/trabalho":"Trabalho e renda","/transito":"Trânsito","/transito/agora":"Trânsito agora","/transito/malha":"Malha viária","/viagens":"Viagens a serviço","/votacoes":"Votações"};
+const ART_NOMES={"/aeroportos":"Aeroportos","/agora/eventos":"Agenda de hoje","/alertas-mapbiomas/territorio":"Alertas de desmatamento (MapBiomas)","/ambiente":"Meio ambiente por estado","/assembleias":"Assembleias legislativas","/cartao-corporativo":"Cartão corporativo","/contadores":"Impostômetro e gastômetro","/contratos":"Contratos públicos","/cortes":"Cortes de gastos","/cpis":"CPIs","/crimes-politicos":"Crimes de políticos","/dividas/devedores":"Maiores devedores","/dividas/empresas":"Dívidas das empresas","/dividas/estados":"Dívidas dos estados","/dividas/familias-estados":"Dívidas das famílias por estado","/dividas/municipios":"Dívidas das cidades","/economia":"Economia","/economia-empresas":"Economia das empresas","/eleicoes/anos":"Anos de eleição","/emendas":"Emendas parlamentares","/energia-tarifas":"Tarifas de energia","/ensino":"Ensino (IDEB)","/escandalos":"Escândalos","/faccoes":"Facções","/fluxo-federativo":"Fluxo federativo","/fundos":"Fundo eleitoral","/gastos/entes":"Gastos por ente","/gastos/evolucao":"Evolução dos gastos","/gastos/funcao":"Gastos por função","/historico-estados":"Histórico dos estados","/igc":"Faculdades (IGC)","/indicadores":"Indicadores","/indicadores-sociais":"Indicadores sociais","/iva":"Reforma tributária (IVA)","/julgamentos":"Julgamentos dos tribunais","/justica":"Fila dos tribunais","/legislacao":"Leis e normas","/lista-suja":"Lista suja do trabalho escravo","/mapa/estados":"Mapa dos estados","/multas-ambientais":"Multas ambientais","/municipios":"Municípios","/noticias":"Notícias","/obras":"Obras","/obras-gestao":"Andamento das obras","/orgaos":"Órgãos","/parlamentares":"Parlamentares","/partidos/composicao":"Composição dos partidos","/policias":"Polícias","/premios":"Prêmios","/proposicoes":"Projetos de lei","/recuperacao-judicial/resumo":"Recuperação judicial","/renuncia-fiscal":"Renúncia fiscal","/resumo-contratos":"Resumo dos contratos","/riscos":"Desastres e riscos","/sancoes":"Empresas punidas","/saneamento":"Saneamento","/saude":"Saúde (resumo)","/saude/municipios":"Saúde por município","/saude/painel":"Painel de saúde","/seguranca":"Segurança pública","/social":"Social por estado","/social/municipios":"Social por município","/tcu-inabilitados":"Inabilitados pelo TCU","/tcu-irregulares":"Contas irregulares (TCU)","/trabalho":"Trabalho e renda","/transito":"Trânsito","/transito/agora":"Trânsito agora","/transito/malha":"Malha viária","/viagens":"Viagens a serviço","/votacoes":"Votações","/estados/:id":"Ficha de um estado","/estados/:x/fluxo":"Fluxo federativo de um estado","/estados/:x/resumo":"Resumo de um estado","/malhas/:id":"Malha do mapa (um estado)","/municipios/:id":"Ficha de um município","/parlamentares/:id":"Perfil de um parlamentar","/parlamentares/:x/atuacao":"Atuação de um parlamentar","/eleicoes/:x/estados":"Eleição: resultado por estado","/eleicoes/:x/cargos":"Eleição: cargos do ano","/eleicoes/:x/:x":"Eleição de um estado","/eleicoes/:x/:x/cargos":"Eleição de um estado: cargos","/eleicoes/:x/:x/mapa":"Eleição de um estado: mapa","/eleicoes/candidato/:id":"Perfil de um candidato","/empresas/:id":"Ficha de uma empresa","/contratos/:id":"Ficha de um contrato","/fornecedores/:id":"Ficha de um fornecedor","/legislacao/:id":"Ficha de uma lei ou norma","/obras/:id":"Ficha de uma obra","/orgaos/:id":"Ficha de um órgão","/policias/:id":"Ficha de uma polícia","/proposicoes/:id":"Ficha de um projeto de lei","/votacoes/:id":"Ficha de uma votação","/escandalos/:id":"Ficha de um escândalo"};
 function artNome(p){if(ART_NOMES[p])return ART_NOMES[p];const t=p.replace(/^\//,"").split("/").map(x=>x.startsWith(":")?"(escolha)":x.replace(/-/g," ")).join(" › ");return t.charAt(0).toUpperCase()+t.slice(1)}
 const artRot=k=>{if(typeof k==="number")return "Coluna "+(k+1);const t=String(k).replace(/[_-]+/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)};
 const artTxt=(v,n)=>{const t=v==null?"":typeof v==="object"?JSON.stringify(v):String(v);return t.length>(n||90)?t.slice(0,n||90)+"…":t};
@@ -7071,6 +7085,15 @@ a.ad-card:hover{border-color:var(--blue);box-shadow:0 3px 14px rgba(47,85,151,.1
 .ad-toast.on{transform:translate(-50%,0)}
 details.ad-more summary{cursor:pointer;color:var(--blue);font-weight:500;font-size:13.5px}
 @media(prefers-reduced-motion:reduce){.ad-bar,.ad-toast{transition:none}}
+.ad [hidden]{display:none!important}
+.ad-ic{flex:0 0 auto;display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--tint);color:var(--blue)}
+.ad-ic.y{background:#FFF1B8;color:#7A5200}
+.ad-ic svg,.ad-tabs svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ad-tabs svg{width:18px;height:18px}
+.ad-tabs a{display:flex;align-items:center;gap:8px}
+.ad-grp .ad-top h3{margin:0}
+[data-theme="dark"] .ad-ic.y{background:#3A3217;color:#F5D77A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ad-ic.y{background:#3A3217;color:#F5D77A}}
 `;
 function artToast(t){const e=$("#adToast");if(!e)return;e.textContent=t;e.classList.add("on");clearTimeout(window.ART_TT);window.ART_TT=setTimeout(()=>e.classList.remove("on"),3800)}
 /* ----- guardar e aplicar alterações ----- */
@@ -7147,7 +7170,7 @@ function artEditor(){const T=window.ART_T,box=$("#artEd");if(!T||!box)return;
  else if(Array.isArray(x))corpo=artArrHtml(T,x);
  else if(x&&typeof x==="object")corpo=artObjHtml(T,x);
  else corpo=`<p>${esc(artValTxt(x))}</p>`;
- box.innerHTML=`<div class="ad-box"><div class="ad-top"><div><h2>${esc(T.titulo)}</h2><div class="ad-crumbs">${crumbs}</div></div><div>${T.custom?'<span class="ad-tag mod">Alterado</span> <button class="b s d" id="artRest" type="button">Voltar ao original</button>':'<span class="ad-tag">Original</span>'}</div></div>${corpo}</div><div class="ad-bar${T.dirty?" on":""}" id="adBar" role="status"><span>Você tem alterações que ainda não foram salvas.</span><button class="b s" id="adDesc" type="button">Descartar</button><button class="b p s" id="artSalva" type="button">Salvar alterações</button></div>`;
+ box.innerHTML=`<div class="ad-box"><div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc(T.ic||"relatorios")}<div><h2>${esc(T.titulo)}</h2><div class="ad-crumbs">${crumbs}</div></div></div><div>${T.custom?'<span class="ad-tag mod">Alterado</span> <button class="b s d" id="artRest" type="button">Voltar ao original</button>':'<span class="ad-tag">Original</span>'}</div></div>${corpo}</div><div class="ad-bar${T.dirty?" on":""}" id="adBar" role="status"><span>Você tem alterações que ainda não foram salvas.</span><button class="b s" id="adDesc" type="button">Descartar</button><button class="b p s" id="artSalva" type="button">Salvar alterações</button></div>`;
  artWire();
  const f=$("#artForm");if(f)artWireForm(f,x)}
 function artWire(){const T=window.ART_T,box=$("#artEd");
@@ -7176,35 +7199,48 @@ function artWireForm(f,x){const T=window.ART_T,err=$("#artFErr");
   T.edit=null;T.dirty=true;artEditor()};
  const del=$("#artDel");let c2=false;
  if(del)del.onclick=()=>{if(!c2){c2=true;del.textContent="Confirmar: apagar";return}x.splice(T.edit,1);T.edit=null;T.dirty=true;artEditor()}}
-/* ----- telas do sistema ----- */
+/* ----- banco de dados: cada base separada ----- */
+const ART_GIC={"Leis e Projetos":"leis","Constituição":"constituicao","Poderes e cargos":"orgaos","Pessoas e empresas":"pessoas","Transparência":"escandalos","Economia":"indicadores","Segurança":"seguranca"};
+const ART_CIC={noticia:"noticias",premio:"premios",dados:"indicadores",explicacao:"leis"};
+const adIc=(k,y)=>`<span class="ad-ic${y?" y":""}">${svgI(I[k]?k:"relatorios")}</span>`;
 async function artAbrir(path,sec){const box=$("#artEd");if(!box)return;box.innerHTML=rload();
  try{const d=await apiGet(path),key=artKey(path),clone=JSON.parse(JSON.stringify(d));
-  window.ART_T={titulo:artNome(path.split("?")[0])+(path.includes("?")?" ("+path.split("?")[1]+")":""),ED:clone,nav:[],edit:null,pag:1,q:"",dirty:false,custom:artOvr(path)!==undefined,
+  window.ART_T={titulo:artNome(path.split("?")[0])+(path.includes("?")?" ("+path.split("?")[1]+")":""),ic:sec,ED:clone,nav:[],edit:null,pag:1,q:"",dirty:false,custom:artOvr(path)!==undefined,
    save:()=>artOvrSalvar(key,window.ART_T.ED),restore:()=>artOvrApagar(key),reabrir:()=>artAbrir(path,sec)};
   artEditor();box.scrollIntoView({behavior:"smooth",block:"start"})}
  catch(e){box.innerHTML='<div class="ad-note">Este dado não está na cópia do sistema que veio com o site.</div>'}}
-async function artTelasMontar(b,sub){
- if(!sub){const secs=ART_SEC.filter(s=>ART_EPS.some(p=>artSecDe(p)===s[0]));
-  b.innerHTML=`<div><h2>Dados das telas</h2><p class="mut" style="margin:4px 0 0">Escolha a tela do site que você quer corrigir. As seções seguem a ordem do menu.</p></div><div class="ad-cards">${secs.map(([k,t])=>{const n=ART_EPS.filter(p=>artSecDe(p)===k).length,alt=ART_EPS.filter(p=>artSecDe(p)===k&&window.ART_OVR[p]!==undefined).length;return `<a class="ad-card" href="#/admin/telas/${k}"><h3>${esc(t)}</h3><p>${n} ${n===1?"conjunto de dados":"conjuntos de dados"}${alt?` · <b>${alt} alterado${alt>1?"s":""}</b>`:""}</p><span class="go">Abrir ›</span></a>`}).join("")}</div>`;return}
- const sec=ART_SEC.find(x=>x[0]===sub);if(!sec){b.innerHTML=rvazio("Seção não encontrada.");return}
- const eps=ART_EPS.filter(p=>artSecDe(p)===sub);
- b.innerHTML=`<div><a class="ad-back" href="#/admin/telas">‹ Todas as telas</a><h2 style="margin-top:6px">${esc(sec[1])}</h2><p class="mut" style="margin:4px 0 0">Escolha o conjunto de dados que a tela usa, altere em tabela e salve.</p></div><div class="ad-list">${eps.map(p=>`<div class="ad-li"><div><b>${esc(artNome(p))}</b><small>${esc(p)}</small></div><span>${window.ART_OVR[p]!==undefined?'<span class="ad-tag mod">Alterado</span> ':""}<button class="b s" type="button" data-ep="${esc(p)}">Abrir</button></span></div>`).join("")||'<div class="ad-note">Esta tela não usa dados do servidor.</div>'}</div><details class="ad-more"><summary>Abrir outro endereço (por exemplo, de um estado ou ano)</summary><form id="artEpF" class="ad-box" novalidate style="margin-top:10px"><label>Endereço do dado<input name="ep" placeholder="/eleicoes/2022/SP/cargos"><small>Pode acrescentar filtros no fim, como ?uf=SP</small></label><p class="ad-err" id="artEpE"></p><div><button class="b p" type="submit">Abrir</button></div></form></details><div id="artEd"></div>`;
- const f=b.querySelector("#artEpF"),det=b.querySelector("details");
- b.querySelectorAll("[data-ep]").forEach(x=>x.onclick=()=>{const p=x.dataset.ep;if(p.includes(":")){f.ep.value=p;det.open=true;$("#artEpE").textContent="Troque :x pelo valor real (por exemplo o ano ou a sigla do estado) e clique em Abrir.";f.ep.focus();return}artAbrir(p,sub)});
- f.onsubmit=e=>{e.preventDefault();const p=f.ep.value.trim();if(!p.startsWith("/")||p.includes(":")){$("#artEpE").textContent="Informe um endereço que comece com / e sem :x.";return}$("#artEpE").textContent="";artAbrir(p,sub)};
- const a=window.ART_ABRIR;window.ART_ABRIR=null;if(a)artAbrir(a,sub)}
-/* ----- textos e listas do site ----- */
 function artListaAbrir(ds){const box=$("#artEd");const a=ds.r();if(!Array.isArray(a)){box.innerHTML='<div class="ad-note">Esta lista não está disponível nesta versão.</div>';return}
- window.ART_T={titulo:ds.t,ED:JSON.parse(JSON.stringify(a)),nav:[],edit:null,pag:1,q:"",dirty:false,custom:!!ds.alt,cols:ds.c,
+ window.ART_T={titulo:ds.t,ic:ART_GIC[ds.g]||"relatorios",ED:JSON.parse(JSON.stringify(a)),nav:[],edit:null,pag:1,q:"",dirty:false,custom:!!ds.alt,cols:ds.c,
   save:()=>artDsSalvar(ds,window.ART_T.ED),
   restore:async()=>{await ARTDB.collection("dados").doc(ds.k).delete();if(ds.orig){a.splice(0,a.length,...JSON.parse(JSON.stringify(ds.orig)))}ds.alt=false},
   reabrir:()=>artListaAbrir(ds)};
  artEditor()}
-function artDadosMontar(b,sub){
- if(!sub){const grupos={};ART_DS.forEach(d=>{(grupos[d.g]=grupos[d.g]||[]).push(d)});
-  b.innerHTML=`<div><h2>Textos e listas do site</h2><p class="mut" style="margin:4px 0 0">Listas escritas no próprio site, como Constituição, ministros, leis e unidades policiais. Escolha uma para ver e alterar.</p></div>`+Object.entries(grupos).map(([g,ds])=>`<div class="ad-box"><h3>${esc(g)}</h3><div class="ad-list">${ds.map(d=>{const a=d.r();return `<div class="ad-li"><div><b>${esc(d.t)}</b><small>${Array.isArray(a)?a.length+" linhas":"indisponível"}</small></div><span>${d.alt?'<span class="ad-tag mod">Alterado</span> ':""}<a class="b s" href="#/admin/dados/${d.k}">Abrir</a></span></div>`}).join("")}</div></div>`).join("");return}
- const ds=ART_DS.find(x=>x.k===sub);if(!ds){b.innerHTML=rvazio("Lista não encontrada.");return}
- b.innerHTML=`<div><a class="ad-back" href="#/admin/dados">‹ Todas as listas</a></div><div id="artEd"></div>`;artListaAbrir(ds)}
+function artBancoMontar(b,sub){
+ if(!sub){
+  const tel=ART_SEC.map(([k,t])=>({k,t,l:ART_EPS.filter(p=>artSecDe(p)===k)})).filter(g=>g.l.length);
+  const gl={};ART_DS.forEach(d=>{(gl[d.g]=gl[d.g]||[]).push(d)});
+  const linha=(ic,id,nome,sub2,alt)=>`<div class="ad-li" data-q="${esc((nome+" "+sub2).toLowerCase())}"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(ic)}<div><b>${esc(nome)}</b><small>${esc(sub2)}</small></div></div><span>${alt?'<span class="ad-tag mod">Alterado</span> ':""}<a class="b s" href="#/admin/banco/${id}">Abrir</a></span></div>`;
+  const grupo=(ic,titulo,n,corpo)=>`<div class="ad-box ad-grp"><div class="ad-top"><div style="display:flex;gap:10px;align-items:center">${adIc(ic,true)}<h3>${esc(titulo)}</h3></div><span class="mut">${n} ${n===1?"base":"bases"}</span></div><div class="ad-list">${corpo}</div></div>`;
+  b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("banco",true)}<div><h2>Banco de dados</h2><p class="mut" style="margin:2px 0 0">Cada base fica separada. Escolha uma para ver, alterar, adicionar ou tirar informações.</p></div></div>
+  <input id="adBusca" type="search" placeholder="Buscar uma base (ex.: saúde, ministros, eleições)…" style="max-width:440px">
+  <h3>Telas do sistema</h3>
+  ${tel.map(g=>grupo(g.k,g.t,g.l.length,g.l.map(p=>linha(g.k,encodeURIComponent(p),artNome(p),p,window.ART_OVR[p]!==undefined)).join(""))).join("")}
+  <h3>Textos e listas do site</h3>
+  ${Object.entries(gl).map(([g,ds])=>grupo(ART_GIC[g]||"relatorios",g,ds.length,ds.map(d=>{const a=d.r();return linha(ART_GIC[g]||"relatorios","lista-"+d.k,d.t,Array.isArray(a)?a.length+" linhas":"indisponível",!!d.alt)}).join(""))).join("")}
+  <div class="ad-box"><div class="ad-top"><div style="display:flex;gap:10px;align-items:center">${adIc("banco")}<h3>Banco do servidor</h3></div><span class="ad-tag">Em breve</span></div><p class="mut" style="margin:0">Quando o banco de dados for ligado, cada tabela dele entra aqui como uma base separada, com as mesmas opções de ver, alterar, adicionar e tirar.</p></div>
+  <details class="ad-more"><summary>Abrir outro endereço (por exemplo, de um estado ou ano)</summary><form id="adEnd" class="ad-box" novalidate style="margin-top:10px"><label>Endereço do dado<input name="ep" placeholder="/eleicoes/2022/SP/cargos"><small>Pode acrescentar filtros no fim, como ?uf=SP</small></label><p class="ad-err" id="adEndE"></p><div><button class="b p" type="submit">Abrir</button></div></form></details>`;
+  const q=$("#adBusca");q.oninput=()=>{const t=q.value.toLowerCase().trim();b.querySelectorAll(".ad-grp").forEach(g=>{let n=0;g.querySelectorAll(".ad-li").forEach(li=>{const ok=!t||li.dataset.q.includes(t);li.hidden=!ok;if(ok)n++});g.hidden=!n})};
+  b.querySelector("#adEnd").onsubmit=e=>{e.preventDefault();const p=e.target.ep.value.trim();if(!p.startsWith("/")){$("#adEndE").textContent="Informe um endereço que comece com /.";return}location.hash="#/admin/banco/"+encodeURIComponent(p)};
+  return}
+ let id;try{id=decodeURIComponent(sub)}catch(e){id=sub}
+ b.innerHTML=`<div><a class="ad-back" href="#/admin/banco">‹ Banco de dados</a></div><div id="artEd"></div>`;
+ const box=$("#artEd");
+ if(id.startsWith("lista-")){const ds=ART_DS.find(x=>x.k===id.slice(6));if(ds)artListaAbrir(ds);else box.innerHTML='<div class="ad-note">Base não encontrada.</div>';return}
+ if(id.startsWith("/")){
+  if(id.includes(":")){box.innerHTML=`<form id="adEnd2" class="ad-box" novalidate><h3>Falta um valor</h3><p class="mut" style="margin:0">Troque :x pelo valor real (por exemplo o ano ou a sigla do estado) e clique em Abrir.</p><label>Endereço do dado<input name="ep" value="${esc(id)}"></label><p class="ad-err" id="adEndE2"></p><div><button class="b p" type="submit">Abrir</button></div></form>`;
+   $("#adEnd2").onsubmit=e=>{e.preventDefault();const p=e.target.ep.value.trim();if(!p.startsWith("/")||p.includes(":")){$("#adEndE2").textContent="Informe um endereço sem :x.";return}location.hash="#/admin/banco/"+encodeURIComponent(p)};return}
+  artAbrir(id,artSecDe(id.split("?")[0]));return}
+ box.innerHTML='<div class="ad-note">Base não encontrada.</div>'}
 /* ----- notícias e prêmios autorais ----- */
 async function artVit(id,d){const ref=ARTDB.collection("vitrine").doc(id);
  if(d&&d.publicada)await ref.set({titulo:d.titulo,categoria:d.categoria,resumo:d.resumo,corpo:d.corpo,fonte:d.fonte,video:d.video,atualizada_em:d.atualizada_em});else await ref.delete()}
@@ -7214,9 +7250,9 @@ async function artVitrine(cat,sel,titulo){try{const db=await usarCap("db");const
  box.innerHTML=`<div class="panel mt"><h2>${esc(titulo)}</h2>${l.map(p=>`<details><summary><b>${esc(p.titulo)}</b>${p.resumo?" — "+esc(p.resumo):""}</summary><div class="pub-corpo">${pubCorpo(p.corpo||"")}</div>${p.fonte?`<p class="muted small">Fonte: ${esc(p.fonte)}</p>`:""}${p.video?`<p class="small"><a href="${esc(p.video)}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>`:""}</details>`).join("")}</div>`}catch(e){}}
 function artPostsLista(b,pubs){
  const cat=window.ART_CATF||"todas",lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat),n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
- b.innerHTML=`<div class="ad-top"><div><h2>Notícias e prêmios</h2><p class="mut" style="margin:4px 0 0">Textos seus. Os publicados aparecem nas abas Notícias e Prêmios do site.</p></div><a class="b p" href="#/admin/posts/novo">+ Novo texto</a></div>
+ b.innerHTML=`<div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc("noticias",true)}<div><h2>Notícias</h2><p class="mut" style="margin:2px 0 0">Textos seus (notícias e prêmios autorais). Os publicados aparecem nas abas Notícias e Prêmios do site.</p></div></div><a class="b p" href="#/admin/posts/novo">+ Novo texto</a></div>
  <div class="ad-chips" role="group" aria-label="Tipo">${[["todas","Todos"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="ad-chip${cat===k?" on":""}" data-cat="${k}">${t} (${n(k)})</button>`).join("")}</div>
- <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} <a class="b s" href="#/admin/posts/${esc(p.id)}">Editar</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
+ <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(ART_CIC[p.categoria]||"noticias")}<div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} <a class="b s" href="#/admin/posts/${esc(p.id)}">Editar</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
  b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
 function artPostEditor(b,p){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
  b.innerHTML=`<div><a class="ad-back" href="#/admin/posts">‹ Voltar</a></div><form class="ad-box" novalidate><h2>${p?"Editar texto":"Novo texto"}</h2>
@@ -7245,32 +7281,26 @@ function artPostEditor(b,p){const v=p||{titulo:"",categoria:"noticia",resumo:"",
 /* ----- início da administração e estrutura ----- */
 async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
  const pub=pubs.filter(p=>p.publicada).length,telas=Object.keys(window.ART_OVR),listas=ART_DS.filter(d=>d.alt);
- const itens=[...telas.map(k=>{const p=k.split("?")[0];return {t:artNome(p),sub:k,h:"#/admin/telas/"+artSecDe(p),a:k}}),...listas.map(d=>({t:d.t,sub:"Lista do site",h:"#/admin/dados/"+d.k}))];
- b.innerHTML=`<div><h2>O que você quer fazer?</h2><p class="mut" style="margin:4px 0 0">Escolha uma opção. Tudo o que você alterar fica guardado neste Artifact e já aparece nas telas do site.</p></div>
+ const itens=[...telas.map(k=>{const p=k.split("?")[0];return {ic:artSecDe(p),t:artNome(p),sub:k,h:"#/admin/banco/"+encodeURIComponent(k)}}),...listas.map(d=>({ic:ART_GIC[d.g]||"relatorios",t:d.t,sub:"Lista do site",h:"#/admin/banco/lista-"+d.k}))];
+ b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("admin",true)}<div><h2>O que você quer fazer?</h2><p class="mut" style="margin:2px 0 0">Escolha uma opção. Tudo o que você alterar fica guardado neste Artifact e já aparece nas telas do site.</p></div></div>
  <div class="ad-cards">
-  <a class="ad-card" href="#/admin/posts/novo"><h3>Publicar notícia ou prêmio</h3><p>Escreva um texto seu e publique nas abas Notícias ou Prêmios.</p><span class="go">Escrever ›</span></a>
-  <a class="ad-card" href="#/admin/telas"><h3>Corrigir dados de uma tela</h3><p>Escolha a tela (Saúde, Eleições, Segurança…) e altere os números e textos em tabela.</p><span class="go">Escolher a tela ›</span></a>
-  <a class="ad-card" href="#/admin/dados"><h3>Editar textos e listas</h3><p>Constituição, ministros, leis, unidades policiais e outras listas escritas no site.</p><span class="go">Ver listas ›</span></a>
+  <a class="ad-card" href="#/admin/posts/novo">${adIc("noticias",true)}<h3>Publicar notícia ou prêmio</h3><p>Escreva um texto seu e publique nas abas Notícias ou Prêmios do site.</p><span class="go">Escrever ›</span></a>
+  <a class="ad-card" href="#/admin/banco">${adIc("banco",true)}<h3>Banco de dados</h3><p>Todas as bases separadas: telas do site e listas. Veja, altere, adicione ou tire informações.</p><span class="go">Abrir o banco ›</span></a>
  </div>
  <div class="ad-box"><h3>Como funciona</h3><div class="ad-steps"><div class="ad-step"><b>1</b><span>Escolha o que quer mexer.</span></div><div class="ad-step"><b>2</b><span>Altere, adicione ou apague linhas na tabela.</span></div><div class="ad-step"><b>3</b><span>Clique em <b>Salvar alterações</b>. Para desfazer, use <b>Voltar ao original</b>.</span></div></div></div>
  <div class="ad-cards">
   <div class="ad-card"><span class="mut">Textos publicados</span><span class="n">${nf(pub)}</span><p>${nf(pubs.length-pub)} em rascunho</p></div>
-  <div class="ad-card"><span class="mut">Dados de telas alterados</span><span class="n">${nf(telas.length)}</span></div>
+  <div class="ad-card"><span class="mut">Bases de telas alteradas</span><span class="n">${nf(telas.length)}</span></div>
   <div class="ad-card"><span class="mut">Listas alteradas</span><span class="n">${nf(listas.length)}</span></div>
  </div>
- ${itens.length?`<div class="ad-box"><h3>O que você já alterou</h3><div class="ad-list">${itens.map(i=>`<div class="ad-li"><div><b>${esc(i.t)}</b><small>${esc(i.sub)}</small></div><a class="b s" href="${i.h}"${i.a?` data-abrir-ep="${esc(i.a)}"`:""}>Abrir</a></div>`).join("")}</div></div>`:""}`;
- b.querySelectorAll("[data-abrir-ep]").forEach(a=>a.addEventListener("click",()=>{window.ART_ABRIR=a.dataset.abrirEp}))}
-function artServidor(b){
- b.innerHTML=`<div><h2>Servidor e banco de dados</h2><p class="mut" style="margin:4px 0 0">Ainda não ligados a este Artifact.</p></div>
- <div class="ad-box"><h3>O que vem depois</h3><p class="mut" style="margin:0">Quando o servidor do BRASIL+ estiver no ar, esta área passa a mostrar também:</p><div class="ad-list"><div class="ad-li"><div><b>Contas e acessos</b><small>quem entrou, papéis e administradores</small></div><span class="ad-tag">Em breve</span></div><div class="ad-li"><div><b>Banco de dados</b><small>todas as tabelas, com busca e edição</small></div><span class="ad-tag">Em breve</span></div><div class="ad-li"><div><b>Coletas das fontes</b><small>quando cada fonte foi atualizada e se deu erro</small></div><span class="ad-tag">Em breve</span></div></div></div>`}
-const ART_ABAS=[["resumo","Início"],["posts","Notícias e prêmios"],["telas","Dados das telas"],["dados","Textos e listas"],["servidor","Servidor"]];
+ ${itens.length?`<div class="ad-box"><h3>O que você já alterou</h3><div class="ad-list">${itens.map(i=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(i.ic)}<div><b>${esc(i.t)}</b><small>${esc(i.sub)}</small></div></div><a class="b s" href="${i.h}">Abrir</a></div>`).join("")}</div></div>`:""}`}
+const ART_ABAS=[["resumo","Início","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"]];
 async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
- c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.map(([k,t])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${t}</a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;
+ if(aba==="telas"||aba==="dados"||aba==="servidor"){aba="banco";sub=undefined}
+ c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.map(([k,t,ic])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${svgI(ic)}<span>${t}</span></a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;
  const b=$("#admCorpo");
  try{
-  if(aba==="telas")return artTelasMontar(b,sub);
-  if(aba==="dados")return artDadosMontar(b,sub);
-  if(aba==="servidor")return artServidor(b);
+  if(aba==="banco")return artBancoMontar(b,sub);
   if(aba==="posts"){const pubs=await artPubs();
    if(sub==="novo")return artPostEditor(b,null);
    if(sub){const p=pubs.find(x=>x.id===sub);return p?artPostEditor(b,p):(b.innerHTML=rvazio("Este texto não existe mais."))}
