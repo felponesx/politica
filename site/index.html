@@ -6228,8 +6228,8 @@ P.publicacao=(slug)=>({html:`<div class="crumb"><a href="#/publicacoes">Publica�
 const ADM_ABAS=[["resumo","Visão geral"],["publicacoes","Publicações"],["banco","Banco de dados"],["servidor","Servidor e coletas"]];
 function admFetch(path,corpo){const opt={credentials:"same-origin",headers:{Accept:"application/json"}};if(corpo!==undefined){opt.method="POST";opt.headers["Content-Type"]="application/json";opt.body=JSON.stringify(corpo)}
  return fetch(vlUrl(path),opt).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.detail||"Não foi possível concluir.");e.status=r.status;throw e}return d})}
-P.admin=(aba,sub)=>({html:`<div class="ph"><div><h1>Administração</h1><p>Área só para administradores. O que você publicar aqui aparece no site.</p></div></div><div id="admC">${rload()}</div>`,
- mount(){if(window.ART_ADM)return artAdmMontar(aba||"resumo",sub);admMontar(aba||"resumo",sub)}});
+P.admin=(aba,sub,sub2)=>({html:`<div class="ph"><div><h1>Administração</h1><p>Área só para administradores. O que você publicar aqui aparece no site.</p></div></div><div id="admC">${rload()}</div>`,
+ mount(){if(window.ART_ADM)return artAdmMontar(aba||"resumo",sub,sub2);admMontar(aba||"resumo",sub)}});
 async function admMontar(aba,sub){const c=$("#admC");if(!c)return;
  try{await admFetch("/admin/resumo")}catch(e){c.innerHTML=rvazio(e.status===403?"Esta área é só para administradores.":e.status===401?"Entre na sua conta para acessar.":"Não foi possível abrir a administração agora.");return}
  const teste=VL_CONTA&&VL_CONTA.conta_teste?`<div class="adm-aviso"><b>Conta de teste ativa (admin).</b> Ela deixa de funcionar assim que existir outro administrador ou com <code>ADMIN_PADRAO=false</code>. Desligue antes de publicar o site.</div>`:"";
@@ -6960,16 +6960,92 @@ aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("chan
 window.ART_ADM=false;let ARTDB=null;
 const usarCap=n=>(window.claude&&window.claude.use)?window.claude.use(n).catch(()=>null):Promise.resolve(null);
 async function artAdmIniciar(){try{const [u,d]=await Promise.all([usarCap("user"),usarCap("db")]);if(!d||!u)return;if(!(await u.canEdit()))return;ARTDB=d;window.ART_ADM=true}catch(e){}}
-const ART_CAT={noticia:"Notícia",dados:"Dados",explicacao:"Explicação"};
+const ART_CAT={noticia:"Notícia",premio:"Prêmio autoral",dados:"Dados",explicacao:"Explicação"};
 const ART_ERR={invalid_argument:"Não foi possível salvar. Confira os campos.",quota_exceeded:"Limite de publicações atingido. Apague alguma para criar outra.",resource_exhausted:"Muitas ações seguidas. Espere um pouco e tente de novo.",unavailable:"Serviço indisponível agora. Tente de novo em instantes.",revoked:"Seu acesso a esta área foi retirado."};
 const artMsg=e=>(e&&ART_ERR[e.code])||"Não foi possível concluir. Tente de novo.";
 async function artPubs(){const s=await ARTDB.collection("publicacoes").orderBy("atualizada_em","desc").limit(500).get();return s.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}
-async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
- const abas=ADM_ABAS.filter(([k])=>k!=="publicacoes").map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}${k==="banco"||k==="servidor"?' <small class="muted">(só no servidor)</small>':""}</a>`).join("");
- c.innerHTML=`<div class="adm-aviso"><b>Administração neste Artifact.</b> Os dados editáveis ficam no armazenamento deste Artifact, separado do banco do servidor: o que você grava aqui não aparece automaticamente no site.</div><div class="tabs keep adm-abas">${abas}</div><div id="admCorpo">${rload()}</div>`;
+const ART_ABAS=[["resumo","Notícias e prêmios"],["dados","Dados do sistema"],["banco","Banco de dados"],["servidor","Servidor e coletas"]];
+/* listas do sistema que o administrador pode ver como tabela e alterar (guardadas no Artifact e aplicadas nas telas ao abrir) */
+const ART_DS=[
+ {k:"normas",g:"Leis e Projetos",t:"Leis e normas",r:()=>typeof NORMAS==="undefined"?null:NORMAS},
+ {k:"leis-federais",g:"Leis e Projetos",t:"Principais leis federais",c:["Grupo","Nome","Norma","Para que serve"],r:()=>typeof LEIS_FED==="undefined"?null:LEIS_FED},
+ {k:"projetos",g:"Leis e Projetos",t:"Projetos de lei (exemplos)",r:()=>typeof PROJETOS==="undefined"?null:PROJETOS},
+ {k:"constituicao-resumo",g:"Constituição",t:"Resumo de cada artigo",c:["Artigo","Tema","Resumo"],r:()=>typeof CF_RESUMO==="undefined"?null:CF_RESUMO},
+ {k:"constituicao-artigos",g:"Constituição",t:"Artigos principais",c:["Artigo","Tema","Resumo"],r:()=>typeof CF_ARTIGOS==="undefined"?null:CF_ARTIGOS},
+ {k:"constituicao-titulos",g:"Constituição",t:"Títulos da Constituição",c:["Título","Nome","Artigos","Resumo","Subitens"],r:()=>typeof CF_TITULOS==="undefined"?null:CF_TITULOS},
+ {k:"cargos",g:"Poderes e cargos",t:"Quem ocupa cada cargo",r:()=>typeof NO_CARGO==="undefined"?null:NO_CARGO},
+ {k:"ministros",g:"Poderes e cargos",t:"Ministros de Estado",c:["Cargo","Nome","Ativo (1 sim, 0 não)"],r:()=>typeof MINISTROS==="undefined"?null:MINISTROS},
+ {k:"colegiados",g:"Poderes e cargos",t:"Tribunais e colegiados",r:()=>typeof COLEGIADOS==="undefined"?null:COLEGIADOS},
+ {k:"cargos-indicados",g:"Poderes e cargos",t:"Cargos de indicação",c:["Esfera","Poder","Cargo","Quem indica","Quem aprova","Mandato"],r:()=>typeof CARGOS_IND==="undefined"?null:CARGOS_IND},
+ {k:"pessoas",g:"Pessoas e empresas",t:"Pessoas (exemplos)",r:()=>typeof PESSOAS==="undefined"?null:PESSOAS},
+ {k:"empresas",g:"Pessoas e empresas",t:"Empresas (exemplos)",r:()=>typeof EMPRESAS==="undefined"?null:EMPRESAS},
+ {k:"sigilos",g:"Transparência",t:"Sigilos",r:()=>typeof SIGILOS==="undefined"?null:SIGILOS},
+ {k:"impostos",g:"Economia",t:"Impostos (grupos)",c:["Grupo","Itens"],r:()=>typeof IMP_GRUPOS==="undefined"?null:IMP_GRUPOS},
+ {k:"unidades",g:"Segurança",t:"Unidades policiais",c:["UF","Corporação","Sigla","Nome","Descrição"],r:()=>typeof UNIDADES==="undefined"?null:UNIDADES}
+];
+async function artDadosAplicar(){try{const db=await usarCap("db");if(!db)return;
+ const snap=await Promise.race([db.collection("dados").limit(100).get(),new Promise(r=>setTimeout(()=>r(null),3000))]);if(!snap)return;
+ snap.docs.forEach(d=>{if(!d.exists)return;const ds=ART_DS.find(x=>x.k===d.id);if(!ds)return;const arr=ds.r();if(!Array.isArray(arr))return;
+  try{const l=JSON.parse(d.data().json);if(Array.isArray(l))arr.splice(0,arr.length,...l)}catch(e){}})}catch(e){}}
+function artDsLinhas(ds){const a=ds.r();return Array.isArray(a)?JSON.parse(JSON.stringify(a)):null}
+async function artDsSalvar(ds,linhas){await ARTDB.collection("dados").doc(ds.k).set({json:JSON.stringify(linhas),atualizada_em:new Date().toISOString()});const a=ds.r();if(Array.isArray(a))a.splice(0,a.length,...linhas)}
+function artCols(ds,linhas){const ehArr=linhas.some(r=>Array.isArray(r));
+ if(ehArr){const n=Math.max(0,...linhas.map(r=>Array.isArray(r)?r.length:0));const base=ds.c?ds.c.slice():[];while(base.length<n)base.push("Coluna "+(base.length+1));return base}
+ const ks=[];linhas.forEach(r=>Object.keys(r||{}).forEach(k=>{if(!ks.includes(k))ks.push(k)}));return ks}
+const artTxt=(v,n)=>{const t=v==null?"":typeof v==="object"?JSON.stringify(v):String(v);return t.length>(n||90)?t.slice(0,n||90)+"…":t};
+function artDadosMontar(b,sub,sub2){
+ if(!sub){const grupos={};ART_DS.forEach(d=>{(grupos[d.g]=grupos[d.g]||[]).push(d)});
+  b.innerHTML=`<p class="muted small">Cada categoria é uma lista que alimenta as telas do site. Escolha uma para ver todas as linhas, adicionar, alterar ou apagar.</p>`+Object.entries(grupos).map(([g,ds])=>`<div class="panel mt"><h2>${esc(g)}</h2><div class="chips">${ds.map(d=>{const a=d.r();return `<a class="chip" href="#/admin/dados/${d.k}">${esc(d.t)} <small class="muted">${Array.isArray(a)?a.length:"—"}</small></a>`}).join("")}</div></div>`).join("");return}
+ const ds=ART_DS.find(x=>x.k===sub);if(!ds){b.innerHTML=rvazio("Categoria não encontrada.");return}
+ const linhas=artDsLinhas(ds);if(!linhas){b.innerHTML=rvazio("Esta lista não está disponível nesta versão.");return}
+ if(sub2!==undefined)return artDadosEditor(b,ds,linhas,sub2);
+ const cols=artCols(ds,linhas),ehArr=linhas.some(r=>Array.isArray(r)),mostra=cols.slice(0,6).map(c=>[c,cols.indexOf(c)]);
+ b.innerHTML=`<style>.art-cel{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}</style>
+ <div class="adm-topo"><a href="#/admin/dados">‹ Todas as categorias</a><a class="btn" href="#/admin/dados/${ds.k}/novo">Adicionar linha</a></div>
+ <h2>${esc(ds.t)}</h2><p class="muted small">${linhas.length} linhas. Toque em Editar para ver todas as informações, alterar ou apagar.</p>
+ <div class="tw"><table class="tab"><thead><tr>${mostra.map(([c])=>`<th>${esc(String(c))}</th>`).join("")}<th></th></tr></thead><tbody>${linhas.map((r,i)=>`<tr>${mostra.map(([c,j])=>`<td class="art-cel">${esc(artTxt(ehArr?(Array.isArray(r)?r[j]:""):(r||{})[c]))}</td>`).join("")}<td><a href="#/admin/dados/${ds.k}/${i}">Editar</a></td></tr>`).join("")||'<tr><td colspan="7">Nenhuma linha.</td></tr>'}</tbody></table></div>`}
+function artDadosEditor(b,ds,linhas,sub2){
+ const novo=sub2==="novo",idx=novo?-1:parseInt(sub2,10);
+ if(!novo&&!(idx>=0&&idx<linhas.length)){b.innerHTML=rvazio("Esta linha não existe mais.");return}
+ const ehArr=linhas.some(r=>Array.isArray(r)),cols=artCols(ds,linhas),molde=linhas[0];
+ const linha=novo?(ehArr?cols.map(()=>""):Object.fromEntries(cols.map(c=>[c,""]))):linhas[idx];
+ if(novo&&!ehArr&&cols.includes("id"))linha.id=Math.max(0,...linhas.map(r=>Number((r||{}).id)||0))+1;
+ const ref=novo?molde:linha;
+ const pega=(r,c,i)=>r==null?undefined:(ehArr?r[i]:r[c]);
+ const tipoDe=(c,i)=>{const v=pega(ref,c,i);return v&&typeof v==="object"?"json":typeof v==="number"?"num":typeof v==="boolean"?"bool":"txt"};
+ const valor=(c,i)=>{const v=pega(linha,c,i);return v==null?"":typeof v==="object"?JSON.stringify(v,null,1):String(v)};
+ b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/dados/${ds.k}">‹ Voltar a ${esc(ds.t)}</a><span class="muted small">${novo?"Nova linha":"Linha "+(idx+1)+" de "+linhas.length}</span></div>
+ ${cols.map((c,i)=>{const t=tipoDe(c,i),v=valor(c,i);return `<label>${esc(String(c))}${t==="json"?' <small class="muted">(lista ou objeto em formato JSON)</small>':""}<textarea name="f${i}" rows="${t==="json"?6:(v.length>120?4:2)}">${esc(v)}</textarea></label>`}).join("")}
+ <p class="vlm-e" role="alert"></p><p class="pf-ok small" hidden>Salvo.</p>
+ <div class="pf-acoes"><div>${novo?"":'<button type="button" class="btn adm-apagar">Apagar</button>'}</div><button type="submit" class="btn vlm-s">Salvar</button></div></form>`;
+ const f=b.querySelector("form"),msg=b.querySelector(".vlm-e"),bt=f.querySelector(".vlm-s");
+ f.onsubmit=async e=>{e.preventDefault();msg.textContent="";const vals=[];
+  for(let i=0;i<cols.length;i++){const txt=f["f"+i].value,t=tipoDe(cols[i],i);let v=txt;
+   if(t==="json"){if(txt.trim()==="")v=[];else try{v=JSON.parse(txt)}catch(er){msg.textContent="O campo "+cols[i]+" precisa estar em formato JSON válido.";return}}
+   else if(t==="num"){if(txt.trim()==="")v=null;else{v=Number(txt.replace(",","."));if(Number.isNaN(v)){msg.textContent="O campo "+cols[i]+" precisa ser um número.";return}}}
+   else if(t==="bool")v=txt.trim().toLowerCase()==="true";
+   vals.push(v)}
+  const row=ehArr?vals:Object.fromEntries(cols.map((c,i)=>[c,vals[i]]));
+  const copia=linhas.slice();if(novo)copia.push(row);else copia[idx]=row;
+  bt.disabled=true;try{await artDsSalvar(ds,copia);location.hash="#/admin/dados/"+ds.k}catch(er){msg.textContent=artMsg(er)}finally{bt.disabled=false}};
+ const ap=b.querySelector(".adm-apagar");let c2=false;
+ if(ap)ap.onclick=async()=>{if(!c2){c2=true;ap.textContent="Confirmar exclusão";return}
+  ap.disabled=true;try{const copia=linhas.slice();copia.splice(idx,1);await artDsSalvar(ds,copia);location.hash="#/admin/dados/"+ds.k}
+  catch(er){msg.textContent=artMsg(er);ap.disabled=false;c2=false;ap.textContent="Apagar"}}}
+async function artVit(id,d){const ref=ARTDB.collection("vitrine").doc(id);
+ if(d&&d.publicada)await ref.set({titulo:d.titulo,categoria:d.categoria,resumo:d.resumo,corpo:d.corpo,fonte:d.fonte,video:d.video,atualizada_em:d.atualizada_em});else await ref.delete()}
+async function artVitrine(cat,sel,titulo){try{const db=await usarCap("db");const box=$(sel);if(!db||!box)return;
+ const s=await db.collection("vitrine").orderBy("atualizada_em","desc").limit(50).get();
+ const l=s.docs.filter(d=>d.exists&&d.data().categoria===cat).map(d=>d.data());if(!l.length)return;
+ box.innerHTML=`<div class="panel mt"><h2>${esc(titulo)}</h2>${l.map(p=>`<details><summary><b>${esc(p.titulo)}</b>${p.resumo?" — "+esc(p.resumo):""}</summary><div class="pub-corpo">${pubCorpo(p.corpo||"")}</div>${p.fonte?`<p class="muted small">Fonte: ${esc(p.fonte)}</p>`:""}${p.video?`<p class="small"><a href="${esc(p.video)}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>`:""}</details>`).join("")}</div>`}catch(e){}}
+async function artAdmMontar(aba,sub,sub2){const c=$("#admC");if(!c)return;
+ const abas=ART_ABAS.map(([k,t])=>`<a class="tabl ${k===aba?"on":""}" href="#/admin/${k}">${t}${k==="banco"||k==="servidor"?' <small class="muted">(só no servidor)</small>':""}</a>`).join("");
+ c.innerHTML=`<div class="adm-aviso"><b>Administração neste Artifact.</b> O que você alterar aqui fica guardado neste Artifact, separado do banco do servidor. Depois ligamos ao banco.</div><div class="tabs keep adm-abas">${abas}</div><div id="admCorpo">${rload()}</div>`;
  const b=$("#admCorpo");
- if(aba==="banco"||aba==="servidor"){b.innerHTML=rvazio("Esta seção depende do servidor do BRASIL+ (banco de dados, contas e coletas). Não pode ser editada neste Artifact.");return}
- try{const pubs=await artPubs();
+ if(aba==="banco"||aba==="servidor"){b.innerHTML=rvazio("Esta seção depende do servidor do BRASIL+ (banco de dados, contas e coletas). Ainda não está ligada neste Artifact.");return}
+ try{
+  if(aba==="dados")return artDadosMontar(b,sub,sub2);
+  const pubs=await artPubs();
   if(sub==="novo")return artAdmEditor(b,null,pubs);
   if(sub){const p=pubs.find(x=>x.id===sub);return p?artAdmEditor(b,p,pubs):(b.innerHTML=rvazio("Este registro não existe mais."))}
   return artAdmResumo(b,pubs)}
@@ -6978,10 +7054,10 @@ function artAdmResumo(b,pubs){const pub=pubs.filter(p=>p.publicada).length;
  const cat=window.ART_CATF||"todas";const lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat);
  const n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
  const chips=[["todas","Todas"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="chip${cat===k?" on":""}" data-cat="${k}">${t} <small class="muted">${n(k)}</small></button>`).join("");
- b.innerHTML=`<div class="kpis"><div class="kpi"><span>Publicações</span><strong>${nf(pubs.length)}</strong></div><div class="kpi"><span>Publicadas</span><strong>${nf(pub)}</strong></div><div class="kpi"><span>Rascunhos</span><strong>${nf(pubs.length-pub)}</strong></div></div>
+ b.innerHTML=`<div class="kpis"><div class="kpi"><span>Posts</span><strong>${nf(pubs.length)}</strong></div><div class="kpi"><span>Publicados</span><strong>${nf(pub)}</strong></div><div class="kpi"><span>Rascunhos</span><strong>${nf(pubs.length-pub)}</strong></div></div>
  <div class="chips" role="group" aria-label="Categoria">${chips}</div>
- <div class="adm-topo"><p class="muted small" style="margin:0">Toque no título para ver todas as informações, editar ou apagar. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/resumo/novo">Nova publicação</a></div>
- <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${lista.map(p=>`<tr><td><a href="#/admin/resumo/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicada</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhum registro nesta categoria.</td></tr>'}</tbody></table></div>`;
+ <div class="adm-topo"><p class="muted small" style="margin:0">Notícias e prêmios autorais aparecem nas abas Notícias e Prêmios do site quando publicados. Rascunhos só aparecem para você.</p><a class="btn" href="#/admin/resumo/novo">Novo post</a></div>
+ <div class="tw"><table class="tab"><thead><tr><th>Título</th><th>Categoria</th><th>Situação</th><th>Atualizada</th></tr></thead><tbody>${lista.map(p=>`<tr><td><a href="#/admin/resumo/${esc(p.id)}">${esc(p.titulo||"(sem título)")}</a></td><td>${esc(ART_CAT[p.categoria]||p.categoria||"—")}</td><td>${p.publicada?'<span class="tag sit-ex">Publicado</span>':'<span class="tag">Rascunho</span>'}</td><td>${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</td></tr>`).join("")||'<tr><td colspan="4">Nenhum registro nesta categoria.</td></tr>'}</tbody></table></div>`;
  b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
 function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
  b.innerHTML=`<form class="adm-form" novalidate><div class="adm-topo"><a href="#/admin/resumo">‹ Voltar à lista</a>${p?`<span class="muted small">ID ${esc(p.id)} · última alteração: ${p.atualizada_em?fdr(p.atualizada_em.slice(0,10)):"—"}</span>`:""}</div>
@@ -7000,14 +7076,17 @@ function artAdmEditor(b,p,pubs){const v=p||{titulo:"",categoria:"noticia",resumo
   if(!d.titulo){msg.textContent="Informe o título.";return}
   if(d.video&&!/^https:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//.test(d.video)){msg.textContent="O vídeo precisa ser um link https do YouTube ou do Vimeo.";return}
   bt.disabled=true;
-  try{if(p){await ARTDB.collection("publicacoes").doc(p.id).set(d);ok.hidden=false}
-   else{const r=await ARTDB.collection("publicacoes").add(d);location.hash="#/admin/resumo/"+r.id;return}}
+  try{if(p){await ARTDB.collection("publicacoes").doc(p.id).set(d);await artVit(p.id,d);ok.hidden=false}
+   else{const r=await ARTDB.collection("publicacoes").add(d);await artVit(r.id,d);location.hash="#/admin/resumo/"+r.id;return}}
   catch(err){msg.textContent=artMsg(err)}finally{bt.disabled=false}};
  const ap=b.querySelector(".adm-apagar");let confirmou=false;
  if(ap)ap.onclick=async()=>{if(!confirmou){confirmou=true;ap.textContent="Confirmar exclusão";return}
-  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();location.hash="#/admin/resumo"}
+  ap.disabled=true;try{await ARTDB.collection("publicacoes").doc(p.id).delete();await artVit(p.id,null);location.hash="#/admin/resumo"}
   catch(err){msg.textContent=artMsg(err);ap.disabled=false;confirmou=false;ap.textContent="Apagar"}}}
-addEventListener("hashchange",route);detectarAPI().finally(async()=>{window.API_ON=!!API.on;if(!API.on||API.snap)await artAdmIniciar();navAtualizar();route()});
+const _pn=P.noticias,_pp=P.premios;
+P.noticias=(...a)=>{const r=_pn(...a);return{...r,html:'<div id="artVitN"></div>'+r.html,mount(){artVitrine("noticia","#artVitN","Notícias do BRASIL+");return r.mount&&r.mount()}}};
+P.premios=(...a)=>{const r=_pp(...a);return{...r,html:'<div id="artVitP"></div>'+r.html,mount(){artVitrine("premio","#artVitP","Prêmios autorais do BRASIL+");return r.mount&&r.mount()}}};
+addEventListener("hashchange",route);detectarAPI().finally(async()=>{window.API_ON=!!API.on;if(!API.on||API.snap){await artAdmIniciar();await artDadosAplicar()}navAtualizar();route()});
 </script>
 <script>
 /* dica inteligente nas tabelas: ao passar sobre uma célula cortada, mostra o texto inteiro e o nome da coluna.
