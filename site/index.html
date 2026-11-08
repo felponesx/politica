@@ -7313,16 +7313,20 @@ function artResumoPerm(pm){const v=ART_ROT_VER.filter(([k])=>pm&&pm.ver&&pm.ver[
  return `Vê: ${v.join(", ")||"nada"} · Altera: ${a.join(", ")||"nada"}`}
 async function artAtividade(b){
  const db=ARTDB,dono=ART_ME.dono;
- const [ativ,acc]=await Promise.all([db.collection("atividade").orderBy("quando","desc").limit(150).get(),db.collection("acessos").get()]);
+ const [ativ,acc]=await Promise.all([db.collection("atividade").orderBy("quando","desc").limit(500).get(),db.collection("acessos").get()]);
  const logs=ativ.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}));
  const pessoas=acc.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()})).sort((x,y)=>String(x.email).localeCompare(String(y.email)));
  let nomes={};try{const u=await usarCap("user"),ids=[...new Set(logs.map(l=>l.quem).filter(Boolean))];if(u&&ids.length)nomes=await u.profiles(ids)}catch(e){}
  const nomeDe=l=>(nomes[l.quem]&&nomes[l.quem].name)||l.email||"Alguém";
+ const nz=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+ const dataBr=i=>{try{return new Date(i).toLocaleDateString("pt-BR")}catch(e){return""}};
+ const dataLonga=i=>{try{return new Date(i).toLocaleDateString("pt-BR",{day:"numeric",month:"long",year:"numeric"})}catch(e){return""}};
+ const qDe=l=>nz([nomeDe(l),l.email,l.acao,l.onde,l.detalhe,artQuando(l.quando),dataBr(l.quando),dataLonga(l.quando),String(l.quando||"").slice(0,10)].join(" "));
  const quem=[...new Set(logs.map(nomeDe))].sort();
  const chk=(g,k,t)=>`<label class="chk"><input type="checkbox" name="${g}-${k}"> <span>${esc(t)}</span></label>`;
  b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("atividade",true)}<div><h2>Controle de atividade</h2><p class="mut" style="margin:2px 0 0">Veja quem alterou o quê e escolha quem pode ver e alterar a administração.</p></div></div>
- <div class="ad-box"><div class="ad-top"><h3>Atividade recente</h3>${quem.length>1?`<select id="adQuem" style="max-width:240px"><option value="">Todas as pessoas</option>${quem.map(n=>`<option>${esc(n)}</option>`).join("")}</select>`:""}</div>
-  <div class="ad-tw" style="max-height:340px"><table class="ad-t"><thead><tr><th>Quando</th><th>Quem</th><th>O que fez</th><th>Onde</th></tr></thead><tbody id="adLog">${logs.map(l=>`<tr data-n="${esc(nomeDe(l))}"><td>${esc(artQuando(l.quando))}</td><td>${esc(nomeDe(l))}</td><td>${esc(l.acao||"")}</td><td class="c">${esc(l.onde||"")}${l.detalhe?` <small class="mut">${esc(l.detalhe)}</small>`:""}</td></tr>`).join("")||'<tr><td colspan="4" class="mut">Nenhuma atividade registrada ainda. Cada alteração feita na administração aparece aqui.</td></tr>'}</tbody></table></div></div>
+ <div class="ad-box"><div class="ad-top"><h3>Atividade recente</h3><span class="mut" id="adLogN"></span></div><input id="adBuscaLog" type="search" placeholder="Buscar por pessoa, o que fez, onde ou data (ex.: Ana, apagou, Saúde, 07/11, hoje)" autocomplete="off">
+  <div class="ad-tw" style="max-height:340px"><table class="ad-t"><thead><tr><th>Quando</th><th>Quem</th><th>O que fez</th><th>Onde</th></tr></thead><tbody id="adLog">${logs.map(l=>`<tr data-q="${esc(qDe(l))}"><td>${esc(artQuando(l.quando))}</td><td>${esc(nomeDe(l))}</td><td>${esc(l.acao||"")}</td><td class="c">${esc(l.onde||"")}${l.detalhe?` <small class="mut">${esc(l.detalhe)}</small>`:""}</td></tr>`).join("")||'<tr><td colspan="4" class="mut">Nenhuma atividade registrada ainda. Cada alteração feita na administração aparece aqui.</td></tr>'}<tr id="adLogVazio" hidden><td colspan="4" class="mut">Nada encontrado para esta busca.</td></tr></tbody></table></div></div>
  <div class="ad-box"><h3>Pessoas com acesso</h3><div class="ad-list">
   <div class="ad-li"><div><b>${esc(dono?(ART_ME.nome||ART_ME.email||"Você"):"Dono do Artifact")}</b><small>Dono · vê e altera tudo</small></div><span class="ad-tag ok">Dono</span></div>
   ${pessoas.map(x=>`<div class="ad-li"><div><b>${esc(x.email)}</b><small>${esc(artResumoPerm(x.perm))}</small></div><span>${x.ativo===false?'<span class="ad-tag">Pausado</span>':'<span class="ad-tag ok">Ativo</span>'}${dono?` <button class="b s" type="button" data-ed-acc="${esc(x.id)}">Editar</button> <button class="b s" type="button" data-pausa="${esc(x.id)}">${x.ativo===false?"Reativar":"Pausar"}</button> <button class="b s d" type="button" data-rem="${esc(x.id)}">Remover</button>`:""}</span></div>`).join("")}
@@ -7333,7 +7337,14 @@ async function artAtividade(b){
   <div class="ad-chips"><button type="button" class="ad-chip" data-pre="ver">Só ver tudo</button><button type="button" class="ad-chip" data-pre="tudo">Ver e alterar tudo</button><button type="button" class="ad-chip" data-pre="nada">Limpar</button></div>
   <div class="ad-note"><b>Para a pessoa abrir o painel</b>, compartilhe este Artifact com o mesmo e-mail como <b>Editor</b>, no botão Compartilhar do Artifact. Aqui você escolhe o que ela vê e altera dentro da administração; essas regras valem na tela de administração.</div>
   <p class="ad-err" id="adAcErr" role="alert"></p><div class="ad-top"><span></span><button class="b p" type="submit">Salvar acesso</button></div></form>`:""}`;
- const sel=$("#adQuem");if(sel)sel.onchange=()=>{b.querySelectorAll("#adLog tr[data-n]").forEach(tr=>{tr.hidden=!!sel.value&&tr.dataset.n!==sel.value})};
+ const linhas=[...b.querySelectorAll("#adLog tr[data-q]")],cont=$("#adLogN"),bl=$("#adBuscaLog");
+ const dia=d=>d.toLocaleDateString("pt-BR");
+ const filtra=()=>{const hoje=new Date(),ont=new Date(Date.now()-864e5);
+  const tk=nz(bl.value).split(/\s+/).filter(Boolean).map(t=>t==="hoje"?dia(hoje):t==="ontem"?dia(ont):t);
+  let n=0;linhas.forEach(tr=>{const ok=tk.every(t=>tr.dataset.q.includes(t));tr.hidden=!ok;if(ok)n++});
+  const v=$("#adLogVazio");if(v)v.hidden=!(linhas.length&&!n);
+  cont.textContent=linhas.length?(tk.length?n+" de "+linhas.length+" registros":linhas.length+" registros"):""};
+ if(bl){bl.oninput=filtra;filtra()}
  const f=$("#adAcesso");if(!f)return;
  const marca=(ver,alt)=>{ART_ROT_VER.forEach(([k])=>{f["ver-"+k].checked=!!ver[k]});ART_ROT_ALT.forEach(([k])=>{f["alt-"+k].checked=!!alt[k]})};
  const todos=o=>Object.fromEntries(o.map(([k])=>[k,true]));
