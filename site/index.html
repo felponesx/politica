@@ -2261,6 +2261,7 @@ html.tema-troca,html.tema-troca *{transition:background-color .9s ease,color .9s
 const I={
 publicacoes:'<path d="M5 5h11a3 3 0 0 1 3 3v11H8a3 3 0 0 1-3-3z"/><path d="M8 9h6M8 12h6M8 15h4"/>',
 admin:'<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+instagram:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/>',
 atividade:'<circle cx="9" cy="8" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M16 5.5a3 3 0 0 1 0 5.5M17.5 14.7c1.8.6 3 2 3.5 4.3"/>',
 banco:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
 inicio:'<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
@@ -2297,7 +2298,7 @@ fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v
 const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["publicacoes","Publicações"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;if(n[0]==="publicacoes")return window.API_ON===true;return true}
-function navSubAdmin(){return [["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["atividade","atividade","Controle de atividade"]].filter(x=>artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
+function navSubAdmin(){return [["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
 function navHTML(){return NAV.filter(navVisivel).map(n=>n==="-"?"<hr>":`<a href="#/${n[0]}" data-k="${n[0]}"${n[0]==="admin"?' class="nav-adm"':""}>${svgI(n[0])}<span>${n[1]}</span></a>`+(n[0]==="admin"?`<div class="nav-sub">${navSubAdmin()}</div>`:"")).join("")}
 function navAtualizar(){document.getElementById("nav").innerHTML=navHTML();document.getElementById("sheetNav").innerHTML=navHTML();const ba=document.getElementById("btnAdmin");if(ba)ba.hidden=!window.VL_ADMIN}
 navAtualizar();
@@ -6978,7 +6979,7 @@ aplicarPrefs();matchMedia("(prefers-color-scheme: dark)").addEventListener("chan
 /* ===== Administração dentro do Artifact (sem servidor) =====
    Só ativa para quem pode editar (canEdit). O que é alterado fica guardado no armazenamento do Artifact e é aplicado nas telas. */
 window.ART_ADM=false;let ARTDB=null;let ART_ME={id:null,email:"",nome:"",dono:false},ART_ASSETS=null;window.ART_PERM=null;
-const ART_PERM_TODAS={ver:{posts:true,banco:true,atividade:true},alt:{posts:true,telas:true,listas:true,imagens:true}};
+const ART_PERM_TODAS={ver:{posts:true,banco:true,instagram:true,atividade:true},alt:{posts:true,telas:true,listas:true,imagens:true,instagram:true}};
 const artVer=k=>!!(window.ART_PERM&&window.ART_PERM.ver&&window.ART_PERM.ver[k]);
 const artAlt=k=>!!(window.ART_PERM&&window.ART_PERM.alt&&window.ART_PERM.alt[k]);
 const usarCap=n=>(window.claude&&window.claude.use)?window.claude.use(n).catch(()=>null):Promise.resolve(null);
@@ -7102,6 +7103,12 @@ details.ad-more summary{cursor:pointer;color:var(--blue);font-weight:500;font-si
 .ad .chk{display:flex;gap:8px;align-items:center;color:var(--ink);font-weight:400}
 .ad .chk input{width:18px;height:18px;flex:0 0 auto}
 .ad-fs{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;gap:8px;min-width:0}
+.ad-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.ad-grid3{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:720px){.ad-grid3{grid-template-columns:repeat(3,1fr)}}
+.ad-mes{display:grid;grid-template-columns:70px 1fr minmax(120px,auto);gap:10px;align-items:center;font-size:13px}
+.ad-mbar{height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
+.ad-mbar i{display:block;height:100%;border-radius:99px;background:var(--blue)}
 .ad-fs legend{padding:0 6px;color:var(--ink2);font-weight:600;font-size:13px}
 .ad-ic{flex:0 0 auto;display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--tint);color:var(--blue)}
 .ad-ic.y{background:#FFF1B8;color:#7A5200}
@@ -7268,11 +7275,11 @@ async function artVitrine(cat,sel,titulo){try{const db=await usarCap("db");const
  const s=await db.collection("vitrine").orderBy("atualizada_em","desc").limit(50).get();
  const l=s.docs.filter(d=>d.exists&&d.data().categoria===cat).map(d=>d.data());if(!l.length)return;
  box.innerHTML=`<div class="panel mt"><h2>${esc(titulo)}</h2>${l.map(p=>`<details><summary><b>${esc(p.titulo)}</b>${p.resumo?" — "+esc(p.resumo):""}</summary>${p.capa_id?`<img src="/_blob/${esc(p.capa_id)}" alt="" style="max-width:100%;border-radius:10px;margin:8px 0">`:""}<div class="pub-corpo">${pubCorpo(p.corpo||"")}</div>${p.fonte?`<p class="muted small">Fonte: ${esc(p.fonte)}</p>`:""}${p.video?`<p class="small"><a href="${esc(p.video)}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>`:""}</details>`).join("")}</div>`}catch(e){}}
-function artPostsLista(b,pubs){
+function artPostsLista(b,pubs,ig){ig=ig||[];const igN=id=>{const n=ig.filter(x=>x.vinculos&&x.vinculos.texto===id).length;return n?`<span class="ad-tag">Instagram ${n}</span> `:""};
  const cat=window.ART_CATF||"todas",lista=cat==="todas"?pubs:pubs.filter(p=>p.categoria===cat),n=k=>k==="todas"?pubs.length:pubs.filter(p=>p.categoria===k).length;
  b.innerHTML=`<div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc("noticias",true)}<div><h2>Notícias</h2><p class="mut" style="margin:2px 0 0">Textos seus (notícias e prêmios autorais). Os publicados aparecem nas abas Notícias e Prêmios do site.</p></div></div>${artAlt("posts")?'<a class="b p" href="#/admin/posts/novo">+ Novo texto</a>':""}</div>
  <div class="ad-chips" role="group" aria-label="Tipo">${[["todas","Todos"],...Object.entries(ART_CAT)].map(([k,t])=>`<button type="button" class="ad-chip${cat===k?" on":""}" data-cat="${k}">${t} (${n(k)})</button>`).join("")}</div>
- <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(ART_CIC[p.categoria]||"noticias")}<div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} <a class="b s" href="#/admin/posts/${esc(p.id)}">${artAlt("posts")?"Editar":"Ver"}</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
+ <div class="ad-list">${lista.map(p=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(ART_CIC[p.categoria]||"noticias")}<div><b>${esc(p.titulo||"(sem título)")}</b><small>${esc(ART_CAT[p.categoria]||p.categoria||"")}${p.atualizada_em?" · "+fdr(p.atualizada_em.slice(0,10)):""}</small></div></div><span>${p.publicada?'<span class="ad-tag ok">Publicado</span>':'<span class="ad-tag">Rascunho</span>'} ${igN(p.id)}<a class="b s" href="#/admin/posts/${esc(p.id)}">${artAlt("posts")?"Editar":"Ver"}</a></span></div>`).join("")||'<div class="ad-note">Nenhum texto aqui ainda. Clique em <b>+ Novo texto</b> para começar.</div>'}</div>`;
  b.querySelectorAll("[data-cat]").forEach(x=>x.onclick=()=>{window.ART_CATF=x.dataset.cat;route()})}
 function artPostEditor(b,p){const v=p||{titulo:"",categoria:"noticia",resumo:"",corpo:"",fonte:"",video:"",publicada:false};
  const imgBox=artAlt("imagens")&&ART_ASSETS?`<div class="ad-box" style="gap:8px"><b>Imagem de capa</b>${v.capa_id?`<img src="/_blob/${esc(v.capa_id)}" alt="" style="max-width:260px;border-radius:10px">`:""}<input type="file" name="foto" accept="image/jpeg,image/png,image/webp"><small class="mut">JPEG, PNG ou WebP, até 3 MB.${v.capa_id?" Escolha outro arquivo para trocar.":""}</small>${v.capa_id?'<label class="chk"><input type="checkbox" name="semfoto"> <span>Tirar a imagem atual</span></label>':""}</div>`:(v.capa_id?`<img src="/_blob/${esc(v.capa_id)}" alt="" style="max-width:260px;border-radius:10px">`:"");
@@ -7306,8 +7313,8 @@ function artPostEditor(b,p){const v=p||{titulo:"",categoria:"noticia",resumo:"",
   catch(er){err.textContent=artMsg(er);ap.disabled=false;c=false;ap.textContent="Apagar este texto"}}}
 /* ----- controle de atividade: quem fez o quê e quem tem acesso ----- */
 async function artLog(acao,onde,detalhe){try{if(!ARTDB)return;await ARTDB.collection("atividade").add({quando:new Date().toISOString(),quem:ART_ME.id||"",email:ART_ME.email||"",acao,onde:onde||"",detalhe:detalhe||""})}catch(e){}}
-const ART_ROT_VER=[["posts","Notícias e prêmios"],["banco","Banco de dados"],["atividade","Controle de atividade"]];
-const ART_ROT_ALT=[["posts","Criar e editar notícias e prêmios"],["telas","Alterar dados das telas"],["listas","Alterar textos e listas do site"],["imagens","Inserir imagens"]];
+const ART_ROT_VER=[["posts","Notícias e prêmios"],["banco","Banco de dados"],["instagram","Instagram"],["atividade","Controle de atividade"]];
+const ART_ROT_ALT=[["posts","Criar e editar notícias e prêmios"],["telas","Alterar dados das telas"],["listas","Alterar textos e listas do site"],["imagens","Inserir imagens"],["instagram","Alterar a movimentação do Instagram"]];
 const artQuando=i=>{try{return new Date(i).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}catch(e){return i||""}};
 function artResumoPerm(pm){const v=ART_ROT_VER.filter(([k])=>pm&&pm.ver&&pm.ver[k]).map(x=>x[1]),a=ART_ROT_ALT.filter(([k])=>pm&&pm.alt&&pm.alt[k]).map(x=>x[1]);
  return `Vê: ${v.join(", ")||"nada"} · Altera: ${a.join(", ")||"nada"}`}
@@ -7356,12 +7363,138 @@ async function artAtividade(b){
   const email=f.email.value.trim().toLowerCase();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!/^[a-z0-9._@+-]+$/.test(email)){err.textContent="Digite um e-mail válido (letras, números, ponto, + ou -).";return}
   const ver={},alt={};ART_ROT_VER.forEach(([k])=>{if(f["ver-"+k].checked)ver[k]=true});ART_ROT_ALT.forEach(([k])=>{if(f["alt-"+k].checked)alt[k]=true});
-  if(alt.posts||alt.imagens)ver.posts=true;if(alt.telas||alt.listas)ver.banco=true;
+  if(alt.posts||alt.imagens)ver.posts=true;if(alt.telas||alt.listas)ver.banco=true;if(alt.instagram)ver.instagram=true;
   if(!Object.keys(ver).length){err.textContent="Escolha pelo menos uma coisa que a pessoa pode ver.";return}
   const bt=f.querySelector("button[type=submit]");bt.disabled=true;
   try{const ex=pessoas.find(y=>y.id===email);await db.collection("acessos").doc(email).set({email,perm:{ver,alt},ativo:ex?ex.ativo!==false:true,criado_em:(ex&&ex.criado_em)||new Date().toISOString(),atualizado_em:new Date().toISOString(),por:ART_ME.id||""});
    artLog(ex?"alterou permissões":"liberou acesso",email,artResumoPerm({ver,alt}));artToast("Acesso salvo.");route()}
   catch(er){err.textContent=artMsg(er);bt.disabled=false}}}
+/* ----- Instagram: movimentação das postagens e vínculo com o sistema ----- */
+const IG_TIPOS={post:"Post",reel:"Reel",story:"Story",carrossel:"Carrossel"};
+const artNz=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const igNum=v=>{const n=Number(String(v==null?"":v).replace(/\./g,"").replace(",","."));return Number.isFinite(n)?n:0};
+const igOk=u=>!u||/^https:\/\/(www\.)?instagram\.com\//.test(u);
+const igBases=()=>[...ART_EPS.map(p=>({id:p,nome:artNome(p)})),...ART_DS.map(d=>({id:"lista-"+d.k,nome:d.t+" (lista do site)"}))];
+const igMet=[["curtidas","Curtidas"],["comentarios","Comentários"],["compartilhamentos","Compartilhamentos"],["salvos","Salvos"],["alcance","Alcance"]];
+async function artInstagram(b,sub){
+ const db=ARTDB,alt=artAlt("instagram");
+ const [cfgD,igS,pubs]=await Promise.all([db.collection("config").doc("instagram").get(),db.collection("instagram").orderBy("data","desc").limit(500).get(),artPubs()]);
+ const cfg=cfgD.exists?cfgD.data():{};
+ const igs=igS.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}));
+ if(sub==="novo")return igEditor(b,null,pubs,cfg);
+ if(sub==="importar")return igImportar(b,igs);
+ if(sub){const x=igs.find(y=>y.id===sub);return x?igEditor(b,x,pubs,cfg):(b.innerHTML=rvazio("Esta postagem não existe mais."))}
+ igPainel(b,igs,pubs,cfg,alt)}
+function igPainel(b,igs,pubs,cfg,alt){
+ const pubd=igs.filter(x=>x.status!=="planejada"),plan=igs.length-pubd.length;
+ const soma=k=>pubd.reduce((a,x)=>a+igNum(x.metricas&&x.metricas[k]),0);
+ const meses=[],hoje=new Date();for(let i=5;i>=0;i--){const d=new Date(hoje.getFullYear(),hoje.getMonth()-i,1);meses.push({k:d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"),t:d.toLocaleDateString("pt-BR",{month:"short",year:"2-digit"}),n:0,c:0})}
+ pubd.forEach(x=>{const m=meses.find(y=>y.k===String(x.data||"").slice(0,7));if(m){m.n++;m.c+=igNum(x.metricas&&x.metricas.curtidas)}});
+ const mx=Math.max(1,...meses.map(m=>m.c));
+ const tit=id=>{const p=pubs.find(y=>y.id===id);return p?p.titulo:""};
+ const linha=x=>{const m=x.metricas||{},v=x.vinculos||{},tx=v.texto?tit(v.texto):"",nb=(v.bases||[]).length;
+  const q=artNz([x.legenda,IG_TIPOS[x.tipo],x.data,tx,x.perfil].join(" "));
+  return `<div class="ad-li" data-q="${esc(q)}" data-st="${x.status==="planejada"?"planejada":"publicada"}"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc("instagram")}<div><b>${esc(artTxt(x.legenda||"(sem legenda)",70))}</b><small>${esc(IG_TIPOS[x.tipo]||"Post")} · ${x.data?esc(fdr(String(x.data).slice(0,10))):"sem data"} · ${igNum(m.curtidas)} curtidas · ${igNum(m.comentarios)} comentários · alcance ${igNum(m.alcance)}${tx?" · texto: "+esc(artTxt(tx,40)):""}${nb?" · "+nb+" base"+(nb>1?"s":""):""}</small></div></div><span>${x.status==="planejada"?'<span class="ad-tag mod">Planejada</span>':'<span class="ad-tag ok">Publicada</span>'} <a class="b s" href="#/admin/instagram/${esc(x.id)}">${alt?"Abrir":"Ver"}</a></span></div>`};
+ const st0=window.ART_IGF||"todas";
+ b.innerHTML=`<div class="ad-top"><div style="display:flex;gap:12px;align-items:center">${adIc("instagram",true)}<div><h2>Instagram</h2><p class="mut" style="margin:2px 0 0">Movimentação das postagens e ligação com os textos e as bases do sistema.</p></div></div>${alt?'<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="b" href="#/admin/instagram/importar">Importar planilha</a><a class="b p" href="#/admin/instagram/novo">+ Nova postagem</a></div>':""}</div>
+ <div class="ad-box"><div class="ad-top"><div><h3>Perfil</h3><p class="mut" style="margin:2px 0 0">${cfg.perfil?esc(cfg.perfil)+(cfg.url&&igOk(cfg.url)?` · <a href="${esc(cfg.url)}" target="_blank" rel="noopener noreferrer">Abrir no Instagram</a>`:""):"Nenhum perfil definido ainda."}</p></div></div>${alt?`<details class="ad-more"><summary>${cfg.perfil?"Alterar perfil":"Definir perfil"}</summary><form id="igCfg" novalidate style="display:grid;gap:10px;margin-top:10px"><div class="ad-grid2"><label>Nome do perfil<input name="perfil" placeholder="@brasilmais" value="${esc(cfg.perfil||"")}"></label><label>Endereço do perfil<input name="url" placeholder="https://www.instagram.com/brasilmais/" value="${esc(cfg.url||"")}"></label></div><p class="ad-err" id="igCfgE"></p><div><button class="b p" type="submit">Salvar perfil</button></div></form></details>`:""}</div>
+ <div class="ad-kpis"><div class="ad-card"><span class="mut">Publicadas</span><span class="n">${nf(pubd.length)}</span></div><div class="ad-card"><span class="mut">Planejadas</span><span class="n">${nf(plan)}</span></div><div class="ad-card"><span class="mut">Curtidas</span><span class="n">${nf(soma("curtidas"))}</span></div><div class="ad-card"><span class="mut">Comentários</span><span class="n">${nf(soma("comentarios"))}</span></div><div class="ad-card"><span class="mut">Alcance somado</span><span class="n">${nf(soma("alcance"))}</span></div></div>
+ <div class="ad-box"><h3>Movimento dos últimos 6 meses</h3>${meses.map(m=>`<div class="ad-mes"><span>${esc(m.t)}</span><span class="ad-mbar"><i style="width:${Math.round(m.c/mx*100)}%"></i></span><span class="mut">${m.n} ${m.n===1?"postagem":"postagens"} · ${nf(m.c)} curtidas</span></div>`).join("")}</div>
+ <div class="ad-box"><div class="ad-top"><h3>Postagens</h3><span class="mut" id="igCont"></span></div>
+  <div class="ad-chips" role="group" aria-label="Situação">${[["todas","Todas"],["publicada","Publicadas"],["planejada","Planejadas"]].map(([k,t])=>`<button type="button" class="ad-chip${st0===k?" on":""}" data-igst="${k}">${t}</button>`).join("")}</div>
+  <input id="igBusca" type="search" placeholder="Buscar por legenda, tipo, texto ligado ou data" autocomplete="off">
+  <div class="ad-list" id="igLista">${igs.map(linha).join("")}<div class="ad-note" id="igVazio" ${igs.length?"hidden":""}>${igs.length?"Nada encontrado.":"Nenhuma postagem registrada ainda. Clique em <b>+ Nova postagem</b> ou <b>Importar planilha</b>."}</div></div></div>
+ <div class="ad-note"><b>Como entram os dados:</b> o Artifact não consegue ler o Instagram sozinho. Registre as postagens aqui ou importe a planilha de desempenho que o Instagram (Meta Business Suite) exporta. Quando o servidor do BRASIL+ estiver no ar, a coleta automática pode preencher esta aba.</div>`;
+ const rows=[...b.querySelectorAll("#igLista .ad-li")],vz=$("#igVazio"),ct=$("#igCont"),bq=$("#igBusca");
+ const aplica=()=>{const t=artNz(bq.value).split(/\s+/).filter(Boolean),st=window.ART_IGF||"todas";let n=0;
+  rows.forEach(r=>{const ok=(st==="todas"||r.dataset.st===st)&&t.every(w=>r.dataset.q.includes(w));r.hidden=!ok;if(ok)n++});
+  if(rows.length){vz.hidden=!!n;vz.textContent="Nada encontrado."}ct.textContent=rows.length?(n===rows.length?rows.length+" postagens":n+" de "+rows.length):""};
+ bq.oninput=aplica;
+ b.querySelectorAll("[data-igst]").forEach(x=>x.onclick=()=>{window.ART_IGF=x.dataset.igst;b.querySelectorAll("[data-igst]").forEach(y=>y.classList.toggle("on",y===x));aplica()});
+ aplica();
+ const fc=$("#igCfg");if(fc)fc.onsubmit=async e=>{e.preventDefault();const err=$("#igCfgE");err.textContent="";const u=fc.url.value.trim();
+  if(!igOk(u)){err.textContent="O endereço precisa começar com https://www.instagram.com/";return}
+  try{await ARTDB.collection("config").doc("instagram").set({perfil:fc.perfil.value.trim(),url:u,atualizada_em:new Date().toISOString()});artLog("definiu o perfil do Instagram",fc.perfil.value.trim());artToast("Perfil salvo.");route()}catch(er){err.textContent=artMsg(er)}}}
+function igEditor(b,x,pubs,cfg){
+ const alt=artAlt("instagram"),v=x||{tipo:"post",status:"planejada",data:"",link:"",legenda:"",metricas:{},vinculos:{texto:"",bases:[]},capa_id:""};
+ const m=v.metricas||{},vin=v.vinculos||{};let bases=[...(vin.bases||[])];
+ const BA=igBases(),nomeBase=id=>(BA.find(y=>y.id===id)||{nome:id}).nome;
+ const imgBox=artAlt("imagens")&&ART_ASSETS?`<label>Imagem da postagem <small>JPEG, PNG ou WebP, até 3 MB</small><input type="file" name="foto" accept="image/jpeg,image/png,image/webp"></label>`:"";
+ b.innerHTML=`<div><a class="ad-back" href="#/admin/instagram">‹ Instagram</a></div><form class="ad-box" novalidate><h2>${x?"Postagem do Instagram":"Nova postagem"}</h2>
+ <div class="ad-grid2"><label>Tipo<select name="tipo">${Object.entries(IG_TIPOS).map(([k,t])=>`<option value="${k}"${v.tipo===k?" selected":""}>${t}</option>`).join("")}</select></label><label>Situação<select name="status"><option value="planejada"${v.status!=="publicada"?" selected":""}>Planejada</option><option value="publicada"${v.status==="publicada"?" selected":""}>Publicada</option></select></label></div>
+ <div class="ad-grid2"><label>Data da postagem<input type="date" name="data" value="${esc(String(v.data||"").slice(0,10))}"></label><label>Link da postagem <small>opcional</small><input name="link" placeholder="https://www.instagram.com/p/..." value="${esc(v.link||"")}"></label></div>
+ <label>Legenda <small>texto da postagem</small><textarea name="legenda" rows="6" maxlength="2200">${esc(v.legenda||"")}</textarea></label>
+ <div><button type="button" class="b s" id="igCopia">Copiar legenda</button></div>
+ ${v.capa_id?`<img src="/_blob/${esc(v.capa_id)}" alt="" style="max-width:240px;border-radius:10px">`:""}${imgBox}
+ <div class="ad-box" style="gap:10px"><h3>Desempenho</h3><div class="ad-grid3">${igMet.map(([k,t])=>`<label>${t}<input type="number" min="0" name="m-${k}" value="${igNum(m[k])||""}" placeholder="0"></label>`).join("")}</div></div>
+ <div class="ad-box" style="gap:10px"><h3>Ligação com o sistema</h3>
+  <label>Texto do site <small>notícia ou prêmio ligado a esta postagem</small><select name="vtexto"><option value="">— nenhum —</option>${pubs.map(p=>`<option value="${esc(p.id)}"${vin.texto===p.id?" selected":""}>${esc(p.titulo||"(sem título)")} (${esc(ART_CAT[p.categoria]||"")})</option>`).join("")}</select></label>
+  <label>Bases do banco de dados <small>dados do sistema que a postagem usa</small></label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="igBase" style="flex:1;min-width:200px"><option value="">Escolha uma base…</option>${BA.map(y=>`<option value="${esc(y.id)}">${esc(y.nome)}</option>`).join("")}</select><button type="button" class="b" id="igAdd">Adicionar</button></div>
+  <div class="ad-chips" id="igChips"></div></div>
+ <p class="ad-err" role="alert"></p>
+ <div class="ad-top"><div>${x?'<button type="button" class="b d" id="igDel">Apagar esta postagem</button>':""}</div><button class="b p" type="submit">Salvar</button></div></form>`;
+ const f=b.querySelector("form"),err=b.querySelector(".ad-err"),bt=f.querySelector("button[type=submit]"),chips=$("#igChips");
+ const desenha=()=>{chips.innerHTML=bases.map((id,i)=>`<span class="ad-chip">${esc(nomeBase(id))} <button type="button" class="l" data-x="${i}" aria-label="Tirar">×</button></span>`).join("")||'<span class="mut" style="font-size:13px">Nenhuma base ligada.</span>';
+  chips.querySelectorAll("[data-x]").forEach(y=>y.onclick=()=>{bases.splice(+y.dataset.x,1);desenha()})};
+ desenha();
+ $("#igAdd").onclick=()=>{const s=$("#igBase");if(s.value&&!bases.includes(s.value)){bases.push(s.value);desenha()}s.value=""};
+ $("#igCopia").onclick=()=>{const t=f.legenda.value;if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>artToast("Legenda copiada.")).catch(()=>{f.legenda.select()});else f.legenda.select()};
+ if(!alt){f.querySelectorAll("input,textarea,select,button").forEach(y=>{if(y.id!=="igCopia")y.disabled=true});bt.remove();const dl=$("#igDel");if(dl)dl.remove()}
+ f.onsubmit=async e=>{e.preventDefault();err.textContent="";
+  const link=f.link.value.trim();if(!igOk(link)){err.textContent="O link precisa começar com https://www.instagram.com/";return}
+  const d={tipo:f.tipo.value,status:f.status.value,data:f.data.value||"",link,legenda:f.legenda.value.trim(),perfil:cfg.perfil||v.perfil||"",
+   metricas:Object.fromEntries(igMet.map(([k])=>[k,igNum(f["m-"+k].value)])),vinculos:{texto:f.vtexto.value,bases},capa_id:v.capa_id||"",
+   criado_em:v.criado_em||new Date().toISOString(),atualizada_em:new Date().toISOString()};
+  bt.disabled=true;
+  try{const arq=f.foto&&f.foto.files[0];
+   if(arq){if(!/^image\/(jpeg|png|webp)$/.test(arq.type)){err.textContent="A imagem precisa ser JPEG, PNG ou WebP.";bt.disabled=false;return}if(arq.size>3*1024*1024){err.textContent="A imagem precisa ter até 3 MB.";bt.disabled=false;return}const up=await ART_ASSETS.upload(arq);d.capa_id=up.id;artLog("inseriu imagem",artTxt(d.legenda||"Postagem do Instagram",40),arq.name)}
+   if(x)await ARTDB.collection("instagram").doc(x.id).set(d);else await ARTDB.collection("instagram").add(d);
+   artLog(x?"editou postagem do Instagram":"registrou postagem do Instagram",artTxt(d.legenda||"(sem legenda)",50),d.status);
+   artToast("Postagem salva.");location.hash="#/admin/instagram"}
+  catch(er){err.textContent=artMsg(er);bt.disabled=false}};
+ const dl=$("#igDel");let c=false;
+ if(dl)dl.onclick=async()=>{if(!c){c=true;dl.textContent="Confirmar: apagar";return}dl.disabled=true;try{await ARTDB.collection("instagram").doc(x.id).delete();artLog("apagou postagem do Instagram",artTxt(v.legenda||"(sem legenda)",50));artToast("Postagem apagada.");location.hash="#/admin/instagram"}catch(er){err.textContent=artMsg(er);dl.disabled=false;c=false;dl.textContent="Apagar esta postagem"}}}
+function igCsv(t){const l1=t.split(/\r?\n/)[0]||"",sep=(l1.match(/;/g)||[]).length>(l1.match(/,/g)||[]).length?";":",";
+ const rows=[];let r=[],c="",q=false;
+ for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}
+  else if(ch==='"')q=true;else if(ch===sep){r.push(c);c=""}
+  else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;r.push(c);c="";if(r.some(x=>x!==""))rows.push(r);r=[]}
+  else c+=ch}
+ if(c!==""||r.length){r.push(c);if(r.some(x=>x!==""))rows.push(r)}
+ return rows}
+const IG_COL={data:["data","data de publicacao","data da publicacao","horario de publicacao","publish time","date"],tipo:["tipo","tipo de publicacao","tipo de post","post type"],legenda:["legenda","descricao","description","titulo","caption"],link:["link","link permanente","permalink","url","post url"],curtidas:["curtidas","likes","reacoes","reactions"],comentarios:["comentarios","comments"],compartilhamentos:["compartilhamentos","shares"],salvos:["salvamentos","salvos","saves"],alcance:["alcance","reach"]};
+function igData(t){t=String(t||"").trim();if(!t)return"";let m=t.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[1]+"-"+m[2]+"-"+m[3];
+ m=t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);if(m)return m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");
+ const d=new Date(t);return isNaN(d)?"":d.toISOString().slice(0,10)}
+function igLinhas(txt){const rows=igCsv(txt);if(rows.length<2)return {erro:"Não encontrei linhas de dados. A primeira linha precisa ser o cabeçalho."};
+ const cab=rows[0].map(artNz),idx={};Object.entries(IG_COL).forEach(([k,nomes])=>{const i=cab.findIndex(h=>nomes.includes(h.trim()));if(i>=0)idx[k]=i});
+ if(idx.link===undefined&&idx.legenda===undefined)return {erro:"Não achei as colunas de link ou legenda. Colunas aceitas: data, tipo, legenda (ou descrição), link (ou link permanente), curtidas, comentários, compartilhamentos, salvamentos, alcance."};
+ const get=(r,k)=>idx[k]===undefined?"":r[idx[k]];
+ const itens=rows.slice(1).map(r=>{const t=artNz(get(r,"tipo"));
+  const tipo=/reel/.test(t)?"reel":/stor/.test(t)?"story":/carrossel|carousel|album/.test(t)?"carrossel":"post";
+  const link=String(get(r,"link")).trim(),legenda=String(get(r,"legenda")).trim(),data=igData(get(r,"data"));
+  return {tipo,link:igOk(link)?link:"",legenda,data,metricas:{curtidas:igNum(get(r,"curtidas")),comentarios:igNum(get(r,"comentarios")),compartilhamentos:igNum(get(r,"compartilhamentos")),salvos:igNum(get(r,"salvos")),alcance:igNum(get(r,"alcance"))}}}).filter(x=>x.link||x.legenda);
+ return {itens,cols:Object.keys(idx)}}
+function igImportar(b,igs){
+ const alt=artAlt("instagram");
+ b.innerHTML=`<div><a class="ad-back" href="#/admin/instagram">‹ Instagram</a></div><div class="ad-box"><div style="display:flex;gap:12px;align-items:center">${adIc("instagram",true)}<div><h2>Importar planilha do Instagram</h2><p class="mut" style="margin:2px 0 0">Use a planilha de desempenho das publicações exportada pelo Instagram (Meta Business Suite), em formato CSV.</p></div></div>
+ ${alt?`<label>Arquivo CSV<input type="file" id="igArq" accept=".csv,text/csv,text/plain"></label><label>ou cole o conteúdo aqui<textarea id="igTxt" rows="6" placeholder="data;tipo;legenda;link;curtidas;comentarios;alcance"></textarea></label><div><button type="button" class="b" id="igLer">Ler planilha</button></div><div id="igPrev"></div>`:'<div class="ad-note">Você não tem permissão para importar.</div>'}
+ <div class="ad-note">Colunas aceitas (em português ou inglês): data, tipo, legenda (ou descrição), link (ou link permanente), curtidas, comentários, compartilhamentos, salvamentos, alcance. Postagens com o mesmo link são atualizadas, sem duplicar, e mantêm as ligações que você já fez.</div></div>`;
+ if(!alt)return;
+ let pronto=null;const prev=$("#igPrev");
+ $("#igArq").onchange=async e=>{const a=e.target.files[0];if(a){if(a.size>3*1024*1024){prev.innerHTML='<p class="ad-err">O arquivo precisa ter até 3 MB.</p>';return}$("#igTxt").value=await a.text()}};
+ $("#igLer").onclick=()=>{pronto=null;const r=igLinhas($("#igTxt").value);
+  if(r.erro){prev.innerHTML=`<p class="ad-err">${esc(r.erro)}</p>`;return}
+  if(!r.itens.length){prev.innerHTML='<p class="ad-err">Nenhuma postagem reconhecida.</p>';return}
+  pronto=r.itens.slice(0,500);
+  prev.innerHTML=`<div class="ad-note">${pronto.length} postagens reconhecidas${r.itens.length>500?" (as 500 primeiras)":""}. Colunas usadas: ${esc(r.cols.join(", "))}.</div><div class="ad-tw" style="max-height:260px"><table class="ad-t"><thead><tr><th>Data</th><th>Tipo</th><th>Legenda</th><th>Curtidas</th></tr></thead><tbody>${pronto.slice(0,8).map(x=>`<tr><td>${esc(x.data||"—")}</td><td>${esc(IG_TIPOS[x.tipo])}</td><td class="c">${esc(artTxt(x.legenda,60))}</td><td>${nf(x.metricas.curtidas)}</td></tr>`).join("")}</tbody></table></div><p class="ad-err" id="igImpE"></p><div><button class="b p" type="button" id="igImp">Importar ${pronto.length} postagens</button></div>`;
+  $("#igImp").onclick=async()=>{const bt=$("#igImp"),er=$("#igImpE");bt.disabled=true;let novas=0,atual=0;
+   try{for(const x of pronto){const id="i"+artH(x.link||(x.legenda+"|"+x.data)),ex=igs.find(y=>y.id===id);
+     await ARTDB.collection("instagram").doc(id).set({...(ex||{vinculos:{texto:"",bases:[]},capa_id:"",criado_em:new Date().toISOString()}),tipo:x.tipo,status:"publicada",data:x.data,link:x.link,legenda:x.legenda,metricas:x.metricas,atualizada_em:new Date().toISOString()});ex?atual++:novas++}
+    artLog("importou planilha do Instagram",novas+" novas, "+atual+" atualizadas");artToast("Importado: "+novas+" novas e "+atual+" atualizadas.");location.hash="#/admin/instagram"}
+   catch(e2){er.textContent=artMsg(e2)+" (importadas até aqui: "+(novas+atual)+")";bt.disabled=false}}}}
 /* ----- início da administração e estrutura ----- */
 async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
  const pub=pubs.filter(p=>p.publicada).length,telas=Object.keys(window.ART_OVR),listas=ART_DS.filter(d=>d.alt);
@@ -7369,7 +7502,7 @@ async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
  b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("admin",true)}<div><h2>O que você quer fazer?</h2><p class="mut" style="margin:2px 0 0">Escolha uma opção. Tudo o que você alterar fica guardado neste Artifact e já aparece nas telas do site.</p></div></div>
  <div class="ad-cards">
   <a class="ad-card" href="#/admin/posts/novo">${adIc("noticias",true)}<h3>Publicar notícia ou prêmio</h3><p>Escreva um texto seu e publique nas abas Notícias ou Prêmios do site.</p><span class="go">Escrever ›</span></a>
-  <a class="ad-card" href="#/admin/banco">${adIc("banco",true)}<h3>Banco de dados</h3><p>Todas as bases separadas: telas do site e listas. Veja, altere, adicione ou tire informações.</p><span class="go">Abrir o banco ›</span></a>
+  <a class="ad-card" href="#/admin/banco">${adIc("banco",true)}<h3>Banco de dados</h3><p>Todas as bases separadas: telas do site e listas. Veja, altere, adicione ou tire informações.</p><span class="go">Abrir o banco ›</span></a>${artVer("instagram")?`<a class="ad-card" href="#/admin/instagram">${adIc("instagram",true)}<h3>Movimentação do Instagram</h3><p>Postagens, curtidas e alcance, ligados aos textos e às bases do sistema.</p><span class="go">Abrir ›</span></a>`:""}
  </div>
  <div class="ad-box"><h3>Como funciona</h3><div class="ad-steps"><div class="ad-step"><b>1</b><span>Escolha o que quer mexer.</span></div><div class="ad-step"><b>2</b><span>Altere, adicione ou apague linhas na tabela.</span></div><div class="ad-step"><b>3</b><span>Clique em <b>Salvar alterações</b>. Para desfazer, use <b>Voltar ao original</b>.</span></div></div></div>
  <div class="ad-cards">
@@ -7378,7 +7511,7 @@ async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
   <div class="ad-card"><span class="mut">Listas alteradas</span><span class="n">${nf(listas.length)}</span></div>
  </div>
  ${itens.length?`<div class="ad-box"><h3>O que você já alterou</h3><div class="ad-list">${itens.map(i=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(i.ic)}<div><b>${esc(i.t)}</b><small>${esc(i.sub)}</small></div></div><a class="b s" href="${i.h}">Abrir</a></div>`).join("")}</div></div>`:""}`}
-const ART_ABAS=[["resumo","Início","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"],["atividade","Controle de atividade","atividade"]];
+const ART_ABAS=[["resumo","Início","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"],["instagram","Instagram","instagram"],["atividade","Controle de atividade","atividade"]];
 async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
  if(aba==="telas"||aba==="dados"||aba==="servidor"){aba="banco";sub=undefined}
  c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.filter(x=>x[0]==="resumo"||artVer(x[0])).map(([k,t,ic])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${svgI(ic)}<span>${t}</span></a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;
@@ -7386,11 +7519,13 @@ async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
  try{
   if(aba!=="resumo"&&!artVer(aba)){b.innerHTML='<div class="ad-note">Você não tem permissão para ver esta área.</div>';return}
   if(aba==="atividade")return artAtividade(b);
+  if(aba==="instagram")return artInstagram(b,sub);
   if(aba==="banco")return artBancoMontar(b,sub);
   if(aba==="posts"){const pubs=await artPubs();
    if(sub==="novo")return artPostEditor(b,null);
    if(sub){const p=pubs.find(x=>x.id===sub);return p?artPostEditor(b,p):(b.innerHTML=rvazio("Este texto não existe mais."))}
-   return artPostsLista(b,pubs)}
+   let ig=[];if(artVer("instagram")){try{ig=(await ARTDB.collection("instagram").limit(500).get()).docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}catch(e){}}
+   return artPostsLista(b,pubs,ig)}
   return artHome(b)}
  catch(e){b.innerHTML=rerro(e)}}
 const _pn=P.noticias,_pp=P.premios;
