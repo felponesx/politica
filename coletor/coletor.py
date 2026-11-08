@@ -171,22 +171,54 @@ def proxima_pagina(cfg, tmp):
 
 
 def coletar_fonte(db, nome, cfg):
+    """Baixa a fonte. Com paginação ('camara'), junta as páginas num só arquivo {"dados": [...]} e grava uma vez.
+    Antes, cada página substituía a anterior e só a última ficava. Se uma página falhar, nada parcial é gravado:
+    a última versão boa continua no ar."""
     url, paginas = cfg["url"], 0
     limite = cfg.get("max_paginas", 1000)
+    paginada = cfg.get("paginacao") == "camara"
+    juntos, t_inicio = [], time.monotonic()
     while url and paginas < limite:
         t0 = time.monotonic()
         try:
             status, tmp, tipo, _ = baixar(url, cfg.get("headers", {}))
             prox = proxima_pagina(cfg, tmp)
-            sha, tam = guardar(tmp, nome)
-            m = registrar(db, nome, "web", url, status, sha, tam, tipo, ms=int((time.monotonic() - t0) * 1000))
-            print(f"  {nome} {status} {tam}B {'NOVO' if m else 'igual'} {url}")
+            if paginada:
+                juntos.extend(itens_da_pagina(tmp))
+                tmp.unlink(missing_ok=True)
+            else:
+                sha, tam = guardar(tmp, nome)
+                m = registrar(db, nome, "web", url, status, sha, tam, tipo, ms=int((time.monotonic() - t0) * 1000))
+                print(f"  {nome} {status} {tam}B {'NOVO' if m else 'igual'} {url}")
         except Exception as e:
             registrar(db, nome, "web", url, getattr(e, "code", None), None, None, None, str(e),
                       ms=int((time.monotonic() - t0) * 1000))
             print(f"  {nome} ERRO {url}: {e}")
             return
         url, paginas = prox, paginas + 1
+    if paginada:
+        _gravar_juntas(db, nome, cfg["url"], juntos, int((time.monotonic() - t_inicio) * 1000), paginas)
+
+
+def itens_da_pagina(caminho: Path) -> list:
+    """Itens de uma página da API paginada ('dados' na Câmara). Página sem lista é erro, não página vazia."""
+    corpo = json.loads(caminho.read_text(encoding="utf-8"))
+    dados = corpo.get("dados") if isinstance(corpo, dict) else None
+    if not isinstance(dados, list):
+        raise ValueError("página sem a lista 'dados' (formato mudou?)")
+    return dados
+
+
+def _gravar_juntas(db, nome, url, itens, ms, paginas):
+    if not itens:
+        registrar(db, nome, "web", url, 200, None, None, None, "nenhum item nas páginas", ms=ms)
+        print(f"  {nome} ERRO: nenhum item nas {paginas} páginas")
+        return
+    tmp = DADOS / f".tmp-{time.time_ns()}"
+    tmp.write_text(json.dumps({"dados": itens}, ensure_ascii=False), encoding="utf-8")
+    sha, tam = guardar(tmp, nome)
+    m = registrar(db, nome, "web", url, 200, sha, tam, "application/json", ms=ms)
+    print(f"  {nome} {paginas} páginas, {len(itens)} itens, {tam}B {'NOVO' if m else 'igual'}")
 
 
 def vencida(db, nome, cfg):

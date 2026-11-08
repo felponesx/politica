@@ -104,8 +104,52 @@ def _adaptar_linhas(db, n, caminho: Path, meta: dict):
         raise ValueError("nenhuma linha com chave válida")
 
 
+def _adaptar_camara_deputados(db, n, caminho: Path, meta: dict):
+    """Deputados (API da Câmara; o coletor já juntou as páginas em {"dados": [...]}). Grava em `parlamentares` com a MESMA função
+    do coletor próprio (camara._deputado), para as telas de Congresso continuarem enxergando os dados."""
+    from app.collectors import camara
+    dados = json.loads(caminho.read_text(encoding="utf-8")).get("dados")
+    if not isinstance(dados, list) or not dados:
+        raise ValueError("lista de deputados vazia ou fora do formato")
+    vistos = set()
+    for d in dados:
+        if not isinstance(d, dict) or d.get("id") is None:
+            continue
+        camara._deputado(db, d)
+        vistos.add(str(d["id"]))
+        n += 1
+    camara.marcar_em_exercicio(db, camara.CASA, vistos, minimo=400)   # a Câmara tem 513 cadeiras
+    db.commit()
+    if not n.itens:
+        raise ValueError("nenhum deputado com id válido")
+
+
+def _adaptar_senado_senadores(db, n, caminho: Path, meta: dict):
+    """Senadores em exercício (API do Senado). Grava em `parlamentares` com a mesma função do coletor próprio (senado._senador)."""
+    from app.collectors import senado
+    from app.utils import cavar, como_lista
+    dados = json.loads(caminho.read_text(encoding="utf-8"))
+    vistos = set()
+    for p in como_lista(cavar(dados, "ListaParlamentarEmExercicio", "Parlamentares", "Parlamentar")):
+        i = p.get("IdentificacaoParlamentar", p)
+        if i.get("CodigoParlamentar") is None:
+            continue
+        senado._senador(db, i.get("CodigoParlamentar"), i.get("NomeParlamentar"),
+                        i.get("SiglaPartidoParlamentar"), i.get("UfParlamentar"),
+                        i.get("UrlFotoParlamentar"), i.get("EmailParlamentar"))
+        vistos.add(str(i.get("CodigoParlamentar")))
+        n += 1
+    senado.marcar_em_exercicio(db, senado.CASA, vistos, minimo=70)   # o Senado tem 81 cadeiras
+    db.commit()
+    if not n.itens:
+        raise ValueError("nenhum senador na lista")
+
+
 _ADAPTADORES_GENERICOS = {"linhas": _adaptar_linhas}
-ADAPTADORES = {"bcb": _adaptar_bcb}   # fontes com adaptador próprio (nome da fonte -> função)
+# fontes com adaptador próprio (nome da fonte -> função). Cada uma reaproveita a função do coletor próprio.
+ADAPTADORES = {"bcb": _adaptar_bcb,
+               "camara-deputados": _adaptar_camara_deputados,
+               "senado-senadores": _adaptar_senado_senadores}
 
 
 def _liberado(meta: dict) -> bool:

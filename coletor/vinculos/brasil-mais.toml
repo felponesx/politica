@@ -1,14 +1,24 @@
 # Vínculo/produto BRASIL+. Cada [[fonte]] é um bot. Para somar links, crie outro arquivo com o mesmo `nome`.
 nome = "BRASIL+"
 
-# Câmara dos Deputados: deputados (paginado, segue o link "next")
+# Câmara dos Deputados: deputados (paginado, segue o link "next"; o coletor junta as páginas num arquivo só)
 [[fonte]]
-nome = "camara"
+nome = "camara-deputados"
 url = "https://dadosabertos.camara.leg.br/api/v2/deputados?itens=100&ordem=ASC&ordenarPor=id"
 intervalo_min = 15          # votações e deputados mudam ao longo do dia
 paginacao = "camara"
+publicar_dados = true       # o BRASIL+ grava em `parlamentares` pelo adaptador camara-deputados
 headers = { Accept = "application/json" }
 esperado = "Lista de deputados federais em exercício, com id, nome, partido e UF."
+
+# Senado: senadores em exercício (lista única)
+[[fonte]]
+nome = "senado-senadores"
+url = "https://legis.senado.leg.br/dadosabertos/senador/lista/atual.json"
+intervalo_min = 360
+publicar_dados = true       # o BRASIL+ grava em `parlamentares` pelo adaptador senado-senadores
+headers = { Accept = "application/json" }
+esperado = "Senadores em exercício: lista dentro de ListaParlamentarEmExercicio.Parlamentares.Parlamentar, com código, nome, partido e UF."
 
 # Banco Central, SGS série 433 (IPCA mensal)
 [[fonte]]
