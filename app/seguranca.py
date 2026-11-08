@@ -171,7 +171,7 @@ class Protecao(BaseHTTPMiddleware):
             h["Cache-Control"] = "no-store"
         elif caminho.startswith("/midia/"):
             h.setdefault("Cache-Control", "public, max-age=3600")
-        if caminho == "/":
+        if caminho in ("/", "/painel"):
             h["Content-Security-Policy"] = CSP_SITE
             h["X-Frame-Options"] = "DENY"
         return resp

@@ -101,3 +101,12 @@ def site():
     if SITE.exists():
         return FileResponse(SITE, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
     return {"status": "ok", "docs": "/docs", "aviso": "Coloque o site em site/index.html para servi-lo aqui."}
+
+
+# Painel de coletas do próprio BRASIL+ (lê /fontes/status e /coletas; só para o seu PC e o celular via Tailscale)
+PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"
+
+
+@app.get("/painel", include_in_schema=False)
+def painel():
+    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})

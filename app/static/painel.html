@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coletas — BRASIL+</title>
+<style>
+  :root {
+    --azul: #2F6FED;
+    --marinho: #1D2939;
+    --cinza: #667085;
+    --linha: #E4E7EC;
+    --fundo: #FFFFFF;
+    --suave: #F5F7FA;
+    --ok: #1BAF7A;
+    --erro: #D92D20;
+    --aviso: #F5A524;
+    --parado: #98A2B3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --marinho: #E4E7EC; --cinza: #98A2B3; --linha: #344054; --fundo: #101828; --suave: #1D2939;
+    }
+  }
+  :root[data-theme="dark"] {
+    --marinho: #E4E7EC; --cinza: #98A2B3; --linha: #344054; --fundo: #101828; --suave: #1D2939;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--fundo); color: var(--marinho);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  h1 { font-size: 22px; margin: 0; }
+  .sub { color: var(--cinza); font-size: 13px; }
+  button {
+    font: inherit; font-size: 14px; color: #fff; background: var(--azul); border: 0;
+    border-radius: 8px; padding: 8px 14px; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.05); }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kpi { border: 1px solid var(--linha); border-radius: 12px; padding: 14px 16px; background: var(--suave); }
+  .kpi b { display: block; font-size: 26px; line-height: 1.2; }
+  .kpi span { color: var(--cinza); font-size: 13px; }
+  .kpi.ok b { color: var(--ok); }
+  .kpi.erro b { color: var(--erro); }
+  .kpi.aviso b { color: var(--aviso); }
+  .kpi.parado b { color: var(--parado); }
+  h2 { font-size: 16px; margin: 28px 0 10px; }
+  .tabela { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .tabela th { text-align: left; color: var(--cinza); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--linha); }
+  .tabela td { padding: 9px 10px; border-bottom: 1px solid var(--linha); vertical-align: top; }
+  .tabela td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .tag.ok { background: #E7F8F1; color: #0F7A55; }
+  .tag.erro { background: #FDECEA; color: #B42318; }
+  .tag.aviso { background: #FFF4E0; color: #A05A00; }
+  .tag.parado { background: #F2F4F7; color: #475467; }
+  .erro-txt { color: var(--erro); font-size: 12px; word-break: break-word; }
+  .aviso-txt { color: var(--cinza); font-size: 12px; margin-top: 12px; }
+  .vazio { color: var(--cinza); padding: 16px 0; }
+  .tabela-wrap { overflow-x: auto; }
+  @media (max-width: 640px) {
+    .tabela .oculto-celular { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Coletas do BRASIL+</h1>
+      <div class="sub" id="atualizado">Carregando…</div>
+    </div>
+    <button id="atualizar" type="button">Atualizar</button>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <h2>Fontes</h2>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead>
+        <tr><th>Tarefa</th><th>Situação</th><th class="oculto-celular">Última coleta boa</th><th class="num oculto-celular">Horas desde</th><th class="oculto-celular">Itens</th></tr>
+      </thead>
+      <tbody id="fontes"></tbody>
+    </table>
+  </div>
+  <div class="aviso-txt" id="aviso"></div>
+
+  <h2>Últimas execuções</h2>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead>
+        <tr><th>Tarefa</th><th>Resultado</th><th class="oculto-celular">Início</th><th class="num oculto-celular">Itens</th></tr>
+      </thead>
+      <tbody id="coletas"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ROTULO = {
+    ok: ["Em dia", "ok"],
+    falhando: ["Falhando", "erro"],
+    sem_coleta_boa: ["Sem coleta boa", "aviso"],
+    nunca_coletada: ["Nunca rodou", "parado"]
+  };
+  var ORDEM = { falhando: 0, sem_coleta_boa: 1, nunca_coletada: 2, ok: 3 };
+
+  function el(tag, texto, classe) {
+    var e = document.createElement(tag);
+    if (texto !== undefined && texto !== null) e.textContent = texto;
+    if (classe) e.className = classe;
+    return e;
+  }
+
+  function tag(situacao) {
+    var r = ROTULO[situacao] || ["—", "parado"];
+    return el("span", r[0], "tag " + r[1]);
+  }
+
+  function horas(h) {
+    if (h === null || h === undefined) return "—";
+    if (h < 1) return "menos de 1 h";
+    if (h < 48) return Math.round(h) + " h";
+    return Math.round(h / 24) + " dias";
+  }
+
+  function hora(iso) {
+    if (!iso) return "—";
+    var d = new Date(iso);
+    return d.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+
+  function kpi(classe, numero, rotulo) {
+    var c = el("div", null, "kpi " + classe);
+    c.append(el("b", String(numero)), el("span", rotulo));
+    return c;
+  }
+
+  function pintarResumo(r) {
+    var k = document.getElementById("kpis");
+    k.replaceChildren(
+      kpi("ok", r.ok || 0, "em dia"),
+      kpi("erro", r.falhando || 0, "falhando"),
+      kpi("aviso", r.sem_coleta_boa || 0, "sem coleta boa"),
+      kpi("parado", r.nunca_coletada || 0, "nunca rodou")
+    );
+  }
+
+  function pintarFontes(lista) {
+    var corpo = document.getElementById("fontes");
+    corpo.replaceChildren();
+    if (!lista.length) {
+      var v = el("tr"); var td = el("td", "Nenhuma fonte configurada.", "vazio"); td.colSpan = 5; v.append(td); corpo.append(v);
+      return;
+    }
+    lista.slice().sort(function (a, b) {
+      return (ORDEM[a.situacao] - ORDEM[b.situacao]) || a.tarefa.localeCompare(b.tarefa);
+    }).forEach(function (f) {
+      var tr = el("tr");
+      var t1 = el("td", f.tarefa);
+      var t2 = el("td");
+      t2.append(tag(f.situacao));
+      if (f.ultimo_erro) t2.append(el("div", f.ultimo_erro, "erro-txt"));
+      var t3 = el("td", hora(f.ultima_ok), "oculto-celular");
+      var t4 = el("td", horas(f.horas_desde_ok), "num oculto-celular");
+      var t5 = el("td", f.itens_ultima_ok === undefined || f.itens_ultima_ok === null ? "—" : String(f.itens_ultima_ok), "num oculto-celular");
+      tr.append(t1, t2, t3, t4, t5);
+      corpo.append(tr);
+    });
+  }
+
+  function pintarColetas(lista) {
+    var corpo = document.getElementById("coletas");
+    corpo.replaceChildren();
+    if (!lista.length) {
+      var v = el("tr"); var td = el("td", "Nenhuma execução ainda.", "vazio"); td.colSpan = 4; v.append(td); corpo.append(v);
+      return;
+    }
+    lista.forEach(function (c) {
+      var tr = el("tr");
+      var nome = c.fonte + " · " + c.tarefa;
+      var resultado = el("td");
+      var situ = c.status === "ok" ? "ok" : c.status === "parcial" ? "aviso" : "erro";
+      var rot = { ok: "Concluída", parcial: "Parcial", erro: "Erro", abortada: "Abortada", rodando: "Rodando" }[c.status] || c.status;
+      resultado.append(el("span", rot, "tag " + situ));
+      if (c.erro) resultado.append(el("div", c.erro, "erro-txt"));
+      tr.append(el("td", nome), resultado, el("td", hora(c.inicio), "oculto-celular"),
+                el("td", c.itens === null || c.itens === undefined ? "—" : String(c.itens), "num oculto-celular"));
+      corpo.append(tr);
+    });
+  }
+
+  function marcarErro(msg) {
+    document.getElementById("atualizado").textContent = msg;
+  }
+
+  async function pegar(caminho) {
+    var r = await fetch(caminho, { cache: "no-store", headers: { "Accept": "application/json" } });
+    if (!r.ok) throw new Error(caminho + " respondeu " + r.status);
+    return r.json();
+  }
+
+  async function carregar() {
+    try {
+      var [status, coletas] = await Promise.all([pegar("/fontes/status"), pegar("/coletas?limit=30")]);
+      pintarResumo(status.resumo || {});
+      pintarFontes(status.fontes || []);
+      pintarColetas(coletas || []);
+      document.getElementById("aviso").textContent = status.aviso || "";
+      document.getElementById("atualizado").textContent = "Atualizado às " +
+        new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) +
+        " · atualiza sozinho a cada minuto";
+    } catch (e) {
+      marcarErro("Não foi possível carregar os dados. Tente de novo em instantes.");
+    }
+  }
+
+  document.getElementById("atualizar").addEventListener("click", carregar);
+  carregar();
+  setInterval(carregar, 60000);
+})();
+</script>
+</body>
+</html>
