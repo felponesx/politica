@@ -12,7 +12,7 @@ Uso:
 Configuração: vinculos/*.toml (um por produto, com várias [[fonte]]), destinos.toml, .env (chaves).
 Só biblioteca padrão (Python 3.11+).
 """
-import hashlib, html as _html, json, os, re, shutil, sqlite3, subprocess, sys, time, tomllib, urllib.request
+import hashlib, html as _html, json, os, re, shutil, sqlite3, subprocess, sys, time, tomllib, urllib.error, urllib.request
 try:
     import fcntl          # Linux/Termux
 except ImportError:       # Windows
@@ -33,7 +33,7 @@ def carregar_env():
     """Lê .env (CHAVE=valor) sem sobrescrever o que já está no ambiente. O cron não herda o seu shell."""
     p = RAIZ / ".env"
     if p.exists():
-        for l in p.read_text().splitlines():
+        for l in p.read_text(encoding="utf-8").splitlines():
             l = l.strip()
             if l and not l.startswith("#") and "=" in l:
                 k, v = l.split("=", 1)
@@ -92,7 +92,7 @@ def carregar_vinculos():
     fontes, nomes = {}, set()
     for p in sorted((RAIZ / "vinculos").glob("*.toml")):
         try:
-            cfg = tomllib.loads(p.read_text())
+            cfg = tomllib.loads(p.read_text(encoding="utf-8"))
         except Exception as e:
             avisar(f"  {p.name}: arquivo inválido ({e})")
             continue
@@ -104,9 +104,6 @@ def carregar_vinculos():
                 avisar(f"  {p.name}: fonte ignorada (nome em minúsculas/números/-/_ e url http): {n!r}")
             elif n in fontes:
                 avisar(f"  {p.name}: fonte repetida ignorada: {n}")
-            elif f.get("publicar_dados") and f.get("paginacao"):
-                avisar(f"  {p.name}: {n}: publicar_dados não vale para fonte paginada (só uma página seria publicada)")
-                fontes[n] = {**f, "publicar_dados": False, "vinculo": v, "arquivo": p.name}
             else:
                 fontes[n] = {**f, "vinculo": v, "arquivo": p.name}
     return fontes, sorted(nomes)
@@ -152,6 +149,11 @@ def baixar(url, headers, tentativas=3):
                 with open(tmp, "wb") as f:
                     shutil.copyfileobj(r, f)
                 return r.status, tmp, r.headers.get("Content-Type"), r.headers
+        except urllib.error.HTTPError as e:
+            if e.code == 304:   # o servidor diz que não mudou: não é falha, não tenta de novo
+                return 304, None, None, e.headers
+            ultimo = e
+            time.sleep(2 ** i)
         except Exception as e:
             ultimo = e
             time.sleep(2 ** i)
@@ -162,7 +164,7 @@ def proxima_pagina(cfg, tmp):
     """Paginação declarada na config. 'camara': segue links[rel=next] do JSON."""
     if cfg.get("paginacao") == "camara":
         try:
-            for l in json.loads(tmp.read_text()).get("links", []):
+            for l in json.loads(tmp.read_text(encoding="utf-8")).get("links", []):
                 if l.get("rel") == "next":
                     return l["href"]
         except Exception:
@@ -182,6 +184,10 @@ def coletar_fonte(db, nome, cfg):
         t0 = time.monotonic()
         try:
             status, tmp, tipo, _ = baixar(url, cfg.get("headers", {}))
+            if status == 304:
+                registrar(db, nome, "web", url, 304, None, None, None, None, ms=int((time.monotonic() - t0) * 1000))
+                print(f"  {nome} 304 sem mudança desde a última coleta {url}")
+                return
             prox = proxima_pagina(cfg, tmp)
             if paginada:
                 juntos.extend(itens_da_pagina(tmp))
@@ -576,7 +582,7 @@ def destinos_estado(db):
     if not cfg.exists():
         return []
     saida = []
-    for d in tomllib.loads(cfg.read_text()).get("destino", []):
+    for d in tomllib.loads(cfg.read_text(encoding="utf-8")).get("destino", []):
         n = nome_destino(d)
         r = db.execute("SELECT ok, em, erro FROM envio WHERE destino=? ORDER BY id DESC LIMIT 1", (n,)).fetchone()
         saida.append({"nome": n, "tipo": d.get("tipo"), "ok": None if not r else bool(r[0]),
@@ -705,7 +711,7 @@ def exportar_dados(db, pasta):
         dest = pasta / "dados" / nome
         meta_arq = dest / "meta.json"
         try:
-            if json.loads(meta_arq.read_text()).get("sha256") == sha_pub:
+            if json.loads(meta_arq.read_text(encoding="utf-8")).get("sha256") == sha_pub:
                 continue
         except Exception:
             pass
@@ -713,7 +719,7 @@ def exportar_dados(db, pasta):
         for velho in dest.glob("atual.*"):
             velho.unlink()
         shutil.copyfile(origem, dest / ("atual" + ext))
-        meta_arq.write_text(json.dumps({"fonte": nome, "vinculo": cfg["vinculo"], "url": url, "sha256": sha_pub,
+        meta_arq.write_text(encoding="utf-8", data=json.dumps({"fonte": nome, "vinculo": cfg["vinculo"], "url": url, "sha256": sha_pub,
                                         "sha256_original": sha, "corrigido": bool(corr), "regras": corr["regras"] if corr else [],
                                         "alteracoes": corr["mudancas"] if corr else 0,
                                         "bytes": origem.stat().st_size, "coletado_em": em, "veredito": r[1],
@@ -727,13 +733,13 @@ def enviar_git(db, d, novo, corpo):
     arq = pasta / "status.json"
     sem_hora = lambda x: {k: v for k, v in x.items() if k != "gerado_em"}
     try:   # sem mudança e recente (< 60 min): mantém o arquivo, para não gerar commit à toa
-        atual = json.loads(arq.read_text())
+        atual = json.loads(arq.read_text(encoding="utf-8"))
         recente = datetime.now(timezone.utc) - datetime.fromisoformat(atual["gerado_em"]) < timedelta(minutes=60)
         if recente and sem_hora(atual) == sem_hora(novo):
-            corpo = arq.read_text()
+            corpo = arq.read_text(encoding="utf-8")
     except Exception:
         pass
-    arq.write_text(corpo)
+    arq.write_text(corpo, encoding="utf-8")
     shutil.copyfile(RAIZ / "painel.html", pasta / "painel.html")
     exportar_dados(db, pasta)
     git = lambda *x, **k: subprocess.run(["git", "-C", str(pasta), *x], check=True, **k)
@@ -775,7 +781,7 @@ def enviar_tudo(db, silencioso=False):
     novo = status_fontes(db)
     corpo = json.dumps(novo, ensure_ascii=False, indent=1)
     falhas = 0
-    for d in tomllib.loads(cfg.read_text()).get("destino", []):
+    for d in tomllib.loads(cfg.read_text(encoding="utf-8")).get("destino", []):
         n = nome_destino(d)
         try:
             {"git": enviar_git, "http": enviar_http, "pasta": enviar_pasta}[d["tipo"]](db, d, novo, corpo)
