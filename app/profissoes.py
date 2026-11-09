@@ -80,3 +80,71 @@ def resumir(vinculos):
 def ranking(resumo, campo="media", maior_primeiro=True, limite=10):
     itens = sorted(resumo.items(), key=lambda kv: kv[1][campo], reverse=maior_primeiro)
     return [{"cbo": k, **v} for k, v in itens[:limite]]
+
+
+# ---------- acumulação em streaming (usada pelo coletor: não guarda os vínculos, só contagens) ----------
+PASSO_FAIXA_REM = 10  # resolução dos percentis: R$ 10 (o mínimo e o máximo são exatos)
+
+
+class Acumulador:
+    """Soma vínculos um a um. Por profissão guarda: contagem, soma, mínimo, máximo, histograma de
+    remuneração (em degraus de R$ 10) e contagem por faixa de horas. Nenhum vínculo individual fica na memória."""
+
+    def __init__(self):
+        self.prof = {}
+
+    def add(self, cbo, remuneracao, faixa_horas):
+        if not cbo or remuneracao is None or remuneracao <= 0 or faixa_horas is None:
+            return
+        p = self.prof.get(cbo)
+        if p is None:
+            p = self.prof[cbo] = {"n": 0, "soma": 0.0, "min": None, "max": None, "hist": {}, "faixas": {}}
+        p["n"] += 1
+        p["soma"] += remuneracao
+        p["min"] = remuneracao if p["min"] is None else min(p["min"], remuneracao)
+        p["max"] = remuneracao if p["max"] is None else max(p["max"], remuneracao)
+        bucket = int(remuneracao // PASSO_FAIXA_REM)
+        p["hist"][bucket] = p["hist"].get(bucket, 0) + 1
+        f = p["faixas"].get(faixa_horas)
+        if f is None:
+            f = p["faixas"][faixa_horas] = [0, 0.0]
+        f[0] += 1
+        f[1] += remuneracao
+
+    def total(self):
+        return sum(p["n"] for p in self.prof.values())
+
+    def resultado(self, minimo=MINIMO_VINCULOS):
+        saida = {}
+        for cbo, p in self.prof.items():
+            n = p["n"]
+            if n < minimo:
+                continue
+            hist = sorted(p["hist"].items())
+
+            def quantil(q):
+                k = max(1, min(n, -(-int(q * n * 1000) // 1000)))
+                acumulado = 0
+                for bucket, c in hist:
+                    acumulado += c
+                    if acumulado >= k:
+                        return float(bucket * PASSO_FAIXA_REM)
+                return float(hist[-1][0] * PASSO_FAIXA_REM)
+
+            faixas = []
+            for cod in sorted(p["faixas"]):
+                rotulo = faixa_de_horas(cod)
+                if rotulo is None:
+                    continue
+                k, soma = p["faixas"][cod]
+                faixas.append({"faixa": rotulo, "pct": round(100 * k / n, 1), "media": round(soma / k, 2)})
+            saida[cbo] = {
+                "vinculos": n,
+                "media": round(p["soma"] / n, 2),
+                "minimo": round(p["min"], 2),
+                "maximo": round(p["max"], 2),
+                "p10": quantil(0.10),
+                "p90": quantil(0.90),
+                "horas": faixas,
+            }
+        return saida
