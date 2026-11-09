@@ -58,9 +58,12 @@ def main():
     for raiz, _, nomes_ext in os.walk(pasta):
         for nome in nomes_ext:
             with open(os.path.join(raiz, nome), "rb") as fh:
-                conteudo = fh.read(4000)
-            print(f"\n----- {nome}: primeiras linhas -----")
-            print(conteudo.decode("latin-1", errors="replace")[:2500])
+                conteudo = fh.read()
+            linhas = conteudo.decode("latin-1", errors="replace").splitlines()
+            print(f"\n----- {nome}: {len(linhas)} linhas; cabeçalho com {len(linhas[0]) if linhas else 0} caracteres -----")
+            print("CABECALHO_COLUNAS:", linhas[0].count(";") + 1 if linhas and ";" in linhas[0] else (linhas[0].count(",") + 1 if linhas else 0))
+            for amostra in linhas[1:8]:
+                print("AMOSTRA:", amostra[:600])
     ftp.cwd("/pdet/microdados/RAIS/Layouts/vínculos")
     xls = "RAIS_vinculos_layout2020.xls"
     bruto = baixar(ftp, xls)
