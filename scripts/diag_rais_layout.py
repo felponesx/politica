@@ -31,13 +31,19 @@ def baixar(ftp, nome, limite=None):
 def main():
     ftp = conectar()
     ftp.cwd("/pdet/microdados/RAIS/Layouts")
-    nomes = sorted(ftp.nlst())
-    print("Layouts:", nomes)
-    for nome in nomes:
-        if nome.lower().endswith((".txt", ".csv", ".htm", ".html", ".md")):
-            dados = baixar(ftp, nome, limite=20000)
-            print(f"\n----- {nome} (primeiros {len(dados)} bytes) -----")
-            print(dados.decode("latin-1", errors="replace")[:4000])
+    for sub in sorted(ftp.nlst()):
+        ftp.cwd("/pdet/microdados/RAIS/Layouts")
+        try:
+            ftp.cwd(sub)
+        except ftplib.Error:
+            continue
+        nomes = sorted(ftp.nlst())
+        print(f"\nLayouts/{sub}:", nomes)
+        for nome in nomes:
+            if nome.lower().endswith((".txt", ".csv", ".htm", ".html", ".md")):
+                dados = baixar(ftp, nome, limite=20000)
+                print(f"\n----- {sub}/{nome} (primeiros {len(dados)} bytes) -----")
+                print(dados.decode("latin-1", errors="replace")[:4000])
     ftp.cwd("/pdet/microdados/RAIS/2025")
     print("\n2025:", sorted(ftp.nlst()))
     dados = baixar(ftp, "RAIS_VINC_PUB_NI.7z")
