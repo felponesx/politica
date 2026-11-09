@@ -50,11 +50,26 @@ def main():
     print("\nNI.7z bytes:", len(dados))
     import py7zr
     with py7zr.SevenZipFile(io.BytesIO(dados)) as z:
-        print("membros:", z.getnames())
-        for nome, bio in z.readall().items():
+        nomes = z.getnames()
+        print("membros:", nomes)
+        extraidos = z.read(nomes)
+        for nome, bio in extraidos.items():
             conteudo = bio.read(4000)
             print(f"\n----- {nome}: primeiras linhas -----")
             print(conteudo.decode("latin-1", errors="replace")[:2500])
+    ftp.cwd("/pdet/microdados/RAIS/Layouts/vínculos")
+    xls = "RAIS_vinculos_layout2020.xls"
+    bruto = baixar(ftp, xls)
+    print(f"\n----- {xls}: {len(bruto)} bytes -----")
+    try:
+        import xlrd
+        livro = xlrd.open_workbook(file_contents=bruto)
+        for planilha in livro.sheets():
+            print(f"\n== aba {planilha.name} ({planilha.nrows} linhas)")
+            for r in range(min(planilha.nrows, 90)):
+                print(" | ".join(str(c) for c in planilha.row_values(r)))
+    except ImportError:
+        print("xlrd indisponível")
     ftp.quit()
     return 0
 
