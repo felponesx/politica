@@ -7,22 +7,23 @@ faixa de horas contratadas, com a % das pessoas e a média de salário de cada f
 A RAIS não informa a escala (6x1 ou 5x2): mostramos as horas contratadas, que é o dado oficial."""
 from collections import defaultdict
 
-# faixas de horas contratadas semanais: (rótulo, limite inferior inclusive, superior inclusive)
-FAIXAS_HORAS = [
-    ("até 30 h", 0, 30),
-    ("31 a 36 h", 31, 36),
-    ("37 a 40 h", 37, 40),
-    ("41 a 44 h", 41, 44),
-    ("mais de 44 h", 45, 10_000),
-]
+# faixas de horas contratadas (campo "Faixa Hora Contrat - Código" da RAIS).
+# Códigos 1 a 6 vêm do dicionário de 2020; o código 7 aparece no arquivo de 2025 (45 h ou mais) e não está no dicionário de 2020.
+FAIXA_HORAS_OFICIAL = {
+    1: "até 12 h",
+    2: "13 a 15 h",
+    3: "16 a 20 h",
+    4: "21 a 30 h",
+    5: "31 a 40 h",
+    6: "41 a 44 h",
+    7: "mais de 44 h",  # observado no arquivo de 2025; ausente do dicionário de 2020
+}
 MINIMO_VINCULOS = 30  # abaixo disso a profissão não sai publicada (amostra pequena demais)
 
 
-def faixa_de_horas(horas):
-    for rotulo, lo, hi in FAIXAS_HORAS:
-        if lo <= horas <= hi:
-            return rotulo
-    return None
+def faixa_de_horas(codigo):
+    """código oficial 1..6 -> rótulo; qualquer outra coisa fica de fora."""
+    return FAIXA_HORAS_OFICIAL.get(int(codigo)) if codigo is not None else None
 
 
 def _quantil(valores_ordenados, q):
@@ -34,12 +35,13 @@ def _quantil(valores_ordenados, q):
 
 
 def resumir(vinculos):
-    """vinculos: iterável de (cbo:str, remuneracao:float, horas:int). Devolve {cbo: resumo}."""
+    """vinculos: iterável de rais_leitor.Vinculo. Devolve {cbo: resumo}."""
     por_cbo = defaultdict(list)
-    for cbo, rem, horas in vinculos:
-        if cbo is None or rem is None or rem < 0:
+    for v in vinculos:
+        cbo, rem, faixa = v.cbo, v.remuneracao, v.faixa_horas
+        if cbo is None or rem is None or rem <= 0:
             continue
-        por_cbo[str(cbo)].append((float(rem), int(horas or 0)))
+        por_cbo[str(cbo)].append((float(rem), faixa))
 
     saida = {}
     for cbo, itens in por_cbo.items():
@@ -50,11 +52,11 @@ def resumir(vinculos):
         media = sum(rems) / n
         faixas = []
         por_faixa = defaultdict(list)
-        for r, h in itens:
-            f = faixa_de_horas(h)
+        for r, faixa in itens:
+            f = faixa_de_horas(faixa)
             if f:
                 por_faixa[f].append(r)
-        for rotulo, _, _ in FAIXAS_HORAS:
+        for rotulo in FAIXA_HORAS_OFICIAL.values():
             lista = por_faixa.get(rotulo)
             if not lista:
                 continue
