@@ -88,3 +88,42 @@ def test_arquivo_real_de_amostra_passa_pelo_acumulador(tmp_path):
     trouxe = C.agregar_arquivo(caminho, acc)
     assert trouxe == 6
     assert set(acc.prof) == {"717020", "621005", "715505", "724315"}
+
+
+class _FTPQueCai:
+    """Simula um FTP que cai na primeira transferência e retoma com REST na segunda."""
+
+    def __init__(self, dados):
+        self.dados = dados
+        self.chamadas = 0
+
+    def cwd(self, _):
+        pass
+
+    def size(self, _):
+        return len(self.dados)
+
+    def retrbinary(self, _cmd, escreve, blocksize=0, rest=None):
+        self.chamadas += 1
+        inicio = rest or 0
+        if self.chamadas == 1:
+            escreve(self.dados[inicio:inicio + 100])
+            raise TimeoutError("caiu no meio")
+        escreve(self.dados[inicio:])
+
+    def quit(self):
+        pass
+
+    def close(self):
+        pass
+
+
+def test_download_retoma_do_ponto_em_que_parou(tmp_path, monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    dados = bytes(range(256)) * 2000
+    ftp = _FTPQueCai(dados)
+    monkeypatch.setattr(C, "conectar", lambda: ftp)  # a nova tentativa usa a mesma "conexão" simulada
+    destino = tmp_path / "RAIS_VINC_PUB_TESTE.7z"
+    C.baixar_regional(ftp, 2025, "RAIS_VINC_PUB_TESTE.7z", destino)
+    assert destino.read_bytes() == dados
+    assert ftp.chamadas == 2

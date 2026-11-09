@@ -59,11 +59,34 @@ def escolher_ano(nomes_raiz: list[str], listar_pasta) -> int:
     raise ColetaIncompleta("nenhum ano preferido está completo: " + ", ".join(map(str, ANOS_PREFERIDOS)))
 
 
-def baixar_regional(ftp: ftplib.FTP, ano: int, nome: str, destino: Path) -> Path:
-    ftp.cwd(f"{RAIZ}/{ano}")  # esta conexão é nova para cada arquivo
-    tamanho = ftp.size(nome)
-    with open(destino, "wb") as fh:
-        ftp.retrbinary(f"RETR {nome}", fh.write, blocksize=1 << 20)
+def baixar_regional(ftp: ftplib.FTP, ano: int, nome: str, destino: Path, tentativas: int = 6) -> Path:
+    """Baixa um arquivo regional com retomada: se a transferência cair, tenta de novo a partir
+    do ponto em que parou (REST), com uma pausa crescente entre as tentativas.
+    Usa a conexão recebida na primeira tentativa; se ela cair, abre outra."""
+    import time
+
+    tamanho = None
+    ultimo_erro = None
+    for n in range(1, tentativas + 1):
+        try:
+            ftp.cwd(f"{RAIZ}/{ano}")
+            if tamanho is None:
+                tamanho = ftp.size(nome)
+            ja = destino.stat().st_size if destino.exists() else 0
+            if ja >= tamanho:
+                break
+            with open(destino, "ab") as fh:
+                ftp.retrbinary(f"RETR {nome}", fh.write, blocksize=1 << 20, rest=ja or None)
+            ultimo_erro = None
+            break
+        except (ftplib.Error, OSError, EOFError) as e:
+            ultimo_erro = e
+            log.warning("RAIS %s: tentativa %s falhou (%s); retomando", nome, n, e)
+            _fechar(ftp)
+            time.sleep(min(60, 5 * n))
+            ftp = conectar()
+    if ultimo_erro is not None:
+        raise ColetaIncompleta(f"{nome}: não baixou após {tentativas} tentativas ({ultimo_erro})")
     if destino.stat().st_size != tamanho:
         raise ColetaIncompleta(f"{nome}: baixou {destino.stat().st_size} de {tamanho} bytes")
     return destino
