@@ -48,13 +48,17 @@ def main():
     print("\n2025:", sorted(ftp.nlst()))
     dados = baixar(ftp, "RAIS_VINC_PUB_NI.7z")
     print("\nNI.7z bytes:", len(dados))
+    import os
     import py7zr
+    import tempfile
+    pasta = tempfile.mkdtemp()
     with py7zr.SevenZipFile(io.BytesIO(dados)) as z:
-        nomes = z.getnames()
-        print("membros:", nomes)
-        extraidos = z.read(nomes)
-        for nome, bio in extraidos.items():
-            conteudo = bio.read(4000)
+        print("membros:", z.getnames())
+        z.extractall(path=pasta)
+    for raiz, _, nomes_ext in os.walk(pasta):
+        for nome in nomes_ext:
+            with open(os.path.join(raiz, nome), "rb") as fh:
+                conteudo = fh.read(4000)
             print(f"\n----- {nome}: primeiras linhas -----")
             print(conteudo.decode("latin-1", errors="replace")[:2500])
     ftp.cwd("/pdet/microdados/RAIS/Layouts/vínculos")
