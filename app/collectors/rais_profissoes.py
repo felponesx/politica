@@ -142,3 +142,16 @@ def _listar_ano(ftp):
         ftp.cwd(RAIZ)
         return nomes
     return listar
+
+
+if __name__ == "__main__":
+    import sys
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    try:
+        resumo = coletar()
+    except ColetaIncompleta as e:
+        print("COLETA NÃO GRAVADA:", e)
+        sys.exit(1)
+    print("COLETA OK:", resumo)
+    print("arquivo:", DESTINO)
