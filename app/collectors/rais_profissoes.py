@@ -60,7 +60,7 @@ def escolher_ano(nomes_raiz: list[str], listar_pasta) -> int:
 
 
 def baixar_regional(ftp: ftplib.FTP, ano: int, nome: str, destino: Path) -> Path:
-    ftp.cwd(f"{RAIZ}/{ano}")
+    ftp.cwd(f"{RAIZ}/{ano}")  # esta conexão é nova para cada arquivo
     tamanho = ftp.size(nome)
     with open(destino, "wb") as fh:
         ftp.retrbinary(f"RETR {nome}", fh.write, blocksize=1 << 20)
@@ -109,30 +109,43 @@ def gravar_se_valido(doc: dict, destino: Path = DESTINO) -> Path:
 
 
 def coletar(destino: Path = DESTINO) -> dict:
-    """Coleta completa (roda no robô). Baixa um arquivo regional por vez, lê, soma e apaga.
-    Qualquer falha antes de gravar deixa o arquivo anterior intacto."""
+    """Coleta completa (roda no robô). Uma conexão FTP nova para cada arquivo: a conexão não fica
+    parada enquanto o arquivo anterior é lido (o servidor derruba conexões ociosas). Um arquivo por vez,
+    lido, somado e apagado. Qualquer falha antes de gravar deixa o arquivo anterior intacto."""
     ftp = conectar()
     try:
         ftp.cwd(RAIZ)
         ano = escolher_ano(ftp.nlst(), _listar_ano(ftp))
-        acc = P.Acumulador()
-        por_arquivo = {}
-        with tempfile.TemporaryDirectory(prefix="rais_dl_") as pasta:
-            for nome in ARQUIVOS_REGIONAIS:
-                caminho = baixar_regional(ftp, ano, nome, Path(pasta) / nome)
-                trouxe = agregar_arquivo(caminho, acc)
-                por_arquivo[nome] = trouxe
-                caminho.unlink()  # libera o disco antes do próximo arquivo
-                if trouxe == 0 and nome != "RAIS_VINC_PUB_NI.7z":
-                    raise ColetaIncompleta(f"{nome} não trouxe nenhum vínculo válido")
     finally:
-        try:
-            ftp.quit()
-        except ftplib.Error:
-            pass
+        _fechar(ftp)
+    acc = P.Acumulador()
+    por_arquivo = {}
+    with tempfile.TemporaryDirectory(prefix="rais_dl_") as pasta:
+        for nome in ARQUIVOS_REGIONAIS:
+            ftp = conectar()
+            try:
+                caminho = baixar_regional(ftp, ano, nome, Path(pasta) / nome)
+            finally:
+                _fechar(ftp)
+            trouxe = agregar_arquivo(caminho, acc)
+            por_arquivo[nome] = trouxe
+            caminho.unlink()  # libera o disco antes do próximo arquivo
+            if trouxe == 0 and nome != "RAIS_VINC_PUB_NI.7z":
+                raise ColetaIncompleta(f"{nome} não trouxe nenhum vínculo válido")
     doc = montar_documento(ano, acc, por_arquivo)
     gravar_se_valido(doc, destino)
     return {"ano": ano, "vinculos": doc["vinculos_validos"], "profissoes": len(doc["profissoes"])}
+
+
+def _fechar(ftp):
+    """Fecha a conexão sem deixar um erro de rede esconder o resultado."""
+    try:
+        ftp.quit()
+    except (ftplib.Error, OSError):
+        try:
+            ftp.close()
+        except OSError:
+            pass
 
 
 def _listar_ano(ftp):
