@@ -2,7 +2,6 @@
 de vínculos do ano mais novo, SEM baixar o arquivo inteiro. Serve para escolher o ano e conferir o layout antes
 de gravar o coletor. Não grava nada no banco."""
 import ftplib
-import io
 import re
 import sys
 
@@ -47,15 +46,6 @@ def main():
                     tam = "?"
                 print("  ", a, tam)
             ftp.cwd(f"{BASE}/{p}")
-            alvo = next((a for a in arquivos if "vinc" in a.lower() and a.lower().endswith((".7z", ".zip", ".txt", ".comt"))), None)
-            if alvo:
-                try:
-                    import py7zr
-                    buf = io.BytesIO()
-                    ftp.retrbinary(f"RETR {alvo}", buf.write, blocksize=1 << 20) if False else None
-                    print("  vínculos de exemplo:", alvo, "(leitura de cabeçalho em etapa seguinte)")
-                except ImportError:
-                    print("  py7zr indisponível")
     ftp.quit()
     return 0
 
