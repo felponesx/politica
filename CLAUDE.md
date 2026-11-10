@@ -584,6 +584,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Salários por profissão (10/11): nomes da lista OFICIAL da CBO (`app/dados/cbo_nomes.json`: `cbo2002-ocupacao.csv` + `cbo2002-familia.csv` do gov.br; o FTP da RAIS não tem a lista). Comparação
   entre anos: `python -m app.collectors.rais_profissoes 2024` grava `profissoes_rais_2024.json` (workflow com campo "ano"); `/profissoes` devolve `anos` e `historico` (nominal). Aviso de RAIS nova:
   `rais-monitor.yml` (dia 7; só pelo branch padrão) coleta e abre issue; o coletor usa o ano completo mais novo e nunca troca dado completo por parcial.
+  RAIS 2024 entrou em 10/11 (`app/dados/profissoes_rais_2024.json`, 48,45 mi vínculos; 2025: 50,48 mi). Média ponderada geral +6,0% (nominal); mediana das profissões com 5 mil+ vínculos +5,3%.
+  Variação acima de 50% num ano vira "a conferir" e sai das ordens de aumento/queda (`prfVar`): ex.: procurador da República R$ 5,5 mil na RAIS 2024 → R$ 58 mil em 2025.
 - Eleições: pacotes `p/el-<ano>-<cargo>-<turno>.json` (mapas por município + resumo por estado) e `p/el-outros.json`; chave grande vai no pacote como marcador `{"__arquivo": "g/…"}` (`snapSegue`).
   Trocar de ano: 12 MB -> 1,4 MB.
 - Código da página dividido por tela foi testado (estilo e texto idênticos) e NÃO publicado: sem ganho medido (o navegador só compila função usada).

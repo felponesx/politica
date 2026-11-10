@@ -63,7 +63,8 @@ def _historico() -> dict:
 
 
 AVISO_HISTORICO = ("Comparação entre anos em valores nominais (sem correção pela inflação). A lista de profissões e a forma de "
-                   "declarar podem mudar de um ano para outro.")
+                   "declarar podem mudar de um ano para outro. Variação acima de 50% para mais ou para menos aparece como \"a conferir\" "
+                   "(provável mudança na forma de declarar) e fica fora das listas de maior aumento e maior queda.")
 
 
 def _arredonda(v, casas=2):

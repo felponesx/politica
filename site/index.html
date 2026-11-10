@@ -5912,8 +5912,9 @@ const prfNorm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCa
 const prfPct=v=>Number(v).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
 function prfMais(p){return (p.horas||[]).reduce((a,h)=>(!a||h.pct>a.pct)?h:a,null)}
 /* variação entre o primeiro e o último ano coletados (valores nominais, sem correção pela inflação) */
-function prfVar(p){const a=Object.keys(p.historico||{}).sort();if(a.length<2)return null;const v0=p.historico[a[0]],v1=p.historico[a[a.length-1]];return v0>0&&v1!=null?{de:a[0],ate:a[a.length-1],pct:(v1/v0-1)*100}:null}
-const prfVarTxt=v=>`<span class="prf-var ${v.pct>=0?"sobe":"desce"}">${v.pct>=0?"+":"−"}${prfPct(Math.abs(v.pct))} desde ${v.de}</span>`;
+function prfVar(p){const a=Object.keys(p.historico||{}).sort();if(a.length<2)return null;const v0=p.historico[a[0]],v1=p.historico[a[a.length-1]];if(!(v0>0&&v1!=null))return null;const pct=(v1/v0-1)*100;return{de:a[0],ate:a[a.length-1],pct,suspeito:Math.abs(pct)>50}}
+/* mais de 50% para cima ou para baixo em um ano costuma ser mudança na forma de declarar (ex.: procurador da República com R$ 5,5 mil na RAIS 2024): "a conferir", fora das ordens de aumento e queda */
+const prfVarTxt=v=>v.suspeito?`<span class="prf-var" title="Variação de ${v.pct>=0?"+":"−"}${prfPct(Math.abs(v.pct))} desde ${v.de}: grande demais para um ano, provável mudança na forma de declarar à RAIS">a conferir</span>`:`<span class="prf-var ${v.pct>=0?"sobe":"desce"}">${v.pct>=0?"+":"−"}${prfPct(Math.abs(v.pct))} desde ${v.de}</span>`;
 function prfCard(p){const m=prfMais(p),hs=(p.horas||[]).filter(h=>h.pct>0);
  return `<div class="prf-card" role="button" tabindex="0" aria-expanded="false">
   <div class="prf-top"><div><b>${p.nome?esc(p.nome):p.familia?esc(p.familia):"Ocupação não identificada"}</b>${!p.nome&&p.familia?`<small>Ocupação nova: a CBO publica só o nome da família</small>`:""}<small>CBO ${esc(p.cbo)} · ${nf(p.vinculos)} vínculos</small></div><div class="prf-med"><span>Média</span><b>${brl(p.media)}</b>${(()=>{const v=prfVar(p);return v?prfVarTxt(v):""})()}</div></div>
@@ -5921,7 +5922,7 @@ function prfCard(p){const m=prfMais(p),hs=(p.horas||[]).filter(h=>h.pct>0);
   <div class="prf-mais" hidden>${hs.map(h=>`<p>${prfPct(h.pct)} das pessoas trabalham ${esc(h.faixa)} e recebem média de ${brl(h.media)}</p>`).join("")}<p class="mut">Menor salário ${brl(p.minimo)} · maior salário ${brl(p.maximo)}</p>${Object.keys(p.historico||{}).length>1?`<p><b>Média por ano:</b> ${Object.keys(p.historico).sort().map(a=>`${a}: ${brl(p.historico[a])}`).join(" · ")}</p>`:""}</div></div>`}
 function prfLista(){const q=prfNorm($("#prfQ").value),o=$("#prfO").value;
  let L=(window._PRF||[]).filter(p=>!q||p.cbo.includes(q)||prfNorm(p.nome).includes(q));
- const vp=p=>{const v=prfVar(p);return v?v.pct:-Infinity};
+ const vp=p=>{const v=prfVar(p);return v&&!v.suspeito?v.pct:-Infinity};
  L=[...L].sort((a,b)=>o==="menor"?a.media-b.media:o==="vinc"?b.vinculos-a.vinculos:o==="sobe"?vp(b)-vp(a):o==="desce"?(vp(a)===-Infinity?1:vp(b)===-Infinity?-1:vp(a)-vp(b)):b.media-a.media);
  const n=Math.min(L.length,PRF_QTD);
  $("#prfLista").innerHTML=L.length?`<p class="mut">${nf(L.length)} profissões · mostrando ${nf(n)}. Toque em um cartão para ver a divisão por horas.</p><div class="prf-grid">${L.slice(0,n).map(prfCard).join("")}</div>`+(L.length>n?`<div class="mt" style="text-align:center"><button class="btn" id="prfMais" type="button">Mostrar mais</button></div>`:""):rvazio("Nenhuma profissão encontrada.");
