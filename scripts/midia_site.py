@@ -118,9 +118,10 @@ def fnv1a(texto: str) -> int:
     return h
 
 
-# tamanhos máximos (nunca amplia: se a fonte for menor, fica como veio). 360 px de altura é o que cabe na cópia publicada
-# (limite de 256 MB por versão do Artifact); 720p/1080p reais de milhares de retratos passariam de 500 MB.
-ALTURA_FOTO = 360
+# tamanhos máximos (nunca amplia: se a fonte for menor, fica como veio). A foto maior aparece com 92 px no celular
+# (cartão do perfil) e as listas usam 42–52 px: 200 px dá nitidez em tela 2x (era 360 até 10/11/2026; fotos já gravadas:
+# python -m scripts.reduzir_fotos site/midia).
+ALTURA_FOTO = 200
 ALTURA_LOGO = 256  # baixa com folga; ao gravar, scripts/logos_arquivo.py reduz para ALTURA_MAX (160 px)
 
 

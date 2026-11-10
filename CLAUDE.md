@@ -85,7 +85,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Desde 1985: `bcb-series` (SGS) desde 1985 com seletor de período em Indicadores; proposições PEC/PLP/MPV/PDL/PDC/PLN desde 1985
   (`HISTORICO` em `scripts/coleta_ci.py`). Eleições: o TSE só publica dados abertos a partir de 1994 (1989 e antes não existem em base aberta).
 - Impostômetro: federal (Receita) + estaduais e municipais (`siconfi-tributos`, RREO Anexo 03 de cada estado e prefeitura, 12 meses); prefeituras sem relatório estimadas pela média por habitante da UF.
-- Imagens: retratos até 360 px de altura (JPEG 78; Câmara usa a versão `jpgmaior`) e logos até 256 px (PNG); nunca amplia. 720p/1080p reais não cabem no limite de 256 MB do Artifact.
+- Imagens: retratos até 200 px de altura (WebP; a foto maior aparece com 92 px no celular; era 360 px até 10/11/2026) e logos até 160 px (o maior aparece com 61 px); nunca amplia. Reduzir uma cópia pronta: `python -m scripts.reduzir_fotos site/midia` e `python -m scripts.logos_arquivo site/midia/logos.json`.
 
 ## Notícias rápidas (out/2026)
 - `.github/workflows/noticias.yml` + `scripts/noticias_rapido.py`: a cada 15 min lê os feeds (`buscar_feeds` em `app/collectors/noticias.py`),
@@ -570,3 +570,14 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   só então grava `cbs_arrecadacao`/`ibs_arrecadacao` por competência com origem (URL, SHA-256, aba, coluna). PDF fica `relatorio_encontrado` (revisão). Nada é estimado. Robô: `ibge-malha-municipios`, `malha-comparar`.
 - **Tela dos alertas do MapBiomas (31/10/2026)**: aba Meio ambiente (`#/ambiente`) ganhou o bloco "Alertas de desmatamento do MapBiomas" (`mbPainel`, `mbCarregar` no site): seletor de período (todos os anos ou um ano; o último é parcial), mapa por estado, maiores e menores, biomas e os 100 maiores municípios (só nome, sem UF), sempre com o aviso de que NÃO é o PRODES;
   a ficha do estado (`#/ambiente/<UF>`) mostra os alertas do estado e a linha por ano. Lê `GET /alertas-mapbiomas/territorio` (exportada na cópia estática: `FIXAS` de `exportar_snapshot.py`; vale na próxima geração da cópia pelo robô). Conferido no navegador com dados reais (540.088 alertas, 11,43 mi ha), PC e celular, sem erro de JS.
+
+## Leveza e limpeza (10/11/2026)
+- Pacotes da cópia estática (`scripts/pacotes_copia.py`, chamado pelo exportador; manifest → `pacotes`): as chaves pequenas de cada assunto ficam juntas em
+  `dados/p/<inicio|economia|governo|escandalos|ambiente|geral|eleicoes>.json` (eleicoes só vale na tela de eleições). O site (`snapMapaPacotes`, `snapPacote`) lê o pacote e,
+  se falhar, a parte s<N> como antes. `snapGet` não procura nas partes consultas de lista que não existem (só as `bases`). Resumos prontos da inicial: `/inicio/proposicoes` e os
+  últimos registros. Medido no celular: Início 21 MB → 2,5 MB, Eleições 27,6 → 8,4 MB. Para uma cópia pronta: `python -m scripts.pacotes_copia site/dados`.
+- Fotos só são buscadas perto da tela (`FOTO_IO`); no celular não há pré-carga em segundo plano. Troca de tema: só superfícies grandes animam fundo/borda (0,4 s) — animar
+  todos os elementos travava (Eleições 3,7 s) e View Transitions deixava a tela em branco no app do Claude.
+- CSS: `python -m scripts.enxuga_css site/index.html` tira declarações sobrescritas e seletores impossíveis (conferido: estilo calculado idêntico em 42 telas).
+- Contratos com data de assinatura no futuro (erro do PNCP) vão para o fim da ordem por data e ganham "data a conferir" (`dataFutura`, `dataContrato`).
+- `admin_padrao` (conta admin/admin) é false por padrão; o `.env.local` do PC liga. O teste de rotas de escrita olha dentro dos `_IncludedRouter` do FastAPI 0.16x.
