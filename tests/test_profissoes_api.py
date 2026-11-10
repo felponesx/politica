@@ -26,7 +26,7 @@ def test_lista_ordenada_pela_media(monkeypatch, tmp_path):
     assert d["disponivel"] is True
     assert [x["cbo"] for x in d["profissoes"]] == ["222", "111"]
     assert d["profissoes"][1]["media"] == 3000.46
-    assert set(d["profissoes"][0]) == {"cbo", "nome", "vinculos", "media", "minimo", "maximo", "p10", "p90", "horas", "historico"}
+    assert set(d["profissoes"][0]) == {"cbo", "nome", "familia", "vinculos", "media", "minimo", "maximo", "p10", "p90", "horas", "historico"}
 
 
 def test_arquivo_real_carrega():
@@ -39,9 +39,9 @@ def test_arquivo_real_carrega():
 
 
 def test_nomes_de_cbo_aparecem():
-    r._carregar.cache_clear(); r._historico.cache_clear(); r._nomes.cache_clear()
+    r._carregar.cache_clear(); r._historico.cache_clear(); r._cbo.cache_clear()
     d = r.profissoes()
-    r._carregar.cache_clear(); r._historico.cache_clear(); r._nomes.cache_clear()
+    r._carregar.cache_clear(); r._historico.cache_clear(); r._cbo.cache_clear()
     por = {x["cbo"]: x for x in d["profissoes"]}
     assert por["121010"]["nome"]
     assert d["com_nome"] > 2000
@@ -62,3 +62,12 @@ def test_historico_entre_anos(monkeypatch, tmp_path):
     assert d["anos"] == [2024, 2025] and d["aviso_historico"]
     assert por["111"]["historico"] == {"2024": 3000.0, "2025": 3300.0}
     assert por["222"]["historico"] == {"2025": 9000.0}  # profissão sem o ano anterior: só o atual
+
+
+def test_codigo_sem_titulo_mostra_a_familia_oficial():
+    r._carregar.cache_clear(); r._historico.cache_clear(); r._cbo.cache_clear()
+    d = r.profissoes()
+    por = {x["cbo"]: x for x in d["profissoes"]}
+    if "142360" in por:  # gerente com código criado depois da lista oficial
+        assert por["142360"]["nome"] is None and por["142360"]["familia"].startswith("Gerentes de comercialização")
+    assert por["421125"]["nome"] == "Operador de caixa"  # título oficial, não o sinônimo "Atendente de pedágio"

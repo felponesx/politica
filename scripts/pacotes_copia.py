@@ -8,7 +8,8 @@ Também grava resumos prontos para a tela inicial (contagem de proposições por
 exigiam baixar listas inteiras (/proposicoes ~2,4 MB, /contratos ~1,5 MB).
 
 Uso numa cópia já pronta (sem banco):  python -m scripts.pacotes_copia [site/dados]
-Pacotes: inicio, eleicoes (só na tela de eleições), economia, governo, escandalos, ambiente e geral (ver SECOES).
+Pacotes: inicio, economia, governo, escandalos, ambiente, geral (ver SECOES) e, só na tela de eleições, eleicoes (malhas e
+resumos por estado) e el-<ano>-<cargo>-<turno> (mapas por município; os pequenos juntos em el-outros).
 O exportador (scripts/exportar_snapshot.py) chama `gravar_pacotes` ao gerar a cópia.
 """
 from __future__ import annotations
@@ -19,7 +20,8 @@ import sys
 from datetime import date
 from pathlib import Path
 
-GRANDE = 150_000  # mesmo limite das partes: acima disso a resposta já tem arquivo próprio (dados/g/…)
+GRANDE = 150_000
+MAPA_PROPRIO = 300_000  # ano/cargo/turno de mapa por município com mais que isso ganha pacote próprio  # mesmo limite das partes: acima disso a resposta já tem arquivo próprio (dados/g/…)
 
 INICIO = [
     "/contadores", "/mapa/estados", "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m", "/gastos/entes",
@@ -82,24 +84,36 @@ def _ultimo_ano_eleicao(dados) -> int | None:
     return max(anos) if anos else None
 
 
+def _marcador(v) -> bool:
+    return isinstance(v, dict) and set(v) == {"__arquivo"}
+
+
 def montar_pacotes(dados: dict, fixas) -> dict:
-    """{arquivo: {"telas": [...]|None, "valores": {chave: valor}}}. Só entram chaves pequenas (abaixo de GRANDE)."""
-    pequeno = {k for k, v in dados.items() if len(_texto(v).encode()) <= GRANDE}
+    """{arquivo: {"telas": [...]|None, "valores": {chave: valor}}}. Chave pequena entra com o valor; chave grande (que tem
+    arquivo próprio em dados/g/) entra só com o marcador {"__arquivo": "g/…"} — o site vai direto ao arquivo."""
+    from scripts.exportar_snapshot import fnv1a
     usadas: set[str] = set()
 
+    def valor(k):
+        v = dados[k]
+        if _marcador(v) or len(_texto(v).encode()) <= GRANDE:
+            return v
+        return {"__arquivo": f"g/{fnv1a(k):08x}.json"}  # mesmo nome que gravar_partes dá ao arquivo
+
     def pegar(chaves):
-        out = {k: dados[k] for k in chaves if k in pequeno and k not in usadas}
+        out = {k: valor(k) for k in chaves if k in dados and k not in usadas}
         usadas.update(out)
         return out
 
     inicio = pegar(INICIO + sorted(k for k in dados if re.match(r"^/estados/[A-Z]{2}/fluxo$", k)))
-    ano = _ultimo_ano_eleicao(dados)
-    ele = []
-    if ano:
-        ele = [k for k in dados if re.match(rf"^/eleicoes/{ano}/[A-Z]{{2}}/mapa\?cargo=PRESIDENTE&turno=1$", k)]
-        ele += [f"/eleicoes/{ano}/estados?cargo=PRESIDENTE&turno=1", f"/eleicoes/{ano}/cargos"]
-    ele += sorted(k for k in dados if re.match(r"^/malhas/[A-Z]{2}$", k))
-    eleicoes = pegar(ele)
+    # Eleições: malhas e resumos por estado (todos os anos) num pacote; os mapas por município num pacote por
+    # ano/cargo/turno (cada um ~0,9 MB; antes vinham de 27 partes de ~450 KB); as combinações pequenas juntas.
+    eleicoes = pegar(sorted(k for k in dados if re.match(r"^/malhas/[A-Z]{2}$", k) or re.match(r"^/eleicoes/\d{4}/cargos$", k)))
+    mapas: dict[tuple, list] = {}
+    for k in sorted(dados):
+        m = re.match(r"^/eleicoes/(\d{4})/[A-Z]{2}/mapa\?cargo=([^&]+)&turno=(\d)$", k)
+        if m:
+            mapas.setdefault(m.groups(), []).append(k)
     candidatas = [k for k in fixas if not any(re.match(p, k) for p in FORA)] + sorted(k for k in dados if any(re.match(p, k) for p in EXTRAS_TELAS))
     secao_de = {seg: nome for nome, segs in SECOES.items() for seg in segs}
     grupos: dict[str, list] = {}
@@ -108,12 +122,23 @@ def montar_pacotes(dados: dict, fixas) -> dict:
     out = {}
     if inicio:
         out["p/inicio.json"] = {"telas": None, "valores": inicio}
+    if eleicoes:  # malhas e mapas só valem juntos na tela de eleições; nas outras, ler um estado pela parte sai mais barato
+        out["p/eleicoes.json"] = {"telas": ["eleicoes"], "valores": eleicoes}
+    outros = {}
+    for (ano, cargo, turno), ks in sorted(mapas.items()):
+        tam = sum(len(_texto(dados[k]).encode()) for k in ks if not _marcador(dados[k]))
+        if tam >= MAPA_PROPRIO:
+            slug = re.sub(r"[^a-z]+", "-", cargo.lower()).strip("-")
+            # o resumo por estado do mesmo ano/cargo/turno vai junto (a tela pede os dois)
+            out[f"p/el-{ano}-{slug}-{turno}.json"] = {"telas": ["eleicoes"], "valores": pegar(ks + [f"/eleicoes/{ano}/estados?cargo={cargo}&turno={turno}"])}
+        else:
+            outros.update(pegar(ks))
+    if outros:
+        out["p/el-outros.json"] = {"telas": ["eleicoes"], "valores": outros}
     for nome in [*SECOES, "geral"]:
         vals = pegar(grupos.get(nome, []))
         if vals:
             out[f"p/{nome}.json"] = {"telas": None, "valores": vals}
-    if eleicoes:  # malhas e mapas só valem juntos na tela de eleições; nas outras, ler um estado pela parte sai mais barato
-        out["p/eleicoes.json"] = {"telas": ["eleicoes"], "valores": eleicoes}
     return out
 
 
@@ -136,9 +161,8 @@ def ler_copia(pasta: Path) -> dict:
         for k, v in json.loads((pasta / f"s{i}.json").read_text(encoding="utf-8")).items():
             if isinstance(v, dict) and "__arquivo" in v:
                 arq = pasta / v["__arquivo"]
-                v = json.loads(arq.read_text(encoding="utf-8")) if arq.exists() else None
-            if v is not None:
-                dados[k] = v
+                v = json.loads(arq.read_text(encoding="utf-8")) if arq.exists() else {"__arquivo": v["__arquivo"]}
+            dados[k] = v
     return dados
 
 

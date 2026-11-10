@@ -26,11 +26,19 @@ NOMES_ARQUIVO = Path(__file__).resolve().parents[1] / "dados" / "cbo_nomes.json"
 
 
 @lru_cache(maxsize=1)
-def _nomes() -> dict:
+def _cbo() -> dict:
     try:
-        return json.loads(NOMES_ARQUIVO.read_text(encoding="utf-8")).get("nomes", {})
+        return json.loads(NOMES_ARQUIVO.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
+
+
+def _nomes() -> dict:
+    return _cbo().get("nomes", {})
+
+
+def _familias() -> dict:
+    return _cbo().get("familias", {})
 
 
 @lru_cache(maxsize=1)
@@ -68,13 +76,15 @@ def profissoes():
     if not d or not d.get("profissoes"):
         return {"disponivel": False, "aviso": AVISO, "profissoes": []}
     lista = []
-    nomes = _nomes()
+    nomes, familias = _nomes(), _familias()
     atual = int(d.get("ano_referencia") or 0)
     hist = {a: v for a, v in _historico().items() if a != atual}
     for cbo, p in d["profissoes"].items():
         lista.append({
             "cbo": cbo,
             "nome": nomes.get(cbo),
+            # código sem título na lista oficial (ocupação criada depois): ao menos a família oficial dele
+            "familia": None if nomes.get(cbo) else familias.get(cbo[:4]),
             "vinculos": p.get("vinculos"),
             "media": _arredonda(p.get("media")),
             "minimo": _arredonda(p.get("minimo")),
@@ -87,7 +97,7 @@ def profissoes():
     lista.sort(key=lambda x: (x["media"] or 0), reverse=True)
     return {
         "disponivel": True,
-        "nomes_fonte": "CBO 2002 (Ministério do Trabalho), lista pública em github.com/datasets-br/cbo",
+        "nomes_fonte": "CBO 2002, lista oficial do Ministério do Trabalho e Emprego (gov.br) e listas derivadas dela",
         "com_nome": sum(1 for x in lista if x["nome"]),
         "fonte": d.get("fonte"),
         "ano_referencia": d.get("ano_referencia"),

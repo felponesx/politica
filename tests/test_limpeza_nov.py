@@ -53,3 +53,22 @@ def test_resumo_da_inicial_e_pacotes():
     todas = {k for p in pac.values() for k in p["valores"]}
     assert "/policias/pm-SP" not in todas  # ficha de uma polícia fica só na parte
     assert sum(len(p["valores"]) for p in pac.values()) == len(todas)  # cada chave em um pacote só
+
+
+def test_pacotes_de_eleicoes_por_ano_cargo_e_marcador_das_chaves_grandes(monkeypatch):
+    import scripts.pacotes_copia as pc
+    from scripts.exportar_snapshot import fnv1a
+    monkeypatch.setattr(pc, "MAPA_PROPRIO", 50)
+    grande = {"itens": ["x" * 200_000]}
+    dados = {"/malhas/SP": {"m": 1}, "/eleicoes/2022/cargos": [1],
+             "/eleicoes/2022/SP/mapa?cargo=PRESIDENTE&turno=1": {"v": "y" * 100},
+             "/eleicoes/2022/MG/mapa?cargo=PRESIDENTE&turno=1": grande,
+             "/eleicoes/2022/estados?cargo=PRESIDENTE&turno=1": {"e": 1},
+             "/eleicoes/2022/SP/mapa?cargo=DEPUTADO FEDERAL&turno=1": {"d": 1}}
+    pac = pc.montar_pacotes(dados, [])
+    el = pac["p/el-2022-presidente-1.json"]
+    assert el["telas"] == ["eleicoes"] and "/eleicoes/2022/estados?cargo=PRESIDENTE&turno=1" in el["valores"]
+    # a chave grande vai como marcador para o arquivo g/ (mesmo nome que gravar_partes usa)
+    assert el["valores"]["/eleicoes/2022/MG/mapa?cargo=PRESIDENTE&turno=1"] == {"__arquivo": f"g/{fnv1a('/eleicoes/2022/MG/mapa?cargo=PRESIDENTE&turno=1'):08x}.json"}
+    assert "/eleicoes/2022/SP/mapa?cargo=DEPUTADO FEDERAL&turno=1" in pac["p/el-outros.json"]["valores"]
+    assert set(pac["p/eleicoes.json"]["valores"]) == {"/malhas/SP", "/eleicoes/2022/cargos"}

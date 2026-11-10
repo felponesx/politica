@@ -3606,12 +3606,13 @@ async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)
 function snapMapaPacotes(m){const o={};for(const[arq,p]of Object.entries(m.pacotes||{}))for(const k of p.chaves||[])if(!o[k])o[k]={arquivo:arq,telas:p.telas||null};return o}
 function snapPacote(arq){if(!SNAP.cache[arq])SNAP.cache[arq]=fetch("dados/"+arq).then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[arq];throw e});return SNAP.cache[arq]}
 async function snapLer0(k){const pk=SNAP.pk&&SNAP.pk[k];
- if(pk&&(!pk.telas||pk.telas.includes((location.hash.replace(/^#\/?/,"").split("/")[0])||"inicio"))){try{const P=await snapPacote(pk.arquivo);if(P&&k in P)return P[k]}catch(e){}}
+ if(pk&&(!pk.telas||pk.telas.includes((location.hash.replace(/^#\/?/,"").split("/")[0])||"inicio"))){try{const P=await snapPacote(pk.arquivo);if(P&&k in P)return snapSegue(P[k])}catch(e){}}
  const n=snapHash(k)%SNAP.m.shards;
  if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
  const v=(await SNAP.cache[n])[k];
- // respostas grandes ficam num arquivo só delas (dados/g/…): só são baixadas quando a página pede
- if(v&&typeof v==="object"&&v.__arquivo){const f=v.__arquivo;if(!SNAP.cache[f])SNAP.cache[f]=fetch("dados/"+f).then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[f];throw e});return SNAP.cache[f]}
+ return snapSegue(v)}
+// respostas grandes ficam num arquivo só delas (dados/g/…): só são baixadas quando a página pede (o marcador vem da parte ou do pacote)
+function snapSegue(v){if(v&&typeof v==="object"&&v.__arquivo){const f=v.__arquivo;if(!SNAP.cache[f])SNAP.cache[f]=fetch("dados/"+f).then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[f];throw e});return SNAP.cache[f]}
  return v}
 const snapNorm=t=>String(t??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* filtros das listas: "=campo" compara sem diferenciar maiúsculas; "~campo1,campo2" procura o texto em qualquer um */
@@ -5852,7 +5853,7 @@ function prfVar(p){const a=Object.keys(p.historico||{}).sort();if(a.length<2)ret
 const prfVarTxt=v=>`<span class="prf-var ${v.pct>=0?"sobe":"desce"}">${v.pct>=0?"+":"−"}${prfPct(Math.abs(v.pct))} desde ${v.de}</span>`;
 function prfCard(p){const m=prfMais(p),hs=(p.horas||[]).filter(h=>h.pct>0);
  return `<div class="prf-card" role="button" tabindex="0" aria-expanded="false">
-  <div class="prf-top"><div><b>${p.nome?esc(p.nome):"Ocupação não identificada"}</b><small>CBO ${esc(p.cbo)} · ${nf(p.vinculos)} vínculos</small></div><div class="prf-med"><span>Média</span><b>${brl(p.media)}</b>${(()=>{const v=prfVar(p);return v?prfVarTxt(v):""})()}</div></div>
+  <div class="prf-top"><div><b>${p.nome?esc(p.nome):p.familia?esc(p.familia):"Ocupação não identificada"}</b>${!p.nome&&p.familia?`<small>Ocupação nova: a CBO publica só o nome da família</small>`:""}<small>CBO ${esc(p.cbo)} · ${nf(p.vinculos)} vínculos</small></div><div class="prf-med"><span>Média</span><b>${brl(p.media)}</b>${(()=>{const v=prfVar(p);return v?prfVarTxt(v):""})()}</div></div>
   <p class="prf-frase">10% recebem até ${brl(p.p10)}, e 90% recebem até ${brl(p.p90)}${m?`. A maioria (${prfPct(m.pct)}) trabalha ${esc(m.faixa)}`:""}.</p>
   <div class="prf-mais" hidden>${hs.map(h=>`<p>${prfPct(h.pct)} das pessoas trabalham ${esc(h.faixa)} e recebem média de ${brl(h.media)}</p>`).join("")}<p class="mut">Menor salário ${brl(p.minimo)} · maior salário ${brl(p.maximo)}</p>${Object.keys(p.historico||{}).length>1?`<p><b>Média por ano:</b> ${Object.keys(p.historico).sort().map(a=>`${a}: ${brl(p.historico[a])}`).join(" · ")}</p>`:""}</div></div>`}
 function prfLista(){const q=prfNorm($("#prfQ").value),o=$("#prfO").value;
