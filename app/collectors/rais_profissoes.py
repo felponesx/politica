@@ -59,21 +59,24 @@ def escolher_ano(nomes_raiz: list[str], listar_pasta) -> int:
     raise ColetaIncompleta("nenhum ano preferido está completo: " + ", ".join(map(str, ANOS_PREFERIDOS)))
 
 
-def baixar_regional(ftp: ftplib.FTP, ano: int, nome: str, destino: Path, tentativas: int = 6) -> Path:
-    """Baixa um arquivo regional com retomada: se a transferência cair, tenta de novo a partir
-    do ponto em que parou (REST), com uma pausa crescente entre as tentativas.
-    Usa a conexão recebida na primeira tentativa; se ela cair, abre outra."""
+def baixar_regional(ftp, ano: int, nome: str, destino: Path, tentativas: int = 10) -> Path:
+    """Baixa um arquivo regional com retomada: se a transferência cair (ou a conexão for recusada),
+    tenta de novo a partir do ponto em que parou (REST), com pausa crescente entre as tentativas.
+    Cada tentativa abre uma conexão nova quando a anterior já não serve."""
     import time
 
     tamanho = None
     ultimo_erro = None
     for n in range(1, tentativas + 1):
         try:
+            if ftp is None:
+                ftp = conectar()
             ftp.cwd(f"{RAIZ}/{ano}")
             if tamanho is None:
                 tamanho = ftp.size(nome)
             ja = destino.stat().st_size if destino.exists() else 0
             if ja >= tamanho:
+                ultimo_erro = None
                 break
             with open(destino, "ab") as fh:
                 ftp.retrbinary(f"RETR {nome}", fh.write, blocksize=1 << 20, rest=ja or None)
@@ -83,8 +86,9 @@ def baixar_regional(ftp: ftplib.FTP, ano: int, nome: str, destino: Path, tentati
             ultimo_erro = e
             log.warning("RAIS %s: tentativa %s falhou (%s); retomando", nome, n, e)
             _fechar(ftp)
-            time.sleep(min(60, 5 * n))
-            ftp = conectar()
+            ftp = None
+            time.sleep(min(120, 10 * n))
+    _fechar(ftp)
     if ultimo_erro is not None:
         raise ColetaIncompleta(f"{nome}: não baixou após {tentativas} tentativas ({ultimo_erro})")
     if destino.stat().st_size != tamanho:
@@ -145,11 +149,7 @@ def coletar(destino: Path = DESTINO) -> dict:
     por_arquivo = {}
     with tempfile.TemporaryDirectory(prefix="rais_dl_") as pasta:
         for nome in ARQUIVOS_REGIONAIS:
-            ftp = conectar()
-            try:
-                caminho = baixar_regional(ftp, ano, nome, Path(pasta) / nome)
-            finally:
-                _fechar(ftp)
+            caminho = baixar_regional(None, ano, nome, Path(pasta) / nome)
             trouxe = agregar_arquivo(caminho, acc)
             por_arquivo[nome] = trouxe
             caminho.unlink()  # libera o disco antes do próximo arquivo
@@ -161,13 +161,15 @@ def coletar(destino: Path = DESTINO) -> dict:
 
 
 def _fechar(ftp):
-    """Fecha a conexão sem deixar um erro de rede esconder o resultado."""
+    """Fecha a conexão sem deixar um erro de rede esconder o resultado (a conexão pode já estar morta)."""
+    if ftp is None:
+        return
     try:
         ftp.quit()
-    except (ftplib.Error, OSError):
+    except Exception:
         try:
             ftp.close()
-        except OSError:
+        except Exception:
             pass
 
 

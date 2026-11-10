@@ -127,3 +127,34 @@ def test_download_retoma_do_ponto_em_que_parou(tmp_path, monkeypatch):
     C.baixar_regional(ftp, 2025, "RAIS_VINC_PUB_TESTE.7z", destino)
     assert destino.read_bytes() == dados
     assert ftp.chamadas == 2
+
+
+def test_nova_conexao_recusada_nao_quebra_a_retomada(tmp_path, monkeypatch):
+    """O servidor recusou a reconexão na vida real: o laço tem de tentar de novo, não estourar."""
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    dados = bytes(range(256)) * 1000
+    ftp_ok = _FTPQueCai(dados)
+    chamadas = {"n": 0}
+
+    def conectar_instavel():
+        chamadas["n"] += 1
+        if chamadas["n"] == 1:
+            raise ConnectionResetError("recusada")
+        return ftp_ok
+
+    monkeypatch.setattr(C, "conectar", conectar_instavel)
+    destino = tmp_path / "RAIS_VINC_PUB_TESTE.7z"
+    C.baixar_regional(ftp_ok, 2025, "RAIS_VINC_PUB_TESTE.7z", destino)
+    assert destino.read_bytes() == dados
+
+
+def test_fechar_aceita_conexao_morta():
+    class Morta:
+        def quit(self):
+            raise AttributeError("sock None")
+
+        def close(self):
+            raise OSError("já fechada")
+
+    C._fechar(Morta())  # não pode levantar
+    C._fechar(None)
