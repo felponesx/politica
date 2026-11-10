@@ -581,3 +581,20 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - CSS: `python -m scripts.enxuga_css site/index.html` tira declarações sobrescritas e seletores impossíveis (conferido: estilo calculado idêntico em 42 telas).
 - Contratos com data de assinatura no futuro (erro do PNCP) vão para o fim da ordem por data e ganham "data a conferir" (`dataFutura`, `dataContrato`).
 - `admin_padrao` (conta admin/admin) é false por padrão; o `.env.local` do PC liga. O teste de rotas de escrita olha dentro dos `_IncludedRouter` do FastAPI 0.16x.
+- Salários por profissão (10/11): nomes da lista OFICIAL da CBO (`app/dados/cbo_nomes.json`: `cbo2002-ocupacao.csv` + `cbo2002-familia.csv` do gov.br; o FTP da RAIS não tem a lista). Comparação
+  entre anos: `python -m app.collectors.rais_profissoes 2024` grava `profissoes_rais_2024.json` (workflow com campo "ano"); `/profissoes` devolve `anos` e `historico` (nominal). Aviso de RAIS nova:
+  `rais-monitor.yml` (dia 7; só pelo branch padrão) coleta e abre issue; o coletor usa o ano completo mais novo e nunca troca dado completo por parcial.
+- Eleições: pacotes `p/el-<ano>-<cargo>-<turno>.json` (mapas por município + resumo por estado) e `p/el-outros.json`; chave grande vai no pacote como marcador `{"__arquivo": "g/…"}` (`snapSegue`).
+  Trocar de ano: 12 MB -> 1,4 MB.
+- Código da página dividido por tela foi testado (estilo e texto idênticos) e NÃO publicado: sem ganho medido (o navegador só compila função usada).
+
+## Empresas públicas, privadas e concessões (10/11/2026)
+- `app/empresas_tipo.py` (tipo pela natureza jurídica: 2011 empresa pública, 2038 economia mista, 1xxx órgão público, cooperativa, sem fins lucrativos, resto privada; concessão pela
+  ATIVIDADE (CNAE) em energia, água e esgoto, rodovias, ferrovias, metrô, aeroportos, portos, gás canalizado, telefonia fixa, ônibus — indício, não o contrato).
+- Coletor `python -m app.collectors.empresas_tipo [site/dados]` (fora do registro de tarefas; roda daqui ou no robô): CVM (cadastro; controle acionário do FCA mais novo — o do cadastro geral
+  fica velho, ex.: Sabesp privada desde 22/07/2024; DFP do último ano cheio: receita 3.01, lucro 3.11, empréstimos 2.01.04+2.02.01, versão mais nova, consolidado), cadastro do CNPJ (BrasilAPI,
+  reserva minhareceita.org; CNPJ já consultado não é pedido de novo) e a dívida com a União das 600 empresas de `/dividas/empresas`. Grava `app/dados/empresas_tipos.json`; `GET /empresas-tipos`.
+  Conferido em 10/11: 1.110 empresas, 643 com faturamento (2025), 48 do governo, 180 concessões. Faturamento por empresa só existe aberto para companhias abertas.
+- Site: aba "Públicas e privadas" em Empresas e Contratos (`telaTiposEmp`, `etChips`, `etCard`): filtro por tipo, ordem por faturamento/lucro/dívida, estado e busca; etiquetas acima do nome
+  também em "Maiores empresas". S.A. privada de controle estatal (subsidiária) mostra só "Controle estatal" e não conta como privada.
+- Falta: estatais federais que não são companhia aberta nem estão nas 600 (ex.: Correios, BNDES) — viriam da lista da SEST (Panorama das Estatais).
