@@ -9,7 +9,7 @@ def test_lista_sem_dados_nao_quebra(monkeypatch, tmp_path):
     r._carregar.cache_clear()
 
 
-def test_lista_ordenada_pela_media_e_sem_nomes(monkeypatch, tmp_path):
+def test_lista_ordenada_pela_media(monkeypatch, tmp_path):
     import json
     arq = tmp_path / "p.json"
     arq.write_text(json.dumps({
@@ -26,7 +26,7 @@ def test_lista_ordenada_pela_media_e_sem_nomes(monkeypatch, tmp_path):
     assert d["disponivel"] is True
     assert [x["cbo"] for x in d["profissoes"]] == ["222", "111"]
     assert d["profissoes"][1]["media"] == 3000.46
-    assert set(d["profissoes"][0]) == {"cbo", "vinculos", "media", "minimo", "maximo", "p10", "p90", "horas"}
+    assert set(d["profissoes"][0]) == {"cbo", "nome", "vinculos", "media", "minimo", "maximo", "p10", "p90", "horas"}
 
 
 def test_arquivo_real_carrega():
@@ -36,3 +36,12 @@ def test_arquivo_real_carrega():
     assert d["disponivel"] is True
     assert d["total_profissoes"] > 2000
     assert d["ano_referencia"] == 2025
+
+
+def test_nomes_de_cbo_aparecem():
+    r._carregar.cache_clear(); r._nomes.cache_clear()
+    d = r.profissoes()
+    r._carregar.cache_clear(); r._nomes.cache_clear()
+    por = {x["cbo"]: x for x in d["profissoes"]}
+    assert por["121010"]["nome"]
+    assert d["com_nome"] > 2000

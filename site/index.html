@@ -217,7 +217,9 @@ tbody tr[data-href]:hover{background:var(--bg)}
 @media (max-width:760px){
   .app{display:block}
   .side{display:none}
-  .top{padding:10px 14px}
+  .top{padding:10px 14px;gap:6px}
+  .top .dolar-pill{display:none}
+  .top .ibtn{width:34px;height:34px}
   .top .mlogo{display:block}
   .top .gsearch{display:none}
   .page{padding:18px 14px 110px}
@@ -5978,7 +5980,7 @@ const prfPct=v=>Number(v).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
 function prfMais(p){return (p.horas||[]).reduce((a,h)=>(!a||h.pct>a.pct)?h:a,null)}
 function prfCard(p){const m=prfMais(p),hs=(p.horas||[]).filter(h=>h.pct>0);
  return `<div class="prf-card" role="button" tabindex="0" aria-expanded="false">
-  <div class="prf-top"><div><b>${p.nome?esc(p.nome):"Profissão CBO "+esc(p.cbo)}</b><small>${p.nome?"CBO "+esc(p.cbo)+" · ":""}${nf(p.vinculos)} vínculos</small></div><div class="prf-med"><span>Média</span><b>${brl(p.media)}</b></div></div>
+  <div class="prf-top"><div><b>${p.nome?esc(p.nome):"Ocupação não identificada"}</b><small>CBO ${esc(p.cbo)} · ${nf(p.vinculos)} vínculos</small></div><div class="prf-med"><span>Média</span><b>${brl(p.media)}</b></div></div>
   <p class="prf-frase">10% recebem até ${brl(p.p10)}, e 90% recebem até ${brl(p.p90)}${m?`. A maioria (${prfPct(m.pct)}) trabalha ${esc(m.faixa)}`:""}.</p>
   <div class="prf-mais" hidden>${hs.map(h=>`<p>${prfPct(h.pct)} das pessoas trabalham ${esc(h.faixa)} e recebem média de ${brl(h.media)}</p>`).join("")}<p class="mut">Menor salário ${brl(p.minimo)} · maior salário ${brl(p.maximo)}</p></div></div>`}
 function prfLista(){const q=prfNorm($("#prfQ").value),o=$("#prfO").value;

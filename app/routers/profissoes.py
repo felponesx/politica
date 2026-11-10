@@ -22,6 +22,17 @@ AVISO = (
 )
 
 
+NOMES_ARQUIVO = Path(__file__).resolve().parents[1] / "dados" / "cbo_nomes.json"
+
+
+@lru_cache(maxsize=1)
+def _nomes() -> dict:
+    try:
+        return json.loads(NOMES_ARQUIVO.read_text(encoding="utf-8")).get("nomes", {})
+    except (OSError, ValueError):
+        return {}
+
+
 @lru_cache(maxsize=1)
 def _carregar() -> dict | None:
     try:
@@ -40,9 +51,11 @@ def profissoes():
     if not d or not d.get("profissoes"):
         return {"disponivel": False, "aviso": AVISO, "profissoes": []}
     lista = []
+    nomes = _nomes()
     for cbo, p in d["profissoes"].items():
         lista.append({
             "cbo": cbo,
+            "nome": nomes.get(cbo),
             "vinculos": p.get("vinculos"),
             "media": _arredonda(p.get("media")),
             "minimo": _arredonda(p.get("minimo")),
@@ -54,6 +67,8 @@ def profissoes():
     lista.sort(key=lambda x: (x["media"] or 0), reverse=True)
     return {
         "disponivel": True,
+        "nomes_fonte": "CBO 2002 (Ministério do Trabalho), lista pública em github.com/datasets-br/cbo",
+        "com_nome": sum(1 for x in lista if x["nome"]),
         "fonte": d.get("fonte"),
         "ano_referencia": d.get("ano_referencia"),
         "atualizado_em": d.get("atualizado_em"),
