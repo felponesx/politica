@@ -107,3 +107,27 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
   `publicacoes_sem_arrecadacao`, `arrecadacao_publicada`. Nunca grava arrecadação zero nem estimada. A API de apuração da CBS (`docs.receitafederal.gov.br/apuracao-cbs`) é POR CONTRIBUINTE (CNPJ base, OAuth2, IP autorizado): lida, registrada e NÃO usada.
 - **Mata Atlântica**: a página de downloads monta a lista por `GET /business/api/v1/download/all`; o arquivo é versionado no nome (`yearly_deforestation_biome_mata_atlantica_v20260806.zip`), por isso os nomes chutados davam 404. `app/collectors/prodes_mata.py`.
 - **MapBiomas Alerta**: `alerts` (alertas com área e filtro por território) responde "Token de acesso inválido"; só as contagens por bioma e mês (`alertStatusByBiomes`) e `territoryOptions` são públicas. Cruzamento territorial depende de token (cadastro do Felipe em plataforma.alerta.mapbiomas.org).
+
+## Saúde por município, votos dos tribunais e Mata Atlântica (10/11/2026) — conferido contra as fontes reais
+- **Leitos por município** (`saude-leitos-municipios`, `app/collectors/saude_mun.py`): arquivo anual "Hospitais e Leitos"
+  (`s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/Leitos_SUS/json/Leitos_json_<ano>.zip`, página `dadosabertos.saude.gov.br/dataset/hospitais-e-leitos`):
+  uma linha por hospital e mês. Set/2026: 3.561 municípios com hospital, 524 mil leitos existentes, 354.841 SUS, 64.141 UTI. A API
+  `/assistencia-a-saude/cnes-leitos` ignora `limit` (1 linha por chamada) e não serve para o país. "Existente" é o leito cadastrado,
+  não o livre nem o em funcionamento: ocupação não é publicada em base aberta. Município fora do arquivo = 0 leitos cadastrados (não falta de dado).
+- **Vacinação** (`saude-vacinacao`): TabNet do PNI (`bd_pni/cpnibr.def`, POST em `webtabx.exe`, resposta em Google DataTable). Base aberta de 1994 a 2022;
+  de 2023 em diante só painel (infoms), sem arquivo — fica indisponível, nada é estimado. 5.570 municípios em 2022 (Penta no Brasil: 77,24%).
+  A API do SUS (`apidadosabertos.saude.gov.br`) não tem cobertura vacinal por município.
+- **Mínimo constitucional em saúde** (`siconfi-saude-minimo`, `app/collectors/siconfi.py`): o SIOPS (`siops.datasus.gov.br`) recusa acesso automatizado
+  (BigIP 426/502). O RREO Anexo 14 do SICONFI traz o mesmo cálculo da LC 141/2012 (linha "Despesas com Ações e Serviços Públicos de Saúde Executadas com
+  Recursos de Impostos", colunas "Valor Apurado", "% Mínimo a Aplicar", "% Aplicado"), por ente (`id_ente` obrigatório): ~1 s por ente, 5.597 entes.
+  Prefeitura de São Paulo, 2025: 23,85% (mínimo 15%). Sem anexo = "não entregou" (nunca 0%).
+- **STJ, votos de cada ministro** (`stj-votos`, `app/collectors/stj.py`): Portal de Dados Abertos do STJ (CKAN), "Espelhos de Acórdãos" dos 10 órgãos julgadores,
+  um JSON por mês. O campo `decisao` é a certidão: quem votou com o relator, vencidos, ausentes, impedidos, não participantes. 12 meses (set/2025–set/2026):
+  62.398 acórdãos, 461 por maioria. O espelho cobre só os acórdãos que a Secretaria de Jurisprudência trata. Nomes grudados sem vírgula na certidão são separados
+  (`separar_grudados`) e apelidos unidos ao nome completo (`unir_apelidos`) só quando não há dúvida. As "íntegras" (`integras-de-decisoes-terminativas-e-acordaos-*`)
+  trazem o texto inteiro, mas a certidão do espelho já tem a posição de cada um.
+- **TSE**: os dados abertos (`processual-<ano>` → `processos_eleitorais_decisoes_<ano>.zip`) trazem só o relator e o tipo de cada decisão (`tse-relatorias`,
+  instância 3); o portal de jurisprudência (`jurisprudencia.tse.jus.br`) devolve 403 para acesso automatizado. **Voto individual no TSE: indisponível.**
+- **Mata Atlântica**: PRODES (`inpe-prodes-mata-atlantica`, km² por ano, oficial) e MapBiomas Alerta (`mapbiomas-alertas-territorio`, hectares de alertas validados;
+  precisa de `MAPBIOMAS_EMAIL`/`MAPBIOMAS_SENHA`) ficam em painéis separados no Meio ambiente, nunca somados. A série do PRODES na Mata Atlântica só fica ano a ano
+  a partir de 2017 (antes há anos sem mapeamento e valores de mais de um ano): o gráfico começa ali.

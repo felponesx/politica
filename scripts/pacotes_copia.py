@@ -39,7 +39,7 @@ SECOES = {
                 "dividas", "recuperacao-judicial", "fluxo-federativo", "economia-empresas", "empresas-tipos", "resumo-contratos", "fornecedores-cruzados",
                 "empresas-setores", "obras-gestao"],
     "escandalos": ["escandalos", "escandalos-fila", "crimes-politicos", "sancoes", "tcu-inabilitados", "tcu-irregulares", "lista-suja",
-                   "doadores", "faccoes", "julgamentos", "cpis", "legislacao-resumo", "diarios-oficiais"],
+                   "doadores", "faccoes", "julgamentos", "votos-tribunais", "cpis", "legislacao-resumo", "diarios-oficiais"],
     "ambiente": ["saude", "alertas-mapbiomas", "ambiente", "multas-ambientais", "malha"],
 }
 FORA = [r"^/policias/.+"]  # fichas de uma polícia: cada página lê uma só; no pacote sairia mais caro

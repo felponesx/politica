@@ -737,6 +737,16 @@ def julgamentos():
     return _j.dados()
 
 
+@router.get("/votos-tribunais", tags=["Tribunais"])
+def votos_tribunais(db: Session = Depends(get_db)):
+    """Como votou cada ministro do STJ, pela certidão de cada acórdão (só o que está escrito), e as relatorias do TSE (sem voto individual: não há base aberta)."""
+    from app import votos_tribunais as _v
+    d = memo(("votos-tribunais",), lambda: _v.dados(db))
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode as coletas stj-votos e tse-relatorias.")
+    return d
+
+
 @router.get("/faccoes", tags=["Segurança"])
 def faccoes():
     """Facções criminosas de maior alcance, onde são mais fortes e a fonte de cada uma (lista curada)."""

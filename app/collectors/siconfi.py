@@ -210,3 +210,57 @@ def coletar_tributos_entes(ano: int, bimestre: int = 6, esferas: list[str] | Non
         if sem:
             n.avisos.append(f"{sem} de {len(entes)} entes sem o Anexo 03 de {ano} (não entregaram ou mudou o formato)")
     return n.itens
+
+
+def saude_minimo_anexo14(itens: list[dict]) -> dict | None:
+    """Mínimo constitucional em saúde do RREO Anexo 14 (demonstrativo simplificado): despesa com ações e serviços públicos de
+    saúde (ASPS) paga com impostos, o % mínimo (15% municípios, 12% estados) e o % aplicado até o bimestre. Sem as duas
+    porcentagens: None (não entregou ou mudou o formato) — nunca vira zero."""
+    alvo = [x for x in itens if "SAÚDE" in (x.get("conta") or "").upper() and "AÇÕES E SERVIÇOS" in (x.get("conta") or "").upper()]
+    col = lambda t: next((para_float(x.get("valor")) for x in alvo if t in (x.get("coluna") or "")), None)  # noqa: E731
+    minimo, aplicado, valor = col("Mínimo a Aplicar"), col("% Aplicado"), col("Valor Apurado")
+    if minimo is None or aplicado is None:
+        return None
+    return {"valor_asps": valor, "pct_minimo": minimo, "pct_aplicado": aplicado, "cumpriu": aplicado >= minimo,
+            "conta": alvo[0].get("conta") if alvo else None}
+
+
+def coletar_saude_minimo(ano: int, bimestre: int = 6, esferas: list[str] | None = None, ufs: list[str] | None = None):
+    """% da receita de impostos aplicado em saúde por estado (E) e município (M) — RREO Anexo 14 do SICONFI, o mesmo cálculo do
+    SIOPS/LC 141/2012. O SIOPS (siops.datasus.gov.br) recusa o acesso automatizado (BigIP 426/502); o SICONFI traz o resumo oficial
+    que o próprio ente entrega ao Tesouro. Ente sem o anexo fica contado em "sem_entrega" (dado indisponível, não zero)."""
+    esferas = [e.upper() for e in (esferas or ["E", "M"])]
+    entes = [("E", CODIGO_IBGE_POR_UF[uf], uf) for uf in (ufs or UFS) if "E" in esferas]
+    if "M" in esferas:
+        from sqlalchemy import select as _sel
+
+        from app.db import SessionLocal
+        from app.models import Municipio
+        with SessionLocal() as _db:
+            entes += [("M", int(m.codigo_ibge), m.uf) for m in _db.scalars(_sel(Municipio).where(Municipio.uf.in_(ufs or UFS)))]
+    with registrar_coleta("siconfi", "saude_minimo", ano=ano, bimestre=bimestre, esferas=",".join(esferas)) as (db, n):
+        sem: dict = {}
+        for k, (esfera, id_ente, uf) in enumerate(entes):
+            try:
+                itens = list(paginar("rreo", {"an_exercicio": ano, "nr_periodo": bimestre, "co_tipo_demonstrativo": "RREO",
+                                              "no_anexo": "RREO-Anexo 14", "co_esfera": esfera, "id_ente": id_ente}))
+            except Exception:
+                itens = []
+            m = saude_minimo_anexo14(itens)
+            if not m:
+                sem.setdefault(f"{esfera}-{uf}", []).append(id_ente)
+                continue
+            upsert(db, Registro, {"fonte": "siconfi", "tipo": "saude_minimo", "chave": f"{esfera}-{id_ente}-{ano}"},
+                   {"uf": uf, "ano": ano, "titulo": (itens[0].get("instituicao") if itens else None) or str(id_ente),
+                    "valor": m["pct_aplicado"], "dados": {**m, "esfera": esfera, "id_ente": id_ente, "bimestre": bimestre}})
+            n += 1
+            if k % 200 == 0:
+                db.commit()
+        upsert(db, Registro, {"fonte": "siconfi", "tipo": "saude_minimo_resumo", "chave": f"{ano}-{','.join(esferas)}"},
+               {"ano": ano, "titulo": f"mínimo em saúde {ano}", "dados": {"ano": ano, "bimestre": bimestre, "entes": len(entes),
+                                                                            "sem_entrega": {k: len(v) for k, v in sem.items()},
+                                                                            "sem_entrega_ids": {k: v[:600] for k, v in sem.items()}}})
+        faltam = sum(len(v) for v in sem.values())
+        if faltam:
+            n.avisos.append(f"{faltam} de {len(entes)} entes sem o Anexo 14 de {ano} (não entregaram ou mudou o formato)")
+    return n.itens

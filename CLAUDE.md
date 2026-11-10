@@ -598,3 +598,18 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Site: aba "Públicas e privadas" em Empresas e Contratos (`telaTiposEmp`, `etChips`, `etCard`): filtro por tipo, ordem por faturamento/lucro/dívida, estado e busca; etiquetas acima do nome
   também em "Maiores empresas". S.A. privada de controle estatal (subsidiária) mostra só "Controle estatal" e não conta como privada.
 - Falta: estatais federais que não são companhia aberta nem estão nas 600 (ex.: Correios, BNDES) — viriam da lista da SEST (Panorama das Estatais).
+
+## Saúde por município, votos dos tribunais e Mata Atlântica (10/11/2026)
+- Coletas novas (registradas em `app/collectors/__init__.py`, robô `EXTRAS`/`VALIDADE`/`LIMITES`, agendador mensal): `saude-leitos-municipios` e `saude-vacinacao`
+  (`app/collectors/saude_mun.py`), `siconfi-saude-minimo` (RREO Anexo 14, `ano=`; o SIOPS bloqueia robôs), `stj-votos` (`app/collectors/stj.py`) e `tse-relatorias`
+  (`app/collectors/tse_relatorias.py`). Detalhes e números conferidos em `docs/FONTES.md`.
+- API: `/saude/municipios?uf=` ganhou leitos (existentes, SUS, UTI, por mil), `vacinacao` (cobertura por vacina, 2022) e `saude_minimo_*`, mais `fontes` (fonte, link,
+  período, status da coleta, data). `/saude/painel` traz `saude_minimo_*` e `vacinacao` por estado e `fontes_novas`. Novas: `/saude/vacinacao` (série por estado e vacina)
+  e `/saude/minimo`. `/votos-tribunais` (`app/votos_tribunais.py`): por ministro do STJ, decisões por maioria com a posição de cada um, e o TSE com `votos_individuais: false`.
+- Regras: dado indisponível ≠ zero (chave ausente/None e "sem dado" na tela; 0 só quando a fonte foi lida e não tem o item, como município sem hospital; UBS não coletada não
+  vira 0). Leito existente ≠ disponível. Vacinação de 2023+ não é estimada. Posição de ministro só a escrita na certidão (acompanhou, vencido, ausente, impedido, não
+  participou; "Participaram do julgamento" em decisão por maioria vira "participou", sem deduzir o voto); presidir não é voto. Resultado do colegiado à parte.
+- Site: Saúde (seletor com vacinas e "Impostos aplicados em saúde", gráfico da cobertura vacinal, tabela dos municípios com leitos, Penta e mínimo, rodapé das fontes —
+  `saudeFontes`, `saudeVacMonta`), Leis e Projetos › Julgamentos dos tribunais (`votosTrib`: ministros do STJ, decisões por maioria com etiqueta por ministro, quadro do TSE),
+  Meio ambiente (`maCarregar`: PRODES e MapBiomas da Mata Atlântica lado a lado).
+- Cópia pronta: `DATABASE_URL=... python -m scripts.copia_saude_tribunais [site/dados]` junta os campos novos nas chaves existentes (não apaga nada) e atualiza os pacotes.
