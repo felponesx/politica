@@ -158,3 +158,9 @@ def test_fechar_aceita_conexao_morta():
 
     C._fechar(Morta())  # não pode levantar
     C._fechar(None)
+
+
+def test_ano_novo_completo_entra_e_parcial_nao():
+    completo = list(C.ARQUIVOS_REGIONAIS)
+    lista = _lista({"2026": completo, "2025": completo, "2027": completo[:3]})
+    assert C.escolher_ano(["2025", "2026", "2027", "Layouts"], lista) == 2026  # 2027 pela metade fica de fora

@@ -23,7 +23,7 @@ log = logging.getLogger("coletor.rais")
 
 HOST = "ftp.mtps.gov.br"
 RAIZ = "/pdet/microdados/RAIS"
-ANOS_PREFERIDOS = (2025, 2024)  # 2025 primeiro; 2024 só se 2025 estiver incompleto
+ANOS_PREFERIDOS = (2025, 2024)  # piso da busca: o coletor usa o ano completo MAIS NOVO a partir de 2024 (2026, 2027… entram sozinhos)
 ARQUIVOS_REGIONAIS = (
     "RAIS_VINC_PUB_CENTRO_OESTE.7z",
     "RAIS_VINC_PUB_MG_ES_RJ.7z",
@@ -47,16 +47,16 @@ def conectar() -> ftplib.FTP:
     return ftp
 
 
-def escolher_ano(nomes_raiz: list[str], listar_pasta) -> int:
-    """Devolve o primeiro ano preferido cuja pasta tem todos os arquivos regionais."""
-    for ano in ANOS_PREFERIDOS:
-        if str(ano) not in nomes_raiz:
-            continue
+def escolher_ano(nomes_raiz: list[str], listar_pasta, minimo: int = ANOS_PREFERIDOS[-1]) -> int:
+    """Devolve o ano MAIS NOVO (a partir de `minimo`) cuja pasta tem todos os arquivos regionais. Um ano novo publicado
+    pela metade é pulado (fica o anterior): nunca se troca um dado completo por um parcial."""
+    anos = sorted((int(n) for n in nomes_raiz if re.fullmatch(r"\d{4}", str(n)) and int(n) >= minimo), reverse=True)
+    for ano in anos:
         arquivos = set(listar_pasta(str(ano)))
         if all(a in arquivos for a in ARQUIVOS_REGIONAIS):
             return ano
         log.warning("RAIS %s incompleta (faltam %s)", ano, [a for a in ARQUIVOS_REGIONAIS if a not in arquivos])
-    raise ColetaIncompleta("nenhum ano preferido está completo: " + ", ".join(map(str, ANOS_PREFERIDOS)))
+    raise ColetaIncompleta(f"nenhum ano a partir de {minimo} está completo")
 
 
 def baixar_regional(ftp, ano: int, nome: str, destino: Path, tentativas: int = 10) -> Path:
