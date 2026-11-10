@@ -2051,7 +2051,10 @@ svg.voo-fim path,svg.voo-fim text{transition:opacity 1.5s ease .25s!important}
 /* logo do app no topo do login */
 .vl2-logo{width:44px;height:44px;border-radius:12px;flex:none;object-fit:cover;background:none!important}
 /* troca de tema: a tela escurece (ou clareia) devagar */
-html.tema-troca,html.tema-troca *{transition:background-color .9s ease,color .9s ease,border-color .9s ease,fill .9s ease,stroke .9s ease,box-shadow .9s ease!important}
+/* troca de tema: o navegador tira uma "foto" da tela nova e a revela num círculo que nasce no botão (View Transitions).
+   Antes cada elemento animava 6 cores por 0,9 s: em telas com milhares de elementos (Eleições) o celular travava. */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2}
 #btnTheme svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #btnTheme .tm-sol{fill:currentColor;stroke:none}
 .adm-aviso{background:#FFF6E5;color:#8A5A00;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;margin:0 0 12px}
@@ -3353,9 +3356,12 @@ function tmAnima(b,lua){const svg=b.querySelector(".tm-svg");if(!svg)return;cons
  svg.style.transition="transform .9s cubic-bezier(.4,0,.2,1)";svg.style.transform=`rotate(${lua?-180:0}deg)`;
  const f=t=>{const k=Math.min(1,(t-t0)/D),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;rec.setAttribute("cx",x0+(x1-x0)*e);rec.setAttribute("cy",y0+(y1-y0)*e);raios.style.opacity=lua?1-e:e;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
 function temaComAnimacao(){const h=document.documentElement,b=document.getElementById("btnTheme");const vaiEscuro=h.dataset.theme!=="dark";
- if(matchMedia("(prefers-reduced-motion: reduce)").matches){toggleTheme();return}
- window.TM_ANIM=true;h.classList.add("tema-troca");if(b)tmAnima(b,vaiEscuro);toggleTheme();
- setTimeout(()=>{h.classList.remove("tema-troca");window.TM_ANIM=false},1000)}
+ if(semMov()||!document.startViewTransition||window.TM_ANIM){toggleTheme();return}  // sem suporte: troca na hora (leve), só o ícone anima
+ window.TM_ANIM=true;
+ const r=b?b.getBoundingClientRect():{left:innerWidth-40,top:0,width:40,height:40},x=r.left+r.width/2,y=r.top+r.height/2,R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+ let vt;try{vt=document.startViewTransition(()=>{toggleTheme();if(b)tmEstado(b,!vaiEscuro)})}catch(e){window.TM_ANIM=false;toggleTheme();return}
+ vt.ready.then(()=>{if(b)tmAnima(b,vaiEscuro);h.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:560,easing:"cubic-bezier(.4,0,.2,1)",pseudoElement:"::view-transition-new(root)"})}).catch(()=>{});
+ vt.finished.finally(()=>{window.TM_ANIM=false})}
 $("#btnTheme").onclick=temaComAnimacao;
 $("#bMore").onclick=()=>{closeSearch();closeAll();$("#sheet").classList.add("open");$("#sheetOv").classList.add("open");travar("menu",true)};
 $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEventListener("click",e=>{if(e.target.closest("a"))closeAll()});
