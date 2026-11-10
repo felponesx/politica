@@ -1129,6 +1129,11 @@ a.rrow b{font-weight:500}
 .obs.parou::before{background:#E9A23B}.obs.parou i{background:#E06C4F;border-color:#E06C4F}.obs.parou span{color:#B24A2E;font-weight:600}
 .obp{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:4px}.obp .bar{flex:0 0 140px;height:6px}.obp.venc .bar i{background:#E06C4F}.obp.venc span{color:#B24A2E}
 .tag.ob-ok{background:#E3F2EA;color:#25683F}
+.et-chips{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 4px}.et-chip{display:inline-block;font-size:10.5px;font-weight:600;line-height:1;padding:4px 7px;border-radius:999px;background:#EAECF0;color:#344054;white-space:nowrap}
+.et-empresa_publica,.et-entidade_publica{background:#E0EAFF;color:#2F4EA8}.et-economia_mista{background:#EDE4FF;color:#6B3FC4}.et-privada{background:#E3F2EA;color:#25683F}.et-cooperativa{background:#FEF0C7;color:#93370D}.et-conc{background:#FFF1E6;color:#B54708}.et-bolsa{background:#E6F4FA;color:#0B6A8F}.et-ext{background:#FCE7F3;color:#9D174D}
+:root[data-theme="dark"] .et-chip{background:#2A3140;color:#D0D5DD}:root[data-theme="dark"] .et-empresa_publica,:root[data-theme="dark"] .et-entidade_publica{background:#1E2B4D;color:#A4BCFD}:root[data-theme="dark"] .et-economia_mista{background:#2E2350;color:#C9B5FF}:root[data-theme="dark"] .et-privada{background:#173527;color:#8EDBB0}:root[data-theme="dark"] .et-cooperativa{background:#4A3510;color:#FEC84B}:root[data-theme="dark"] .et-conc{background:#45290F;color:#FDB022}:root[data-theme="dark"] .et-bolsa{background:#0F3445;color:#7CD4FD}:root[data-theme="dark"] .et-ext{background:#4A1934;color:#FBB6D9}
+.et-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}.et-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}.et-nome b{display:block;color:var(--ink)}.et-nome small{display:block;color:var(--ink2);margin-top:2px;font-size:12px}
+.et-vs{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:10px}.et-v span{display:block;font-size:11px;color:var(--ink2)}.et-v b{display:block;color:var(--ink);font-size:14px}.et-v small{display:block;font-size:10.5px;color:var(--ink2)}
 .tag.dt-conf{background:#FEF0C7;color:#93370D;font-size:11px;vertical-align:1px;display:inline-block;width:auto;font-weight:600}
 :root[data-theme="dark"] .tag.dt-conf{background:#4A3510;color:#FEC84B}.tag.ob-and{background:#E3EEFA}.tag.ob-par{background:#FBE6DF;color:#9A3B22}.tag.ob-canc{background:#EEF0F3;color:var(--muted)}
 
@@ -3947,12 +3952,43 @@ mount(){apiGet("/legislacao/"+String(id).slice(1)).then(d=>{const n=d.norma,o=d.
 
 /* ---------- contratos e fornecedores reais ---------- */
 const _empresas=P.empresas,_contrato=P.contrato;
-const ABAS_EMP=view=>`<div class="tabs" style="margin-top:0">${[["empresas","Empresas"],["maiores","Maiores empresas"],["contratos","Contratos públicos"]].map(t=>`<a class="tabl ${t[0]===view?"on":""}" href="#/empresas${t[0]==="empresas"?"":"/"+t[0]}">${t[1]}</a>`).join("")}</div>`;
+/* ----- Empresas públicas, de economia mista, privadas e concessões (/empresas-tipos: CVM + Receita + PGFN) ----- */
+let ET=null;const etDados=()=>ET||(ET=apiGet("/empresas-tipos").then(d=>d&&d.disponivel?d:null).catch(()=>null));
+function etChips(e,D){const ex=(D&&D.explica)||{},tp=(D&&D.tipos)||{},o=[];
+ if(e.tipo)o.push(`<span class="et-chip et-${e.tipo}" title="${esc(ex[e.tipo]||"")}">${esc(tp[e.tipo]||e.tipo)}</span>`);
+ if(e.controle==="estatal"&&e.tipo!=="empresa_publica"&&e.tipo!=="economia_mista")o.push(`<span class="et-chip et-economia_mista" title="Companhia aberta controlada pelo governo, segundo o formulário entregue à CVM">Controle estatal</span>`);
+ if(e.controle==="estrangeiro")o.push(`<span class="et-chip et-ext" title="Controle estrangeiro, segundo o formulário entregue à CVM">Controle estrangeiro</span>`);
+ if(e.concessao)o.push(`<span class="et-chip et-conc" title="${esc(ex.concessao||"")}">Concessão · ${esc(e.concessao)}</span>`);
+ if(e.bolsa)o.push(`<span class="et-chip et-bolsa" title="Companhia aberta com ações negociadas na bolsa (CVM)">Na bolsa</span>`);
+ return o.length?`<div class="et-chips">${o.join("")}</div>`:""}
+const ET_FILTROS=[["","Todas"],["governo","Do governo (públicas e mistas)"],["empresa_publica","Empresas públicas"],["economia_mista","Economia mista"],["privada","Privadas"],["concessao","Concessões de serviço público"],["bolsa","Na bolsa"],["estrangeiro","Controle estrangeiro"]];
+const ET_ORDEM=[["faturamento","Maior faturamento"],["lucro","Maior lucro"],["divida_balanco","Maior dívida no balanço"],["divida_uniao","Maior dívida com a União"]];
+function etCard(e,D,k){const v=(t,x,s)=>`<div class="et-v"><span>${t}</span><b>${x}</b>${s?`<small>${s}</small>`:""}</div>`;const banco=/Intermedia|Seguro|Prêmio/i.test(e.conta_receita||"");
+ return`<div class="et-card">${etChips(e,D)}<div class="et-nome"><b>${esc(tit(e.nome||e.razao_social||"Empresa"))}</b><small>${[e.atividade,e.municipio&&e.uf?e.municipio+" ("+e.uf+")":e.uf].filter(Boolean).map(esc).join(" · ")} · CNPJ ${esc(String(e.cnpj).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5"))}</small></div>
+ <div class="et-vs">${v(banco?"Receita (financeira)":"Faturamento",e.faturamento!=null?brl(e.faturamento):"não publicado",e.faturamento!=null&&e.exercicio?"em "+e.exercicio.slice(0,4):"só companhias abertas publicam")}${v("Lucro",e.lucro!=null?brl(e.lucro):"—",e.lucro<0?"prejuízo":"")}${v("Dívida no balanço",e.divida_balanco!=null?brl(e.divida_balanco):"—","empréstimos e financiamentos")}${v("Deve à União",e.divida_uniao!=null?(e.divida_uniao?brl(e.divida_uniao):"nada"):"—","dívida ativa (PGFN)")}</div></div>`}
+function telaTiposEmp(){let qtd=30;return{html:`<div class="ph"><div><h1>Empresas e Contratos</h1><p>Empresas públicas, de economia mista e privadas, as que atuam em serviços públicos concedidos, quanto faturam e quanto devem.</p></div></div>`+ABAS_EMP("tipos")+`<div id="etBox">${rload()}</div>`,
+ mount(){etDados().then(D=>{const box=$("#etBox");if(!box)return;if(!D){box.innerHTML=rvazio("A classificação das empresas ainda não foi coletada (tarefa empresas-tipo).");return}
+  const C=D.contagem||{},L=D.empresas||[];
+  box.innerHTML=`<div class="kpis"><div class="kpi"><span>Do governo</span><strong>${nf(C.governo||0)}</strong><small>públicas, mistas e de controle estatal</small></div><div class="kpi"><span>Privadas</span><strong>${nf(C.privada||0)}</strong></div><div class="kpi"><span>Concessões</span><strong>${nf(C.concessao||0)}</strong><small>serviço público, pela atividade</small></div><div class="kpi"><span>Com faturamento</span><strong>${nf(C.com_faturamento||0)}</strong><small>companhias abertas, ${D.ano_balanco}</small></div></div>
+  <div class="panel mt"><div class="filters"><input id="etQ" placeholder="Pesquisar por nome, CNPJ, atividade ou cidade" style="flex:1;min-width:180px" autocomplete="off"><select id="etT" data-titulo="Tipo">${ET_FILTROS.map(([k,t])=>`<option value="${k}">${t}</option>`).join("")}</select><select id="etO" data-titulo="Ordem">${ET_ORDEM.map(([k,t])=>`<option value="${k}">${t}</option>`).join("")}</select>${UFSel("etU")}</div>
+  <p class="small muted" style="margin:6px 0 0">${Object.entries(D.explica||{}).filter(([k])=>["empresa_publica","economia_mista","concessao"].includes(k)).map(([k,t])=>`<b>${esc(k==="concessao"?"Concessão":(D.tipos||{})[k])}:</b> ${esc(t)}`).join(" ")}</p>
+  <p class="small muted" id="etN" style="margin:8px 0"></p><div id="etL"></div><p class="small muted mt">${esc(D.aviso||"")} Fonte: ${esc(D.fonte||"")}.</p></div>`;
+  const norm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  const pinta=()=>{const q=norm($("#etQ").value.trim()),dg=$("#etQ").value.replace(/\D/g,""),t=$("#etT").value,o=$("#etO").value,uf=$("#etU").value;
+   let l=L.filter(e=>(!uf||e.uf===uf)&&(!t||(t==="governo"?e.governo:t==="concessao"?!!e.concessao:t==="bolsa"?e.bolsa:t==="estrangeiro"?e.controle==="estrangeiro":e.tipo===t))&&(!q||norm([e.nome,e.razao_social,e.atividade,e.municipio,e.concessao].join(" ")).includes(q)||(dg.length>=4&&String(e.cnpj).startsWith(dg))));
+   l=l.slice().sort((a,b)=>(b[o]??-Infinity)-(a[o]??-Infinity));const n=Math.min(qtd,l.length);
+   $("#etN").textContent=`${nf(l.length)} ${l.length===1?"empresa":"empresas"} · mostrando ${nf(n)}`;
+   $("#etL").innerHTML=l.length?`<div class="et-grid">${l.slice(0,n).map((e,k)=>etCard(e,D,k)).join("")}</div>`+(l.length>n?`<div class="mt" style="text-align:center"><button class="btn" id="etMais" type="button">Mostrar mais</button></div>`:""):rvazio("Nenhuma empresa com esses filtros.");
+   const mb=$("#etMais");if(mb)mb.onclick=()=>{qtd+=30;pinta()}};
+  const de=()=>{qtd=30;pinta()};$("#etQ").oninput=debounce(de,250);$("#etT").onchange=de;$("#etO").onchange=de;$("#etU").onchange=de;pinta()})}}}
+const ABAS_EMP=view=>`<div class="tabs" style="margin-top:0">${[["empresas","Empresas"],["tipos","Públicas e privadas"],["maiores","Maiores empresas"],["contratos","Contratos públicos"]].map(t=>`<a class="tabl ${t[0]===view?"on":""}" href="#/empresas${t[0]==="empresas"?"":"/"+t[0]}">${t[1]}</a>`).join("")}</div>`;
 P.empresas=(v,...a)=>{if(!API.on)return _empresas(v,...a);
 if(v==="dividas"){const sub=a[0];return{html:"",mount(){history.replaceState(null,"","#/dividas/empresas"+(sub&&sub!=="resumo"?"/"+sub:""));route()}}}
+if(v==="tipos")return telaTiposEmp();
 if(v==="maiores")return{html:`<div class="ph"><div><h1>Empresas e Contratos</h1><p>Quem vende para o poder público, para quais órgãos e por quanto, e quantas empresas do país devem à União, estão em recuperação judicial ou faliram.</p></div></div>`+ABAS_EMP("maiores")+`<div class="panel"><h2>Maiores empresas do país <small>pelo capital social</small></h2><p class="small muted" style="margin:0 0 8px">Empresas ativas (matriz) com o maior capital social declarado à Receita Federal, com a dívida de cada uma com a União. O capital social é o declarado pela própria empresa e não é conferido: há valores claramente errados no cadastro.</p>
  <div class="filters"><input id="mpq" placeholder="Pesquisar por nome, CNPJ, atividade ou cidade" style="flex:1;min-width:180px" autocomplete="off">${UFSel("mpuf")}<select id="mpp" data-titulo="Porte"><option value="">Todos os portes</option></select></div><p class="small muted" id="mpn" style="margin:0 0 8px"></p><div id="empCap">${rload()}</div></div>`,
- mount(){apiGet("/dividas/empresas").then(E=>{const b=$("#empCap");if(!b)return;const todas=(E.maiores_empresas||[]).slice().sort((x,y)=>(y.capital_social||0)-(x.capital_social||0));
+ mount(){Promise.all([apiGet("/dividas/empresas"),etDados()]).then(([E,D])=>{const b=$("#empCap");if(!b)return;const todas=(E.maiores_empresas||[]).slice().sort((x,y)=>(y.capital_social||0)-(x.capital_social||0));
+  if(D&&D.empresas){const por={};D.empresas.forEach(x=>{por[String(x.cnpj).slice(0,8)]=x});todas.forEach(e=>{const x=por[String(e.cnpj_basico||"").padStart(8,"0")];if(x)e._chips=etChips(x,D)})}
   if(!todas.length){b.innerHTML=rvazio("Os dados das empresas ainda estão sendo coletados.");return}
   const portes=[...new Set(todas.map(e=>e.porte).filter(Boolean))];$("#mpp").insertAdjacentHTML("beforeend",portes.map(x=>`<option>${esc(x)}</option>`).join(""));
   const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
@@ -5132,7 +5168,7 @@ TELA_DIV.empresas.mount=D=>telaEmpresasDiv(D);
 const empLogo=(e,sz=44)=>`<span class="emp-logo" data-elogo="${e.cnpj_basico}" style="width:${sz}px;height:${sz}px">${esc(iniciais((e.nome||"?").replace(/\b(S\.?\s?A|LTDA|EIRELI)\b\.?/gi,"").trim()||"?"))}</span>`;
 const empTags=e=>`${e.recuperacao_judicial?'<span class="tag esc-den">Recuperação judicial</span>':""}${e.falida?'<span class="tag esc-con">Falida</span>':""}${e.ativa===false?'<span class="tag">Não está ativa</span>':""}`;
 const fornLogo=(cnpj,nome,sz=28)=>empLogo({cnpj_basico:String(cnpj||"").replace(/\D/g,"").slice(0,8),nome},sz);
-function empCard(e,k,tipo){return`<div class="emp-card"><span class="emp-pos">${k+1}º</span>${empLogo(e)}<div class="emp-tx"><b>${esc(e.nome||"Empresa "+e.cnpj_basico)}</b>
+function empCard(e,k,tipo){return`<div class="emp-card"><span class="emp-pos">${k+1}º</span>${empLogo(e)}<div class="emp-tx">${e._chips||""}<b>${esc(e.nome||"Empresa "+e.cnpj_basico)}</b>
  <div class="small muted">${[e.porte,e.uf,e.atividade].filter(Boolean).map(esc).join(" · ")}</div><div class="small emp-res" data-eres="${e.cnpj_basico}"></div><div class="emp-tags">${empTags(e)}</div></div>
  <div class="emp-v">${tipo==="capital"?`<strong>${e.capital_social?brl(e.capital_social):"—"}</strong><span class="small muted">capital social · deve à União: ${e.divida_uniao?brl(e.divida_uniao):"nada"}</span>`:`<strong>${e.divida_uniao?brl(e.divida_uniao):"Nada"}</strong><span class="small muted">${tipo==="cap"&&e.capital_social?`capital ${brl(e.capital_social)}`:"devido à União"}</span>`}</div></div>`}
 const compEmp=(l,v)=>l.length?`<div class="fl-lista">${l.map(e=>`<div class="fl-l"><span class="fl-n">${empLogo(e,24)}${esc(e.nome||"Empresa "+e.cnpj_basico)}</span><span class="fl-r">${v(e)}</span><span class="fl-s">${[e.porte,e.uf,e.atividade].filter(Boolean).map(esc).join(" · ")}${empTags(e)?" · "+empTags(e):""}</span></div>`).join("")}</div>`:rvazio("Sem dados.");

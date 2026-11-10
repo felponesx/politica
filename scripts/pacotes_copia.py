@@ -36,7 +36,7 @@ SECOES = {
     "economia": ["economia", "indicadores", "energia-tarifas", "iva", "renuncia-fiscal", "aeroportos", "transito", "acidentes-rodovias",
                  "caged", "trabalho", "social", "indicadores-sociais", "saneamento"],
     "governo": ["orgaos", "cortes", "emendas", "gastos", "historico-estados", "cartao-corporativo", "servidores", "viagens", "fundos",
-                "dividas", "recuperacao-judicial", "fluxo-federativo", "economia-empresas", "resumo-contratos", "fornecedores-cruzados",
+                "dividas", "recuperacao-judicial", "fluxo-federativo", "economia-empresas", "empresas-tipos", "resumo-contratos", "fornecedores-cruzados",
                 "empresas-setores", "obras-gestao"],
     "escandalos": ["escandalos", "escandalos-fila", "crimes-politicos", "sancoes", "tcu-inabilitados", "tcu-irregulares", "lista-suja",
                    "doadores", "faccoes", "julgamentos", "cpis", "legislacao-resumo", "diarios-oficiais"],
