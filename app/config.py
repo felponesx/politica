@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     google_client_id: str = ""           # GOOGLE_CLIENT_ID: cliente OAuth (Aplicativo da Web) do Google Cloud. Vazio = botão do Google desligado.
     admin_teste_email: str = "admin"     # ADMIN_TESTE_EMAIL: e-mail da conta de teste (ex.: o seu). Fica no servidor, nunca no código.
     admin_teste_senha: str = "admin"     # ADMIN_TESTE_SENHA: senha da conta de teste. Fica no servidor, nunca no código.
-    admin_padrao: bool = True            # ADMIN_PADRAO: conta de teste admin/admin, só enquanto não houver outro administrador. Ponha false antes de publicar.
+    admin_padrao: bool = False           # ADMIN_PADRAO: conta de teste admin/admin (true só no .env do PC/desenvolvimento), e só enquanto não houver outro administrador.
     setup_admin_token: str = ""          # SETUP_ADMIN_TOKEN: chave (32+ caracteres) para a página /admin/configurar, que torna admin uma conta já criada. Vazio = página desligada. Apague depois de usar.
     admin_emails: str = ""               # ADMIN_EMAILS: e-mails (separados por vírgula) que viram administradores ao entrar. Só no servidor.
     expor_docs: bool = True              # /docs, /redoc e /openapi.json; desligue em produção (EXPOR_DOCS=false)

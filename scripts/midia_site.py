@@ -121,7 +121,7 @@ def fnv1a(texto: str) -> int:
 # tamanhos máximos (nunca amplia: se a fonte for menor, fica como veio). 360 px de altura é o que cabe na cópia publicada
 # (limite de 256 MB por versão do Artifact); 720p/1080p reais de milhares de retratos passariam de 500 MB.
 ALTURA_FOTO = 360
-ALTURA_LOGO = 256
+ALTURA_LOGO = 256  # baixa com folga; ao gravar, scripts/logos_arquivo.py reduz para ALTURA_MAX (160 px)
 
 
 def foto_maior(url: str) -> str:

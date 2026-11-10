@@ -313,7 +313,11 @@ class Exportador:
         for nome, conteudo in proprios.items():
             (pasta / nome).write_bytes(conteudo)
         # textos e siglas padronizados também nos dados já gravados
-        tamanho = gravar_partes(pasta, {k: limpar(v) for k, v in self.dados.items()})
+        limpos = {k: limpar(v) for k, v in self.dados.items()}
+        tamanho = gravar_partes(pasta, limpos)
+        # pacotes por tela (dados/p/…) e resumos da tela inicial: ver scripts/pacotes_copia.py
+        from scripts.pacotes_copia import gravar_pacotes
+        pacotes = gravar_pacotes(pasta, limpos, FIXAS)
         with SessionLocal() as db:
             ultima = db.scalar(select(func.max(Parlamentar.id)))  # noqa: F841 (só garante que o banco responde)
             contagem = {"parlamentares": db.scalar(select(func.count()).select_from(Parlamentar)),
@@ -322,7 +326,7 @@ class Exportador:
                         "normas": db.scalar(select(func.count()).select_from(Norma))}
         manifest = {"versao": VERSAO, "gerado_em": datetime.now().astimezone().isoformat(timespec="minutes"),
                     "shards": SHARDS, "bases": self.bases, "totais": self.totais, "contagem": contagem,
-                    "consultas": len(self.dados), "bytes": tamanho}
+                    "consultas": len(self.dados), "bytes": tamanho, "pacotes": pacotes}
         (pasta / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1, default=_json), encoding="utf-8")
         return manifest
 

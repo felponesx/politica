@@ -3564,7 +3564,6 @@ const PREF_PADRAO={tema:"claro"};
 function prefs(){let p={};try{p=JSON.parse(localStorage.getItem("bm-prefs")||"{}");if(!localStorage.getItem("bm-prefs")&&localStorage.getItem("bm-theme")==="dark")p.tema="escuro"}catch(e){}return{...PREF_PADRAO,...p}}
 function salvarPrefs(p){try{localStorage.setItem("bm-prefs",JSON.stringify(p))}catch(e){}aplicarPrefs()}
 const ICO_TEMA='<svg class="tm-svg" viewBox="0 0 24 24"><defs><mask id="tmMascara"><rect x="-4" y="-4" width="32" height="32" fill="#fff"/><circle class="tm-recorte" cx="26" cy="4" r="6.6" fill="#000"/></mask></defs><circle class="tm-sol" cx="12" cy="12" r="4.6" mask="url(#tmMascara)"/><g class="tm-raios" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>';
-const ICO_LUA='<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',ICO_SOL='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
 function aplicarPrefs(){const p=prefs(),r=document.documentElement;const esc=p.tema==="escuro"||(p.tema==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);r.dataset.theme=esc?"dark":"light";r.classList.remove("fonte-grande","sem-animacao");
  const b=document.getElementById("btnTheme");if(b){const t=esc?"Ativar o modo claro":"Ativar o modo escuro";if(!b.querySelector(".tm-svg"))b.innerHTML=ICO_TEMA;if(!window.TM_ANIM)tmEstado(b,esc);b.setAttribute("aria-label",t);b.title=t}}
 const semMov=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -3739,7 +3738,13 @@ async function snapContadores(base){try{const e=await fetch("dados/contadores_ex
  return{...base,...(e.impostometro?{impostometro:{...(base&&base.impostometro||{}),...e.impostometro}}:{}),...(e.gastometro?{gastometro:{...(base&&base.gastometro||{}),...e.gastometro}}:{})}}catch(_){return base}}
 async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)return x}
  if(k==="/contadores"){return snapContadores(await snapLer0(k))}return snapLer0(k)}
-async function snapLer0(k){const n=snapHash(k)%SNAP.m.shards;
+/* pacotes: as chaves pequenas que uma tela usa ficam juntas num arquivo só (dados/p/…), em vez de espalhadas em dezenas de partes de ~450 KB.
+   manifest.pacotes = {"p/inicio.json":{chaves:[…], telas:["inicio"]?}}; sem "telas", vale em qualquer tela. A chave continua também na parte (s<N>). */
+function snapMapaPacotes(m){const o={};for(const[arq,p]of Object.entries(m.pacotes||{}))for(const k of p.chaves||[])if(!o[k])o[k]={arquivo:arq,telas:p.telas||null};return o}
+function snapPacote(arq){if(!SNAP.cache[arq])SNAP.cache[arq]=fetch("dados/"+arq).then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[arq];throw e});return SNAP.cache[arq]}
+async function snapLer0(k){const pk=SNAP.pk&&SNAP.pk[k];
+ if(pk&&(!pk.telas||pk.telas.includes((location.hash.replace(/^#\/?/,"").split("/")[0])||"inicio"))){try{const P=await snapPacote(pk.arquivo);if(P&&k in P)return P[k]}catch(e){}}
+ const n=snapHash(k)%SNAP.m.shards;
  if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
  const v=(await SNAP.cache[n])[k];
  // respostas grandes ficam num arquivo só delas (dados/g/…): só são baixadas quando a página pede
@@ -3758,7 +3763,9 @@ const snapFalta=(o="Esta consulta")=>Object.assign(new Error(`${o} não faz part
 async function snapGet(p){const u=new URL(p,"https://copia.local");const cam=decodeURIComponent(u.pathname);const ps={};u.searchParams.forEach((v,k)=>{if(v!=="")ps[k]=v});
  if(cam==="/proposicoes"&&ps.casa==="congresso"){delete ps.casa;ps.tipos="PLN,MPV,PLV"}  // sessão conjunta: matérias do Congresso Nacional
  if(cam==="/busca")return snapBusca(ps);
- let v=await snapLer(snapChave(cam,ps));
+ const bs=(SNAP.m.bases||{})[cam],kq=snapChave(cam,ps),np=Object.keys(ps).length;
+ const direto=!bs||(SNAP.pk&&SNAP.pk[kq])||bs.some(b=>Object.keys(b).length===np&&Object.keys(b).every(k=>ps[k]===String(b[k])));
+ let v=direto?await snapLer(kq):undefined;
  if(v===undefined||(v&&v.__completa)){const resto={...ps};delete resto.limit;delete resto.offset;let base=null;
   for(const b of(SNAP.m.bases||{})[cam]||[])if(Object.entries(b).every(([k,x])=>resto[k]===String(x))&&(!base||Object.keys(b).length>Object.keys(base).length))base=b;
   if(!base)throw snapFalta();
@@ -3784,7 +3791,7 @@ async function detectarAPI(){API.on=false;API.snap=false;API.erro="";const cand=
  if(s!=="demo"&&/^https?:$/.test(location.protocol)&&!/claude\.ai|claudeusercontent/.test(location.hostname))cand.push("");
  for(const b of cand){API.base=b;try{const r=await apiGet("/saude",{timeout:3000});if(r&&r.status==="ok"){API.on=true;break}}catch(e){API.erro=e.name==="AbortError"?"O servidor não respondeu a tempo.":e.message}}
  if(!API.on&&s!=="demo"&&/^https?:$/.test(location.protocol)){try{const r=await fetch("dados/manifest.json",{headers:{Accept:"application/json"}});
-  if(r.ok){const m=await r.json();if(m&&m.versao&&m.shards){SNAP.m=m;SNAP.cache={};API.on=true;API.snap=true;API.base=""}}}catch(e){}}
+  if(r.ok){const m=await r.json();if(m&&m.versao&&m.shards){SNAP.m=m;SNAP.cache={};SNAP.pk=snapMapaPacotes(m);API.on=true;API.snap=true;API.base=""}}}catch(e){}}
  if(!API.on)API.base=null;API.checado=true;document.documentElement.classList.toggle("api-on",API.on);
  const b=$("#apiPill");if(b){b.hidden=false;b.classList.toggle("on",API.on);b.title=API.snap?"Cópia dos dados oficiais de "+dataCopia():API.on?"Dados oficiais do servidor BRASIL+":"Dados de demonstração";b.querySelector("span").textContent=API.on?"Dados oficiais":"Demonstração"}
  const df=$("#demoFaixa");if(df)df.hidden=API.on}
@@ -4735,9 +4742,6 @@ async function malhaUF(uf){if(MALHA_C[uf])return MALHA_C[uf];const m=await apiGe
  const ms=m.municipios.filter(c=>!(uf==="PE"&&c.codigo==="2605459")),[x0,y0,x1,y1]=bboxD(ms.map(c=>c.d)),[gx0,gy0,gx1,gy1]=bboxD([GEO.p[uf]]);
  const sx=(gx1-gx0)/(x1-x0||1),sy=(gy1-gy0)/(y1-y0||1);
  return MALHA_C[uf]={ms,t:`matrix(${sx.toFixed(5)} 0 0 ${sy.toFixed(5)} ${(gx0-x0*sx).toFixed(3)} ${(gy0-y0*sy).toFixed(3)})`}}
-function infoMunicipio(x,uf,nomeDe,corDe,partDe){const w=x.vencedor,sg=x.segundo,T=x.total||0;
- const lin=(c,pct)=>`<div class="ht-bar"><span>${esc(tit(nomeDe(c.sq_candidato,c.nome)))} <small>${esc(c.partido||partDe(c.sq_candidato)||"")}</small></span><b>${nf(Math.round(T*pct/100))} · ${pctN(pct)}</b><i style="width:${Math.min(100,pct)}%;background:${corDe(c.sq_candidato)}"></i></div>`;
- return`<div class="ht-top"><div><b>${esc(x.municipio)} · ${uf}</b><span>${nf(T)} votos válidos</span></div></div>${lin(w,w.percentual)}${sg?lin({sq_candidato:sg.sq_candidato},sg.percentual):""}`}
 async function camadaMunPais(o){const{f,corDe,forte,cands,modo,onZoom}=o;const tok=f._mk=(f._mk||0)+1;const svg=$("#elmap svg.geo");if(!svg)return;
  const nomeDe=(sq,n)=>{const c=cands.find(x=>x.sq_candidato===sq);return c?c.nome:(n||"")},partDe=sq=>{const c=cands.find(x=>x.sq_candidato===sq);return c?c.partido:""};
  const res={};let i=0;const ufs=UFS.map(u=>u.uf);
@@ -5293,7 +5297,7 @@ addEventListener("hashchange",()=>{const v=$("#view");v&&v.classList.remove("sd"
 
 /* ---------- Início: todos os blocos com dados oficiais ---------- */
 const kcardR=(icon,l,v,sub)=>`<div class="panel kc"><div class="ico">${hi(icon)}</div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${sub}</div></div>`;
-const quando=d=>{if(!d)return"";const x=new Date(String(d).slice(0,10)+"T12:00:00"),h=new Date();const dias=Math.round((h-x)/864e5);return dias<=0?"hoje":dias===1?"ontem":dias<8?`há ${dias} dias`:fd(String(d).slice(0,10))};
+const quando=d=>{if(!d)return"";const x=new Date(String(d).slice(0,10)+"T12:00:00"),h=new Date();const dias=Math.round((h-x)/864e5);return dias<0?fd(String(d).slice(0,10)):dias===0?"hoje":dias===1?"ontem":dias<8?`há ${dias} dias`:fd(String(d).slice(0,10))};
 async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados").catch(()=>null),apiGet("/contadores").catch(()=>null)]);
  const kg=document.querySelector(".kgrid4");
  if(kg&&m){const E=m.estados,soma=k=>UFS.reduce((a,u)=>a+(((E[u.uf]||{})[k])||0),0),g=c&&c.gastometro;
@@ -5305,11 +5309,11 @@ async function inicioReal(){const[m,c]=await Promise.all([apiGet("/mapa/estados"
   document.querySelectorAll("#cmpseg button").forEach(b=>{if(CMP[b.dataset.c])b.textContent=CMP[b.dataset.c][0]});const on=document.querySelector("#cmpseg button.on");on&&on.click();
   setTimeout(()=>{const s=$("#cmpsub");if(s)s.textContent=s.textContent.replace(/\(\d{4}\)/,`(${m.anos.gasto||""}) · dados oficiais`)},0)}
  // proposições apresentadas (últimos meses coletados)
- todosItens("/proposicoes",4000).then(l=>{const box=[...document.querySelectorAll(".r1 .panel")].find(p=>/Projetos em tramitação/.test(p.textContent));if(!box||!l.length)return;
-  const cont={};l.forEach(p=>cont[p.sigla_tipo||"?"]=(cont[p.sigla_tipo||"?"]||0)+1);const NT={PL:"Projetos de lei",REQ:"Requerimentos",RIC:"Pedidos de informação",PEC:"Propostas de emenda",PLP:"Projetos de lei complementar",PDL:"Projetos de decreto legislativo",MPV:"Medidas provisórias",INC:"Indicações"};
-  const it=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,n],i)=>[NT[k]||k,n,["#609FEC","#F8C260","#AF8CEB","#8CDBB6","#F69981"][i]]);const tot=l.length;
-  const d=l.map(p=>p.data_apresentacao).filter(Boolean).sort();
-  box.innerHTML=`<div class="hd"><div><h2>Proposições apresentadas</h2><p>Câmara e Senado${d.length?`, ${fd(d[0].slice(0,10))} a ${fd(d[d.length-1].slice(0,10))}`:""}</p></div><a href="#/leis/projetos">Ver todas</a></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(it,nf(tot),"proposições")}<div style="flex:1;min-width:190px">${it.map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${esc(x[0])}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/tot*100)}%</span></div>`).join("")}</div></div>`}).catch(()=>{});
+ const propResumo=()=>todosItens("/proposicoes",4000).then(l=>{const cont={};l.forEach(p=>cont[p.sigla_tipo||"?"]=(cont[p.sigla_tipo||"?"]||0)+1);const d=l.map(p=>p.data_apresentacao).filter(Boolean).sort();return{por_tipo:cont,total:l.length,data_min:d[0]||null,data_max:d[d.length-1]||null}});
+ (API.snap?snapLer("/inicio/proposicoes").then(r=>r&&r.total?r:propResumo()).catch(propResumo):propResumo()).then(R=>{const box=[...document.querySelectorAll(".r1 .panel")].find(p=>/Projetos em tramitação/.test(p.textContent));if(!box||!R.total)return;
+  const cont=R.por_tipo;const NT={PL:"Projetos de lei",REQ:"Requerimentos",RIC:"Pedidos de informação",PEC:"Propostas de emenda",PLP:"Projetos de lei complementar",PDL:"Projetos de decreto legislativo",MPV:"Medidas provisórias",INC:"Indicações"};
+  const it=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,n],i)=>[NT[k]||k,n,["#609FEC","#F8C260","#AF8CEB","#8CDBB6","#F69981"][i]]);const tot=R.total;
+  box.innerHTML=`<div class="hd"><div><h2>Proposições apresentadas</h2><p>Câmara e Senado${R.data_min&&R.data_max?`, ${fd(R.data_min.slice(0,10))} a ${fd(R.data_max.slice(0,10))}`:""}</p></div><a href="#/leis/projetos">Ver todas</a></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">${ring(it,nf(tot),"proposições")}<div style="flex:1;min-width:190px">${it.map(x=>`<div class="pl"><i style="background:${x[2]}"></i><span>${esc(x[0])}</span><b>${nf(x[1])}</b><span>${Math.round(x[1]/tot*100)}%</span></div>`).join("")}</div></div>`}).catch(()=>{});
  // últimas atualizações: o que entrou por último nas bases
  Promise.all([apiGet("/votacoes?limit=2").catch(()=>({itens:[]})),apiGet("/proposicoes?limit=1").catch(()=>({itens:[]})),apiGet("/legislacao?limit=1").catch(()=>({itens:[]})),apiGet("/contratos?ordenar=data&limit=1").catch(()=>({itens:[]}))]).then(([v,p,n,ct])=>{
   const box=[...document.querySelectorAll(".r1.rup .panel")].find(x=>/Últimas atualizações/.test(x.textContent));if(!box)return;
@@ -5764,7 +5768,6 @@ surfe:["#1FA3C9",'<path d="M3 11c2.5 0 2.5-3 5-3s2.5 3 5 3 2.5-3 5-3 2.5 3 3 3M3
 handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M12 8v5M8 18.5l4-5.5 4 5.5"/>'],
 "jogos-eletronicos":["#D6409F",'<path d="M7 8h10a4 4 0 0 1 4 4.2l-.6 3.6a2.5 2.5 0 0 1-4.2 1.3L14.5 15h-5l-1.700 2.1a2.5 2.5 0 0 1-4.2-1.3L3 12.2A4 4 0 0 1 7 8z"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="15.5" cy="11.5" r=".6"/><circle cx="17.5" cy="13" r=".6"/>']};
 const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
-const prmRes=c=>{const r=c.grupos.flatMap(g=>g.brasil),t=r.filter(x=>/^(campe|ouro)/i.test(x.resultado)).length,o=r.length-t;return r.length?(t?`<b class="prm-n" style="--c:#F5A524">${nf(t)}</b> ${t===1?"título":"títulos"}`:"")+(t&&o?" · ":"")+(o?`${nf(o)} ${o===1?"pódio":"pódios"}`:""):"sem título confirmado"};
 /* ---------- Ensino (IDEB, faculdades, escolas) ---------- */
 const ENS_ETAPAS=[["iniciais","Anos iniciais (1º ao 5º ano)"],["finais","Anos finais (6º ao 9º ano)"],["medio","Ensino médio"]],ENS_COR={iniciais:"#2F6FED",finais:"#1BAF7A",medio:"#F5A524"};
 const ENS_ABAS=[["geral","Visão geral"],["estados","Por estado"],["faculdades","Faculdades"],["escolas","Escolas"]];
@@ -6192,11 +6195,14 @@ async function midiaLogos(gs=LOGO_GRUPOS){const L=await midiaGrupo(gs[0]||"parti
 async function fotoDe(chave){const i=await midiaIdx();if(!i||!i.blocos)return null;const b=snapHash(chave)%i.blocos;if(!MIDIA.blocos[b])MIDIA.blocos[b]=midiaJSON("fotos_"+b+".json").then(x=>x||{});return(await MIDIA.blocos[b])[chave]||null}
 const logoPart=(L,s)=>L&&L.partidos[normSig(s)];
 function imgLogo(l,h,alt){const im=document.createElement("img");im.decoding="async";im.className="plogo-img";im.src=l.img;im.alt=alt||"";im.height=h;im.style.height=h+"px";im.style.width="auto";im.title=alt?`${alt} (logo: Wikimedia Commons)`:"";return im}
+function fotoCarrega(el){const k=el.dataset.foto;
+ fotoDe(k).then(src=>{if(!el.isConnected)return;const sz=el.style.width;
+  if(!src&&/^https?:/.test(k)){src=k}if(!src)return;const im=document.createElement("img");im.className="rfoto";im.decoding="async";im.loading="lazy";im.alt="Foto de "+(el.dataset.nome||"");im.style.width=sz;im.style.height=el.style.height;im.width=parseInt(sz)||48;im.height=parseInt(el.style.height)||48;
+  im.onerror=()=>{if(im.isConnected)im.replaceWith(el)};im.src=src;el.replaceWith(im)})}
+const FOTO_IO="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){FOTO_IO.unobserve(e.target);fotoCarrega(e.target)}}),{rootMargin:"400px 0px"}):null;
 function aplicarMidia(){
- document.querySelectorAll("[data-foto]:not([data-mok])").forEach(el=>{el.dataset.mok=1;const k=el.dataset.foto;
-  fotoDe(k).then(src=>{if(!el.isConnected)return;const sz=el.style.width;
-   if(!src&&/^https?:/.test(k)){src=k}if(!src)return;const im=document.createElement("img");im.className="rfoto";im.decoding="async";im.loading="lazy";im.alt="Foto de "+(el.dataset.nome||"");im.style.width=sz;im.style.height=el.style.height;im.width=parseInt(sz)||48;im.height=parseInt(el.style.height)||48;
-   im.onerror=()=>{if(im.isConnected)im.replaceWith(el)};im.src=src;el.replaceWith(im)})});
+ // fotos só são buscadas quando o retrato chega perto da tela: cada bloco de fotos tem ~0,9 MB e uma lista longa pedia dezenas deles
+ document.querySelectorAll("[data-foto]:not([data-mok])").forEach(el=>{el.dataset.mok=1;FOTO_IO?FOTO_IO.observe(el):fotoCarrega(el)});
  const marcas=document.querySelectorAll("[data-plogo]:not([data-mok])"),bolas=document.querySelectorAll("svg.hemi:not([data-mok])"),pol=document.querySelectorAll("[data-pol]:not([data-mok])"),unids=document.querySelectorAll("[data-unids]:not([data-uok])"),vls=document.querySelectorAll("[data-vlogo]:not([data-mok])");
  if(!marcas.length&&!bolas.length&&!pol.length&&!unids.length&&!vls.length&&!document.querySelector("[data-elogo]:not([data-mok]),[data-eres]:not([data-mok])"))return;
 const gs=[];if(marcas.length||bolas.length)gs.push("partidos");if(pol.length||unids.length)gs.push("policias","estados");if(vls.length)gs.push("veiculos");
@@ -6554,7 +6560,7 @@ function iaBuscaLimpa(){const b=$("#sIAbox"),r=$("#sRes");if(b)b.hidden=true;if(
  i.addEventListener("keydown",e=>{if(e.key==="Enter"&&iaPergunta(i.value)){e.preventDefault();e.stopImmediatePropagation();iaNaBusca(i.value)}},true);
  const _os=openSearch;openSearch=function(...x){_os(...x);iaBuscaLimpa();iaBuscaAtualiza()}}}
 // depois que a página abre, baixa em segundo plano os dados das abas mais usadas (troca de aba mais rápida)
-(()=>{const c=navigator.connection;if(c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")))return;const ocioso=window.requestIdleCallback||(f=>setTimeout(f,1500));
+(()=>{const c=navigator.connection;if(c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")))return;if(matchMedia("(max-width:760px)").matches)return;const ocioso=window.requestIdleCallback||(f=>setTimeout(f,1500));
  const ir=()=>{if(!API.checado)return setTimeout(ir,800);if(!API.on)return;let i=0;const L=["/seguranca","/gastos/entes","/noticias?limit=1500","/eleicoes/anos","/orgaos","/dividas/estados","/contadores"];
   const prox=()=>{if(i>=L.length)return;apiGet(L[i++]).catch(()=>{}).finally(()=>ocioso(prox,{timeout:4000}))};prox()};
  addEventListener("load",()=>setTimeout(()=>ocioso(ir,{timeout:5000}),2500))})();
