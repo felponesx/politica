@@ -20,7 +20,7 @@ from scripts.exportar_snapshot import GRANDE, fnv1a
 
 NOVAS_NO_PACOTE = {"/saude/vacinacao": "p/ambiente.json", "/saude/minimo": "p/ambiente.json", "/votos-tribunais": "p/escandalos.json"}
 CAMPOS_MUN = ("leitos", "leitos_sus", "leitos_uti", "leitos_uti_sus", "hospitais", "leitos_por_mil", "leitos_competencia", "vacinacao_ano", "vacinacao",
-              "saude_minimo_pct", "saude_minimo_exigido", "saude_minimo_cumpriu", "saude_minimo_valor")
+              "saude_minimo_pct", "saude_minimo_exigido", "saude_minimo_cumpriu", "saude_minimo_valor", "saude_minimo_suspeito")
 
 
 def _texto(v) -> str:

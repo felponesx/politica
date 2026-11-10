@@ -5790,7 +5790,7 @@ function saudeVacMonta(uf){const g=$("#saVacG");if(!g)return;apiGet("/saude/vaci
    g.innerHTML=lineChart(ser,a,{h:200,fmt:v=>sauD1(v)+"%"})+`<p class="small muted" style="margin:6px 0 0">${a[a.length-1]}: ${uf&&e[a[a.length-1]]!=null?esc(UF[uf].nome)+" "+sauD1(e[a[a.length-1]])+"% · ":""}Brasil ${sauD1(b[a[a.length-1]])}%. ${esc(V.aviso||"")}</p>`};
   sel.onchange=des;des();if(typeof pilulas==="function")pilulas()}).catch(()=>{const p=$("#saVac");if(p)p.remove()})}
 function saudeMinBr(B){const m=B.saude_minimo_municipios;if(!m)return"";
- return saudeKpi(`Prefeituras: mínimo em saúde${B.saude_minimo_ano_municipios?` (${B.saude_minimo_ano_municipios})`:""}`,`${nf(m.cumpriram)} cumpriram`,`de ${nf(m.entregaram)} que entregaram o demonstrativo${m.sem_dado?` · ${nf(m.sem_dado)} sem o demonstrativo no SICONFI (sem dado, não é 0%)`:""}`)}
+ return saudeKpi(`Prefeituras: mínimo em saúde${B.saude_minimo_ano_municipios?` (${B.saude_minimo_ano_municipios})`:""}`,`${nf(m.cumpriram)} cumpriram`,`de ${nf(m.entregaram)} com o dado no SICONFI${m.a_conferir?` · ${nf(m.a_conferir)} a conferir (valor impossível)`:""}${m.sem_dado?` · ${nf(m.sem_dado)} sem dado (não é 0%)`:""}`)}
 function saudeKpi(t,v,s){return`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`}
 function saudeFim(D){return`<div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:0;padding-left:18px;color:var(--ink2);line-height:1.5">${(D.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul><p class="small muted" style="margin:10px 0 0">Fontes: ${(D.fontes||[]).map(esc).join("; ")}.${D.competencias&&D.competencias.leitos?` Leitos, UTI e médicos: ${D.competencias.leitos.slice(5)}/${D.competencias.leitos.slice(0,4)}.`:""}</p></div>`}
 function saudeTmiBr(B){const s=B.tmi_serie;if(!s)return"";const a=Object.keys(s).sort();if(a.length<2)return"";
@@ -5837,6 +5837,7 @@ function saudeUF(v,D,uf){const e=D.estados[uf]||{},B=D.brasil,n=UF[uf].nome;
   e.municipios_sem_ubs!=null?saudeKpi("Municípios sem UBS cadastrada",nf(e.municipios_sem_ubs),`de ${nf(e.municipios)}`):"",
   e.mm_ocupadas!=null?saudeKpi("Mais Médicos: vagas ocupadas",nf(e.mm_ocupadas),`${sauD1(e.mm_pct_ocupadas)}% das ${nf(e.mm_vagas)} vagas`):"",
   e.gasto_saude!=null?saudeKpi(`Governo do estado em saúde${D.ano_gasto?` (${D.ano_gasto})`:""}`,brl(e.gasto_saude),`${e.gasto_saude_por_hab!=null?sauR(e.gasto_saude_por_hab)+" por habitante · ":""}${sauD1(e.pct_do_gasto)}% do gasto do estado`):"",
+  e.saude_minimo_suspeito?saudeKpi("Impostos aplicados em saúde","a conferir",`o estado declarou ${sauD1(e.saude_minimo_declarado)}%, fora do possível (provável erro de digitação na fonte)`):"",
   e.saude_minimo_pct!=null?saudeKpi(`Impostos aplicados em saúde${B.saude_minimo_ano?` (${B.saude_minimo_ano})`:""}`,sauD1(e.saude_minimo_pct)+"%",`mínimo da Constituição: ${sauD1(e.saude_minimo_exigido)}% · ${e.saude_minimo_cumpriu?"cumpriu":"não cumpriu"}`):"",
   e.vacinacao&&e.vacinacao.Penta!=null?saudeKpi("Cobertura da vacina Penta",sauD1(e.vacinacao.Penta)+"%",`em ${e.vacinacao_ano} ${cmp(e.vacinacao.Penta,B.vacinacao&&B.vacinacao.Penta,v=>sauD1(v)+"%")}`):""].filter(Boolean).join("");
  const sr=e.tmi_serie,bs=B.tmi_serie,an=sr?Object.keys(sr).filter(a=>bs&&bs[a]!=null).sort():[];
@@ -5845,13 +5846,13 @@ function saudeUF(v,D,uf){const e=D.estados[uf]||{},B=D.brasil,n=UF[uf].nome;
   <div class="panel mt"><h2>Municípios de ${esc(n)}</h2><p class="small muted" style="margin:0 0 8px">UBS, Mais Médicos, leitos cadastrados, cobertura vacinal e quanto dos impostos a prefeitura aplicou em saúde. "Sem dado" é falta de informação na fonte; 0 é zero de verdade.</p><div id="saMun">${rload()}</div></div>
   <p class="small" style="margin:10px 0 0"><a class="btn" href="#/uf/${uf}">Abrir a ficha completa de ${esc(n)}</a></p>${saudeFim(D)}`;
  apiGet("/saude/municipios?uf="+uf+"&limit=500").then(r=>{const b=$("#saMun");if(!b)return;
-  const F=r.fontes||{},ok=k=>F[k]&&(F[k].status==="ok"||F[k].status==="parcial"||F[k].periodo),sd=`<span class="muted">sem dado</span>`,its=r.itens||[];
+  const F=r.fontes||{},sd=`<span class="muted">sem dado</span>`,its=r.itens||[];
   const col=[["Município",x=>esc(x.nome)],["População",x=>x.populacao?nf(x.populacao):"—","n"]];
   if(its.some(x=>x.ubs!=null))col.push(["UBS",x=>x.ubs==null?sd:nf(x.ubs),"n"],["UBS por 10 mil hab.",x=>x.ubs_por_10mil==null?sd:sauD1(x.ubs_por_10mil),"n"]);
   if(its.some(x=>x.mm_vagas!=null))col.push(["Mais Médicos (vagas)",x=>x.mm_vagas==null?"—":nf(x.mm_ocupadas)+" de "+nf(x.mm_vagas),"n"]);
   if(its.some(x=>x.leitos!=null))col.push(["Leitos (SUS)",x=>x.leitos==null?sd:nf(x.leitos)+(x.leitos?` <small class="muted">(${nf(x.leitos_sus)})</small>`:""),"n"],["Leitos por mil hab.",x=>x.leitos_por_mil==null?sd:sauD2(x.leitos_por_mil),"n"],["UTI",x=>x.leitos_uti==null?sd:nf(x.leitos_uti),"n"]);
   if(its.some(x=>x.vacinacao))col.push([`Penta${F.vacinacao&&F.vacinacao.periodo?" ("+F.vacinacao.periodo+")":""}`,x=>x.vacinacao&&x.vacinacao.Penta!=null?sauD1(x.vacinacao.Penta)+"%":sd,"n"]);
-  if(its.some(x=>x.saude_minimo_pct!=null))col.push([`Impostos em saúde${F.minimo&&F.minimo.periodo?" ("+F.minimo.periodo+")":""}`,x=>x.saude_minimo_pct==null?`<span class="muted">${ok("minimo")?"não entregou":"sem dado"}</span>`:`<span style="color:${x.saude_minimo_cumpriu?"var(--ok,#1BAF7A)":"#D92D20"}">${sauD1(x.saude_minimo_pct)}%</span>`,"n"]);
+  if(its.some(x=>x.saude_minimo_pct!=null))col.push([`Impostos em saúde${F.minimo&&F.minimo.periodo?" ("+F.minimo.periodo+")":""}`,x=>x.saude_minimo_pct==null?sd:x.saude_minimo_suspeito?`<span class="muted" title="Declarado: ${sauD1(x.saude_minimo_pct)}% — fora do possível, provável erro de digitação na fonte">a conferir</span>`:`<span style="color:${x.saude_minimo_cumpriu?"var(--ok,#1BAF7A)":"#D92D20"}">${sauD1(x.saude_minimo_pct)}%</span>`,"n"]);
   b.innerHTML=table(col,its)+saudeFontes(F)}).catch(e=>{const b=$("#saMun");if(b)b.innerHTML=rerro(e)});
  saudeVacMonta(uf)}
 P.saude=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";

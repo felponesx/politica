@@ -58,6 +58,10 @@ def test_minimo_constitucional_do_anexo14():
     m = saude_minimo_anexo14(ANEXO14)
     assert m["pct_aplicado"] == 23.85 and m["pct_minimo"] == 15 and m["cumpriu"] and round(m["valor_asps"]) == 19751075346
     assert saude_minimo_anexo14([]) is None  # sem anexo: indisponível, nunca 0%
+    # Ribeirão Preto declarou "0,2" (R$ 624 mi em saúde): erro de digitação provável → a conferir, sem cumpriu/não cumpriu
+    errado = [dict(x, valor=0.2) if "Aplicado" in x["coluna"] else x for x in ANEXO14]
+    m2 = saude_minimo_anexo14(errado)
+    assert m2["suspeito"] and m2["cumpriu"] is None and m2["pct_aplicado"] == 0.2
     assert saude_minimo_anexo14(ANEXO14[:1]) is None
 
 
@@ -91,3 +95,18 @@ def test_api_separa_zero_de_sem_dado():
             db.query(Municipio).filter(Municipio.codigo_ibge.in_(["9900011", "9900021"])).delete(synchronize_session=False)
             db.query(Coleta).filter(Coleta.fonte == "cnes").delete(synchronize_session=False)
             db.commit()
+
+
+def test_anexo14_le_o_rreo_simplificado_das_prefeituras_pequenas(monkeypatch):
+    from app.collectors import siconfi
+    pedidos = []
+
+    def falso(endpoint, params):
+        pedidos.append(params["co_tipo_demonstrativo"])
+        return iter(ANEXO14 if params["co_tipo_demonstrativo"] == "RREO Simplificado" else [])
+
+    monkeypatch.setattr(siconfi, "paginar", falso)
+    itens, tipo = siconfi.anexo_rreo("RREO-Anexo 14", "M", 3158201, 2025, 6, pequeno=False)
+    assert tipo == "RREO Simplificado" and pedidos == ["RREO", "RREO Simplificado"] and siconfi.saude_minimo_anexo14(itens)["pct_aplicado"] == 23.85
+    pedidos.clear()
+    assert siconfi.anexo_rreo("RREO-Anexo 14", "M", 3158201, 2025, 6, pequeno=True)[1] == "RREO Simplificado" and pedidos == ["RREO Simplificado"]

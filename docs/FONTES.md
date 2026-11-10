@@ -120,6 +120,11 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 - **Mínimo constitucional em saúde** (`siconfi-saude-minimo`, `app/collectors/siconfi.py`): o SIOPS (`siops.datasus.gov.br`) recusa acesso automatizado
   (BigIP 426/502). O RREO Anexo 14 do SICONFI traz o mesmo cálculo da LC 141/2012 (linha "Despesas com Ações e Serviços Públicos de Saúde Executadas com
   Recursos de Impostos", colunas "Valor Apurado", "% Mínimo a Aplicar", "% Aplicado"), por ente (`id_ente` obrigatório): ~1 s por ente, 5.597 entes.
+  **Prefeituras com menos de 50 mil habitantes entregam o "RREO Simplificado"** (`co_tipo_demonstrativo=RREO Simplificado`), que também traz os Anexos 03 e 14:
+  só com "RREO" a coleta achava 2.346 entes de 5.597. `anexo_rreo` tenta os dois (o simplificado primeiro para as pequenas). O impostômetro (`siconfi-tributos`,
+  Anexo 03) tinha o mesmo furo — as ~3.250 cidades pequenas eram estimadas pela média — e passa a ler o dado entregue na próxima coleta.
+  Resultado 2025 (6º bimestre): 27 estados e 3.660 de 5.570 prefeituras. As outras 1.910 não entregaram o anexo ou o entregaram sem o bloco da saúde
+  (conferido: o Anexo 14 de Altinópolis/SP e de São Sebastião do Maranhão/MG só traz receitas, despesas, restos a pagar e operações de crédito) — ficam "sem dado".
   Prefeitura de São Paulo, 2025: 23,85% (mínimo 15%). Sem anexo = "não entregou" (nunca 0%).
 - **STJ, votos de cada ministro** (`stj-votos`, `app/collectors/stj.py`): Portal de Dados Abertos do STJ (CKAN), "Espelhos de Acórdãos" dos 10 órgãos julgadores,
   um JSON por mês. O campo `decisao` é a certidão: quem votou com o relator, vencidos, ausentes, impedidos, não participantes. 12 meses (set/2025–set/2026):

@@ -601,7 +601,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 
 ## Saúde por município, votos dos tribunais e Mata Atlântica (10/11/2026)
 - Coletas novas (registradas em `app/collectors/__init__.py`, robô `EXTRAS`/`VALIDADE`/`LIMITES`, agendador mensal): `saude-leitos-municipios` e `saude-vacinacao`
-  (`app/collectors/saude_mun.py`), `siconfi-saude-minimo` (RREO Anexo 14, `ano=`; o SIOPS bloqueia robôs), `stj-votos` (`app/collectors/stj.py`) e `tse-relatorias`
+  (`app/collectors/saude_mun.py`), `siconfi-saude-minimo` (RREO Anexo 14, `ano=`, `ids=` refaz só alguns entes; o SIOPS bloqueia robôs; cidades com menos de 50 mil habitantes entregam o
+  "RREO Simplificado" — `anexo_rreo` lê os dois, e `siconfi-tributos` também passou a ler), `stj-votos` (`app/collectors/stj.py`) e `tse-relatorias`
   (`app/collectors/tse_relatorias.py`). Detalhes e números conferidos em `docs/FONTES.md`.
 - API: `/saude/municipios?uf=` ganhou leitos (existentes, SUS, UTI, por mil), `vacinacao` (cobertura por vacina, 2022) e `saude_minimo_*`, mais `fontes` (fonte, link,
   período, status da coleta, data). `/saude/painel` traz `saude_minimo_*` e `vacinacao` por estado e `fontes_novas`. Novas: `/saude/vacinacao` (série por estado e vacina)

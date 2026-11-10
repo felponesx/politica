@@ -5734,7 +5734,8 @@
     "/sancoes",
     "/sancoes/contratos?limit=40",
     "/tcu-inabilitados",
-    "/tcu-irregulares"
+    "/tcu-irregulares",
+    "/votos-tribunais"
    ]
   },
   "p/ambiente.json": {
@@ -5745,7 +5746,9 @@
     "/malha/status",
     "/multas-ambientais",
     "/saude",
-    "/saude/painel"
+    "/saude/minimo",
+    "/saude/painel",
+    "/saude/vacinacao"
    ]
   },
   "p/geral.json": {

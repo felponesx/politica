@@ -228,7 +228,8 @@ NOTAS_MUN = {
     "vacinacao": "Cobertura vacinal OFICIAL do Programa Nacional de Imunizações (TabNet/DATASUS) pelo município de residência. A base aberta vai até 2022; de 2023 em diante o "
                  "Ministério publica só em painel interativo, sem arquivo aberto, e nada é estimado aqui. Cobertura acima de 100% acontece (vacinados de fora, estimativa de população).",
     "minimo": "Mínimo constitucional em saúde: parte da receita de impostos aplicada em ações e serviços públicos de saúde (LC 141/2012: 15% para municípios e 12% para estados), "
-              "no demonstrativo que o próprio governo entrega ao Tesouro (RREO Anexo 14 do SICONFI, o mesmo cálculo do SIOPS). Quem não entregou aparece como \"não entregou\", nunca como 0%.",
+              "no demonstrativo que o próprio governo entrega ao Tesouro (RREO Anexo 14 do SICONFI, o mesmo cálculo do SIOPS). Quem não entregou aparece como \"sem dado\", nunca como 0%. "
+              "Valor declarado abaixo de 1% ou acima de 100% é erro de digitação provável (ex.: 0,2 em vez de 20%): aparece como \"a conferir\" e não entra nas contagens.",
 }
 
 
@@ -254,7 +255,10 @@ def _minimo(db: Session, esfera: str, uf: str | None = None) -> tuple[int | None
     if uf:
         q = q.where(Registro.uf == uf)
     por_ano: dict = {}
+    from app.collectors.siconfi import minimo_suspeito
     for ano, d in db.execute(q):
+        if minimo_suspeito(d.get("pct_aplicado")):  # vale também para registros gravados antes da marcação
+            d = {**d, "suspeito": True, "cumpriu": None}
         por_ano.setdefault(ano, {})[str(d.get("id_ente"))[:6]] = d
     if not por_ano:
         return None, {}
@@ -286,7 +290,10 @@ def extras_painel(db: Session) -> tuple[dict, dict]:
         e = {}
         m = (mi or {}).get("estados", {}).get(uf)
         if m:
-            e.update(saude_minimo_pct=m["pct_aplicado"], saude_minimo_exigido=m["pct_minimo"], saude_minimo_cumpriu=m["cumpriu"])
+            if m.get("suspeito"):  # valor declarado impossível: fica fora do mapa, com a marcação
+                e.update(saude_minimo_declarado=m["pct_aplicado"], saude_minimo_suspeito=True, saude_minimo_exigido=m["pct_minimo"])
+            else:
+                e.update(saude_minimo_pct=m["pct_aplicado"], saude_minimo_exigido=m["pct_minimo"], saude_minimo_cumpriu=m["cumpriu"])
         v = vac.get(uf)
         if v and v.get("ano"):
             e.update(vacinacao_ano=v["ano"], vacinacao={va: x for va, s in (v.get("serie") or {}).items() if (x := s.get(str(v["ano"]))) is not None})
@@ -325,7 +332,7 @@ def municipios(db: Session, uf: str, limite: int = 60) -> list[dict]:
         mi = minimo.get(cod)
         if mi:
             item.update(saude_minimo_pct=mi.get("pct_aplicado"), saude_minimo_exigido=mi.get("pct_minimo"), saude_minimo_cumpriu=mi.get("cumpriu"),
-                        saude_minimo_valor=mi.get("valor_asps"))
+                        saude_minimo_valor=mi.get("valor_asps"), saude_minimo_suspeito=bool(mi.get("suspeito")))
         out.append(item)
     out.sort(key=lambda x: -(x["populacao"] or 0))
     return out[:limite]
@@ -349,7 +356,7 @@ def minimo(db: Session) -> dict | None:
         return None
     from app.utils import UF_POR_CODIGO_IBGE
     estados = {UF_POR_CODIGO_IBGE.get(int(k)): {"pct_aplicado": v.get("pct_aplicado"), "pct_minimo": v.get("pct_minimo"), "cumpriu": v.get("cumpriu"),
-                                                "valor": v.get("valor_asps")} for k, v in est.items() if k.isdigit() and int(k) in UF_POR_CODIGO_IBGE}
+                                                "valor": v.get("valor_asps"), "suspeito": bool(v.get("suspeito"))} for k, v in est.items() if k.isdigit() and int(k) in UF_POR_CODIGO_IBGE}
     resumo = db.scalar(select(Registro.dados).where(Registro.fonte == "siconfi", Registro.tipo == "saude_minimo_resumo", Registro.ano == ano_m)
                        .order_by(Registro.id.desc()).limit(1)) if ano_m else None
     total_mun = db.scalar(select(func.count()).select_from(Municipio)) or None
@@ -358,13 +365,15 @@ def minimo(db: Session) -> dict | None:
         u = por_uf.setdefault(UF_POR_CODIGO_IBGE.get(int(str(v.get("id_ente"))[:2]), "?"), {"entregaram": 0, "cumpriram": 0, "pcts": []})
         u["entregaram"] += 1
         u["cumpriram"] += bool(v.get("cumpriu"))
-        u["pcts"].append(v.get("pct_aplicado"))
+        if not v.get("suspeito"):
+            u["pcts"].append(v.get("pct_aplicado"))
     for u in por_uf.values():
         p = sorted(x for x in u.pop("pcts") if x is not None)
         u["mediana_pct"] = p[len(p) // 2] if p else None
     return {"ano_estados": ano_e, "ano_municipios": ano_m, "estados": estados,
             "municipios": {"entregaram": len(mun), "cumpriram": sum(1 for v in mun.values() if v.get("cumpriu")),
                            "nao_cumpriram": sum(1 for v in mun.values() if v.get("cumpriu") is False),
+                           "a_conferir": sum(1 for v in mun.values() if v.get("suspeito")),
                            "sem_dado": (total_mun - len(mun)) if total_mun else None, "por_uf": por_uf,
                            "sem_entrega_coletados": (resumo or {}).get("sem_entrega")},
             "fonte": fontes_municipais(db)["minimo"]}
