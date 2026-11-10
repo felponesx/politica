@@ -2295,7 +2295,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["publicacoes","Publicações"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["publicacoes","Publicações"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;if(n[0]==="publicacoes")return window.API_ON===true;return true}
 function navSubAdmin(){return [["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
@@ -5971,6 +5971,36 @@ P.social=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
   const E={};UFS.forEach(u=>{E[u.uf]={...((S&&S.estados[u.uf])||{}),...((T&&T.estados[u.uf])||{})}});
   const b=S&&S.brasil.bolsa,c=S&&S.brasil.bpc,kp=[b?lacKpi("Bolsa Família",lacN(b.beneficiarios),`${brl(b.valor)} no mês · média ${lacR(b.valor_medio)} por parcela`):"",c?lacKpi("BPC",lacN(c.beneficiarios),`${brl(c.valor)} no mês`):""].join("");
   lacPainel(v,{E,M:SOC_M,G:SOC_G,rota:"social",kpis:kp,depois:lacFim(S||T)})},uf)};
+/* ----- Salários por profissão (RAIS) ----- */
+let PRF_QTD=20;
+const prfNorm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const prfPct=v=>Number(v).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
+function prfMais(p){return (p.horas||[]).reduce((a,h)=>(!a||h.pct>a.pct)?h:a,null)}
+function prfCard(p){const m=prfMais(p),hs=(p.horas||[]).filter(h=>h.pct>0);
+ return `<div class="prf-card" role="button" tabindex="0" aria-expanded="false">
+  <div class="prf-top"><div><b>${p.nome?esc(p.nome):"Profissão CBO "+esc(p.cbo)}</b><small>${p.nome?"CBO "+esc(p.cbo)+" · ":""}${nf(p.vinculos)} vínculos</small></div><div class="prf-med"><span>Média</span><b>${brl(p.media)}</b></div></div>
+  <p class="prf-frase">10% recebem até ${brl(p.p10)}, e 90% recebem até ${brl(p.p90)}${m?`. A maioria (${prfPct(m.pct)}) trabalha ${esc(m.faixa)}`:""}.</p>
+  <div class="prf-mais" hidden>${hs.map(h=>`<p>${prfPct(h.pct)} das pessoas trabalham ${esc(h.faixa)} e recebem média de ${brl(h.media)}</p>`).join("")}<p class="mut">Menor salário ${brl(p.minimo)} · maior salário ${brl(p.maximo)}</p></div></div>`}
+function prfLista(){const q=prfNorm($("#prfQ").value),o=$("#prfO").value;
+ let L=(window._PRF||[]).filter(p=>!q||p.cbo.includes(q)||prfNorm(p.nome).includes(q));
+ L=[...L].sort((a,b)=>o==="menor"?a.media-b.media:o==="vinc"?b.vinculos-a.vinculos:b.media-a.media);
+ const n=Math.min(L.length,PRF_QTD);
+ $("#prfLista").innerHTML=L.length?`<p class="mut">${nf(L.length)} profissões · mostrando ${nf(n)}. Toque em um cartão para ver a divisão por horas.</p><div class="prf-grid">${L.slice(0,n).map(prfCard).join("")}</div>`+(L.length>n?`<div class="mt" style="text-align:center"><button class="b s" id="prfMais">Mostrar mais</button></div>`:""):rvazio("Nenhuma profissão encontrada.");
+ const mb=$("#prfMais");if(mb)mb.onclick=()=>{PRF_QTD+=20;prfLista()}}
+async function prfMontar(){const c=$("#prfCorpo");
+ try{const d=await apiGet("/profissoes");
+  if(!d||!d.disponivel){c.innerHTML=rvazio("Os dados de salários por profissão ainda não foram publicados.");return}
+  $("#prfSub").textContent=`RAIS ${d.ano_referencia} · ${nf(d.vinculos_validos)} vínculos ativos em 31/12 · ${nf(d.total_profissoes)} profissões`;
+  window._PRF=d.profissoes;PRF_QTD=20;
+  c.innerHTML=`<div class="panel"><div class="prf-filtros"><input id="prfQ" type="search" placeholder="Buscar por profissão ou código CBO" aria-label="Buscar profissão"><select id="prfO" aria-label="Ordem"><option value="media">Maior salário médio</option><option value="menor">Menor salário médio</option><option value="vinc">Mais vínculos</option></select></div><p class="mut" style="font-size:.85em;margin:10px 0 0">${esc(d.aviso)}</p></div><div id="prfLista" class="mt"></div>`;
+  $("#prfQ").oninput=()=>{PRF_QTD=20;prfLista()};$("#prfO").onchange=()=>{PRF_QTD=20;prfLista()};
+  $("#prfLista").addEventListener("click",ev=>{const cd=ev.target.closest(".prf-card");if(!cd)return;const mais=cd.querySelector(".prf-mais"),ab=mais.hidden;mais.hidden=!ab;cd.setAttribute("aria-expanded",String(ab))});
+  prfLista()}
+ catch(e){c.innerHTML=rerro(e)}}
+P.profissoes=()=>({html:`<style>.prf-filtros{display:flex;gap:10px;flex-wrap:wrap}.prf-filtros input{flex:1 1 240px;padding:10px 12px;border:1px solid #d6dde8;border-radius:10px;font:inherit}.prf-filtros select{padding:10px 12px;border:1px solid #d6dde8;border-radius:10px;font:inherit;background:#fff}.prf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.prf-card{background:#fff;border:1px solid #e3e9f2;border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .2s}.prf-card:hover,.prf-card:focus{border-color:#2F6FED;outline:none}.prf-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.prf-top small{display:block;color:#667085;margin-top:3px}.prf-med{text-align:right;white-space:nowrap}.prf-med span{display:block;font-size:.75em;color:#667085}.prf-med b{color:#1D2939;font-size:1.1em}.prf-frase{margin:10px 0 0;color:#344054;font-size:.92em}.prf-mais{margin-top:10px;border-top:1px solid #eef2f7;padding-top:10px;font-size:.9em}.prf-mais p{margin:6px 0}</style>
+<div class="crumb"><a href="#/inicio">Início</a> / Salários por profissão</div>
+<div class="panel"><h1>Salários por profissão</h1><p class="mut" id="prfSub">Carregando os dados da RAIS…</p></div>
+<div id="prfCorpo" class="mt">${rload()}</div>`,mount(){prfMontar()}});
 /* ----- Meio ambiente ----- */
 const AMB_G=[["Desmatamento (PRODES, ano fechado)","km2","total","serie"],["Alertas recentes (DETER)","deter"]];
 const AMB_M={km2:["Desmatamento no último ano (km²)",e=>e.km2,lacKm,"Área de floresta e vegetação nativa desmatada por corte raso no último ano do PRODES, somando os biomas do estado.",e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
@@ -7497,9 +7527,12 @@ function igImportar(b,igs){
    catch(e2){er.textContent=artMsg(e2)+" (importadas até aqui: "+(novas+atual)+")";bt.disabled=false}}}}
 /* ----- início da administração e estrutura ----- */
 async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
+ let ativ=[],prf=null,nIg=null;try{ativ=(await ARTDB.collection("atividade").orderBy("quando","desc").limit(8).get()).docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()}))}catch(e){}
+ try{prf=await apiGet("/profissoes")}catch(e){}
+ if(artVer("instagram")){try{nIg=(await ARTDB.collection("instagram").limit(500).get()).docs.filter(d=>d.exists).length}catch(e){}}
  const pub=pubs.filter(p=>p.publicada).length,telas=Object.keys(window.ART_OVR),listas=ART_DS.filter(d=>d.alt);
  const itens=[...telas.map(k=>{const p=k.split("?")[0];return {ic:artSecDe(p),t:artNome(p),sub:k,h:"#/admin/banco/"+encodeURIComponent(k)}}),...listas.map(d=>({ic:ART_GIC[d.g]||"relatorios",t:d.t,sub:"Lista do site",h:"#/admin/banco/lista-"+d.k}))];
- b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("admin",true)}<div><h2>O que você quer fazer?</h2><p class="mut" style="margin:2px 0 0">Escolha uma opção. Tudo o que você alterar fica guardado neste Artifact e já aparece nas telas do site.</p></div></div>
+ b.innerHTML=`<div style="display:flex;gap:12px;align-items:center">${adIc("admin",true)}<div><h2>Gestão</h2><p class="mut" style="margin:2px 0 0">Resumo de tudo o que acontece no sistema. Escolha uma área abaixo para mexer. Tudo o que você alterar já aparece nas telas do site.</p></div></div>
  <div class="ad-cards">
   <a class="ad-card" href="#/admin/posts/novo">${adIc("noticias",true)}<h3>Publicar notícia ou prêmio</h3><p>Escreva um texto seu e publique nas abas Notícias ou Prêmios do site.</p><span class="go">Escrever ›</span></a>
   <a class="ad-card" href="#/admin/banco">${adIc("banco",true)}<h3>Banco de dados</h3><p>Todas as bases separadas: telas do site e listas. Veja, altere, adicione ou tire informações.</p><span class="go">Abrir o banco ›</span></a>${artVer("instagram")?`<a class="ad-card" href="#/admin/instagram">${adIc("instagram",true)}<h3>Movimentação do Instagram</h3><p>Postagens, curtidas e alcance, ligados aos textos e às bases do sistema.</p><span class="go">Abrir ›</span></a>`:""}
@@ -7510,8 +7543,14 @@ async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
   <div class="ad-card"><span class="mut">Bases de telas alteradas</span><span class="n">${nf(telas.length)}</span></div>
   <div class="ad-card"><span class="mut">Listas alteradas</span><span class="n">${nf(listas.length)}</span></div>
  </div>
+ <div class="ad-cards">
+  <div class="ad-card"><span class="mut">Salários por profissão</span><span class="n">${prf&&prf.disponivel?nf(prf.total_profissoes):"—"}</span><p>${prf&&prf.disponivel?"profissões · RAIS "+esc(prf.ano_referencia):"Ainda sem dados publicados"}</p></div>
+  ${nIg!==null?`<div class="ad-card"><span class="mut">Postagens do Instagram</span><span class="n">${nf(nIg)}</span></div>`:""}
+  <div class="ad-card"><span class="mut">Últimas ações registradas</span><span class="n">${nf(ativ.length)}</span><p>${ativ.length?"Veja abaixo":"Nada registrado ainda"}</p></div>
+ </div>
+ ${ativ.length?`<div class="ad-box"><h3>Movimentação recente</h3><div class="ad-list">${ativ.map(l=>`<div class="ad-li"><div style="min-width:0"><b>${esc(l.acao||"Ação")}</b><small>${esc(artQuando(l.quando))} · ${esc(l.email||"alguém")}${l.onde?" · "+esc(l.onde):""}</small></div></div>`).join("")}</div><div style="margin-top:10px"><a class="b s" href="#/admin/atividade">Ver todo o controle de atividade ›</a></div></div>`:""}
  ${itens.length?`<div class="ad-box"><h3>O que você já alterou</h3><div class="ad-list">${itens.map(i=>`<div class="ad-li"><div style="display:flex;gap:10px;align-items:center;min-width:0">${adIc(i.ic)}<div><b>${esc(i.t)}</b><small>${esc(i.sub)}</small></div></div><a class="b s" href="${i.h}">Abrir</a></div>`).join("")}</div></div>`:""}`}
-const ART_ABAS=[["resumo","Início","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"],["instagram","Instagram","instagram"],["atividade","Controle de atividade","atividade"]];
+const ART_ABAS=[["resumo","Gestão","inicio"],["posts","Notícias","noticias"],["banco","Banco de dados","banco"],["instagram","Instagram","instagram"],["atividade","Controle de atividade","atividade"]];
 async function artAdmMontar(aba,sub){const c=$("#admC");if(!c)return;
  if(aba==="telas"||aba==="dados"||aba==="servidor"){aba="banco";sub=undefined}
  c.innerHTML=`<style>${AD_CSS}</style><div class="ad"><nav class="ad-tabs" aria-label="Seções da administração">${ART_ABAS.filter(x=>x[0]==="resumo"||artVer(x[0])).map(([k,t,ic])=>`<a class="${k===aba?"on":""}" href="#/admin/${k}">${svgI(ic)}<span>${t}</span></a>`).join("")}</nav><div class="ad" id="admCorpo">${rload()}</div></div><div id="adToast" class="ad-toast" role="status" aria-live="polite"></div>`;

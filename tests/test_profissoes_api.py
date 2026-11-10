@@ -1,0 +1,38 @@
+from app.routers import profissoes as r
+
+
+def test_lista_sem_dados_nao_quebra(monkeypatch, tmp_path):
+    monkeypatch.setattr(r, "ARQUIVO", tmp_path / "nao_existe.json")
+    r._carregar.cache_clear()
+    d = r.profissoes()
+    assert d["disponivel"] is False and d["profissoes"] == []
+    r._carregar.cache_clear()
+
+
+def test_lista_ordenada_pela_media_e_sem_nomes(monkeypatch, tmp_path):
+    import json
+    arq = tmp_path / "p.json"
+    arq.write_text(json.dumps({
+        "fonte": "RAIS", "ano_referencia": 2025, "vinculos_validos": 100,
+        "profissoes": {
+            "111": {"vinculos": 40, "media": 3000.456, "minimo": 1, "maximo": 9, "p10": 1000, "p90": 5000, "horas": []},
+            "222": {"vinculos": 50, "media": 9000, "minimo": 1, "maximo": 99, "p10": 2000, "p90": 20000, "horas": []},
+        },
+    }), encoding="utf-8")
+    monkeypatch.setattr(r, "ARQUIVO", arq)
+    r._carregar.cache_clear()
+    d = r.profissoes()
+    r._carregar.cache_clear()
+    assert d["disponivel"] is True
+    assert [x["cbo"] for x in d["profissoes"]] == ["222", "111"]
+    assert d["profissoes"][1]["media"] == 3000.46
+    assert set(d["profissoes"][0]) == {"cbo", "vinculos", "media", "minimo", "maximo", "p10", "p90", "horas"}
+
+
+def test_arquivo_real_carrega():
+    r._carregar.cache_clear()
+    d = r.profissoes()
+    r._carregar.cache_clear()
+    assert d["disponivel"] is True
+    assert d["total_profissoes"] > 2000
+    assert d["ano_referencia"] == 2025

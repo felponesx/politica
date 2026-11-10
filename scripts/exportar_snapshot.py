@@ -61,7 +61,7 @@ LISTAS = {
 }
 # respostas guardadas exatamente como o site pede
 FIXAS = [
-    "/saude", "/cortes", "/cartao-corporativo", "/emendas", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
+    "/profissoes", "/saude", "/cortes", "/cartao-corporativo", "/emendas", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
     "/mapa/estados", "/agora/eventos", "/partidos/composicao", "/assembleias", "/gastos/entes", "/orgaos",
     "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/saude/painel", "/ensino", "/sancoes", "/tcu-inabilitados", "/tcu-irregulares", "/justica", "/cpis", "/aeroportos", "/multas-ambientais", "/lista-suja", "/renuncia-fiscal", "/sancoes/contratos?limit=40", "/fidelidade?casa=camara", "/fidelidade?casa=senado", "/social", "/trabalho", "/ambiente", "/viagens", "/servidores", "/acidentes-rodovias", "/igc", "/iva", "/caged", "/ocorrencias?limit=200", "/diarios-oficiais/status", "/transito/malha", "/transito/agora", "/doadores", "/fundos", "/energia-tarifas", "/obras-gestao?escopo=pais", "/indicadores",
     "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
