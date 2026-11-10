@@ -135,14 +135,26 @@ def gravar_se_valido(doc: dict, destino: Path = DESTINO) -> Path:
     return destino
 
 
-def coletar(destino: Path = DESTINO) -> dict:
+def destino_do_ano(ano: int | None) -> Path:
+    """Ano mais novo: profissoes_rais.json (a aba lê este). Anos anteriores (comparação): profissoes_rais_<ano>.json."""
+    return DESTINO if ano is None else DESTINO.with_name(f"profissoes_rais_{ano}.json")
+
+
+def coletar(destino: Path | None = None, ano: int | None = None) -> dict:
     """Coleta completa (roda no robô). Uma conexão FTP nova para cada arquivo: a conexão não fica
     parada enquanto o arquivo anterior é lido (o servidor derruba conexões ociosas). Um arquivo por vez,
     lido, somado e apagado. Qualquer falha antes de gravar deixa o arquivo anterior intacto."""
     ftp = conectar()
     try:
         ftp.cwd(RAIZ)
-        ano = escolher_ano(ftp.nlst(), _listar_ano(ftp))
+        if ano is None:
+            ano = escolher_ano(ftp.nlst(), _listar_ano(ftp))
+        else:  # ano pedido (histórico): também precisa de TODOS os arquivos regionais
+            arquivos = set(_listar_ano(ftp)(str(ano)))
+            faltam = [a for a in ARQUIVOS_REGIONAIS if a not in arquivos]
+            if faltam:
+                raise ColetaIncompleta(f"RAIS {ano} incompleta (faltam {faltam})")
+            destino = destino or destino_do_ano(ano)
     finally:
         _fechar(ftp)
     acc = P.Acumulador()
@@ -156,6 +168,7 @@ def coletar(destino: Path = DESTINO) -> dict:
             if trouxe == 0 and nome != "RAIS_VINC_PUB_NI.7z":
                 raise ColetaIncompleta(f"{nome} não trouxe nenhum vínculo válido")
     doc = montar_documento(ano, acc, por_arquivo)
+    destino = destino or DESTINO
     gravar_se_valido(doc, destino)
     return {"ano": ano, "vinculos": doc["vinculos_validos"], "profissoes": len(doc["profissoes"])}
 
@@ -187,9 +200,10 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     try:
-        resumo = coletar()
+        pedido = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].strip() else None
+        resumo = coletar(ano=pedido)
     except ColetaIncompleta as e:
         print("COLETA NÃO GRAVADA:", e)
         sys.exit(1)
     print("COLETA OK:", resumo)
-    print("arquivo:", DESTINO)
+    print("arquivo:", destino_do_ano(pedido))

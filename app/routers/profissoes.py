@@ -41,6 +41,23 @@ def _carregar() -> dict | None:
         return None
 
 
+@lru_cache(maxsize=1)
+def _historico() -> dict:
+    """{ano: {cbo: {"media":…, "vinculos":…}}} dos anos anteriores coletados (profissoes_rais_<ano>.json)."""
+    out = {}
+    for arq in sorted(ARQUIVO.parent.glob("profissoes_rais_*.json")):
+        try:
+            d = json.loads(arq.read_text(encoding="utf-8"))
+            out[int(d["ano_referencia"])] = {c: {"media": p.get("media"), "vinculos": p.get("vinculos")} for c, p in d["profissoes"].items()}
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+    return out
+
+
+AVISO_HISTORICO = ("Comparação entre anos em valores nominais (sem correção pela inflação). A lista de profissões e a forma de "
+                   "declarar podem mudar de um ano para outro.")
+
+
 def _arredonda(v, casas=2):
     return None if v is None else round(float(v), casas)
 
@@ -52,6 +69,8 @@ def profissoes():
         return {"disponivel": False, "aviso": AVISO, "profissoes": []}
     lista = []
     nomes = _nomes()
+    atual = int(d.get("ano_referencia") or 0)
+    hist = {a: v for a, v in _historico().items() if a != atual}
     for cbo, p in d["profissoes"].items():
         lista.append({
             "cbo": cbo,
@@ -63,6 +82,7 @@ def profissoes():
             "p10": _arredonda(p.get("p10")),
             "p90": _arredonda(p.get("p90")),
             "horas": p.get("horas") or [],
+            "historico": {str(a): _arredonda(v[cbo]["media"]) for a, v in sorted(hist.items()) if cbo in v} | {str(atual): _arredonda(p.get("media"))} if hist else {},
         })
     lista.sort(key=lambda x: (x["media"] or 0), reverse=True)
     return {
@@ -76,5 +96,7 @@ def profissoes():
         "total_profissoes": len(lista),
         "observacao": d.get("observacao"),
         "aviso": AVISO,
+        "anos": sorted([*hist, atual]),
+        "aviso_historico": AVISO_HISTORICO if hist else None,
         "profissoes": lista,
     }

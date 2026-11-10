@@ -49,18 +49,27 @@ def pares_cbo(livro) -> tuple[dict, str]:
 
 
 def dicionario(ftp) -> dict:
+    """Procura em TODOS os arquivos .xls/.xlsx das pastas de Layouts a aba com mais pares código CBO → nome."""
     import xlrd
+    melhor = {"nomes": {}}
     ftp.cwd(f"{RAIZ}/Layouts")
-    pasta = next((p for p in ftp.nlst() if p.lower().startswith("v") and "nculo" in p.lower()), None)
-    ftp.cwd(f"{RAIZ}/Layouts/{pasta}")
-    xls = sorted((n for n in ftp.nlst() if n.lower().endswith((".xls", ".xlsx"))),
-                 key=lambda n: int((re.findall(r"(\d{4})", n) or ["0"])[-1]))
-    print("leiautes:", xls)
-    arq = xls[-1]
-    bruto = baixar(ftp, arq)
-    nomes, aba = pares_cbo(xlrd.open_workbook(file_contents=bruto))
-    print(f"{arq}: aba '{aba}' com {len(nomes)} ocupações")
-    return {"fonte": f"RAIS — dicionário oficial ({RAIZ}/Layouts/{pasta}/{arq}, aba {aba})", "arquivo": arq, "nomes": dict(sorted(nomes.items()))}
+    for pasta in sorted(ftp.nlst()):
+        try:
+            ftp.cwd(f"{RAIZ}/Layouts/{pasta}")
+        except Exception:
+            continue
+        for arq in sorted(n for n in ftp.nlst() if n.lower().endswith(".xls")):
+            try:
+                nomes, aba = pares_cbo(xlrd.open_workbook(file_contents=baixar(ftp, arq)))
+            except Exception as e:
+                print(f"{pasta}/{arq}: não abriu ({e})")
+                continue
+            print(f"{pasta}/{arq}: aba '{aba}' com {len(nomes)} ocupações")
+            if len(nomes) > len(melhor["nomes"]):
+                melhor = {"fonte": f"RAIS — dicionário oficial ({RAIZ}/Layouts/{pasta}/{arq}, aba {aba})", "arquivo": f"{pasta}/{arq}",
+                          "nomes": dict(sorted(nomes.items()))}
+            ftp.cwd(f"{RAIZ}/Layouts/{pasta}")
+    return melhor
 
 
 def cabecalho(ftp, ano: int):
