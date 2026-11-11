@@ -16,7 +16,7 @@ Um programa (`BRASILMais.exe`) faz tudo: banco (SQLite embutido), captura, confe
 
 Os dados (banco, configuração, vínculos, arquivos originais captados) ficam em `C:\Users\<você>\BRASILMais`, separados do programa: gerar o `.exe` de novo nunca apaga nada. Chaves e opções: `config.env` nessa pasta (a `ADMIN_TOKEN` é criada sozinha). O site completo (fotos e cópia dos dados) é copiado para `BRASILMais\site`.
 
-Diferença para a opção 2: o banco é SQLite, e **a barra de busca fica mais fraca**. No PostgreSQL ela ignora acentos, entende palavras parecidas e ordena por relevância; no SQLite vira "contém o texto" (digitar `joao` não acha `João`). Todo o resto funciona igual (coletas, painel, cadastro de fontes, telas, API). Se a busca for importante, use a opção 2 ou aponte o programa para um PostgreSQL com `DATABASE_URL=...` no `config.env`.
+Diferença para a opção 2: o banco é SQLite. **Nomes** (políticos, municípios) a busca acha mesmo escritos errado, com ou sem acento (`Nicolas Ferrera` acha `Nikolas Ferreira`), nos dois bancos. **Textos** (leis, projetos, contratos): no PostgreSQL entende variações da palavra e ordena por relevância ("educação" acha "educacional"); no SQLite vira "contém o texto". Todo o resto funciona igual. Se a busca em textos for importante, use a opção 2 ou aponte o programa para um PostgreSQL com `DATABASE_URL=...` no `config.env`.
 
 ## Opção 2: Docker + PostgreSQL (o que já estava)
 ## Antes (uma vez)
