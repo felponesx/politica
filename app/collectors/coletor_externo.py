@@ -66,6 +66,67 @@ def _pega(obj, caminho):
 _TIPO_OK = re.compile(r"^[a-z0-9_:\-]{1,60}$")
 
 
+LIMITE_ARQUIVO = 200 << 20      # 200 MB, depois de descompactar (contra arquivo zip que explode)
+
+
+def _linhas_csv(texto: str) -> list:
+    import csv
+    import io
+    amostra = texto[:4096]
+    try:
+        dialeto = csv.Sniffer().sniff(amostra, delimiters=",;\t|")
+    except csv.Error:
+        dialeto = csv.excel
+    leitor = csv.DictReader(io.StringIO(texto), dialect=dialeto)
+    return [{(k or "").strip(): (v or "").strip() for k, v in linha.items()} for linha in leitor]
+
+
+def _linhas_xml(dados: bytes, lista: str | None) -> list:
+    import xml.etree.ElementTree as ET
+    raiz = ET.fromstring(dados)
+    itens = raiz.findall(lista) if lista else list(raiz)
+    out = []
+    for el in itens:
+        linha = dict(el.attrib)
+        for filho in el:
+            linha[filho.tag] = (filho.text or "").strip()
+        out.append(linha)
+    return out
+
+
+def ler_linhas(caminho: Path, meta: dict) -> list:
+    """Lê o arquivo liberado conforme o formato da fonte (json, csv, xml ou zip com um desses dentro). Devolve lista de dicionários."""
+    formato = (meta.get("formato") or "json").lower()
+    mapa = meta.get("mapa") or {}
+    if formato == "zip":
+        import zipfile
+        with zipfile.ZipFile(caminho) as z:
+            membros = [m for m in z.infolist() if m.filename.lower().endswith((".csv", ".xml", ".json")) and not m.is_dir()]
+            if not membros:
+                raise ValueError("zip sem arquivo csv, xml ou json dentro")
+            escolhido = next((m for m in membros if m.filename == meta.get("arquivo_zip")), membros[0])
+            if escolhido.file_size > LIMITE_ARQUIVO:
+                raise ValueError("arquivo dentro do zip grande demais")
+            conteudo = z.read(escolhido)
+        formato = escolhido.filename.lower().rsplit(".", 1)[1]
+    else:
+        conteudo = caminho.read_bytes()
+    if formato == "json":
+        linhas = json.loads(conteudo.decode("utf-8"))
+        if mapa.get("lista"):   # a lista vem dentro de um campo da resposta (ex.: "dados" na API da Câmara)
+            linhas = _pega(linhas, mapa["lista"])
+        return linhas
+    if formato == "csv":
+        try:
+            texto = conteudo.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            texto = conteudo.decode("latin-1")
+        return _linhas_csv(texto)
+    if formato == "xml":
+        return _linhas_xml(conteudo, mapa.get("lista"))
+    raise ValueError(f"formato {formato!r} não suportado")
+
+
 def _adaptar_linhas(db, n, caminho: Path, meta: dict):
     """Adaptador genérico: lista de objetos JSON -> registros, pelo mapa que o vínculo declara.
     Assim uma fonte nova entra SEM código novo: basta declarar `adaptador = "linhas"` e o `mapa` no vínculo."""
@@ -77,9 +138,7 @@ def _adaptar_linhas(db, n, caminho: Path, meta: dict):
         raise ValueError("mapa.tipo inválido (use letras minúsculas, números, _ : -)")
     if not mapa.get("chave"):
         raise ValueError("mapa.chave é obrigatório")
-    linhas = json.loads(caminho.read_text(encoding="utf-8"))
-    if mapa.get("lista"):   # a lista vem dentro de um campo da resposta (ex.: "dados" na API da Câmara)
-        linhas = _pega(linhas, mapa["lista"])
+    linhas = ler_linhas(caminho, meta)
     if not isinstance(linhas, list) or not linhas:
         raise ValueError("lista vazia ou fora do formato (esperado: lista de objetos)")
     fonte = meta["fonte"]

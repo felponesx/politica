@@ -126,20 +126,21 @@ def _do_cadastro() -> list:
 
 
 def _somar_cadastro(fontes: dict, nomes: set):
-    """Entra no mesmo formato de um [[fonte]] do TOML. Por enquanto só JSON (o adaptador 'linhas' lê JSON)."""
+    """Entra no mesmo formato de um [[fonte]] do TOML. Formatos: json, csv, xml e zip (com um desses dentro)."""
     for f in _do_cadastro():
         n = str(f.get("nome", ""))
         produto = str(f.get("produto") or "BRASIL+")
         if not NOME_OK.match(n) or not str(f.get("url", "")).startswith("https://"):
             avisar(f"  cadastro: fonte ignorada (nome ou endereço inválido): {n!r}")
-        elif f.get("formato") != "json":
-            avisar(f"  cadastro: {n}: formato {f.get('formato')} ainda não é lido pelo coletor (só json por enquanto)")
+        elif f.get("formato") not in ("json", "csv", "xml", "zip"):
+            avisar(f"  cadastro: {n}: formato {f.get('formato')} desconhecido")
         elif n in fontes:
             avisar(f"  cadastro: {n} já existe num vínculo: ignorada")
         else:
             nomes.add(produto)
             fontes[n] = {"nome": n, "url": f["url"], "intervalo_min": int(f.get("intervalo_min", 1440)),
                          "publicar_dados": True, "adaptador": "linhas", "mapa": f.get("campos") or {},
+                         "formato": f["formato"],
                          "headers": {"Accept": "application/json"}, "vinculo": produto, "arquivo": "cadastro",
                          "esperado": f"Lista de registros da fonte {n}, mapeada pelos campos cadastrados."}
 
@@ -313,9 +314,18 @@ def formato(tipo, url):
 
 
 def amostra(caminho, limite=6000):
-    """Texto do começo do arquivo; None se parecer binário (ZIP etc.)."""
-    with open(caminho, "rb") as f:
-        b = f.read(limite * 4)
+    """Texto do começo do arquivo; para ZIP, do primeiro csv/xml/json dentro. None se continuar binário."""
+    import zipfile
+    if zipfile.is_zipfile(caminho):
+        with zipfile.ZipFile(caminho) as z:
+            dentro = [m for m in z.infolist() if m.filename.lower().endswith((".csv", ".xml", ".json")) and not m.is_dir()]
+            if not dentro:
+                return None
+            with z.open(dentro[0]) as f:
+                b = f.read(limite * 4)
+    else:
+        with open(caminho, "rb") as f:
+            b = f.read(limite * 4)
     if b"\x00" in b[:4000]:
         return None
     return b.decode("utf-8", errors="replace")[:limite]
@@ -758,7 +768,7 @@ def exportar_dados(db, pasta):
                                         "sha256_original": sha, "corrigido": bool(corr), "regras": corr["regras"] if corr else [],
                                         "alteracoes": corr["mudancas"] if corr else 0,
                                         "bytes": origem.stat().st_size, "coletado_em": em, "veredito": r[1],
-                                        "decisao": r[2], "arquivo": "atual" + ext, **({"adaptador": cfg["adaptador"]} if cfg.get("adaptador") else {}), **({"mapa": cfg["mapa"]} if cfg.get("mapa") else {})}, ensure_ascii=False, indent=1))
+                                        "decisao": r[2], "arquivo": "atual" + ext, **({"adaptador": cfg["adaptador"]} if cfg.get("adaptador") else {}), **({"mapa": cfg["mapa"]} if cfg.get("mapa") else {}), "formato": cfg.get("formato", "json")}, ensure_ascii=False, indent=1))
 
 
 def enviar_git(db, d, novo, corpo):

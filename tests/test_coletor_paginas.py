@@ -114,7 +114,7 @@ def test_cadastro_json_entra_e_csv_e_avisado(monkeypatch):
     ]
     monkeypatch.setattr(col, "_do_cadastro", lambda: cadastro)
     fontes, _ = col.carregar_vinculos()
-    assert "exemplo-json" in fontes and "exemplo-csv" not in fontes
+    assert "exemplo-json" in fontes and "exemplo-csv" in fontes and fontes["exemplo-csv"]["formato"] == "csv"
     f = fontes["exemplo-json"]
     assert f["adaptador"] == "linhas" and f["mapa"]["chave"] == "id" and f["publicar_dados"] is True and f["intervalo_min"] == 60
 
@@ -129,3 +129,13 @@ def test_brasil_fora_do_ar_nao_derruba_o_coletor(monkeypatch):
     assert col._do_cadastro() == []
     fontes, _ = col.carregar_vinculos()   # segue com os vínculos de sempre
     assert isinstance(fontes, dict)
+
+
+def test_amostra_de_zip_vem_do_arquivo_de_dentro(tmp_path):
+    """Para o Gemini conferir ZIP, a amostra é do csv de dentro, e não do binário."""
+    import zipfile
+    zip_path = tmp_path / "pacote.zip"
+    with zipfile.ZipFile(zip_path, "w") as z:
+        z.writestr("dados.csv", "id,nome\n1,Ana\n")
+    texto = col.amostra(zip_path)
+    assert texto is not None and "id,nome" in texto
