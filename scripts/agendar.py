@@ -57,6 +57,9 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
         g["ingestao"] = [("coletor-ingestao", {})]
     if settings.tomtom_api_key:   # trânsito das 27 capitais de hora em hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500)
         g["transito"] = [("tomtom-transito", {})]
+    desligadas = {t.strip() for t in os.environ.get("NATIVAS_DESLIGADAS", "").split(",") if t.strip()}
+    if desligadas:   # tarefas que o coletor passou a fazer (ex.: camara-deputados,senado-senadores): não coletar duas vezes
+        g = {k: [(t, params) for t, params in v if t not in desligadas] for k, v in g.items()}
     return g
 
 

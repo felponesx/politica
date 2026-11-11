@@ -178,7 +178,8 @@ def status_das_fontes(db: Session = Depends(get_db)):
     por: dict[tuple, dict] = {}
     for fonte, tarefa, status, fim, inicio, itens, erro in linhas:  # da mais nova para a mais velha
         d = por.setdefault((fonte, tarefa), {"ultima_ok": None, "ultimo_status": status, "ultimo_erro": None, "falhas_recentes": 0})
-        if d["ultimo_erro"] is None and erro and status in ("erro", "parcial", "abortada"):
+        # só mostra o erro se ele é mais novo que a última coleta boa (da mais nova para a mais velha: ultima_ok ainda vazia)
+        if d["ultimo_erro"] is None and d["ultima_ok"] is None and erro and status in ("erro", "parcial", "abortada"):
             from app.limpeza import mascarar
             d["ultimo_erro"] = mascarar(erro, 160)
         if status in ("erro", "abortada") and d["ultima_ok"] is None:

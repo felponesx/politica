@@ -275,3 +275,14 @@ def test_emendas_soma_e_rota():
         db.commit()
     j = cliente.get("/emendas").json()
     assert j["detalhe"]["2099"]["pago"] == 1000.0 and j["anos"][-1]["ano"] == 2099
+
+
+def test_tarefas_nativas_podem_ser_desligadas_quando_o_coletor_assume(monkeypatch):
+    from datetime import date
+
+    from scripts import agendar
+    antes = {t for itens in agendar.grupos(date(2026, 10, 8)).values() for t, _ in itens}
+    assert {"camara-deputados", "senado-senadores"} <= antes   # por padrão nada é desligado
+    monkeypatch.setenv("NATIVAS_DESLIGADAS", "camara-deputados, senado-senadores")
+    depois = {t for itens in agendar.grupos(date(2026, 10, 8)).values() for t, _ in itens}
+    assert depois == antes - {"camara-deputados", "senado-senadores"}

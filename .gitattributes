@@ -1,0 +1,6 @@
+# Scripts de shell rodam dentro do Docker (Linux): precisam de quebra de linha LF, mesmo clonados no Windows.
+# (Com CRLF o postgres nao executa infra/initdb/*.sh e o backup falha com "Illegal option".)
+*.sh text eol=lf
+# Scripts do Windows
+*.ps1 text eol=crlf
+*.cmd text eol=crlf

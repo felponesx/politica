@@ -3,3 +3,5 @@ dados/
 destinos.toml
 __pycache__/
 .env
+coletor.exe
+ciclo.log*

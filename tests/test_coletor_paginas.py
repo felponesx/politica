@@ -139,3 +139,63 @@ def test_amostra_de_zip_vem_do_arquivo_de_dentro(tmp_path):
         z.writestr("dados.csv", "id,nome\n1,Ana\n")
     texto = col.amostra(zip_path)
     assert texto is not None and "id,nome" in texto
+
+
+class _RespFalsa:
+    def __init__(self, corpo):
+        self._corpo = corpo.encode() if isinstance(corpo, str) else corpo
+
+    def read(self, *a):
+        return self._corpo
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def test_gemini_teste_funciona_sem_mostrar_a_chave(monkeypatch, capsys):
+    monkeypatch.setenv("GEMINI_API_KEY", "CHAVE-SECRETA-DE-TESTE-123")
+    resp = json.dumps({"candidates": [{"content": {"parts": [{"text": '{"ok": true}'}]}}]})
+    monkeypatch.setattr(col.urllib.request, "urlopen", lambda req, timeout=60: _RespFalsa(resp))
+    assert col.testar_gemini() == 0
+    saida = capsys.readouterr().out
+    assert "respondeu" in saida and "CHAVE-SECRETA" not in saida
+
+
+def test_gemini_teste_modelo_inexistente_lista_os_disponiveis(monkeypatch, capsys):
+    import io
+    import urllib.error
+    monkeypatch.setenv("GEMINI_API_KEY", "CHAVE-SECRETA-DE-TESTE-123")
+    chamadas = []
+
+    def abrir(req, timeout=60):
+        chamadas.append(req.full_url)
+        if ":generateContent" in req.full_url:
+            raise urllib.error.HTTPError(req.full_url, 404, "Not Found", {},
+                                         io.BytesIO(json.dumps({"error": {"message": "modelo não encontrado"}}).encode()))
+        return _RespFalsa(json.dumps({"models": [{"name": "models/gemini-exemplo", "supportedGenerationMethods": ["generateContent"]},
+                                                 {"name": "models/so-embedding", "supportedGenerationMethods": ["embedContent"]}]}))
+
+    monkeypatch.setattr(col.urllib.request, "urlopen", abrir)
+    assert col.testar_gemini() == 1
+    saida = capsys.readouterr().out
+    assert "gemini-exemplo" in saida and "so-embedding" not in saida and "CHAVE-SECRETA" not in saida
+
+
+def test_gemini_teste_sem_chave(monkeypatch, capsys):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    assert col.testar_gemini() == 1
+    assert "GEMINI_API_KEY" in capsys.readouterr().out
+
+
+def test_como_executavel_os_dados_ficam_ao_lado_do_programa(tmp_path, monkeypatch):
+    """No .exe do PyInstaller __file__ aponta para uma pasta temporária; os dados precisam ficar ao lado do executável."""
+    import sys
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(sys, "executable", str(tmp_path / "coletor.exe"))
+    spec = importlib.util.spec_from_file_location("coletor_congelado", RAIZ / "coletor" / "coletor.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    assert mod.RAIZ == tmp_path and mod.DADOS == tmp_path / "dados"

@@ -9,6 +9,7 @@ Uso:
   python coletor.py desfazer FONTE          # volta a publicar o arquivo original, sem a correção automática
   python coletor.py importar FONTE ARQUIVO...   # arquivos avulsos que você já tem
   python coletor.py status                  # últimas coletas
+  python coletor.py gemini-teste            # confere a chave e o modelo do Gemini (mostra os modelos se o nome não existir)
 Configuração: vinculos/*.toml (um por produto, com várias [[fonte]]), destinos.toml, .env (chaves).
 Só biblioteca padrão (Python 3.11+).
 """
@@ -21,7 +22,8 @@ except ImportError:       # Windows
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-RAIZ = Path(__file__).parent
+# Como programa (.exe do PyInstaller) os dados ficam ao lado do executável; a pasta temporária dele some a cada execução.
+RAIZ = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
 DADOS = RAIZ / "dados"          # raw/ + manifesto.db  (é isto que se copia/faz backup)
 RAW = DADOS / "raw"
 DB = DADOS / "manifesto.db"
@@ -370,6 +372,44 @@ def checar_local(db, nome, sha, caminho):
 
 def modelo_ia():
     return os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
+
+
+def testar_gemini() -> int:
+    """Chamada mínima para ver se a chave e o modelo funcionam. Nunca imprime a chave. Devolve 0 se funcionou."""
+    chave = os.environ.get("GEMINI_API_KEY")
+    if not chave:
+        print("GEMINI_API_KEY não está definida. Coloque a chave no arquivo .env desta pasta (GEMINI_API_KEY=...).")
+        return 1
+    base, modelo = os.environ.get("GEMINI_URL", "https://generativelanguage.googleapis.com"), modelo_ia()
+    cab = {"Content-Type": "application/json", "x-goog-api-key": chave}
+    corpo = {"contents": [{"parts": [{"text": 'Responda só com o JSON {"ok": true}.'}]}],
+             "generationConfig": {"responseMimeType": "application/json"}}
+    try:
+        req = urllib.request.Request(f"{base}/v1beta/models/{modelo}:generateContent", data=json.dumps(corpo).encode(), headers=cab, method="POST")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            resp = json.load(r)
+        print(f"Gemini respondeu com o modelo {modelo}: {resp['candidates'][0]['content']['parts'][0]['text'].strip()[:80]}")
+        return 0
+    except urllib.error.HTTPError as e:
+        try:
+            msg = json.loads(e.read().decode("utf-8", "replace")).get("error", {}).get("message", "")[:200]
+        except Exception:
+            msg = ""
+        print(f"O Gemini recusou ({e.code}) com o modelo {modelo}. {msg}")
+        if e.code in (400, 403, 404):
+            try:
+                req = urllib.request.Request(f"{base}/v1beta/models?pageSize=200", headers={"x-goog-api-key": chave})
+                with urllib.request.urlopen(req, timeout=60) as r:
+                    lista = json.load(r).get("models", [])
+                nomes = [m["name"].split("/")[-1] for m in lista if "generateContent" in m.get("supportedGenerationMethods", [])]
+                print("Modelos disponíveis para esta chave (use um deles em GEMINI_MODEL no .env):")
+                print("  " + "\n  ".join(nomes[:25]))
+            except Exception as e2:
+                print(f"Não consegui listar os modelos: {type(e2).__name__}")
+        return 1
+    except Exception as e:
+        print(f"Falha ao falar com o Gemini: {type(e).__name__}")
+        return 1
 
 
 def perguntar_gemini(nome, cfg, texto, tam, ant):
@@ -878,6 +918,8 @@ def main(a):
         decidir(db, a[1], cmd)
     elif cmd == "desfazer" and len(a) > 1:
         desfazer(db, a[1])
+    elif cmd == "gemini-teste":
+        sys.exit(testar_gemini())
     elif cmd == "status":
         for r in db.execute("SELECT coletado_em,fonte,origem,status,bytes,mudou,substr(url,1,70),erro "
                             "FROM coleta ORDER BY id DESC LIMIT 20"):
