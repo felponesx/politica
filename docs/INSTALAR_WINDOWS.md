@@ -2,6 +2,21 @@
 
 O PC principal capta, confere, guarda e distribui os dados. O notebook e o celular só controlam, pelo Tailscale.
 
+## Opção 1 (recomendada): programa único, sem Docker
+Um programa (`BRASILMais.exe`) faz tudo: banco (SQLite embutido), captura, conferência com o Gemini, API, site e painel.
+
+1. Precisa só do Python 3.12 (para gerar o programa) e do Tailscale (para o celular).
+2. `git pull --ff-only origin ingestao-coletor-celular`
+3. `powershell -ExecutionPolicy Bypass -File instalar\construir-tudo.ps1` (alguns minutos; gera `build-exe\dist\BRASILMais\BRASILMais.exe`).
+4. Rode `BRASILMais.exe`. Na primeira vez ele cria sua pasta `C:\Users\<você>\BRASILMais`, a chave do administrador e pergunta a chave do Gemini (não aparece na tela).
+5. Para abrir sozinho ao ligar o Windows: `BRASILMais.exe --iniciar-com-windows` (como administrador). No Windows, deixe o PC sem dormir na tomada.
+6. Para o celular: `tailscale serve --bg 8000`.
+
+Os dados (banco, configuração, vínculos, arquivos originais captados) ficam em `C:\Users\<você>\BRASILMais`, separados do programa: gerar o `.exe` de novo nunca apaga nada. Chaves e opções: `config.env` nessa pasta (a `ADMIN_TOKEN` é criada sozinha). O site completo (fotos e cópia dos dados) é copiado para `BRASILMais\site`.
+
+Diferença para a opção 2: o banco é SQLite, e **a barra de busca fica mais fraca**. No PostgreSQL ela ignora acentos, entende palavras parecidas e ordena por relevância; no SQLite vira "contém o texto" (digitar `joao` não acha `João`). Todo o resto funciona igual (coletas, painel, cadastro de fontes, telas, API). Se a busca for importante, use a opção 2 ou aponte o programa para um PostgreSQL com `DATABASE_URL=...` no `config.env`.
+
+## Opção 2: Docker + PostgreSQL (o que já estava)
 ## Antes (uma vez)
 Docker Desktop (aberto, "Engine running"), Python 3.12, Git e Tailscale instalados. O repositório clonado em `C:\Users\<você>\brasilplus`.
 

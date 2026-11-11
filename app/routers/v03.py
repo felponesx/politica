@@ -104,7 +104,7 @@ def _externos(agora=None, horas=12):
     import os
     from datetime import timezone
     try:
-        caminho = os.environ.get("CONTADORES_EXTERNOS") or os.path.join(os.path.dirname(__file__), "..", "..", "site", "dados", "contadores_externos.json")
+        caminho = os.environ.get("CONTADORES_EXTERNOS") or os.path.join(os.environ.get("BRASILPLUS_SITE") or os.path.join(os.path.dirname(__file__), "..", "..", "site"), "dados", "contadores_externos.json")
         with open(caminho, encoding="utf-8") as f:
             d = json.load(f)
         idade = (agora or datetime.now(timezone.utc)) - datetime.fromisoformat(d["atualizado_em"])
@@ -691,7 +691,7 @@ def ia_indice():
             h = ((h ^ ord(c)) * 0x01000193) & 0xFFFFFFFF
         return h
 
-    pasta = Path(__file__).resolve().parents[2] / "site" / "dados"
+    pasta = Path(os.environ.get("BRASILPLUS_SITE") or Path(__file__).resolve().parents[2] / "site") / "dados"
     try:
         n = json.loads((pasta / "manifest.json").read_text(encoding="utf-8"))["shards"]
         valor = json.loads((pasta / f"s{fnv1a('/ia/indice') % n}.json").read_text(encoding="utf-8")).get("/ia/indice")

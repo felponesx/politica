@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from contextlib import asynccontextmanager
 
@@ -92,7 +93,7 @@ app.include_router(fontes_cadastro_rotas.router)
 
 
 # Site (frontend) servido pelo próprio backend: abra http://localhost:8000 e as telas já usam a API.
-SITE = Path(__file__).resolve().parent.parent / "site" / "index.html"
+SITE = (Path(os.environ["BRASILPLUS_SITE"]) if os.environ.get("BRASILPLUS_SITE") else Path(__file__).resolve().parent.parent / "site") / "index.html"
 # fotos e logos gerados pelo robô (scripts/midia_site.py); o site busca em midia/
 app.mount("/midia", StaticFiles(directory=SITE.parent / "midia", check_dir=False), name="midia")
 

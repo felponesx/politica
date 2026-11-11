@@ -23,7 +23,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # Como programa (.exe do PyInstaller) os dados ficam ao lado do executável; a pasta temporária dele some a cada execução.
-RAIZ = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
+RAIZ = (Path(os.environ["COLETOR_RAIZ"]) if os.environ.get("COLETOR_RAIZ")   # o programa do BRASIL+ escolhe a pasta
+        else Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent)
 DADOS = RAIZ / "dados"          # raw/ + manifesto.db  (é isto que se copia/faz backup)
 RAW = DADOS / "raw"
 DB = DADOS / "manifesto.db"
@@ -842,7 +843,8 @@ def enviar_pasta(db, d, novo, corpo):
     pasta = Path(d["pasta"])
     pasta.mkdir(parents=True, exist_ok=True)
     (pasta / "status.json").write_text(corpo, encoding="utf-8")
-    shutil.copyfile(RAIZ / "painel.html", pasta / "painel.html")
+    if (RAIZ / "painel.html").exists():   # o painel antigo é opcional (o BRASIL+ tem o seu em /painel)
+        shutil.copyfile(RAIZ / "painel.html", pasta / "painel.html")
     exportar_dados(db, pasta)
     print(f"  pasta: gravado em {pasta}")
 

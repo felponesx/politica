@@ -12,3 +12,4 @@ backups/
 
 # clone do repositório de dados do coletor do celular (docker-compose.local.yml)
 coletor-dados/
+build-exe/

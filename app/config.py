@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     # Conexão de ESCRITA, usada só pelo cadastro de fontes (rotas com X-Admin-Token). Vazia = sem escrita pela API.
     # O resto da API continua com o usuário só de leitura.
     database_url_escrita: str = ""
+    sqlite_wal: bool = False             # SQLITE_WAL=true: modo WAL (executável de um processo só: a API lê enquanto as coletas gravam)
     transparencia_api_key: str = ""
     mapbiomas_email: str = ""           # MAPBIOMAS_EMAIL / MAPBIOMAS_SENHA: conta da plataforma MapBiomas Alerta (login da API); só no servidor, nunca no site nem no repositório
     mapbiomas_senha: str = ""
