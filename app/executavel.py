@@ -105,6 +105,7 @@ def preparar(base: Path, porta: int = PORTA_PADRAO) -> dict:
     }
     for k, v in {**padrao, **cfg}.items():
         os.environ.setdefault(k, v)
+    os.environ.setdefault("BRASILPLUS_BASE", str(base))
     return cfg
 
 
@@ -149,6 +150,67 @@ def ciclo_coletor() -> None:
     TAREFAS["coletor-ingestao"]()
 
 
+def _copiar_sqlite(origem: Path, destino: Path) -> None:
+    """Cópia consistente pelo próprio SQLite, mesmo com o programa usando o banco."""
+    import sqlite3
+    a, c = sqlite3.connect(str(origem)), sqlite3.connect(str(destino))
+    try:
+        a.backup(c)
+    finally:
+        c.close()
+        a.close()
+
+
+def _guardar_ultimos(pasta: Path, padrao: str, quantos: int = 7) -> None:
+    for velho in sorted(pasta.glob(padrao))[:-quantos]:
+        velho.unlink()
+
+
+def fazer_backup(base: Path | None = None) -> list[Path]:
+    """Backup diário: banco do BRASIL+ e manifesto do coletor (cópia consistente, últimos 7 dias) e os arquivos originais
+    captados (só acrescenta, nunca apaga). Se BACKUP_EXTRA apontar para outra pasta (disco externo, nuvem sincronizada), copia também lá."""
+    base = base or Path(os.environ.get("BRASILPLUS_BASE") or Path.cwd())
+    destino = base / "backups"
+    destino.mkdir(exist_ok=True)
+    dia = datetime.now().strftime("%Y%m%d")
+    feitos: list[Path] = []
+
+    url = os.environ.get("DATABASE_URL", "")
+    if url.startswith("sqlite:///"):
+        banco = Path(url[len("sqlite:///"):])
+        if banco.exists():
+            alvo = destino / f"brasilplus-{dia}.db"
+            _copiar_sqlite(banco, alvo)
+            _guardar_ultimos(destino, "brasilplus-*.db")
+            feitos.append(alvo)
+    manifesto = base / "coletor" / "dados" / "manifesto.db"
+    if manifesto.exists():
+        alvo = destino / f"coletor-manifesto-{dia}.db"
+        _copiar_sqlite(manifesto, alvo)
+        _guardar_ultimos(destino, "coletor-manifesto-*.db")
+        feitos.append(alvo)
+    for sub in ("raw", "corrigido"):   # arquivos originais: insubstituíveis, só se acrescenta
+        origem = base / "coletor" / "dados" / sub
+        if origem.exists():
+            for arq in origem.rglob("*"):
+                if arq.is_file():
+                    alvo_arq = destino / "coletor-dados" / sub / arq.relative_to(origem)
+                    if not alvo_arq.exists():
+                        alvo_arq.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(arq, alvo_arq)
+
+    extra = os.environ.get("BACKUP_EXTRA")
+    if extra:
+        pasta_extra = Path(extra).expanduser()
+        pasta_extra.mkdir(parents=True, exist_ok=True)
+        for arq in feitos:
+            shutil.copy2(arq, pasta_extra / arq.name)
+        _guardar_ultimos(pasta_extra, "brasilplus-*.db")
+        _guardar_ultimos(pasta_extra, "coletor-manifesto-*.db")
+    log.info("Backup feito em %s", destino)
+    return feitos
+
+
 def proximo_ciclo(fuso, segundos: int = 30) -> datetime:
     """Primeiro ciclo do coletor, daqui a poucos segundos. Precisa ter fuso: sem ele o agendador lê o horário como o do fuso DELE
     (America/Sao_Paulo), e num computador em outro fuso o ciclo ficaria horas no futuro."""
@@ -163,6 +225,7 @@ def montar_agendador():
     s = BackgroundScheduler(timezone="America/Sao_Paulo", job_defaults={"coalesce": True, "max_instances": 1, "misfire_grace_time": 3600})
     agendar_tarefas(s)
     s.add_job(ciclo_coletor, "interval", minutes=5, id="ciclo-coletor", next_run_time=proximo_ciclo(s.timezone))
+    s.add_job(fazer_backup, "cron", hour=3, minute=30, id="backup")
     return s
 
 

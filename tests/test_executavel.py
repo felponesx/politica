@@ -92,3 +92,63 @@ def test_primeiro_ciclo_e_daqui_a_poucos_segundos_em_qualquer_fuso(fuso):
     quando = ex.proximo_ciclo(ZoneInfo(fuso), 30)
     assert quando.tzinfo is not None
     assert 20 <= (quando - datetime.now(timezone.utc)).total_seconds() <= 40
+
+
+def _base_com_dados(tmp_path, monkeypatch):
+    import sqlite3
+    base = tmp_path / "BRASILMais"
+    (base / "coletor" / "dados" / "raw" / "bcb" / "ab").mkdir(parents=True)
+    banco = base / "dados-brasilplus" / "brasilplus.db"
+    banco.parent.mkdir(parents=True)
+    c = sqlite3.connect(banco)
+    c.execute("create table t (x text)")
+    c.execute("insert into t values ('importante')")
+    c.commit()
+    c.close()
+    m = sqlite3.connect(base / "coletor" / "dados" / "manifesto.db")
+    m.execute("create table coleta (id integer)")
+    m.commit()
+    m.close()
+    (base / "coletor" / "dados" / "raw" / "bcb" / "ab" / "abc123").write_bytes(b"original captado")
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{banco.as_posix()}")
+    monkeypatch.delenv("BACKUP_EXTRA", raising=False)
+    return base
+
+
+def test_backup_copia_banco_manifesto_e_originais(tmp_path, monkeypatch):
+    import sqlite3
+    base = _base_com_dados(tmp_path, monkeypatch)
+    feitos = ex.fazer_backup(base)
+    assert len(feitos) == 2
+    copia = next(f for f in feitos if f.name.startswith("brasilplus-"))
+    assert sqlite3.connect(copia).execute("select x from t").fetchone() == ("importante",)
+    assert (base / "backups" / "coletor-dados" / "raw" / "bcb" / "ab" / "abc123").read_bytes() == b"original captado"
+
+
+def test_backup_nunca_apaga_original_que_sumiu_da_origem(tmp_path, monkeypatch):
+    base = _base_com_dados(tmp_path, monkeypatch)
+    ex.fazer_backup(base)
+    (base / "coletor" / "dados" / "raw" / "bcb" / "ab" / "abc123").unlink()
+    ex.fazer_backup(base)
+    assert (base / "backups" / "coletor-dados" / "raw" / "bcb" / "ab" / "abc123").exists()
+
+
+def test_backup_guarda_so_os_ultimos_7_dias_do_banco(tmp_path, monkeypatch):
+    base = _base_com_dados(tmp_path, monkeypatch)
+    (base / "backups").mkdir()
+    for d in range(1, 10):
+        (base / "backups" / f"brasilplus-202001{d:02d}.db").write_bytes(b"antigo")
+    ex.fazer_backup(base)
+    sobraram = sorted((base / "backups").glob("brasilplus-*.db"))
+    assert len(sobraram) == 7 and any(not a.read_bytes() == b"antigo" for a in sobraram)   # o de hoje está entre eles
+
+
+def test_backup_extra_copia_em_outra_pasta(tmp_path, monkeypatch):
+    base = _base_com_dados(tmp_path, monkeypatch)
+    monkeypatch.setenv("BACKUP_EXTRA", str(tmp_path / "disco-externo"))
+    ex.fazer_backup(base)
+    assert list((tmp_path / "disco-externo").glob("brasilplus-*.db"))
+
+
+def test_agendador_tem_o_backup_diario():
+    assert "backup" in {j.id for j in ex.montar_agendador().get_jobs()}

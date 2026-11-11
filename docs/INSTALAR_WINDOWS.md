@@ -12,6 +12,8 @@ Um programa (`BRASILMais.exe`) faz tudo: banco (SQLite embutido), captura, confe
 5. Para abrir sozinho ao ligar o Windows: `BRASILMais.exe --iniciar-com-windows` (como administrador). No Windows, deixe o PC sem dormir na tomada.
 6. Para o celular: `tailscale serve --bg 8000`.
 
+**Backup:** todo dia às 3:30 o programa copia o banco e o manifesto do coletor (últimos 7 dias) e os arquivos originais captados (só acrescenta, nunca apaga) para `BRASILMais\\backups`. Como isso fica no mesmo disco, ponha em `config.env` `BACKUP_EXTRA=D:\\Backups\\BRASILMais` (disco externo ou pasta sincronizada com a nuvem) para ter uma segunda cópia.
+
 Os dados (banco, configuração, vínculos, arquivos originais captados) ficam em `C:\Users\<você>\BRASILMais`, separados do programa: gerar o `.exe` de novo nunca apaga nada. Chaves e opções: `config.env` nessa pasta (a `ADMIN_TOKEN` é criada sozinha). O site completo (fotos e cópia dos dados) é copiado para `BRASILMais\site`.
 
 Diferença para a opção 2: o banco é SQLite, e **a barra de busca fica mais fraca**. No PostgreSQL ela ignora acentos, entende palavras parecidas e ordena por relevância; no SQLite vira "contém o texto" (digitar `joao` não acha `João`). Todo o resto funciona igual (coletas, painel, cadastro de fontes, telas, API). Se a busca for importante, use a opção 2 ou aponte o programa para um PostgreSQL com `DATABASE_URL=...` no `config.env`.
