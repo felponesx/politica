@@ -1448,6 +1448,8 @@ svg.geo.com-mun path.st{pointer-events:none}svg.geo.mun-venc path.st{fill:transp
 html,body{overflow-x:clip;max-width:100%}
 .pill-q{display:block;width:calc(100% - 16px);margin:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink)}
 .pill-m{max-height:min(70vh,520px);overflow-y:auto}.pill-q{position:sticky;top:0;z-index:1}
+/* lista de estados com pesquisa: a caixa fica fixa no topo e só a lista rola (antes a caixa flutuava sobre as primeiras linhas) */
+.pill-m:has(>.pill-q){display:flex;flex-direction:column;overflow:hidden;padding-top:0}.pill-m:has(>.pill-q)>.pill-q{position:static;flex:none;width:auto;margin:10px 10px 6px}.pill-m:has(>.pill-q)>.seg{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 /* segurança: "por dia" em quatro quadros simples (v1.10) */
 .sd-grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
 .sd-l{display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,150px);gap:10px;align-items:baseline}
@@ -2144,6 +2146,7 @@ indicacoes:'<circle cx="9" cy="7" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d
 seguranca:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
 saude:'<rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/>',
 escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6 4-4"/><path d="m9 13-5 5"/><path d="M4 21h8"/>',
+profissoes:'<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12.5h18"/>',
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
 ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
@@ -4619,20 +4622,7 @@ return{html:r.html,mount(){r.mount&&r.mount();apiGet("/mapa/estados").then(d=>{c
  const pe=document.querySelector("#hmapcard .cardfoot");if(pe&&!document.querySelector("#hmapReal"))pe.insertAdjacentHTML("afterend",`<p class="small muted" id="hmapReal" style="margin:8px 0 0" title="${esc(d.fonte)}"><a href="#/fontes">Fontes</a></p>`)}).catch(()=>{})}}};
 
 /* Estado: eleições reais no lugar da demonstração */
-const _uf4=P.uf;
-const CARGOS_UF=["GOVERNADOR","SENADOR","DEPUTADO FEDERAL","DEPUTADO ESTADUAL","DEPUTADO DISTRITAL","PRESIDENTE"];
-P.uf=(id,g)=>{const r=_uf4(id,g);if(!API.on)return r;const u=UF[id]||UF.SP;
-return{html:r.html,mount(){r.mount&&r.mount();(async()=>{try{const anos=await apiGet("/eleicoes/anos");for(const ano of anos){const cs=(await apiGet(`/eleicoes/${ano}/${u.uf}/cargos`)).filter(c=>CARGOS_UF.includes(c));if(!cs.length)continue;
-  const res=await Promise.all(cs.map(c=>apiGet(`/eleicoes/${ano}/${u.uf}`+qs({cargo:c,turno:1})).catch(()=>null)));const sec=document.getElementById("s-eleicoes");if(!sec)return;
-  const D={};res.filter(Boolean).forEach(d=>D[d.cargo]=d);const pc=n=>n.toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";const nm=e=>esc(tit(e.nome))+" ("+esc(e.partido||"")+")";
-  const lin=[];
-  if(D.PRESIDENTE&&D.PRESIDENTE.mais_votados[0]){const m=D.PRESIDENTE.mais_votados[0];lin.push(["Presidente: mais votado no estado",nm(m)+" · "+pc(m.percentual)])}
-  if(D.GOVERNADOR&&D.GOVERNADOR.eleitos[0]){const m=D.GOVERNADOR.eleitos[0];lin.push(["Governador eleito",nm(m)+" · "+pc(m.percentual)])}
-  if(D.SENADOR&&D.SENADOR.eleitos.length)lin.push([D.SENADOR.eleitos.length>1?"Senadores eleitos":"Senador eleito",D.SENADOR.eleitos.map(nm).join("<br>")]);
-  const banc=c=>{const d=D[c];if(!d)return null;const it=Object.entries(d.por_partido).filter(([p,o])=>o.eleitos>0).map(([p,o])=>[p,o.eleitos]).sort((x,y)=>y[1]-x[1]);return it.length?it:null};
-  const bf=banc("DEPUTADO FEDERAL"),be=banc(D["DEPUTADO ESTADUAL"]?"DEPUTADO ESTADUAL":"DEPUTADO DISTRITAL"),tot=l=>l.reduce((t,x)=>t+x[1],0),top=l=>{const t=l.slice(0,6),r=tot(l.slice(6));return r?[...t,["Outros",r]]:t};
-  sec.innerHTML=`<h2 class="ufsec-h">Eleições ${ano}</h2>${bf||be?`<div class="grid g2">${bf?`<div class="panel"><h2>Deputados federais eleitos <small>${nf(tot(bf))} vagas</small></h2>${hbars(top(bf),{fmt:nf})}</div>`:""}${be?`<div class="panel"><h2>${D["DEPUTADO ESTADUAL"]?"Deputados estaduais":"Deputados distritais"} eleitos <small>${nf(tot(be))} vagas</small></h2>${hbars(top(be),{fmt:nf})}</div>`:""}</div>`:""}
-  <p class="small muted">Fonte: TSE, 1º turno. Mapa por município e comparação com a eleição anterior em <a href="#/eleicoes">Eleições</a>.</p>`;return}}catch(e){}})()}}};
+
 
 /* Eleições: mapa por município (cargos majoritários) */
 /* ---------- presidente: todos os municípios no mapa do país ---------- */
@@ -5939,7 +5929,7 @@ async function prfMontar(){const c=$("#prfCorpo");
  catch(e){c.innerHTML=rerro(e)}}
 P.profissoes=()=>({html:`<style>.prf-filtros{display:flex;gap:10px;flex-wrap:wrap}.prf-filtros input{flex:1 1 240px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--surface);color:var(--ink)}.prf-filtros select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--surface);color:var(--ink)}.prf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.prf-card{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .2s}.prf-card:hover,.prf-card:focus{border-color:#2F6FED;outline:none}.prf-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.prf-top small{display:block;color:var(--ink2);margin-top:3px}.prf-med{text-align:right;white-space:nowrap}.prf-med span{display:block;font-size:.75em;color:var(--ink2)}.prf-med b{color:var(--ink);font-size:1.1em}.prf-frase{margin:10px 0 0;color:var(--ink2);font-size:.92em}.prf-mais{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;font-size:.9em}.prf-mais p{margin:6px 0}.prf-var{display:block;font-size:.74em;font-weight:600;margin-top:2px}.prf-var.sobe{color:#1B8A5A}.prf-var.desce{color:#C4320A}</style>
 <div class="crumb"><a href="#/inicio">Início</a> / Salários por profissão</div>
-<div class="panel"><div style="display:flex;align-items:center;gap:14px"><span aria-hidden="true" style="flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:#EAF1FD;color:#2F6FED"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12.5h18"/><circle cx="12" cy="12.5" r="1.6" fill="currentColor"/></svg></span><h1 style="margin:0">Salários por profissão</h1></div><p class="mut" id="prfSub">Carregando os dados da RAIS…</p></div>
+<div class="panel"><h1>Salários por profissão</h1><p class="mut" id="prfSub">Carregando os dados da RAIS…</p></div>
 <div id="prfCorpo" class="mt">${rload()}</div>`,mount(){prfMontar()}});
 /* ----- Meio ambiente ----- */
 const AMB_G=[["Desmatamento (PRODES, ano fechado)","km2","total","serie"],["Alertas recentes (DETER)","deter"]];
