@@ -5,6 +5,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "sqlite:///./brasilplus.db"
+    # Conexão de ESCRITA, usada só pelo cadastro de fontes (rotas com X-Admin-Token). Vazia = sem escrita pela API.
+    # O resto da API continua com o usuário só de leitura.
+    database_url_escrita: str = ""
     transparencia_api_key: str = ""
     mapbiomas_email: str = ""           # MAPBIOMAS_EMAIL / MAPBIOMAS_SENHA: conta da plataforma MapBiomas Alerta (login da API); só no servidor, nunca no site nem no repositório
     mapbiomas_senha: str = ""

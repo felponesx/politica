@@ -102,3 +102,30 @@ def test_proxima_pagina_com_acentos_em_utf8(tmp_path):
     corpo = {"dados": [{"id": 1, "nome": "Conceição Ação"}], "links": [{"rel": "next", "href": "http://api/p2"}]}
     pagina.write_bytes(json.dumps(corpo, ensure_ascii=False).encode("utf-8"))
     assert col.proxima_pagina({"paginacao": "camara"}, pagina) == "http://api/p2"
+
+
+def test_cadastro_json_entra_e_csv_e_avisado(monkeypatch):
+    """Fontes cadastradas pela tela: JSON entra como fonte com o mapa; formato ainda não suportado fica de fora com aviso."""
+    cadastro = [
+        {"nome": "exemplo-json", "produto": "BRASIL+", "url": "https://dados.exemplo.gov.br/a.json", "intervalo_min": 60,
+         "formato": "json", "campos": {"tipo": "exemplo_json", "chave": "id", "valor": "v"}},
+        {"nome": "exemplo-csv", "produto": "BRASIL+", "url": "https://dados.exemplo.gov.br/b.csv", "intervalo_min": 60,
+         "formato": "csv", "campos": {"chave": "id"}},
+    ]
+    monkeypatch.setattr(col, "_do_cadastro", lambda: cadastro)
+    fontes, _ = col.carregar_vinculos()
+    assert "exemplo-json" in fontes and "exemplo-csv" not in fontes
+    f = fontes["exemplo-json"]
+    assert f["adaptador"] == "linhas" and f["mapa"]["chave"] == "id" and f["publicar_dados"] is True and f["intervalo_min"] == 60
+
+
+def test_brasil_fora_do_ar_nao_derruba_o_coletor(monkeypatch):
+    import urllib.error
+
+    def fora(req, timeout=15):
+        raise urllib.error.URLError("conexão recusada")
+
+    monkeypatch.setattr(col.urllib.request, "urlopen", fora)
+    assert col._do_cadastro() == []
+    fontes, _ = col.carregar_vinculos()   # segue com os vínculos de sempre
+    assert isinstance(fontes, dict)

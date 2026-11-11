@@ -567,3 +567,19 @@ class VotoLei(Base):
     proposicao_id: Mapped[int] = mapped_column(ForeignKey("proposicoes.id", ondelete="CASCADE"), index=True)
     opcao: Mapped[str] = mapped_column(String(12))
     atualizado_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+
+
+class FonteCadastrada(Base):
+    """Fonte cadastrada pela tela (sem git). O coletor do PC lê esta lista pela API e capta no intervalo escolhido."""
+    __tablename__ = "fontes_cadastradas"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    nome: Mapped[str] = mapped_column(String(64), unique=True)
+    produto: Mapped[str] = mapped_column(String(60), default="BRASIL+")
+    url: Mapped[str] = mapped_column(String(500))
+    intervalo_min: Mapped[int] = mapped_column(Integer, default=1440)
+    formato: Mapped[str] = mapped_column(String(10))
+    campos: Mapped[dict] = mapped_column(JSON)   # tipo, chave, valor, titulo, uf, data, lista, dados
+    permitir_pessoas: Mapped[bool] = mapped_column(default=False)
+    ativa: Mapped[bool] = mapped_column(default=True)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    atualizada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))

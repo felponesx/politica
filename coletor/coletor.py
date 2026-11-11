@@ -106,7 +106,42 @@ def carregar_vinculos():
                 avisar(f"  {p.name}: fonte repetida ignorada: {n}")
             else:
                 fontes[n] = {**f, "vinculo": v, "arquivo": p.name}
+    _somar_cadastro(fontes, nomes)
     return fontes, sorted(nomes)
+
+
+CADASTRO_URL = os.environ.get("BRASIL_FONTES_URL", "http://127.0.0.1:8000/fontes-cadastradas?ativa=true")
+
+
+def _do_cadastro() -> list:
+    """Fontes cadastradas pela tela do BRASIL+ (sem git). Se o BRASIL+ estiver fora, segue só com os vínculos."""
+    try:
+        req = urllib.request.Request(CADASTRO_URL, headers={"User-Agent": UA, "Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=15) as r:
+            dados = json.loads(r.read().decode("utf-8"))
+        return dados if isinstance(dados, list) else []
+    except Exception as e:
+        avisar(f"  cadastro de fontes indisponível ({type(e).__name__}): seguindo só com os vínculos")
+        return []
+
+
+def _somar_cadastro(fontes: dict, nomes: set):
+    """Entra no mesmo formato de um [[fonte]] do TOML. Por enquanto só JSON (o adaptador 'linhas' lê JSON)."""
+    for f in _do_cadastro():
+        n = str(f.get("nome", ""))
+        produto = str(f.get("produto") or "BRASIL+")
+        if not NOME_OK.match(n) or not str(f.get("url", "")).startswith("https://"):
+            avisar(f"  cadastro: fonte ignorada (nome ou endereço inválido): {n!r}")
+        elif f.get("formato") != "json":
+            avisar(f"  cadastro: {n}: formato {f.get('formato')} ainda não é lido pelo coletor (só json por enquanto)")
+        elif n in fontes:
+            avisar(f"  cadastro: {n} já existe num vínculo: ignorada")
+        else:
+            nomes.add(produto)
+            fontes[n] = {"nome": n, "url": f["url"], "intervalo_min": int(f.get("intervalo_min", 1440)),
+                         "publicar_dados": True, "adaptador": "linhas", "mapa": f.get("campos") or {},
+                         "headers": {"Accept": "application/json"}, "vinculo": produto, "arquivo": "cadastro",
+                         "esperado": f"Lista de registros da fonte {n}, mapeada pelos campos cadastrados."}
 
 
 # ---------- coleta ----------

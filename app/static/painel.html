@@ -61,6 +61,14 @@
   .aviso-txt { color: var(--cinza); font-size: 12px; margin-top: 12px; }
   .vazio { color: var(--cinza); padding: 16px 0; }
   .tabela-wrap { overflow-x: auto; }
+  .form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 8px 0 4px; }
+  .form label { display: grid; gap: 4px; font-size: 13px; color: var(--cinza); }
+  .form label.largo { grid-column: 1 / -1; }
+  .form label.check { display: flex; align-items: center; gap: 8px; }
+  .form input, .form select { font: inherit; font-size: 14px; color: var(--marinho); background: var(--fundo);
+    border: 1px solid var(--linha); border-radius: 8px; padding: 8px 10px; }
+  .form .acoes { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  button.secundario { background: #fff; color: var(--azul); border: 1px solid var(--linha); }
   @media (max-width: 640px) {
     .tabela .oculto-celular { display: none; }
   }
@@ -77,6 +85,37 @@
   </header>
 
   <div class="kpis" id="kpis"></div>
+
+  <h2>Cadastrar fonte</h2>
+  <form id="form-fonte" class="form" autocomplete="off">
+    <label>Nome <input name="nome" required maxlength="64" placeholder="ex.: senado-senadores"></label>
+    <label>Produto <input name="produto" value="BRASIL+" maxlength="60"></label>
+    <label class="largo">Endereço (https) <input name="url" required type="url" placeholder="https://..."></label>
+    <label>Intervalo (minutos) <input name="intervalo_min" type="number" value="1440" min="5" max="43200"></label>
+    <label>Formato
+      <select name="formato">
+        <option value="json">JSON</option><option value="csv">CSV (em breve)</option>
+        <option value="xml">XML (em breve)</option><option value="zip">ZIP (em breve)</option>
+      </select>
+    </label>
+    <label>Campo que identifica a linha <input name="chave" required placeholder="ex.: id"></label>
+    <label>Campo do valor <input name="valor"></label>
+    <label>Campo do título <input name="titulo"></label>
+    <label>Campo da UF <input name="uf"></label>
+    <label>Campo da data <input name="data"></label>
+    <label>Lista dentro do arquivo <input name="lista" placeholder="ex.: dados (se houver)"></label>
+    <label class="largo check"><input type="checkbox" name="permitir_pessoas"> Esta fonte traz dados de pessoas (nome, CPF...)</label>
+    <label class="largo">Chave do administrador <input name="token" type="password" required></label>
+    <div class="acoes"><button type="submit">Cadastrar</button><span id="form-msg" class="sub"></span></div>
+  </form>
+
+  <h2>Fontes cadastradas</h2>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead><tr><th>Nome</th><th>Formato</th><th>Intervalo</th><th>Situação</th><th></th></tr></thead>
+      <tbody id="cadastradas"></tbody>
+    </table>
+  </div>
 
   <h2>Fontes</h2>
   <div class="tabela-wrap">
@@ -222,7 +261,70 @@
     }
   }
 
+  var TOKEN_KEY = "bp_admin_token";
+  function tokenGuardado() { try { return sessionStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } }
+  function guardarToken(t) { try { sessionStorage.setItem(TOKEN_KEY, t); } catch (e) { /* navegador sem sessão: segue sem guardar */ } }
+
+  async function enviarFonte(ev) {
+    ev.preventDefault();
+    var f = ev.target, msg = document.getElementById("form-msg");
+    var d = new FormData(f), token = String(d.get("token") || "");
+    var campos = {};
+    ["chave", "valor", "titulo", "uf", "data", "lista"].forEach(function (k) {
+      var v = String(d.get(k) || "").trim();
+      if (v) campos[k === "lista" ? "lista" : k] = v;
+    });
+    var corpo = {
+      nome: String(d.get("nome") || "").trim(), produto: String(d.get("produto") || "BRASIL+"),
+      url: String(d.get("url") || "").trim(), intervalo_min: parseInt(d.get("intervalo_min"), 10) || 1440,
+      formato: String(d.get("formato") || "json"), campos: campos, permitir_pessoas: d.get("permitir_pessoas") === "on"
+    };
+    msg.textContent = "Enviando…";
+    try {
+      var r = await fetch("/fontes-cadastradas", { method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Token": token }, body: JSON.stringify(corpo) });
+      var j = await r.json().catch(function () { return {}; });
+      if (!r.ok) { msg.textContent = typeof j.detail === "string" ? j.detail : "Não foi possível cadastrar (" + r.status + ")."; return; }
+      guardarToken(token);
+      f.reset();
+      msg.textContent = "Fonte cadastrada. O coletor pega na próxima rodada.";
+      listarCadastradas();
+    } catch (e) { msg.textContent = "Sem conexão com o servidor."; }
+  }
+
+  async function alternarFonte(id, ativa) {
+    var msg = document.getElementById("form-msg"), token = tokenGuardado();
+    if (!token) { msg.textContent = "Digite a chave do administrador no formulário acima e cadastre uma fonte para liberar esta ação."; return; }
+    try {
+      var r = await fetch("/fontes-cadastradas/" + id, { method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Token": token }, body: JSON.stringify({ ativa: !ativa }) });
+      if (!r.ok) { msg.textContent = "Não foi possível alterar (" + r.status + ")."; return; }
+      listarCadastradas();
+    } catch (e) { msg.textContent = "Sem conexão com o servidor."; }
+  }
+
+  async function listarCadastradas() {
+    var corpo = document.getElementById("cadastradas");
+    var lista;
+    try { lista = await pegar("/fontes-cadastradas"); } catch (e) { return; }
+    corpo.replaceChildren();
+    if (!lista.length) { var v = el("tr"), td = el("td", "Nenhuma fonte cadastrada ainda.", "vazio"); td.colSpan = 5; v.append(td); corpo.append(v); return; }
+    lista.forEach(function (x) {
+      var tr = el("tr");
+      var botao = el("button", x.ativa ? "Pausar" : "Ativar", "secundario");
+      botao.type = "button";
+      botao.addEventListener("click", function () { alternarFonte(x.id, x.ativa); });
+      var situ = el("td");
+      situ.append(el("span", x.ativa ? "Ativa" : "Pausada", "tag " + (x.ativa ? "ok" : "parado")));
+      tr.append(el("td", x.nome), el("td", x.formato.toUpperCase()), el("td", "a cada " + x.intervalo_min + " min"), situ, el("td"));
+      tr.lastChild.append(botao);
+      corpo.append(tr);
+    });
+  }
+
+  document.getElementById("form-fonte").addEventListener("submit", enviarFonte);
   document.getElementById("atualizar").addEventListener("click", carregar);
+  listarCadastradas();
   carregar();
   setInterval(carregar, 60000);
 })();

@@ -10,6 +10,11 @@ if settings.database_url.startswith("postgres") and settings.somente_leitura and
 engine = create_engine(settings.database_url, pool_pre_ping=True, connect_args=_connect_args)
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
+# Escrita só para o cadastro de fontes (usuário com permissão de escrever, separado do de leitura da API).
+_engine_escrita = (create_engine(settings.database_url_escrita, pool_pre_ping=True)
+                   if settings.database_url_escrita else None)
+SessionEscrita = sessionmaker(bind=_engine_escrita, expire_on_commit=False) if _engine_escrita is not None else None
+
 
 class Base(DeclarativeBase):
     pass
