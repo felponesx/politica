@@ -2078,6 +2078,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #btnTheme svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #btnTheme .tm-sol{fill:currentColor;stroke:none}
 .adm-aviso{background:#FFF6E5;color:#8A5A00;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;margin:0 0 12px}
+.fac-lg{height:22px;width:auto;max-width:44px;object-fit:contain;vertical-align:middle;margin-right:8px;border-radius:4px}
 </style>
 </head>
 <body>
@@ -5726,13 +5727,14 @@ function ensEstados(D,sel){const I=D.ideb;if(!I||!I.ufs)return{html:ensVazio()};
   <div class="mt">${linhasDuplo(serie,anos,v,ensN1,{alto:"Melhores notas",baixo:"Piores notas",coresAlto:LIN_AZUL})}</div>`};
  return{html:`<div class="pbar mt" id="ensSel">${pill("ensE","Etapa",ENS_ETAPAS,etapa)}${pill("ensU","Estado",[["","Brasil"],...UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>[u.uf,u.nome])],uf)}</div><div id="ensB">${corpo()}</div>`,
   mount(){const re=()=>{const b=$("#ensB");if(b)b.innerHTML=corpo()};$("#ensE").onchange=e=>{etapa=e.target.value;re()};$("#ensU").onchange=e=>{uf=e.target.value;re()}}}}
-function ensFaculdades(D){const S=D.superior;if(!S||!(S.instituicoes||[]).length)return{html:ensVazio()};const L=S.instituicoes;let f={uf:"",cat:"",q:""};
+function ensFaculdades(D){const S=D.superior;if(!S||!(S.instituicoes||[]).length)return{html:ensVazio()};const L=S.instituicoes;let f={uf:"",cat:"",q:""};let FL={};
+ const facLogo=x=>{const l=FL[String(x.codigo)];return l&&l.img?`<img class="fac-lg" src="${l.img}" alt="" loading="lazy" decoding="async" title="Logo: Wikipédia">`:""};
  const faixa=x=>x.faixa!=null?`<span class="prm-r" style="--c:${x.faixa>=4?"#1BAF7A":x.faixa===3?"#F5A524":"#E5484D"}">Faixa ${x.faixa}</span>`:"—";
  const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.uf||x.uf===f.uf)&&(!f.cat||x.categoria===f.cat)&&(!q||snapNorm(x.nome+" "+(x.sigla||"")+" "+(x.municipio||"")).includes(q))).sort((a,b)=>(b.igc??-1)-(a.igc??-1));
-  $("#ensFL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(l.length)} instituições · IGC ${S.ano}</p>`+table([["Instituição",x=>`<b>${esc(x.nome)}</b>${x.sigla?` <span class="small muted">${esc(x.sigla)}</span>`:""}`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Tipo",x=>esc(x.categoria||"—")],["IGC contínuo",x=>ensN1(x.igc),"n"],["Faixa",x=>faixa(x)]],l)};
+  $("#ensFL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(l.length)} instituições · IGC ${S.ano}</p>`+table([["Instituição",x=>`${facLogo(x)}<b>${esc(x.nome)}</b>${x.sigla?` <span class="small muted">${esc(x.sigla)}</span>`:""}`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Tipo",x=>esc(x.categoria||"—")],["IGC contínuo",x=>ensN1(x.igc),"n"],["Faixa",x=>faixa(x)]],l)};
  return{html:`<div class="panel mt"><h2>Melhores faculdades e universidades</h2><p class="small muted" style="margin:0 0 8px">Ranking pelo IGC (Índice Geral de Cursos) do INEP, de ${S.ano}: junta a qualidade dos cursos de graduação, mestrado e doutorado. Faixa 5 é a melhor; só valem instituições avaliadas.</p>
   <div class="filters"><select id="efU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="efC" data-pill="Tipo"><option value="">Públicas e privadas</option>${[...new Set(L.map(x=>x.categoria).filter(Boolean))].map(c=>`<option>${esc(c)}</option>`).join("")}</select><input id="efQ" placeholder="Buscar instituição" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensFL"></div><p class="small muted" style="margin:10px 0 0">Fonte: INEP, Índice Geral de Cursos (IGC) ${S.ano}. O IGC é a nota da instituição, não de cada curso, e nenhuma nota é estimada.</p></div>`,
-  mount(){lista();$("#efU").onchange=e=>{f.uf=e.target.value;lista()};$("#efC").onchange=e=>{f.cat=e.target.value;lista()};$("#efQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+  mount(){lista();midiaGrupo("faculdades").then(G=>{FL=G||{};if(Object.keys(FL).length&&$("#ensFL"))lista()});$("#efU").onchange=e=>{f.uf=e.target.value;lista()};$("#efC").onchange=e=>{f.cat=e.target.value;lista()};$("#efQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
 function ensEscolas(D){const E=D.escolas;if(!E||!ENS_ETAPAS.some(([k])=>(E[k]||[]).length))return{html:ensVazio()};let f={etapa:"iniciais",uf:"",rede:"",q:""};
  const lista=()=>{const q=snapNorm(f.q),L=(E[f.etapa]||[]).filter(x=>(!f.uf||x.uf===f.uf)&&(!f.rede||x.rede===f.rede)&&(!q||snapNorm(x.nome+" "+(x.municipio||"")).includes(q)));
   $("#ensEL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(L.length)} escolas · IDEB ${E.ano||""}</p>`+table([["Escola",x=>`<b>${esc(x.nome)}</b><div class="small muted">${esc(x.municipio||"")}</div>`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Rede",x=>esc(x.rede||"—")],["IDEB",x=>ensN1(x.ideb),"n"]],L)};
@@ -6166,7 +6168,7 @@ async function midiaJSON(n){try{const r=await fetch("midia/"+n,{headers:{Accept:
 async function midiaIdx(){if(MIDIA.idx===undefined)MIDIA.idx=midiaJSON("indice.json");return MIDIA.idx}
 // logos.json é só o índice: cada grupo (partidos, polícias, estados, veículos, empresas) fica num arquivo próprio e só é
 // baixado quando a tela mostra algo dele (antes era um arquivo único de 16 MB). Cópias antigas com tudo junto continuam valendo.
-const LOGO_GRUPOS=["partidos","policias","estados","veiculos","empresas"];MIDIA.grupos={};
+const LOGO_GRUPOS=["partidos","policias","estados","veiculos","empresas","faculdades"];MIDIA.grupos={};
 function midiaGrupo(g){if(!MIDIA.grupos[g]){if(!MIDIA.logos)MIDIA.logos=midiaIdx().then(i=>i?midiaJSON("logos.json"):null).then(L=>L||{});
   MIDIA.grupos[g]=MIDIA.logos.then(L=>L.grupos&&L.grupos[g]?midiaJSON(L.grupos[g]):L[g]).then(x=>{x=x||{};if(g!=="partidos")return x;const o={};Object.entries(x).forEach(([k,v])=>o[normSig(k)]=v);return o})}
  return MIDIA.grupos[g]}

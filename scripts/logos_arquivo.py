@@ -13,7 +13,7 @@ import json
 import os
 from datetime import date
 
-GRUPOS = ("partidos", "policias", "estados", "veiculos", "empresas")
+GRUPOS = ("partidos", "policias", "estados", "veiculos", "empresas", "faculdades")
 QUALIDADE = 88
 ALTURA_MAX = 160
 

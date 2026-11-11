@@ -20,6 +20,7 @@ import unicodedata
 import sys
 import zipfile
 from datetime import date
+from pathlib import Path
 
 import httpx
 
@@ -565,6 +566,96 @@ def logos_empresas(db) -> dict:
     return out
 
 
+_INFO_ENSINO = re.compile(r"\{\{\s*Info/(Universidade|Institui[cç][aã]o de ensino|Faculdade|Escola|Instituto)", re.I)
+
+
+def faculdade_wikipedia(nome: str, sigla: str | None) -> dict | None:
+    """Verbete de instituição de ensino ({{Info/Universidade}}...) cujo título (sem o parêntese) tem só palavras do nome
+    oficial do INEP ou é a própria sigla. Na dúvida (homônimo, título com palavra a mais), sem logo."""
+    alvo = _palavras(nome)
+    sig = (sigla or "").strip()
+    try:
+        d = cli.get(WIKI, params={"action": "query", "format": "json", "list": "search", "srlimit": 5,
+                                  "srsearch": nome}).json()
+    except Exception:
+        return None
+    for r in d.get("query", {}).get("search", []):
+        t = r["title"]
+        base = re.sub(r"\s*\(.*\)$", "", t)
+        tp = _palavras(base)
+        if not tp or not (tp <= alvo and len(tp) >= max(2, len(alvo) - 1) or (sig and base.upper() == sig.upper())):
+            continue
+        try:
+            txt = cli.get(WIKI, params={"action": "parse", "page": t, "prop": "wikitext", "section": 0,
+                                        "format": "json", "formatversion": 2}).json().get("parse", {}).get("wikitext", "")
+        except Exception:
+            continue
+        if _INFO_ENSINO.search(txt):
+            return {"titulo": t}
+    return None
+
+
+def igc_lista(dados="site/dados") -> list[dict]:
+    """Instituições do IGC mais recente, da cópia estática (/igc) ou do banco."""
+    lista = []
+    try:
+        from scripts.copia_saude_tribunais import Copia
+        v = Copia(Path(dados)).ler("/igc") or {}
+        lista = (v.get("edicao") or {}).get("lista") or []
+    except Exception as e:  # noqa: BLE001 - sem cópia, tenta o banco
+        log.info("IGC fora da cópia: %s", e)
+    if not lista:
+        try:
+            from app.db import SessionLocal
+            from app.models import Registro
+            with SessionLocal() as db:
+                r = db.query(Registro).filter_by(fonte="inep", tipo="igc_edicao").order_by(Registro.chave.desc()).first()
+                lista = ((r.dados or {}).get("lista") or []) if r else []
+        except Exception as e:  # noqa: BLE001
+            log.info("IGC fora do banco: %s", e)
+    return lista
+
+
+def logos_faculdades(dados="site/dados", limite=400, antes: dict | None = None) -> dict:
+    """{codigo_ies: {img, pagina, titulo}}: logo (imagem principal do verbete) das instituições com melhor IGC e de todas as
+    públicas, até `limite`. Instituição já com logo na cópia anterior não é procurada de novo (a Wikimedia limita pedidos)."""
+    antes = antes or {}
+    lista = [x for x in igc_lista(dados) if x.get("codigo") and x.get("nome")]
+    publica = [x for x in lista if "blica" in (x.get("categoria") or "")]
+    melhores = sorted(lista, key=lambda x: -(x.get("igc") or -1))
+    alvo, vistos = [], set()
+    for x in publica + melhores:
+        c = str(x["codigo"])
+        if c not in vistos:
+            vistos.add(c)
+            alvo.append(x)
+        if len(alvo) >= limite:
+            break
+    out = {c: v for c, v in antes.items() if isinstance(v, dict) and v.get("img")}
+    achados = {}
+    for x in alvo:
+        c = str(x["codigo"])
+        if c in out:
+            continue
+        w = faculdade_wikipedia(x["nome"], x.get("sigla"))
+        if w:
+            achados[c] = w["titulo"]
+    info = wiki_imagens(sorted(set(achados.values())))
+    for c, t in achados.items():
+        meta = info.get(t) or {}
+        if not meta.get("thumb"):
+            continue
+        try:
+            rr = cli.get(meta["thumb"])
+            img = miniatura(rr.content, ALTURA_LOGO, "PNG") if rr.status_code == 200 else None
+        except Exception:
+            img = None
+        if img:
+            out[c] = {"img": img, "pagina": meta.get("pagina"), "titulo": t}
+    log.info("faculdades com logo: %d de %d procuradas", len(out), len(alvo))
+    return out
+
+
 def nomes_indicados(site="site/index.html") -> list[str]:
     """Nomes de ministros, tribunais e colegiados que o site lista (NO_CARGO e MINISTROS)."""
     try:
@@ -645,6 +736,11 @@ def main(pasta: str):
         lg = ler(os.path.join(pasta, "logos.json"))
     with SessionLocal() as db:
         lg["empresas"] = logos_empresas(db) or lg.get("empresas") or {}
+    try:  # logos das faculdades e universidades (aba Ensino › Faculdades)
+        lg["faculdades"] = logos_faculdades(os.path.join(os.path.dirname(os.path.normpath(pasta)), "dados"),
+                                            antes=lg.get("faculdades")) or lg.get("faculdades") or {}
+    except Exception as e:  # noqa: BLE001 - não derruba as fotos
+        log.warning("logos das faculdades não atualizados: %s", e)
     gravar(os.path.join(pasta, "logos.json"), lg)
     with SessionLocal() as db:
         fotos = {**fotos_congresso(db), **fotos_tse(db), **fotos_prefeitos(db), **fotos_wikipedia(nomes_indicados())}
@@ -706,5 +802,13 @@ def reblocar(pasta: str) -> None:
 if __name__ == "__main__":
     if sys.argv[1:2] == ["--reblocar"]:
         reblocar(sys.argv[2] if len(sys.argv) > 2 else "site/midia")
+    elif sys.argv[1:2] == ["--faculdades"]:  # só os logos das faculdades, numa cópia pronta: --faculdades [site/midia] [site/dados]
+        from scripts.logos_arquivo import gravar, ler
+        logging.basicConfig(level=logging.INFO)
+        p = sys.argv[2] if len(sys.argv) > 2 else "site/midia"
+        arq = os.path.join(p, "logos.json")
+        L = ler(arq)
+        L["faculdades"] = logos_faculdades(sys.argv[3] if len(sys.argv) > 3 else "site/dados", antes=L.get("faculdades"))
+        print(gravar(arq, L), len(L["faculdades"]), "faculdades com logo")
     else:
         main(sys.argv[1] if len(sys.argv) > 1 else "site/midia")
