@@ -2931,6 +2931,8 @@ function inlineZoomOut(cfg){limpaVoo();const card=$(cfg.card),st=$(cfg.holder),u
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");const mg0=st.querySelector("g.uf-mun"),mgc=mg0&&mg0.cloneNode(true);if(mgc)mgc.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));
  st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
+ /* volta direta, sem a animação do estado voltando ao mapa: ela pesava demais e travava o celular e o PC */
+ return;
  const tp=uf&&($(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`));const reduce=semMov();
  if(reduce||!h0||!tp||!tp.animate)return;
  const svg=tp.ownerSVGElement,r=svg.getBoundingClientRect(),t=tp.getBoundingClientRect();
