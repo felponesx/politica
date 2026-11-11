@@ -616,3 +616,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   `saudeFontes`, `saudeVacMonta`), Leis e Projetos › Julgamentos dos tribunais (`votosTrib`: ministros do STJ, decisões por maioria com etiqueta por ministro, quadro do TSE),
   Meio ambiente (`maCarregar`: PRODES e MapBiomas da Mata Atlântica lado a lado).
 - Cópia pronta: `DATABASE_URL=... python -m scripts.copia_saude_tribunais [site/dados]` junta os campos novos nas chaves existentes (não apaga nada) e atualiza os pacotes.
+
+## Mapas por município de 2006, 2010 e 2014 (11/11/2026)
+- `tse-resultados ano=2014|2010|2006` (banco SQLite à parte) + `python -m scripts.mapa_eleicao_copia <ano> site/dados` (código IBGE pelo código TSE dos mapas de 2018/2022; zeros à esquerda ignorados).
+- No Artifact (limite de 511 arquivos por versão) esses anos ficam só em 2 pacotes por ano, `p/el-<ano>-presidente.json` e `p/el-<ano>-estaduais.json`, com os valores dentro
+  (sem `g/` nem chave nas partes s<N>). No repositório os pacotes seguem o padrão do `pacotes_copia` (um por cargo e turno).
