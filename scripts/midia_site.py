@@ -569,6 +569,23 @@ def logos_empresas(db) -> dict:
 _INFO_ENSINO = re.compile(r"\{\{\s*Info/(Universidade|Institui[cç][aã]o de ensino|Faculdade|Escola|Instituto)", re.I)
 
 
+_SOBRA_IES = {"fundacao", "professor", "prof"}
+
+
+def titulo_confere(nome: str, sigla: str | None, titulo: str) -> bool:
+    """O título do verbete (sem parêntese) tem exatamente as palavras do nome do INEP, tirando "Fundação", "Professor" e a sigla
+    (ex.: "FUNDAÇÃO UNIVERSIDADE FEDERAL DO ABC" = "Universidade Federal do ABC"), ou é a própria sigla. Uma palavra a mais ou a
+    menos já é outra instituição (UFAPE ≠ UFPE, UFOB ≠ UFBA)."""
+    base = re.sub(r"\s*\(.*\)$", "", titulo or "")
+    if sigla and base.strip().upper() == sigla.strip().upper():
+        return True
+    if _palavras(nome) and _palavras(nome) == _palavras(base):
+        return True
+    tira = _SOBRA_IES | _palavras(sigla or "")
+    alvo, tp = _palavras(nome) - tira, _palavras(base) - tira
+    return len(tp) >= 2 and tp == alvo
+
+
 def faculdade_wikipedia(nome: str, sigla: str | None) -> dict | None:
     """Verbete de instituição de ensino ({{Info/Universidade}}...) cujo título (sem o parêntese) tem só palavras do nome
     oficial do INEP ou é a própria sigla. Na dúvida (homônimo, título com palavra a mais), sem logo."""
@@ -582,8 +599,7 @@ def faculdade_wikipedia(nome: str, sigla: str | None) -> dict | None:
     for r in d.get("query", {}).get("search", []):
         t = r["title"]
         base = re.sub(r"\s*\(.*\)$", "", t)
-        tp = _palavras(base)
-        if not tp or not (tp <= alvo and len(tp) >= max(2, len(alvo) - 1) or (sig and base.upper() == sig.upper())):
+        if not titulo_confere(nome, sig, base):
             continue
         try:
             txt = cli.get(WIKI, params={"action": "parse", "page": t, "prop": "wikitext", "section": 0,
@@ -647,7 +663,7 @@ def logos_faculdades(dados="site/dados", limite=400, antes: dict | None = None) 
             continue
         try:
             rr = cli.get(meta["thumb"])
-            img = miniatura(rr.content, ALTURA_LOGO, "PNG") if rr.status_code == 200 else None
+            img = miniatura(rr.content, 64, "PNG")  # aparece com 22 px if rr.status_code == 200 else None
         except Exception:
             img = None
         if img:
