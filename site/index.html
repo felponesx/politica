@@ -2548,11 +2548,7 @@ return{html:`<div class="ph"><div><h1>Arrecadação e repasses</h1><p>Quanto cad
 <div class="legend" style="flex-wrap:wrap"><i style="background:#609FEC"></i>retorna menos de 34%<i style="background:#E6EAF0;margin-left:8px"></i>retorna até 100%<i style="background:#F9CE75;margin-left:8px"></i>recebe mais do que arrecada</div></div>
 <div class="panel" id="aside"></div></div>
 <div class="panel mt"><div class="hd"><div><h2>Todos os estados</h2><p>Valores anuais</p></div><div class="filters" style="margin:0"><select id="areg"><option value="">Todas as regiões</option>${Object.entries(REG).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select><select id="aord"><option value="saldo">Ordenar por saldo</option><option value="arr">Por arrecadação</option><option value="ret">Por retorno</option><option value="ratio">Por retorno a cada R$ 1</option></select></div></div><div id="atab"></div></div>
-<div class="panel mt"><h2>Como ler estes números</h2><div class="grid g2 small" style="color:var(--ink2)">
-<p style="margin:0"><b style="color:var(--ink)">Arrecadado no estado</b> soma os tributos federais pagos por pessoas e empresas com domicílio fiscal no estado, como Imposto de Renda, IPI, PIS/Cofins e contribuições previdenciárias.</p>
-<p style="margin:0"><b style="color:var(--ink)">Retornou ao estado</b> soma as transferências da União ao governo estadual e às prefeituras: fundos de participação (FPE e FPM), Fundeb, SUS, assistência social e repasses voluntários.</p>
-<p style="margin:0"><b style="color:var(--ink)">Redistribuído ao país</b> é a diferença. Fica com a União e financia despesas nacionais e as transferências a estados que recebem mais do que arrecadam.</p>
-<p style="margin:0"><b style="color:var(--ink)">Limitações.</b> Empresas com sede em um estado pagam tributos por operações feitas em outros, o que eleva a arrecadação de estados como São Paulo e o Distrito Federal. Gastos diretos da União no estado, como benefícios do INSS e salários federais, não entram neste cálculo e terão uma visão própria.</p></div>${SRC}</div>`,
+<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Arrecadado: tributos federais pagos no estado. Retornou: transferências da União ao estado e às prefeituras. A diferença fica com a União. Empresas pagam onde têm sede, por isso o número não mostra só quem mora no estado.</p></div>`,
 mount(){const ds=()=>{const u=UF[sel];$("#aside").innerHTML=`<div class="crumb">Brasil / ${REG[u.reg]}</div><h3 style="font-size:22px">${u.nome}</h3><p style="margin:8px 0 14px">${arrSentence(u)}</p>${arrSplit(u,true)}<div class="facts" style="margin-top:16px"><div><span>Retorno por R$ 1 arrecadado</span>R$ ${(u.ret/u.arr).toFixed(2).replace(".",",")}</div><div><span>Arrecadação própria</span>${brl(u.prop)}</div></div><div style="margin-top:14px"><a class="btn pri" href="#/uf/${u.uf}/arrecadacao">Abrir ${u.nome}</a></div>`;
 XF("#amap").innerHTML=brMap(null,sel,reg,{fillFn:fillS,legend:false});bindMap($("#amap"),null,null,x=>{sel=x;ds()})};
 const dt=()=>{const key={saldo:u=>u.arr-u.ret,arr:u=>u.arr,ret:u=>u.ret,ratio:u=>u.ret/u.arr}[ord];const rows=UFS.filter(u=>!reg||u.reg===reg).sort((a,b)=>key(b)-key(a));
@@ -2920,7 +2916,7 @@ function focoEstado(card,on){const view=card.closest("#popB")||$("#view");if(!vi
  else{(card.closest("#popB")||document).querySelectorAll(".st-oculto").forEach(c=>c.classList.remove("st-oculto"));view.classList.remove("stfocus")}}
 function topoDoCard(card){const box=card.closest(".pop-b");if(box){box.scrollTop=Math.max(0,card.offsetTop-box.offsetTop-8);return}const t=card.getBoundingClientRect().top+scrollY-(innerWidth<=760?64:84);scrollTo({top:Math.max(0,t),behavior:"instant"})}
 /* ---------- zoom de estado na mesma área (genérico) ---------- */
-function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return false;const hz=$(cfg.holder);if(hz)hz.classList.remove("stg-go");card.addEventListener("zpouso",()=>{const hh=$(cfg.holder);if(hh)hh.classList.add("stg-go")},{once:true});
+function inlineZoomIn(cfg,uf,pathEl){limpaVoo();const card=$(cfg.card);if(!card)return false;const hz=$(cfg.holder);if(hz)hz.classList.remove("stg-go");card.addEventListener("zpouso",()=>{const hh=$(cfg.holder);if(hh)hh.classList.add("stg-go")},{once:true});
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  if(!pathEl&&$(cfg.main).style.display!=="none")pathEl=$(`${cfg.map} path.st[data-uf="${uf}"]`)||$(`${cfg.map} path[data-uf="${uf}"]`);
  flyState(pathEl,uf,()=>{const r=cfg.render(uf);const h=$(cfg.holder);h.dataset.uf=uf;
@@ -2929,7 +2925,9 @@ function inlineZoomIn(cfg,uf,pathEl){const card=$(cfg.card);if(!card)return fals
   // celular: a ficha (centenas de elementos) só entra na tela depois do voo; durante o voo só o desenho do estado é desenhado
   if(zLeve()&&!semMov()){card.classList.add("zleve");setTimeout(()=>{card.classList.remove("zleve");r.mount&&r.mount()},580)}else r.mount&&r.mount();
   h.querySelector(".zback").onclick=()=>inlineZoomOut(cfg);return h.querySelector("#ufHeroPath")});return true}
-function inlineZoomOut(cfg){const card=$(cfg.card),st=$(cfg.holder),uf=st.dataset.uf;
+/* limpa sobras de uma animação de zoom anterior (cópia do estado parada na tela, mapa escondido): sem isso o mapa voltava falhado */
+function limpaVoo(){document.querySelectorAll(".zoomfx").forEach(e=>e.remove());document.querySelectorAll("svg.voo-volta,svg.voo-fim").forEach(q=>q.classList.remove("voo-volta","voo-fim"));document.querySelectorAll("#emain,#elmain,#hmapmain").forEach(m=>{m.style.opacity="";m.style.transition=""})}
+function inlineZoomOut(cfg){limpaVoo();const card=$(cfg.card),st=$(cfg.holder),uf=st.dataset.uf;
  const ct=card.getBoundingClientRect().top;if(ct<70||ct>innerHeight*.5)scrollTo({top:ct+scrollY-84});
  const hp=st.querySelector("#ufHeroPath");const h0=hp&&hp.getBoundingClientRect();const fromFill=hp&&hp.getAttribute("fill");const mg0=st.querySelector("g.uf-mun"),mgc=mg0&&mg0.cloneNode(true);if(mgc)mgc.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));
  st.innerHTML="";st.style.display="none";$(cfg.main).style.display="";card.classList.remove("stmode","zooming");focoEstado(card,false);topoDoCard(card);cfg.onBack&&cfg.onBack();
@@ -3509,8 +3507,7 @@ const COLEGIADOS=[
  {n:"Tribunal Superior Eleitoral (TSE)",g:[["Ministros do STF",3,"#7DB2F0"],["Ministros do STJ",2,"#8CDBB6"],["Juristas nomeados pelo Presidente (lista do STF)",2,"#F9CE75"]],r:"7 membros, com mandato de 2 anos."},
  {n:"Tribunal de Contas da União (TCU)",g:[["Escolhidos pelo Congresso Nacional",6,"#8CDBB6"],["Indicado pelo Presidente (livre escolha)",1,"#7DB2F0"],["Indicados pelo Presidente entre auditores e procuradores do TCU",2,"#BC9AE9"]],r:"9 ministros. Os indicados pelo Presidente passam pelo Senado."},
  {n:"Superior Tribunal Militar (STM)",g:[["Exército",4,"#8CDBB6"],["Marinha",3,"#7DB2F0"],["Aeronáutica",3,"#BC9AE9"],["Civis",5,"#F9CE75"]],r:"15 ministros, nomeados pelo Presidente com aprovação do Senado."},
- {n:"Diretoria do Banco Central",g:[["Presidente do BC",1,"#F69981"],["Diretores",8,"#7DB2F0"]],r:"Indicados pelo Presidente e aprovados pelo Senado, com mandatos fixos de 4 anos."},
- {n:"Tribunais de Contas dos Estados (cada um)",g:[["Escolhidos pela Assembleia Legislativa",4,"#8CDBB6"],["Indicados pelo Governador",3,"#7DB2F0"]],r:"7 conselheiros em cada tribunal."}];
+ {n:"Diretoria do Banco Central",g:[["Presidente do BC",1,"#F69981"],["Diretores",8,"#7DB2F0"]],r:"Indicados pelo Presidente e aprovados pelo Senado, com mandatos fixos de 4 anos."}];
 const CARGOS_IND=[
  ["Federal","Judiciário","Ministro do STF","Presidente da República","Senado (maioria absoluta)","Até os 75 anos"],
  ["Federal","Judiciário","Ministro do STJ","Presidente, a partir de lista do STJ","Senado","Até os 75 anos"],
@@ -5309,10 +5306,10 @@ const relArquivo=(cam,b)=>"brasilplus_"+(REL_NOMES[cam]||cam).split("(")[0].norm
 
 /* Relatórios e Dados: situação das fontes e uso da pesquisa na internet da IA (limites e custo estimado) */
 {const _r6=P.relatorios;P.relatorios=(...a)=>{const r=_r6(...a);const m0=r.mount;
- return{html:r.html+`<div class="panel mt" id="fsPainel"><h2>Situação das fontes</h2><p class="small muted" style="margin:0 0 8px">Mostra se a última coleta de cada fonte oficial funcionou e há quanto tempo. Quando uma fonte falha, os dados antigos continuam no site; nada é inventado.</p><div id="fsCorpo" class="small muted">Carregando…</div></div>
- <div class="panel mt" id="iaUsoPainel" hidden><h2>Uso da pesquisa na internet (IA)</h2><div id="iaUsoCorpo" class="small muted">Carregando…</div></div>`,
+ return{html:r.html+`<div class="panel mt" id="iaUsoPainel" hidden><h2>Uso da pesquisa na internet (IA)</h2><div id="iaUsoCorpo" class="small muted">Carregando…</div></div>`,
  mount(){m0&&m0();
-  apiGet("/fontes/status").then(d=>{const ordem={falhando:0,sem_coleta_boa:1,ok:2,nunca_coletada:3};const f=[...(d.fontes||[])].sort((x,y)=>(ordem[x.situacao]??9)-(ordem[y.situacao]??9)||x.tarefa.localeCompare(y.tarefa)),rs=d.resumo||{};const rot={ok:"Funcionando",falhando:"Última coleta falhou",sem_coleta_boa:"Sem coleta boa ainda",nunca_coletada:"Ainda não coletada"};
+  /* a situação das fontes agora fica na Administração › Bots */
+  if(document.getElementById("fsPainel"))apiGet("/fontes/status").then(d=>{const ordem={falhando:0,sem_coleta_boa:1,ok:2,nunca_coletada:3};const f=[...(d.fontes||[])].sort((x,y)=>(ordem[x.situacao]??9)-(ordem[y.situacao]??9)||x.tarefa.localeCompare(y.tarefa)),rs=d.resumo||{};const rot={ok:"Funcionando",falhando:"Última coleta falhou",sem_coleta_boa:"Sem coleta boa ainda",nunca_coletada:"Ainda não coletada"};
    const cor={ok:"#1BAF7A",falhando:"#EB6834",sem_coleta_boa:"#F5A524",nunca_coletada:"#98A2B3"};
    $("#fsCorpo").innerHTML=`<div class="kpis" style="margin-bottom:10px">${Object.keys(rot).map(k=>`<div class="kpi"><span><i style="font-style:normal;color:${cor[k]}">●</i> ${rot[k]}</span><strong>${nf(rs[k]||0)}</strong></div>`).join("")}</div>`+
     table([["Fonte",x=>esc(x.tarefa)],["Situação",x=>`<span style="color:${cor[x.situacao]}">●</span> ${esc(rot[x.situacao]||x.situacao)}`],["Última coleta boa",x=>x.ultima_ok?x.ultima_ok.replace("T"," "):"—"],["Idade",x=>x.horas_desde_ok==null?"—":x.horas_desde_ok<48?nf(Math.round(x.horas_desde_ok))+" h":nf(Math.round(x.horas_desde_ok/24))+" dias","n"],["Itens",x=>x.itens_ultima_ok==null?"—":nf(x.itens_ultima_ok),"n"]],f)+`<p class="small muted" style="margin:8px 0 0">${esc(d.aviso||"")}</p>`}).catch(()=>{$("#fsPainel").hidden=true});
@@ -5521,7 +5518,7 @@ P.seguranca=()=>{let met=null;const SZ={card:"#segcard",main:"#segmain",holder:"
    <details class="mt"><summary class="small">Ver por estado</summary>${table([["Estado",r=>`<a href="#/seguranca" data-segz="${r.uf}">${esc(r.nome)}</a>`],["Policiais (PM e Civil)",r=>{const f=gv(d.estados[r.uf],"efetivo")||{};return f.policia_militar==null&&f.policia_civil==null?"—":n0((f.policia_militar||0)+(f.policia_civil||0))},"n"],["Por mil habitantes",r=>n1(gv(d.estados[r.uf],"efetivo","policiais_por_mil")),"n"]],UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)))}</details></div>`:""}
   <div class="un-fac mt"><div class="seg sw un-sw" role="tablist" aria-label="Polícia ou crime organizado"><button type="button" class="on" data-unfac="pol">Polícias</button><button type="button" data-unfac="fac">Facções criminosas</button></div><div class="panel" data-unp="pol"><div class="hd"><div><h2>Unidades especiais</h2><p>Batalhões e grupos táticos mais conhecidos. Toque numa unidade para ver a história e os números.</p></div><a class="btn" href="#/policias">Todas as polícias ›</a></div>${segUnidades(null)}${UNIDADES.some(u=>u[0]!=="BR")?`<details class="mt" open><summary class="small">Unidades dos estados</summary><div class="embl-grid" data-unids="ALL">${UNIDADES.filter(u=>u[0]!=="BR").map(cartaoUnidade).join("")}</div></details>`:""}</div>${facHtml()}</div>
   <div class="panel mt"><h2>Procurados pela Justiça</h2><p class="small" style="margin:6px 0 0">O número de mandados de prisão em aberto vem do Banco Nacional de Medidas Penais e Prisões (BNMP), do Conselho Nacional de Justiça. O BNMP não responde a servidores fora do Brasil; o número entra aqui quando o BRASIL+ rodar no servidor próprio. Enquanto isso, a consulta pública está no <a href="https://portalbnmp.cnj.jus.br/" target="_blank" rel="noopener">portal do BNMP</a>.</p></div>
-  <div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:6px 0 0;padding-left:18px">${(d.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>
+  <div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Dados oficiais, com fonte e período indicados ao lado. Taxas por 100 mil habitantes, sem ajuste por idade. Nada é estimado.</p></div>
   ${RSRC(Object.values(d.fontes||{}).join("; "))}`;
   const dias=diasPeriodo((d.referencias||{}).ocorrencias);
   const kpisBr=(m,nome,f,fmt,sub)=>{const k=m==="hom"?"homicidio_doloso":m.startsWith("c_")?m.slice(2):m==="detidos"?"mandados_cumpridos":null,o=B.ocorrencias||{};
@@ -5821,7 +5818,7 @@ function saudeVacMonta(uf){const g=$("#saVacG");if(!g)return;apiGet("/saude/vaci
 function saudeMinBr(B){const m=B.saude_minimo_municipios;if(!m)return"";
  return saudeKpi(`Prefeituras: mínimo em saúde${B.saude_minimo_ano_municipios?` (${B.saude_minimo_ano_municipios})`:""}`,`${nf(m.cumpriram)} cumpriram`,`de ${nf(m.entregaram)} com o dado no SICONFI${m.a_conferir?` · ${nf(m.a_conferir)} a conferir (valor impossível)`:""}${m.sem_dado?` · ${nf(m.sem_dado)} sem dado (não é 0%)`:""}`)}
 function saudeKpi(t,v,s){return`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`}
-function saudeFim(D){return`<div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:0;padding-left:18px;color:var(--ink2);line-height:1.5">${(D.notas||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul><p class="small muted" style="margin:10px 0 0">Fontes: ${(D.fontes||[]).map(esc).join("; ")}.${D.competencias&&D.competencias.leitos?` Leitos, UTI e médicos: ${D.competencias.leitos.slice(5)}/${D.competencias.leitos.slice(0,4)}.`:""}</p></div>`}
+function saudeFim(D){return`<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Dados oficiais, com fonte e período indicados ao lado. Taxas por 100 mil habitantes, sem ajuste por idade. Nada é estimado.</p></div>`}
 function saudeTmiBr(B){const s=B.tmi_serie;if(!s)return"";const a=Object.keys(s).sort();if(a.length<2)return"";
  const pre=B.tmi_preliminar&&Object.keys(B.tmi_preliminar).sort().pop();
  return`<div class="panel mt"><h2>Mortalidade infantil no Brasil <small>por mil nascidos vivos</small></h2>${lineChart([{n:"Brasil",v:a.map(x=>s[x])}],a,{h:200,fmt:v=>sauD1(v)})}<p class="small muted" style="margin:6px 0 0">${a[a.length-1]}: ${sauD2(s[a[a.length-1]])}.${pre?` Em ${pre} (dados ainda preliminares): ${sauD2(B.tmi_preliminar[pre].taxa)}.`:""}</p></div>`}
@@ -5846,7 +5843,7 @@ function saudeBrasil(v,D){const B=D.brasil,E=D.estados;let m=SAU_G.flatMap(g=>g.
   B.vacinacao&&B.vacinacao.Penta!=null?saudeKpi("Cobertura da vacina Penta",sauD1(B.vacinacao.Penta)+"%",`em ${B.vacinacao_ano}, último ano com dado aberto`):"",saudeMinBr(B)].filter(Boolean).join("");
  const ops=SAU_G.map(g=>`<optgroup label="${g[0]}">${g.slice(1).filter(k=>Object.values(E).some(e=>SAU_M[k][1](e)!=null)).map(k=>`<option value="${k}">${SAU_M[k][0]}</option>`).join("")}</optgroup>`).join("");
  v.innerHTML=`<div class="kpis kpis-c">${kp}</div><div class="panel mt"><div class="hd"><div><h2 id="saT"></h2><p class="small muted" id="saN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="saM" data-titulo="Mostrar" data-pill>${ops}</select></div></div>
-  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="saMap"></div><div id="saRk"></div></div></div>${saudeTmiBr(B)}${saudeInt(B)}${saudeCausas(B,"De que os brasileiros morrem")}${saudeDengue(B,"Dengue no Brasil",B)}${B.vacinacao?saudeVacBr():""}<div class="panel mt"><h2>Todos os estados</h2><div id="saLs"></div></div>${saudeFim(D)}`;
+  <div class="grid g2" style="align-items:start;margin-top:10px"><div id="saMap"></div><div id="saRk"></div></div></div>${saudeTmiBr(B)}${saudeInt(B)}${saudeCausas(B,"De que os brasileiros morrem")}${saudeDengue(B,"Dengue no Brasil",B)}${B.vacinacao?saudeVacBr():""}${saudeFim(D)}`;
  const des=()=>{const x=SAU_M[m],vals={};UFS.forEach(u=>{const e=E[u.uf],val=e&&x[1](e);if(val!=null)vals[u.uf]=val});
   $("#saT").textContent=x[0];$("#saN").textContent=x[3];
   $("#saMap").innerHTML=Object.keys(vals).length?mapaValores(vals,x[2]):rvazio("Sem dados desta medida ainda.");bindMap($("#saMap"),null,null,u=>{location.hash="#/saude/"+u});
@@ -5854,7 +5851,7 @@ function saudeBrasil(v,D){const B=D.brasil,E=D.estados;let m=SAU_G.flatMap(g=>g.
   if(m==="tmi"){const serie={},anos=new Set();UFS.forEach(u=>{const s=E[u.uf]&&E[u.uf].tmi_serie;if(s){serie[u.uf]=s;Object.keys(s).forEach(a=>anos.add(a))}});
    $("#saRk").innerHTML=linhasDuplo(serie,[...anos].sort(),vals,x[2],{href,alto:"Mais mortes de bebês",baixo:"Menos mortes de bebês",nota:"Mortes de menores de 1 ano por mil nascidos vivos, ano a ano."})}
   else $("#saRk").innerHTML=rankDuplo(vals,x[2],{href,corAlto:"#2F6FED",corBaixo:"#7C8CA8"});
-  $("#saLs").innerHTML=listaUF(Object.entries(vals).map(([u,k])=>({uf:u,k,r:x[2](k)}))).replace(/href="#\/uf\//g,'href="#/saude/')};
+  };
  des();if(typeof pilulas==="function")pilulas();$("#saM").onchange=e=>{m=e.target.value;des()};saudeVacMonta("")}
 function saudeUF(v,D,uf){const e=D.estados[uf]||{},B=D.brasil,n=UF[uf].nome;
  const cmp=(a,b,f)=>a==null||b==null?"":`<em>Brasil: ${f(b)}</em>`;
@@ -5906,7 +5903,7 @@ function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini}){let m=ini||Object
   $("#lcRk").innerHTML=anos.size>=2?linhasDuplo(serie,[...anos].sort(),vals,x[2],{href,rot:x[6]||(a=>a)}):rankDuplo(vals,x[2],{href,corAlto:x[7]||"#2F6FED",corBaixo:"#7C8CA8"});
   $("#lcLs").innerHTML=listaUF(Object.entries(vals).map(([u,k])=>({uf:u,k,r:x[2](k)}))).replace(/href="#\/uf\//g,`href="#/${rota}/`)};
  des();if(typeof pilulas==="function")pilulas();$("#lcM").onchange=e=>{m=e.target.value;des()}}
-const lacFim=(D,...mais)=>`<div class="panel mt"><h2>Como ler estes números</h2><ul class="small" style="margin:0;padding-left:18px;color:var(--ink2);line-height:1.5">${[D&&D.aviso,...mais].filter(Boolean).map(n=>`<li>${esc(n)}</li>`).join("")}</ul>${D&&D.fontes?`<p class="small muted" style="margin:8px 0 0">Fontes: ${D.fontes.map(esc).join(" · ")}.</p>`:""}</div>`;
+const lacFim=(D,...mais)=>`<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Dados oficiais, com fonte e período indicados ao lado. Taxas por 100 mil habitantes, sem ajuste por idade. Nada é estimado.</p></div>`;
 function lacTela(nome,desc,rota,pegar,montar,uf){return{html:`<div class="ph"><div><h1>${nome}</h1><p>${desc}</p></div></div><div id="lcV">${API.on?rload():`<div class="rbanner">Esta tela aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;Promise.all(pegar()).then(D=>{const v=$("#lcV");if(v)montar(v,D,uf)}).catch(e=>{const v=$("#lcV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)})}}}
 /* ----- Social e Trabalho ----- */
@@ -5972,11 +5969,13 @@ P.profissoes=()=>({html:`<style>.prf-filtros{display:flex;gap:10px;flex-wrap:wra
 <div id="prfCorpo" class="mt">${rload()}</div>`,mount(){prfMontar()}});
 /* ----- Meio ambiente ----- */
 const AMB_G=[["Desmatamento (PRODES, ano fechado)","km2","total","serie"],["Alertas recentes (DETER)","deter"]];
+const acumuladoSerie=s=>{let t=0,o={};Object.keys(s||{}).sort().forEach(a=>{t+=s[a]||0;o[a]=Math.round(t*100)/100});return o};
+const deterMensal=e=>e.deter&&e.deter.mensal?Object.fromEntries(Object.entries(e.deter.mensal).map(([m,v])=>[m,Math.round(((v&&v.desmatamento)||0)*100)/100])):null;
 const AMB_M={km2:["Desmatamento no último ano (km²)",e=>e.km2,lacKm,"Área de floresta e vegetação nativa desmatada por corte raso no último ano do PRODES, somando os biomas do estado.",e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
- total:["Desmatamento acumulado desde 2008 (km²)",e=>e.total_desde_inicio,lacKm,"Soma do desmatamento por corte raso de 2008 até o último ano do PRODES.",null,SCALE_VERM,null,"#E5484D"],
+ total:["Desmatamento acumulado desde 2008 (km²)",e=>e.total_desde_inicio,lacKm,"Soma do desmatamento por corte raso de 2008 até o último ano do PRODES, ano a ano.",e=>acumuladoSerie(e.serie),SCALE_VERM,a=>a,"#E5484D"],
  serie:["Desmatamento por ano (comparação das séries)",e=>e.km2,lacKm,"Mesma medida do último ano, mostrando a evolução de cada estado ano a ano.",e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
  focos:["Focos de queimadas no último ano",e=>e.focos,lacN,"Pontos com calor detectados por satélite no ano (INPE). Um foco não mede a área queimada nem diz se o fogo é criminoso; estados maiores tendem a ter mais.",e=>e.focos_serie,SCALE_VERM,a=>a,"#E5484D"],
- deter:["Alertas de desmatamento nos últimos 12 meses (km²)",e=>e.deter_12m,lacKm,"Alertas do DETER (Amazônia e Cerrado) nos últimos 12 meses completos. É sinal rápido, não a taxa oficial.",null,SCALE_VERM,null,"#E5484D"]};
+ deter:["Alertas de desmatamento nos últimos 12 meses (km²)",e=>e.deter_12m,lacKm,"Alertas do DETER (Amazônia e Cerrado) nos últimos 12 meses completos. É sinal rápido, não a taxa oficial.",deterMensal,SCALE_VERM,null,"#E5484D"]};
 function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{},an=Object.keys(s).sort();
  const kp=[e.km2!=null?lacKpi("Desmatamento em "+e.ultimo_ano,lacKm(e.km2),"PRODES, corte raso"):"",e.total_desde_inicio!=null?lacKpi("Desde 2008",lacKm(e.total_desde_inicio)):"",e.deter_12m!=null?lacKpi("Alertas em 12 meses",lacKm(e.deter_12m),"DETER"):""].filter(Boolean).join("");
  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento em ${esc(n)} <small>km² por ano</small></h2>${lineChart([{n,v:an.map(a=>s[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
@@ -6559,7 +6558,9 @@ document.addEventListener("click",e=>{const a=e.target.closest("[data-voltar]");
 const POL_ALIAS={"u-RJ-CRE":"u-RJ-CORE"};
 const polSlug=k=>{const s=String(k||"").replace(/:/g,"-").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9-]/g,"");return POL_ALIAS[s]||s};
 let POL_LISTA=null,POL_P=null;
-function polLista(){return POL_LISTA?Promise.resolve(POL_LISTA):POL_P||(POL_P=apiGet("/policias").then(r=>(POL_LISTA=r.itens||[],POL_LISTA)).catch(()=>(POL_LISTA=[],POL_LISTA)))}
+/* a lista pode trazer a mesma unidade mais de uma vez (cópia com a lista em dois arquivos): fica uma por chave */
+function polUnicos(L){const vistos=new Set();return (L||[]).filter(x=>{const k=x.chave||x.slug||x.nome;if(vistos.has(k))return false;vistos.add(k);return true})}
+function polLista(){return POL_LISTA?Promise.resolve(POL_LISTA):POL_P||(POL_P=apiGet("/policias").then(r=>(POL_LISTA=polUnicos(r.itens),POL_LISTA)).catch(()=>(POL_LISTA=[],POL_LISTA)))}
 const POL_CORP={pm:"Polícia Militar",pc:"Polícia Civil",pf:"Polícia Federal",prf:"Polícia Rodoviária Federal",spf:"Polícia Penal Federal",fn:"Força Nacional",u:"Unidade especial"};
 const POL_EF={pm:"policia_militar",pc:"policia_civil",pf:"policia_federal",prf:"prf",spf:"policia_penal_federal"};
 const polFonte=u=>u?` <a class="small pol-f" href="${esu(u)}" target="_blank" rel="noopener">fonte</a>`:"";
@@ -7564,7 +7565,7 @@ async function artHome(b){let pubs=[];try{pubs=await artPubs()}catch(e){}
 /* ----- Bots: cada coleta automática do banco (fica em Administração › Bots) ----- */
 async function artBots(b){
  if(!API.on){b.innerHTML=`<div class="ad-box"><h3>Bots de captura</h3><p class="mut small">Aqui aparece, para cada coleta automática, se ela está funcionando, parada ou com erro. Fica disponível quando o banco estiver ligado ao servidor BRASIL+.</p></div>`;return}
- b.innerHTML=`<div class="ad-box"><h3>Bots de captura</h3><p class="mut small">Cada bot é uma coleta automática de dados. "Funcionando": a última coleta deu certo nos últimos 30 dias. "Parado": deu certo, mas faz mais de 30 dias. "Com erro": a última tentativa falhou (o dado anterior continua).</p></div>${rload()}`;
+ b.innerHTML=`<div class="ad-box"><h3>Situação das fontes</h3><p class="mut small">Mostra se a última coleta de cada fonte oficial funcionou e há quanto tempo. "Funcionando": deu certo nos últimos 30 dias. "Parado": deu certo, mas faz mais de 30 dias. "Com erro": a última tentativa falhou (o dado anterior continua no site; nada é inventado).</p></div>${rload()}`;
  try{
   const [F,C]=await Promise.all([apiGet("/fontes/status"),apiGet("/coletas?limit=40")]);
   const sit=d=>{if(d.ultimo_status==="rodando")return["Rodando agora","sit-ex"];
