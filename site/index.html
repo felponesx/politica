@@ -4686,7 +4686,7 @@ async function mapaMunicipal(f){const box=$("#elmapa");if(!box)return;const maj=
   const dv=$("#elmunInfo");if(dv)$("#elmapaC svg.mmun").addEventListener("click",e=>{const p=e.target.closest("path[data-c]"),x=p&&por[p.dataset.c];if(!x)return;
    const lin=(sq,pct,nome,part)=>`<div class="ht-bar"><span>${esc(nome||nomeDe(sq))} <small>${esc(part||"")}</small></span><b>${nf(Math.round(x.total*pct/100))} · ${pct.toLocaleString("pt-BR")}%</b><i style="width:${Math.min(100,pct)}%;background:${corPart(part||(cds.find(c=>c.sq_candidato===sq)||{}).partido||"")}"></i></div>`;
    dv.innerHTML=`<b>${esc(x.municipio)}</b> <span class="muted">${nf(x.total)} votos válidos</span>${lin(x.vencedor.sq_candidato,x.vencedor.percentual,tit(x.vencedor.nome),x.vencedor.partido)}${x.segundo?lin(x.segundo.sq_candidato,x.segundo.percentual):""}`})}
- catch(e){const hs=document.querySelector("#elstate .ufhero-svg");if(hs)hs.style.display="";$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2018 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
+ catch(e){const hs=document.querySelector("#elstate .ufhero-svg");if(hs)hs.style.display="";$("#elmapaC").innerHTML=rvazio(e.status===404?"Para ver o mapa, rode as coletas ibge-malhas e tse-resultados deste estado.":/cópia/.test(e.message||"")?"O mapa cidade por cidade aparece nas eleições de 2014 em diante (as anteriores ficam no servidor BRASIL+).":"Mapa indisponível: "+esc(e.message))}}
 
 
 /* ---------- roteador ---------- */

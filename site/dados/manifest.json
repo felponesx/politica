@@ -4579,6 +4579,169 @@
     "eleicoes"
    ]
   },
+  "p/el-2014-governador-1.json": {
+   "chaves": [
+    "/eleicoes/2014/AC/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/AL/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/AM/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/AP/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/BA/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/CE/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/DF/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/ES/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/GO/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/MA/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/MG/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/MS/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/MT/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/PA/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/PB/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/PE/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/PI/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/PR/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/RJ/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/RN/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/RO/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/RR/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/RS/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/SC/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/SE/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/SP/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/TO/mapa?cargo=GOVERNADOR&turno=1",
+    "/eleicoes/2014/estados?cargo=GOVERNADOR&turno=1"
+   ],
+   "telas": [
+    "eleicoes"
+   ]
+  },
+  "p/el-2014-governador-2.json": {
+   "chaves": [
+    "/eleicoes/2014/AC/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/AM/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/AP/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/CE/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/DF/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/GO/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/MS/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/PA/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/PB/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/RJ/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/RN/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/RO/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/RR/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/RS/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/TO/mapa?cargo=GOVERNADOR&turno=2",
+    "/eleicoes/2014/estados?cargo=GOVERNADOR&turno=2"
+   ],
+   "telas": [
+    "eleicoes"
+   ]
+  },
+  "p/el-2014-presidente-1.json": {
+   "chaves": [
+    "/eleicoes/2014/AC/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/AL/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/AM/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/AP/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/BA/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/CE/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/DF/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/ES/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/GO/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/MA/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/MG/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/MS/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/MT/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/PA/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/PB/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/PE/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/PI/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/PR/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/RJ/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/RN/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/RO/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/RR/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/RS/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/SC/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/SE/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/SP/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/TO/mapa?cargo=PRESIDENTE&turno=1",
+    "/eleicoes/2014/estados?cargo=PRESIDENTE&turno=1"
+   ],
+   "telas": [
+    "eleicoes"
+   ]
+  },
+  "p/el-2014-presidente-2.json": {
+   "chaves": [
+    "/eleicoes/2014/AC/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/AL/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/AM/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/AP/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/BA/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/CE/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/DF/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/ES/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/GO/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/MA/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/MG/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/MS/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/MT/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/PA/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/PB/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/PE/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/PI/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/PR/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/RJ/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/RN/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/RO/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/RR/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/RS/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/SC/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/SE/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/SP/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/TO/mapa?cargo=PRESIDENTE&turno=2",
+    "/eleicoes/2014/estados?cargo=PRESIDENTE&turno=2"
+   ],
+   "telas": [
+    "eleicoes"
+   ]
+  },
+  "p/el-2014-senador-1.json": {
+   "chaves": [
+    "/eleicoes/2014/AC/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/AL/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/AM/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/AP/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/BA/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/CE/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/DF/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/ES/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/GO/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/MA/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/MG/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/MS/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/MT/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/PA/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/PB/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/PE/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/PI/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/PR/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/RJ/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/RN/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/RO/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/RR/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/RS/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/SC/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/SE/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/SP/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/TO/mapa?cargo=SENADOR&turno=1",
+    "/eleicoes/2014/estados?cargo=SENADOR&turno=1"
+   ],
+   "telas": [
+    "eleicoes"
+   ]
+  },
   "p/el-2018-governador-1.json": {
    "chaves": [
     "/eleicoes/2018/AC/mapa?cargo=GOVERNADOR&turno=1",
@@ -5667,7 +5830,6 @@
     "/economia-empresas",
     "/emendas",
     "/empresas-setores",
-    "/empresas-tipos",
     "/fluxo-federativo",
     "/fornecedores-cruzados?limit=60",
     "/fundos",
