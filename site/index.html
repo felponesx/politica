@@ -1448,6 +1448,17 @@ svg.geo.com-mun path.st{pointer-events:none}svg.geo.mun-venc path.st{fill:transp
 /* nunca rolar para os lados (celular e telas largas): o que passar da tela é cortado, não vira barra de rolagem (v1.10) */
 html,body{overflow-x:clip;max-width:100%}
 .pill-q{display:block;width:calc(100% - 16px);margin:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink)}
+/* dentro da ficha de um estado, os painéis ficam cinza claros sobre o cartão branco (antes apareciam como abas brancas) */
+#elstate .panel{background:var(--bg)}
+.mun-busca{margin:10px 0 6px}.mun-q{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;background:var(--surface);color:var(--ink)}.mun-res{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.mun-r{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}.mun-r:hover{background:var(--tint)}
+.el-lista{display:block}
+.el-c{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:center;padding:10px 0;border-top:1px solid var(--line2);color:inherit;text-decoration:none}
+.el-c:first-child{border-top:0}
+.el-c>.rfoto,.el-c>.ini{grid-column:1;grid-row:1/3;border-radius:50%}
+.el-n{grid-column:2;grid-row:1;font-size:14.5px;font-weight:600;color:var(--ink);min-width:0;overflow-wrap:anywhere}
+.el-v{grid-column:3;grid-row:1;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
+.el-s{grid-column:2/-1;grid-row:2;font-size:12.5px;color:var(--muted);line-height:1.35}
+.el-c:hover .el-n{text-decoration:underline}
 .pill-m{max-height:min(70vh,520px);overflow-y:auto}.pill-q{position:sticky;top:0;z-index:1}
 /* lista de estados com pesquisa: a caixa fica fixa no topo e só a lista rola (antes a caixa flutuava sobre as primeiras linhas) */
 .pill-m:has(>.pill-q){display:flex;flex-direction:column;overflow:hidden;padding-top:0}.pill-m:has(>.pill-q)>.pill-q{position:static;flex:none;width:auto;margin:10px 10px 6px}.pill-m:has(>.pill-q)>.seg{flex:1 1 auto;min-height:0;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
@@ -4145,7 +4156,7 @@ mount(){let f={ano:"",uf:"",cargo:"",turno:"1",unidade:""};
    $("#elres").innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>Votos nominais válidos</span><strong>${nf(d.votos_validos_nominais)}</strong></div><div class="kpi"><span>Eleitos</span><strong>${(d.eleitos_total??d.eleitos.length)}</strong></div><div class="kpi"><span>Partidos com votos</span><strong>${pp.length}</strong></div></div>
    <div class="grid g2 mt"><div class="panel"><h2>Votos por partido</h2>${hbars(pp.slice(0,12).map(([p,o])=>[p,o.votos]),{fmt:nf})}</div>
    <div class="panel"><h2>${cmp?`Comparação com ${cmp.ano}`:"Eleitos por partido"}</h2>${cmp?table([["Partido",x=>sigla(x[0])],[`% ${d.ano}`,x=>x[1].percentual_atual.toLocaleString("pt-BR")+"%","n"],[`% ${cmp.ano}`,x=>x[1].percentual_anterior.toLocaleString("pt-BR")+"%","n"],["Variação",x=>`<span style="color:${x[1].variacao_pp>=0?"var(--ok)":"var(--stop)"}">${x[1].variacao_pp>0?"+":""}${x[1].variacao_pp.toLocaleString("pt-BR")} p.p.</span>`,"n"]],Object.entries(cmp.partidos).sort((x,y)=>y[1].percentual_atual-x[1].percentual_atual).slice(0,12)):hbars(pp.filter(([,o])=>o.eleitos).map(([p,o])=>[p,o.eleitos]),{fmt:nf})}</div></div>
-   <div class="panel mt"><h2>${(d.eleitos_total??d.eleitos.length)?"Eleitos":"Mais votados"}</h2>${table([["Candidato",c=>`<b style="font-weight:500">${esc(c.nome)}</b>${c.unidade&&f.cargo==="PREFEITO"?`<div class="small muted">${esc(tit(c.unidade))}</div>`:""}`],["Partido",c=>sigla(c.partido)],["Votos",c=>`${nf(c.votos)} <span class="small muted">${c.percentual.toLocaleString("pt-BR")}%</span>`,"n"],["Resultado",c=>esc(tit(c.situacao||""))]],(d.eleitos_total??d.eleitos.length)?d.eleitos:d.mais_votados)}</div><div id="elmapa"></div>`;typeof mapaMunicipal==="function"&&mapaMunicipal(f)}
+   <div class="panel mt"><h2>${(d.eleitos_total??d.eleitos.length)?"Eleitos":"Mais votados"}</h2>${elCands((d.eleitos_total??d.eleitos.length)?d.eleitos:d.mais_votados,f.cargo)}</div><div id="elmapa"></div>`;typeof mapaMunicipal==="function"&&mapaMunicipal(f)}
   catch(e){$("#elres").innerHTML=e.status===404?rvazio(esc(e.message)):rerro(e)}};
  const cargos=async()=>{if(!f.ano||!f.uf)return;try{const cs=await apiGet(`/eleicoes/${f.ano}/${f.uf}/cargos`);$("#elcargo").innerHTML=`<option value="">${cs.length?"Escolha o cargo":"Sem resultados para esse estado"}</option>`+cs.map(c=>`<option value="${esc(c)}">${esc(CARGON(c))}</option>`).join("");f.cargo=cs[0]||"";$("#elcargo").value=f.cargo;carregar()}catch(e){$("#elres").innerHTML=rerro(e)}};
  apiGet("/eleicoes/anos").then(anos=>{if(!anos.length){demoComAviso(_eleicoes,a,"Nenhum resultado do TSE coletado ainda (ex.: <code>python -m scripts.coletar tse-resultados ano=2022 uf=SP</code>).");return}
@@ -4856,6 +4867,10 @@ const corVoto=(cor,p)=>p>=60||!/^#[0-9a-f]{6}$/i.test(cor)?cor:misturaBranco(cor
 const ELCOR=["#4F86C6","#EB492B","#45A27C","#E2A93B","#8E6CC2","#3FA9B8","#D3678F","#8C9A52"];
 const MAJ=["PRESIDENTE","GOVERNADOR","SENADOR","PREFEITO"];
 const ELCAND={};
+/* candidatos eleitos e mais votados: foto, nome, votos e partido em cartões compactos (igual às outras listas) */
+function elCands(L,cargo){if(!L||!L.length)return rvazio("Nenhum candidato nesta eleição.");
+ return `<div class="fl-box"><div class="el-lista">${L.map((c,i)=>{const sq=c.sq_candidato;const dest=sq?"#/candidato/"+sq:"#";const pc=c.percentual!=null?Number(c.percentual).toLocaleString("pt-BR")+"%":"";
+  return `<a class="el-c${i>=10?" fl-x":""}"${i>=10?" hidden":""} href="${dest}">${sq?fotoR("tse:"+sq,c.nome,46):avIni(c.nome)}<span class="el-n">${esc(tit(c.nome))}</span><span class="el-v">${nf(c.votos)}</span><span class="el-s">${esc(sigla(c.partido))}${pc?" · "+pc:""}${cargo==="PREFEITO"&&c.unidade?" · "+esc(tit(c.unidade)):""}${c.situacao?" · "+esc(tit(c.situacao)):""}</span></a>`}).join("")}</div>${L.length>10?`<button type="button" class="btn fl-mais">Ver todos (${L.length})</button>`:""}</div>`}
 const lcand=(c,ano,cargo)=>{if(!c||!c.sq_candidato)return esc(tit((c&&c.nome)||""));ELCAND[c.sq_candidato]={...c,ano:c.ano||ano,cargo:c.cargo||cargo};return`<a class="clk" href="#/candidato/${encodeURIComponent(c.sq_candidato)}">${esc(tit(c.nome))}</a>`};
 const ELN={PRESIDENTE:"Presidente",GOVERNADOR:"Governador",SENADOR:"Senador","DEPUTADO FEDERAL":"Deputado federal","DEPUTADO ESTADUAL":"Deputado estadual","DEPUTADO DISTRITAL":"Deputado distrital",PREFEITO:"Prefeito",VEREADOR:"Vereador"};
 const pctN=v=>(v||0).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
@@ -4888,8 +4903,19 @@ mount(){const ELZ={card:"#elcard",main:"#elmain",holder:"#elstate",map:"#elmap",
   const W=b.w+2*pad,H=b.h+2*pad;
   return{por,
    svg:`<svg class="ufhero-svg mun" viewBox="${b.x-pad} ${b.y-pad} ${W} ${H}" style="aspect-ratio:${W.toFixed(3)}/${H.toFixed(3)}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Quem venceu em cada município"><g class="uf-mun" transform="${m.t}">${paths}</g><path id="ufHeroPath" d="${GEO.p[uf]}" fill="none" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`,
-   sob:`<div class="panel mun-sob"><h2>Quem venceu em cada município</h2><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><div class="mun-info" id="elmunInfo">Toque em uma cidade no mapa para ver os votos.</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Fonte: TSE e malhas do IBGE.</p></div>`}};
+   sob:`<div class="panel mun-sob"><h2>Quem venceu em cada município</h2><div class="hleg" style="justify-content:flex-start">${Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<span><i style="background:${corPart(p)};width:10px;height:10px;border-radius:50%;display:inline-block"></i>${bandPart(p,12)}${esc(p)}<b>${nf(n)}</b></span>`).join("")}</div><div class="mun-busca"><input id="munQ" class="mun-q" type="search" placeholder="Pesquisar cidade pelo nome" autocomplete="off" aria-label="Pesquisar cidade"><div id="munRes" class="mun-res"></div></div><div class="mun-info" id="elmunInfo">Toque em uma cidade no mapa ou pesquise o nome para ver os votos.</div><p class="small muted" style="margin:6px 0 0">Cor do partido de quem venceu (a mesma da logo); um pouco mais clara quando ficou abaixo de 60% dos votos. Fonte: TSE e malhas do IBGE.</p></div>`}};
  const ligaMun=MU=>{const svg=document.querySelector("#elstate .ufhero-svg.mun"),dv=$("#elmunInfo");if(!svg||!dv)return;const cds=(dados&&dados.brasil&&dados.brasil.candidatos)||[];
+  /* pesquisa de cidade: mostra as cidades que batem com o nome e abre a escolhida como se fosse tocada no mapa */
+  const q=$("#munQ"),res=$("#munRes");
+  if(q&&res){const nm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+   const todas=Object.entries(MU.por).map(([c,x])=>({c,n:x.municipio||"",k:nm(x.municipio)}));
+   const abre=c=>{const pa=svg.querySelector(`path[data-c="${c}"]`);if(pa)pa.dispatchEvent(new MouseEvent("click",{bubbles:true}));res.innerHTML="";q.value="";};
+   q.addEventListener("input",()=>{const t=nm(q.value.trim());if(t.length<2){res.innerHTML="";return}
+    const r=todas.filter(x=>x.k.includes(t)).sort((a,b)=>a.k.indexOf(t)-b.k.indexOf(t)||a.n.localeCompare(b.n,"pt-BR")).slice(0,8);
+    res.innerHTML=r.length?r.map(x=>`<button type="button" class="mun-r" data-c="${esc(x.c)}">${esc(tit(x.n))}</button>`).join(""):'<p class="small muted" style="margin:6px 0 0">Nenhuma cidade com esse nome neste estado.</p>'});
+   res.addEventListener("click",e=>{const b=e.target.closest("button[data-c]");if(b)abre(b.dataset.c)});
+   q.addEventListener("keydown",e=>{if(e.key==="Enter"){const b=res.querySelector("button[data-c]");if(b)abre(b.dataset.c)}});
+  }
   const achar=sq=>cds.find(x=>x.sq_candidato===sq)||{};
   svg.addEventListener("click",e=>{const p=e.target.closest("path[data-c]"),x=p&&MU.por[p.dataset.c];if(!x)return;
    svg.querySelectorAll("path.on").forEach(q=>q.classList.remove("on"));p.classList.add("on");p.parentNode.appendChild(p);
