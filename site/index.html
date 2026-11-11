@@ -6002,7 +6002,8 @@ function mbPainel(el,D,uf){
   const bi=Object.entries(D.por_bioma||{}).map(([b,e])=>[b,ano==="tudo"?e.area_ha_total:(e.area_ha_por_ano[ano]||0)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
   $("#mbBi").innerHTML=bi.length?hbars(bi,{fmt:lacHa}):rvazio("Sem alertas neste período.");
   const mu=(D.municipios||[]).map(m=>({m:m.municipio,v:ano==="tudo"?m.area_ha_total:(m.area_ha_por_ano[ano]||0),a:m.alertas})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
-  $("#mbMu").innerHTML=mu.length?table([["Município",x=>esc(x.m)],["Área alertada",x=>lacHa(x.v),"n"],ano==="tudo"?["Alertas",x=>lacN(x.a),"n"]:null].filter(Boolean),mu):rvazio("Sem alertas neste período.")};
+  const topo=mu.length?mu[0].v:1;
+  $("#mbMu").innerHTML=mu.length?`<div class="fl-box"><div class="fl-lista">${mu.map((x,i)=>`<div class="fl-l${i>=10?" fl-x":""}"${i>=10?" hidden":""}><span class="fl-n">${esc(x.m)}</span><span class="fl-r">${lacHa(x.v)}</span><span class="fl-s">${ano==="tudo"&&x.a!=null?lacN(x.a)+" alertas · ":""}${pct0(x.v/topo*100)} do maior município</span><span class="fl-b"><span class="bar"><i style="width:${Math.max(1,x.v/topo*100).toFixed(1)}%"></i></span></span></div>`).join("")}</div>${mu.length>10?`<button type="button" class="btn fl-mais">Ver todos (${mu.length})</button>`:""}</div>`:rvazio("Sem alertas neste período.")};
  des();if(typeof pilulas==="function")pilulas();$("#mbA").onchange=e=>{ano=e.target.value;des()}}
 /* ----- Órgãos › Viagens a serviço e Fundo eleitoral; Indicadores › tarifa de energia ----- */
 function telaViagens(){return{html:`<div id="vgL">${rload()}</div>`,mount(){apiGet("/viagens").then(D=>{const b=$("#vgL");if(!b)return;let ano=String(D.anos[0].ano);
