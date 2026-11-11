@@ -1450,7 +1450,7 @@ html,body{overflow-x:clip;max-width:100%}
 .pill-q{display:block;width:calc(100% - 16px);margin:8px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13.5px;background:var(--surface);color:var(--ink)}
 .pill-m{max-height:min(70vh,520px);overflow-y:auto}.pill-q{position:sticky;top:0;z-index:1}
 /* lista de estados com pesquisa: a caixa fica fixa no topo e só a lista rola (antes a caixa flutuava sobre as primeiras linhas) */
-.pill-m:has(>.pill-q){display:flex;flex-direction:column;overflow:hidden;padding-top:0}.pill-m:has(>.pill-q)>.pill-q{position:static;flex:none;width:auto;margin:10px 10px 6px}.pill-m:has(>.pill-q)>.seg{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pill-m:has(>.pill-q){display:flex;flex-direction:column;overflow:hidden;padding-top:0}.pill-m:has(>.pill-q)>.pill-q{position:static;flex:none;width:auto;margin:10px 10px 6px}.pill-m:has(>.pill-q)>.seg{flex:1 1 auto;min-height:0;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 /* segurança: "por dia" em quatro quadros simples (v1.10) */
 .sd-grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
 .sd-l{display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,150px);gap:10px;align-items:baseline}
