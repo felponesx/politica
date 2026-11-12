@@ -2079,6 +2079,13 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #btnTheme .tm-sol{fill:currentColor;stroke:none}
 .adm-aviso{background:#FFF6E5;color:#8A5A00;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.5;margin:0 0 12px}
 .fac-lg{height:22px;width:auto;max-width:44px;object-fit:contain;vertical-align:middle;margin-right:8px;border-radius:4px}
+/* concursos, cursos e eventos */
+.oc-lista{display:flex;flex-direction:column;gap:10px}.oc-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.oc-card{display:block;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink);text-decoration:none}
+.oc-card h3{margin:6px 0 2px;font-size:15.5px;line-height:1.3}.oc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.oc-facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin:8px 0}.oc-facts div{display:flex;flex-direction:column}.oc-facts span{font-size:11.5px;color:var(--muted)}.oc-facts b{font-size:14px}
+.oc-cargos{margin:4px 0}.oc-res{margin:6px 0}.oc-link{display:inline-block;margin-top:6px;font-weight:600;font-size:13.5px}.oc-mais{width:100%;margin-top:4px}
+.oc-chk{display:flex;align-items:center;gap:6px;white-space:nowrap}.oc-onde{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 </style>
 </head>
 <body>
@@ -2164,7 +2171,7 @@ escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6
 profissoes:'<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12.5h18"/>',
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
-ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
+concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
@@ -2182,7 +2189,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;return true}
 function navSubAdmin(){return [["resumo","inicio","Gestão (início)"],["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["bots","bots","Bots"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>x[0]==="resumo"||artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
@@ -5748,6 +5755,80 @@ P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";
   mount(){if(!API.on)return;apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}const v=$("#ensV");if(!v)return;let o;
    if(aba==="geral")o={html:ensGeral(D)+RSRC()};else if(aba==="estados")o=ensEstados(D,{uf:UF[uf]?uf:""});else if(aba==="faculdades")o=ensFaculdades(D);else o=ensEscolas(D);
    v.innerHTML=o.html;if(o.mount)o.mount();if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)})}}};
+// ===== Concursos e cursos · Eventos (12/11/2026): /concursos, /cursos, /eventos, /eventos-patrocinios (app/oportunidades.py)
+const OP_ABAS=[["concursos","Concursos"],["cursos","Cursos gratuitos"]];
+const opData=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"";
+const opVazio=t=>`<div class="rbanner">Os dados ${t} ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`;
+const opSemAPI=`<div class="rbanner">Aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
+const opMais=(id,n,tot)=>tot>n?`<button class="btn oc-mais" data-opmais="${id}">Ver mais (${nf(tot-n)} restantes)</button>`:"";
+function opLista(box,itens,card,passo=30){let n=passo;const pinta=()=>{box.innerHTML=itens.length?itens.slice(0,n).map(card).join("")+opMais(box.id,n,itens.length):rvazio("Nada encontrado com esses filtros.");
+  const b=box.querySelector("[data-opmais]");if(b)b.onclick=()=>{n+=passo;pinta()}};pinta()}
+P.concursos=aba=>{aba=OP_ABAS.some(a=>a[0]===aba)?aba:"concursos";
+ return{html:`<div class="ph"><div><h1>Concursos e cursos</h1><p>Concursos públicos abertos e cursos gratuitos num lugar só, tirados direto das fontes oficiais.</p></div></div><div class="tabs" style="margin-top:0">${OP_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/concursos/${a[0]}">${a[1]}</a>`).join("")}</div><div id="opV">${API.on?rload():opSemAPI}</div>`,
+  mount(){if(!API.on)return;const ehC=aba==="cursos";apiGet(ehC?"/cursos":"/concursos").then(D=>{const v=$("#opV");if(!v)return;const o=ehC?opCursos(D):opConcursos(D);v.innerHTML=o.html;o.mount();if(typeof pilulas==="function")pilulas()})
+   .catch(e=>{const v=$("#opV");if(v)v.innerHTML=e.status===404?opVazio(ehC?"dos cursos":"dos concursos"):rerro(e)})}}};
+function opSitu(x){const s=x.situacao||"";const c=/abertas/.test(s)?"#1BAF7A":/encerradas/.test(s)?"#8A919E":/ainda/.test(s)?"#F5A524":"";return c?`<span class="prm-r" style="--c:${c}">${esc(s.charAt(0).toUpperCase()+s.slice(1))}</span>`:""}
+function opConcCard(x){const f=[];if(x.vagas)f.push(["Vagas",nf(x.vagas)]);if(x.salario_max)f.push(["Salário até",brlC(x.salario_max)]);
+ if(x.inscricoes_fim)f.push(["Inscrições até",opData(x.inscricoes_fim)]);if(x.banca)f.push(["Banca",esc(x.banca)]);if(x.escolaridade)f.push(["Nível",esc(x.escolaridade.join(", "))]);
+ const onde=x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:(x.esfera==="federal"?"Órgão federal":"");
+ return`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.area||"Outras áreas")}</span><span class="tag">${esc(x.tipo||"")}</span>${opSitu(x)}</div>
+ <h3>${esc(x.orgao||x.titulo)}</h3><div class="small muted">${esc(x.titulo||"")}${x.vinculo&&x.vinculo!==x.orgao?` · ${esc(x.vinculo)}`:""}${onde?` · ${onde}`:""} · publicado em ${opData(x.publicado)}</div>
+ ${f.length?`<div class="oc-facts">${f.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join("")}</div>`:""}
+ ${x.cargos?`<div class="small oc-cargos"><b>Cargos:</b> ${x.cargos.map(esc).join(" · ")}</div>`:""}
+ <a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver o edital oficial ›</a> <span class="small muted">${esc(x.fonte||"")}</span></div>`}
+function opConcursos(D){const L=D.itens||[];let f={area:"",tipo:"",abertas:false,q:""};
+ const areas=Object.keys(D.areas||{}),abertas=L.filter(x=>/abertas/.test(x.situacao||"")).length;
+ return{html:`<div class="kpis mt"><div class="kpi"><span>Editais de abertura</span><strong>${nf(D.total)}</strong><em>últimos ${D.periodo_dias} dias</em></div><div class="kpi"><span>Com inscrições abertas</span><strong>${nf(abertas)}</strong><em>quando o edital diz a data</em></div><div class="kpi"><span>Áreas</span><strong>${nf(areas.length)}</strong><em>${esc(areas.slice(0,3).join(", "))}</em></div></div>
+  <div class="panel mt"><h2>Concursos e seleções abertos</h2><div class="filters"><select id="ocA" data-pill="Área"><option value="">Todas as áreas</option>${areas.map(a=>`<option>${esc(a)}</option>`).join("")}</select><select id="ocT" data-pill="Tipo"><option value="">Concurso e seleção</option><option>Concurso público</option><option>Processo seletivo</option></select><label class="small oc-chk"><input type="checkbox" id="ocAb"> Só inscrições abertas</label><input id="ocQ" placeholder="Buscar órgão, cargo, cidade" style="flex:1;min-width:160px" autocomplete="off"></div>
+  <p class="small muted" id="ocN" style="margin:6px 0"></p><div id="ocL" class="oc-lista"></div></div>
+  <div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
+  mount(){const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.area||x.area===f.area)&&(!f.tipo||x.tipo===f.tipo)&&(!f.abertas||/abertas/.test(x.situacao||""))&&(!q||snapNorm([x.orgao,x.titulo,x.vinculo,x.municipio,x.uf,(x.cargos||[]).join(" "),x.resumo].join(" ")).includes(q)));
+    $("#ocN").textContent=`${nf(l.length)} de ${nf(L.length)} editais`;opLista($("#ocL"),l,opConcCard)};lista();
+   $("#ocA").onchange=e=>{f.area=e.target.value;lista()};$("#ocT").onchange=e=>{f.tipo=e.target.value;lista()};$("#ocAb").onchange=e=>{f.abertas=e.target.checked;lista()};$("#ocQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+function opCursoCard(x){const f=[];if(x.carga_horaria)f.push(`${nf(x.carga_horaria)} h`);if(x.modalidade)f.push(esc(x.modalidade));if(x.certificado)f.push("Com certificado");
+ return`<div class="oc-card oc-curso"><div class="oc-top"><span class="tag">${esc(x.ofertante||"")}</span>${x.tema?`<span class="tag">${esc(x.tema)}</span>`:""}${x.inscricoes_abertas?`<span class="prm-r" style="--c:#1BAF7A">Inscrições abertas</span>`:""}<span class="prm-r" style="--c:#2F6FED">Gratuito</span></div>
+ <h3>${esc(x.nome)}</h3>${x.quem_faz&&x.quem_faz!==x.ofertante?`<div class="small muted">Conteúdo: ${esc(x.quem_faz)}</div>`:""}${f.length?`<div class="small">${f.join(" · ")}</div>`:""}
+ ${x.resumo?`<p class="small muted oc-res">${esc(x.resumo)}</p>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver o curso e se inscrever ›</a></div>`}
+function opCursos(D){const L=D.itens||[];let f={of:"",tema:"",q:""};const temas=Object.keys(D.temas||{}),ofs=Object.keys(D.ofertantes||{});
+ return{html:`<div class="kpis mt"><div class="kpi"><span>Cursos gratuitos</span><strong>${nf(D.total)}</strong><em>online, para todo o país</em></div>${ofs.map(o=>`<div class="kpi"><span>${esc(o)}</span><strong>${nf(D.ofertantes[o])}</strong><em>cursos</em></div>`).join("")}</div>
+  <div class="panel mt"><h2>Cursos gratuitos</h2><div class="filters"><select id="cuO" data-pill="Quem oferece"><option value="">Todos</option>${ofs.map(o=>`<option>${esc(o)}</option>`).join("")}</select><select id="cuT" data-pill="Tema"><option value="">Todos os temas</option>${temas.map(t=>`<option>${esc(t)}</option>`).join("")}</select><input id="cuQ" placeholder="Buscar curso" style="flex:1;min-width:160px" autocomplete="off"></div>
+  <p class="small muted" id="cuN" style="margin:6px 0"></p><div id="cuL" class="oc-lista oc-grade"></div></div>
+  <div class="panel mt"><h2>Onde mais procurar cursos gratuitos</h2><p class="small muted" style="margin:0 0 8px">Estes não publicam um catálogo aberto que dê para juntar aqui automaticamente.</p><div class="oc-onde">${(D.onde_procurar||[]).map(o=>`<a class="oc-card" href="${esc(o.url)}" target="_blank" rel="noopener"><h3>${esc(o.nome)} ›</h3><div class="small muted">${esc(o.obs)}</div></a>`).join("")}</div></div>
+  <div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
+  mount(){const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.of||x.ofertante===f.of)&&(!f.tema||(x.tema||"Outros")===f.tema)&&(!q||snapNorm([x.nome,x.tema,x.quem_faz,x.resumo].join(" ")).includes(q)));
+    $("#cuN").textContent=`${nf(l.length)} de ${nf(L.length)} cursos`;opLista($("#cuL"),l,opCursoCard,24)};lista();
+   $("#cuO").onchange=e=>{f.of=e.target.value;lista()};$("#cuT").onchange=e=>{f.tema=e.target.value;lista()};$("#cuQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+// ---- Eventos
+const evValor=x=>x.valor?`${brlC(x.valor)}${x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";
+const evNome=x=>x.artista?`<b>${esc(x.artista)}</b>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`:`<span class="small">${esc((x.objeto||"").slice(0,140))}${(x.objeto||"").length>140?"…":""}</span>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`;
+const evCols=[["Show",evNome],["Cidade",x=>x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:esc(x.uf||"—")],["Data do show",x=>x.data_evento?opData(x.data_evento):"—"],["Quem paga",x=>esc(x.esfera==="municipal"?"Prefeitura":x.esfera==="estadual"?"Governo do estado":x.esfera==="federal"?"União":x.orgao||"—")],["Valor",evValor,"n"],["Contrato",x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">PNCP ›</a>`]];
+P.eventos=uf=>{uf=UF[uf]?uf:"";
+ return{html:`<div class="ph"><div><h1>Eventos</h1><p>Shows e festas pagos por prefeituras e governos: quem vai tocar, onde, quando e quanto custou o cachê. E as empresas que patrocinam eventos culturais pela Lei Rouanet.</p></div></div>
+  <div class="filters">${UFSel("evUF","Todo o Brasil")}</div><div id="evV">${API.on?rload():opSemAPI}</div><div id="evP"></div>`,
+  mount(){if(!API.on)return;const s=$("#evUF");if(s){s.value=uf;s.onchange=e=>{location.hash="#/eventos"+(e.target.value?"/"+e.target.value:"")}}
+   apiGet("/eventos"+(uf?"?uf="+uf:"")).then(D=>{const v=$("#evV");if(!v)return;const o=uf?evEstado(D):evBrasil(D);v.innerHTML=o.html;o.mount&&o.mount();if(typeof pilulas==="function")pilulas()})
+    .catch(e=>{const v=$("#evV");if(v)v.innerHTML=e.status===404?opVazio("dos eventos"):rerro(e)});
+   apiGet("/eventos-patrocinios"+(uf?"?uf="+uf:"")).then(evPatro).catch(()=>{const p=$("#evP");if(p)p.innerHTML=""})}}};
+function evKpis(D,cid){return`<div class="kpis mt"><div class="kpi"><span>Shows contratados</span><strong>${nf(D.total)}</strong><em>${D.periodo?`publicados de ${opData(D.periodo.de)} a ${opData(D.periodo.ate)}`:""}</em></div><div class="kpi"><span>Valor dos cachês</span><strong>${brl(D.valor_total)}</strong><em>dinheiro público</em></div><div class="kpi"><span>Cidades</span><strong>${nf(cid)}</strong><em>com show contratado</em></div></div>`}
+function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd);
+ return{html:evKpis(D,D.cidades_total??(D.cidades||[]).length)+
+  `${(D.proximos||[]).length?`<div class="panel mt"><h2>Próximos shows</h2><p class="small muted" style="margin:0 0 8px">Os que têm a data escrita no contrato, a partir de hoje.</p>${table(evCols,D.proximos)}</div>`:""}
+  <div class="panel mt"><h2>Maiores cachês</h2>${table(evCols,D.maiores||[])}</div>
+  <div class="g2 mt"><div class="panel"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado no seletor acima para ver todos os shows e cidades.</p>${listaUF(pu.map(([u,v])=>({uf:u,k:v.valor,r:brl(v.valor)+` · ${nf(v.qtd)} shows`})))}</div>
+  <div class="panel"><h2>Cidades que mais gastaram</h2>${table([["Cidade",x=>`${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div></div>
+  <div class="rbanner mt small">${esc(D.aviso||"")}</div>`}}
+function evEstado(D){const L=D.itens||[];let q="";
+ return{html:evKpis(D,(D.cidades||[]).length)+`<div class="panel mt"><h2>Cidades de ${esc(UF[D.uf]||D.uf)}</h2>${table([["Cidade",x=>esc(x.municipio)],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div>
+  <div class="panel mt"><h2>Todos os shows</h2><div class="filters"><input id="evQ" placeholder="Buscar cidade, artista ou festa" style="flex:1;min-width:160px" autocomplete="off"></div><div id="evL"></div></div><div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
+  mount(){const pinta=()=>{const n=snapNorm(q),l=n?L.filter(x=>snapNorm([x.municipio,x.artista,x.evento,x.objeto].join(" ")).includes(n)):L;$("#evL").innerHTML=l.length?table(evCols,l):rvazio("Nada encontrado.")};pinta();$("#evQ").oninput=debounce(e=>{q=e.target.value.trim();pinta()},200)}}}
+function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
+ p.innerHTML=`<div class="panel mt"><h2>Patrocínio de eventos (Lei Rouanet)</h2><p class="small muted" style="margin:0 0 8px">${esc(D.aviso||"")}</p>
+  <div class="kpis"><div class="kpi"><span>Projetos de música com patrocínio</span><strong>${nf(D.total)}</strong></div><div class="kpi"><span>Valor captado</span><strong>${brl(D.captado_total)}</strong></div></div>
+  ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>esc(x.nome)],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>brlC(x.valor),"n"]],D.empresas)}`:""}
+  <h3 class="mt">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
+ opLista($("#evPL"),pj,x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.segmento||"Música")}</span>${x.inicio?`<span class="small muted">${opData(x.inicio)} a ${opData(x.fim)}</span>`:""}</div><h3>${esc(x.nome)}</h3>
+  <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b>${brlC(x.captado)}</b></div><div><span>Aprovado</span><b>${brlC(x.aprovado)}</b></div></div>
+  ${(x.patrocinadores||[]).length?`<div class="small oc-cargos"><b>Patrocinadores:</b> ${x.patrocinadores.map(s=>`${esc(s.nome)} (${brlC(s.valor)})`).join(" · ")}</div>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver no VerSalic ›</a></div>`,10)}
 P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premios").then(d=>{const box=$("#prmD");if(!box)return;let C,G,E;
   for(const c of d.categorias)for(const g of c.grupos){const e=g.brasil.find(x=>x.chave===chave);if(e){C=c;G=g;E=e}}
   if(!E){box.innerHTML=rvazio("Título não encontrado.");return}
@@ -7054,6 +7135,8 @@ const ART_SEC=[
  ["escandalos","Escândalos e crimes",["/escandalos","/crimes-politicos","/lista-suja","/tcu-inabilitados","/tcu-irregulares"]],
  ["noticias","Notícias",["/noticias"]],
  ["ensino","Ensino",["/ensino","/igc"]],
+ ["concursos","Concursos e cursos",["/concursos","/cursos"]],
+ ["eventos","Eventos",["/eventos","/eventos-patrocinios"]],
  ["premios","Prêmios",["/premios"]],
  ["indicadores","Indicadores",["/indicadores","/economia","/aeroportos","/energia-tarifas","/iva","/renuncia-fiscal","/transito"]],
  ["relatorios","Relatórios e Dados",["/fontes","/coletas","/exportar","/ia","/busca"]],
