@@ -1,0 +1,502 @@
+[
+ {
+  "n": 1,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Quem é [nome] e qual cargo ocupa atualmente?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "perfil",
+  "fonte": "Cadastro da Câmara e do Senado.",
+  "limite": "Só mandatos no Congresso; cargos do Executivo e de tribunais não estão no cadastro."
+ },
+ {
+  "n": 2,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Qual é o histórico político de [nome]?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "historico_pessoa",
+  "fonte": "TSE: candidaturas e resultados (1994 em diante) ligadas ao parlamentar.",
+  "limite": "Só o que passou por eleição; cargos nomeados, suplência e mandatos anteriores a 1994 não aparecem."
+ },
+ {
+  "n": 3,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Quais cargos públicos [nome] já ocupou?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "historico_pessoa",
+  "fonte": "TSE (candidaturas e resultado) e cadastro do Congresso.",
+  "limite": "Só cargos de eleição; nomeados (ministro, secretário), suplentes que assumiram e vereadores não entram."
+ },
+ {
+  "n": 4,
+  "bloco": "Identificação e perfil",
+  "pergunta": "A qual partido [nome] pertence atualmente e por quais partidos já passou?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "historico_pessoa",
+  "fonte": "Partido atual: cadastro. Anteriores: partido de cada candidatura no TSE.",
+  "limite": "Troca de partido fora de ano de eleição não aparece."
+ },
+ {
+  "n": 5,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Qual é a formação acadêmica e profissional de [nome]?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "historico_pessoa",
+  "fonte": "TSE: grau de instrução e ocupação declarados a cada candidatura.",
+  "limite": "É o que a própria pessoa declarou; não há diploma nem currículo."
+ },
+ {
+  "n": 6,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Qual foi o patrimônio declarado por [nome] nas últimas eleições?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "patrimonio_pessoa",
+  "fonte": "TSE: bens declarados a cada candidatura.",
+  "limite": "Valor declarado, sem correção pela inflação; só em ano de candidatura."
+ },
+ {
+  "n": 7,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Quais são os principais projetos de lei apresentados por [nome]?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "projetos_pessoa",
+  "fonte": "Câmara e Senado: tramitação das proposições.",
+  "limite": "A autoria só existe para proposições com tramitação coletada; não há critério de projeto 'principal'."
+ },
+ {
+  "n": 8,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Quais são as principais decisões e atuações políticas de [nome]?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "participacao_pessoa",
+  "fonte": "Votações nominais, presença, projetos e comissões.",
+  "limite": "'Decisões' não existe como dado: o BRASIL+ mostra votos, presença e projetos."
+ },
+ {
+  "n": 9,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Quem são os políticos que atualmente ocupam os principais cargos do governo federal?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:governo",
+  "fonte": "—",
+  "limite": "A lista de ministros fica só no site, não no banco; não há base aberta única e atualizada de cargos do Executivo."
+ },
+ {
+  "n": 10,
+  "bloco": "Identificação e perfil",
+  "pergunta": "Quais políticos representam cada estado no Senado e na Câmara dos Deputados?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "lista_estado",
+  "fonte": "Cadastro da Câmara e do Senado.",
+  "limite": "Só quem está em exercício na última coleta."
+ },
+ {
+  "n": 11,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quantos processos judiciais estão associados a [nome]?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "processos_pessoa",
+  "fonte": "—",
+  "limite": "Não existe base aberta de processos por pessoa. Existem só: representações por quebra de decoro (Câmara), registro de candidatura (TSE) e casos curados."
+ },
+ {
+  "n": 12,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quais políticos possuem registros de processos judiciais e quantos cada um possui?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "condenacoes_lista",
+  "fonte": "Casos curados do BRASIL+ (cada um com fonte).",
+  "limite": "Só os casos curados, e a lista mostra condenações: não é o total de processos de ninguém."
+ },
+ {
+  "n": 13,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quais processos de [nome] ainda estão em andamento?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "processos_pessoa",
+  "fonte": "Casos curados e representações da Câmara.",
+  "limite": "Mostra a situação e a data da fonte; o andamento atual não é acompanhado."
+ },
+ {
+  "n": 14,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quais processos de [nome] já foram arquivados ou encerrados?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "processos_pessoa",
+  "fonte": "Casos curados e representações da Câmara.",
+  "limite": "Só o que a fonte curada registra (ex.: 'processo arquivado', 'prescrito')."
+ },
+ {
+  "n": 15,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "[Nome] possui condenações judiciais? Quais são e qual é a situação atual?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "processos_pessoa",
+  "fonte": "Casos curados do BRASIL+.",
+  "limite": "Só condenações dos casos curados; ausência aqui não prova que não existe."
+ },
+ {
+  "n": 16,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quais políticos possuem processos relacionados a improbidade administrativa?",
+  "dado": "nenhum",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "—",
+  "limite": "Não há base aberta de ações de improbidade por pessoa; só apareceria se um caso curado descrevesse isso."
+ },
+ {
+  "n": 17,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Existem investigações envolvendo [nome] em tribunais ou órgãos de controle?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "processos_pessoa",
+  "fonte": "Casos curados; TCU (só totais, sem nome).",
+  "limite": "Só casos curados (situação e data da fonte); o TCU é publicado apenas em totais por estado, sem nome."
+ },
+ {
+  "n": 18,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Em quais tribunais existem processos associados a [nome]?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:tribunais",
+  "fonte": "—",
+  "limite": "Não existe base aberta que diga em quais tribunais uma pessoa responde."
+ },
+ {
+  "n": 19,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quanto tempo os processos envolvendo [nome] estão em tramitação?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:tempo_processo",
+  "fonte": "—",
+  "limite": "Não existe base aberta com o tempo de tramitação de processos por pessoa."
+ },
+ {
+  "n": 20,
+  "bloco": "Processos judiciais e investigações",
+  "pergunta": "Quais políticos possuem condenações definitivas, distinguindo-as de investigações e processos ainda sem decisão final?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "condenacoes_lista",
+  "fonte": "Casos curados do BRASIL+ (situação com termos fechados).",
+  "limite": "Distingue 'condenado' de 'condenado (recorre)' (ainda cabe recurso); investigados e réus não entram nessa lista."
+ },
+ {
+  "n": 21,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quantos projetos de lei [nome] apresentou durante seu mandato?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "projetos_pessoa",
+  "fonte": "Câmara e Senado: tramitação.",
+  "limite": "Só entre as proposições com tramitação coletada: número menor não quer dizer que apresentou pouco."
+ },
+ {
+  "n": 22,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quantos projetos de lei foram aprovados, rejeitados ou arquivados?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Situação registrada de cada proposição.",
+  "limite": "Para uma pessoa funciona (perguntas 21, 24 e 25); a versão geral, sem nome, ainda não existe."
+ },
+ {
+  "n": 23,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quais parlamentares possuem registros de projetos apresentados e quantos cada um possui?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Tramitação coletada.",
+  "limite": "Só proposições com tramitação coletada."
+ },
+ {
+  "n": 24,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quais projetos de [nome] já se transformaram em leis?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "projetos_pessoa",
+  "fonte": "Situação 'transformado em norma jurídica'.",
+  "limite": "Só entre as proposições com tramitação coletada."
+ },
+ {
+  "n": 25,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quantos projetos apresentados por [nome] ainda estão aguardando votação?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "projetos_pessoa",
+  "fonte": "Situação registrada.",
+  "limite": "Conta 'em andamento ou sem decisão final'; não separa quem já está pautado."
+ },
+ {
+  "n": 26,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quais deputados e senadores apresentaram projetos nos últimos 12 meses?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Tramitação coletada e data de apresentação.",
+  "limite": "Só proposições com tramitação coletada."
+ },
+ {
+  "n": 27,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quantos projetos [nome] apresentou como autor e como coautor?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "projetos_pessoa",
+  "fonte": "—",
+  "limite": "Mostra as proposições em que a pessoa consta entre os autores; não separa autor principal de coautor."
+ },
+ {
+  "n": 28,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quais áreas são mais abordadas nos projetos apresentados por [nome]?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "projetos_pessoa",
+  "fonte": "Ementa das proposições com tramitação coletada.",
+  "limite": "Áreas por palavra-chave da ementa; não é posição política."
+ },
+ {
+  "n": 29,
+  "bloco": "Projetos de lei",
+  "pergunta": "Quais projetos de [nome] tiveram impacto financeiro previsto no orçamento público?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:impacto",
+  "fonte": "—",
+  "limite": "O impacto financeiro previsto por proposição não é publicado como dado aberto."
+ },
+ {
+  "n": 30,
+  "bloco": "Projetos de lei",
+  "pergunta": "Como a produção legislativa de [nome] se compara à de outros parlamentares do mesmo período?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "comparar_pessoa",
+  "fonte": "Cota e votações nominais.",
+  "limite": "A comparação de projetos não é feita: a autoria é coletada só em parte. Compara cota e participação em votações."
+ },
+ {
+  "n": 31,
+  "bloco": "Votações e participação",
+  "pergunta": "Quantas votações nominais [nome] participou durante o mandato?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "participacao_pessoa",
+  "fonte": "Votações nominais coletadas.",
+  "limite": "Últimos 12 meses (presença) e votos nas votações coletadas; não é o mandato inteiro."
+ },
+ {
+  "n": 32,
+  "bloco": "Votações e participação",
+  "pergunta": "Em quantas votações [nome] esteve ausente?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "participacao_pessoa",
+  "fonte": "Votações nominais coletadas.",
+  "limite": "Ausência é calculada (total menos votou) e inclui licença e quem ainda não tinha tomado posse."
+ },
+ {
+  "n": 33,
+  "bloco": "Votações e participação",
+  "pergunta": "Quantas vezes [nome] votou a favor, contra ou se absteve?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "participacao_pessoa",
+  "fonte": "Votos nas votações nominais coletadas.",
+  "limite": "Só votações nominais coletadas; votação secreta não entra."
+ },
+ {
+  "n": 34,
+  "bloco": "Votações e participação",
+  "pergunta": "Quais parlamentares possuem registros de maior participação em votações nominais?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "ranking_participacao",
+  "fonte": "Votações nominais dos últimos 12 meses.",
+  "limite": "Só quem está em exercício; suplente recente aparece com menos votações."
+ },
+ {
+  "n": 35,
+  "bloco": "Votações e participação",
+  "pergunta": "Quais parlamentares possuem registros de menor participação em votações nominais?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "ranking_participacao",
+  "fonte": "Votações nominais dos últimos 12 meses.",
+  "limite": "Quem não votou em nenhuma não aparece na lista."
+ },
+ {
+  "n": 36,
+  "bloco": "Votações e participação",
+  "pergunta": "Como [nome] votou nas principais propostas relacionadas à economia?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Votos + ementa da matéria.",
+  "limite": "Exigiria classificar votações por tema por palavra-chave; 'principais' não é critério do dado."
+ },
+ {
+  "n": 37,
+  "bloco": "Votações e participação",
+  "pergunta": "Como [nome] votou em projetos relacionados à saúde e educação?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Votos + ementa da matéria.",
+  "limite": "Idem: classificação por palavra-chave."
+ },
+ {
+  "n": 38,
+  "bloco": "Votações e participação",
+  "pergunta": "Qual foi o posicionamento de [nome] nas votações de reformas tributárias e previdenciárias?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Votos + nome da matéria.",
+  "limite": "Só se a votação estiver coletada e identificável pelo nome da proposição."
+ },
+ {
+  "n": 39,
+  "bloco": "Votações e participação",
+  "pergunta": "Como mudou o comportamento de votação de [nome] ao longo dos anos?",
+  "dado": "parcial",
+  "motor": "a_fazer",
+  "intencao": null,
+  "fonte": "Votos por ano.",
+  "limite": "Depende de quantos anos de votações foram coletados."
+ },
+ {
+  "n": 40,
+  "bloco": "Votações e participação",
+  "pergunta": "Como votaram individualmente os ministros do STF, STJ e TSE em determinada decisão?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:votos_ministros",
+  "fonte": "—",
+  "limite": "Não há base aberta com o voto de cada ministro; só 6 julgamentos do STF curados, com placar."
+ },
+ {
+  "n": 41,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quanto [nome] recebeu de remuneração durante o mandato?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:remuneracao",
+  "fonte": "—",
+  "limite": "A remuneração por pessoa não é coletada; a cota parlamentar não é salário."
+ },
+ {
+  "n": 42,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quanto [nome] gastou com verba parlamentar?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "gasto_pessoa",
+  "fonte": "Cota parlamentar (Câmara e Senado).",
+  "limite": "Valor reembolsado/pago; ano corrente pode estar incompleto."
+ },
+ {
+  "n": 43,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quais foram as principais despesas de [nome] com viagens, hospedagens e passagens?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "despesas_categoria",
+  "fonte": "Categorias da cota parlamentar.",
+  "limite": "Só o que a cota reembolsa; viagens pagas por outros meios não aparecem."
+ },
+ {
+  "n": 44,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quais políticos possuem registros de despesas parlamentares e quais são os valores por categoria?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "despesas_categoria",
+  "fonte": "Cota parlamentar por categoria.",
+  "limite": "As categorias têm nomes diferentes na Câmara e no Senado."
+ },
+ {
+  "n": 45,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quanto [nome] recebeu em doações eleitorais e quais foram seus principais doadores?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "financas_campanha",
+  "fonte": "TSE: prestação de contas (origem das receitas, despesas por tipo).",
+  "limite": "O nome de cada doador pessoa física não é guardado (CPF não é guardado)."
+ },
+ {
+  "n": 46,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Qual foi a evolução do patrimônio declarado de [nome] entre as eleições?",
+  "dado": "completo",
+  "motor": "pronto",
+  "intencao": "patrimonio_pessoa",
+  "fonte": "TSE: bens declarados.",
+  "limite": "Sem correção pela inflação."
+ },
+ {
+  "n": 47,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quantas emendas parlamentares [nome] apresentou e quais valores foram destinados?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "emendas_pessoa",
+  "fonte": "Portal da Transparência: emendas.",
+  "limite": "Só os 30 maiores autores de cada ano; o número de emendas por pessoa não é guardado."
+ },
+ {
+  "n": 48,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quanto das emendas de [nome] foi efetivamente empenhado, liquidado e pago?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "emendas_pessoa",
+  "fonte": "Portal da Transparência: emendas.",
+  "limite": "Por autor há empenhado e pago; o liquidado existe só no total do ano."
+ },
+ {
+  "n": 49,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Quais empresas receberam recursos públicos relacionados a contratos ou emendas indicadas por [nome]?",
+  "dado": "nenhum",
+  "motor": "pronto",
+  "intencao": "sem_dado:empresas_emendas",
+  "fonte": "—",
+  "limite": "O vínculo entre cada emenda e a empresa que recebeu não é coletado."
+ },
+ {
+  "n": 50,
+  "bloco": "Gastos, patrimônio e atividade",
+  "pergunta": "Como se distribuem os gastos, a participação legislativa, os projetos e as votações de [nome] em comparação com outros políticos do mesmo cargo e período?",
+  "dado": "parcial",
+  "motor": "pronto",
+  "intencao": "comparar_pessoa",
+  "fonte": "Cota e votações nominais.",
+  "limite": "Projetos e emendas ficam fora da comparação (coletados só em parte)."
+ }
+]

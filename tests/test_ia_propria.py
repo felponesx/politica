@@ -146,3 +146,10 @@ def test_diz_quem_entendeu_quando_o_nome_nao_e_igual(dados):
     assert aproximado.startswith("Entendi que você se refere a Nikolas Ferreira.")
     assert not exato.startswith("Entendi")
     assert _ask("Processos do Nicolas Ferrera")["resposta"].startswith("Entendi que você se refere a Nikolas Ferreira.")
+
+
+def test_palavras_com_cedilha_sao_reconhecidas(dados):
+    """Regressão: a normalização de nomes trocava ç por s, e o motor deixava de reconhecer doações, condenações, votações, ocupação..."""
+    from app.ia_propria import _norm_kw
+    assert _norm_kw("Doações, condenações e votações — ocupação") == "doacoes condenacoes e votacoes ocupacao"
+    assert _ask("Nikolas Ferreira possui condenações?")["intencao"] == "processos_pessoa"

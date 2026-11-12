@@ -22,3 +22,16 @@ def sem_resposta(db: Session = Depends(get_db)):
     linhas = db.scalars(select(Registro).where(Registro.fonte == "ia", Registro.tipo == "pergunta_sem_resposta")
                         .order_by(Registro.valor.desc(), Registro.id.desc()).limit(50)).all()
     return [{"pergunta": r.titulo, "vezes": int(r.valor or 0)} for r in linhas]
+
+
+@router.get("/ia/cobertura")
+def cobertura():
+    """As 50 perguntas de treinamento e o que o BRASIL+ consegue responder de cada uma: `dado` (completo, parcial ou nenhum: o que existe nas
+    fontes abertas) e `motor` (pronto ou a_fazer: o que a IA própria já responde). Cada linha diz a fonte e o que o dado NÃO cobre."""
+    import json
+    from pathlib import Path
+    itens = json.loads((Path(__file__).resolve().parent.parent / "dados" / "ia_cobertura.json").read_text(encoding="utf-8"))
+    cont = lambda k, v: sum(1 for x in itens if x[k] == v)
+    return {"total": len(itens), "dado": {k: cont("dado", k) for k in ("completo", "parcial", "nenhum")},
+            "motor": {k: cont("motor", k) for k in ("pronto", "a_fazer")}, "perguntas": itens,
+            "regra": "Nunca inventar. Investigação, processo e condenação são coisas diferentes. Não ter o registro no banco não prova que algo não existe."}

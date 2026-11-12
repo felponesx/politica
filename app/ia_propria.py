@@ -14,12 +14,20 @@ Quando o dado não existe em base aberta (ex.: processos por pessoa), diz isso e
 import hashlib
 import logging
 import re
+import unicodedata
 
 from sqlalchemy import func, select
 
-from app import busca, ia_local, processos
+from app import busca, ia_consultas, ia_local, processos
+from app.ia_base import FONTE_CADASTRO, FONTE_COTA, brl, resposta as _resposta, entendi as _entendi, plural as _plural, cargo as _cargo
 from app.models import Despesa, Parlamentar, Registro
-from app.nomes import normalizar
+
+
+def _norm_kw(texto: str) -> str:
+    """Palavras da pergunta: minúsculas, sem acento e com ç virando c ("doações" -> "doacoes"), para casar com as palavras-chave.
+    (A normalização de NOMES, em app/nomes.py, é outra: troca ç por s para comparar pela pronúncia.)"""
+    t = unicodedata.normalize("NFKD", (texto or "").lower())
+    return re.sub(r"[^a-z0-9]+", " ", "".join(c for c in t if not unicodedata.combining(c))).strip()
 from app.utils import upsert
 
 log = logging.getLogger("brasilplus.ia_propria")
@@ -38,7 +46,15 @@ PALAVRAS_DA_PERGUNTA = set("""quem qual quais quanto quantos quantas foi e eh o 
 para tem teve ter sobre me fale diga mostre informacoes informacao perfil deputado deputada deputados deputadas senador senadora senadores
 parlamentar parlamentares gastou gasto gastos gastar mais maior maiores menos cota ceap despesa despesas processo processos representacao
 representacoes decoro partido estado ano hoje atual atualmente ha existem existe total numero ranking top lidera candidato candidatos
-investigado condenado inquerito acusado respondeu responde ao aos pelo pela pelos pelas vez cadeira cadeiras federal federais""".split())
+investigado condenado inquerito acusado respondeu responde ao aos pelo pela pelos pelas vez cadeira cadeiras federal federais
+verba viagem viagens hospedagem hospedagens passagem passagens combustivel divulgacao categoria categorias valores principais possuem
+registros registro area areas abordadas apresentou apresentaram apresentado apresentados projeto projetos lei leis votacao votacoes
+nominal nominais participou participacao participar ausente ausencias ausencia presenca votou votaram favor contra absteve abstencao
+patrimonio bens declarado declarados historico trajetoria cargos formacao academica profissional instrucao escolaridade ocupacao
+profissao partidos anteriores passou emenda emendas destinados doacoes doadores receitas arrecadou campanha comparar comparacao
+comparado posicao colocacao colegas media periodo evolucao eleicoes ultimas ultimos ja se durante mandato esteve ministros stf stj
+tse tribunais tribunal improbidade andamento arquivados arquivado encerrados encerrado condenacoes condenacao autor coautor
+politico politicos remuneracao recebeu salario subsidio empresas empresa""".split())
 
 EXEMPLOS = [
     "Quem mais gastou com a cota parlamentar em 2024?",
@@ -48,38 +64,12 @@ EXEMPLOS = [
     "Quem é a deputada Maria da Silva?",
     "Processos do Nikolas Ferreira",
 ]
-FONTE_COTA = "Cota parlamentar: Câmara dos Deputados (cota para o exercício da atividade parlamentar) e Senado (CEAPS), dados abertos."
-FONTE_CADASTRO = "Cadastro de parlamentares: Câmara dos Deputados e Senado Federal, dados abertos."
 
 
 # ---------- apoio ----------
 
-def brl(v: float) -> str:
-    return "R$ " + f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-
-def _entendi(e: dict) -> str:
-    """Se o nome achado não é igual ao digitado, diz quem foi entendido (a pessoa pode corrigir)."""
-    _i, nome, nota = e["pessoas"][0]
-    return f"Entendi que você se refere a {nome}. " if nota < 0.97 else ""
-
-
-def _plural(n: int, singular: str, plural: str) -> str:
-    return f"{n} {singular if n == 1 else plural}"
-
-
 def _tem(tokens: list[str], *radicais: str) -> bool:
     return any(t.startswith(r) for t in tokens for r in radicais)
-
-
-def _cargo(casa: str | None) -> str:
-    return {"camara": "deputado(a) federal", "senado": "senador(a)"}.get(casa or "", "parlamentar")
-
-
-def _resposta(entendeu: bool, intencao: str | None, texto: str, fontes: list[str] | None = None, dados: dict | None = None,
-              aviso: str | None = None, sugestoes: list[str] | None = None) -> dict:
-    return {"entendeu": entendeu, "intencao": intencao, "resposta": texto, "fontes": fontes or [], "dados": dados or {},
-            "aviso": aviso, "sugestoes": sugestoes or []}
 
 
 def _entidades(db, pergunta: str, norm: str) -> dict:
@@ -105,13 +95,16 @@ def _entidades(db, pergunta: str, norm: str) -> dict:
     for t in re.findall(r"[A-Za-zÀ-ú]{2,}", pergunta):
         if t.upper() in partidos and (t.isupper() or re.search(rf"(?:partido|do|da|pelo)\s+{re.escape(t)}\b", pergunta, re.I)):
             e["partido"] = t.upper()
-            sobra = sobra.replace(f" {normalizar(t)} ", " ")
+            sobra = sobra.replace(f" {_norm_kw(t)} ", " ")
             break
 
     resto = [t for t in sobra.split() if t not in PALAVRAS_DA_PERGUNTA and not t.isdigit()]
     palavras_originais = re.findall(r"[A-Za-zÀ-ú']+", pergunta)
-    capitalizadas = {normalizar(w) for i, w in enumerate(palavras_originais) if i > 0 and w[:1].isupper() and (not w.isupper() or len(w) > 3)}
+    capitalizadas = {_norm_kw(w) for i, w in enumerate(palavras_originais) if i > 0 and w[:1].isupper() and (not w.isupper() or len(w) > 3)}
     e["pessoas"] = _achar_pessoas(db, resto, capitalizadas)
+    # alguém foi citado pelo nome (palavra com inicial maiúscula sobrando) mas não achado inteiro: respostas GERAIS não valem,
+    # senão "processos do Fulano Costa" viraria uma lista geral em vez de "não entendi"
+    e["nome_citado"] = any(t in capitalizadas for t in resto)
     return e
 
 
@@ -243,7 +236,7 @@ def _processos_pessoa(db, e: dict) -> dict:
     else:
         texto = (f"Sobre {p.nome}, nas fontes que o BRASIL+ tem: {n_rep} representação(ões) por quebra de decoro na Câmara, "
                  f"{n_reg} registro(s) de candidatura com situação a destacar e {n_caso} caso(s) curado(s).")
-    texto = _entendi(e) + texto + " Não existe base aberta de inquéritos e ações penais por nome; o que não está nessas fontes não aparece."
+    texto = _entendi(e) + texto + ia_consultas.casos_da_pessoa(db, p) + " Não existe base aberta de inquéritos e ações penais por nome; o que não está nessas fontes não aparece."
     return _resposta(True, "processos_pessoa", texto, ["Câmara dos Deputados (representações), TSE (registro de candidatura), casos curados do BRASIL+."],
                      {"parlamentar": p.nome, "representacoes": n_rep, "registros": n_reg, "casos": n_caso}, processos.AVISO)
 
@@ -258,18 +251,32 @@ def _processos_ranking() -> dict:
 def _executar(db, intencao: str, e: dict, casa: str | None) -> dict | None:
     """Roda um tipo de pergunta. Devolve None se faltar o que o tipo precisa (ex.: a pessoa não foi achada no banco)."""
     pessoa = bool(e["pessoas"])
-    if intencao == "processos_pessoa":
-        return _processos_pessoa(db, e) if pessoa else None
+    com_pessoa = {"processos_pessoa": _processos_pessoa, "gasto_pessoa": _gasto_pessoa, "perfil": _perfil,
+                  "historico_pessoa": ia_consultas.historico_pessoa, "patrimonio_pessoa": ia_consultas.patrimonio_pessoa,
+                  "financas_campanha": ia_consultas.financas_campanha, "projetos_pessoa": ia_consultas.projetos_pessoa,
+                  "participacao_pessoa": ia_consultas.participacao_pessoa, "emendas_pessoa": ia_consultas.emendas_pessoa,
+                  "comparar_pessoa": ia_consultas.comparar_pessoa}
+    if intencao in com_pessoa:
+        return com_pessoa[intencao](db, e) if pessoa else None
+    if intencao.startswith("sem_dado:"):
+        return ia_consultas.sem_dado(intencao.split(":", 1)[1])
     if intencao == "processos_ranking":
         return _processos_ranking()
     if intencao == "gasto_ranking":
         return _gasto_ranking(db, e, casa)
-    if intencao == "gasto_pessoa":
-        return _gasto_pessoa(db, e) if pessoa else None
     if intencao == "quantos_parlamentares":
         return _quantos(db, e, casa)
-    if intencao == "perfil":
-        return _perfil(db, e) if pessoa else None
+    if intencao == "lista_estado":
+        if not e["uf"]:
+            return _resposta(True, "lista_estado", "De qual estado? Por exemplo: \"Quais senadores representam a Bahia?\" ou \"Quais deputados são de SP?\".",
+                             [], {}, None, ["Quais senadores representam a Bahia?", "Quais deputados são de SP?"])
+        return ia_consultas.lista_estado(db, e, casa)
+    if intencao == "ranking_participacao":
+        return ia_consultas.ranking_participacao(db, e, casa, e.get("menor", False))
+    if intencao == "despesas_categoria":
+        return ia_consultas.despesas_categoria(db, e, e.get("categoria"))
+    if intencao == "condenacoes_lista":
+        return ia_consultas.condenacoes_lista(db, e)
     return None
 
 
@@ -277,7 +284,7 @@ def _com_sugestao(db, e: dict, sug: dict) -> dict:
     """Junta o que o assistente viu com o que as regras já achavam. A pessoa e o partido SEMPRE são conferidos no banco."""
     novo = dict(e)
     if sug["nome"]:
-        resto = [t for t in normalizar(sug["nome"]).split() if t not in PALAVRAS_DA_PERGUNTA]
+        resto = [t for t in _norm_kw(sug["nome"]).split() if t not in PALAVRAS_DA_PERGUNTA]
         novo["pessoas"] = _achar_pessoas(db, resto, None, so_completo=True) or e["pessoas"]
     if sug["uf"]:
         novo["uf"] = sug["uf"]
@@ -292,7 +299,7 @@ def _com_sugestao(db, e: dict, sug: dict) -> dict:
 
 def responder(db, pergunta: str) -> dict:
     pergunta = (pergunta or "").replace("\x00", " ").strip()[:300]
-    norm = normalizar(pergunta)
+    norm = _norm_kw(pergunta)
     tokens = norm.split()
     e = _entidades(db, pergunta, norm)
     pessoa = bool(e["pessoas"])
@@ -303,11 +310,65 @@ def responder(db, pergunta: str) -> dict:
     f_proc = _tem(tokens, "process", "representac", "decoro", "investig", "condenad", "inquerit", "acusad", "respond")
     casa = "senado" if _tem(tokens, "senador") and not _tem(tokens, "deputad") else "camara" if _tem(tokens, "deputad") and not _tem(tokens, "senador") else None
 
-    regra = ("processos_pessoa" if f_proc and pessoa else "processos_ranking" if f_proc and f_mais else
-             "gasto_ranking" if f_gasto and f_mais and not pessoa else "gasto_pessoa" if f_gasto and pessoa else
-             "quantos_parlamentares" if f_quant and f_cargo else "perfil" if pessoa else None)
+    livre = not e["nome_citado"]   # a pergunta não cita nome de pessoa: respostas gerais (rankings, listas) valem
+    f_menos = _tem(tokens, "menos", "menor", "pior", "baix")
+    f_cond = _tem(tokens, "condenac", "condenad")
+    f_hist = _tem(tokens, "histori", "trajetor", "cargos", "formac", "instruc", "escolar", "ocupac", "profiss", "candidatur", "partidos")
+    f_patr = _tem(tokens, "patrimon", "bens", "riquez")
+    f_part = _tem(tokens, "votac", "particip", "ausen", "presenc", "votou", "votaram", "abst")
+    f_proj = _tem(tokens, "projet", "proposic", "autoria", "apresent")
+    f_emenda = _tem(tokens, "emenda")
+    f_comp = _tem(tokens, "compar", "posicao", "colocac", "colegas", "medi")
+    f_camp = _tem(tokens, "doac", "doador", "arrecad", "campanha", "receita")
+    f_lista = _tem(tokens, "quem", "quais", "represent", "lista")
+    f_atuacao = _tem(tokens, "atuac", "decis")
+    f_tema = _tem(tokens, "economi", "saude", "educac", "reform", "previdenc", "tribut", "mudou", "evolu", "longo")
+    padroes = sorted({x for radical, ps in ia_consultas.CATEGORIAS.items() if _tem(tokens, radical) for x in ps}) or None   # junta todas as citadas
+    f_categoria = padroes is not None or _tem(tokens, "categor")
+    e["categoria"], e["menor"] = padroes, f_menos
+
+    sem = None
+    if _tem(tokens, "ministr") and _tem(tokens, "stf", "stj", "tse", "votaram", "votou") and not pessoa:
+        sem = "votos_ministros"
+    elif _tem(tokens, "ministr", "governo") and (_tem(tokens, "cargo", "ocupam", "atual") or f_lista) and not pessoa and not f_proc:
+        sem = "governo"
+    elif f_proc and _tem(tokens, "tribunal", "tribunais") and _tem(tokens, "quais", "qual", "onde") and not _tem(tokens, "orgao"):
+        sem = "tribunais"
+    elif f_proc and _tem(tokens, "tempo", "tramita") and not _tem(tokens, "projet"):
+        sem = "tempo_processo"
+    elif _tem(tokens, "impacto", "orcament") and f_proj:
+        sem = "impacto"
+    elif _tem(tokens, "remunerac", "salari", "subsidi") or (_tem(tokens, "recebeu") and not _tem(tokens, "empresa", "recurso", "doac")):
+        sem = "remuneracao"
+    elif _tem(tokens, "empresa") and (f_emenda or _tem(tokens, "contrato", "recurso")):
+        sem = "empresas_emendas"
+
+    regra = ("sem_dado:" + sem if sem else
+             "processos_pessoa" if (f_proc or f_cond) and pessoa else
+             "processos_ranking" if (f_proc or f_cond) and f_mais and livre else
+             "condenacoes_lista" if (f_proc or f_cond) and not pessoa and livre else
+             "emendas_pessoa" if f_emenda and pessoa else
+             "patrimonio_pessoa" if f_patr and pessoa else
+             "financas_campanha" if f_camp and pessoa else
+             "historico_pessoa" if f_hist and pessoa else
+             "comparar_pessoa" if f_comp and pessoa else
+             "participacao_pessoa" if f_tema and _tem(tokens, "votou", "votaram", "votac", "posicion") and pessoa else
+             "projetos_pessoa" if f_proj and pessoa else
+             "ranking_participacao" if f_part and (f_mais or f_menos) and not pessoa and livre else
+             "participacao_pessoa" if (f_part or f_atuacao) and pessoa else
+             "despesas_categoria" if f_gasto and f_categoria and (pessoa or (not f_mais and livre)) else
+             "gasto_ranking" if f_gasto and f_mais and not pessoa and livre else
+             "gasto_pessoa" if f_gasto and pessoa else
+             "lista_estado" if f_cargo and f_lista and not f_quant and (e["uf"] or _tem(tokens, "cada", "estado")) else
+             "quantos_parlamentares" if f_quant and f_cargo else
+             "perfil" if pessoa else None)
     if regra:
-        return _executar(db, regra, e, casa)
+        r = _executar(db, regra, e, casa)
+        if r:
+            if regra == "participacao_pessoa" and f_tema:   # o BRASIL+ ainda não separa votos por tema nem por ano
+                r["resposta"] = ("Ainda não separo os votos por tema (economia, saúde, educação, reformas) nem mostro a evolução ano a ano; "
+                                 "o que o BRASIL+ tem é a participação geral. " + r["resposta"])
+            return r
 
     # As regras não entenderam. Se o assistente local estiver ligado (opcional), ele sugere o tipo e o que foi citado;
     # o motor confere tudo no banco e é ele quem responde.

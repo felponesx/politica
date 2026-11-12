@@ -584,3 +584,19 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   só então grava `cbs_arrecadacao`/`ibs_arrecadacao` por competência com origem (URL, SHA-256, aba, coluna). PDF fica `relatorio_encontrado` (revisão). Nada é estimado. Robô: `ibge-malha-municipios`, `malha-comparar`.
 - **Tela dos alertas do MapBiomas (31/10/2026)**: aba Meio ambiente (`#/ambiente`) ganhou o bloco "Alertas de desmatamento do MapBiomas" (`mbPainel`, `mbCarregar` no site): seletor de período (todos os anos ou um ano; o último é parcial), mapa por estado, maiores e menores, biomas e os 100 maiores municípios (só nome, sem UF), sempre com o aviso de que NÃO é o PRODES;
   a ficha do estado (`#/ambiente/<UF>`) mostra os alertas do estado e a linha por ano. Lê `GET /alertas-mapbiomas/territorio` (exportada na cópia estática: `FIXAS` de `exportar_snapshot.py`; vale na próxima geração da cópia pelo robô). Conferido no navegador com dados reais (540.088 alertas, 11,43 mi ha), PC e celular, sem erro de JS.
+
+## IA própria do BRASIL+ (nov/2026) — sem Gemini/Claude/GPT, sem token, sem custo
+- `GET /ia/pergunta?q=...` (`app/ia_propria.py` roteia; `app/ia_consultas.py` tem as consultas; `app/ia_base.py` os utilitários; `app/nomes.py` acha nome escrito errado por pronúncia
+  do português + distância de edição). Reconhece o tipo da pergunta por palavras-chave, acha pessoa/partido/estado/ano, consulta o banco e responde com fonte e o que o dado NÃO cobre.
+  Não entende: diz isso, sugere perguntas e guarda o texto (`GET /ia/perguntas-sem-resposta`, no painel) para virar tipo novo.
+- Tabela das 50 perguntas de treinamento: `app/dados/ia_cobertura.json` (`GET /ia/cobertura`, `docs/IA_COBERTURA.md`): `dado` (completo/parcial/nenhum nas fontes abertas) e `motor`
+  (pronto/a_fazer). Um teste faz cada pergunta "pronta" e confere a intenção. Ao adicionar um tipo de pergunta, atualize o JSON e o teste.
+- REGRAS: nunca inventar; investigação, processo e condenação são coisas diferentes; ausência de registro no banco NÃO prova inexistência; nome parecido não é identidade
+  (palavra com inicial maiúscula não pode ser descartada; "Entendi que você se refere a X" quando o nome não é idêntico; respostas gerais só quando a pergunta não cita nome).
+  Processos por pessoa NÃO têm base aberta: só representações (Câmara), registro de candidatura (TSE) e casos curados.
+- Cuidado: `app/nomes.py:normalizar` troca ç por s (pronúncia de NOMES); as palavras-chave da pergunta usam `_norm_kw` (ç vira c). Misturar as duas quebra todo o vocabulário.
+- Assistente local OPCIONAL (`app/ia_local.py`, `docs/IA_LOCAL.md`): modelo no próprio PC (llama.cpp Vulkan; RX 580 não tem ROCm) só ajuda a escolher o tipo da pergunta quando as regras
+  não entendem; MODELO_LOCAL_URL só aceita 127.0.0.1; o motor confere tudo e responde. Desligado por padrão.
+- Programa único (`app/executavel.py`, `instalar/construir-tudo.ps1`, `docs/INSTALAR_WINDOWS.md`): .exe com SQLite embutido, API, painel, agendador e coletor; dados em ~/BRASILMais.
+- Testes: ao rodar a suíte inteira, outros testes deixam dados no mesmo banco; os testes de IA usam partido/estado/ano exclusivos (ZZT, RR, 2099) para não depender de banco limpo.
+

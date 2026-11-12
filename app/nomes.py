@@ -26,7 +26,7 @@ def normalizar(texto: str) -> str:
 
 def fonetica(palavra: str) -> str:
     """Chave de pronúncia aproximada para o português do Brasil."""
-    p = palavra
+    p = re.sub(r"c(ao|oes)$", r"s\1", palavra)   # -cao/-coes é quase sempre -ção/-ções (sem a cedilha digitada)
     p = p.replace("ph", "f").replace("th", "t").replace("ck", "k")
     p = re.sub(r"^h", "", p)
     p = re.sub(r"ch|sh", "x", p)

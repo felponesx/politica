@@ -93,3 +93,10 @@ def test_busca_exata_nao_perde_nem_duplica(parlamentares):
     with SessionLocal() as db:
         r = busca.buscar(db, "silva", ["parlamentares"])["parlamentares"]
     assert [x["titulo"] for x in r].count("Maria da Silva") == 1
+
+
+def test_cedilha_digitada_ou_nao_e_a_mesma_pronuncia():
+    """"Conceição" e "Conceicao" (sem cedilha) são o mesmo nome, e "-ção" sem cedilha também."""
+    indice = IndiceNomes([(1, "Conceição Ação"), (2, "Cláudia Souza")])
+    assert indice.buscar("Conceicao Acao")[0][0] == 1 and indice.buscar("Conceição Ação")[0][0] == 1
+    assert fonetica("conceicao") == fonetica("conceisao")
