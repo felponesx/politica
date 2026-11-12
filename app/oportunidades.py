@@ -2,6 +2,7 @@
 app/collectors/oportunidades.py (tarefas concursos, cursos-gratuitos, eventos-shows, eventos-patrocinios)."""
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from datetime import date, timedelta
 
@@ -77,13 +78,16 @@ def concursos(db: Session, dias: int = 120) -> dict | None:
 def cursos(db: Session) -> dict | None:
     itens = []
     for d in _dados(db, "curso"):
-        x = {k: d.get(k) for k in ("nome", "ofertante", "quem_faz", "tema", "carga_horaria", "modalidade", "inscricoes_abertas", "certificado", "url", "resumo")}
+        x = {k: d.get(k) for k in ("nome", "ofertante", "quem_faz", "tema", "carga_horaria", "modalidade", "inscricoes_abertas", "certificado", "url", "resumo", "lancado")}
+        if x.get("tema") and re.search(r"destaque|novidade|gratuit|mais vendid|lan[cç]amento|promo", x["tema"], re.I):
+            x["tema"] = None
         if x.get("resumo"):
             x["resumo"] = x["resumo"][:220]
         itens.append({k: v for k, v in x.items() if v not in (None, "")})
     if not itens:
         return None
-    itens.sort(key=lambda x: (not x.get("inscricoes_abertas", False), x.get("nome") or ""))
+    # os mais novos primeiro (a Escola Virtual informa o lançamento); sem data, em ordem alfabética
+    itens.sort(key=lambda x: (not x.get("inscricoes_abertas", False), "" if x.get("lancado") else "1", "".join(chr(255 - ord(c)) for c in x.get("lancado") or ""), x.get("nome") or ""))
     temas, ofertantes = defaultdict(int), defaultdict(int)
     for x in itens:
         temas[x.get("tema") or "Outros"] += 1

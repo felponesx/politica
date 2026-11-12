@@ -621,3 +621,18 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - `tse-resultados ano=2014|2010|2006` (banco SQLite à parte) + `python -m scripts.mapa_eleicao_copia <ano> site/dados` (código IBGE pelo código TSE dos mapas de 2018/2022; zeros à esquerda ignorados).
 - No Artifact (limite de 511 arquivos por versão) esses anos ficam só em 2 pacotes por ano, `p/el-<ano>-presidente.json` e `p/el-<ano>-estaduais.json`, com os valores dentro
   (sem `g/` nem chave nas partes s<N>). No repositório os pacotes seguem o padrão do `pacotes_copia` (um por cargo e turno).
+
+## Concursos e cursos · Eventos (12/11/2026)
+- Menus novos (`NAV`: `concursos` = "Concursos e cursos" com abas Concursos / Cursos gratuitos, `#/concursos/<aba>`; `eventos` = "Eventos", `#/eventos/<UF>`), código no bloco
+  "Concursos e cursos · Eventos" do site (`P.concursos`, `opConcursos`, `opCursos`, `P.eventos`, `evBrasil`, `evEstado`, `evPatro`). Coletores em `app/collectors/oportunidades.py`, leitura em
+  `app/oportunidades.py`, rotas `/concursos`, `/cursos`, `/eventos[?uf=]`, `/eventos-patrocinios[?uf=]` (`app/routers/oportunidades.py`). Tarefas: `concursos`, `cursos-gratuitos`, `eventos-shows`, `eventos-patrocinios`.
+- Concursos: busca do DOU (`in.gov.br/consulta/-/buscar/dou`, seção 3, bloco JSON `BuscaDouPortlet_params`, até 75 por página, janelas de 7 dias) + texto do artigo; só edital de ABERTURA de vaga
+  (`eh_abertura`: fora retificação/resultado/homologação/convocação, seleção de alunos, licitação). Vagas, salário, inscrições, cargos e banca só se escritos (`detalhes_edital`). Municipais pelo Querido Diário
+  (`api.queridodiario.org.br`, 503/520 em 12/11 → aviso). Estaduais (delegado da Polícia Civil etc.) NÃO entram: cada estado tem seu diário. Conferido em 12/11: 28 editais de abertura em 14 dias.
+- Cursos: Escola Virtual.Gov (`api-evg.enap.gov.br/v1/cursos`, 1.026 cursos, link `/cursos/<slug>`) + Sebrae (GraphQL da loja `loja.sebrae.com.br/graphql`, só preço 0: 489). Senai/Senac/Sesi/CRAS sem catálogo aberto:
+  só links em "Onde mais procurar" (`ONDE_PROCURAR`).
+- Eventos: PNCP `contratacoes/publicacao` modalidade 9 (inexigibilidade) filtrada por `SHOW`/`NAO_SHOW` no objeto; artista, festa e data só do texto (`ler_show`; `reprocessar_eventos` relê os gravados).
+  O PNCP responde devagar (≈10 s/página): dias em paralelo (`paralelos=6`). Valor homologado, senão estimado (marcado). Palco/som/estrutura não somam. 7 dias de nov/2026: 726 shows, R$ 64,8 mi.
+- Patrocínio: não há base aberta de patrocínio de festa de prefeitura. Lei Rouanet (SALIC `api.salic.cultura.gov.br/api/v1/projetos`, área 3 = Música, com captado > 0; o detalhe `/projetos/<PRONAC>` traz
+  `_embedded.captacoes` com o doador). Pessoa física só somada, sem nome. Outras áreas deixam a leitura em horas.
+- Artifact (limite de 511 arquivos): três pacotes só da tela — `p/concursos.json`, `p/eventos.json` e `p/eventos-uf.json` — sem chave nas partes s<N>.

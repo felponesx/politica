@@ -136,3 +136,16 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 - **Mata Atlântica**: PRODES (`inpe-prodes-mata-atlantica`, km² por ano, oficial) e MapBiomas Alerta (`mapbiomas-alertas-territorio`, hectares de alertas validados;
   precisa de `MAPBIOMAS_EMAIL`/`MAPBIOMAS_SENHA`) ficam em painéis separados no Meio ambiente, nunca somados. A série do PRODES na Mata Atlântica só fica ano a ano
   a partir de 2017 (antes há anos sem mapeamento e valores de mais de um ano): o gráfico começa ali.
+
+## Concursos, cursos gratuitos e eventos (12/11/2026) — conferido contra as fontes reais
+| Tema | Fonte | Situação | Observação |
+|---|---|---|---|
+| Concursos federais | DOU, busca `in.gov.br/consulta/-/buscar/dou` (seção 3) + página do artigo | funciona | só editais de abertura; 28 em 14 dias (TRT9, conselhos, universidades, IFs) |
+| Concursos municipais | Querido Diário (`api.queridodiario.org.br/gazettes`) | fora do ar em 12/11 (503/520) | o coletor tenta e avisa; nada é inventado |
+| Concursos estaduais | diários oficiais de cada estado | não feito | 27 diários diferentes, sem API comum |
+| Cursos | Escola Virtual.Gov (`api-evg.enap.gov.br/v1/cursos`) | funciona | 1.026 cursos, todos gratuitos com certificado |
+| Cursos | Sebrae (GraphQL da loja, preço 0) | funciona | 489 gratuitos |
+| Cursos | Senai, Senac, Sesi, CRAS | sem catálogo aberto | só links |
+| Shows pagos | PNCP `consulta/v1/contratacoes/publicacao`, modalidade 9 | funciona (lento) | a busca por texto do PNCP (`/api/search`) não responde |
+| Patrocínio | SALIC (Lei Rouanet) `api/v1/projetos` + detalhe com `captacoes` | funciona | filtros de valor ignorados pela API; área 3 (Música) |
+| Patrocínio de festa municipal | — | não existe em base aberta | dito na tela |

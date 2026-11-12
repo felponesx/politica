@@ -303,7 +303,7 @@ def coletar_cursos():
                     cats = [c.get("name") for c in it.get("categories") or [] if c.get("name")]
                     if preco != 0 or not any(re.search(r"curso|oficina|trilha|palestra", _sa(c)) for c in cats + [it.get("name") or ""]):
                         continue
-                    tema = next((c for c in cats if not re.search(r"curso|todos|online|presencial|default", _sa(c))), None)
+                    tema = next((c for c in cats if not re.search(r"curso|todos|online|presencial|default|destaque|novidade|gratuit|mais vendid|lancamento|promo", _sa(c))), None)
                     x = {"nome": _limpa(it.get("name")), "ofertante": "Sebrae", "quem_faz": "Sebrae", "tema": tema,
                          "modalidade": "Online" if any("online" in _sa(c) for c in cats) else None, "gratuito": True, "certificado": None,
                          "inscricoes_abertas": True, "url": f"https://loja.sebrae.com.br/{it.get('url_key')}", "uf": None, "abrangencia": "Brasil"}
@@ -398,48 +398,76 @@ def ler_show(objeto: str) -> dict:
     return out
 
 
-def coletar_eventos(dias: int = 60):
-    """Shows e apresentações artísticas contratados por prefeituras, estados e União (PNCP, inexigibilidade)."""
+def _shows_do_dia(cli, dia: date) -> tuple[list[dict], list[str]]:
+    """Todas as páginas de inexigibilidade publicadas no dia; devolve só as que são show/apresentação artística."""
+    achados, avisos = [], []
+    for pagina in range(1, 400):
+        p = {"dataInicial": dia.strftime("%Y%m%d"), "dataFinal": dia.strftime("%Y%m%d"), "codigoModalidadeContratacao": 9,
+             "pagina": pagina, "tamanhoPagina": 50}
+        try:
+            r = _get(cli, PNCP_PUB, params=p)
+            if r.status_code == 204:
+                break
+            d = r.json()
+        except Exception as e:  # noqa: BLE001
+            avisos.append(f"PNCP {dia} p{pagina}: {type(e).__name__}")
+            break
+        achados += [x for x in d.get("data") or [] if SHOW.search(x.get("objetoCompra") or "") and not NAO_SHOW.search(x.get("objetoCompra") or "")]
+        if pagina >= int(d.get("totalPaginas") or 1):
+            break
+    return achados, avisos
+
+
+def _evento_de(x: dict) -> dict:
+    obj = x.get("objetoCompra") or ""
+    org, uni = x.get("orgaoEntidade") or {}, x.get("unidadeOrgao") or {}
+    hom, est = x.get("valorTotalHomologado"), x.get("valorTotalEstimado")
+    esf = {"M": "municipal", "E": "estadual", "F": "federal", "D": "distrital"}.get(org.get("esferaId"), org.get("esferaId"))
+    e = {"objeto": obj[:600], "orgao": _limpa(org.get("razaoSocial")), "unidade": _limpa(uni.get("nomeUnidade")), "esfera": esf,
+         "uf": uni.get("ufSigla"), "municipio": uni.get("municipioNome"), "codigo_ibge": uni.get("codigoIbge"),
+         "valor": hom if hom else est, "valor_tipo": "homologado" if hom else ("estimado" if est else None),
+         "publicado": (x.get("dataPublicacaoPncp") or "")[:10], "processo": x.get("processo"),
+         "url": PNCP_LINK.format(org.get("cnpj"), x.get("anoCompra"), x.get("sequencialCompra")), "fonte": "PNCP"}
+    e.update(ler_show(obj))
+    return e
+
+
+def coletar_eventos(dias: int = 60, paralelos: int = 6):
+    """Shows e apresentações artísticas contratados por prefeituras, estados e União (PNCP, inexigibilidade).
+    O PNCP responde devagar (10 s por página em alguns dias): os dias são lidos em paralelo; a gravação é uma só."""
+    from concurrent.futures import ThreadPoolExecutor
     dias = int(dias)
     with registrar_coleta("oportunidades", "eventos", dias=dias) as (db, n), _cli(90) as cli:
         hoje = date.today()
-        dia = hoje - timedelta(days=dias)
-        while dia <= hoje:
-            for pagina in range(1, 400):
-                p = {"dataInicial": dia.strftime("%Y%m%d"), "dataFinal": dia.strftime("%Y%m%d"), "codigoModalidadeContratacao": 9,
-                     "pagina": pagina, "tamanhoPagina": 50}
-                try:
-                    r = _get(cli, PNCP_PUB, params=p)
-                    if r.status_code == 204:
-                        break
-                    d = r.json()
-                except Exception as e:  # noqa: BLE001
-                    n.avisos.append(f"PNCP {dia} p{pagina}: {type(e).__name__}")
-                    break
-                for x in d.get("data") or []:
-                    obj = x.get("objetoCompra") or ""
-                    if not SHOW.search(obj) or NAO_SHOW.search(obj):
-                        continue
-                    org, uni = x.get("orgaoEntidade") or {}, x.get("unidadeOrgao") or {}
-                    hom, est = x.get("valorTotalHomologado"), x.get("valorTotalEstimado")
-                    esf = {"M": "municipal", "E": "estadual", "F": "federal", "D": "distrital"}.get(org.get("esferaId"), org.get("esferaId"))
-                    e = {"objeto": obj[:600], "orgao": _limpa(org.get("razaoSocial")), "unidade": _limpa(uni.get("nomeUnidade")), "esfera": esf,
-                         "uf": uni.get("ufSigla"), "municipio": uni.get("municipioNome"), "codigo_ibge": uni.get("codigoIbge"),
-                         "valor": hom if hom else est, "valor_tipo": "homologado" if hom else ("estimado" if est else None),
-                         "publicado": (x.get("dataPublicacaoPncp") or "")[:10], "processo": x.get("processo"),
-                         "url": PNCP_LINK.format(org.get("cnpj"), x.get("anoCompra"), x.get("sequencialCompra")), "fonte": "PNCP"}
-                    e.update(ler_show(obj))
+        lista = [hoje - timedelta(days=k) for k in range(dias, -1, -1)]
+        with ThreadPoolExecutor(max_workers=max(1, int(paralelos))) as ex:
+            for achados, avisos in ex.map(lambda d: _shows_do_dia(cli, d), lista):
+                n.avisos += avisos
+                for x in achados:
+                    e = _evento_de(x)
                     upsert(db, Registro, {"fonte": "pncp", "tipo": "evento_show", "chave": x.get("numeroControlePNCP") or e["url"]},
-                           {"titulo": (e.get("artista") or obj)[:300], "uf": e["uf"], "ano": int(e["publicado"][:4]) if e["publicado"] else None,
+                           {"titulo": (e.get("artista") or e["objeto"])[:300], "uf": e["uf"], "ano": int(e["publicado"][:4]) if e["publicado"] else None,
                             "valor": e["valor"], "dados": e})
                     n += 1
                 db.commit()
-                if pagina >= int(d.get("totalPaginas") or 1):
-                    break
-            dia += timedelta(days=1)
         if not n.itens and n.avisos:
             raise RuntimeError("; ".join(n.avisos[:5]))
     return n.itens
+
+
+def reprocessar_eventos(db) -> int:
+    """Lê de novo artista, evento e data dos objetos já gravados (depois de melhorar ler_show), sem baixar nada."""
+    feitos = 0
+    for r in db.query(Registro).filter_by(fonte="pncp", tipo="evento_show"):
+        d = dict(r.dados or {})
+        for k in ("artista", "evento", "data_evento"):
+            d.pop(k, None)
+        d.update(ler_show(d.get("objeto") or ""))
+        r.dados = d
+        r.titulo = (d.get("artista") or d.get("objeto") or "")[:300]
+        feitos += 1
+    db.commit()
+    return feitos
 
 
 SALIC = "https://api.salic.cultura.gov.br/api/v1/projetos"

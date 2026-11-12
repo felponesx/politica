@@ -5818,7 +5818,7 @@ function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd)
   <div class="panel"><h2>Cidades que mais gastaram</h2>${table([["Cidade",x=>`${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div></div>
   <div class="rbanner mt small">${esc(D.aviso||"")}</div>`}}
 function evEstado(D){const L=D.itens||[];let q="";
- return{html:evKpis(D,(D.cidades||[]).length)+`<div class="panel mt"><h2>Cidades de ${esc(UF[D.uf]||D.uf)}</h2>${table([["Cidade",x=>esc(x.municipio)],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div>
+ return{html:evKpis(D,(D.cidades||[]).length)+`<div class="panel mt"><h2>Cidades de ${esc((UF[D.uf]||{}).nome||D.uf)}</h2>${table([["Cidade",x=>esc(x.municipio)],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div>
   <div class="panel mt"><h2>Todos os shows</h2><div class="filters"><input id="evQ" placeholder="Buscar cidade, artista ou festa" style="flex:1;min-width:160px" autocomplete="off"></div><div id="evL"></div></div><div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
   mount(){const pinta=()=>{const n=snapNorm(q),l=n?L.filter(x=>snapNorm([x.municipio,x.artista,x.evento,x.objeto].join(" ")).includes(n)):L;$("#evL").innerHTML=l.length?table(evCols,l):rvazio("Nada encontrado.")};pinta();$("#evQ").oninput=debounce(e=>{q=e.target.value.trim();pinta()},200)}}}
 function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
