@@ -18,7 +18,7 @@ import unicodedata
 
 from sqlalchemy import func, select
 
-from app import busca, ia_consultas, ia_local, processos
+from app import busca, ia_consultas, ia_esclarecer, ia_local, processos
 from app.ia_base import FONTE_CADASTRO, FONTE_COTA, brl, resposta as _resposta, entendi as _entendi, plural as _plural, cargo as _cargo
 from app.models import Despesa, Parlamentar, Registro
 
@@ -105,6 +105,7 @@ def _entidades(db, pergunta: str, norm: str) -> dict:
     # alguém foi citado pelo nome (palavra com inicial maiúscula sobrando) mas não achado inteiro: respostas GERAIS não valem,
     # senão "processos do Fulano Costa" viraria uma lista geral em vez de "não entendi"
     e["nome_citado"] = any(t in capitalizadas for t in resto)
+    e["resto"] = resto
     return e
 
 
@@ -218,12 +219,17 @@ def _perfil(db, e: dict) -> dict:
     achados = e["pessoas"]
     if len(achados) > 1:
         lista = [f"{n} ({_parlamentar(db, i).partido or 's/p'}-{_parlamentar(db, i).uf or '--'}, {_cargo(_parlamentar(db, i).casa)})" for i, n, _ in achados]
-        return _resposta(True, "perfil", "Achei mais de uma pessoa com esse nome: " + "; ".join(lista) + ". Diga o nome completo.", [FONTE_CADASTRO],
-                         {"opcoes": [n for _i, n, _s in achados]})
+        r = _resposta(True, "perfil", "Achei mais de uma pessoa com esse nome: " + "; ".join(lista) + ". Diga o nome completo.", [FONTE_CADASTRO],
+                      {"opcoes": [n for _i, n, _s in achados]}, None, [f"Quem é {n}?" for _i, n, _s in achados])
+        r["pergunta_de_volta"] = "De qual delas você quer saber?"
+        return r
     p = _parlamentar(db, achados[0][0])
     situacao = "em exercício" if p.em_exercicio else "fora de exercício na última coleta"
     texto = _entendi(e) + f"{p.nome}: {_cargo(p.casa)}, {p.partido or 'sem partido informado'}-{p.uf or '--'}, {situacao}."
-    return _resposta(True, "perfil", texto, [FONTE_CADASTRO], {"id": p.id, "nome": p.nome, "partido": p.partido, "uf": p.uf, "casa": p.casa})
+    r = _resposta(True, "perfil", texto, [FONTE_CADASTRO], {"id": p.id, "nome": p.nome, "partido": p.partido, "uf": p.uf, "casa": p.casa},
+                  None, ia_esclarecer.opcoes_da_pessoa(p.nome))
+    r["pergunta_de_volta"] = f"O que mais você quer saber sobre {p.nome}?"
+    return r
 
 
 def _processos_pessoa(db, e: dict) -> dict:
@@ -379,5 +385,11 @@ def responder(db, pergunta: str) -> dict:
             r["assistente"] = "modelo local"
             return r
     _guardar_sem_resposta(db, pergunta, norm)
-    return _resposta(False, None, "Não entendi essa pergunta. Posso responder, por exemplo:\n- " + "\n- ".join(EXEMPLOS)
-                     + "\nGuardei a pergunta para aprender um tipo novo.", [], {}, None, EXEMPLOS)
+    parecidos = []
+    if e["nome_citado"]:   # nome citado mas não achado inteiro: só SUGERE quem pode ser, não responde sobre ninguém
+        for i, n, _nota in _achar_pessoas(db, e["resto"]):
+            pl = _parlamentar(db, i)
+            parecidos.append({"nome": n, "partido": pl.partido, "uf": pl.uf, "casa": pl.casa})
+    flags = {"gasto": f_gasto, "part": f_part or f_atuacao, "proj": f_proj, "proc": f_proc, "cond": f_cond, "patr": f_patr, "hist": f_hist,
+             "emenda": f_emenda, "camp": f_camp, "comp": f_comp, "quant": f_quant and f_cargo}
+    return ia_esclarecer.esclarecer(e, flags, parecidos)

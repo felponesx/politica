@@ -153,3 +153,53 @@ def test_palavras_com_cedilha_sao_reconhecidas(dados):
     from app.ia_propria import _norm_kw
     assert _norm_kw("Doações, condenações e votações — ocupação") == "doacoes condenacoes e votacoes ocupacao"
     assert _ask("Nikolas Ferreira possui condenações?")["intencao"] == "processos_pessoa"
+
+
+# ---------- quando não sabe, pergunta de volta ----------
+
+def test_sem_dizer_de_quem_pergunta_de_quem_e_oferece_opcoes(dados):
+    r = _ask("Quanto gastou em 2024?")
+    assert not r["entendeu"] and r["entendi"]["ano"] == 2024 and "gastos da cota parlamentar" in r["entendi"]["assunto"]
+    assert "de qual parlamentar" in r["pergunta_de_volta"].lower() and any("de quem" in x for x in r["falta"])
+    assert "Quem mais gastou com a cota parlamentar em 2024?" in r["sugestoes"]
+    assert "Entendi:" in r["resposta"] and "Faltou:" in r["resposta"] and "/ia/cobertura" in r["resposta"]
+
+
+def test_nome_que_nao_bate_inteiro_so_sugere_nao_responde(dados):
+    r = _ask("Processos do Nikolas Ferreira Costa")
+    assert not r["entendeu"] and "Você quis dizer Nikolas Ferreira" in r["pergunta_de_volta"]
+    assert "Processos de Nikolas Ferreira" in r["sugestoes"]
+    assert "representação" not in r["resposta"].lower() and "caso" not in r["resposta"].lower().replace("caso a", "")   # nenhum fato sobre ninguém
+    assert "qual pessoa você quis dizer" in r["falta"]
+
+
+def test_nome_que_nao_existe_explica_o_que_o_banco_tem(dados):
+    r = _ask("Zyxwv Qwrtp")
+    assert not r["entendeu"] and "Não encontrei ninguém" in r["pergunta_de_volta"] and "deputado(a) ou senador(a)" in r["pergunta_de_volta"]
+    assert r["sugestoes"]
+
+
+def test_pergunta_sem_nada_reconhecido_pergunta_sobre_quem_ou_o_que(dados):
+    r = _ask("qual a cor do céu azul")
+    assert not r["entendeu"] and r["pergunta_de_volta"] == "Sobre quem ou sobre o quê você quer saber?" and len(r["sugestoes"]) >= 6
+    assert r["entendi"]["assunto"] == [] and len(r["falta"]) == 2
+
+
+def test_so_o_estado_ou_so_o_partido_pergunta_o_que_quer_saber(dados):
+    uf = _ask("Bahia")
+    assert uf["entendi"]["estado"] == "BA" and "o que você quer saber" in uf["pergunta_de_volta"] and any("senadores" in x for x in uf["sugestoes"])
+    partido = _ask("PL")
+    assert partido["entendi"]["partido"] == "PL" and "Quantos deputados do PL tem?" in partido["sugestoes"]
+
+
+def test_so_o_nome_mostra_quem_e_e_pergunta_o_que_mais(dados):
+    r = _ask("Maria da Silva")
+    assert r["entendeu"] and r["intencao"] == "perfil" and r["pergunta_de_volta"] == "O que mais você quer saber sobre Maria da Silva?"
+    assert "Quanto Maria da Silva gastou com a cota parlamentar?" in r["sugestoes"] and len(r["sugestoes"]) >= 6
+
+
+def test_pergunta_de_volta_chega_pela_api_e_a_pergunta_continua_guardada(dados):
+    r = TestClient(app).get("/ia/pergunta", params={"q": "Quanto gastou em 2024?"}).json()
+    assert r["pergunta_de_volta"] and r["falta"] and r["entendi"]["ano"] == 2024
+    with SessionLocal() as db:
+        assert db.scalar(select(Registro).where(Registro.fonte == "ia", Registro.tipo == "pergunta_sem_resposta")) is not None
