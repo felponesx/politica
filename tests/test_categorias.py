@@ -3,7 +3,11 @@ from datetime import datetime
 
 from fastapi.testclient import TestClient
 
-from app.categorias import CATEGORIAS, MAPA, categoria_de
+import json
+import re
+from pathlib import Path
+
+from app.categorias import CATEGORIAS, MAPA, SEM_COLETA_PROPRIA, categoria_de
 from app.collectors import TAREFAS
 from app.db import SessionLocal, criar_tabelas
 from app.main import app
@@ -17,11 +21,20 @@ def test_toda_tarefa_tem_categoria_escrita_de_proposito():
     assert not sorted(escritas - set(TAREFAS)), "categoria aponta para tarefa que não existe"
 
 
-def test_categorias_tem_id_unico_e_nome():
-    ids = [c["id"] for c in CATEGORIAS]
-    assert len(ids) == len(set(ids)) and all(c["nome"] for c in CATEGORIAS)
-    assert set(MAPA) <= set(ids)
-    assert categoria_de("nao-existe") == "outras"
+def test_categorias_sao_as_secoes_do_menu_do_site():
+    """Se alguém criar uma seção no site e esquecer a categoria (ou o contrário), o teste avisa."""
+    site = (Path(__file__).resolve().parents[1] / "site" / "index.html").read_text(encoding="utf-8")
+    nav = json.loads(re.search(r"const NAV=(\[.*?\]);", site, re.S).group(1))
+    secoes = {i: n for i, n in nav if i != "inicio"}
+    cats = {c["id"]: c["nome"] for c in CATEGORIAS}
+    assert set(cats) == set(secoes), (set(cats) ^ set(secoes))
+    assert all(cats[i] == secoes[i] for i in cats)
+
+
+def test_toda_secao_com_coleta_tem_tarefa_e_as_sem_coleta_estao_marcadas():
+    assert set(MAPA) == {c["id"] for c in CATEGORIAS}
+    assert {c for c in MAPA if not MAPA[c].split()} == SEM_COLETA_PROPRIA
+    assert categoria_de("nao-existe") == "relatorios"
 
 
 def test_status_traz_categoria_e_estado_rodando():
@@ -33,7 +46,7 @@ def test_status_traz_categoria_e_estado_rodando():
     dados = cliente.get("/fontes/status").json()
     assert {c["id"] for c in dados["categorias"]} == {c["id"] for c in CATEGORIAS}
     bcb = next(f for f in dados["fontes"] if f["tarefa"] == "bcb-series")
-    assert bcb["categoria"] == "economia" and bcb["rodando"] is True and bcb["estado"] == "rodando"
+    assert bcb["categoria"] == "indicadores" and bcb["rodando"] is True and bcb["estado"] == "rodando"
     assert all(f["estado"] in ("rodando", "aviso", "erro", "ok", "parado") for f in dados["fontes"])
     with SessionLocal() as db:   # falha sem coleta boa anterior também vira erro (vermelho), não "nunca rodou"
         db.add(Coleta(fonte="tse", tarefa="candidatos", parametros={"ano": "2099"}, status="erro", inicio=datetime.now(), fim=datetime.now(), erro="HTTP 503"))
