@@ -171,7 +171,10 @@ class Protecao(BaseHTTPMiddleware):
             h["Cache-Control"] = "no-store"
         elif caminho.startswith("/midia/"):
             h.setdefault("Cache-Control", "public, max-age=3600")
-        if caminho in ("/", "/painel"):
+        if caminho == "/":
             h["Content-Security-Policy"] = CSP_SITE
+            h["X-Frame-Options"] = "DENY"
+        elif caminho == "/painel":   # o painel manda a política própria (mais fechada); só entra a do site se faltar
+            h.setdefault("Content-Security-Policy", CSP_SITE)
             h["X-Frame-Options"] = "DENY"
         return resp

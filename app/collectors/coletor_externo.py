@@ -82,7 +82,7 @@ def _linhas_csv(texto: str) -> list:
 
 
 def _linhas_xml(dados: bytes, lista: str | None) -> list:
-    import xml.etree.ElementTree as ET
+    from defusedxml import ElementTree as ET   # o arquivo vem de fora: sem entidades perigosas
     raiz = ET.fromstring(dados)
     itens = raiz.findall(lista) if lista else list(raiz)
     out = []

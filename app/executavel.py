@@ -235,7 +235,7 @@ def instalar_inicio() -> int:
         print("Isto só vale no Windows.")
         return 1
     exe = sys.executable if getattr(sys, "frozen", False) else str(Path(__file__).resolve())
-    r = subprocess.run('schtasks /Create /TN "BRASILMAIS" /TR "\\"' + exe + '\\" --sem-navegador" /SC ONLOGON /F', shell=True)
+    r = subprocess.run(["schtasks", "/Create", "/TN", "BRASILMAIS", "/TR", f'"{exe}" --sem-navegador', "/SC", "ONLOGON", "/F"])   # sem shell: o caminho não vira comando
     print("BRASIL+ vai abrir sozinho quando você entrar no Windows." if r.returncode == 0 else "Não consegui criar a tarefa (rode como administrador).")
     return r.returncode
 

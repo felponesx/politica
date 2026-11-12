@@ -60,3 +60,13 @@ def test_rejeitar_tira_do_publico_e_tipo_invalido_e_recusado():
     assert oid not in [x["id"] for x in cliente.get("/oportunidades").json()]
     ruim = cliente.post("/oportunidades", json={**CORPO, "tipo": "palestra", "link": "https://escola.exemplo.gov.br/x-y-z"}, headers=h)
     assert ruim.status_code == 422
+
+
+def test_pendente_e_rejeitado_so_aparecem_com_o_token():
+    cliente = TestClient(app)
+    h = {"X-Admin-Token": TOKEN}
+    cliente.post("/oportunidades", json={**CORPO, "link": "https://escola.exemplo.gov.br/so-pendente"}, headers=h)
+    assert cliente.get("/oportunidades", params={"status": "pendente"}).status_code == 401   # sem token: nada de lista de pendentes
+    assert cliente.get("/oportunidades", params={"status": "pendente"}, headers={"X-Admin-Token": "errado-errado-errado-errado-errado"}).status_code == 401
+    ok = cliente.get("/oportunidades", params={"status": "pendente"}, headers=h)
+    assert ok.status_code == 200 and any(x["link"].endswith("so-pendente") for x in ok.json())

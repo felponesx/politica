@@ -10,7 +10,8 @@ def test_painel_abre_e_tem_politica_de_seguranca():
     r = cliente.get("/painel")
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("text/html")
-    assert "Content-Security-Policy" in r.headers and "default-src 'self'" in r.headers["Content-Security-Policy"]
+    csp = r.headers["Content-Security-Policy"]   # política própria do painel: nada de fora, só o próprio endereço
+    assert "default-src 'none'" in csp and "connect-src 'self'" in csp and "frame-ancestors 'none'" in csp
     assert "Coletas do BRASIL+" in r.text
 
 

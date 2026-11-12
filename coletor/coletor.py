@@ -103,8 +103,8 @@ def carregar_vinculos():
         nomes.add(v)
         for f in cfg.get("fonte", []):
             n = str(f.get("nome", ""))
-            if not NOME_OK.match(n) or not str(f.get("url", "")).startswith(("http://", "https://")):
-                avisar(f"  {p.name}: fonte ignorada (nome em minúsculas/números/-/_ e url http): {n!r}")
+            if not NOME_OK.match(n) or not str(f.get("url", "")).startswith("https://"):
+                avisar(f"  {p.name}: fonte ignorada (nome em minúsculas/números/-/_ e url https): {n!r}")
             elif n in fontes:
                 avisar(f"  {p.name}: fonte repetida ignorada: {n}")
             else:

@@ -113,4 +113,9 @@ PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"
 
 @app.get("/painel", include_in_schema=False)
 def painel():
-    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
+    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers={
+        "Cache-Control": "no-cache",
+        # só código e dados da própria página; nada de fora, nada de moldura, sem <base> nem formulário para outro site
+        "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+                                   "img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+        "X-Frame-Options": "DENY"})

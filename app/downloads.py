@@ -65,7 +65,7 @@ def sha256(caminho: Path) -> str:
 
 
 def md5(caminho: Path) -> str:
-    h = hashlib.md5()  # noqa: S324 - só confere o arquivo contra o .md5 que a Geofabrik publica, não protege nada
+    h = hashlib.md5(usedforsecurity=False)  # noqa: S324 - só confere o arquivo contra o .md5 que a Geofabrik publica, não protege nada
     with open(caminho, "rb") as f:
         for b in iter(lambda: f.read(1 << 22), b""):
             h.update(b)

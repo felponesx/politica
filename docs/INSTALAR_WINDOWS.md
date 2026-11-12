@@ -18,6 +18,17 @@ Os dados (banco, configuração, vínculos, arquivos originais captados) ficam e
 
 Diferença para a opção 2: o banco é SQLite. **Nomes** (políticos, municípios) a busca acha mesmo escritos errado, com ou sem acento (`Nicolas Ferrera` acha `Nikolas Ferreira`), nos dois bancos. **Textos** (leis, projetos, contratos): no PostgreSQL entende variações da palavra e ordena por relevância ("educação" acha "educacional"); no SQLite vira "contém o texto". Todo o resto funciona igual. Se a busca em textos for importante, use a opção 2 ou aponte o programa para um PostgreSQL com `DATABASE_URL=...` no `config.env`.
 
+
+## Atualizar o sistema (um comando)
+Toda vez que houver versao nova no GitHub, rode no PowerShell, na pasta do projeto:
+
+```
+powershell -ExecutionPolicy Bypass -File instalar\atualizar-e-subir.ps1
+```
+
+Ele baixa a versao nova, fecha o BRASIL+, gera o programa de novo e abre. As tabelas novas do banco (migracoes) sao criadas sozinhas na abertura.
+Seus dados (`C:\Users\<voce>\BRASILMais`) nao sao tocados.
+
 ## Opção 2: Docker + PostgreSQL (o que já estava)
 ## Antes (uma vez)
 Docker Desktop (aberto, "Engine running"), Python 3.12, Git e Tailscale instalados. O repositório clonado em `C:\Users\<você>\brasilplus`.

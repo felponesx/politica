@@ -39,9 +39,12 @@ def _ver(o: Oportunidade) -> dict:
 
 
 @router.get("/oportunidades", tags=["Cursos, eventos e concursos"])
-def listar(tipo: str | None = None, uf: str | None = None, status: str = "aprovado", db: Session = Depends(get_db)):
+def listar(request: Request, tipo: str | None = None, uf: str | None = None, status: str = "aprovado",
+           x_admin_token: str | None = Header(default=None), db: Session = Depends(get_db)):
     if status not in STATUS:
         raise HTTPException(422, "status inválido")
+    if status != "aprovado":   # pendente e rejeitado não são públicos: só o administrador vê
+        _exige_admin(request, x_admin_token or "")
     q = select(Oportunidade).where(Oportunidade.status == status).order_by(Oportunidade.inscricoes_ate.is_(None),
                                                                             Oportunidade.inscricoes_ate, Oportunidade.id.desc())
     if tipo:

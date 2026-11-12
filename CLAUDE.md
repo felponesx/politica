@@ -603,3 +603,12 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Programa único (`app/executavel.py`, `instalar/construir-tudo.ps1`, `docs/INSTALAR_WINDOWS.md`): .exe com SQLite embutido, API, painel, agendador e coletor; dados em ~/BRASILMais.
 - Testes: ao rodar a suíte inteira, outros testes deixam dados no mesmo banco; os testes de IA usam partido/estado/ano exclusivos (ZZT, RR, 2099) para não depender de banco limpo.
 
+
+
+## Revisão de segurança e subida em um comando (nov/2026)
+- Ferramentas: `bandit` (código) e `pip-audit` (dependências: nenhuma vulnerabilidade conhecida). Nenhum segredo nem arquivo `.env` real versionado; `.gitignore` agora também barra `config.env`, `*.env`, `destinos.toml`, `*.pem`, `*.key` (testes em `tests/test_seguranca_final.py`).
+- Corrigido: XML de fonte externa lido com `defusedxml` (`escandalos_fila`, `cpis`, `coletor_externo`); `schtasks` sem `shell=True` (`executavel.py`); MD5 do download marcado `usedforsecurity=False`; coletor do celular só aceita fonte `https://`; `/painel` com CSP própria fechada (`default-src 'none'`, só o próprio endereço; o middleware só põe a do site se faltar); `/oportunidades` só mostra pendente/rejeitado com o token do administrador.
+- Aceitos de propósito: FTP do CAGED (o servidor do governo só oferece FTP) e scripts `diag_*` (só diagnóstico, não rodam em produção); SQL por texto em `busca.py` usa só nomes de tabela/coluna fixos do código.
+- Ainda abertos: `GET /fontes-cadastradas` e `GET /ia/perguntas-sem-resposta` são leitura pública (a API só escuta 127.0.0.1/Tailscale; se for exposta, pôr token); o teste `test_nenhuma_rota_de_escrita_alem_das_conhecidas` reprova por defeito do próprio teste (lista de rotas chega vazia) e as rotas de escrita novas (`/fontes-cadastradas`, `/oportunidades`) precisam entrar nele quando for consertado.
+- Subir no PC em um comando: `powershell -ExecutionPolicy Bypass -File instalar\atualizar-e-subir.ps1` (git pull → fecha o programa → gera → abre; dados em `~/BRASILMais` intactos; migrações rodam na abertura).
+- Cursos, eventos e concursos: tabela `oportunidades` (migração 0016), `GET/POST /oportunidades`, `/aprovar` e `/rejeitar`, seção no painel. Falta a aba no site público.
