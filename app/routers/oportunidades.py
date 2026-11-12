@@ -23,10 +23,23 @@ def _uf(uf: str | None) -> str | None:
     return s
 
 
+ATOS_OK = ("abertura", "processo_seletivo", "convocacao", "nomeacao", "homologacao", "retificacao", "prorrogacao")
+
+
 @router.get("/concursos", tags=["Concursos e cursos"])
-def concursos(db: Session = Depends(get_db)):
-    """Editais de abertura de concurso público e processo seletivo (Diário Oficial da União e diários das prefeituras)."""
-    return _ou_404(memo(("concursos",), lambda: op.concursos(db)), "concursos")
+def concursos(ato: str | None = Query(None, description="convocacao, nomeacao, homologacao, retificacao, prorrogacao; vazio = aberturas"),
+              db: Session = Depends(get_db)):
+    """Concursos e processos seletivos: DOU (federal), diários estaduais (onde há coletor) e diários das prefeituras (Querido Diário),
+    com a situação de cada fonte em `cobertura`."""
+    if ato and ato not in ATOS_OK:
+        raise HTTPException(422, "Tipo de ato inválido.")
+    return _ou_404(memo(("concursos", ato), lambda: op.concursos(db, ato=ato)), "concursos")
+
+
+@router.get("/concursos/cobertura", tags=["Concursos e cursos"])
+def concursos_cobertura(db: Session = Depends(get_db)):
+    """Situação de cada fonte de concursos: os 27 diários estaduais (coletor, última coleta bem-sucedida, erro) e o Querido Diário."""
+    return op.cobertura_concursos(db)
 
 
 @router.get("/cursos", tags=["Concursos e cursos"])

@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (oportunidades, stj, tse_relatorias, saude_mun, ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
+from app.collectors import (oportunidades, concursos_estaduais, stj, tse_relatorias, saude_mun, ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
                             municipios, tse_financas, obrasgov, pgfn, pncp,
                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
@@ -29,6 +29,9 @@ _TAREFAS_BRUTAS = {
     "cursos-gratuitos": oportunidades.coletar_cursos,
     "eventos-shows": oportunidades.coletar_eventos,
     "eventos-patrocinios": oportunidades.coletar_patrocinios,
+    "concursos-estaduais": concursos_estaduais.coletar_concursos_estaduais,
+    "concursos-municipais": oportunidades.coletar_concursos_municipais,
+    "eventos-pendencias": oportunidades.coletar_eventos_pendencias,
     "ibama-multas": ibama.coletar_ibama_multas,
     "inpe-queimadas": queimadas.coletar_queimadas,
     "tcu-contas-irregulares": tcu.coletar_tcu_irregulares,

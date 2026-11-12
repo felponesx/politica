@@ -26,11 +26,12 @@ ONDE_PROCURAR = [
     {"nome": "CRAS da sua cidade", "url": "https://aplicacoes.mds.gov.br/sagi/cras/", "obs": "Cursos e oficinas gratuitas do serviço de assistência social do município."},
     {"nome": "Pronatec / Novos Caminhos (MEC)", "url": "https://www.gov.br/mec/pt-br/novos-caminhos", "obs": "Cursos técnicos e de qualificação gratuitos em institutos federais e redes estaduais."},
 ]
-AVISO_EVENTOS = ("Shows e apresentações artísticas que prefeituras, governos estaduais e órgãos federais contrataram sem licitação "
-                 "(inexigibilidade: contratação de artista, Lei 14.133, art. 74, II), publicados no Portal Nacional de Contratações "
-                 "Públicas (PNCP). Valor = valor homologado; sem ele, o estimado (marcado). Artista, nome da festa e data só quando estão "
-                 "escritos no objeto do contrato. Palco, som, segurança e outros gastos da festa são contratados à parte e não estão somados. "
-                 "Contratação publicada não prova que o show aconteceu nem indica irregularidade.")
+AVISO_EVENTOS = ("Contratações de eventos publicadas no Portal Nacional de Contratações Públicas (PNCP) por prefeituras, governos estaduais e "
+                 "órgãos federais: cachês de artistas (inexigibilidade, Lei 14.133, art. 74, II) e, quando coletados, palco, som, iluminação, "
+                 "segurança, estrutura e produção. A soma só leva o valor HOMOLOGADO de contratações distintas: valor só estimado, teto de ata "
+                 "de registro de preços e possíveis republicações do mesmo contrato ficam fora da soma (mostrados à parte). Contrato com vários "
+                 "itens (palco + som, por exemplo) não é dividido. Artista, festa e data só quando escritos no objeto. Contratação publicada "
+                 "não prova que o evento aconteceu nem indica irregularidade.")
 AVISO_PATROCINIO = ("Patrocínio de festa da prefeitura por empresas não é publicado em base aberta. O que existe é a Lei Rouanet: "
                     "projetos culturais (festivais, festas, feiras, shows) e as empresas que patrocinaram, com abatimento no imposto de renda "
                     "(sistema SALIC do Ministério da Cultura). Pessoas físicas aparecem só somadas, sem nome.")
@@ -51,20 +52,59 @@ def _ultima(db: Session, tarefa: str) -> dict | None:
     return {"quando": (c.fim or c.inicio).isoformat() if (c.fim or c.inicio) else None, "status": c.status, "aviso": c.erro}
 
 
-def concursos(db: Session, dias: int = 120) -> dict | None:
+ABERTURAS = ("abertura", "processo_seletivo")
+_CAMPOS_CONC = ("titulo", "orgao", "unidade", "vinculo", "esfera", "uf", "municipio", "tipo", "ato", "area", "publicado", "coletado_em", "url", "fonte",
+                "vagas", "salario_max", "inscricoes_inicio", "inscricoes_fim", "cargos", "banca", "escolaridade", "resumo", "incompleto", "trecho_apenas")
+
+
+def _situacao(x: dict, hoje: str) -> str:
+    if x.get("inscricoes_fim") and x["inscricoes_fim"] < hoje:
+        return "inscrições encerradas"
+    if x.get("inscricoes_inicio") and x["inscricoes_inicio"] <= hoje <= (x.get("inscricoes_fim") or hoje):
+        return "inscrições abertas"
+    if x.get("inscricoes_inicio") and x["inscricoes_inicio"] > hoje:
+        return "inscrições ainda não começaram"
+    return "ver edital"
+
+
+def cobertura_concursos(db: Session) -> dict:
+    """Situação de cada fonte: 27 estados (coletor, última coleta boa, erro) e os diários das prefeituras (Querido Diário)."""
+    estados = {}
+    for r in db.execute(select(Registro.chave, Registro.dados).where(Registro.fonte == "doe", Registro.tipo == "concurso_uf_status")):
+        d = r.dados or {}
+        estados[r.chave] = {k: d.get(k) for k in ("diario", "url", "status", "motivo", "erro", "ultima_tentativa", "ultima_sucesso", "itens_ultima_sucesso")}
+    qd = db.execute(select(Registro.dados).where(Registro.fonte == "querido_diario", Registro.tipo == "concursos_status")).scalar_one_or_none() or {}
+    cob = db.execute(select(Registro.dados).where(Registro.fonte == "querido_diario", Registro.tipo == "cobertura")).scalar_one_or_none() or {}
+    return {"estados": estados, "estados_com_coletor": sum(1 for e in estados.values() if e.get("status") != "sem_coletor"),
+            "municipios": {k: qd.get(k) for k in ("status", "erro", "quando", "ultima_sucesso", "itens_ultima_sucesso")} | {
+                "monitorados": cob.get("monitorados"), "sem_cobertura": cob.get("sem_cobertura"), "cobertura_em": cob.get("quando")},
+            "aviso": "Estado sem coletor ou fonte fora do ar não quer dizer que não há concurso: quer dizer que ainda não conseguimos ler."}
+
+
+def concursos(db: Session, dias: int = 120, ato: str | None = None) -> dict | None:
+    """Sem `ato`: editais de abertura e processos seletivos. Com `ato` (convocacao, nomeacao, homologacao, retificacao, prorrogacao):
+    só aquele tipo. Atos "outro" (menções de passagem) ficam guardados e não aparecem."""
+    from app.collectors.oportunidades import ATOS
     hoje = date.today().isoformat()
     corte = (date.today() - timedelta(days=dias)).isoformat()
-    itens = []
+    itens, contagem = [], defaultdict(int)
     for d in _dados(db, "concurso"):
         if (d.get("publicado") or "") < corte:
             continue
-        x = {k: d.get(k) for k in ("titulo", "orgao", "vinculo", "esfera", "uf", "municipio", "tipo", "area", "publicado", "url", "fonte",
-                                   "vagas", "salario_max", "inscricoes_inicio", "inscricoes_fim", "cargos", "banca", "escolaridade", "resumo")}
-        x["situacao"] = ("inscrições encerradas" if x.get("inscricoes_fim") and x["inscricoes_fim"] < hoje else
-                         "inscrições abertas" if x.get("inscricoes_inicio") and x["inscricoes_inicio"] <= hoje <= (x.get("inscricoes_fim") or hoje) else
-                         "inscrições ainda não começaram" if x.get("inscricoes_inicio") and x["inscricoes_inicio"] > hoje else "ver edital")
+        a = d.get("ato") or "abertura"  # o DOU só grava aberturas
+        if a == "outro":
+            continue
+        contagem[a] += 1
+        if (ato and a != ato) or (not ato and a not in ABERTURAS):
+            continue
+        x = {k: d.get(k) for k in _CAMPOS_CONC}
+        x["ato"] = a
+        x["ato_nome"] = ATOS.get(a, a)
+        x["situacao"] = _situacao(x, hoje)
+        if x.get("resumo"):
+            x["resumo"] = x["resumo"][:300]
         itens.append({k: v for k, v in x.items() if v not in (None, [], "")})
-    if not itens:
+    if not itens and not contagem:
         return None
     itens.sort(key=lambda x: x.get("publicado") or "", reverse=True)
     areas, esferas = defaultdict(int), defaultdict(int)
@@ -72,7 +112,8 @@ def concursos(db: Session, dias: int = 120) -> dict | None:
         areas[x.get("area") or "Outras áreas"] += 1
         esferas[x.get("esfera") or "?"] += 1
     return {"total": len(itens), "itens": itens, "areas": dict(sorted(areas.items(), key=lambda a: -a[1])), "esferas": dict(esferas),
-            "periodo_dias": dias, "coleta": _ultima(db, "concursos"), "aviso": AVISO_CONCURSOS}
+            "atos": {k: {"nome": ATOS.get(k, k), "qtd": v} for k, v in sorted(contagem.items(), key=lambda a: -a[1])},
+            "periodo_dias": dias, "coleta": _ultima(db, "concursos"), "cobertura": cobertura_concursos(db), "aviso": AVISO_CONCURSOS}
 
 
 def cursos(db: Session) -> dict | None:
@@ -96,7 +137,11 @@ def cursos(db: Session) -> dict | None:
             "onde_procurar": ONDE_PROCURAR, "coleta": _ultima(db, "cursos"), "aviso": AVISO_CURSOS}
 
 
-_CAMPOS_EVENTO = ("artista", "evento", "data_evento", "municipio", "uf", "esfera", "orgao", "valor", "valor_tipo", "publicado", "url", "objeto")
+_CAMPOS_EVENTO = ("artista", "evento", "data_evento", "municipio", "uf", "esfera", "orgao", "valor", "valor_tipo", "publicado", "url", "objeto",
+                  "categoria", "registro_precos", "possivel_duplicata", "modalidade")
+CATEGORIAS_NOME = {"cache": "Cachê artístico", "palco": "Palco", "som": "Som", "iluminacao": "Iluminação", "seguranca": "Segurança",
+                   "estrutura": "Estrutura (tendas, banheiros, gradis, geradores…)", "producao": "Produção do evento",
+                   "varios": "Vários itens no mesmo contrato"}
 
 
 def _evento(d: dict, objeto: int = 160) -> dict:
@@ -108,30 +153,82 @@ def _evento(d: dict, objeto: int = 160) -> dict:
         x["objeto"] = x["objeto"][:objeto]
     if x.get("esfera"):
         x.pop("orgao", None)
-    return {k: v for k, v in x.items() if v not in (None, "")}
+    if x.get("categoria") == "cache":
+        x.pop("categoria", None)  # o padrão
+    if not x.get("registro_precos"):
+        x.pop("registro_precos", None)
+    if x.get("modalidade") == "Inexigibilidade":
+        x.pop("modalidade", None)
+    return {k: v for k, v in x.items() if v not in (None, "", False)}
+
+
+def _marcar_duplicatas(todos: list[dict]) -> None:
+    """Mesmo órgão, mesmo objeto e mesmo valor em registros diferentes do PNCP (republicação) contam uma vez só: os outros ficam
+    `possivel_duplicata` e saem das somas (continuam na lista)."""
+    vistos = {}
+    for d in sorted(todos, key=lambda d: (d.get("publicado") or "", d.get("numero_controle") or "")):
+        k = (d.get("cnpj_orgao") or d.get("orgao"), re.sub(r"\W+", " ", (d.get("objeto") or "").lower()).strip()[:200], round(float(d.get("valor") or 0), 2))
+        if k[1] and k in vistos:
+            d["possivel_duplicata"] = True
+        else:
+            vistos[k] = True
+
+
+def conta(d: dict) -> bool:
+    """O valor entra na soma só se for contratação de fato: homologado, fora de ata de registro de preços e sem duplicata."""
+    return d.get("valor_tipo") == "homologado" and d.get("registro_precos") is not True and not d.get("possivel_duplicata") and bool(d.get("valor"))
+
+
+def _somas(sel: list[dict]) -> dict:
+    cat = defaultdict(lambda: {"qtd": 0, "valor_contratado": 0.0})
+    fora = {"estimado_sem_homologacao": 0.0, "registro_precos_teto": 0.0, "possiveis_duplicatas": 0.0}
+    for d in sel:
+        c = cat[d.get("categoria") or "cache"]
+        c["qtd"] += 1
+        v = float(d.get("valor") or 0)
+        if conta(d):
+            c["valor_contratado"] += v
+        elif d.get("possivel_duplicata"):
+            fora["possiveis_duplicatas"] += v
+        elif d.get("registro_precos") is True:
+            fora["registro_precos_teto"] += v
+        else:
+            fora["estimado_sem_homologacao"] += v
+    return {"valor_total": round(sum(c["valor_contratado"] for c in cat.values()), 2),
+            "por_categoria": {k: {"nome": CATEGORIAS_NOME.get(k, k), "qtd": v["qtd"], "valor_contratado": round(v["valor_contratado"], 2)} for k, v in cat.items()},
+            "fora_da_soma": {k: round(v, 2) for k, v in fora.items()}}
+
+
+def pendencias_pncp(db: Session) -> dict:
+    pend = [d for (d,) in db.execute(select(Registro.dados).where(Registro.fonte == "pncp", Registro.tipo == "pncp_pendencia")) if d]
+    abertas = [p for p in pend if not p.get("resolvida")]
+    return {"abertas": len(abertas), "resolvidas": len(pend) - len(abertas), "dias_com_falha": sorted({p["dia"] for p in abertas})}
 
 
 def eventos(db: Session, uf: str | None = None) -> dict | None:
-    todos = _dados(db, "evento_show", ("pncp",))
+    # sem categoria = o objeto não é contratação de evento (ex.: ECAD); continua guardado, mas não entra
+    todos = [d for d in _dados(db, "evento_show", ("pncp",)) if d.get("categoria") or "categorias" not in d]
     if not todos:
         return None
+    _marcar_duplicatas(todos)
     datas = sorted(d.get("publicado") for d in todos if d.get("publicado"))
-    base = {"periodo": {"de": datas[0], "ate": datas[-1]} if datas else None, "coleta": _ultima(db, "eventos"), "aviso": AVISO_EVENTOS}
+    base = {"periodo": {"de": datas[0], "ate": datas[-1]} if datas else None, "coleta": _ultima(db, "eventos"), "aviso": AVISO_EVENTOS,
+            "pendencias": pendencias_pncp(db), "categorias_nome": CATEGORIAS_NOME}
     if uf:
         sel = [d for d in todos if d.get("uf") == uf]
         cid = defaultdict(lambda: {"qtd": 0, "valor": 0.0})
         for d in sel:
             c = cid[d.get("municipio") or "(estado)"]
             c["qtd"] += 1
-            c["valor"] += float(d.get("valor") or 0)
+            c["valor"] += float(d.get("valor") or 0) if conta(d) else 0
         itens = sorted((_evento(d) for d in sel), key=lambda x: -(x.get("valor") or 0))
-        return {**base, "uf": uf, "total": len(itens), "valor_total": round(sum(x.get("valor") or 0 for x in itens), 2), "itens": itens,
+        return {**base, "uf": uf, "total": len(itens), **_somas(sel), "itens": itens,
                 "cidades": sorted(({"municipio": k, **v} for k, v in cid.items()), key=lambda c: -c["valor"])}
     por_uf = {u: {"qtd": 0, "valor": 0.0} for u in UFS}
     por_esfera = defaultdict(lambda: {"qtd": 0, "valor": 0.0})
     cid = defaultdict(lambda: {"qtd": 0, "valor": 0.0})
     for d in todos:
-        v = float(d.get("valor") or 0)
+        v = float(d.get("valor") or 0) if conta(d) else 0.0
         if d.get("uf") in por_uf:
             por_uf[d["uf"]]["qtd"] += 1
             por_uf[d["uf"]]["valor"] += v
@@ -142,10 +239,11 @@ def eventos(db: Session, uf: str | None = None) -> dict | None:
             c["qtd"] += 1
             c["valor"] += v
     hoje = date.today().isoformat()
-    proximos = sorted((d for d in todos if (d.get("data_evento") or "") >= hoje), key=lambda d: d["data_evento"])[:60]
-    return {**base, "total": len(todos), "valor_total": round(sum(float(d.get("valor") or 0) for d in todos), 2),
-            "com_artista": sum(1 for d in todos if d.get("artista")), "cidades_total": len(cid), "por_uf": por_uf, "por_esfera": dict(por_esfera),
-            "maiores": [_evento(d) for d in sorted(todos, key=lambda d: -float(d.get("valor") or 0))[:60]],
+    proximos = sorted((d for d in todos if (d.get("data_evento") or "") >= hoje and (d.get("categoria") or "cache") == "cache"),
+                      key=lambda d: d["data_evento"])[:60]
+    return {**base, "total": len(todos), **_somas(todos), "com_artista": sum(1 for d in todos if d.get("artista")), "cidades_total": len(cid),
+            "por_uf": por_uf, "por_esfera": dict(por_esfera),
+            "maiores": [_evento(d) for d in sorted((d for d in todos if conta(d)), key=lambda d: -float(d.get("valor") or 0))[:60]],
             "proximos": [_evento(d) for d in proximos],
             "cidades": [{"municipio": k[0], "uf": k[1], **v} for k, v in sorted(cid.items(), key=lambda a: -a[1]["valor"])[:60]]}
 

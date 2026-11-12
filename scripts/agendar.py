@@ -35,7 +35,7 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
     com_chave = bool(settings.transparencia_api_key)
     ta, tt = _trimestre_anterior(hoje)
     g = {
-        "diario": [("concursos", {"dias": 7}), ("eventos-shows", {"dias": 5}), ("camara-votacoes", recente), ("senado-votacoes", recente), ("camara-proposicoes", recente),
+        "diario": [("concursos", {"dias": 7}), ("eventos-shows", {"dias": 3, "modalidades": "9,8,6,12"}), ("eventos-pendencias", {}), ("concursos-estaduais", {"dias": 7}), ("concursos-municipais", {"dias": 7}), ("camara-votacoes", recente), ("senado-votacoes", recente), ("camara-proposicoes", recente),
                    ("pncp-contratos", {"inicio": hoje - timedelta(days=2), "fim": hoje}),
                    ("legislacao-normas", {"ano": ano}), ("camara-despesas", {"ano": ano}),
                    ("camara-proposicoes-detalhe", {"ano": ano}), ("bcb-series", {"anos": 2}),
