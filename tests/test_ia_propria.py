@@ -131,3 +131,18 @@ def test_lista_de_perguntas_sem_resposta_e_o_painel_mostra(dados):
     lista = TestClient(app).get("/ia/perguntas-sem-resposta").json()
     assert lista[0]["vezes"] == 2 and "céu" in lista[0]["pergunta"] and len(lista) == 2
     assert "/ia/perguntas-sem-resposta" in TestClient(app).get("/painel").text
+
+
+def test_nome_com_palavra_a_mais_nao_vira_outra_pessoa(dados):
+    """"Nikolas Ferreira Costa" não pode ser respondido como "Nikolas Ferreira": a palavra com inicial maiúscula é parte do nome."""
+    r = _ask("Processos do Nikolas Ferreira Costa")
+    assert not r["entendeu"]
+    assert _ask("Processos do Nikolas Ferreira")["intencao"] == "processos_pessoa"
+
+
+def test_diz_quem_entendeu_quando_o_nome_nao_e_igual(dados):
+    aproximado = _ask("Quanto o Nicolas Ferrera gastou em 2024?")["resposta"]
+    exato = _ask("Quanto o Nikolas Ferreira gastou em 2024?")["resposta"]
+    assert aproximado.startswith("Entendi que você se refere a Nikolas Ferreira.")
+    assert not exato.startswith("Entendi")
+    assert _ask("Processos do Nicolas Ferrera")["resposta"].startswith("Entendi que você se refere a Nikolas Ferreira.")

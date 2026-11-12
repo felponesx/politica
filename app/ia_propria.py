@@ -58,6 +58,12 @@ def brl(v: float) -> str:
     return "R$ " + f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
+def _entendi(e: dict) -> str:
+    """Se o nome achado não é igual ao digitado, diz quem foi entendido (a pessoa pode corrigir)."""
+    _i, nome, nota = e["pessoas"][0]
+    return f"Entendi que você se refere a {nome}. " if nota < 0.97 else ""
+
+
 def _plural(n: int, singular: str, plural: str) -> str:
     return f"{n} {singular if n == 1 else plural}"
 
@@ -103,22 +109,31 @@ def _entidades(db, pergunta: str, norm: str) -> dict:
             break
 
     resto = [t for t in sobra.split() if t not in PALAVRAS_DA_PERGUNTA and not t.isdigit()]
-    e["pessoas"] = _achar_pessoas(db, resto)
+    palavras_originais = re.findall(r"[A-Za-zÀ-ú']+", pergunta)
+    capitalizadas = {normalizar(w) for i, w in enumerate(palavras_originais) if i > 0 and w[:1].isupper() and (not w.isupper() or len(w) > 3)}
+    e["pessoas"] = _achar_pessoas(db, resto, capitalizadas)
     return e
 
 
-def _achar_pessoas(db, resto: list[str]) -> list[tuple[int, str, float]]:
-    """Parlamentares parecidos com o que sobrou da pergunta. Tenta o resto inteiro e, se não achar, trechos menores."""
+def _achar_pessoas(db, resto: list[str], capitalizadas: set[str] | None = None, so_completo: bool = False) -> list[tuple[int, str, float]]:
+    """Parlamentares parecidos com o que sobrou da pergunta. Tenta o resto inteiro e, se não achar, trechos menores.
+    Um trecho menor só vale se as palavras deixadas de fora NÃO foram escritas com inicial maiúscula (seriam parte do nome:
+    "Nikolas Ferreira Costa" não pode virar "Nikolas Ferreira"). `so_completo` exige o resto inteiro."""
     if not resto:
         return []
     indice = busca._indice(db, "parlamentares", "nome")
     if indice is None:
         return []
     n = len(resto)
+    capitalizadas = capitalizadas or set()
     for tamanho in range(min(n, 5), 0, -1):
+        if so_completo and tamanho != n:
+            continue
         for ini in range(0, n - tamanho + 1):
             trecho = resto[ini:ini + tamanho]
             if tamanho == 1 and len(trecho[0]) < 4:
+                continue
+            if any(t in capitalizadas for t in resto[:ini] + resto[ini + tamanho:]):   # deixaria de fora parte de um nome
                 continue
             achados = indice.buscar(" ".join(trecho), 4)
             if achados:
@@ -181,7 +196,7 @@ def _gasto_pessoa(db, e: dict) -> dict:
     linhas = db.execute(q).all()
     if not linhas:
         quando = f" em {e['ano']}" if e["ano"] else ""
-        return _resposta(True, "gasto_pessoa", f"Não encontrei despesas da cota de {p.nome}{quando} no banco.", [FONTE_COTA])
+        return _resposta(True, "gasto_pessoa", _entendi(e) + f"Não encontrei despesas da cota de {p.nome}{quando} no banco.", [FONTE_COTA])
     if e["ano"]:
         ano, total, mes = linhas[0]
         texto = f"{p.nome} ({p.partido or 's/p'}-{p.uf or '--'}) gastou {brl(total)} com a cota parlamentar em {ano}."
@@ -191,7 +206,7 @@ def _gasto_pessoa(db, e: dict) -> dict:
         texto = (f"{p.nome} ({p.partido or 's/p'}-{p.uf or '--'}), cota parlamentar por ano: "
                  + "; ".join(f"{a}: {brl(t)}" for a, t, _m in recentes) + f". Total nos anos mostrados: {brl(sum(t for _a, t, _m in recentes))}.")
         aviso = None
-    return _resposta(True, "gasto_pessoa", texto, [FONTE_COTA], {"parlamentar": p.nome, "por_ano": [{"ano": a, "total": round(t, 2)} for a, t, _m in linhas]}, aviso)
+    return _resposta(True, "gasto_pessoa", _entendi(e) + texto, [FONTE_COTA], {"parlamentar": p.nome, "por_ano": [{"ano": a, "total": round(t, 2)} for a, t, _m in linhas]}, aviso)
 
 
 def _quantos(db, e: dict, casa: str | None) -> dict:
@@ -214,7 +229,7 @@ def _perfil(db, e: dict) -> dict:
                          {"opcoes": [n for _i, n, _s in achados]})
     p = _parlamentar(db, achados[0][0])
     situacao = "em exercício" if p.em_exercicio else "fora de exercício na última coleta"
-    texto = f"{p.nome}: {_cargo(p.casa)}, {p.partido or 'sem partido informado'}-{p.uf or '--'}, {situacao}."
+    texto = _entendi(e) + f"{p.nome}: {_cargo(p.casa)}, {p.partido or 'sem partido informado'}-{p.uf or '--'}, {situacao}."
     return _resposta(True, "perfil", texto, [FONTE_CADASTRO], {"id": p.id, "nome": p.nome, "partido": p.partido, "uf": p.uf, "casa": p.casa})
 
 
@@ -228,7 +243,7 @@ def _processos_pessoa(db, e: dict) -> dict:
     else:
         texto = (f"Sobre {p.nome}, nas fontes que o BRASIL+ tem: {n_rep} representação(ões) por quebra de decoro na Câmara, "
                  f"{n_reg} registro(s) de candidatura com situação a destacar e {n_caso} caso(s) curado(s).")
-    texto += " Não existe base aberta de inquéritos e ações penais por nome; o que não está nessas fontes não aparece."
+    texto = _entendi(e) + texto + " Não existe base aberta de inquéritos e ações penais por nome; o que não está nessas fontes não aparece."
     return _resposta(True, "processos_pessoa", texto, ["Câmara dos Deputados (representações), TSE (registro de candidatura), casos curados do BRASIL+."],
                      {"parlamentar": p.nome, "representacoes": n_rep, "registros": n_reg, "casos": n_caso}, processos.AVISO)
 
@@ -263,7 +278,7 @@ def _com_sugestao(db, e: dict, sug: dict) -> dict:
     novo = dict(e)
     if sug["nome"]:
         resto = [t for t in normalizar(sug["nome"]).split() if t not in PALAVRAS_DA_PERGUNTA]
-        novo["pessoas"] = _achar_pessoas(db, resto) or e["pessoas"]
+        novo["pessoas"] = _achar_pessoas(db, resto, None, so_completo=True) or e["pessoas"]
     if sug["uf"]:
         novo["uf"] = sug["uf"]
     if sug["ano"]:
