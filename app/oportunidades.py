@@ -157,6 +157,8 @@ def _evento(d: dict, objeto: int = 160) -> dict:
         x.pop("categoria", None)  # o padrão
     if not x.get("registro_precos"):
         x.pop("registro_precos", None)
+    if valor_suspeito(d):
+        x["valor_a_conferir"] = True
     if x.get("modalidade") == "Inexigibilidade":
         x.pop("modalidade", None)
     return {k: v for k, v in x.items() if v not in (None, "", False)}
@@ -174,20 +176,34 @@ def _marcar_duplicatas(todos: list[dict]) -> None:
             vistos[k] = True
 
 
+LIMITE_SUSPEITO = {"cache": 5e6}  # cachê acima de R$ 5 mi; qualquer outro tipo acima de R$ 50 mi
+LIMITE_SUSPEITO_PADRAO = 50e6
+
+
+def valor_suspeito(d: dict) -> bool:
+    """Valor provavelmente digitado errado na fonte (ex.: camarote para 3 mil pessoas com R$ 399.990.000 no PNCP). Não é corrigido:
+    aparece com "valor a conferir" e sai da soma."""
+    v = float(d.get("valor") or 0)
+    return v > LIMITE_SUSPEITO.get(d.get("categoria") or "cache", LIMITE_SUSPEITO_PADRAO)
+
+
 def conta(d: dict) -> bool:
-    """O valor entra na soma só se for contratação de fato: homologado, fora de ata de registro de preços e sem duplicata."""
-    return d.get("valor_tipo") == "homologado" and d.get("registro_precos") is not True and not d.get("possivel_duplicata") and bool(d.get("valor"))
+    """O valor entra na soma só se for contratação de fato: homologado, fora de ata de registro de preços, sem duplicata e sem valor a conferir."""
+    return (d.get("valor_tipo") == "homologado" and d.get("registro_precos") is not True and not d.get("possivel_duplicata")
+            and bool(d.get("valor")) and not valor_suspeito(d))
 
 
 def _somas(sel: list[dict]) -> dict:
     cat = defaultdict(lambda: {"qtd": 0, "valor_contratado": 0.0})
-    fora = {"estimado_sem_homologacao": 0.0, "registro_precos_teto": 0.0, "possiveis_duplicatas": 0.0}
+    fora = {"estimado_sem_homologacao": 0.0, "registro_precos_teto": 0.0, "possiveis_duplicatas": 0.0, "valor_a_conferir": 0.0}
     for d in sel:
         c = cat[d.get("categoria") or "cache"]
         c["qtd"] += 1
         v = float(d.get("valor") or 0)
         if conta(d):
             c["valor_contratado"] += v
+        elif valor_suspeito(d):
+            fora["valor_a_conferir"] += v
         elif d.get("possivel_duplicata"):
             fora["possiveis_duplicatas"] += v
         elif d.get("registro_precos") is True:

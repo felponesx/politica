@@ -221,7 +221,7 @@ def test_soma_so_contratacao_distinta_e_homologada(db):
     db.commit()
     e = api.eventos(db)
     assert e["valor_total"] == 120000  # 100 mil (uma vez) + 20 mil da segurança
-    assert e["fora_da_soma"] == {"estimado_sem_homologacao": 30000, "registro_precos_teto": 50000, "possiveis_duplicatas": 100000}
+    assert e["fora_da_soma"] == {"estimado_sem_homologacao": 30000, "registro_precos_teto": 50000, "possiveis_duplicatas": 100000, "valor_a_conferir": 0}
     assert e["por_categoria"]["varios"]["qtd"] == 1 and e["por_categoria"]["seguranca"]["valor_contratado"] == 20000
     d = db.query(Registro).filter_by(fonte="pncp", tipo="evento_show", chave="c-1").one().dados
     assert d["url"] == "https://pncp.gov.br/app/editais/111/2026/1" and d["publicado"] == "2026-11-11" and d["coletado_em"] == quando
@@ -240,3 +240,13 @@ def test_pendencia_da_pagina_1_rele_o_dia_todo(db, monkeypatch):
     op._pendencia(db, 9, date(2026, 11, 11), 1, "RemoteProtocolError")
     db.commit()
     assert op.coletar_eventos_pendencias() == 3  # as 3 páginas do dia, não só a 1
+
+
+def test_valor_alto_demais_sai_da_soma(db):
+    from app import oportunidades as api
+    op._gravar_evento(db, _compra(30, "Camarote institucional no evento Semana 2026", 399990000.0), 9, "2026-11-12T00:00:00+00:00")
+    op._gravar_evento(db, _compra(31, "Show da Banda Calypso no Carnaval", 80000.0), 9, "2026-11-12T00:00:00+00:00")
+    db.commit()
+    e = api.eventos(db)
+    assert e["valor_total"] == 80000 and e["fora_da_soma"]["valor_a_conferir"] == 399990000.0
+    assert any(x.get("valor_a_conferir") for x in api.eventos(db, "BA")["itens"])

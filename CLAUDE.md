@@ -658,4 +658,5 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Diagnóstico dos 27 diários com os endereços da lista do Felipe (`scripts/diag_diarios.py`, também pelo robô `diag-diarios.yml`): os endereços dados para AP, AM, CE, GO, RO, SC e SE
   NÃO existem no DNS (AM, GO, RO e SC respondem pelo endereço antigo, que fica no `REGISTRO`; os da lista em `ALTERNATIVOS`); BA, DF e TO não respondem de fora do Brasil; AL, MG e PR têm
   certificado incompleto. Querido Diário fora do ar também pelo robô (12/11).
+- Valor fora do normal (`valor_suspeito` em `app/oportunidades.py`: cachê acima de R$ 5 mi, outros acima de R$ 50 mi) fica visível com "a conferir" e sai da soma (`fora_da_soma.valor_a_conferir`); não é corrigido. Ex.: R$ 399,99 mi de "parceria institucional" em Natal/RN (12/11).
 - `tests/conftest.py` recusa rodar se `DATABASE_URL` não tiver "test" no nome do banco (um `export DATABASE_URL=...` antes do pytest apagou o banco local de coleta em 12/11).
