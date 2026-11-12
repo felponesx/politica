@@ -22,7 +22,8 @@ from app.utils import UFS  # noqa: E402
 PACOTES = {
     "p/concursos.json": (["/concursos", "/cursos"], ["concursos"]),
     "p/eventos.json": (["/eventos", "/eventos-patrocinios"], ["eventos"]),
-    "p/eventos-uf.json": ([f"/eventos?uf={u}" for u in UFS] + [f"/eventos-patrocinios?uf={u}" for u in UFS], ["eventos"]),
+    # patrocínio por estado: a tela filtra a lista do país (cada projeto traz UF e locais)
+    "p/eventos-uf.json": ([f"/eventos?uf={u}" for u in UFS], ["eventos"]),
 }
 
 

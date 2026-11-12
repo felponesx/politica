@@ -6238,6 +6238,58 @@
     "/profissoes",
     "/seguranca"
    ]
+  },
+  "p/concursos.json": {
+   "chaves": [
+    "/concursos",
+    "/cursos"
+   ],
+   "telas": [
+    "concursos"
+   ]
+  },
+  "p/eventos.json": {
+   "chaves": [
+    "/eventos",
+    "/eventos-patrocinios"
+   ],
+   "telas": [
+    "eventos"
+   ]
+  },
+  "p/eventos-uf.json": {
+   "chaves": [
+    "/eventos?uf=AC",
+    "/eventos?uf=AL",
+    "/eventos?uf=AM",
+    "/eventos?uf=AP",
+    "/eventos?uf=BA",
+    "/eventos?uf=CE",
+    "/eventos?uf=DF",
+    "/eventos?uf=ES",
+    "/eventos?uf=GO",
+    "/eventos?uf=MA",
+    "/eventos?uf=MG",
+    "/eventos?uf=MS",
+    "/eventos?uf=MT",
+    "/eventos?uf=PA",
+    "/eventos?uf=PB",
+    "/eventos?uf=PE",
+    "/eventos?uf=PI",
+    "/eventos?uf=PR",
+    "/eventos?uf=RJ",
+    "/eventos?uf=RN",
+    "/eventos?uf=RO",
+    "/eventos?uf=RR",
+    "/eventos?uf=RS",
+    "/eventos?uf=SC",
+    "/eventos?uf=SE",
+    "/eventos?uf=SP",
+    "/eventos?uf=TO"
+   ],
+   "telas": [
+    "eventos"
+   ]
   }
  }
 }

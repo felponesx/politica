@@ -82,7 +82,7 @@ def cursos(db: Session) -> dict | None:
         if x.get("tema") and re.search(r"destaque|novidade|gratuit|mais vendid|lan[cç]amento|promo", x["tema"], re.I):
             x["tema"] = None
         if x.get("resumo"):
-            x["resumo"] = x["resumo"][:220]
+            x["resumo"] = x["resumo"][:140].rsplit(" ", 1)[0] + "…" if len(x["resumo"]) > 140 else x["resumo"]
         itens.append({k: v for k, v in x.items() if v not in (None, "")})
     if not itens:
         return None
@@ -99,10 +99,15 @@ def cursos(db: Session) -> dict | None:
 _CAMPOS_EVENTO = ("artista", "evento", "data_evento", "municipio", "uf", "esfera", "orgao", "valor", "valor_tipo", "publicado", "url", "objeto")
 
 
-def _evento(d: dict, objeto: int = 220) -> dict:
-    x = {k: d.get(k) for k in _CAMPOS_EVENTO}
-    if x.get("objeto"):
+def _evento(d: dict, objeto: int = 160) -> dict:
+    """Formato enxuto: o texto do contrato só quando o artista não foi lido; o órgão só quando a esfera não é conhecida."""
+    x = {k: d.get(k) for k in _CAMPOS_EVENTO if k != "publicado"}
+    if x.get("artista"):
+        x.pop("objeto", None)
+    elif x.get("objeto"):
         x["objeto"] = x["objeto"][:objeto]
+    if x.get("esfera"):
+        x.pop("orgao", None)
     return {k: v for k, v in x.items() if v not in (None, "")}
 
 
@@ -160,6 +165,7 @@ def patrocinios(db: Session, uf: str | None = None) -> dict | None:
                 e["projetos"] += 1
     ps.sort(key=lambda p: -float(p.get("captado") or 0))
     return {"uf": uf, "total": len(ps), "captado_total": round(sum(float(p.get("captado") or 0) for p in ps), 2),
-            "projetos": [{**p, "patrocinadores": (p.get("patrocinadores") or [])[:8]} for p in ps[:150]],
+            "projetos": [{**{k: v for k, v in p.items() if k not in ("fonte", "tipologia")}, "locais": (p.get("locais") or [])[:8],
+                          "patrocinadores": (p.get("patrocinadores") or [])[:8]} for p in ps[:400]],
             "empresas": [{"nome": k, **v} for k, v in sorted(emp.items(), key=lambda a: -a[1]["valor"])[:40]],
             "coleta": _ultima(db, "patrocinios"), "aviso": AVISO_PATROCINIO}

@@ -5808,7 +5808,11 @@ P.eventos=uf=>{uf=UF[uf]?uf:"";
   mount(){if(!API.on)return;const s=$("#evUF");if(s){s.value=uf;s.onchange=e=>{location.hash="#/eventos"+(e.target.value?"/"+e.target.value:"")}}
    apiGet("/eventos"+(uf?"?uf="+uf:"")).then(D=>{const v=$("#evV");if(!v)return;const o=uf?evEstado(D):evBrasil(D);v.innerHTML=o.html;o.mount&&o.mount();if(typeof pilulas==="function")pilulas()})
     .catch(e=>{const v=$("#evV");if(v)v.innerHTML=e.status===404?opVazio("dos eventos"):rerro(e)});
-   apiGet("/eventos-patrocinios"+(uf?"?uf="+uf:"")).then(evPatro).catch(()=>{const p=$("#evP");if(p)p.innerHTML=""})}}};
+   apiGet("/eventos-patrocinios").then(D=>evPatro(uf?evPatroUF(D,uf):D)).catch(()=>{const p=$("#evP");if(p)p.innerHTML=""})}}};
+// patrocínio de um estado: projetos do estado ou com local de realização nele; empresas somadas de novo
+function evPatroUF(D,uf){const pj=(D.projetos||[]).filter(p=>p.uf===uf||(p.locais||[]).some(l=>String(l).endsWith("/"+uf))),e={};
+ pj.forEach(p=>(p.patrocinadores||[]).forEach(s=>{if(!s.cnpj)return;const x=e[s.nome]||(e[s.nome]={nome:s.nome,valor:0,projetos:0});x.valor+=s.valor||0;x.projetos++}));
+ return Object.assign({},D,{uf,total:pj.length,captado_total:pj.reduce((a,p)=>a+(p.captado||0),0),projetos:pj,empresas:Object.values(e).sort((a,b)=>b.valor-a.valor).slice(0,40)})}
 function evKpis(D,cid){return`<div class="kpis mt"><div class="kpi"><span>Shows contratados</span><strong>${nf(D.total)}</strong><em>${D.periodo?`publicados de ${opData(D.periodo.de)} a ${opData(D.periodo.ate)}`:""}</em></div><div class="kpi"><span>Valor dos cachês</span><strong>${brl(D.valor_total)}</strong><em>dinheiro público</em></div><div class="kpi"><span>Cidades</span><strong>${nf(cid)}</strong><em>com show contratado</em></div></div>`}
 function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd);
  return{html:evKpis(D,D.cidades_total??(D.cidades||[]).length)+

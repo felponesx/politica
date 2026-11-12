@@ -636,3 +636,5 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Patrocínio: não há base aberta de patrocínio de festa de prefeitura. Lei Rouanet (SALIC `api.salic.cultura.gov.br/api/v1/projetos`, área 3 = Música, com captado > 0; o detalhe `/projetos/<PRONAC>` traz
   `_embedded.captacoes` com o doador). Pessoa física só somada, sem nome. Outras áreas deixam a leitura em horas.
 - Artifact (limite de 511 arquivos): três pacotes só da tela — `p/concursos.json`, `p/eventos.json` e `p/eventos-uf.json` — sem chave nas partes s<N>.
+- Artifact também tem limite de 256 MiB no total da versão (12/11: estava no teto). Para caber, os mapas por município de TODOS os anos ficaram só nos pacotes `p/el-*`
+  (as cópias repetidas nas partes s<N> saíram: −14,4 MB); patrocínio por estado é filtrado na tela a partir da lista do país (`evPatroUF`). Antes de publicar algo grande, some os tamanhos do `list scope=files`.
