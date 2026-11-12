@@ -6242,6 +6242,12 @@
   "p/concursos.json": {
    "chaves": [
     "/concursos",
+    "/concursos/cobertura",
+    "/concursos?ato=convocacao",
+    "/concursos?ato=homologacao",
+    "/concursos?ato=nomeacao",
+    "/concursos?ato=prorrogacao",
+    "/concursos?ato=retificacao",
     "/cursos"
    ],
    "telas": [
