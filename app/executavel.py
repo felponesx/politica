@@ -266,6 +266,10 @@ def main(argv: list[str] | None = None) -> int:
 
     from app.db import criar_tabelas   # só agora: o ambiente já está pronto
     criar_tabelas()
+    if "--rodar" in argv and argv.index("--rodar") + 1 < len(argv):   # roda um grupo agora (diario, semanal, mensal...) e sai
+        from scripts.agendar import rodar_grupo
+        rodar_grupo(argv[argv.index("--rodar") + 1])
+        return 0
     log.info("BRASIL+ iniciando. Pasta: %s | painel: http://127.0.0.1:%s/painel", base, porta)
 
     agendador = montar_agendador()
