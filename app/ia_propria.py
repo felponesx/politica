@@ -17,7 +17,7 @@ import re
 
 from sqlalchemy import func, select
 
-from app import busca, processos
+from app import busca, ia_local, processos
 from app.models import Despesa, Parlamentar, Registro
 from app.nomes import normalizar
 from app.utils import upsert
@@ -240,6 +240,39 @@ def _processos_ranking() -> dict:
     return _resposta(True, "processos_ranking", texto, [], {}, processos.AVISO, ["Processos do Nikolas Ferreira"])
 
 
+def _executar(db, intencao: str, e: dict, casa: str | None) -> dict | None:
+    """Roda um tipo de pergunta. Devolve None se faltar o que o tipo precisa (ex.: a pessoa não foi achada no banco)."""
+    pessoa = bool(e["pessoas"])
+    if intencao == "processos_pessoa":
+        return _processos_pessoa(db, e) if pessoa else None
+    if intencao == "processos_ranking":
+        return _processos_ranking()
+    if intencao == "gasto_ranking":
+        return _gasto_ranking(db, e, casa)
+    if intencao == "gasto_pessoa":
+        return _gasto_pessoa(db, e) if pessoa else None
+    if intencao == "quantos_parlamentares":
+        return _quantos(db, e, casa)
+    if intencao == "perfil":
+        return _perfil(db, e) if pessoa else None
+    return None
+
+
+def _com_sugestao(db, e: dict, sug: dict) -> dict:
+    """Junta o que o assistente viu com o que as regras já achavam. A pessoa e o partido SEMPRE são conferidos no banco."""
+    novo = dict(e)
+    if sug["nome"]:
+        resto = [t for t in normalizar(sug["nome"]).split() if t not in PALAVRAS_DA_PERGUNTA]
+        novo["pessoas"] = _achar_pessoas(db, resto) or e["pessoas"]
+    if sug["uf"]:
+        novo["uf"] = sug["uf"]
+    if sug["ano"]:
+        novo["ano"] = sug["ano"]
+    if sug["partido"] and sug["partido"] in {x.upper() for x in db.scalars(select(Parlamentar.partido).distinct()).all() if x}:
+        novo["partido"] = sug["partido"]
+    return novo
+
+
 # ---------- entrada ----------
 
 def responder(db, pergunta: str) -> dict:
@@ -255,18 +288,20 @@ def responder(db, pergunta: str) -> dict:
     f_proc = _tem(tokens, "process", "representac", "decoro", "investig", "condenad", "inquerit", "acusad", "respond")
     casa = "senado" if _tem(tokens, "senador") and not _tem(tokens, "deputad") else "camara" if _tem(tokens, "deputad") and not _tem(tokens, "senador") else None
 
-    if f_proc and pessoa:
-        return _processos_pessoa(db, e)
-    if f_proc and f_mais:
-        return _processos_ranking()
-    if f_gasto and f_mais and not pessoa:
-        return _gasto_ranking(db, e, casa)
-    if f_gasto and pessoa:
-        return _gasto_pessoa(db, e)
-    if f_quant and f_cargo:
-        return _quantos(db, e, casa)
-    if pessoa:
-        return _perfil(db, e)
+    regra = ("processos_pessoa" if f_proc and pessoa else "processos_ranking" if f_proc and f_mais else
+             "gasto_ranking" if f_gasto and f_mais and not pessoa else "gasto_pessoa" if f_gasto and pessoa else
+             "quantos_parlamentares" if f_quant and f_cargo else "perfil" if pessoa else None)
+    if regra:
+        return _executar(db, regra, e, casa)
+
+    # As regras não entenderam. Se o assistente local estiver ligado (opcional), ele sugere o tipo e o que foi citado;
+    # o motor confere tudo no banco e é ele quem responde.
+    sugestao = ia_local.classificar(pergunta)
+    if sugestao:
+        r = _executar(db, sugestao["intencao"], _com_sugestao(db, e, sugestao), sugestao["casa"] or casa)
+        if r:
+            r["assistente"] = "modelo local"
+            return r
     _guardar_sem_resposta(db, pergunta, norm)
     return _resposta(False, None, "Não entendi essa pergunta. Posso responder, por exemplo:\n- " + "\n- ".join(EXEMPLOS)
                      + "\nGuardei a pergunta para aprender um tipo novo.", [], {}, None, EXEMPLOS)
