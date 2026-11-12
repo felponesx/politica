@@ -20,7 +20,8 @@ from app.main import app  # noqa: E402
 from app.utils import UFS  # noqa: E402
 
 PACOTES = {
-    "p/concursos.json": (["/concursos", "/cursos"], ["concursos"]),
+    "p/concursos.json": (["/concursos", "/cursos", "/concursos/cobertura"] + [f"/concursos?ato={a}" for a in
+                         ("convocacao", "nomeacao", "homologacao", "retificacao", "prorrogacao")], ["concursos"]),
     "p/eventos.json": (["/eventos", "/eventos-patrocinios"], ["eventos"]),
     # patrocínio por estado: a tela filtra a lista do país (cada projeto traz UF e locais)
     "p/eventos-uf.json": ([f"/eventos?uf={u}" for u in UFS], ["eventos"]),

@@ -638,3 +638,20 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Artifact (limite de 511 arquivos): três pacotes só da tela — `p/concursos.json`, `p/eventos.json` e `p/eventos-uf.json` — sem chave nas partes s<N>.
 - Artifact também tem limite de 256 MiB no total da versão (12/11: estava no teto). Para caber, os mapas por município de TODOS os anos ficaram só nos pacotes `p/el-*`
   (as cópias repetidas nas partes s<N> saíram: −14,4 MB); patrocínio por estado é filtrado na tela a partir da lista do país (`evPatroUF`). Antes de publicar algo grande, some os tamanhos do `list scope=files`.
+
+## Concursos estaduais e municipais, eventos por categoria (12/11/2026)
+- `concursos-estaduais` (`app/collectors/concursos_estaduais.py`): `REGISTRO` com os 27 diários; cada estado roda sozinho (`coletar_estado`) e grava `concurso_uf_status`
+  (status ok/sem_coletor/indisponivel/erro, `ultima_sucesso` preservada quando falha, histórico). Com coletor: SP (API `do-api-web-search.doe.sp.gov.br/v2/advanced-search/publications`
+  + texto completo em `v2/publications/<id>`, órgão pelo `hierarchy`) e MT, ES, GO (plataforma comum `/busca/busca/buscar/query/<pág>/di:/df:/?q=`, texto da página; link
+  `/portal/edicoes/download/<diário>/<página>`; o de ES inclui diários de municípios capixabas → `esfera` municipal). Os outros 23 com o motivo (busca só na tela ou site que não
+  responde daqui — testar pelo robô). Conferido 12/11 (15 dias): SP 888 atos (83 aberturas), MT 88, ES 89, GO 67.
+- Atos (`classificar_ato`): abertura, processo_seletivo, convocacao, nomeacao, homologacao, retificacao, prorrogacao, outro ("outro" = menção de passagem: gravado, não mostrado).
+  Áreas com as polícias separadas (Civil, Militar, Penal, Bombeiros; vaga de professor = Educação). `/concursos?ato=` e `/concursos/cobertura`.
+- `concursos-municipais` (Querido Diário, tarefa própria): até 5 tentativas com espera; `concursos_status` (histórico de falhas, última coleta boa) e `cobertura` (municípios
+  monitorados pela lista `/cities`; sem cobertura só se a tabela `municipios` do IBGE estiver no banco). Trechos (`trecho_apenas`). 12/11: fora do ar (503) o dia todo.
+- Eventos (`eventos-shows modalidades=9,8,6,12`): `categorias_evento` → cachê, palco, som, iluminação, segurança, estrutura, produção ("varios" quando o contrato tem mais de um:
+  o valor NÃO é dividido; produtora que representa o artista não é "produção"; contrato com o próprio ECAD não é evento). Soma (`conta`) só homologado, fora de ata de registro de
+  preços (`srp`) e sem possível republicação (mesmo órgão + objeto + valor, `_marcar_duplicatas`); o resto vai em `fora_da_soma`. 12/11: de R$ 439,7 mi somados antes, R$ 314,5 mi
+  são contratação homologada distinta (R$ 121,8 mi só estimados, R$ 3,3 mi republicações).
+- Página do PNCP que falha vira `pncp_pendencia` (nunca apagada; `resolvida` com data) e as páginas seguintes continuam (antes a coleta do dia parava ali). `eventos-pendencias`
+  relê; pendência na página 1 relê o dia inteiro. `datas=AAAA-MM-DD,...` refaz dias exatos. Registros guardam `publicado`, `coletado_em` e `primeira_coleta`.

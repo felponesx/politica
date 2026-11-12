@@ -71,6 +71,7 @@ FIXAS = [
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
     "/alertas-mapbiomas/territorio", "/alertas-mapbiomas", "/malha/status", "/caged/estoque", "/escandalos-fila", "/diarios-oficiais", "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos", "/premios", "/julgamentos", "/faccoes", "/transito",
 ]
+FIXAS += ["/concursos/cobertura"] + [f"/concursos?ato={a}" for a in ("convocacao", "nomeacao", "homologacao", "retificacao", "prorrogacao")]
 FIXAS += ["/concursos", "/cursos", "/eventos", "/eventos-patrocinios"] + [f"/eventos?uf={u}" for u in UFS] + [f"/eventos-patrocinios?uf={u}" for u in UFS]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
 FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))

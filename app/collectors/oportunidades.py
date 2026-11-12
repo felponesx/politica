@@ -688,6 +688,20 @@ def coletar_eventos_pendencias(limite: int = 500):
         for r in pend:
             d = r.dados
             mod, dia, pagina = int(d["modalidade"]), date.fromisoformat(d["dia"]), int(d["pagina"])
+            if pagina == 1:  # o dia inteiro tinha falhado (sem saber quantas páginas há): relê o dia todo
+                achados, falhas = _eventos_do_dia(cli, mod, dia)
+                if falhas and falhas[0][0] == 1:
+                    _pendencia(db, mod, dia, 1, falhas[0][1])
+                    n.avisos.append(f"{r.chave}: ainda com defeito")
+                    continue
+                for x in achados:
+                    _gravar_evento(db, x, mod, quando)
+                    n += 1
+                for p, erro in falhas:
+                    _pendencia(db, mod, dia, p, erro)
+                _pendencia(db, mod, dia, 1, None)
+                db.commit()
+                continue
             try:
                 pg = _pagina_pncp(cli, mod, dia, pagina)
             except Exception as e:  # noqa: BLE001

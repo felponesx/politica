@@ -222,3 +222,18 @@ def test_soma_so_contratacao_distinta_e_homologada(db):
     assert e["por_categoria"]["varios"]["qtd"] == 1 and e["por_categoria"]["seguranca"]["valor_contratado"] == 20000
     d = db.query(Registro).filter_by(fonte="pncp", tipo="evento_show", chave="c-1").one().dados
     assert d["url"] == "https://pncp.gov.br/app/editais/111/2026/1" and d["publicado"] == "2026-11-11" and d["coletado_em"] == quando
+
+
+def test_pendencia_da_pagina_1_rele_o_dia_todo(db, monkeypatch):
+    monkeypatch.setattr(op, "_pagina_pncp", lambda cli, mod, dia, p: {"totalPaginas": 3, "data": [_compra(10 + p, f"SHOW DA BANDA {p} NA FESTA")]})
+
+    class Cli:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+    monkeypatch.setattr(op, "_cli", lambda *a, **k: Cli())
+    op._pendencia(db, 9, date(2026, 11, 11), 1, "RemoteProtocolError")
+    db.commit()
+    assert op.coletar_eventos_pendencias() == 3  # as 3 páginas do dia, não só a 1

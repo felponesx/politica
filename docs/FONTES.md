@@ -149,3 +149,12 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 | Shows pagos | PNCP `consulta/v1/contratacoes/publicacao`, modalidade 9 | funciona (lento) | a busca por texto do PNCP (`/api/search`) não responde |
 | Patrocínio | SALIC (Lei Rouanet) `api/v1/projetos` + detalhe com `captacoes` | funciona | filtros de valor ignorados pela API; área 3 (Música) |
 | Patrocínio de festa municipal | — | não existe em base aberta | dito na tela |
+
+## Diários oficiais estaduais (12/11/2026)
+| UF | Situação | Como |
+|---|---|---|
+| SP | coletor | API da Imprensa Oficial (busca + texto completo) |
+| MT, ES, GO | coletor | plataforma comum (Elasticsearch com o texto de cada página) |
+| AC, AL, AM, PA, PB, PE, PI, RJ, RO, RR, RS, SC | sem coletor | site abre, mas a busca só existe na tela; falta escrever o leitor |
+| AP, BA, CE, DF, MG, MS, PR, SE, TO | sem coletor | site não respondeu daqui (tempo esgotado); testar pelo robô |
+| MA, RN | sem coletor | MA devolveu 500; RN, 404 no endereço |
