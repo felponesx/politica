@@ -262,6 +262,7 @@ tbody tr[data-href]:hover{background:var(--bg)}
 .ia-msg.eu .ia-bal{background:var(--tint);border-color:transparent}
 .ia-bal p{margin:0 0 8px}.ia-bal p:last-child{margin-bottom:0}.ia-bal ul,.ia-bal ol{margin:4px 0 8px;padding-left:20px}.ia-bal li{margin:3px 0}
 .ia-bal a{color:var(--blue)}
+.ia-volta{margin-top:10px}.ia-fontes,.ia-aviso{margin-top:8px;font-size:12px;color:var(--muted)}.ia-sug-r{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.ia-sug-r .muted{flex:0 0 100%;font-size:12px}.ia-sug-r .chip{max-width:100%;white-space:normal;line-height:1.35;border-radius:14px;font-size:12.5px;text-align:left;color:var(--blue);border-color:#cfdcfb;background:#fff}.ia-sug-r .chip:hover{background:var(--tint)}
 .ia-modo{margin-top:8px;font-size:11.5px;color:var(--muted)}
 .ia-passos{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ia-passos span{font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
 .ia-sug{display:flex;flex-wrap:wrap;gap:6px}.ia-sug .chip{font-size:12.5px}
@@ -6084,7 +6085,9 @@ async function iaPerguntar(q,raiz){q=String(q||"").trim();if(!q||IA.ocupada)retu
  const passo=t=>{if(passos.isConnected)passos.insertAdjacentHTML("beforeend",`<span>${esc(t)}…</span>`)};
  const pronto=(text,modo)=>{resp.text=text;resp.html=null;resp.modo=modo;bal.innerHTML=iaMd(text)+(modo?`<div class="ia-modo">${modo}</div>`:"")};
  const stop=raiz.querySelector(".ia-stop"),env=raiz.querySelector(".ia-env");if(stop)stop.hidden=false;if(env)env.disabled=true;
- try{const sample=await iaSample();
+ try{const own=await iaPropria(q);
+  if(own){resp.text=own.resposta||"";resp.html=iaPropriaHTML(own);resp.modo="IA do BRASIL+: respondida direto do banco, sem custo e sem inventar. Confira sempre a fonte.";bal.innerHTML=resp.html+`<div class="ia-modo">${resp.modo}</div>`;return}
+  const sample=await iaSample();
   if(sample){IA.ctl=new AbortController();IA.turnos.push({role:"user",content:q});
    try{const{text,truncated}=await sample([{role:"user",content:IA_REGRAS()},...IA.turnos.slice(-10)],{tools:iaTools(passo),signal:IA.ctl.signal,modelTier:"default",
      onText:({text})=>{if(bal.isConnected)bal.innerHTML=iaMd(text)}});
@@ -6094,6 +6097,16 @@ async function iaPerguntar(q,raiz){q=String(q||"").trim();if(!q||IA.ocupada)retu
   else pronto(...await iaLocalModo(q,"Modo simples: respostas diretas dos dados oficiais. Com o site aberto no Claude, a IA responde qualquer pergunta."))}
  catch(e){const t=(e&&(IA_ERRO[e.code]||e.message))||"Não consegui responder agora.";pronto((e&&e.text?e.text+"\n\n":"")+"Não consegui responder: "+t,"")}
  finally{IA.ocupada=false;IA.ctl=null;if(stop)stop.hidden=true;if(env)env.disabled=false}}
+// IA própria do BRASIL+ (sem custo): com o servidor no ar, ela responde primeiro; se não souber, pergunta de volta e mostra sugestões em botões
+async function iaPropria(q){if(!iaWebOn())return null;
+ try{const c=new AbortController(),t=setTimeout(()=>c.abort(),20000);const r=await fetch(API.base+"/ia/pergunta?q="+encodeURIComponent(String(q).slice(0,400)),{headers:{Accept:"application/json"},signal:c.signal});clearTimeout(t);
+  return r.ok?await r.json():null}catch(e){return null}}
+function iaPropriaHTML(d){const sug=(d.sugestoes||[]).slice(0,8);
+ const volta="";
+ const fontes=(d.fontes||[]).length?`<div class="ia-fontes">Fonte: ${d.fontes.map(esc).join("; ")}</div>`:"";
+ const aviso=d.aviso?`<div class="ia-aviso">${esc(d.aviso)}</div>`:"";
+ const chips=sug.length?`<div class="ia-sug-r"><span class="muted">${d.entendeu?"Você também pode perguntar:":"Toque numa para perguntar:"}</span>${sug.map(x=>`<button type="button" class="chip" data-iaq="${esc(x)}">${esc(x)}</button>`).join("")}</div>`:"";
+ return iaMd(String(d.resposta||"").replace(/\nVocê pode tentar:\n(?:- .*\n?)+/,"\n"))+volta+fontes+aviso+chips}
 const IA_SUG=["Quem mais gastou a cota parlamentar este ano?","Quem foi o deputado federal mais votado em 2022?","Quem está há mais tempo no poder em São Paulo?","Quais políticos estão em alta nas notícias?","O que as notícias dizem sobre Nikolas Ferreira?","Quem foram os senadores mais votados em 2022?"];
 // a IA não tem tela própria: responde numa janela ao lado da caixa "IA do Brasil+" do menu (no celular, tela cheia)
 // e dentro da barra de pesquisa. Links antigos #/ia/<pergunta> abrem a janela.
@@ -6118,6 +6131,7 @@ function iaAbrir(q=""){closeSearch();let d=$("#iaDock");
  if(q)d._vai(q);else if(!ehCel())d.querySelector("textarea").focus({preventScroll:true})}
 function iaFechar(){const d=$("#iaDock");if(d)d.hidden=true;document.querySelectorAll(".side-foot .ia").forEach(x=>x.classList.remove("on"))}
 P.ia=(q0)=>{setTimeout(()=>{try{history.replaceState(null,"","#/inicio")}catch(e){}iaAbrir(q0?decodeURIComponent(q0):"")},60);return P.inicio()};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-iaq]");if(!b)return;e.preventDefault();const raiz=b.closest("#iaDock,#sIAbox");if(raiz)iaPerguntar(b.dataset.iaq,raiz)});
 document.addEventListener("click",e=>{const a=e.target.closest("[data-ia-abrir]");if(!a)return;e.preventDefault();iaAbrir(a.dataset.iaQ||"")});
 document.addEventListener("keydown",e=>{const d=$("#iaDock");if(e.key==="Escape"&&d&&!d.hidden&&!$("#searchOv").classList.contains("open"))iaFechar()});
 addEventListener("hashchange",()=>{if(ehCel())iaFechar()});

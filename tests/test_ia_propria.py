@@ -203,3 +203,19 @@ def test_pergunta_de_volta_chega_pela_api_e_a_pergunta_continua_guardada(dados):
     assert r["pergunta_de_volta"] and r["falta"] and r["entendi"]["ano"] == 2024
     with SessionLocal() as db:
         assert db.scalar(select(Registro).where(Registro.fonte == "ia", Registro.tipo == "pergunta_sem_resposta")) is not None
+
+
+def test_exemplos_usam_nomes_reais_do_banco_e_variam(dados):
+    from sqlalchemy import select
+    with SessionLocal() as db:
+        reais = set(db.execute(select(Parlamentar.nome).where(Parlamentar.em_exercicio.is_(True), Parlamentar.partido.is_not(None),
+                                                              Parlamentar.uf.is_not(None))).scalars())
+    vistos = set()
+    for q in ("qual a cor do céu azul", "quanto custa um sapato", "me fale do vento", "isso aí", "xpto abc", "como assim hoje"):
+        r = _ask(q)
+        achados = {n for n in reais if any(n in s for s in r["sugestoes"])}
+        assert len(achados) >= 1, r["sugestoes"]
+        vistos |= achados
+        assert _ask(q)["sugestoes"] == r["sugestoes"]   # mesma pergunta, mesmos exemplos
+    assert "Nikolas Ferreira" not in "".join(_ask("Quanto gastou em 2024?")["sugestoes"]) or "Nikolas Ferreira" in reais
+    assert len(vistos) >= 2   # perguntas diferentes mostram pessoas diferentes

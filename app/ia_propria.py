@@ -56,16 +56,6 @@ comparado posicao colocacao colegas media periodo evolucao eleicoes ultimas ulti
 tse tribunais tribunal improbidade andamento arquivados arquivado encerrados encerrado condenacoes condenacao autor coautor
 politico politicos remuneracao recebeu salario subsidio empresas empresa""".split())
 
-EXEMPLOS = [
-    "Quem mais gastou com a cota parlamentar em 2024?",
-    "Quanto o Nikolas Ferreira gastou em 2024?",
-    "Quantos deputados do PT tem?",
-    "Quantos senadores de São Paulo?",
-    "Quem é a deputada Maria da Silva?",
-    "Processos do Nikolas Ferreira",
-]
-
-
 # ---------- apoio ----------
 
 def _tem(tokens: list[str], *radicais: str) -> bool:
@@ -247,11 +237,13 @@ def _processos_pessoa(db, e: dict) -> dict:
                      {"parlamentar": p.nome, "representacoes": n_rep, "registros": n_reg, "casos": n_caso}, processos.AVISO)
 
 
-def _processos_ranking() -> dict:
+def _processos_ranking(db=None) -> dict:
+    nome = ia_esclarecer.amostra(db, "processos")["nome"] if db is not None else None
+    ex = f"Processos de {nome}" if nome else None
     texto = ("Não consigo dizer quem tem mais processos: não existe base aberta que traga processos judiciais por pessoa. "
              "O que o BRASIL+ tem é limitado: representações por quebra de decoro na Câmara, candidaturas com registro indeferido no TSE e os casos "
-             "curados dos escândalos. Posso mostrar isso de um nome específico, por exemplo: \"Processos do Nikolas Ferreira\".")
-    return _resposta(True, "processos_ranking", texto, [], {}, processos.AVISO, ["Processos do Nikolas Ferreira"])
+             "curados dos escândalos. Posso mostrar isso de um nome específico" + (f", por exemplo: \"{ex}\"." if ex else "."))
+    return _resposta(True, "processos_ranking", texto, [], {}, processos.AVISO, [ex] if ex else [])
 
 
 def _executar(db, intencao: str, e: dict, casa: str | None) -> dict | None:
@@ -267,7 +259,7 @@ def _executar(db, intencao: str, e: dict, casa: str | None) -> dict | None:
     if intencao.startswith("sem_dado:"):
         return ia_consultas.sem_dado(intencao.split(":", 1)[1])
     if intencao == "processos_ranking":
-        return _processos_ranking()
+        return _processos_ranking(db)
     if intencao == "gasto_ranking":
         return _gasto_ranking(db, e, casa)
     if intencao == "quantos_parlamentares":
@@ -392,4 +384,4 @@ def responder(db, pergunta: str) -> dict:
             parecidos.append({"nome": n, "partido": pl.partido, "uf": pl.uf, "casa": pl.casa})
     flags = {"gasto": f_gasto, "part": f_part or f_atuacao, "proj": f_proj, "proc": f_proc, "cond": f_cond, "patr": f_patr, "hist": f_hist,
              "emenda": f_emenda, "camp": f_camp, "comp": f_comp, "quant": f_quant and f_cargo}
-    return ia_esclarecer.esclarecer(e, flags, parecidos)
+    return ia_esclarecer.esclarecer(e, flags, parecidos, ia_esclarecer.amostra(db, pergunta, e))

@@ -590,6 +590,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   do português + distância de edição). Reconhece o tipo da pergunta por palavras-chave, acha pessoa/partido/estado/ano, consulta o banco e responde com fonte e o que o dado NÃO cobre.
   Não entende: PERGUNTA DE VOLTA (`app/ia_esclarecer.py`): devolve `entendi` (assunto, pessoa, estado, partido, ano), `falta`, `pergunta_de_volta` e `sugestoes` (perguntas
   prontas com o nome preenchido) e guarda o texto (`GET /ia/perguntas-sem-resposta`, no painel) para virar tipo novo. Nome citado que não bate inteiro: só SUGERE "você quis dizer...?", nunca responde.
+- Exemplos das sugestões (`ia_esclarecer.amostra`): nome, ano, estado e partido REAIS do banco, escolhidos de forma estável pela própria pergunta (perguntas diferentes mostram pessoas diferentes; estado/partido/ano citados mandam). Nunca nome fixo no código.
+- Site: com o servidor no ar, a caixa da IA (`iaPropria`, `iaPropriaHTML`) chama `GET /ia/pergunta` primeiro; a resposta mostra fontes, aviso e as sugestões como botões (`data-iaq`) que perguntam de novo. Sem servidor (cópia estática/Artifact) segue o fluxo antigo (Claude/modo simples). Conferido no Chromium, PC e celular.
 - Tabela das 50 perguntas de treinamento: `app/dados/ia_cobertura.json` (`GET /ia/cobertura`, `docs/IA_COBERTURA.md`): `dado` (completo/parcial/nenhum nas fontes abertas) e `motor`
   (pronto/a_fazer). Um teste faz cada pergunta "pronta" e confere a intenção. Ao adicionar um tipo de pergunta, atualize o JSON e o teste.
 - REGRAS: nunca inventar; investigação, processo e condenação são coisas diferentes; ausência de registro no banco NÃO prova inexistência; nome parecido não é identidade
