@@ -34,38 +34,45 @@ log = logging.getLogger("brasilplus.concursos_estaduais")
 UA = {"User-Agent": "Mozilla/5.0 (compatible; BRASILmais/1.0; dados publicos)"}
 TERMOS = ('"concurso público"', '"processo seletivo"')
 
-# (UF, diário, endereço, adaptador ou None, motivo quando None)
-SEM_ROTA = "a busca do diário só existe na tela (sem rota de dados aberta); falta escrever o leitor deste estado"
-NAO_RESPONDE = "o site do diário não respondeu a partir do ambiente de coleta (pode bloquear acesso de fora do Brasil); testar pelo robô"
+# (UF, diário, endereço, adaptador ou None, motivo quando None). Endereços da lista do Felipe (12/11/2026); onde só o antigo respondeu daqui,
+# o antigo fica no lugar e o da lista vai em ALTERNATIVOS. Motivos = resultado de scripts/diag_diarios.py em 12/11 (rodar também pelo robô).
+SEM_ROTA = "o site abre, mas a busca só existe na tela (sem rota de dados aberta); falta escrever o leitor deste estado"
+SO_PDF = "o site publica o diário em PDF; falta o leitor (baixar o PDF do dia e procurar os atos)"
+BUSCA_HTML = "o site tem busca em HTML; falta escrever o leitor desta busca"
+PROXY = "a rede do ambiente de coleta barrou o endereço (502 no proxy); testar pelo robô"
+CERT = "o site manda o certificado incompleto (falha de verificação TLS); dá para completar a cadeia como no INEP, depois de conferir"
+CAIU = "o site derrubou a conexão (pode bloquear acesso de fora do Brasil); testar pelo robô"
 REGISTRO = [
-    ("AC", "Diário Oficial do Acre", "https://diario.ac.gov.br/", None, SEM_ROTA),
-    ("AL", "Diário Oficial de Alagoas", "https://diario.imprensaoficial.al.gov.br/", None, SEM_ROTA),
+    ("AC", "Diário Oficial do Acre", "https://diario.ac.gov.br/", None, BUSCA_HTML),
+    ("AL", "Diário Oficial de Alagoas", "https://www.imprensaoficialal.com.br/", None, CERT),
     ("AM", "Diário Oficial do Amazonas", "https://diario.imprensaoficial.am.gov.br/", None, SEM_ROTA),
-    ("AP", "Diário Oficial do Amapá", "https://www.diario.ap.gov.br/", None, NAO_RESPONDE),
-    ("BA", "Diário Oficial da Bahia", "https://dool.egba.ba.gov.br/", None, NAO_RESPONDE),
-    ("CE", "Diário Oficial do Ceará", "http://imprensaoficial.ce.gov.br/", None, NAO_RESPONDE),
-    ("DF", "Diário Oficial do Distrito Federal", "https://dodf.df.gov.br/", None, NAO_RESPONDE),
+    ("AP", "Diário Oficial do Amapá", "https://www.diariooficial.ap.gov.br/", None, PROXY),
+    ("BA", "Diário Oficial da Bahia", "https://dool.egba.ba.gov.br/", None, CAIU),
+    ("CE", "Diário Oficial do Ceará", "https://www.diariooficial.ce.gov.br/", None, PROXY),
+    ("DF", "Diário Oficial do Distrito Federal", "https://dodf.df.gov.br/", None, CAIU),
     ("ES", "Diário Oficial do Espírito Santo", "https://ioes.dio.es.gov.br", "dioe", None),
     ("GO", "Diário Oficial de Goiás", "https://diariooficial.abc.go.gov.br", "dioe", None),
-    ("MA", "Diário Oficial do Maranhão", "https://www.diariooficial.ma.gov.br/", None, "o site do diário respondeu com erro 500"),
-    ("MG", "Diário Oficial de Minas Gerais", "https://www.jornalminasgerais.mg.gov.br/", None, NAO_RESPONDE),
-    ("MS", "Diário Oficial de Mato Grosso do Sul", "https://www.spdo.ms.gov.br/diariodoe", None, NAO_RESPONDE),
+    ("MA", "Diário Oficial do Maranhão", "https://diariooficial.ma.gov.br/", None, "o site do diário respondeu com erro 500"),
+    ("MG", "Diário Oficial de Minas Gerais", "https://www.jornalminasgerais.mg.gov.br/", None, CERT),
+    ("MS", "Diário Oficial de Mato Grosso do Sul", "https://www.imprensaoficial.ms.gov.br/", None, BUSCA_HTML),
     ("MT", "Diário Oficial de Mato Grosso", "https://www.iomat.mt.gov.br", "dioe", None),
-    ("PA", "Diário Oficial do Pará", "http://www.ioepa.com.br/", None, SEM_ROTA),
-    ("PB", "Diário Oficial da Paraíba", "https://auniao.pb.gov.br/", None, SEM_ROTA),
-    ("PE", "Diário Oficial de Pernambuco", "https://diariooficial.cepe.com.br/", None, SEM_ROTA),
+    ("PA", "Diário Oficial do Pará", "https://www.ioepa.com.br/", None, SO_PDF),
+    ("PB", "Diário Oficial da Paraíba", "https://auniao.pb.gov.br/servicos/diario-oficial", None, "o endereço da página do diário devolveu 404"),
+    ("PE", "Diário Oficial de Pernambuco", "https://www.cepe.com.br/diario-oficial", None, SO_PDF),
     ("PI", "Diário Oficial do Piauí", "https://www.diario.pi.gov.br/", None, SEM_ROTA),
-    ("PR", "Diário Oficial do Paraná", "https://www.documentos.dioe.pr.gov.br/", None, NAO_RESPONDE),
-    ("RJ", "Diário Oficial do Rio de Janeiro", "https://www.ioerj.com.br/", None, SEM_ROTA),
-    ("RN", "Diário Oficial do Rio Grande do Norte", "http://www.diariooficial.rn.gov.br/", None, "o endereço do diário devolveu 404"),
-    ("RO", "Diário Oficial de Rondônia", "https://diof.ro.gov.br/", None, SEM_ROTA),
-    ("RR", "Diário Oficial de Roraima", "https://www.imprensaoficial.rr.gov.br/", None, SEM_ROTA),
-    ("RS", "Diário Oficial do Rio Grande do Sul", "https://www.diariooficial.rs.gov.br/", None, SEM_ROTA),
+    ("PR", "Diário Oficial do Paraná", "https://www.documentos.dioe.pr.gov.br/", None, CERT),
+    ("RJ", "Diário Oficial do Rio de Janeiro", "https://portal.ioerj.com.br/diario-oficial/", None, SO_PDF),
+    ("RN", "Diário Oficial do Rio Grande do Norte", "https://www.diariooficial.rn.gov.br/", None, SEM_ROTA),
+    ("RO", "Diário Oficial de Rondônia", "https://diof.ro.gov.br/", None, BUSCA_HTML),
+    ("RR", "Diário Oficial de Roraima", "https://imprensaoficial.rr.gov.br/", None, SEM_ROTA),
+    ("RS", "Diário Oficial do Rio Grande do Sul", "https://diariooficial.rs.gov.br/", None, SEM_ROTA),
     ("SC", "Diário Oficial de Santa Catarina", "https://portal.doe.sea.sc.gov.br/", None, SEM_ROTA),
-    ("SE", "Diário Oficial de Sergipe", "https://www.segrase.se.gov.br/", None, NAO_RESPONDE),
+    ("SE", "Diário Oficial de Sergipe", "https://doe.se.gov.br/", None, PROXY),
     ("SP", "Diário Oficial do Estado de São Paulo", "https://doe.sp.gov.br", "sp", None),
-    ("TO", "Diário Oficial do Tocantins", "https://diariooficial.to.gov.br/", None, NAO_RESPONDE),
+    ("TO", "Diário Oficial do Tocantins", "https://diariooficial.to.gov.br/", None, CAIU),
 ]
+ALTERNATIVOS = {"AM": "https://doe.am.gov.br/", "GO": "https://diariooficial.go.gov.br/", "PI": "https://www.diariooficial.pi.gov.br/",
+                "RO": "https://diariooficial.ro.gov.br/", "SC": "https://doe.sc.gov.br/"}
 REG = {r[0]: r for r in REGISTRO}
 SP_API = "https://do-api-web-search.doe.sp.gov.br/v2/advanced-search/publications"
 MAX_DETALHES_SP = 400  # textos completos lidos por coleta (só aberturas e processos seletivos)

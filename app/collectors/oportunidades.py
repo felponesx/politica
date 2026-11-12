@@ -68,7 +68,8 @@ def _num(t: str) -> float | None:
 # ---------------------------------------------------------------------------------------------------- concursos
 DOU_BUSCA = "https://www.in.gov.br/consulta/-/buscar/dou"
 DOU_ARTIGO = "https://www.in.gov.br/web/dou/-/{}"
-QD_API = "https://api.queridodiario.org.br/gazettes"
+QD_BASES = ("https://api.queridodiario.ok.org.br", "https://api.queridodiario.org.br")  # o oficial (documentação) e o que ele redireciona
+QD_API = QD_BASES[0] + "/gazettes"
 
 _FORA = re.compile(r"retifica|homologa|resultado|convoca|prorroga|nomea|nomeia|sem efeito|cancela|suspen|anula|revoga|"
                    r"reabertura de prazo|gabarito|classifica[cç][aã]o final|aprovad[oa]s|recurso|errata|adiamento|reti-ratifica", re.I)
@@ -269,7 +270,7 @@ def coletar_concursos(dias: int = 30, municipais: bool = True):
     return n.itens
 
 
-QD_CIDADES = "https://api.queridodiario.org.br/cities"
+QD_CIDADES = QD_BASES[0] + "/cities"
 QD_TERMOS = ('"concurso público"', '"processo seletivo"')
 
 
@@ -279,8 +280,12 @@ def _agora() -> str:
 
 
 def _qd_get(cli, url, params=None, tentativas=5):
-    """O Querido Diário cai com 502/503/520: até 5 tentativas com espera de 5, 10, 20, 40 s; a última resposta volta."""
+    """O Querido Diário cai com 502/503/520: até 5 tentativas com espera de 5, 10, 20, 40 s, alternando entre o endereço oficial
+    (api.queridodiario.ok.org.br) e o que ele redireciona (api.queridodiario.org.br); a última resposta volta."""
+    caminho = url.split("queridodiario", 1)[1].split("/", 1)[1] if "queridodiario" in url else None
     for t in range(tentativas):
+        if caminho is not None:
+            url = f"{QD_BASES[t % len(QD_BASES)]}/{caminho}"
         try:
             r = cli.get(url, params=params)
             if r.status_code < 500 and r.status_code != 429:
@@ -467,7 +472,7 @@ PNCP_PUB = "https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao"
 PNCP_LINK = "https://pncp.gov.br/app/editais/{}/{}/{}"
 SHOW = re.compile(r"\bshows?\b|apresenta[cç][aã]o (art[ií]stica|musical|cultural)|apresenta[cç][oõ]es art[ií]sticas|\bcantor|\bcantora\b|"
                   r"\bbanda\b|dupla sertaneja|atra[cç][aã]o (art[ií]stica|musical)|artista|\bdj\b|orquestra|grupo musical", re.I)
-NAO_SHOW = re.compile(r"radar|banda larga|banda[- ](?:s|c|x|ku|l|ka)\b|internet|frequ[eê]ncia|telecomunica|sobressalente|equipamento|"
+NAO_SHOW = re.compile(r"fretamento|transporte d|[oô]nibus|uniformes?\b|instrumentos? musica|manuten[cç][aã]o de instrumento|radar|banda larga|banda[- ](?:s|c|x|ku|l|ka)\b|internet|frequ[eê]ncia|telecomunica|sobressalente|equipamento|"
                       r"aquisi[cç][aã]o de|fornecimento de (?!show|apresenta)|loca[cç][aã]o de (?:palco|som|tenda|banheiro|gerador|estrutura)|"
                       r"software|sistema de gest|licen[cç]a de uso|ve[ií]culo|medicament|exame|consulta m[eé]dic|curso de|capacita[cç][aã]o|"
                       r"treinamento|inscri[cç][aã]o (de|em|no|para)|assinatura|publica[cç][aã]o|palestra", re.I)
@@ -577,6 +582,11 @@ def categorias_evento(objeto: str) -> list[str]:
             cats.remove("producao")
         return cats
     if cats and not CONTEXTO_EVENTO.search(o):
+        return []
+    # enfeite de Natal e compra de material não são serviço de evento
+    if "iluminacao" in cats and re.search(r"decorativ|natalin|ornament|enfeite|cascata|pisca|snowfall", _sa(o)):
+        cats.remove("iluminacao")
+    if cats and re.match(r"\W*aquisi[cç][aã]o d", _sa(o)) and not re.search(r"servi[cç]o|loca[cç][aã]o", _sa(o)[:200]):
         return []
     return cats
 

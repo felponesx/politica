@@ -172,6 +172,9 @@ def test_categorias_de_evento():
     assert op.categorias_evento("Locação de banheiros químicos e tendas para a festa de São João") == ["estrutura"]
     assert op.categorias_evento("Produção executiva do evento Réveillon 2027") == ["producao"]
     assert op.categorias_evento("Contratação de empresa para iluminação pública do bairro") == []
+    assert op.categorias_evento("Fretamento de ônibus executivos para o transporte dos integrantes da Banda Municipal ao festival") == []
+    assert op.categorias_evento("AQUISIÇÃO DE ILUMINAÇÃO DECORATIVA NATALINA (CASCATAS LUMINOSAS DE LED) para o Natal") == []
+    assert op.categorias_evento("Fornecimento de estandes, palco tipo tablado, sistema de sonorização e painel de LED, para evento") == ["palco", "som", "estrutura"]
     assert op.categorias_evento("Aquisição de material de limpeza") == []
     assert op.categorias_evento("CONTRATAÇÃO DO ESCRITÓRIO CENTRAL DE ARRECADAÇÃO E DISTRIBUIÇÃO - ECAD, PARA PAGAMENTO DOS DIREITOS AUTORAIS") == []
     # a produtora que representa a banda não vira "produção do evento"
