@@ -11,7 +11,9 @@ from app.collectors import _TAREFAS_BRUTAS
 from app.collectors.registro import registro_das_tarefas
 
 # tarefas que já têm o caminho pelo celular pronto (adaptador próprio ou genérico, testado)
-PRONTAS = {"bcb-series": "adaptador próprio (`bcb`), testado"}
+PRONTAS = {"bcb-series": "adaptador próprio (`bcb`), testado",
+           "camara-deputados": "vínculo no toml + adaptador próprio; falta conferir com arquivo real do celular",
+           "senado-senadores": "vínculo no toml + adaptador próprio; falta conferir com arquivo real do celular"}
 
 
 def gerar() -> str:

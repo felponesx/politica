@@ -25,7 +25,7 @@ Mapa genérico (`adaptador = "linhas"`): `tipo`, `chave` (obrigatório), `valor`
 | `bcb-series` | bcb / series | adaptador próprio (`bcb`), testado |
 | `caged-estoque-referencia` | caged / estoque_referencia | pendente: falta o vínculo pelo celular |
 | `caged-saldos` | caged / saldos | pendente: falta o vínculo pelo celular |
-| `camara-deputados` | camara / deputados | pendente: falta o vínculo pelo celular |
+| `camara-deputados` | camara / deputados | vínculo no toml + adaptador próprio; falta conferir com arquivo real do celular |
 | `camara-despesas` | camara / despesas | pendente: falta o vínculo pelo celular |
 | `camara-orgaos` | camara / orgaos | pendente: falta o vínculo pelo celular |
 | `camara-orientacoes` | camara / orientacoes | pendente: falta o vínculo pelo celular |
@@ -90,7 +90,7 @@ Mapa genérico (`adaptador = "linhas"`): `tipo`, `chave` (obrigatório), `valor`
 | `seguranca-sinesp` | sinesp / vde | pendente: falta o vínculo pelo celular |
 | `senado-ceaps` | senado / ceaps | pendente: falta o vínculo pelo celular |
 | `senado-materias` | senado / materias | pendente: falta o vínculo pelo celular |
-| `senado-senadores` | senado / senadores | pendente: falta o vínculo pelo celular |
+| `senado-senadores` | senado / senadores | vínculo no toml + adaptador próprio; falta conferir com arquivo real do celular |
 | `senado-situacao` | senado / situacao | pendente: falta o vínculo pelo celular |
 | `senado-votacoes` | senado / votacoes | pendente: falta o vínculo pelo celular |
 | `siconfi-despesas-funcao` | siconfi / despesas_funcao | pendente: falta o vínculo pelo celular |
