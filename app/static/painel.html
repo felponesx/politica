@@ -69,6 +69,48 @@
     border: 1px solid var(--linha); border-radius: 8px; padding: 8px 10px; }
   .form .acoes { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   button.secundario { background: #fff; color: var(--azul); border: 1px solid var(--linha); }
+
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--cinza); margin: 4px 0 14px; }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .pt { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+  .pt.rodando { background: var(--azul); }
+  .pt.ok { background: var(--ok); }
+  .pt.aviso { background: var(--aviso); }
+  .pt.erro { background: var(--erro); }
+  .pt.parado { background: var(--parado); }
+  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .cat { position: relative; text-align: left; color: var(--marinho); background: var(--fundo); border: 1px solid var(--linha);
+    border-radius: 12px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; }
+  .cat:hover { border-color: #B2CCFF; }
+  .cat[aria-pressed="true"] { border-color: var(--azul); box-shadow: 0 0 0 1px var(--azul); }
+  .cat b { font-size: 15px; }
+  .cat small { color: var(--cinza); font-size: 12.5px; }
+  .cat .contas { display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 12.5px; color: var(--cinza); }
+  .cat .contas span { display: inline-flex; align-items: center; gap: 5px; }
+  .icone { position: relative; width: 44px; height: 44px; border-radius: 10px; background: #EEF4FF; color: var(--azul);
+    display: grid; place-items: center; flex: none; }
+  .icone svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .anel { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); pointer-events: none; }
+  .icone > svg.anel { width: calc(100% + 10px); height: calc(100% + 10px); fill: none; stroke: none; stroke-width: 0; }
+  .anel circle { fill: none; stroke: var(--azul); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 26 200;
+    transform-origin: 50% 50%; animation: girar 1.1s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  .detalhe { margin-top: 16px; border: 1px solid var(--linha); border-radius: 12px; overflow: hidden; }
+  .detalhe > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px;
+    background: var(--suave); border-bottom: 1px solid var(--linha); }
+  .detalhe > header b { font-size: 15px; }
+  .detalhe > header button { background: #fff; color: var(--azul); border: 1px solid var(--linha); }
+  .link-linha { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 14px;
+    border-bottom: 1px solid var(--linha); }
+  .link-linha:last-child { border-bottom: 0; }
+  .link-linha .pt-box { position: relative; width: 22px; height: 22px; display: grid; place-items: center; }
+  .link-linha .pt-box .anel { inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); }
+  .link-linha .pt-box .anel circle { stroke-width: 2; }
+  .link-linha .nome { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; word-break: break-word; }
+  .link-linha .info { font-size: 12.5px; color: var(--cinza); }
+  .link-linha .erro-txt { margin-top: 2px; }
+  .link-linha .dir { text-align: right; font-size: 12.5px; color: var(--cinza); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { .anel circle { animation: none; } }
   @media (max-width: 640px) {
     .tabela .oculto-celular { display: none; }
   }
@@ -126,15 +168,16 @@
     </table>
   </div>
 
-  <h2>Fontes</h2>
-  <div class="tabela-wrap">
-    <table class="tabela">
-      <thead>
-        <tr><th>Tarefa</th><th>Situação</th><th class="oculto-celular">Última coleta boa</th><th class="num oculto-celular">Horas desde</th><th class="oculto-celular">Itens</th></tr>
-      </thead>
-      <tbody id="fontes"></tbody>
-    </table>
+  <h2>Categorias</h2>
+  <div class="legenda" aria-label="Legenda">
+    <span><i class="pt parado"></i>ainda não rodou</span>
+    <span><i class="pt rodando"></i>coletando agora (anel girando)</span>
+    <span><i class="pt ok"></i>em dia</span>
+    <span><i class="pt aviso"></i>com avisos ou para revisar</span>
+    <span><i class="pt erro"></i>falhando</span>
   </div>
+  <div class="cats" id="cats"></div>
+  <div id="detalhe" class="detalhe" hidden></div>
   <div class="aviso-txt" id="aviso"></div>
 
   <h2>Últimas execuções</h2>
@@ -201,27 +244,113 @@
     );
   }
 
-  function pintarFontes(lista) {
-    var corpo = document.getElementById("fontes");
-    corpo.replaceChildren();
-    if (!lista.length) {
-      var v = el("tr"); var td = el("td", "Nenhuma fonte configurada.", "vazio"); td.colSpan = 5; v.append(td); corpo.append(v);
-      return;
-    }
-    lista.slice().sort(function (a, b) {
-      return (ORDEM[a.situacao] - ORDEM[b.situacao]) || a.tarefa.localeCompare(b.tarefa);
-    }).forEach(function (f) {
-      var tr = el("tr");
-      var t1 = el("td", f.tarefa);
-      var t2 = el("td");
-      t2.append(tag(f.situacao));
-      if (f.ultimo_erro) t2.append(el("div", f.ultimo_erro, "erro-txt"));
-      var t3 = el("td", hora(f.ultima_ok), "oculto-celular");
-      var t4 = el("td", horas(f.horas_desde_ok), "num oculto-celular");
-      var t5 = el("td", f.itens_ultima_ok === undefined || f.itens_ultima_ok === null ? "—" : String(f.itens_ultima_ok), "num oculto-celular");
-      tr.append(t1, t2, t3, t4, t5);
-      corpo.append(tr);
+  var ICONE = {
+    congresso: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+    eleicoes: '<path d="M5 4h14v16H5zM9 12l2.2 2.2L15.5 10"/>',
+    gastos: '<path d="M12 3v18M16 7.5c0-1.7-1.8-3-4-3s-4 1.3-4 3 1.8 2.6 4 3 4 1.3 4 3-1.8 3-4 3-4-1.3-4-3"/>',
+    economia: '<path d="M3 17l5-5 4 4 8-8M15 8h6v6"/>',
+    dividas: '<path d="M3 9l9-5 9 5v2H3zM5 11v7M10 11v7M14 11v7M19 11v7M3 20h18"/>',
+    justica: '<path d="M12 4v16M6 20h12M5 7h14M7 7l-3 6h6zM17 7l-3 6h6z"/>',
+    saude_educacao: '<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',
+    social: '<path d="M9 11a3 3 0 100-6 3 3 0 000 6zM3 20c0-3.3 2.7-5 6-5s6 1.7 6 5M16 11a3 3 0 000-6M17 15c2.4.4 4 2 4 5"/>',
+    seguranca: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/>',
+    ambiente: '<path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15M5 19l7-7"/>',
+    noticias: '<path d="M4 5h13v14H4zM17 9h3v10a2 2 0 01-2 2M7 9h6M7 13h6M7 16h4"/>',
+    outras: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>'
+  };
+  var ESTADO = { rodando: "Coletando agora", ok: "Em dia", aviso: "Com avisos", erro: "Falhando", parado: "Nunca rodou" };
+  var PRIORIDADE = { rodando: 0, erro: 1, aviso: 2, parado: 3, ok: 4 };
+  var categorias = [], fontesAtuais = [], categoriaAberta = null;
+
+  function icone(id, rodando) {
+    var box = el("span", null, "icone");
+    box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICONE[id] || ICONE.outras) + '</svg>';
+    if (rodando) box.append(anel());
+    return box;
+  }
+  function anel() {
+    var ns = "http://www.w3.org/2000/svg";
+    var s = document.createElementNS(ns, "svg");
+    s.setAttribute("viewBox", "0 0 100 100"); s.setAttribute("class", "anel"); s.setAttribute("aria-label", "coletando");
+    var c = document.createElementNS(ns, "circle");
+    c.setAttribute("cx", "50"); c.setAttribute("cy", "50"); c.setAttribute("r", "46");
+    s.append(c);
+    return s;
+  }
+  function contagem(lista) {
+    var c = { rodando: 0, ok: 0, aviso: 0, erro: 0, parado: 0 };
+    lista.forEach(function (f) { c[f.estado] = (c[f.estado] || 0) + 1; });
+    return c;
+  }
+  function porCategoria(id) {
+    return fontesAtuais.filter(function (f) { return f.categoria === id; })
+      .sort(function (a, b) { return (PRIORIDADE[a.estado] - PRIORIDADE[b.estado]) || a.tarefa.localeCompare(b.tarefa); });
+  }
+
+  function pintarCategorias(status) {
+    fontesAtuais = status.fontes || [];
+    categorias = status.categorias || [];
+    var grade = document.getElementById("cats");
+    grade.replaceChildren();
+    categorias.forEach(function (cat) {
+      var lista = porCategoria(cat.id);
+      if (!lista.length) return;
+      var c = contagem(lista);
+      var b = el("button", null, "cat");
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(categoriaAberta === cat.id));
+      var topo = el("span", null, "");
+      topo.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:8px";
+      topo.append(icone(cat.id, c.rodando > 0));
+      topo.append(el("small", lista.length + (lista.length === 1 ? " link" : " links")));
+      var nome = el("b", cat.nome);
+      var contas = el("span", null, "contas");
+      contas.className = "contas";
+      [["rodando", "coletando"], ["ok", "em dia"], ["aviso", "com aviso"], ["erro", "falhando"]].forEach(function (x) {
+        if (!c[x[0]]) return;
+        var s = el("span"); s.append(el("i", null, "pt " + x[0]), document.createTextNode(c[x[0]] + " " + x[1])); contas.append(s);
+      });
+      if (!contas.childNodes.length) contas.append(el("span", "ainda não rodou"));
+      b.append(topo, nome, contas);
+      b.addEventListener("click", function () { abrirCategoria(cat.id); });
+      grade.append(b);
     });
+    if (categoriaAberta) mostrarDetalhe(categoriaAberta);
+  }
+
+  function abrirCategoria(id) {
+    categoriaAberta = categoriaAberta === id ? null : id;
+    pintarCategorias({ fontes: fontesAtuais, categorias: categorias });
+    if (!categoriaAberta) document.getElementById("detalhe").hidden = true;
+  }
+
+  function mostrarDetalhe(id) {
+    var cat = categorias.filter(function (c) { return c.id === id; })[0];
+    var caixa = document.getElementById("detalhe");
+    caixa.hidden = false;
+    caixa.replaceChildren();
+    var topo = el("header");
+    var titulo = el("b", cat ? cat.nome : id);
+    var fechar = el("button", "Fechar"); fechar.type = "button";
+    fechar.addEventListener("click", function () { abrirCategoria(id); });
+    topo.append(titulo, fechar);
+    caixa.append(topo);
+    var lista = porCategoria(id);
+    lista.forEach(function (f) {
+      var linha = el("div", null, "link-linha");
+      var pb = el("span", null, "pt-box");
+      pb.append(el("i", null, "pt " + f.estado));
+      if (f.rodando) pb.append(anel());
+      var meio = el("div");
+      meio.append(el("div", f.tarefa, "nome"));
+      var info = (ESTADO[f.estado] || "") + (f.ultima_ok ? " · última boa " + hora(f.ultima_ok) : "");
+      meio.append(el("div", info, "info"));
+      if (f.ultimo_erro) meio.append(el("div", f.ultimo_erro, "erro-txt"));
+      var dir = el("div", (f.itens_ultima_ok === undefined || f.itens_ultima_ok === null) ? "" : f.itens_ultima_ok + " itens", "dir");
+      linha.append(pb, meio, dir);
+      caixa.append(linha);
+    });
+    if (!lista.length) caixa.append(el("div", "Nenhum link nesta categoria.", "vazio"));
   }
 
   function pintarColetas(lista) {
@@ -259,7 +388,7 @@
     try {
       var [status, coletas] = await Promise.all([pegar("/fontes/status"), pegar("/coletas?limit=30")]);
       pintarResumo(status.resumo || {});
-      pintarFontes(status.fontes || []);
+      pintarCategorias(status);
       pintarColetas(coletas || []);
       document.getElementById("aviso").textContent = status.aviso || "";
       document.getElementById("atualizado").textContent = "Atualizado às " +

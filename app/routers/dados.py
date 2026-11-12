@@ -171,6 +171,7 @@ def status_das_fontes(db: Session = Depends(get_db)):
     coletor grava em `coletas` (app/collectors/registro.py), não pelo nome da linha de comando."""
     from datetime import datetime
 
+    from app.categorias import CATEGORIAS, categoria_de
     from app.collectors.registro import registro_das_tarefas
     agora = datetime.now()
     linhas = db.execute(select(Coleta.fonte, Coleta.tarefa, Coleta.status, Coleta.fim, Coleta.inicio, Coleta.itens, Coleta.erro)
@@ -195,8 +196,14 @@ def status_das_fontes(db: Session = Depends(get_db)):
         d = dict(por.get(chave) or {"ultima_ok": None, "ultimo_status": "nunca_coletada", "ultimo_erro": None, "falhas_recentes": 0}, tarefa=t)
         d["situacao"] = ("nunca_coletada" if d["ultimo_status"] == "nunca_coletada" else "sem_coleta_boa" if d["ultima_ok"] is None
                          else "falhando" if d["ultimo_status"] in ("erro", "abortada") else "ok")
+        # estado para o painel: rodando (anel), ok (verde), parcial = com avisos ou dado a revisar (amarelo), erro (vermelho), parado (cinza)
+        d["rodando"] = d["ultimo_status"] == "rodando"
+        d["estado"] = ("rodando" if d["rodando"] else "aviso" if d["ultimo_status"] == "parcial"
+                       else "erro" if d["ultimo_status"] in ("erro", "abortada")
+                       else "ok" if d["situacao"] == "ok" else "parado")
+        d["categoria"] = categoria_de(t)
         out.append(d)
-    return {"fontes": out, "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
+    return {"fontes": out, "categorias": CATEGORIAS, "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
             "aviso": "Mostra se a coleta rodou, não se o número publicado está certo. Dados históricos são mantidos quando uma fonte falha."}
 
 
