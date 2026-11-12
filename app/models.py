@@ -583,3 +583,24 @@ class FonteCadastrada(Base):
     ativa: Mapped[bool] = mapped_column(default=True)
     criada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     atualizada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class Oportunidade(Base):
+    """Cursos, eventos e concursos. Entram por cadastro (token) e ficam pendentes até uma aprovação; só o aprovado aparece ao público."""
+    __tablename__ = "oportunidades"
+    __table_args__ = (UniqueConstraint("tipo", "link", name="uq_oportunidade_tipo_link"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    tipo: Mapped[str] = mapped_column(String(12), index=True)  # curso | evento | concurso
+    titulo: Mapped[str] = mapped_column(String(300))
+    orgao: Mapped[str | None] = mapped_column(String(200))
+    uf: Mapped[str | None] = mapped_column(String(2), index=True)
+    cidade: Mapped[str | None] = mapped_column(String(120))
+    data_inicio: Mapped[date | None] = mapped_column(Date)
+    data_fim: Mapped[date | None] = mapped_column(Date)
+    inscricoes_ate: Mapped[date | None] = mapped_column(Date)
+    link: Mapped[str] = mapped_column(String(500))
+    fonte: Mapped[str | None] = mapped_column(String(200))
+    status: Mapped[str] = mapped_column(String(12), default="pendente", index=True)  # pendente | aprovado | rejeitado
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    aprovada_em: Mapped[datetime | None] = mapped_column(DateTime)

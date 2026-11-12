@@ -160,6 +160,16 @@
     </table>
   </div>
 
+  <h2>Cursos, eventos e concursos</h2>
+  <div class="sub" style="margin-bottom:8px">Só o que já foi aprovado aparece aqui. Cadastro e aprovação ficam na API com o token do administrador.</div>
+  <div class="form" style="margin-bottom:10px"><div class="acoes" id="op-filtros"></div></div>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead><tr><th>Tipo</th><th>Título</th><th>Órgão</th><th>UF</th><th>Inscrições até</th></tr></thead>
+      <tbody id="oportunidades"></tbody>
+    </table>
+  </div>
+
   <h2>Perguntas que a IA não entendeu</h2>
   <div class="sub" style="margin-bottom:8px">Cada pergunta frequente aqui vira um tipo novo de resposta.</div>
   <div class="tabela-wrap">
@@ -477,6 +487,38 @@
     });
   }
 
+
+  var OP_TIPOS = [["", "Todos"], ["curso", "Cursos"], ["evento", "Eventos"], ["concurso", "Concursos"]];
+  var opTipo = "";
+  function pintarOportunidades(lista) {
+    var corpo = document.getElementById("oportunidades");
+    corpo.replaceChildren();
+    if (!lista.length) { var v = el("tr"), td = el("td", "Nada aprovado nesta categoria ainda.", "vazio"); td.colSpan = 5; v.append(td); corpo.append(v); return; }
+    lista.forEach(function (o) {
+      var tr = el("tr");
+      var titulo = el("td");
+      var a = el("a", o.titulo); a.href = o.link; a.target = "_blank"; a.rel = "noopener"; a.style.color = "var(--azul)";
+      titulo.append(a);
+      tr.append(el("td", ({curso: "Curso", evento: "Evento", concurso: "Concurso"})[o.tipo] || o.tipo), titulo,
+                el("td", o.orgao || "—"), el("td", o.uf || "—"), el("td", o.inscricoes_ate ? o.inscricoes_ate.split("-").reverse().join("/") : "—"));
+      corpo.append(tr);
+    });
+  }
+  function desenharFiltrosOp() {
+    var box = document.getElementById("op-filtros"); box.replaceChildren();
+    OP_TIPOS.forEach(function (t) {
+      var b = el("button", t[1], t[0] === opTipo ? "" : "secundario"); b.type = "button";
+      b.addEventListener("click", function () { opTipo = t[0]; desenharFiltrosOp(); carregarOportunidades(); });
+      box.append(b);
+    });
+  }
+  async function carregarOportunidades() {
+    try {
+      var q = "/oportunidades" + (opTipo ? "?tipo=" + opTipo : "");
+      pintarOportunidades(await pegar(q));
+    } catch (e) { /* sem a API: a tabela fica como está */ }
+  }
+  desenharFiltrosOp(); carregarOportunidades();
   document.getElementById("form-fonte").addEventListener("submit", enviarFonte);
   document.getElementById("atualizar").addEventListener("click", carregar);
   listarCadastradas();
