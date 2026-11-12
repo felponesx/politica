@@ -14,7 +14,7 @@ from app.config import settings
 from app import observabilidade
 from app.db import criar_tabelas
 from app.seguranca import LimiteCorpo, Protecao
-from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas, lacunas as lacunas_rotas, sancoes as sancoes_rotas, saude as saude_rotas, doadores as doadores_rotas, contas as contas_rotas, fontes_cadastro as fontes_cadastro_rotas
+from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas, lacunas as lacunas_rotas, sancoes as sancoes_rotas, saude as saude_rotas, doadores as doadores_rotas, contas as contas_rotas, fontes_cadastro as fontes_cadastro_rotas, ia_propria as ia_propria_rotas
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -90,6 +90,7 @@ app.include_router(sancoes_rotas.router)
 app.include_router(doadores_rotas.router)
 app.include_router(contas_rotas.router)
 app.include_router(fontes_cadastro_rotas.router)
+app.include_router(ia_propria_rotas.router)
 
 
 # Site (frontend) servido pelo próprio backend: abra http://localhost:8000 e as telas já usam a API.

@@ -117,6 +117,15 @@
     </table>
   </div>
 
+  <h2>Perguntas que a IA não entendeu</h2>
+  <div class="sub" style="margin-bottom:8px">Cada pergunta frequente aqui vira um tipo novo de resposta.</div>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead><tr><th>Pergunta</th><th class="num">Vezes</th></tr></thead>
+      <tbody id="sem-resposta"></tbody>
+    </table>
+  </div>
+
   <h2>Fontes</h2>
   <div class="tabela-wrap">
     <table class="tabela">
@@ -261,6 +270,14 @@
     }
   }
 
+  async function listarSemResposta() {
+    var corpo = document.getElementById("sem-resposta"), lista;
+    try { lista = await pegar("/ia/perguntas-sem-resposta"); } catch (e) { return; }
+    corpo.replaceChildren();
+    if (!lista.length) { var v = el("tr"), td = el("td", "Nenhuma pergunta sem resposta.", "vazio"); td.colSpan = 2; v.append(td); corpo.append(v); return; }
+    lista.forEach(function (x) { corpo.append((function () { var tr = el("tr"); tr.append(el("td", x.pergunta), el("td", String(x.vezes), "num")); return tr; })()); });
+  }
+
   var TOKEN_KEY = "bp_admin_token";
   function tokenGuardado() { try { return sessionStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } }
   function guardarToken(t) { try { sessionStorage.setItem(TOKEN_KEY, t); } catch (e) { /* navegador sem sessão: segue sem guardar */ } }
@@ -325,6 +342,7 @@
   document.getElementById("form-fonte").addEventListener("submit", enviarFonte);
   document.getElementById("atualizar").addEventListener("click", carregar);
   listarCadastradas();
+  listarSemResposta();
   carregar();
   setInterval(carregar, 60000);
 })();
