@@ -655,3 +655,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   são contratação homologada distinta (R$ 121,8 mi só estimados, R$ 3,3 mi republicações).
 - Página do PNCP que falha vira `pncp_pendencia` (nunca apagada; `resolvida` com data) e as páginas seguintes continuam (antes a coleta do dia parava ali). `eventos-pendencias`
   relê; pendência na página 1 relê o dia inteiro. `datas=AAAA-MM-DD,...` refaz dias exatos. Registros guardam `publicado`, `coletado_em` e `primeira_coleta`.
+- Diagnóstico dos 27 diários com os endereços da lista do Felipe (`scripts/diag_diarios.py`, também pelo robô `diag-diarios.yml`): os endereços dados para AP, AM, CE, GO, RO, SC e SE
+  NÃO existem no DNS (AM, GO, RO e SC respondem pelo endereço antigo, que fica no `REGISTRO`; os da lista em `ALTERNATIVOS`); BA, DF e TO não respondem de fora do Brasil; AL, MG e PR têm
+  certificado incompleto. Querido Diário fora do ar também pelo robô (12/11).
+- `tests/conftest.py` recusa rodar se `DATABASE_URL` não tiver "test" no nome do banco (um `export DATABASE_URL=...` antes do pytest apagou o banco local de coleta em 12/11).

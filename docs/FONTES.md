@@ -150,11 +150,18 @@ Próxima tentativa, se valer a pena: timeout de leitura maior que o padrão em `
 | Patrocínio | SALIC (Lei Rouanet) `api/v1/projetos` + detalhe com `captacoes` | funciona | filtros de valor ignorados pela API; área 3 (Música) |
 | Patrocínio de festa municipal | — | não existe em base aberta | dito na tela |
 
-## Diários oficiais estaduais (12/11/2026)
-| UF | Situação | Como |
+## Diários oficiais estaduais (12/11/2026) — `scripts/diag_diarios.py`, testado daqui e pelo robô (`diag-diarios.yml`)
+| UF | Situação | Como / motivo |
 |---|---|---|
 | SP | coletor | API da Imprensa Oficial (busca + texto completo) |
-| MT, ES, GO | coletor | plataforma comum (Elasticsearch com o texto de cada página) |
-| AC, AL, AM, PA, PB, PE, PI, RJ, RO, RR, RS, SC | sem coletor | site abre, mas a busca só existe na tela; falta escrever o leitor |
-| AP, BA, CE, DF, MG, MS, PR, SE, TO | sem coletor | site não respondeu daqui (tempo esgotado); testar pelo robô |
-| MA, RN | sem coletor | MA devolveu 500; RN, 404 no endereço |
+| MT, ES, GO | coletor | plataforma comum (Elasticsearch com o texto de cada página); GO pelo endereço antigo `diariooficial.abc.go.gov.br` |
+| AC, MS, RO | sem coletor | busca em HTML (RO: busca genérica do portal); falta o leitor |
+| PA, PE, RJ | sem coletor | diário em PDF na página; falta o leitor de PDF |
+| AM, PI, RN, RR, RS, SC | sem coletor | site abre, busca só na tela |
+| AL, MG, PR | sem coletor | certificado TLS incompleto (dá para completar a cadeia, como no INEP) |
+| BA, DF, TO | sem coletor | não respondem de fora do Brasil (tempo esgotado aqui e no robô) |
+| AP, CE, SE | sem coletor | o endereço indicado não existe no DNS; falta achar o oficial |
+| MA, PB | sem coletor | MA devolve 500; PB, 404 no endereço indicado |
+
+Os endereços `doe.am.gov.br`, `diariooficial.go.gov.br`, `diariooficial.ro.gov.br`, `doe.sc.gov.br`, `diariooficial.ap.gov.br`, `diariooficial.ce.gov.br` e `doe.se.gov.br` não existem no DNS (12/11).
+O Querido Diário (`api.queridodiario.ok.org.br` e `api.queridodiario.org.br`) não respondeu nem pelo robô em 12/11.

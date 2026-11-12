@@ -35,20 +35,21 @@ UA = {"User-Agent": "Mozilla/5.0 (compatible; BRASILmais/1.0; dados publicos)"}
 TERMOS = ('"concurso público"', '"processo seletivo"')
 
 # (UF, diário, endereço, adaptador ou None, motivo quando None). Endereços da lista do Felipe (12/11/2026); onde só o antigo respondeu daqui,
-# o antigo fica no lugar e o da lista vai em ALTERNATIVOS. Motivos = resultado de scripts/diag_diarios.py em 12/11 (rodar também pelo robô).
+# o antigo fica no lugar e o da lista vai em ALTERNATIVOS. Motivos = scripts/diag_diarios.py em 12/11, daqui e pelo robô (diag-diarios.yml):
+# os endereços da lista para AP, AM, CE, GO, RO, SC e SE não existem no DNS; AM, GO, RO e SC respondem pelo endereço antigo.
 SEM_ROTA = "o site abre, mas a busca só existe na tela (sem rota de dados aberta); falta escrever o leitor deste estado"
 SO_PDF = "o site publica o diário em PDF; falta o leitor (baixar o PDF do dia e procurar os atos)"
 BUSCA_HTML = "o site tem busca em HTML; falta escrever o leitor desta busca"
-PROXY = "a rede do ambiente de coleta barrou o endereço (502 no proxy); testar pelo robô"
+NAO_EXISTE = "o endereço indicado não existe (o nome do site não foi encontrado no DNS, nem pelo robô do GitHub); falta achar o endereço oficial"
 CERT = "o site manda o certificado incompleto (falha de verificação TLS); dá para completar a cadeia como no INEP, depois de conferir"
-CAIU = "o site derrubou a conexão (pode bloquear acesso de fora do Brasil); testar pelo robô"
+CAIU = "o site não responde de fora do Brasil (tempo esgotado aqui e no robô do GitHub)"
 REGISTRO = [
     ("AC", "Diário Oficial do Acre", "https://diario.ac.gov.br/", None, BUSCA_HTML),
     ("AL", "Diário Oficial de Alagoas", "https://www.imprensaoficialal.com.br/", None, CERT),
     ("AM", "Diário Oficial do Amazonas", "https://diario.imprensaoficial.am.gov.br/", None, SEM_ROTA),
-    ("AP", "Diário Oficial do Amapá", "https://www.diariooficial.ap.gov.br/", None, PROXY),
+    ("AP", "Diário Oficial do Amapá", "https://www.diariooficial.ap.gov.br/", None, NAO_EXISTE),
     ("BA", "Diário Oficial da Bahia", "https://dool.egba.ba.gov.br/", None, CAIU),
-    ("CE", "Diário Oficial do Ceará", "https://www.diariooficial.ce.gov.br/", None, PROXY),
+    ("CE", "Diário Oficial do Ceará", "https://www.diariooficial.ce.gov.br/", None, NAO_EXISTE),
     ("DF", "Diário Oficial do Distrito Federal", "https://dodf.df.gov.br/", None, CAIU),
     ("ES", "Diário Oficial do Espírito Santo", "https://ioes.dio.es.gov.br", "dioe", None),
     ("GO", "Diário Oficial de Goiás", "https://diariooficial.abc.go.gov.br", "dioe", None),
@@ -67,7 +68,7 @@ REGISTRO = [
     ("RR", "Diário Oficial de Roraima", "https://imprensaoficial.rr.gov.br/", None, SEM_ROTA),
     ("RS", "Diário Oficial do Rio Grande do Sul", "https://diariooficial.rs.gov.br/", None, SEM_ROTA),
     ("SC", "Diário Oficial de Santa Catarina", "https://portal.doe.sea.sc.gov.br/", None, SEM_ROTA),
-    ("SE", "Diário Oficial de Sergipe", "https://doe.se.gov.br/", None, PROXY),
+    ("SE", "Diário Oficial de Sergipe", "https://doe.se.gov.br/", None, NAO_EXISTE),
     ("SP", "Diário Oficial do Estado de São Paulo", "https://doe.sp.gov.br", "sp", None),
     ("TO", "Diário Oficial do Tocantins", "https://diariooficial.to.gov.br/", None, CAIU),
 ]
