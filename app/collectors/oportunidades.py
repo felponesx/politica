@@ -422,7 +422,7 @@ def _evento_de(x: dict) -> dict:
     obj = x.get("objetoCompra") or ""
     org, uni = x.get("orgaoEntidade") or {}, x.get("unidadeOrgao") or {}
     hom, est = x.get("valorTotalHomologado"), x.get("valorTotalEstimado")
-    esf = {"M": "municipal", "E": "estadual", "F": "federal", "D": "distrital"}.get(org.get("esferaId"), org.get("esferaId"))
+    esf = {"M": "municipal", "E": "estadual", "F": "federal", "D": "distrital"}.get(org.get("esferaId"))  # "N" (não se aplica): mostra o órgão
     e = {"objeto": obj[:600], "orgao": _limpa(org.get("razaoSocial")), "unidade": _limpa(uni.get("nomeUnidade")), "esfera": esf,
          "uf": uni.get("ufSigla"), "municipio": uni.get("municipioNome"), "codigo_ibge": uni.get("codigoIbge"),
          "valor": hom if hom else est, "valor_tipo": "homologado" if hom else ("estimado" if est else None),
