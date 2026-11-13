@@ -612,3 +612,6 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Ainda abertos: `GET /fontes-cadastradas` e `GET /ia/perguntas-sem-resposta` são leitura pública (a API só escuta 127.0.0.1/Tailscale; se for exposta, pôr token); o teste `test_nenhuma_rota_de_escrita_alem_das_conhecidas` reprova por defeito do próprio teste (lista de rotas chega vazia) e as rotas de escrita novas (`/fontes-cadastradas`, `/oportunidades`) precisam entrar nele quando for consertado.
 - Subir no PC em um comando: `powershell -ExecutionPolicy Bypass -File instalar\atualizar-e-subir.ps1` (git pull → fecha o programa → gera → abre; dados em `~/BRASILMais` intactos; migrações rodam na abertura).
 - Cursos, eventos e concursos: tabela `oportunidades` (migração 0016), `GET/POST /oportunidades`, `/aprovar` e `/rejeitar`, seção no painel. Falta a aba no site público.
+
+## Organizador de links (nov/2026)
+- `POST /organizar` (`app/organizador.py`, token de administrador): recebe texto com links e devolve uma PROPOSTA por link (categoria, formato, intervalo, destinos). Usa o Gemini (`GEMINI_API_KEY`, `GEMINI_MODEL` no `.env`, saída validada) e, sem chave ou com resposta ruim, a regra local por palavras do endereço. Não baixa o link nem grava nada; ainda NÃO testado com chave real. Na prévia (artefato) a barra fica na aba Bots e usa só a regra local.
