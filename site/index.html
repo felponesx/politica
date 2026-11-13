@@ -5824,7 +5824,7 @@ function opCursos(D){const L=D.itens||[];let f={of:"",tema:"",q:""};const temas=
     $("#cuN").textContent=`${nf(l.length)} de ${nf(L.length)} cursos`;opLista($("#cuL"),l,opCursoCard,24);orgaosAplicar()};lista();
    $("#cuO").onchange=e=>{f.of=e.target.value;lista()};$("#cuT").onchange=e=>{f.tema=e.target.value;lista()};$("#cuQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
 // ---- Catástrofes e acidentes (tragédias marcantes, acidentes nas rodovias por estado, notícias de desastres)
-const CAT_ABAS=[["tragedias","Tragédias marcantes"],["rodovias","Rodovias por estado"],["noticias","Notícias recentes"]];
+const CAT_ABAS=[["tragedias","Tragédias marcantes"],["rodovias","Rodovias por estado"],["dinheiro","Dinheiro público e doações"],["noticias","Notícias recentes"]];
 const CAT_ROT={pedestre:"pedestre",motociclista:"motociclista",motorista_carro:"motorista de carro, caminhonete ou utilitário",caminhao_carreta:"caminhão ou carreta",onibus:"ônibus",bicicleta:"ciclista"};
 const CAT_NOME={pedestre:"Pedestre",motociclista:"Motociclista (moto ou motoneta)",motorista_carro:"Motorista de carro, caminhonete ou utilitário",caminhao_carreta:"Caminhão ou carreta (condutor)",onibus:"Ônibus e micro-ônibus",bicicleta:"Ciclista"};
 const catPct=v=>v==null?"sem dado":lacD(v,1)+"%";
@@ -5838,18 +5838,30 @@ P.catastrofes=(...a)=>{const aba=CAT_ABAS.some(x=>x[0]===a[0])?a[0]:"tragedias",
   mount(){if(!API.on)return;const erro=e=>{const b=$("#catV");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)};
    if(aba==="tragedias")apiGet("/catastrofes").then(D=>{const v=$("#catV");if(v)catTragedias(v,D)}).catch(erro);
    else if(aba==="rodovias")apiGet("/catastrofes/rodovias").then(D=>{const v=$("#catV");if(v)catRodovias(v,D,uf)}).catch(erro);
+   else if(aba==="dinheiro")apiGet("/catastrofes/transferencias").then(D=>{const v=$("#catV");if(v)catDinheiro(v,D)}).catch(erro);
    else apiGet("/noticias?limit=1500").then(D=>{const v=$("#catV");if(v)catNoticias(v,D)}).catch(erro)}}};
 function catTragedias(v,D){const L=D.itens||[];let f={tipo:""};
  const cartao=x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(D.tipos[x.tipo]||x.tipo)}</span><span class="tag">${esc(x.uf)}</span><span class="small muted">${x.data_texto?esc(x.data_texto):opData(x.data)}</span></div>
    <h3>${esc(x.titulo)}</h3><div class="small muted">${esc(x.local)} · ${esc((UF[x.uf]||{}).nome||x.uf)}</div>
    <div class="kpis" style="margin:8px 0 0"><div class="kpi"><span>Mortos</span><strong>${nf(x.mortos)}</strong><em>${esc(x.mortos_nota||"")}</em></div></div>
    <p class="small oc-res">${esc(x.resumo)}</p>
+   ${x.repasse_federal?`<div class="small">Repasse da União para defesa civil em ${esc(x.uf)} em ${x.repasse_federal.ano}: <b>${brlC(x.repasse_federal.valor)}</b> <span class="muted">(todos os desastres do ano, não só este)</span></div>`:`<div class="small muted">Repasse da União para defesa civil: dado não coletado para ${esc(String(x.data).slice(0,4))}.</div>`}
    <div class="small">${x.fontes.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.nome)} ›</a>`).join(" · ")}</div></div>`;
  const lista=()=>{const xs=L.filter(x=>!f.tipo||x.tipo===f.tipo);$("#catN").textContent=`${nf(xs.length)} de ${nf(L.length)} tragédias`;$("#catL").innerHTML=xs.length?xs.map(cartao).join(""):rvazio("Nada com esse filtro.")};
  v.innerHTML=`<div class="panel mt"><h2>Tragédias que marcaram o país</h2><div class="filters"><select id="catT" data-pill="Tipo"><option value="">Todos os tipos</option>${Object.entries(D.tipos).map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join("")}</select></div>
    <p class="small muted" id="catN" style="margin:6px 0"></p><div id="catL" class="oc-lista oc-grade"></div></div>
    <div class="rbanner mt small">${esc(D.aviso||"")}</div>`;
  $("#catT").onchange=e=>{f.tipo=e.target.value;lista()};lista();if(typeof pilulas==="function")pilulas()}
+const CAT_M_DIN={valor:["Repasse da União para defesa civil",e=>e.valor,v=>brlC(v),"Dinheiro federal transferido a cada estado para ações de defesa civil no ano"]};
+const CAT_G_DIN=[["Valor","valor"]];
+function catDinheiro(v,D){if(D.erro){v.innerHTML=rvazio(D.erro);return}
+ const E={};D.estados.forEach(e=>E[e.uf]=e);
+ const anos=(D.anos||[]).map(y=>`<option value="${y}" ${y===D.ano?"selected":""}>${y}</option>`).join("");
+ const kp=[lacKpi("Repasse da União para defesa civil em "+D.ano+(D.parcial?" (ano em andamento)":""),brlC(D.brasil),D.meses_coletados+" de 12 meses coletados"),
+  lacKpi("Doações da população","sem base aberta","não há dado oficial de doações para desastres; não estimamos")].join("");
+ v.innerHTML=`<div class="rbanner mt small">${esc(D.aviso)} Fonte: ${esc(D.fonte)}. Quanto o próprio estado gastou com desastres não está nesta base.</div><div class="filters" style="margin:8px 0"><select id="catAnoD" data-pill="Ano">${anos}</select></div>`;
+ lacPainel(v,{E,M:CAT_M_DIN,G:CAT_G_DIN,rota:"catastrofes/dinheiro",kpis:kp});
+ const sel=$("#catAnoD");if(sel)sel.onchange=e=>{const y=e.target.value;apiGet("/catastrofes/transferencias?ano="+y).then(N=>{const w=$("#catV");if(w)catDinheiro(w,N)}).catch(er=>{const w=$("#catV");if(w)w.innerHTML=rerro(er)})}}
 function catRodovias(v,D,uf){if(D.erro){v.innerHTML=rvazio(D.erro);return}
  const E={};D.estados.forEach(e=>E[e.uf]=e);const b=D.brasil;
  const kp=[lacKpi("Acidentes em "+D.ano+(D.parcial?" (ano em andamento)":""),nf(b.acidentes),"rodovias federais, PRF"),

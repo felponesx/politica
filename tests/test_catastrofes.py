@@ -95,3 +95,25 @@ def test_feeds_de_catastrofe_tem_nome_proprio_e_veiculo_do_source():
            '<source url="https://uol.com.br">UOL</source><pubDate>Mon, 01 Jan 2026 10:00:00 GMT</pubDate></item></rss>')
     itens = noticias.ler_feed(xml, "Catástrofes 0", True, "catastrofe")
     assert itens[0]["veiculo"] == "UOL" and itens[0]["titulo"] == "Avião cai em Minas" and itens[0]["tema"] == "catastrofe"
+
+
+def test_repasses_filtra_defesa_civil_e_soma_valores_com_virgula():
+    from app.collectors import defesa_civil_transf as dc
+    cab = ["ANO / MÊS", "TIPO TRANSFERÊNCIA", "UF", "NOME SUBFUNÇÃO", "NOME AÇÃO", "VALOR TRANSFERIDO"]
+    linhas = [
+        ["202410", "Legais", "RS", "Defesa civil", "ACOES DE PROTECAO E DEFESA CIVIL", "1000,50"],
+        ["202410", "Legais", "RS", "Saúde", "ATENCAO BASICA", "999,00"],               # fora: não é defesa civil
+        ["202410", "Voluntárias", "RS", "Segurança pública", "RESPOSTA A DESASTRES", "-300,25"],  # estorno real
+        ["202410", "Legais", "SC", "Segurança pública", "OUTRA ACAO", "50"],           # fora: sem palavra-chave
+        ["202410", "Legais", "XX", "Defesa civil", "ACOES DE PROTECAO E DEFESA CIVIL", "10"],     # UF inválida
+    ]
+    ag = dc.agregar(linhas, cab)
+    assert list(ag) == ["RS"]
+    assert ag["RS"]["valor"] == 700.25 and ag["RS"]["linhas"] == 2
+    assert ag["RS"]["por_tipo"] == {"Legais": 1000.5, "Voluntárias": -300.25}
+
+
+def test_transferencias_sem_dado_do_ano_devolve_nulo_nao_zero(db=None):
+    from app.catastrofes import tragedias
+    d = tragedias(None, None)  # sem banco: nenhum ano coletado
+    assert all(x["repasse_federal"] is None for x in d["itens"])

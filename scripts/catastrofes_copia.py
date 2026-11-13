@@ -1,7 +1,7 @@
 """Grava na cópia estática a aba Catástrofes e acidentes num pacote só dela: p/catastrofes.json.
 
 Uso: DATABASE_URL=... python -m scripts.catastrofes_copia [site/dados] [--sem-partes]
-Chaves: /catastrofes (tragédias), /catastrofes/rodovias e /catastrofes/rodovias?ano=AAAA (um por ano com dados).
+Chaves: /catastrofes (tragédias), /catastrofes/rodovias, /catastrofes/rodovias?ano=AAAA, /catastrofes/transferencias e ?ano=AAAA.
 As notícias de catástrofes já vêm no noticias.json do robô rápido (tema "catastrofe")."""
 from __future__ import annotations
 
@@ -31,6 +31,9 @@ def gravar(pasta: Path, partes: bool = True) -> list[str]:
     r = cli.get("/catastrofes/rodovias")
     if r.status_code == 200:
         chaves += [f"/catastrofes/rodovias?ano={a}" for a in r.json().get("anos", [])]
+    t = cli.get("/catastrofes/transferencias")
+    if t.status_code == 200:
+        chaves += ["/catastrofes/transferencias"] + [f"/catastrofes/transferencias?ano={a}" for a in t.json().get("anos", [])]
     d = {}
     for k in chaves:
         resp = cli.get(k)

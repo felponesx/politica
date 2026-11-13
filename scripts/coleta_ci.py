@@ -139,6 +139,7 @@ VALIDADE = {
     "camara-orientacoes": ("camara", "orientacoes", (), lambda p: 1),
     "prf-acidentes": ("prf", "acidentes", (), lambda p: 20),
     "prf-pessoas": ("prf", "pessoas", (), lambda p: 20),
+    "defesa-civil-transferencias": ("portal", "defesa-civil-transferencias", (), lambda p: 60),
     "inpe-desmatamento": ("inpe", "desmatamento", (), lambda p: 30),
     "inpe-prodes-mata-atlantica": ("inpe", "prodes_mata_atlantica", (), lambda p: 30),
     "ibge-trabalho": ("ibge", "trabalho", (), lambda p: 30),
