@@ -2098,16 +2098,16 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .cat-leg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2)}
 .cat-leg i{width:10px;height:10px;border-radius:50%;background:#E5484D;display:inline-block}
 #catMapa{margin:8px auto 0;max-width:640px}
-#catMapa svg.geo{width:100%;height:auto}
+#catMapa svg.geo{width:100%;height:auto;overflow:hidden;filter:none}
 #catMapa svg.geo path.st{fill:#D9DDE3;stroke:#fff;stroke-width:.8;transition:fill .5s,opacity .6s,filter .6s}
-#catMapa svg.geo.zoomed path.st{opacity:.3;filter:blur(1.2px)}
+#catMapa svg.geo.zoomed path.st{opacity:0}
 #catMapa svg.geo.zoomed path.st.alvo{opacity:1;filter:none;fill:#BFD3FA}
 #catMapa .pin{cursor:pointer;outline:none}
 #catMapa .pin .ponto{fill:#E5484D;stroke:#fff;stroke-width:1.6}
 #catMapa .pin:hover .ponto,#catMapa .pin:focus .ponto{fill:#B91C1C}
 #catMapa .pin .pulso{fill:rgba(229,72,77,.16);transform-box:fill-box;transform-origin:center;animation:catPulso 2.6s ease-out infinite}
 #catMapa .pin:nth-child(3n) .pulso{animation-delay:.8s}#catMapa .pin:nth-child(3n+1) .pulso{animation-delay:1.6s}
-#catMapa svg.geo.zoomed g.pin:not(.alvo):not(.mesmo){opacity:.18;transition:opacity .5s}
+#catMapa svg.geo.zoomed g.pin:not(.alvo):not(.mesmo){opacity:0;pointer-events:none;transition:opacity .5s}
 #catMapa svg.geo.zoomed g.pin.alvo .ponto{stroke:#1D2939;stroke-width:1.6}
 .cat-outras{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
 .cat-chip{all:unset;box-sizing:border-box;cursor:pointer;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -5943,7 +5943,7 @@ function catAnimaVB(svg,de,para,ms){const a=de||svg.getAttribute("viewBox").spli
  const passo=now=>{const t=Math.min(1,(now-t0)/ms),k=ease(t);svg.setAttribute("viewBox",a.map((v,i)=>(v+(para[i]-v)*k).toFixed(2)).join(" "));if(t<1)requestAnimationFrame(passo)};
  requestAnimationFrame(passo)}
 let CAT_LISTA=[];
-function catAbrir(id){const x=CAT_LISTA.find(i=>i.id===id);const svg=$("#catMapa svg.geo");if(!x||!svg)return;
+function catAbrir(id){const x=CAT_LISTA.find(i=>i.id===id);const svg=$("#catMapa svg.geo");if(!x||!svg)return;clearTimeout(CAT_T);
  const [cx,cy]=CAT_POS[x.id]||catAfim()(x.lon,x.lat),W=GEO.w/3.2,H=GEO.h/3.2;
  svg.classList.add("zoomed");svg.querySelectorAll("path.st").forEach(p=>p.classList.toggle("alvo",p.dataset.uf===x.uf));svg.querySelectorAll("g.pin").forEach(g=>{g.classList.toggle("alvo",g.dataset.id===x.id);g.classList.toggle("mesmo",g.dataset.uf===x.uf)});
  catAnimaVB(svg,null,[cx-W/2,cy-H/2,W,H],850);
@@ -5951,7 +5951,8 @@ function catAbrir(id){const x=CAT_LISTA.find(i=>i.id===id);const svg=$("#catMapa
  $("#catFechar").onclick=catFechar;
  $("#catHist").onclick=e=>{const c=e.target.closest(".cat-chip");if(c)catAbrir(c.dataset.id)};
  $("#catHist").scrollIntoView({behavior:"smooth",block:"nearest"})}
-function catFechar(){const svg=$("#catMapa svg.geo");if(svg){catAnimaVB(svg,null,CAT_VB_INI().split(" ").map(Number),700);svg.classList.remove("zoomed");svg.querySelectorAll("path.alvo,g.pin.alvo").forEach(p=>p.classList.remove("alvo"));svg.querySelectorAll("g.pin.mesmo").forEach(g=>g.classList.remove("mesmo"))}$("#catHist").innerHTML=""}
+let CAT_T=null;
+function catFechar(){const svg=$("#catMapa svg.geo");if(svg){catAnimaVB(svg,null,CAT_VB_INI().split(" ").map(Number),700);clearTimeout(CAT_T);CAT_T=setTimeout(()=>{svg.classList.remove("zoomed");svg.querySelectorAll("path.alvo,g.pin.alvo").forEach(p=>p.classList.remove("alvo"));svg.querySelectorAll("g.pin.mesmo").forEach(g=>g.classList.remove("mesmo"))},semMov()?0:720)}$("#catHist").innerHTML=""}
 function catHistoria(x){const im=x.imagem?`<img src="${esc(x.imagem)}" alt="${esc(x.titulo)}" loading="lazy">`:`<div class="cat-sem">Sem foto adequada disponível para esta tragédia.</div>`;
  const cred=x.credito_imagem?`<div class="small muted cat-cred">Foto: ${esc(x.credito_imagem.autor)} · ${esc(x.credito_imagem.licenca)} · <a href="${esc(x.credito_imagem.pagina)}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`:"";
  const rep=x.repasse_federal?`<div class="cat-rep">Em ${x.repasse_federal.ano}, a União repassou <b>${brlC(x.repasse_federal.valor)}</b> para defesa civil em ${esc(x.uf)}. <span class="muted">Esse total inclui outros desastres do ano.</span></div>`:"";
