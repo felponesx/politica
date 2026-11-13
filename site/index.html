@@ -2107,7 +2107,11 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #catMapa .pin:hover .ponto,#catMapa .pin:focus .ponto{fill:#B91C1C}
 #catMapa .pin .pulso{fill:rgba(229,72,77,.16);transform-box:fill-box;transform-origin:center;animation:catPulso 2.6s ease-out infinite}
 #catMapa .pin:nth-child(3n) .pulso{animation-delay:.8s}#catMapa .pin:nth-child(3n+1) .pulso{animation-delay:1.6s}
-#catMapa svg.geo.zoomed g.pin:not(.alvo){opacity:.18;transition:opacity .5s}
+#catMapa svg.geo.zoomed g.pin:not(.alvo):not(.mesmo){opacity:.18;transition:opacity .5s}
+#catMapa svg.geo.zoomed g.pin.alvo .ponto{stroke:#1D2939;stroke-width:1.6}
+.cat-outras{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.cat-chip{all:unset;box-sizing:border-box;cursor:pointer;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.cat-chip:hover,.cat-chip:focus-visible{border-color:#E5484D;color:#B91C1C}
 #catMapa svg.geo.zoomed g.pin.alvo .pulso{animation:none;opacity:0}
 @keyframes catPulso{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.9);opacity:0}}
 @media (prefers-reduced-motion:reduce){#catMapa .pin .pulso{animation:none;opacity:0}}
@@ -5918,8 +5922,19 @@ function catAfim(){const pares=Object.entries(CAT_CENT).filter(([u])=>GEO.p[u]).
  const X=ajusta(pares.map(r=>r.x)),Y=ajusta(pares.map(r=>r.y));
  return(lo,la)=>[X[0]*lo+X[1]*la+X[2],Y[0]*lo+Y[1]*la+Y[2]]}
 const CAT_VB_INI=()=>`-4 -4 ${GEO.w+8} ${GEO.h+8}`;
+let CAT_POS={};
+// pontos muito próximos (ex.: três tragédias em São Paulo) são afastados no desenho para poderem ser tocados
+function catEspalha(pts,dmin){const p=pts.map(q=>({...q}));
+ for(let it=0;it<80;it++){let mexeu=false;
+  for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++){let dx=p[j].x-p[i].x,dy=p[j].y-p[i].y,d=Math.hypot(dx,dy);
+   if(d<dmin){if(d<.01){const a=(i*2.399+j)%6.283;dx=Math.cos(a);dy=Math.sin(a);d=1}
+    const f=(dmin-d)/2/d;p[i].x-=dx*f;p[i].y-=dy*f;p[j].x+=dx*f;p[j].y+=dy*f;mexeu=true}}
+  if(!mexeu)break}
+ return p}
 function catMapa(itens){const proj=catAfim();
- const pinos=itens.filter(x=>x.lat!=null&&x.lon!=null).map(x=>{const [px,py]=proj(x.lon,x.lat);return`<g class="pin" data-id="${esc(x.id)}" data-uf="${esc(x.uf)}" tabindex="0" role="button" aria-label="${esc(x.titulo)}"><circle class="pulso" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="9"/><circle class="ponto" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5.5"/><title>${esc(x.titulo)}</title></g>`}).join("");
+ const base0=itens.filter(x=>x.lat!=null&&x.lon!=null).map(x=>{const [px,py]=proj(x.lon,x.lat);return{id:x.id,uf:x.uf,titulo:x.titulo,x:px,y:py}});
+ const pts=catEspalha(base0,9);CAT_POS={};pts.forEach(q=>CAT_POS[q.id]=[q.x,q.y]);
+ const pinos=pts.map(q=>`<g class="pin" data-id="${esc(q.id)}" data-uf="${esc(q.uf)}" tabindex="0" role="button" aria-label="${esc(q.titulo)}"><circle class="pulso" cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="7.5"/><circle class="ponto" cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="4.2"/><title>${esc(q.titulo)}</title></g>`).join("");
  const base=brMap(null,null,null,{fillFn:()=>"#D9DDE3",labels:false,legend:false});
  $("#catMapa").innerHTML=base.replace("</svg>",`<g class="pinos">${pinos}</g></svg>`);}
 function catAnimaVB(svg,de,para,ms){const a=de||svg.getAttribute("viewBox").split(/\s+/).map(Number);
@@ -5929,13 +5944,14 @@ function catAnimaVB(svg,de,para,ms){const a=de||svg.getAttribute("viewBox").spli
  requestAnimationFrame(passo)}
 let CAT_LISTA=[];
 function catAbrir(id){const x=CAT_LISTA.find(i=>i.id===id);const svg=$("#catMapa svg.geo");if(!x||!svg)return;
- const [cx,cy]=catAfim()(x.lon,x.lat),W=GEO.w/3.2,H=GEO.h/3.2;
- svg.classList.add("zoomed");svg.querySelectorAll("path.st").forEach(p=>p.classList.toggle("alvo",p.dataset.uf===x.uf));svg.querySelectorAll("g.pin").forEach(g=>g.classList.toggle("alvo",g.dataset.id===x.id));
+ const [cx,cy]=CAT_POS[x.id]||catAfim()(x.lon,x.lat),W=GEO.w/3.2,H=GEO.h/3.2;
+ svg.classList.add("zoomed");svg.querySelectorAll("path.st").forEach(p=>p.classList.toggle("alvo",p.dataset.uf===x.uf));svg.querySelectorAll("g.pin").forEach(g=>{g.classList.toggle("alvo",g.dataset.id===x.id);g.classList.toggle("mesmo",g.dataset.uf===x.uf)});
  catAnimaVB(svg,null,[cx-W/2,cy-H/2,W,H],850);
  $("#catHist").innerHTML=catHistoria(x);
  $("#catFechar").onclick=catFechar;
+ $("#catHist").onclick=e=>{const c=e.target.closest(".cat-chip");if(c)catAbrir(c.dataset.id)};
  $("#catHist").scrollIntoView({behavior:"smooth",block:"nearest"})}
-function catFechar(){const svg=$("#catMapa svg.geo");if(svg){catAnimaVB(svg,null,CAT_VB_INI().split(" ").map(Number),700);svg.classList.remove("zoomed");svg.querySelectorAll("path.alvo,g.pin.alvo").forEach(p=>p.classList.remove("alvo"))}$("#catHist").innerHTML=""}
+function catFechar(){const svg=$("#catMapa svg.geo");if(svg){catAnimaVB(svg,null,CAT_VB_INI().split(" ").map(Number),700);svg.classList.remove("zoomed");svg.querySelectorAll("path.alvo,g.pin.alvo").forEach(p=>p.classList.remove("alvo"));svg.querySelectorAll("g.pin.mesmo").forEach(g=>g.classList.remove("mesmo"))}$("#catHist").innerHTML=""}
 function catHistoria(x){const im=x.imagem?`<img src="${esc(x.imagem)}" alt="${esc(x.titulo)}" loading="lazy">`:`<div class="cat-sem">Sem foto adequada disponível para esta tragédia.</div>`;
  const cred=x.credito_imagem?`<div class="small muted cat-cred">Foto: ${esc(x.credito_imagem.autor)} · ${esc(x.credito_imagem.licenca)} · <a href="${esc(x.credito_imagem.pagina)}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`:"";
  const rep=x.repasse_federal?`<div class="cat-rep">Em ${x.repasse_federal.ano}, a União repassou <b>${brlC(x.repasse_federal.valor)}</b> para defesa civil em ${esc(x.uf)}. <span class="muted">Esse total inclui outros desastres do ano.</span></div>`:"";
@@ -5947,7 +5963,8 @@ function catHistoria(x){const im=x.imagem?`<img src="${esc(x.imagem)}" alt="${es
   <p class="cat-texto">${esc(x.historia||x.resumo)}</p>
   ${rep}
   <div class="small">${x.historia_pagina?`<a href="${esc(x.historia_pagina)}" target="_blank" rel="noopener">Matéria completa na Wikipédia ›</a> · `:""}${x.fontes.map(q=>`<a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(q.nome)} ›</a>`).join(" · ")}</div>
-  <div class="small muted" style="margin-top:6px">Ponto no mapa: ${esc(x.ponto||"")}</div></div></div></div>`}
+  <div class="small muted" style="margin-top:6px">Ponto no mapa: ${esc(x.ponto||"")}</div>${catOutras(x)}</div></div></div>`}
+function catOutras(x){const o=CAT_LISTA.filter(i=>i.uf===x.uf&&i.id!==x.id);if(!o.length)return"";return`<div class="cat-outras"><span class="small muted">Outras tragédias em ${esc((UF[x.uf]||{}).nome||x.uf)}:</span>${o.map(i=>`<button class="cat-chip" data-id="${esc(i.id)}">${esc(i.titulo)}</button>`).join("")}</div>`}
 function catRepBloco(R){if(!R||R.erro)return"";const top=(R.estados||[]).slice(0,8);
  const anos=(R.anos||[]).map(y=>`<option value="${y}" ${y===R.ano?"selected":""}>${y}</option>`).join("");
  return`<div class="panel mt cat-rep-box"><div class="cat-lhead"><div><h2>Dinheiro federal para defesa civil</h2><p class="small muted" style="margin:4px 0 0">Quanto a União repassou a estados e municípios para ações de defesa civil. Não é o gasto do estado e não separa por desastre.</p></div><select id="catAnoD" data-pill="Ano">${anos}</select></div>
@@ -5955,7 +5972,7 @@ function catRepBloco(R){if(!R||R.erro)return"";const top=(R.estados||[]).slice(0
   <div class="mt">${hbars(top.map(e=>[(UF[e.uf]||{}).nome||e.uf,e.valor]))}</div><p class="small muted" style="margin:8px 0 0">Os 8 estados que mais receberam no ano.</p></div>`}
 function catLigaAno(){const sel=$("#catAnoD");if(!sel)return;sel.onchange=e=>apiGet("/catastrofes/transferencias?ano="+e.target.value).then(N=>{const b=document.querySelector(".cat-rep-box");if(b)b.outerHTML=catRepBloco(N);catLigaAno()}).catch(()=>{})}
 function catTragedias(v,D,R){CAT_LISTA=D.itens||[];let f={tipo:""};
- v.innerHTML=`<div class="panel cat-mapa-box"><div class="cat-mhead"><div><h2>Onde aconteceram</h2><p class="small muted" style="margin:4px 0 0">Toque em um ponto vermelho para ver o que aconteceu.</p></div><span class="cat-leg"><i></i>tragédia marcante</span></div><div id="catMapa"></div><div id="catHist"></div></div>
+ v.innerHTML=`<div class="panel cat-mapa-box"><div class="cat-mhead"><div><h2>Onde aconteceram</h2><p class="small muted" style="margin:4px 0 0">Toque em um ponto vermelho para ver o que aconteceu. Pontos muito próximos são afastados no desenho para poderem ser tocados; o local certo está em cada cartão.</p></div><span class="cat-leg"><i></i>tragédia marcante</span></div><div id="catMapa"></div><div id="catHist"></div></div>
   ${catRepBloco(R)}
   <div class="panel mt"><div class="cat-lhead"><h2>Todas as tragédias</h2><select id="catT" data-pill="Tipo"><option value="">Todos os tipos</option>${Object.entries(D.tipos||{}).map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join("")}</select></div>
   <p class="small muted" id="catN" style="margin:4px 0 10px"></p><div id="catL" class="cat-grid"></div></div>
