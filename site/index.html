@@ -2105,8 +2105,11 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #catMapa .pin{cursor:pointer;outline:none}
 #catMapa .pin .ponto{fill:#E5484D;stroke:#fff;stroke-width:1.6}
 #catMapa .pin:hover .ponto,#catMapa .pin:focus .ponto{fill:#B91C1C}
-#catMapa .pin .pulso{fill:rgba(229,72,77,.28);transform-box:fill-box;transform-origin:center;animation:catPulso 2.2s ease-out infinite}
-@keyframes catPulso{0%{transform:scale(.6);opacity:1}100%{transform:scale(2.4);opacity:0}}
+#catMapa .pin .pulso{fill:rgba(229,72,77,.16);transform-box:fill-box;transform-origin:center;animation:catPulso 2.6s ease-out infinite}
+#catMapa .pin:nth-child(3n) .pulso{animation-delay:.8s}#catMapa .pin:nth-child(3n+1) .pulso{animation-delay:1.6s}
+#catMapa svg.geo.zoomed g.pin:not(.alvo){opacity:.18;transition:opacity .5s}
+#catMapa svg.geo.zoomed g.pin.alvo .pulso{animation:none;opacity:0}
+@keyframes catPulso{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.9);opacity:0}}
 @media (prefers-reduced-motion:reduce){#catMapa .pin .pulso{animation:none;opacity:0}}
 .cat-hist{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
 .cat-hgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
@@ -5903,19 +5906,20 @@ const CAT_G=[["Quantidade","acidentes","pessoas","feridos","mortos"],["Quem esta
 const CAT_COR_ENV={pedestre:"#E5484D",motociclista:"#F5A524",motorista_carro:"#2F6FED",caminhao_carreta:"#8B5CF6",onibus:"#1BAF7A",bicicleta:"#0EA5E9"};
 const CAT_TIPO_COR={aviao:"#2F6FED",barragem:"#8B5CF6",chuva_deslizamento:"#1BAF7A",incendio:"#EB6834",rodovia:"#F5A524",desabamento:"#E5484D"};
 const CAT_TIPO_NOME={aviao:"Avião",barragem:"Barragem",chuva_deslizamento:"Chuva e deslizamento",incendio:"Incêndio",rodovia:"Rodovia",desabamento:"Desabamento"};
-const CAT_CENT={AC:[-9.0,-70.5],AL:[-9.6,-36.6],AP:[1.4,-51.8],AM:[-4.2,-64.5],BA:[-12.5,-41.7],CE:[-5.2,-39.5],DF:[-15.8,-47.8],ES:[-19.6,-40.7],GO:[-15.9,-49.6],MA:[-5.4,-45.4],MT:[-12.7,-56.0],MS:[-20.5,-54.6],MG:[-18.5,-44.6],PA:[-3.9,-52.7],PB:[-7.2,-36.7],PR:[-24.6,-51.5],PE:[-8.4,-37.9],PI:[-7.7,-42.7],RJ:[-22.3,-42.7],RN:[-5.8,-36.5],RS:[-30.0,-53.2],RO:[-11.0,-62.8],RR:[2.1,-61.4],SC:[-27.3,-50.3],SP:[-22.3,-48.7],SE:[-10.6,-37.4],TO:[-9.8,-48.3]};
-// projeção: latitude/longitude -> desenho do mapa. Albers (a do mapa do IBGE), depois ajuste linear sobre o centro aproximado de cada estado
-function catAfim(){const R=Math.PI/180,f1=-2*R,f2=-22*R,f0=-12*R,l0=-54,n=(Math.sin(f1)+Math.sin(f2))/2,C=Math.cos(f1)**2+2*n*Math.sin(f1),r0=Math.sqrt(C-2*n*Math.sin(f0))/n;
- const alb=(la,lo)=>{const r=Math.sqrt(C-2*n*Math.sin(la*R))/n,th=n*(lo-l0)*R;return[r*Math.sin(th),r0-r*Math.cos(th)]};
- const pares=Object.entries(CAT_CENT).filter(([u])=>GEO.c[u]).map(([u,[la,lo]])=>{const [uu,vv]=alb(la,lo);return{u:uu,v:vv,x:GEO.c[u][0],y:GEO.c[u][1]}});
- const ajusta=ys=>{const A=[[0,0,0],[0,0,0],[0,0,0]],B=[0,0,0];pares.forEach((r,i)=>{const v=[r.u,r.v,1];for(let p=0;p<3;p++){B[p]+=v[p]*ys[i];for(let q=0;q<3;q++)A[p][q]+=v[p]*v[q]}});
+const CAT_CENT={AC:[-9.2133,-70.4729],AM:[-4.1541,-64.6535],PA:[-3.9804,-53.0715],AP:[1.4475,-51.962],TO:[-10.1481,-48.3313],MA:[-5.0722,-45.2878],PI:[-7.3893,-42.9705],CE:[-5.0932,-39.6158],RN:[-5.8398,-36.6733],PB:[-7.121,-36.8325],PE:[-8.3252,-37.9977],AL:[-9.5137,-36.6248],SE:[-10.5838,-37.4438],BA:[-12.4753,-41.7212],MG:[-18.4562,-44.6734],ES:[-19.5752,-40.6685],RJ:[-22.1957,-42.6628],SP:[-22.2658,-48.729],PR:[-24.6359,-51.6166],SC:[-27.2474,-50.4747],RS:[-29.7865,-53.2452],MS:[-20.3273,-54.8456],MT:[-12.949,-55.9123],GO:[-16.0412,-49.6225],DF:[-15.7812,-47.7969],RO:[-10.9131,-62.842],RR:[2.0827,-61.3919]};
+// projeção: latitude/longitude -> desenho do mapa. O desenho é uma transformação linear da latitude e longitude:
+// ajustamos sobre o centroide de cada polígono desenhado (GEO.p) e o centro oficial do estado (CAT_CENT).
+function catCentroPoligono(d){let A=0,cx=0,cy=0;d.split("M").filter(x=>x.trim()).forEach(rg=>{const pts=[...rg.matchAll(/(-?[\d.]+)\s+(-?[\d.]+)/g)].map(m=>[+m[1],+m[2]]);
+ for(let i=0;i<pts.length;i++){const [x0,y0]=pts[i],[x1,y1]=pts[(i+1)%pts.length],cr=x0*y1-x1*y0;A+=cr;cx+=(x0+x1)*cr;cy+=(y0+y1)*cr}});return[cx/(3*A),cy/(3*A)]}
+function catAfim(){const pares=Object.entries(CAT_CENT).filter(([u])=>GEO.p[u]).map(([u,[la,lo]])=>{const [x,y]=catCentroPoligono(GEO.p[u]);return{la,lo,x,y}});
+ const ajusta=ys=>{const A=[[0,0,0],[0,0,0],[0,0,0]],B=[0,0,0];pares.forEach((r,i)=>{const v=[r.lo,r.la,1];for(let p=0;p<3;p++){B[p]+=v[p]*ys[i];for(let q=0;q<3;q++)A[p][q]+=v[p]*v[q]}});
   for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){const f=A[j][i]/A[i][i];for(let k=i;k<3;k++)A[j][k]-=f*A[i][k];B[j]-=f*B[i]}
   const w=[0,0,0];for(let i=2;i>=0;i--){let t=B[i];for(let k=i+1;k<3;k++)t-=A[i][k]*w[k];w[i]=t/A[i][i]}return w};
  const X=ajusta(pares.map(r=>r.x)),Y=ajusta(pares.map(r=>r.y));
- return(lo,la)=>{const [u,v]=alb(la,lo);return[X[0]*u+X[1]*v+X[2],Y[0]*u+Y[1]*v+Y[2]]}}
+ return(lo,la)=>[X[0]*lo+X[1]*la+X[2],Y[0]*lo+Y[1]*la+Y[2]]}
 const CAT_VB_INI=()=>`-4 -4 ${GEO.w+8} ${GEO.h+8}`;
 function catMapa(itens){const proj=catAfim();
- const pinos=itens.filter(x=>x.lat!=null&&x.lon!=null).map(x=>{const [px,py]=proj(x.lon,x.lat);return`<g class="pin" data-id="${esc(x.id)}" tabindex="0" role="button" aria-label="${esc(x.titulo)}"><circle class="pulso" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="9"/><circle class="ponto" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5.5"/><title>${esc(x.titulo)}</title></g>`}).join("");
+ const pinos=itens.filter(x=>x.lat!=null&&x.lon!=null).map(x=>{const [px,py]=proj(x.lon,x.lat);return`<g class="pin" data-id="${esc(x.id)}" data-uf="${esc(x.uf)}" tabindex="0" role="button" aria-label="${esc(x.titulo)}"><circle class="pulso" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="9"/><circle class="ponto" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5.5"/><title>${esc(x.titulo)}</title></g>`}).join("");
  const base=brMap(null,null,null,{fillFn:()=>"#D9DDE3",labels:false,legend:false});
  $("#catMapa").innerHTML=base.replace("</svg>",`<g class="pinos">${pinos}</g></svg>`);}
 function catAnimaVB(svg,de,para,ms){const a=de||svg.getAttribute("viewBox").split(/\s+/).map(Number);
@@ -5926,12 +5930,12 @@ function catAnimaVB(svg,de,para,ms){const a=de||svg.getAttribute("viewBox").spli
 let CAT_LISTA=[];
 function catAbrir(id){const x=CAT_LISTA.find(i=>i.id===id);const svg=$("#catMapa svg.geo");if(!x||!svg)return;
  const [cx,cy]=catAfim()(x.lon,x.lat),W=GEO.w/3.2,H=GEO.h/3.2;
- svg.classList.add("zoomed");svg.querySelectorAll("path.st").forEach(p=>p.classList.toggle("alvo",p.dataset.uf===x.uf));
+ svg.classList.add("zoomed");svg.querySelectorAll("path.st").forEach(p=>p.classList.toggle("alvo",p.dataset.uf===x.uf));svg.querySelectorAll("g.pin").forEach(g=>g.classList.toggle("alvo",g.dataset.id===x.id));
  catAnimaVB(svg,null,[cx-W/2,cy-H/2,W,H],850);
  $("#catHist").innerHTML=catHistoria(x);
  $("#catFechar").onclick=catFechar;
  $("#catHist").scrollIntoView({behavior:"smooth",block:"nearest"})}
-function catFechar(){const svg=$("#catMapa svg.geo");if(svg){catAnimaVB(svg,null,CAT_VB_INI().split(" ").map(Number),700);svg.classList.remove("zoomed");svg.querySelectorAll("path.alvo").forEach(p=>p.classList.remove("alvo"))}$("#catHist").innerHTML=""}
+function catFechar(){const svg=$("#catMapa svg.geo");if(svg){catAnimaVB(svg,null,CAT_VB_INI().split(" ").map(Number),700);svg.classList.remove("zoomed");svg.querySelectorAll("path.alvo,g.pin.alvo").forEach(p=>p.classList.remove("alvo"))}$("#catHist").innerHTML=""}
 function catHistoria(x){const im=x.imagem?`<img src="${esc(x.imagem)}" alt="${esc(x.titulo)}" loading="lazy">`:`<div class="cat-sem">Sem foto adequada disponível para esta tragédia.</div>`;
  const cred=x.credito_imagem?`<div class="small muted cat-cred">Foto: ${esc(x.credito_imagem.autor)} · ${esc(x.credito_imagem.licenca)} · <a href="${esc(x.credito_imagem.pagina)}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`:"";
  const rep=x.repasse_federal?`<div class="cat-rep">Em ${x.repasse_federal.ano}, a União repassou <b>${brlC(x.repasse_federal.valor)}</b> para defesa civil em ${esc(x.uf)}. <span class="muted">Esse total inclui outros desastres do ano.</span></div>`:"";

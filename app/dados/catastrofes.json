@@ -16,9 +16,9 @@
    }
   ],
   "wiki": "Incêndio na boate Kiss",
-  "lat": -29.6842,
-  "lon": -53.8069,
-  "ponto": "Santa Maria (RS)",
+  "lat": -29.7849,
+  "lon": -53.825,
+  "ponto": "Centro do município de Santa Maria (RS)",
   "imagem": null
  },
  {
@@ -38,9 +38,9 @@
    }
   ],
   "wiki": "Rompimento de barragem em Brumadinho",
-  "lat": -20.1186,
-  "lon": -44.1983,
-  "ponto": "Brumadinho (MG), mina Córrego do Feijão"
+  "lat": -20.1778,
+  "lon": -44.1227,
+  "ponto": "Centro do município de Brumadinho (MG); a barragem fica na mina Córrego do Feijão, a poucos quilômetros do centro"
  },
  {
   "id": "voepass-2283-2024",
@@ -59,9 +59,9 @@
    }
   ],
   "wiki": "Voo Voepass 2283",
-  "lat": -23.0296,
-  "lon": -46.9758,
-  "ponto": "Vinhedo (SP)",
+  "lat": -23.0465,
+  "lon": -46.9792,
+  "ponto": "Centro do município de Vinhedo (SP)",
   "imagem": null
  },
  {
@@ -81,9 +81,9 @@
    }
   ],
   "wiki": "Enchentes e deslizamentos em Petrópolis em 2022",
-  "lat": -22.5049,
-  "lon": -43.1789,
-  "ponto": "Petrópolis (RJ)"
+  "lat": -22.398,
+  "lon": -43.1568,
+  "ponto": "Centro do município de Petrópolis (RJ)"
  },
  {
   "id": "mariana-2015",
@@ -102,9 +102,9 @@
    }
   ],
   "wiki": "Rompimento de barragem em Mariana",
-  "lat": -20.3762,
-  "lon": -43.4322,
-  "ponto": "Bento Rodrigues, Mariana (MG)"
+  "lat": -20.3291,
+  "lon": -43.3313,
+  "ponto": "Centro do município de Mariana (MG); a tragédia foi no distrito de Bento Rodrigues, a cerca de 10 km"
  },
  {
   "id": "tam-3054-2007",
@@ -148,9 +148,9 @@
    }
   ],
   "wiki": "Voo Gol 1907",
-  "lat": -10.0,
-  "lon": -54.9,
-  "ponto": "Área aproximada na Serra do Cachimbo (MT); ponto genérico",
+  "lat": -12.949,
+  "lon": -55.9123,
+  "ponto": "Centro do estado de Mato Grosso: o local exato fica numa área de mata, sem município",
   "imagem": null
  },
  {
@@ -172,7 +172,7 @@
   "wiki": "Incêndio no Edifício Joelma",
   "lat": -23.5456,
   "lon": -46.6357,
-  "ponto": "Centro de São Paulo (SP)"
+  "ponto": "Centro de São Paulo, perto da Praça da Bandeira (SP)"
  },
  {
   "id": "teofilo-otoni-2024",
@@ -191,9 +191,9 @@
    }
   ],
   "wiki": "Acidente rodoviário de Teófilo Otoni",
-  "lat": -17.8579,
-  "lon": -41.5081,
-  "ponto": "BR-116, Teófilo Otoni (MG); ponto da cidade",
+  "lat": -17.7146,
+  "lon": -41.3837,
+  "ponto": "Centro do município de Teófilo Otoni (MG); o acidente foi no distrito de Lajinha, a cerca de 20 km",
   "imagem": null
  },
  {
@@ -214,8 +214,8 @@
    }
   ],
   "wiki": "Enchentes no Rio Grande do Sul em 2024",
-  "lat": -30.0331,
-  "lon": -51.23,
-  "ponto": "Estado todo; o ponto é a capital, Porto Alegre"
+  "lat": -29.7865,
+  "lon": -53.2452,
+  "ponto": "Centro do estado do Rio Grande do Sul: a enchente atingiu muitos municípios"
  }
 ]
