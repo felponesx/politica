@@ -240,6 +240,15 @@ def instalar_inicio() -> int:
     return r.returncode
 
 
+def instancia_unica() -> bool:
+    """Windows: só um BRASIL+ por vez (o instalador usa o mesmo nome para fechar o programa ao atualizar). False = já está aberto."""
+    if sys.platform != "win32":
+        return True
+    import ctypes
+    ctypes.windll.kernel32.CreateMutexW(None, False, "BRASILMaisMutex")
+    return ctypes.windll.kernel32.GetLastError() != 183   # ERROR_ALREADY_EXISTS
+
+
 def abrir_navegador(porta: int) -> None:
     import urllib.request
     for _ in range(60):
@@ -253,8 +262,17 @@ def abrir_navegador(porta: int) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
+    if sys.stdout is None or sys.stderr is None:   # programa sem janela preta: nada de print quebrando
+        sys.stdout = sys.stderr = open(os.devnull, "w", encoding="utf-8")
+    if "--versao" in argv:
+        from app.versao import VERSAO
+        print(VERSAO)
+        return 0
     if "--iniciar-com-windows" in argv:
         return instalar_inicio()
+    if "--rodar" not in argv and not instancia_unica():   # já aberto: só mostra o painel
+        webbrowser.open(f"http://127.0.0.1:{int(os.environ.get('PORT') or PORTA_PADRAO)}/painel")
+        return 0
     base = pasta_base(argv)
     porta = int(os.environ.get("PORT") or PORTA_PADRAO)
     preparar(base, porta)
@@ -279,9 +297,24 @@ def main(argv: list[str] | None = None) -> int:
 
     import uvicorn
 
+    from app import bandeja, atualizador
     from app.main import app
+    from app.versao import VERSAO
+    servidor = uvicorn.Server(uvicorn.Config(app, host=os.environ.get("API_BIND", "127.0.0.1"), port=porta, log_config=None))
+    pedir_saida = lambda: setattr(servidor, "should_exit", True)   # noqa: E731
+    agendador.add_job(lambda: log.info("atualizador: %s", atualizador.verificar(pedir_saida, bandeja.notificar)), "interval",
+                      hours=6, id="atualizador", next_run_time=datetime.now(agendador.timezone) + timedelta(minutes=2))
     try:
-        uvicorn.Server(uvicorn.Config(app, host=os.environ.get("API_BIND", "127.0.0.1"), port=porta, log_config=None)).run()
+        if "--sem-bandeja" in argv:
+            servidor.run()
+        else:   # servidor em segundo plano e o ícone perto do relógio na linha principal; sem ícone, espera o servidor
+            fio = threading.Thread(target=servidor.run, name="servidor")
+            fio.start()
+            if not bandeja.rodar(porta, VERSAO, pedir_saida):
+                fio.join()
+            else:
+                servidor.should_exit = True
+                fio.join(timeout=30)
     finally:
         agendador.shutdown(wait=False)
     return 0

@@ -15,3 +15,4 @@ shapely>=2,<3
 apscheduler==3.10.*
 pillow==13.*
 sentry-sdk==2.*
+pystray==0.19.*; sys_platform == "win32"

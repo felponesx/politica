@@ -1,3 +1,16 @@
+# Instalar pelo instalador (recomendado)
+
+1. No GitHub: **Actions > Instalador do Windows > Run workflow**, versao `1.0.0` (ou crie a tag `v1.0.0`). Leva ~15 min.
+2. Em **Releases**, baixe `BRASILMais-Setup.exe`, de dois cliques e siga "Avancar" (nao pede administrador).
+3. Marque "Abrir o BRASIL+ sozinho quando eu ligar o computador". O programa fica com um icone perto do relogio (Abrir o painel / Sair).
+4. Seus dados ficam em `C:\Users\<voce>\BRASILMais` e nunca sao apagados ao instalar, atualizar ou desinstalar.
+5. **Atualizacao automatica**: a cada 6 h o programa olha a Release mais nova, baixa, confere o SHA-256 e instala sozinho
+   (fecha, troca e abre de novo). Para so avisar: `ATUALIZAR_AUTO=0` em `config.env`. Repositorio privado: ponha em `config.env`
+   `ATUALIZAR_TOKEN=` com uma chave do GitHub so de leitura (Contents: Read) - nunca mande essa chave no chat.
+6. Em outro computador/celular: abra pelo navegador o endereco do Tailscale do seu PC + `/painel`.
+
+Abaixo, o metodo antigo com scripts (so para quem quiser gerar na propria maquina).
+
 # Instalar o BRASIL+ no PC principal (Windows)
 
 O PC principal capta, confere, guarda e distribui os dados. O notebook e o celular só controlam, pelo Tailscale.

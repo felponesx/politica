@@ -615,3 +615,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 
 ## Organizador de links (nov/2026)
 - `POST /organizar` (`app/organizador.py`, token de administrador): recebe texto com links e devolve uma PROPOSTA por link (categoria, formato, intervalo, destinos). Usa o Gemini (`GEMINI_API_KEY`, `GEMINI_MODEL` no `.env`, saída validada) e, sem chave ou com resposta ruim, a regra local por palavras do endereço. Não baixa o link nem grava nada; ainda NÃO testado com chave real. Na prévia (artefato) a barra fica na aba Bots e usa só a regra local.
+
+## Instalador e atualização automática (nov/2026)
+- `.github/workflows/instalador.yml` (botão ou tag `vX.Y.Z`): PyInstaller sem janela (`--noconsole`), teste que abre o `.exe` e espera `/pronto`, Inno Setup (`instalar/BRASILMais.iss`, instala só para o usuário, atalhos, abrir ao ligar o Windows) e Release com `BRASILMais-Setup.exe` + `.sha256`. Versão em `app/versao.py` (o workflow troca).
+- Programa: ícone perto do relógio (`app/bandeja.py`, pystray), uma instância só (mutex `BRASILMaisMutex`), `--sem-bandeja`, `--versao`. `app/atualizador.py`: a cada 6 h consulta a última Release, baixa, CONFERE o SHA-256 (sem hash, não instala) e roda o instalador em silêncio. `ATUALIZAR_AUTO=0`, `ATUALIZAR_TOKEN` (repositório privado), `ATUALIZAR_REPO`. Testes: `tests/test_atualizador.py`.
+- NUNCA rodado num Windows real ainda (só o teste do workflow no GitHub); Mac/Linux fora do escopo por enquanto.
