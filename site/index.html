@@ -2098,7 +2098,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .cat-leg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2)}
 .cat-leg i{width:10px;height:10px;border-radius:50%;background:#E5484D;display:inline-block}
 #catMapa{margin:8px auto 0;max-width:640px}
-#catMapa svg.geo{width:100%;height:auto;overflow:hidden;filter:none}
+#catMapa svg.geo{width:100%;height:auto;max-height:480px;overflow:hidden;filter:none}
 #catMapa svg.geo path.st{fill:#D9DDE3;stroke:#fff;stroke-width:.8;transition:fill .5s,opacity .6s,filter .6s}
 #catMapa svg.geo.zoomed path.st{opacity:0}
 #catMapa svg.geo.zoomed path.st.alvo{opacity:1;filter:none;fill:#BFD3FA}
@@ -5943,10 +5943,17 @@ function catAnimaVB(svg,de,para,ms){const a=de||svg.getAttribute("viewBox").spli
  const passo=now=>{const t=Math.min(1,(now-t0)/ms),k=ease(t);svg.setAttribute("viewBox",a.map((v,i)=>(v+(para[i]-v)*k).toFixed(2)).join(" "));if(t<1)requestAnimationFrame(passo)};
  requestAnimationFrame(passo)}
 let CAT_LISTA=[];
+// enquadra o estado inteiro (e os pontos dele) com uma margem; o formato da caixa acompanha o do estado
+function catEnquadro(svg,uf){const pa=svg.querySelector('path.st[data-uf="'+uf+'"]');const bb=pa.getBBox();
+ let x0=bb.x,y0=bb.y,x1=bb.x+bb.width,y1=bb.y+bb.height;
+ svg.querySelectorAll('g.pin[data-uf="'+uf+'"] .ponto').forEach(c=>{const cx=+c.getAttribute("cx"),cy=+c.getAttribute("cy");x0=Math.min(x0,cx-8);x1=Math.max(x1,cx+8);y0=Math.min(y0,cy-8);y1=Math.max(y1,cy+8)});
+ let w=x1-x0,h=y1-y0;const pad=Math.max(w,h)*.1;w+=2*pad;h+=2*pad;
+ const cx=(x0+x1)/2,cy=(y0+y1)/2;const minW=70;if(w<minW){h=h*minW/w;w=minW}
+ return[cx-w/2,cy-h/2,w,h]}
 function catAbrir(id){const x=CAT_LISTA.find(i=>i.id===id);const svg=$("#catMapa svg.geo");if(!x||!svg)return;clearTimeout(CAT_T);
- const [cx,cy]=CAT_POS[x.id]||catAfim()(x.lon,x.lat),W=GEO.w/3.2,H=GEO.h/3.2;
+ const vb=catEnquadro(svg,x.uf);
  svg.classList.add("zoomed");svg.querySelectorAll("path.st").forEach(p=>p.classList.toggle("alvo",p.dataset.uf===x.uf));svg.querySelectorAll("g.pin").forEach(g=>{g.classList.toggle("alvo",g.dataset.id===x.id);g.classList.toggle("mesmo",g.dataset.uf===x.uf)});
- catAnimaVB(svg,null,[cx-W/2,cy-H/2,W,H],850);
+ catAnimaVB(svg,null,vb,850);
  $("#catHist").innerHTML=catHistoria(x);
  $("#catFechar").onclick=catFechar;
  $("#catHist").onclick=e=>{const c=e.target.closest(".cat-chip");if(c)catAbrir(c.dataset.id)};
