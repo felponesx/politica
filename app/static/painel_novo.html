@@ -764,7 +764,7 @@ html.sem-login .painel { filter: blur(3px); pointer-events: none; }
       </section>
     </section>
     <section class="aba" id="aba-noticias" hidden>
-      <div class="previa-aviso">Prévia: os títulos e veículos abaixo são exemplos. As notícias reais entram pelo robô de notícias.</div>
+      <div class="previa-aviso">Matérias coletadas dos feeds públicos de cada veículo (título e link; a matéria completa fica no site original).</div>
       <section class="card"><h2>Notícias captadas <span>últimas 24 h</span></h2><div class="dk" id="nKpis"></div></section>
       <div class="ini-duas">
         <section class="card"><h2>Por tema <span>quantas matérias</span></h2><div class="pad" id="nTemas"></div></section>
@@ -774,14 +774,14 @@ html.sem-login .painel { filter: blur(3px); pointer-events: none; }
     </section>
 
     <section class="aba" id="aba-instagram" hidden>
-      <div class="previa-aviso">Prévia: o Instagram ainda não está conectado ao BRASIL+. Esta tela mostra o que vai aparecer quando estiver.</div>
+      <div class="previa-aviso" id="igAviso">Conta do Instagram do BRASIL+ (só leitura).</div>
       <section class="card">
         <h2>Conta do BRASIL+ <span id="igStatus"></span></h2>
         <div class="pad">
           <div class="ig-passos" id="igPassos"></div>
         </div>
       </section>
-      <section class="card"><h2>Publicações <span>quando conectado</span></h2><div class="pad"><div class="vazio">Nenhuma publicação ainda.</div></div></section>
+      <section class="card"><h2>Publicações <span id="igPubsN"></span></h2><div id="igPubs"></div></section>
     </section>
 
     <section class="aba" id="aba-atividade" hidden>
@@ -950,9 +950,10 @@ function resumoPaginas(){
   const reg = []; Object.values(dados.bots).forEach(b => (b.historico||[]).forEach(e => reg.push(e)));
   const ult = reg.filter(e => agora - new Date(e.em).getTime() <= 24*H);
   const novos = ult.filter(e => e.r==="novo").length, erros = ult.filter(e => e.r==="erro").length;
-  const corrigidos = lista.filter(b => b.verificacao && b.verificacao.liberado).length;
-  const retidos = lista.filter(b => b.verificacao && !b.verificacao.liberado).length;
-  const faltam = lista.length - corrigidos;
+  const doColetor = lista.filter(b => b.coletor);
+  const corrigidos = doColetor.filter(b => b.verificacao && b.verificacao.liberado).length;
+  const retidos = doColetor.filter(b => b.verificacao && !b.verificacao.liberado).length;
+  const faltam = doColetor.length - corrigidos;
   const iaN = iaNumeros(), iaTreinos = IA_COB.length - 50;
   const cards = [
     {id:"bots", titulo:"Bots", icone:"camadas", num:`${c.ok}/${total}`, sub:"robôs em dia", barra:[["ok",c.ok],["run",c.run],["err",c.err],["idle",c.idle]],
@@ -961,10 +962,10 @@ function resumoPaginas(){
      linhas:[`${novos} dados novos`, `${erros} com erro`]},
     {id:"ia", titulo:"IA", icone:"pulso", num:`${iaN.pronto}/${iaN.total}`, sub:"perguntas com resposta pronta", barra:[["ok",iaN.completo],["run",iaN.parcial],["err",iaN.nenhum],["idle",iaN.fazer]],
      linhas:[`${iaN.completo} com dado completo`, `${iaTreinos} treinos no chat`]},
-    {id:"correcao", titulo:"Correção", icone:"escudo", num:`${corrigidos}/${lista.length}`, sub:"corrigidos e liberados", barra:[["ok",corrigidos],["run",retidos],["idle",faltam]],
+    {id:"correcao", titulo:"Correção", icone:"escudo", num:`${corrigidos}/${doColetor.length}`, sub:"fontes do coletor liberadas", barra:[["ok",corrigidos],["run",retidos],["idle",faltam]],
      linhas:[`${retidos} ${retidos===1?"retido":"retidos"} para revisão`, `${faltam} ainda faltam`]}
   ];
-  cards.filter(k => !(REAL && k.id === "correcao")).forEach((k,i) => {
+  cards.forEach((k,i) => {
     const b = mk("button",null,"rp"); b.type = "button"; b.style.setProperty("--i", i);
     b.onclick = () => { location.hash = k.id; };
     const topo = mk("div",null,"rp-topo");
@@ -1215,34 +1216,56 @@ function tPasso(v){
 }
 $("tForm").addEventListener("submit", e => { e.preventDefault(); tEnviar(); });
 
-const NOTICIAS_EX = [];   // aba Notícias não existe nesta página (as notícias reais ficam no site)
-const FEEDS_EX = [
-  {nome:"Política (feed 1)", estado:"ok", ultimo:"há 3 min"}, {nome:"Economia (feed 2)", estado:"ok", ultimo:"há 3 min"},
-  {nome:"Escândalos (feed 3)", estado:"aviso", ultimo:"há 1 h"}, {nome:"Fake news (feed 4)", estado:"erro", ultimo:"há 6 h"}
-];
-function noticiasTela(){
+let NOTICIAS_AT = 0;
+async function noticiasTela(forcar){
+  if(!podeVer("noticias") || (location.hash.slice(1) || "") !== "noticias") return;
+  if(!forcar && Date.now() - NOTICIAS_AT < 60000) return;
+  NOTICIAS_AT = Date.now();
+  let j; try{ j = await pegar("/noticias?limit=1500"); } catch(e){ $("nLista").textContent = "Não consegui ler as notícias: " + e.message; return; }
+  const itens = j.itens || [], agora = Date.now(), H = 36e5;
+  const quando = i => i.data ? new Date(i.data).getTime() : 0;
+  const porVeic = {}, porTema = {};
+  itens.forEach(i => { const v = porVeic[i.veiculo || "?"] = porVeic[i.veiculo || "?"] || {n: 0, h24: 0, ult: 0}; v.n++; if(agora - quando(i) <= 24*H) v.h24++; v.ult = Math.max(v.ult, quando(i));
+    const t = i.tema || "geral"; porTema[t] = (porTema[t] || 0) + 1; });
+  const feeds = Object.entries(porVeic).map(([nome, v]) => ({nome, ...v, estado: !v.ult || agora - v.ult > 48*H ? "erro" : agora - v.ult > 12*H ? "aviso" : "ok"}));
+  const h24 = itens.filter(i => agora - quando(i) <= 24*H).length;
   const k = $("nKpis"); k.replaceChildren();
-  [["Matérias em 24 h", String(NOTICIAS_EX.length*9), "de todos os feeds"], ["Feeds ativos", String(FEEDS_EX.filter(f => f.estado!=="erro").length), `de ${FEEDS_EX.length}`], ["Com erro", String(FEEDS_EX.filter(f => f.estado==="erro").length), "feeds que não responderam"]]
+  [["Matérias em 24 h", nf(h24,0), "de todos os veículos"], ["Veículos ativos", nf(feeds.filter(f => f.estado !== "erro").length,0), `de ${feeds.length}`], ["Sem matéria nova", nf(feeds.filter(f => f.estado === "erro").length,0), "há mais de 48 h"], ["Matérias guardadas", nf(itens.length,0), "últimos 10 dias"]]
     .forEach(([a,b,c],i) => { const x = mk("div",null,"kpi"); x.style.setProperty("--i", i); x.append(mk("span",a), mk("div",b,"v"), mk("div",c,"s")); k.append(x); });
-  const temas = [...new Set(NOTICIAS_EX.map(n => n.tema))], t = $("nTemas"); t.replaceChildren();
-  temas.forEach((tema,i) => { const n = NOTICIAS_EX.filter(x => x.tema===tema).length * 9; const linha = mk("div",null,"dsec"); linha.style.setProperty("--i", i);
+  const t = $("nTemas"); t.replaceChildren();
+  const maxT = Math.max(1, ...Object.values(porTema));
+  Object.entries(porTema).sort((a,b) => b[1]-a[1]).forEach(([tema,n],i) => { const linha = mk("div",null,"dsec"); linha.style.setProperty("--i", i);
     const ic = mk("span",null,"icone est-ok"); ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg>';
-    const m = mk("div",null,"dsec-meio"); m.append(mk("b",tema), mk("span",`${n} matérias`,"dsec-n")); const tr = mk("div",null,"dtrilho"); const p = mk("span"); p.style.width = (n/(temas.length*9)*100*2)+"%"; tr.append(p); m.append(tr);
+    const m = mk("div",null,"dsec-meio"); m.append(mk("b",tema), mk("span",`${nf(n,0)} matérias`,"dsec-n")); const tr = mk("div",null,"dtrilho"); const p = mk("span"); p.style.width = (n/maxT*100)+"%"; tr.append(p); m.append(tr);
     linha.append(ic,m); t.append(linha); });
-  $("nFeedsN").textContent = `${FEEDS_EX.length}`; const fd = $("nFeeds"); fd.replaceChildren();
-  FEEDS_EX.forEach((f,i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const ic = mk("span",null,"icone est-"+({ok:"ok",aviso:"run",erro:"err"})[f.estado]); ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19a2 2 0 100-4 2 2 0 000 4zM5 11a8 8 0 018 8M5 4a15 15 0 0115 15"/></svg>';
-    const m = mk("div"); m.append(mk("b",f.nome), mk("small",f.ultimo)); l.append(ic,m, mk("span", ({ok:"em dia",aviso:"lento",erro:"sem resposta"})[f.estado], "ativ-b")); fd.append(l); });
+  if(!Object.keys(porTema).length) t.append(mk("div","Nenhuma matéria coletada ainda. A coleta de notícias roda a cada 6 horas.","corr-vazio"));
+  $("nFeedsN").textContent = `${feeds.length}`; const fd = $("nFeeds"); fd.replaceChildren();
+  feeds.sort((a,b) => b.ult - a.ult).forEach((f,i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const ic = mk("span",null,"icone est-"+({ok:"ok",aviso:"run",erro:"err"})[f.estado]);
+    ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19a1 1 0 100-2 1 1 0 000 2zM5 12a7 7 0 017 7M5 5a14 14 0 0114 14"/></svg>';
+    const m = mk("div"); m.append(mk("b",f.nome), mk("small",`${nf(f.n,0)} matérias · última ${f.ult ? rel(new Date(f.ult).toISOString()) : "nunca"}`)); l.append(ic,m, mk("span", ({ok:"em dia",aviso:"lento",erro:"sem notícia nova"})[f.estado], "ativ-b")); fd.append(l); });
   const lst = $("nLista"); lst.replaceChildren();
-  NOTICIAS_EX.forEach((n,i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const ic = mk("span",null,"icone est-"+({ok:"ok",aviso:"run",erro:"err"})[n.estado]);
+  itens.slice(0, 40).forEach((n,i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const ic = mk("span",null,"icone est-ok");
     ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h10v12H4zM14 8h2v8a1.5 1.5 0 01-1.5 1.5H14M6.5 7.5h5M6.5 10.5h5"/></svg>';
-    const m = mk("div"); m.append(mk("b",n.titulo), mk("small",`${n.tema} · ${n.veiculo} · ${n.em}`)); l.append(ic,m); lst.append(l); });
+    const m = mk("div"); const tit = seguro(n.link) ? mk("a", n.titulo) : mk("b", n.titulo); if(seguro(n.link)){ tit.href = n.link; tit.target = "_blank"; tit.rel = "noopener noreferrer"; tit.style.fontWeight = "600"; }
+    m.append(tit, mk("small", `${n.tema || "geral"} · ${n.veiculo || "?"} · ${n.data ? rel(n.data) : ""}`)); l.append(ic,m); lst.append(l); });
 }
-const IG_PASSOS = [["Criar a conta do BRASIL+ no Instagram","pendente"],["Conectar ao sistema (token da conta)","pendente"],["Publicar o primeiro post de teste","pendente"],["Ligar a publicação automática","pendente"]];
-function instagramTela(){
-  $("igStatus").textContent = "ainda não criada";
+async function instagramTela(forcar){
+  if(!podeVer("instagram") || (location.hash.slice(1) || "") !== "instagram") return;
+  let j; try{ j = await pegar("/instagram/status" + (forcar === "atualizar" ? "?atualizar=true" : "")); } catch(e){ $("igStatus").textContent = "indisponível"; return; }
+  $("igStatus").textContent = j.erro ? "com problema" : j.conta ? "@" + j.conta.usuario : j.configurada ? "conectando" : "ainda não conectada";
+  $("igAviso").textContent = (j.erro ? j.erro + ". " : "") + (j.aviso || "");
   const p = $("igPassos"); p.replaceChildren();
-  IG_PASSOS.forEach(([t,e],i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const ic = mk("span",null,"icone est-idle"); ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/></svg>'; const m = mk("div"); m.append(mk("b",t), mk("small","passo "+(i+1))); l.append(ic,m); p.append(l); });
+  (j.passos || []).forEach((x,i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const ic = mk("span",null,"icone est-"+(x.estado === "feito" ? "ok" : "idle"));
+    ic.innerHTML = x.estado === "feito" ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>';
+    const m = mk("div"); m.append(mk("b", x.texto), mk("small", x.estado === "feito" ? "feito" : "pendente")); l.append(ic,m); p.append(l); });
+  if(j.conta){ const l = mk("div",null,"ativ-l"); const m = mk("div"); m.append(mk("b", `${j.conta.tipo || "conta"} · ${nf(j.conta.publicacoes || 0,0)} publicações`), mk("small", "dados da conta pela API oficial do Instagram")); l.append(mk("span",null,"icone est-ok"), m); p.append(l); }
+  const box = $("igPubs"); box.replaceChildren(); $("igPubsN").textContent = j.publicacoes && j.publicacoes.length ? `${j.publicacoes.length} recentes` : "";
+  if(!(j.publicacoes || []).length) box.append(mk("div", j.configurada ? "Nenhuma publicação encontrada." : "Conecte a conta para ver as publicações aqui.", "corr-vazio"));
+  (j.publicacoes || []).forEach((x,i) => { const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i); const m = mk("div");
+    const t = seguro(x.link) ? mk("a", x.legenda || "(sem legenda)") : mk("b", x.legenda || "(sem legenda)"); if(seguro(x.link)){ t.href = x.link; t.target = "_blank"; t.rel = "noopener noreferrer"; t.style.fontWeight = "600"; }
+    m.append(t, mk("small", `${x.tipo || ""} · ${x.em ? rel(x.em) : ""}${x.curtidas != null ? " · " + x.curtidas + " curtidas" : ""}${x.comentarios != null ? " · " + x.comentarios + " comentários" : ""}`)); l.append(mk("span",null,"icone est-ok"), m); box.append(l); });
 }
+addEventListener("hashchange", () => { noticiasTela(true); instagramTela(); });
 const ATIV_EX = [];   // preenchido com as coletas reais (atualizarReal)
 let atFiltro = "todos";
 function atividadeTela(){
@@ -1320,7 +1343,7 @@ function perfilDe(c){
   box.append(mk("p", c.papel === "usuario" ? "Escolha um papel (Leitor, Editor ou Administrador) para esta conta entrar no painel."
     : c.papel === "admin" ? "Administrador sempre pode tudo." : "Alterar: vê e muda. Ver: só olha. Nenhum: a aba some para esta pessoa.", "sub"));
   if(c.papel === "leitor" || c.papel === "editor"){
-    [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["atividade","Atividade"]].forEach(([k, nome]) => {
+    [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["noticias","Notícias"],["instagram","Instagram"],["atividade","Atividade"],["correcao","Correção"]].forEach(([k, nome]) => {
       const linha = mk("div", null, "perm-l"); linha.append(mk("span", nome));
       const seg = mk("div", null, "seg"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", nome + " de " + c.nome);
       [["alterar", "Alterar"], ["ver", "Ver"], ["", "Nenhum"]].forEach(([v, t]) => {
@@ -1537,38 +1560,54 @@ function dadosTab(){
 }
 
 /* Correção: o que o corretor (regras locais + Gemini) achou antes de liberar */
+async function acaoColetor(caminho, corpo){
+  const r = await fetch(caminho, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(corpo)});
+  if(!r.ok){ const e = await r.json().catch(() => ({})); alert(e.detail || ("Não consegui salvar (" + r.status + ").")); }
+  atualizarReal();
+}
 function correcaoTab(){
   const c = dados.correcao || {}, ia = c.ia || {};
   $("gemStatus").textContent = ia.ativa ? `Gemini ativo · modelo ${ia.modelo}` : "Gemini desligado · defina GEMINI_API_KEY no arquivo .env";
+  const pode = podeAlterar("correcao");
   const icone = (b, est) => { const k = CAT_OF[b.nome]; const s = mk("span",null,"icone est-"+est); s.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICONE[k]||ICONE.outras||"") + '</svg>'; return s; };
-  const item = (b, cls, detalhe, est) => { const d = mk("div",null,"corr-item "+cls); const i = icone(b, est);
-    if(b.status==="run") i.append(anelSvg()); const t = mk("div"); t.append(mk("b",b.nome), mk("small",detalhe)); d.append(i,t); return d; };
+  const botao = (txt, fn, cls) => { const x = mk("button", txt, cls || "lk"); x.type = "button"; x.disabled = !pode; x.onclick = fn; return x; };
+  const item = (b, cls, detalhe, est, acoes) => { const d = mk("div",null,"corr-item "+cls); const i = icone(b, est);
+    if(b.status==="run") i.append(anelSvg()); const t = mk("div"); t.append(mk("b",b.nome), mk("small",detalhe)); d.append(i,t);
+    if(acoes && acoes.length){ const a = mk("div",null,"ac-acoes"); acoes.forEach(x => a.append(x)); d.append(a); } return d; };
   const vazio = (box, txt) => box.append(mk("div",txt,"corr-vazio"));
-  const corrigindo = lista.filter(b => b.status==="run");
-  const corrigidos = lista.filter(b => b.verificacao && b.verificacao.liberado && b.status!=="run");
-  const faltam = lista.filter(b => b.status!=="run" && !(b.verificacao && b.verificacao.liberado));
+  const doColetor = lista.filter(b => b.coletor);
+  const corrigindo = doColetor.filter(b => b.status==="run");
+  const corrigidos = doColetor.filter(b => b.verificacao && b.verificacao.liberado && b.status!=="run");
+  const faltam = doColetor.filter(b => b.status!=="run" && !(b.verificacao && b.verificacao.liberado));
   const boxC = $("corrigindo"), boxOk = $("corrigidos"), boxF = $("faltam");
   boxC.replaceChildren(); boxOk.replaceChildren(); boxF.replaceChildren();
   $("ncorrendo").textContent = corrigindo.length ? `(${corrigindo.length})` : "";
   corrigindo.forEach(b => boxC.append(item(b,"", "coletando e conferindo agora", "run")));
   if(!corrigindo.length) vazio(boxC, "Nada sendo corrigido agora.");
   $("ncorr").textContent = corrigidos.length;
-  corrigidos.forEach(b => boxOk.append(item(b,"ok", `liberado ${rel(b.verificacao.em)} · ${b.verificacao.por}`, "ok")));
+  corrigidos.forEach(b => {
+    const cor = b.correcao && !b.correcao.desfeita ? ` · ${b.correcao.mudancas} ajustes de formato` : "";
+    const acoes = b.correcao && !b.correcao.desfeita ? [botao("Desfazer correção", () => acaoColetor("/coletor/desfazer", {fonte: b.nome}))] : [];
+    boxOk.append(item(b,"ok", `liberado ${rel(b.verificacao.em)} · ${b.verificacao.por}${cor}`, "ok", acoes));
+  });
   if(!corrigidos.length) vazio(boxOk, "Nenhum item corrigido ainda.");
   $("nfalta").textContent = faltam.length;
   faltam.forEach(b => {
-    const motivo = !b.em ? "nunca rodou"
+    const retido = b.verificacao && !b.verificacao.liberado && b.verificacao.decisao !== "rejeitado";
+    const motivo = retido ? "retido: " + (b.verificacao.motivos[0] || "aguarda revisão")
+      : b.verificacao && b.verificacao.decisao === "rejeitado" ? "rejeitado: " + (b.verificacao.motivos[0] || "sem motivo registrado")
+      : !b.em ? "nunca rodou"
       : b.status==="err" ? (b.detalhe || "falhou na última coleta")
-      : b.verificacao && !b.verificacao.liberado ? "retido: " + (b.verificacao.motivos[0] || "aguarda revisão")
       : "aguardando a verificação";
-    boxF.append(item(b,"falta", motivo, b.status==="err" ? "err" : "idle"));
+    const acoes = retido ? [botao("Aprovar", () => acaoColetor("/coletor/decidir", {fonte: b.nome, acao: "aprovar"}), "btn prim"), botao("Rejeitar", () => acaoColetor("/coletor/decidir", {fonte: b.nome, acao: "rejeitar"}))] : [];
+    boxF.append(item(b,"falta", motivo, b.status==="err" ? "err" : "idle", acoes));
   });
-  if(!faltam.length) vazio(boxF, "Tudo corrigido.");
+  if(!faltam.length) vazio(boxF, doColetor.length ? "Tudo corrigido." : "Nenhuma fonte do coletor ainda. Cadastre uma em Bots.");
 }
 /*FIM*/
 const IA_COB = [{"n": 1, "bloco": "Identificação e perfil", "pergunta": "Quem é [nome] e qual cargo ocupa atualmente?", "dado": "completo", "motor": "pronto", "fonte": "Cadastro da Câmara e do Senado.", "limite": "Só mandatos no Congresso; cargos do Executivo e de tribunais não estão no cadastro."}, {"n": 2, "bloco": "Identificação e perfil", "pergunta": "Qual é o histórico político de [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "TSE: candidaturas e resultados (1994 em diante) ligadas ao parlamentar.", "limite": "Só o que passou por eleição; cargos nomeados, suplência e mandatos anteriores a 1994 não aparecem."}, {"n": 3, "bloco": "Identificação e perfil", "pergunta": "Quais cargos públicos [nome] já ocupou?", "dado": "parcial", "motor": "pronto", "fonte": "TSE (candidaturas e resultado) e cadastro do Congresso.", "limite": "Só cargos de eleição; nomeados (ministro, secretário), suplentes que assumiram e vereadores não entram."}, {"n": 4, "bloco": "Identificação e perfil", "pergunta": "A qual partido [nome] pertence atualmente e por quais partidos já passou?", "dado": "parcial", "motor": "pronto", "fonte": "Partido atual: cadastro. Anteriores: partido de cada candidatura no TSE.", "limite": "Troca de partido fora de ano de eleição não aparece."}, {"n": 5, "bloco": "Identificação e perfil", "pergunta": "Qual é a formação acadêmica e profissional de [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "TSE: grau de instrução e ocupação declarados a cada candidatura.", "limite": "É o que a própria pessoa declarou; não há diploma nem currículo."}, {"n": 6, "bloco": "Identificação e perfil", "pergunta": "Qual foi o patrimônio declarado por [nome] nas últimas eleições?", "dado": "completo", "motor": "pronto", "fonte": "TSE: bens declarados a cada candidatura.", "limite": "Valor declarado, sem correção pela inflação; só em ano de candidatura."}, {"n": 7, "bloco": "Identificação e perfil", "pergunta": "Quais são os principais projetos de lei apresentados por [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "Câmara e Senado: tramitação das proposições.", "limite": "A autoria só existe para proposições com tramitação coletada; não há critério de projeto 'principal'."}, {"n": 8, "bloco": "Identificação e perfil", "pergunta": "Quais são as principais decisões e atuações políticas de [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais, presença, projetos e comissões.", "limite": "'Decisões' não existe como dado: o BRASIL+ mostra votos, presença e projetos."}, {"n": 9, "bloco": "Identificação e perfil", "pergunta": "Quem são os políticos que atualmente ocupam os principais cargos do governo federal?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "A lista de ministros fica só no site, não no banco; não há base aberta única e atualizada de cargos do Executivo."}, {"n": 10, "bloco": "Identificação e perfil", "pergunta": "Quais políticos representam cada estado no Senado e na Câmara dos Deputados?", "dado": "completo", "motor": "pronto", "fonte": "Cadastro da Câmara e do Senado.", "limite": "Só quem está em exercício na última coleta."}, {"n": 11, "bloco": "Processos judiciais e investigações", "pergunta": "Quantos processos judiciais estão associados a [nome]?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não existe base aberta de processos por pessoa. Existem só: representações por quebra de decoro (Câmara), registro de candidatura (TSE) e casos curados."}, {"n": 12, "bloco": "Processos judiciais e investigações", "pergunta": "Quais políticos possuem registros de processos judiciais e quantos cada um possui?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados do BRASIL+ (cada um com fonte).", "limite": "Só os casos curados, e a lista mostra condenações: não é o total de processos de ninguém."}, {"n": 13, "bloco": "Processos judiciais e investigações", "pergunta": "Quais processos de [nome] ainda estão em andamento?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados e representações da Câmara.", "limite": "Mostra a situação e a data da fonte; o andamento atual não é acompanhado."}, {"n": 14, "bloco": "Processos judiciais e investigações", "pergunta": "Quais processos de [nome] já foram arquivados ou encerrados?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados e representações da Câmara.", "limite": "Só o que a fonte curada registra (ex.: 'processo arquivado', 'prescrito')."}, {"n": 15, "bloco": "Processos judiciais e investigações", "pergunta": "[Nome] possui condenações judiciais? Quais são e qual é a situação atual?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados do BRASIL+.", "limite": "Só condenações dos casos curados; ausência aqui não prova que não existe."}, {"n": 16, "bloco": "Processos judiciais e investigações", "pergunta": "Quais políticos possuem processos relacionados a improbidade administrativa?", "dado": "nenhum", "motor": "a_fazer", "fonte": "—", "limite": "Não há base aberta de ações de improbidade por pessoa; só apareceria se um caso curado descrevesse isso."}, {"n": 17, "bloco": "Processos judiciais e investigações", "pergunta": "Existem investigações envolvendo [nome] em tribunais ou órgãos de controle?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados; TCU (só totais, sem nome).", "limite": "Só casos curados (situação e data da fonte); o TCU é publicado apenas em totais por estado, sem nome."}, {"n": 18, "bloco": "Processos judiciais e investigações", "pergunta": "Em quais tribunais existem processos associados a [nome]?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não existe base aberta que diga em quais tribunais uma pessoa responde."}, {"n": 19, "bloco": "Processos judiciais e investigações", "pergunta": "Quanto tempo os processos envolvendo [nome] estão em tramitação?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não existe base aberta com o tempo de tramitação de processos por pessoa."}, {"n": 20, "bloco": "Processos judiciais e investigações", "pergunta": "Quais políticos possuem condenações definitivas, distinguindo-as de investigações e processos ainda sem decisão final?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados do BRASIL+ (situação com termos fechados).", "limite": "Distingue 'condenado' de 'condenado (recorre)' (ainda cabe recurso); investigados e réus não entram nessa lista."}, {"n": 21, "bloco": "Projetos de lei", "pergunta": "Quantos projetos de lei [nome] apresentou durante seu mandato?", "dado": "parcial", "motor": "pronto", "fonte": "Câmara e Senado: tramitação.", "limite": "Só entre as proposições com tramitação coletada: número menor não quer dizer que apresentou pouco."}, {"n": 22, "bloco": "Projetos de lei", "pergunta": "Quantos projetos de lei foram aprovados, rejeitados ou arquivados?", "dado": "parcial", "motor": "a_fazer", "fonte": "Situação registrada de cada proposição.", "limite": "Para uma pessoa funciona (perguntas 21, 24 e 25); a versão geral, sem nome, ainda não existe."}, {"n": 23, "bloco": "Projetos de lei", "pergunta": "Quais parlamentares possuem registros de projetos apresentados e quantos cada um possui?", "dado": "parcial", "motor": "a_fazer", "fonte": "Tramitação coletada.", "limite": "Só proposições com tramitação coletada."}, {"n": 24, "bloco": "Projetos de lei", "pergunta": "Quais projetos de [nome] já se transformaram em leis?", "dado": "parcial", "motor": "pronto", "fonte": "Situação 'transformado em norma jurídica'.", "limite": "Só entre as proposições com tramitação coletada."}, {"n": 25, "bloco": "Projetos de lei", "pergunta": "Quantos projetos apresentados por [nome] ainda estão aguardando votação?", "dado": "parcial", "motor": "pronto", "fonte": "Situação registrada.", "limite": "Conta 'em andamento ou sem decisão final'; não separa quem já está pautado."}, {"n": 26, "bloco": "Projetos de lei", "pergunta": "Quais deputados e senadores apresentaram projetos nos últimos 12 meses?", "dado": "parcial", "motor": "a_fazer", "fonte": "Tramitação coletada e data de apresentação.", "limite": "Só proposições com tramitação coletada."}, {"n": 27, "bloco": "Projetos de lei", "pergunta": "Quantos projetos [nome] apresentou como autor e como coautor?", "dado": "parcial", "motor": "pronto", "fonte": "—", "limite": "Mostra as proposições em que a pessoa consta entre os autores; não separa autor principal de coautor."}, {"n": 28, "bloco": "Projetos de lei", "pergunta": "Quais áreas são mais abordadas nos projetos apresentados por [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "Ementa das proposições com tramitação coletada.", "limite": "Áreas por palavra-chave da ementa; não é posição política."}, {"n": 29, "bloco": "Projetos de lei", "pergunta": "Quais projetos de [nome] tiveram impacto financeiro previsto no orçamento público?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "O impacto financeiro previsto por proposição não é publicado como dado aberto."}, {"n": 30, "bloco": "Projetos de lei", "pergunta": "Como a produção legislativa de [nome] se compara à de outros parlamentares do mesmo período?", "dado": "parcial", "motor": "pronto", "fonte": "Cota e votações nominais.", "limite": "A comparação de projetos não é feita: a autoria é coletada só em parte. Compara cota e participação em votações."}, {"n": 31, "bloco": "Votações e participação", "pergunta": "Quantas votações nominais [nome] participou durante o mandato?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais coletadas.", "limite": "Últimos 12 meses (presença) e votos nas votações coletadas; não é o mandato inteiro."}, {"n": 32, "bloco": "Votações e participação", "pergunta": "Em quantas votações [nome] esteve ausente?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais coletadas.", "limite": "Ausência é calculada (total menos votou) e inclui licença e quem ainda não tinha tomado posse."}, {"n": 33, "bloco": "Votações e participação", "pergunta": "Quantas vezes [nome] votou a favor, contra ou se absteve?", "dado": "completo", "motor": "pronto", "fonte": "Votos nas votações nominais coletadas.", "limite": "Só votações nominais coletadas; votação secreta não entra."}, {"n": 34, "bloco": "Votações e participação", "pergunta": "Quais parlamentares possuem registros de maior participação em votações nominais?", "dado": "completo", "motor": "pronto", "fonte": "Votações nominais dos últimos 12 meses.", "limite": "Só quem está em exercício; suplente recente aparece com menos votações."}, {"n": 35, "bloco": "Votações e participação", "pergunta": "Quais parlamentares possuem registros de menor participação em votações nominais?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais dos últimos 12 meses.", "limite": "Quem não votou em nenhuma não aparece na lista."}, {"n": 36, "bloco": "Votações e participação", "pergunta": "Como [nome] votou nas principais propostas relacionadas à economia?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos + ementa da matéria.", "limite": "Exigiria classificar votações por tema por palavra-chave; 'principais' não é critério do dado."}, {"n": 37, "bloco": "Votações e participação", "pergunta": "Como [nome] votou em projetos relacionados à saúde e educação?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos + ementa da matéria.", "limite": "Idem: classificação por palavra-chave."}, {"n": 38, "bloco": "Votações e participação", "pergunta": "Qual foi o posicionamento de [nome] nas votações de reformas tributárias e previdenciárias?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos + nome da matéria.", "limite": "Só se a votação estiver coletada e identificável pelo nome da proposição."}, {"n": 39, "bloco": "Votações e participação", "pergunta": "Como mudou o comportamento de votação de [nome] ao longo dos anos?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos por ano.", "limite": "Depende de quantos anos de votações foram coletados."}, {"n": 40, "bloco": "Votações e participação", "pergunta": "Como votaram individualmente os ministros do STF, STJ e TSE em determinada decisão?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não há base aberta com o voto de cada ministro; só 6 julgamentos do STF curados, com placar."}, {"n": 41, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto [nome] recebeu de remuneração durante o mandato?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "A remuneração por pessoa não é coletada; a cota parlamentar não é salário."}, {"n": 42, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto [nome] gastou com verba parlamentar?", "dado": "completo", "motor": "pronto", "fonte": "Cota parlamentar (Câmara e Senado).", "limite": "Valor reembolsado/pago; ano corrente pode estar incompleto."}, {"n": 43, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quais foram as principais despesas de [nome] com viagens, hospedagens e passagens?", "dado": "parcial", "motor": "pronto", "fonte": "Categorias da cota parlamentar.", "limite": "Só o que a cota reembolsa; viagens pagas por outros meios não aparecem."}, {"n": 44, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quais políticos possuem registros de despesas parlamentares e quais são os valores por categoria?", "dado": "completo", "motor": "pronto", "fonte": "Cota parlamentar por categoria.", "limite": "As categorias têm nomes diferentes na Câmara e no Senado."}, {"n": 45, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto [nome] recebeu em doações eleitorais e quais foram seus principais doadores?", "dado": "parcial", "motor": "pronto", "fonte": "TSE: prestação de contas (origem das receitas, despesas por tipo).", "limite": "O nome de cada doador pessoa física não é guardado (CPF não é guardado)."}, {"n": 46, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Qual foi a evolução do patrimônio declarado de [nome] entre as eleições?", "dado": "completo", "motor": "pronto", "fonte": "TSE: bens declarados.", "limite": "Sem correção pela inflação."}, {"n": 47, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quantas emendas parlamentares [nome] apresentou e quais valores foram destinados?", "dado": "parcial", "motor": "pronto", "fonte": "Portal da Transparência: emendas.", "limite": "Só os 30 maiores autores de cada ano; o número de emendas por pessoa não é guardado."}, {"n": 48, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto das emendas de [nome] foi efetivamente empenhado, liquidado e pago?", "dado": "parcial", "motor": "pronto", "fonte": "Portal da Transparência: emendas.", "limite": "Por autor há empenhado e pago; o liquidado existe só no total do ano."}, {"n": 49, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quais empresas receberam recursos públicos relacionados a contratos ou emendas indicadas por [nome]?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "O vínculo entre cada emenda e a empresa que recebeu não é coletado."}, {"n": 50, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Como se distribuem os gastos, a participação legislativa, os projetos e as votações de [nome] em comparação com outros políticos do mesmo cargo e período?", "dado": "parcial", "motor": "pronto", "fonte": "Cota e votações nominais.", "limite": "Projetos e emendas ficam fora da comparação (coletados só em parte)."}];
 const IA_SEM = [{"pergunta": "Quantos processos o [nome] tem no STF?", "vezes": 14}, {"pergunta": "Qual o salário médio dos servidores de Palmas?", "vezes": 9}, {"pergunta": "Quantas queimadas teve na Amazônia em 2025?", "vezes": 7}, {"pergunta": "Quais projetos de lei sobre energia solar foram votados este ano?", "vezes": 5}, {"pergunta": "Quem são os prefeitos com mais processos no TCU?", "vezes": 4}];
-const ABAS = [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["atividade","Atividade"],["acessos","Acessos"]];
+const ABAS = [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["noticias","Notícias"],["instagram","Instagram"],["atividade","Atividade"],["acessos","Acessos"],["correcao","Correção"]];
 const ABAS_IC = {
   acessos: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 016 0V9"/></svg>',
   noticias: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4h10v12H4zM14 8h2v8a1.5 1.5 0 01-1.5 1.5H14M6.5 7.5h5M6.5 10.5h5M6.5 13.5h3"/></svg>',
@@ -1615,7 +1654,7 @@ async function pegar(caminho){
   if(!r.ok) throw new Error(caminho + " respondeu " + r.status);
   return r.json();
 }
-function adaptar(status, coletas){
+function adaptar(status, coletas, col){
   const fontes = status.fontes || [], agora = Date.now(), nomes = new Set(fontes.map(f => f.tarefa));
   const hist = {}, atividade = [];
   (coletas || []).slice().reverse().forEach(c => {   // da mais antiga para a mais nova
@@ -1634,6 +1673,14 @@ function adaptar(status, coletas){
       coletas: h.length, taxa_sucesso: h.length ? ok / h.length : null, duracao_ms: h.length ? h[h.length - 1].ms : null, bytes: 0,
       publicar_dados: false, verificacao: null, correcao: null, historico: h, categoria: f.categoria};
   });
+  const dest = [];
+  if(col && col.bots){
+    Object.entries(col.bots).forEach(([nome, b]) => {
+      if(!bots[nome]){ bots[nome] = {...b, coletor: true, categoria: CAT_OF[nome] || "relatorios"}; CAT_OF[nome] = bots[nome].categoria; }
+      else Object.assign(bots[nome], {coletor: true, verificacao: b.verificacao, correcao: b.correcao, bytes: b.bytes, historico: b.historico.length ? b.historico : bots[nome].historico, publicar_dados: b.publicar_dados});
+    });
+    dest.push(...(col.destinos || []));
+  }
   const dia = agora - 864e5, semana = agora - 7 * 864e5, recentes = (coletas || []).filter(c => c.inicio && new Date(iso(c.inicio)) > dia);
   const sem = (coletas || []).filter(c => c.inicio && new Date(iso(c.inicio)) > semana), boas = sem.filter(c => c.status !== "erro" && c.status !== "abortada").length;
   return {versao: 4, gerado_em: new Date().toISOString(),
@@ -1641,14 +1688,14 @@ function adaptar(status, coletas){
              novos_24h: recentes.filter(c => c.status !== "erro" && c.status !== "abortada" && c.itens > 0).length,
              iguais_24h: recentes.filter(c => c.status !== "erro" && c.status !== "abortada" && !(c.itens > 0)).length,
              sucesso_7d: sem.length ? boas / sem.length : 1, bytes: 0},
-    vinculos: [{nome: "BRASIL+", fontes: fontes.map(f => f.tarefa)}], bots, atividade, destinos: [],
-    correcao: {ia: {ativa: false, modelo: ""}, resumo: {ok: 0, suspeito: 0, erro: 0, retidos: 0, rejeitados: 0, sem_ia: 0}, itens: []}, config: {}};
+    vinculos: [{nome: "BRASIL+", fontes: Object.keys(bots)}], bots, atividade, destinos: dest,
+    correcao: (col && col.correcao) || {ia: {ativa: false, modelo: ""}, resumo: {ok: 0, suspeito: 0, erro: 0, retidos: 0, rejeitados: 0, sem_ia: 0}, itens: []}, config: (col && col.config) || {}};
 }
 async function atualizarReal(){
   const p = document.querySelector(".painel"), ic = $("recIcon");
   p.classList.add("carregando"); ic.classList.add("girando");
   try{
-    const [status, coletas] = await Promise.all([pegar("/fontes/status"), pegar("/coletas?limit=200")]);
+    const [status, coletas, col] = await Promise.all([pegar("/fontes/status"), pegar("/coletas?limit=200"), pegar("/coletor/status").catch(() => null)]);
     CATEGORIAS.splice(0, CATEGORIAS.length, ...(status.categorias || []));
     Object.keys(CAT_OF).forEach(k => delete CAT_OF[k]);
     (status.fontes || []).forEach(f => { CAT_OF[f.tarefa] = f.categoria; });
@@ -1658,7 +1705,8 @@ async function atualizarReal(){
       const acao = c.status === "erro" || c.status === "abortada" ? "falhou em" : c.status === "parcial" ? "coletou com aviso" : c.status === "rodando" ? "está coletando" : "coletou";
       ATIV_EX.push({quem: "Sistema", acao, alvo: k + (c.erro ? " · " + String(c.erro).slice(0, 80) : ""), em: rel(iso(c.inicio)) || "agora", tipo: "coleta"});
     });
-    render(adaptar(status, coletas));
+    if(col) (col.atividade || []).slice(0, 30).forEach(a => ATIV_EX.push({quem: "Coletor", acao: a.r === "erro" ? "falhou em" : a.r === "novo" ? "coletou dado novo de" : "conferiu", alvo: a.bot + (a.detalhe ? " · " + a.detalhe : ""), em: rel(iso(a.em)) || "agora", tipo: "coleta"}));
+    render(adaptar(status, coletas, col));
     const sem = status.sem_secao || [], aviso = $("semSecao");
     aviso.hidden = !sem.length;
     aviso.textContent = sem.length ? `Novas coletas sem seção (${sem.length}): ${sem.slice(0, 12).join(", ")}${sem.length > 12 ? " e mais " + (sem.length - 12) : ""}. Elas ficam em Relatórios e Dados até alguém escolher a seção.` : "";

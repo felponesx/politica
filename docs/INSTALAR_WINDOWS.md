@@ -97,3 +97,6 @@ Para ser o primeiro administrador, escolha UM jeito:
 2. Só para começar, sem conta: no `config.env` ponha `ADMIN_PADRAO=true` e entre com e-mail `admin` e senha `admin`. Essa conta de teste **para de valer sozinha assim que existir outro administrador**. Depois do passo 1, apague essa linha.
 
 Quem não tem conta cria uma no site; depois o administrador procura o e-mail na aba **Acessos** e escolhe o papel.
+
+## Instagram no painel (opcional, só leitura)
+No `config.env` ponha `INSTAGRAM_TOKEN=` com o token de longa duração da conta profissional do BRASIL+ (Instagram API com login do Instagram). O painel mostra a conta e as últimas publicações. Ele **não publica** nada no Instagram. O token vale 60 dias: troque antes de vencer. Nunca mande esse token no chat.

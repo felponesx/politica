@@ -9,15 +9,17 @@ from __future__ import annotations
 from app import contas
 from app.models import Conta
 
-SECOES = ("painel", "bots", "dados", "ia", "atividade", "acessos")
+SECOES = ("painel", "bots", "dados", "ia", "noticias", "instagram", "atividade", "acessos", "correcao")
 NIVEIS = ("alterar", "ver", "")
 PAPEIS = ("usuario", "leitor", "editor", "admin")
 NOMES_PAPEL = {"usuario": "Conta comum (sem acesso ao painel)", "leitor": "Leitor", "editor": "Editor", "admin": "Administrador"}
 
 PADRAO = {
     "admin": {s: "alterar" for s in SECOES},
-    "editor": {"painel": "ver", "bots": "alterar", "dados": "ver", "ia": "alterar", "atividade": "ver", "acessos": ""},
-    "leitor": {"painel": "ver", "bots": "ver", "dados": "ver", "ia": "ver", "atividade": "ver", "acessos": ""},
+    "editor": {"painel": "ver", "bots": "alterar", "dados": "ver", "ia": "alterar", "noticias": "ver", "instagram": "ver",
+               "atividade": "ver", "acessos": "", "correcao": "alterar"},
+    "leitor": {"painel": "ver", "bots": "ver", "dados": "ver", "ia": "ver", "noticias": "ver", "instagram": "ver",
+               "atividade": "ver", "acessos": "", "correcao": "ver"},
 }
 
 
