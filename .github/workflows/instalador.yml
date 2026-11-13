@@ -52,7 +52,7 @@ jobs:
             --collect-submodules app --collect-submodules scripts --collect-submodules pystray `
             --add-data "$PWD\app\dados;app/dados" --add-data "$PWD\app\static;app/static" `
             --add-data "$PWD\migrations;migrations" --add-data "$PWD\alembic.ini;." `
-            --add-data "$PWD\coletor\vinculos;coletor/vinculos" `
+            --add-data "$PWD\coletor\vinculos;coletor/vinculos" --add-data "$PWD\site\index.html;site" `
             executavel.py
           if ($LASTEXITCODE -ne 0) { throw "PyInstaller falhou" }
 

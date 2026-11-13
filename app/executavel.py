@@ -101,6 +101,7 @@ def preparar(base: Path, porta: int = PORTA_PADRAO) -> dict:
         "COLETOR_RAIZ": str(base / "coletor"),
         "BRASIL_FONTES_URL": f"http://127.0.0.1:{porta}/fontes-cadastradas?ativa=true",
         "BRASILPLUS_SITE": str(site if site.exists() else recurso("site")),
+        "BRASILPLUS_INDEX": str(recurso("site/index.html")),
         "PASTA_ARQUIVOS_COLETA": str(base / "dados-brasilplus"),
     }
     for k, v in {**padrao, **cfg}.items():

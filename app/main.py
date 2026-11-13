@@ -113,10 +113,15 @@ SITE = (Path(os.environ["BRASILPLUS_SITE"]) if os.environ.get("BRASILPLUS_SITE")
 app.mount("/midia", StaticFiles(directory=SITE.parent / "midia", check_dir=False), name="midia")
 
 
+# O programa instalado leva a página principal junto (sempre a versão nova); fotos e dados continuam na pasta do site.
+INDEX = Path(os.environ["BRASILPLUS_INDEX"]) if os.environ.get("BRASILPLUS_INDEX") else SITE
+
+
 @app.get("/", include_in_schema=False)
 def site():
-    if SITE.exists():
-        return FileResponse(SITE, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
+    pagina = INDEX if INDEX.exists() else SITE
+    if pagina.exists():
+        return FileResponse(pagina, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
     return {"status": "ok", "docs": "/docs", "aviso": "Coloque o site em site/index.html para servi-lo aqui."}
 
 
