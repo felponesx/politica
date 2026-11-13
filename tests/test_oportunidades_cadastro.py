@@ -24,7 +24,7 @@ def token(monkeypatch):
 
 def test_cadastro_sem_token_e_recusado():
     cliente = TestClient(app)
-    assert cliente.post("/oportunidades", json=CORPO).status_code == 422   # sem o cabeçalho X-Admin-Token
+    assert cliente.post("/oportunidades", json=CORPO).status_code == 401   # sem chave e sem sessão
     assert cliente.post("/oportunidades", json=CORPO, headers={"X-Admin-Token": "errado-errado-errado-errado-errado"}).status_code == 401
 
 

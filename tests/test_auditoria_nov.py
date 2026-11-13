@@ -42,7 +42,9 @@ def test_nenhuma_rota_de_escrita_alem_das_conhecidas():
                        ("POST", "/admin/publicacoes"), ("POST", "/admin/publicacoes/{pid}"), ("POST", "/admin/publicacoes/{pid}/apagar"), ("POST", "/admin/midia"), ("POST", "/admin/configurar"), ("POST", "/proposicoes/{pid}/voto-lei"),
                        # cadastros e aprovações: todos exigem o token de administrador (X-Admin-Token)
                        ("POST", "/fontes-cadastradas"), ("POST", "/fontes-cadastradas/{fonte_id}"), ("POST", "/oportunidades"),
-                       ("POST", "/oportunidades/{oid}/aprovar"), ("POST", "/oportunidades/{oid}/rejeitar"), ("POST", "/organizar")}
+                       ("POST", "/oportunidades/{oid}/aprovar"), ("POST", "/oportunidades/{oid}/rejeitar"), ("POST", "/organizar"),
+                       # acesso ao painel: só por sessão de administrador (tests/test_painel_contas.py)
+                       ("POST", "/painel/contas/{conta_id}")}
 
 
 def test_cors_nao_aceita_escrita_de_outra_origem():

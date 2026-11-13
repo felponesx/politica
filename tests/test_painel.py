@@ -33,6 +33,8 @@ def test_painel_novo_usa_dados_reais_e_nao_leva_dado_de_exemplo():
     assert "AMOSTRA" not in corpo and "dados simulados" not in corpo     # nada de dado inventado na página real
     assert "felipe@exemplo.com" not in corpo                              # sem usuário e login de mentira
     assert 'href="/painel/antigo"' in corpo
+    assert "/contas/entrar" in corpo and "/painel/contas" in corpo           # login e acessos de verdade (contas do site)
+    assert "X-Admin-Token" not in corpo and "bToken" not in corpo            # a página não pede nem guarda a chave: vale a sessão
 
 
 def test_painel_antigo_continua_com_o_cadastro():

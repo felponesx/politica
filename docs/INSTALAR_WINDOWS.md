@@ -87,3 +87,13 @@ No `config.env` do BRASIL+ (`C:\Users\<você>\BRASILMais\config.env`), coloque a
 A cada 6 h o programa gera `site/dados` com o banco dele e envia ao branch atual, só se houver mudança. Usa as credenciais de Git que o seu PC já tem. Para desligar, apague a linha.
 
 Organizador de links (Gemini): ponha `GEMINI_API_KEY=` no `config.env` ou no `.env`, nunca no chat.
+
+
+## Entrar no painel (`/painel`)
+O painel tem login de verdade, com as mesmas contas do site (e-mail e senha). Papéis: **Administrador** (tudo, inclusive dar acesso), **Editor** (vê e cadastra fontes), **Leitor** (só vê) e conta comum (não entra). Cada pessoa pode ter permissões próprias por aba (Alterar, Ver ou Nenhum) na aba **Acessos**.
+
+Para ser o primeiro administrador, escolha UM jeito:
+1. Crie a sua conta no site e ponha o seu e-mail no `config.env`: `ADMIN_EMAILS=seu@email.com`. Feche e abra o BRASIL+ e entre no painel com esse e-mail.
+2. Só para começar, sem conta: no `config.env` ponha `ADMIN_PADRAO=true` e entre com e-mail `admin` e senha `admin`. Essa conta de teste **para de valer sozinha assim que existir outro administrador**. Depois do passo 1, apague essa linha.
+
+Quem não tem conta cria uma no site; depois o administrador procura o e-mail na aba **Acessos** e escolhe o papel.

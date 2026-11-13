@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body class="sem-login">
+<!doctype html><html class="sem-login"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body class="sem-login">
 <title>Coletas do BRASIL+</title>
 <style>
 body{margin:0;background:#fff}
@@ -405,6 +405,8 @@ body{margin:0;background:#fff}
 
 /* ---- IA como conversa: mensagens em cima, barra fixa embaixo ---- */
 .painel .chat { display: flex; flex-direction: column; height: calc(100vh - 190px); min-height: 460px; padding: 0; overflow: hidden; }
+.painel #acBusca { width: 100%; box-sizing: border-box; padding: 10px 16px; border: 1px solid #cbd5e1; border-radius: 999px; font: inherit; font-size: 14px; background: #fff; color: #0f172a; }
+.painel #acBusca:focus { outline: 2px solid #bfdbfe; border-color: #2F6FED; }
 .painel #bChat { height: auto; min-height: 0; max-height: 70vh; }
 .painel #bChat .tfio { flex: 0 1 auto; min-height: 90px; max-height: 52vh; }
 .painel .chat .tfio { flex: 1; min-height: 0; max-height: none; overflow-y: auto; padding: 14px 16px; }
@@ -648,11 +650,11 @@ html.sem-login .painel { filter: blur(3px); pointer-events: none; }
     <span class="lgmark login-marca" aria-hidden="true" style="--lgmask:var(--lgmask-br)"></span>
     <h1>Coletor de dados <b>BRASIL+</b></h1>
     <p class="sub">Entre com seu e-mail e senha.</p>
-    <label>E-mail <input id="lgEmail" type="email" required autocomplete="username" placeholder="voce@exemplo.com"></label>
+    <label>E-mail <input id="lgEmail" type="text" inputmode="email" required autocomplete="username" placeholder="seu e-mail"></label>
     <label>Senha <input id="lgSenha" type="password" required autocomplete="current-password" placeholder="••••••••"></label>
     <button class="btn prim login-btn" type="submit">Entrar</button>
     <div class="aviso" id="lgAviso"></div>
-    <p class="previa-nota">Prévia: o login mostra o fluxo e as permissões. A conferência real da senha fica no programa do PC.</p>
+    <p class="sub" style="margin:10px 0 0;font-size:12px">Use a mesma conta do site. Para administrar o painel a conta precisa ser de administrador (o seu e-mail em ADMIN_EMAILS no config.env). Quem não tem conta cria uma no site e depois pede acesso.</p>
   </form>
 </div>
 <div class="painel">
@@ -709,7 +711,6 @@ html.sem-login .painel { filter: blur(3px); pointer-events: none; }
           <div class="tmsg ia"><b>Novas fontes</b><p>Cole aqui os links novos (pode ser vários de uma vez). Eu organizo: escolho a seção, o formato e de quanto em quanto tempo captar, e mostro para onde cada dado vai. Se quiser outro tempo, escreva junto, por exemplo “a cada 1 hora”. Para mudar a seção de um link: “trocar 2 para saúde”.</p></div>
         </div>
         <form class="tcomp" id="bForm" autocomplete="off">
-          <div class="tlinha" style="margin-bottom:6px"><input id="bToken" type="password" placeholder="Chave do administrador (só para o Gemini organizar; fica só nesta página)" aria-label="Chave do administrador" autocomplete="off"></div>
           <div class="tlinha">
             <input id="bTexto" type="text" placeholder="Cole os links aqui…" aria-label="Links novos para organizar">
             <button class="btn prim tenv" id="bEnviar" type="submit">Enviar</button>
@@ -795,7 +796,7 @@ html.sem-login .painel { filter: blur(3px); pointer-events: none; }
     <section class="aba" id="aba-acessos" hidden>
       <section class="card">
         <h2>Quem entra <span id="acN"></span></h2>
-        <div class="pad"><button class="btn prim" id="acNovo" type="button">+ Novo usuário</button></div>
+        <div class="pad"><input id="acBusca" type="search" placeholder="Procurar uma conta pelo e-mail ou nome, para dar acesso" aria-label="Procurar conta" autocomplete="off"><p class="sub" style="margin:8px 0 0">A pessoa cria a conta no site (com CPF, como qualquer eleitor). Aqui você escolhe o papel e o que ela pode fazer no painel.</p><button class="btn prim" id="acNovo" type="button" hidden>+ Novo usuário</button></div>
         <div class="ac-novo" id="acForm" hidden>
           <label>Nome <input id="acNome" placeholder="Nome da pessoa"></label>
           <label>E-mail <input id="acEmail" type="email" placeholder="pessoa@exemplo.com"></label>
@@ -1282,76 +1283,88 @@ function aplicarPermissoes(){
   // botões de alterar
   const travar = (el, ok) => { if(el){ el.disabled = !ok; el.title = ok ? "" : "Sem permissão para alterar"; } };
   travar($("bEnviar"), podeAlterar("bots"));
-  travar($("tEnviar"), podeAlterar("ia"));
+  travar($("tEnviar"), podeVer("ia"));
   travar($("acNovo"), podeAlterar("acessos"));
   $("quem").textContent = `${SESSAO.nome} · ${PAPEIS[SESSAO.papel]}`;
 }
-function entrar(email, senha){
-  const u = USUARIOS.find(x => x.email.toLowerCase() === email.trim().toLowerCase());
-  const aviso = $("lgAviso");
-  if(!u){ aviso.textContent = "Não encontramos esse e-mail."; return; }
-  if(!u.ativo){ aviso.textContent = "Este acesso está bloqueado. Fale com um administrador."; return; }
-  if(senha.length < 4){ aviso.textContent = "Senha incorreta."; return; }
-  aviso.textContent = "";
-  SESSAO = {id:u.id, nome:u.nome, papel:u.papel};
-  u.ultimo = new Date().toISOString();
-  document.documentElement.classList.remove("sem-login"); document.body.classList.remove("sem-login");
-  registrarAtiv(u.nome, "entrou no sistema", PAPEIS[u.papel], "acesso");
-  aplicarPermissoes(); acessosTela();
-  if(!podeVer(location.hash.slice(1) || "painel")) location.hash = "painel";
+const JSON_VAZIO = {method: "POST", headers: {"Content-Type": "application/json"}, body: "{}"};
+async function entrar(email, senha){
+  const aviso = $("lgAviso"); aviso.textContent = "";
+  try{
+    const r = await fetch("/contas/entrar", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({email: email.trim(), senha})});
+    if(!r.ok){ const e = await r.json().catch(() => ({})); aviso.textContent = e.detail || ("Não consegui entrar (" + r.status + ")."); return; }
+    const j = await pegar("/contas/eu");
+    if(!j.painel){ aviso.textContent = "Esta conta não tem acesso ao painel. Peça a um administrador."; await fetch("/contas/sair", JSON_VAZIO).catch(() => {}); return; }
+    $("lgSenha").value = ""; entrouNoPainel(j);
+  } catch(e) { aviso.textContent = "Erro de rede: " + e.message; }
 }
-function sair(){
-  if(SESSAO) registrarAtiv(SESSAO.nome, "saiu do sistema", PAPEIS[SESSAO.papel], "acesso");
+async function sair(){
+  try{ await fetch("/contas/sair", JSON_VAZIO); } catch(e) {}
   SESSAO = null; document.documentElement.classList.add("sem-login"); document.body.classList.add("sem-login");
   $("lgSenha").value = ""; $("lgAviso").textContent = "";
 }
 $("loginForm").addEventListener("submit", e => { e.preventDefault(); entrar($("lgEmail").value, $("lgSenha").value); });
 $("sairBtn").onclick = sair;
 addEventListener("hashchange", () => { aplicarPermissoes(); if((location.hash.slice(1)||"")==="acessos") acessosTela(); });
-function perfilDe(u){
-  const box = mk("div",null,"perfil");
-  box.append(mk("h3", "Perfil de " + u.nome), mk("p", `${PAPEIS[u.papel]} · ${u.ativo ? "acesso liberado" : "acesso bloqueado"}`, "sub"));
-  box.append(mk("p", "Alterar: vê e muda. Ver: só olha. Nenhum: a aba some para esta pessoa.", "sub"));
-  const pode = podeAlterar("acessos") && u.papel !== "admin";
-  SECOES.forEach(([k,nome]) => {
-    const linha = mk("div",null,"perm-l"); linha.append(mk("span",nome));
-    const seg = mk("div",null,"seg"); seg.setAttribute("role","group"); seg.setAttribute("aria-label",`${nome} de ${u.nome}`);
-    [["alterar","Alterar"],["ver","Ver"],["","Nenhum"]].forEach(([v,t]) => {
-      const b = mk("button",t); b.type = "button"; b.disabled = !pode; if((u.perm[k]||"")===v) b.className = "on";
-      b.onclick = () => { u.perm[k] = v; registrarAtiv(SESSAO.nome, `mudou ${nome} de ${u.nome} para ${t.toLowerCase()}`, u.email, "acesso"); aplicarPermissoes(); acessosTela(); };
-      seg.append(b);
+const PAPEL_NOME = {usuario: "Conta comum", leitor: "Leitor", editor: "Editor", admin: "Administrador"};
+let ACTERMO = "";
+async function acaoConta(id, corpo){
+  const r = await fetch("/painel/contas/" + id, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(corpo)});
+  if(!r.ok){ const e = await r.json().catch(() => ({})); alert(e.detail || ("Não consegui salvar (" + r.status + ").")); }
+  acessosTela(true);
+}
+function perfilDe(c){
+  const box = mk("div", null, "perfil");
+  box.append(mk("h3", "Perfil de " + c.nome), mk("p", `${PAPEL_NOME[c.papel] || c.papel} · ${c.bloqueada ? "bloqueada no painel" : "acesso liberado"}`, "sub"));
+  const pode = podeAlterar("acessos") && c.papel !== "admin" && c.papel !== "usuario" && !c.fixo_por_email;
+  box.append(mk("p", c.papel === "usuario" ? "Escolha um papel (Leitor, Editor ou Administrador) para esta conta entrar no painel."
+    : c.papel === "admin" ? "Administrador sempre pode tudo." : "Alterar: vê e muda. Ver: só olha. Nenhum: a aba some para esta pessoa.", "sub"));
+  if(c.papel === "leitor" || c.papel === "editor"){
+    [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["atividade","Atividade"]].forEach(([k, nome]) => {
+      const linha = mk("div", null, "perm-l"); linha.append(mk("span", nome));
+      const seg = mk("div", null, "seg"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", nome + " de " + c.nome);
+      [["alterar", "Alterar"], ["ver", "Ver"], ["", "Nenhum"]].forEach(([v, t]) => {
+        const b = mk("button", t); b.type = "button"; b.disabled = !pode; if((c.permissoes[k] || "") === v) b.className = "on";
+        b.onclick = () => acaoConta(c.id, {permissoes: {...c.permissoes, [k]: v}});
+        seg.append(b);
+      });
+      linha.append(seg); box.append(linha);
     });
-    linha.append(seg); box.append(linha);
-  });
-  if(u.papel === "admin") box.append(mk("p","Administrador sempre pode tudo.","sub"));
-  const rest = mk("button","Voltar ao padrão do papel","lk"); rest.type = "button"; rest.disabled = !pode;
-  rest.onclick = () => { u.perm = {...PERMISSOES[u.papel]}; aplicarPermissoes(); acessosTela(); };
-  box.append(rest); return box;
+    const rest = mk("button", "Voltar ao padrão do papel", "lk"); rest.type = "button"; rest.disabled = !pode || !c.personalizada;
+    rest.onclick = () => acaoConta(c.id, {redefinir: true}); box.append(rest);
+  }
+  return box;
 }
-function acessosTela(){
-  $("acN").textContent = `${USUARIOS.length} usuários`;
-  const lista = $("acUsuarios"); lista.replaceChildren();
-  USUARIOS.forEach((u,i) => {
-    const l = mk("div",null,"ativ-l"); l.style.setProperty("--i", i);
-    const ic = mk("span",null,"icone est-"+(u.ativo?"ok":"err"));
+async function acessosTela(forcar){
+  if(!podeVer("acessos") || (!forcar && (location.hash.slice(1) || "") !== "acessos")) return;
+  const lista = $("acUsuarios");
+  let j;
+  try{ j = await pegar("/painel/contas" + (ACTERMO ? "?q=" + encodeURIComponent(ACTERMO) : "")); }
+  catch(e){ lista.textContent = "Não consegui carregar as contas: " + e.message; return; }
+  $("acN").textContent = `${j.contas.length} ${ACTERMO ? "encontradas" : "com acesso"}`;
+  lista.replaceChildren();
+  if(!j.contas.length) lista.append(mk("p", ACTERMO ? "Nenhuma conta com esse nome ou e-mail." : "Ninguém tem papel no painel ainda.", "sub"));
+  j.contas.forEach((c, i) => {
+    const l = mk("div", null, "ativ-l"); l.style.setProperty("--i", i);
+    const ic = mk("span", null, "icone est-" + (c.bloqueada ? "err" : c.papel === "usuario" ? "idle" : "ok"));
     ic.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="3.5"/><path d="M5 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5"/></svg>';
-    const m = mk("div"); m.append(mk("b",u.nome), mk("small",`${u.email} · ${u.ultimo ? "último acesso " + rel(u.ultimo) : "nunca entrou"}`));
-    const acoes = mk("div",null,"ac-acoes");
-    const papel = mk("select"); papel.setAttribute("aria-label","Papel de "+u.nome);
-    Object.entries(PAPEIS).forEach(([k,t]) => { const o = mk("option",t); o.value = k; if(u.papel===k) o.selected = true; papel.append(o); });
-    papel.disabled = !podeAlterar("acessos");
-    papel.onchange = () => { if(!podeAlterar("acessos")) return; registrarAtiv(SESSAO.nome, `mudou o papel de ${u.nome} para ${PAPEIS[papel.value]}`, u.email, "acesso"); u.papel = papel.value; u.perm = {...PERMISSOES[u.papel]}; aplicarPermissoes(); acessosTela(); };
-    const bloq = mk("button", u.ativo ? "Bloquear" : "Liberar", "lk"); bloq.type = "button"; bloq.disabled = !podeAlterar("acessos") || !SESSAO || u.id === SESSAO.id;
-    bloq.onclick = () => { u.ativo = !u.ativo; registrarAtiv(SESSAO.nome, `${u.ativo?"liberou":"bloqueou"} o acesso de ${u.nome}`, u.email, "acesso"); acessosTela(); };
-    acoes.append(papel, bloq);
-    const perf = mk("button", PERFIL_ABERTO===u.id ? "Fechar" : "Perfil", "lk"); perf.type = "button";
-    perf.onclick = () => { PERFIL_ABERTO = PERFIL_ABERTO===u.id ? null : u.id; acessosTela(); };
-    acoes.append(perf);
-    l.append(ic,m,acoes); lista.append(l);
-    if(PERFIL_ABERTO===u.id) lista.append(perfilDe(u));
+    const m = mk("div"); m.append(mk("b", c.nome), mk("small", `${c.email} · ${c.entra_com === "google" ? "Google" : "senha"}${c.fixo_por_email ? " · administrador pelo config.env" : ""}${c.conta_teste ? " · conta de teste" : ""}`));
+    const acoes = mk("div", null, "ac-acoes");
+    const papel = mk("select"); papel.setAttribute("aria-label", "Papel de " + c.nome);
+    j.papeis.forEach(p => { const o = mk("option", p.id === "usuario" ? "Sem acesso ao painel" : p.nome); o.value = p.id; if(c.papel === p.id) o.selected = true; papel.append(o); });
+    papel.disabled = !podeAlterar("acessos") || c.fixo_por_email;
+    papel.onchange = () => acaoConta(c.id, {papel: papel.value});
+    const bloq = mk("button", c.bloqueada ? "Liberar" : "Bloquear", "lk"); bloq.type = "button";
+    bloq.disabled = !podeAlterar("acessos") || c.papel === "usuario" || c.fixo_por_email;
+    bloq.onclick = () => acaoConta(c.id, {bloqueada: !c.bloqueada});
+    const perf = mk("button", PERFIL_ABERTO === c.id ? "Fechar" : "Perfil", "lk"); perf.type = "button";
+    perf.onclick = () => { PERFIL_ABERTO = PERFIL_ABERTO === c.id ? null : c.id; acessosTela(true); };
+    acoes.append(papel, bloq, perf);
+    l.append(ic, m, acoes); lista.append(l);
+    if(PERFIL_ABERTO === c.id) lista.append(perfilDe(c));
   });
-  $("acNovo").onclick = () => { if(!podeAlterar("acessos")) return; $("acForm").hidden = false; $("acNome").focus(); };
 }
+$("acBusca").addEventListener("input", () => { clearTimeout(window._acT); window._acT = setTimeout(() => { ACTERMO = $("acBusca").value.trim(); acessosTela(true); }, 300); });
 $("acCancelar").onclick = () => { $("acForm").hidden = true; };
 $("acCriar").onclick = () => {
   const nome = $("acNome").value.trim(), email = $("acEmail").value.trim(), senha = $("acSenha").value, aviso = $("acAviso");
@@ -1555,7 +1568,7 @@ function correcaoTab(){
 /*FIM*/
 const IA_COB = [{"n": 1, "bloco": "Identificação e perfil", "pergunta": "Quem é [nome] e qual cargo ocupa atualmente?", "dado": "completo", "motor": "pronto", "fonte": "Cadastro da Câmara e do Senado.", "limite": "Só mandatos no Congresso; cargos do Executivo e de tribunais não estão no cadastro."}, {"n": 2, "bloco": "Identificação e perfil", "pergunta": "Qual é o histórico político de [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "TSE: candidaturas e resultados (1994 em diante) ligadas ao parlamentar.", "limite": "Só o que passou por eleição; cargos nomeados, suplência e mandatos anteriores a 1994 não aparecem."}, {"n": 3, "bloco": "Identificação e perfil", "pergunta": "Quais cargos públicos [nome] já ocupou?", "dado": "parcial", "motor": "pronto", "fonte": "TSE (candidaturas e resultado) e cadastro do Congresso.", "limite": "Só cargos de eleição; nomeados (ministro, secretário), suplentes que assumiram e vereadores não entram."}, {"n": 4, "bloco": "Identificação e perfil", "pergunta": "A qual partido [nome] pertence atualmente e por quais partidos já passou?", "dado": "parcial", "motor": "pronto", "fonte": "Partido atual: cadastro. Anteriores: partido de cada candidatura no TSE.", "limite": "Troca de partido fora de ano de eleição não aparece."}, {"n": 5, "bloco": "Identificação e perfil", "pergunta": "Qual é a formação acadêmica e profissional de [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "TSE: grau de instrução e ocupação declarados a cada candidatura.", "limite": "É o que a própria pessoa declarou; não há diploma nem currículo."}, {"n": 6, "bloco": "Identificação e perfil", "pergunta": "Qual foi o patrimônio declarado por [nome] nas últimas eleições?", "dado": "completo", "motor": "pronto", "fonte": "TSE: bens declarados a cada candidatura.", "limite": "Valor declarado, sem correção pela inflação; só em ano de candidatura."}, {"n": 7, "bloco": "Identificação e perfil", "pergunta": "Quais são os principais projetos de lei apresentados por [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "Câmara e Senado: tramitação das proposições.", "limite": "A autoria só existe para proposições com tramitação coletada; não há critério de projeto 'principal'."}, {"n": 8, "bloco": "Identificação e perfil", "pergunta": "Quais são as principais decisões e atuações políticas de [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais, presença, projetos e comissões.", "limite": "'Decisões' não existe como dado: o BRASIL+ mostra votos, presença e projetos."}, {"n": 9, "bloco": "Identificação e perfil", "pergunta": "Quem são os políticos que atualmente ocupam os principais cargos do governo federal?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "A lista de ministros fica só no site, não no banco; não há base aberta única e atualizada de cargos do Executivo."}, {"n": 10, "bloco": "Identificação e perfil", "pergunta": "Quais políticos representam cada estado no Senado e na Câmara dos Deputados?", "dado": "completo", "motor": "pronto", "fonte": "Cadastro da Câmara e do Senado.", "limite": "Só quem está em exercício na última coleta."}, {"n": 11, "bloco": "Processos judiciais e investigações", "pergunta": "Quantos processos judiciais estão associados a [nome]?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não existe base aberta de processos por pessoa. Existem só: representações por quebra de decoro (Câmara), registro de candidatura (TSE) e casos curados."}, {"n": 12, "bloco": "Processos judiciais e investigações", "pergunta": "Quais políticos possuem registros de processos judiciais e quantos cada um possui?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados do BRASIL+ (cada um com fonte).", "limite": "Só os casos curados, e a lista mostra condenações: não é o total de processos de ninguém."}, {"n": 13, "bloco": "Processos judiciais e investigações", "pergunta": "Quais processos de [nome] ainda estão em andamento?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados e representações da Câmara.", "limite": "Mostra a situação e a data da fonte; o andamento atual não é acompanhado."}, {"n": 14, "bloco": "Processos judiciais e investigações", "pergunta": "Quais processos de [nome] já foram arquivados ou encerrados?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados e representações da Câmara.", "limite": "Só o que a fonte curada registra (ex.: 'processo arquivado', 'prescrito')."}, {"n": 15, "bloco": "Processos judiciais e investigações", "pergunta": "[Nome] possui condenações judiciais? Quais são e qual é a situação atual?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados do BRASIL+.", "limite": "Só condenações dos casos curados; ausência aqui não prova que não existe."}, {"n": 16, "bloco": "Processos judiciais e investigações", "pergunta": "Quais políticos possuem processos relacionados a improbidade administrativa?", "dado": "nenhum", "motor": "a_fazer", "fonte": "—", "limite": "Não há base aberta de ações de improbidade por pessoa; só apareceria se um caso curado descrevesse isso."}, {"n": 17, "bloco": "Processos judiciais e investigações", "pergunta": "Existem investigações envolvendo [nome] em tribunais ou órgãos de controle?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados; TCU (só totais, sem nome).", "limite": "Só casos curados (situação e data da fonte); o TCU é publicado apenas em totais por estado, sem nome."}, {"n": 18, "bloco": "Processos judiciais e investigações", "pergunta": "Em quais tribunais existem processos associados a [nome]?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não existe base aberta que diga em quais tribunais uma pessoa responde."}, {"n": 19, "bloco": "Processos judiciais e investigações", "pergunta": "Quanto tempo os processos envolvendo [nome] estão em tramitação?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não existe base aberta com o tempo de tramitação de processos por pessoa."}, {"n": 20, "bloco": "Processos judiciais e investigações", "pergunta": "Quais políticos possuem condenações definitivas, distinguindo-as de investigações e processos ainda sem decisão final?", "dado": "parcial", "motor": "pronto", "fonte": "Casos curados do BRASIL+ (situação com termos fechados).", "limite": "Distingue 'condenado' de 'condenado (recorre)' (ainda cabe recurso); investigados e réus não entram nessa lista."}, {"n": 21, "bloco": "Projetos de lei", "pergunta": "Quantos projetos de lei [nome] apresentou durante seu mandato?", "dado": "parcial", "motor": "pronto", "fonte": "Câmara e Senado: tramitação.", "limite": "Só entre as proposições com tramitação coletada: número menor não quer dizer que apresentou pouco."}, {"n": 22, "bloco": "Projetos de lei", "pergunta": "Quantos projetos de lei foram aprovados, rejeitados ou arquivados?", "dado": "parcial", "motor": "a_fazer", "fonte": "Situação registrada de cada proposição.", "limite": "Para uma pessoa funciona (perguntas 21, 24 e 25); a versão geral, sem nome, ainda não existe."}, {"n": 23, "bloco": "Projetos de lei", "pergunta": "Quais parlamentares possuem registros de projetos apresentados e quantos cada um possui?", "dado": "parcial", "motor": "a_fazer", "fonte": "Tramitação coletada.", "limite": "Só proposições com tramitação coletada."}, {"n": 24, "bloco": "Projetos de lei", "pergunta": "Quais projetos de [nome] já se transformaram em leis?", "dado": "parcial", "motor": "pronto", "fonte": "Situação 'transformado em norma jurídica'.", "limite": "Só entre as proposições com tramitação coletada."}, {"n": 25, "bloco": "Projetos de lei", "pergunta": "Quantos projetos apresentados por [nome] ainda estão aguardando votação?", "dado": "parcial", "motor": "pronto", "fonte": "Situação registrada.", "limite": "Conta 'em andamento ou sem decisão final'; não separa quem já está pautado."}, {"n": 26, "bloco": "Projetos de lei", "pergunta": "Quais deputados e senadores apresentaram projetos nos últimos 12 meses?", "dado": "parcial", "motor": "a_fazer", "fonte": "Tramitação coletada e data de apresentação.", "limite": "Só proposições com tramitação coletada."}, {"n": 27, "bloco": "Projetos de lei", "pergunta": "Quantos projetos [nome] apresentou como autor e como coautor?", "dado": "parcial", "motor": "pronto", "fonte": "—", "limite": "Mostra as proposições em que a pessoa consta entre os autores; não separa autor principal de coautor."}, {"n": 28, "bloco": "Projetos de lei", "pergunta": "Quais áreas são mais abordadas nos projetos apresentados por [nome]?", "dado": "parcial", "motor": "pronto", "fonte": "Ementa das proposições com tramitação coletada.", "limite": "Áreas por palavra-chave da ementa; não é posição política."}, {"n": 29, "bloco": "Projetos de lei", "pergunta": "Quais projetos de [nome] tiveram impacto financeiro previsto no orçamento público?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "O impacto financeiro previsto por proposição não é publicado como dado aberto."}, {"n": 30, "bloco": "Projetos de lei", "pergunta": "Como a produção legislativa de [nome] se compara à de outros parlamentares do mesmo período?", "dado": "parcial", "motor": "pronto", "fonte": "Cota e votações nominais.", "limite": "A comparação de projetos não é feita: a autoria é coletada só em parte. Compara cota e participação em votações."}, {"n": 31, "bloco": "Votações e participação", "pergunta": "Quantas votações nominais [nome] participou durante o mandato?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais coletadas.", "limite": "Últimos 12 meses (presença) e votos nas votações coletadas; não é o mandato inteiro."}, {"n": 32, "bloco": "Votações e participação", "pergunta": "Em quantas votações [nome] esteve ausente?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais coletadas.", "limite": "Ausência é calculada (total menos votou) e inclui licença e quem ainda não tinha tomado posse."}, {"n": 33, "bloco": "Votações e participação", "pergunta": "Quantas vezes [nome] votou a favor, contra ou se absteve?", "dado": "completo", "motor": "pronto", "fonte": "Votos nas votações nominais coletadas.", "limite": "Só votações nominais coletadas; votação secreta não entra."}, {"n": 34, "bloco": "Votações e participação", "pergunta": "Quais parlamentares possuem registros de maior participação em votações nominais?", "dado": "completo", "motor": "pronto", "fonte": "Votações nominais dos últimos 12 meses.", "limite": "Só quem está em exercício; suplente recente aparece com menos votações."}, {"n": 35, "bloco": "Votações e participação", "pergunta": "Quais parlamentares possuem registros de menor participação em votações nominais?", "dado": "parcial", "motor": "pronto", "fonte": "Votações nominais dos últimos 12 meses.", "limite": "Quem não votou em nenhuma não aparece na lista."}, {"n": 36, "bloco": "Votações e participação", "pergunta": "Como [nome] votou nas principais propostas relacionadas à economia?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos + ementa da matéria.", "limite": "Exigiria classificar votações por tema por palavra-chave; 'principais' não é critério do dado."}, {"n": 37, "bloco": "Votações e participação", "pergunta": "Como [nome] votou em projetos relacionados à saúde e educação?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos + ementa da matéria.", "limite": "Idem: classificação por palavra-chave."}, {"n": 38, "bloco": "Votações e participação", "pergunta": "Qual foi o posicionamento de [nome] nas votações de reformas tributárias e previdenciárias?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos + nome da matéria.", "limite": "Só se a votação estiver coletada e identificável pelo nome da proposição."}, {"n": 39, "bloco": "Votações e participação", "pergunta": "Como mudou o comportamento de votação de [nome] ao longo dos anos?", "dado": "parcial", "motor": "a_fazer", "fonte": "Votos por ano.", "limite": "Depende de quantos anos de votações foram coletados."}, {"n": 40, "bloco": "Votações e participação", "pergunta": "Como votaram individualmente os ministros do STF, STJ e TSE em determinada decisão?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "Não há base aberta com o voto de cada ministro; só 6 julgamentos do STF curados, com placar."}, {"n": 41, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto [nome] recebeu de remuneração durante o mandato?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "A remuneração por pessoa não é coletada; a cota parlamentar não é salário."}, {"n": 42, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto [nome] gastou com verba parlamentar?", "dado": "completo", "motor": "pronto", "fonte": "Cota parlamentar (Câmara e Senado).", "limite": "Valor reembolsado/pago; ano corrente pode estar incompleto."}, {"n": 43, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quais foram as principais despesas de [nome] com viagens, hospedagens e passagens?", "dado": "parcial", "motor": "pronto", "fonte": "Categorias da cota parlamentar.", "limite": "Só o que a cota reembolsa; viagens pagas por outros meios não aparecem."}, {"n": 44, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quais políticos possuem registros de despesas parlamentares e quais são os valores por categoria?", "dado": "completo", "motor": "pronto", "fonte": "Cota parlamentar por categoria.", "limite": "As categorias têm nomes diferentes na Câmara e no Senado."}, {"n": 45, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto [nome] recebeu em doações eleitorais e quais foram seus principais doadores?", "dado": "parcial", "motor": "pronto", "fonte": "TSE: prestação de contas (origem das receitas, despesas por tipo).", "limite": "O nome de cada doador pessoa física não é guardado (CPF não é guardado)."}, {"n": 46, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Qual foi a evolução do patrimônio declarado de [nome] entre as eleições?", "dado": "completo", "motor": "pronto", "fonte": "TSE: bens declarados.", "limite": "Sem correção pela inflação."}, {"n": 47, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quantas emendas parlamentares [nome] apresentou e quais valores foram destinados?", "dado": "parcial", "motor": "pronto", "fonte": "Portal da Transparência: emendas.", "limite": "Só os 30 maiores autores de cada ano; o número de emendas por pessoa não é guardado."}, {"n": 48, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quanto das emendas de [nome] foi efetivamente empenhado, liquidado e pago?", "dado": "parcial", "motor": "pronto", "fonte": "Portal da Transparência: emendas.", "limite": "Por autor há empenhado e pago; o liquidado existe só no total do ano."}, {"n": 49, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Quais empresas receberam recursos públicos relacionados a contratos ou emendas indicadas por [nome]?", "dado": "nenhum", "motor": "pronto", "fonte": "—", "limite": "O vínculo entre cada emenda e a empresa que recebeu não é coletado."}, {"n": 50, "bloco": "Gastos, patrimônio e atividade", "pergunta": "Como se distribuem os gastos, a participação legislativa, os projetos e as votações de [nome] em comparação com outros políticos do mesmo cargo e período?", "dado": "parcial", "motor": "pronto", "fonte": "Cota e votações nominais.", "limite": "Projetos e emendas ficam fora da comparação (coletados só em parte)."}];
 const IA_SEM = [{"pergunta": "Quantos processos o [nome] tem no STF?", "vezes": 14}, {"pergunta": "Qual o salário médio dos servidores de Palmas?", "vezes": 9}, {"pergunta": "Quantas queimadas teve na Amazônia em 2025?", "vezes": 7}, {"pergunta": "Quais projetos de lei sobre energia solar foram votados este ano?", "vezes": 5}, {"pergunta": "Quem são os prefeitos com mais processos no TCU?", "vezes": 4}];
-const ABAS = [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["atividade","Atividade"]];
+const ABAS = [["painel","Início"],["bots","Bots"],["dados","Dados"],["ia","IA"],["atividade","Atividade"],["acessos","Acessos"]];
 const ABAS_IC = {
   acessos: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 016 0V9"/></svg>',
   noticias: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4h10v12H4zM14 8h2v8a1.5 1.5 0 01-1.5 1.5H14M6.5 7.5h5M6.5 10.5h5M6.5 13.5h3"/></svg>',
@@ -1578,11 +1591,23 @@ $("recIcon").innerHTML = ICON.atualizar;
 $("recarregar").onclick = () => atualizarReal();
 // ---------- dados reais deste computador ----------
 const REAL = true;
-USUARIOS = [{id: 1, nome: "Administrador", email: "", papel: "admin", ativo: true, ultimo: null, perm: {...PERMISSOES.admin}}];
-SESSAO = {id: 1, nome: "Administrador", papel: "admin"};
-document.documentElement.classList.remove("sem-login"); document.body.classList.remove("sem-login");
-aplicarPermissoes();
-$("sairBtn").hidden = true; $("quem").hidden = true;   // não há login nesta página: a chave do administrador só vale para escrever
+let TIMER = null;
+function entrouNoPainel(j){
+  const papel = j.papel_painel || "leitor";
+  USUARIOS = [{id: 1, nome: j.conta.nome, email: "", papel, ativo: true, ultimo: null, perm: {...j.painel}}];
+  SESSAO = {id: 1, nome: j.conta.nome, papel};
+  document.documentElement.classList.remove("sem-login"); document.body.classList.remove("sem-login");
+  $("sairBtn").hidden = false; $("quem").hidden = false;
+  aplicarPermissoes();
+  if(!TIMER){ atualizarReal(); TIMER = setInterval(atualizarReal, 60000); }
+  const h = location.hash.slice(1);
+  if(!ABAS.some(a => a[0] === h) || !podeVer(h)) location.hash = "painel";
+  acessosTela();
+}
+async function iniciarSessao(){
+  try{ const j = await pegar("/contas/eu"); if(j.conta && j.painel){ entrouNoPainel(j); return; } } catch(e) {}
+  document.documentElement.classList.add("sem-login"); document.body.classList.add("sem-login");
+}
 const ESTADO_REAL = {rodando: "run", ok: "ok", aviso: "ok", erro: "err", parado: "idle"};
 const iso = v => v ? String(v).replace(" ", "T") : null;
 async function pegar(caminho){
@@ -1642,8 +1667,7 @@ async function atualizarReal(){
   }
   p.classList.remove("carregando"); ic.classList.remove("girando");
 }
-atualizarReal();
-setInterval(atualizarReal, 60000);
+iniciarSessao();
 
 // ---------- IA: responde com o que está no banco (GET /ia/pergunta) ----------
 tEnviar = async function(){
@@ -1787,7 +1811,7 @@ function bDesenhar(msg){
   const repo = dados && dados.config && dados.config.repo;
   if(repo){ const a = mk("a","Abrir no GitHub","btn"); a.href = `${repo.url}/edit/${repo.branch}/${arquivoGerado.caminho}`; a.target = "_blank"; a.rel = "noopener"; bt.append(a); }
   msg.append(bt);
-  msg.append(mk("small",(bUlt.origem === "gemini" ? "Organizado pelo Gemini. " : "Organizado por uma regra simples pelo endereço (informe a chave do administrador para usar o Gemini). ") + "Nada foi cadastrado: confira a seção e copie o bloco.","org-av"));
+  msg.append(mk("small",(bUlt.origem === "gemini" ? "Organizado pelo Gemini. " : "Organizado por uma regra simples pelo endereço (o Gemini entra quando a chave GEMINI_API_KEY estiver no servidor). ") + "Nada foi cadastrado: confira a seção e copie o bloco.","org-av"));
 }
 $("bForm").addEventListener("submit", e => {
   e.preventDefault();
@@ -1805,9 +1829,9 @@ $("bForm").addEventListener("submit", e => {
   organizarReal(q).then(r => { bUlt = r; bDesenhar(msg); }).catch(() => { bUlt = bPropor(q); bDesenhar(msg); });
 });
 async function organizarReal(q){
-  const local = bPropor(q), token = $("bToken").value.trim();
-  if(!token || !local.props.length) return local;   // sem chave: só a regra local (nada é enviado ao servidor)
-  const r = await fetch("/organizar", {method: "POST", headers: {"Content-Type": "application/json", "X-Admin-Token": token}, body: JSON.stringify({texto: q})});
+  const local = bPropor(q);
+  if(!local.props.length || !podeAlterar("bots")) return local;   // sem permissão em Bots: só a regra local (nada vai ao servidor)
+  const r = await fetch("/organizar", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({texto: q})});
   if(!r.ok) { const e = await r.text().catch(() => ""); throw new Error(r.status + " " + e.slice(0, 80)); }
   const j = await r.json(), porUrl = new Map(local.props.map(f => [f.url, f]));
   local.props = (j.propostas || []).map(p => { const base = porUrl.get(p.url) || {nome: p.url}; return {...base, url: p.url, cat: p.categoria, fmt: p.formato, iv: p.intervalo_min || base.iv, origem: p.origem}; });
