@@ -33,7 +33,7 @@ Name: "desktopicon"; Description: "Criar um atalho na area de trabalho"; GroupDe
 
 [Files]
 Source: "..\build-exe\dist\BRASILMais\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
-Source: "..\site\*"; DestDir: "{userprofile}\BRASILMais\site"; Flags: recursesubdirs onlyifdoesntexist uninsneveruninstall skipifsourcedoesntexist
+Source: "..\site\*"; DestDir: "{%USERPROFILE}\BRASILMais\site"; Flags: recursesubdirs onlyifdoesntexist uninsneveruninstall skipifsourcedoesntexist
 
 [Icons]
 Name: "{autoprograms}\BRASIL+"; Filename: "{app}\BRASILMais.exe"
