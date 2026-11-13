@@ -5,13 +5,15 @@ Revises: 0015
 import sqlalchemy as sa
 from alembic import op
 
-revision = "0016"
-down_revision = "0015"
+revision = "0020"
+down_revision = "0019"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
+    if "oportunidades" in sa.inspect(op.get_bind()).get_table_names():
+        return
     op.create_table(
         "oportunidades",
         sa.Column("id", sa.Integer, primary_key=True),

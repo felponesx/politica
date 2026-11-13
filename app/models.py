@@ -6,7 +6,7 @@ para depois serem normalizadas em tabelas específicas conforme as telas exigire
 """
 from datetime import date, datetime, timezone
 
-from sqlalchemy import (JSON, BigInteger, Date, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, String, Text,
+from sqlalchemy import (JSON, BigInteger, Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, LargeBinary, String, Text,
                         UniqueConstraint, func, text)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -542,10 +542,19 @@ class Conta(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(254), unique=True)
-    senha_hash: Mapped[str] = mapped_column(String(200))
+    senha_hash: Mapped[str | None] = mapped_column(String(200))  # vazio nas contas que entram só pelo Google
+    google_sub: Mapped[str | None] = mapped_column(String(64), unique=True)  # id da conta Google (claim "sub")
+    papel: Mapped[str] = mapped_column(String(12), default="usuario")       # "usuario" ou "admin"
     cpf_codigo: Mapped[str] = mapped_column(String(64), unique=True)  # HMAC-SHA256(CPF_PEPPER, CPF): impede duas contas com o mesmo CPF
     nome: Mapped[str] = mapped_column(String(120))
     criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+    termos_versao: Mapped[str | None] = mapped_column(String(20))   # versão dos termos aceitos no cadastro
+    termos_aceitos_em: Mapped[datetime | None] = mapped_column(DateTime)
+    # perfil (opcional, a pessoa completa em "Minha conta"; ver app/contas.py PERFIL_CAMPOS)
+    data_nascimento: Mapped[date | None] = mapped_column(Date)
+    uf: Mapped[str | None] = mapped_column(String(2))
+    cidade: Mapped[str | None] = mapped_column(String(80))
+    interesses: Mapped[str | None] = mapped_column(String(300))  # chaves separadas por vírgula
 
 
 class Sessao(Base):
@@ -604,3 +613,34 @@ class Oportunidade(Base):
     status: Mapped[str] = mapped_column(String(12), default="pendente", index=True)  # pendente | aprovado | rejeitado
     criada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     aprovada_em: Mapped[datetime | None] = mapped_column(DateTime)
+class Midia(Base):
+    """Foto enviada pelo administrador (guardada no banco, até 3 MB). Serve as capas e imagens das publicações."""
+    __tablename__ = "midias"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nome: Mapped[str] = mapped_column(String(120))
+    tipo: Mapped[str] = mapped_column(String(20))  # image/jpeg, image/png, image/webp
+    tamanho: Mapped[int] = mapped_column(Integer)
+    dados: Mapped[bytes] = mapped_column(LargeBinary)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+
+
+class Publicacao(Base):
+    """Notícia ou publicação própria do BRASIL+ (escrita pelo administrador). Só aparece no site quando 'publicada' é verdadeiro."""
+    __tablename__ = "publicacoes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(160), unique=True)
+    titulo: Mapped[str] = mapped_column(String(200))
+    resumo: Mapped[str | None] = mapped_column(String(400))
+    corpo: Mapped[str] = mapped_column(Text)            # texto puro; linha em branco separa parágrafos
+    categoria: Mapped[str] = mapped_column(String(40), default="noticia")
+    capa_midia_id: Mapped[int | None] = mapped_column(ForeignKey("midias.id", ondelete="SET NULL"))
+    capa_url: Mapped[str | None] = mapped_column(String(500))  # ou um link https de imagem
+    video_url: Mapped[str | None] = mapped_column(String(300))  # só YouTube ou Vimeo, guardado como link de incorporação
+    fonte: Mapped[str | None] = mapped_column(String(300))
+    publicada: Mapped[bool] = mapped_column(Boolean, default=False)
+    publicada_em: Mapped[datetime | None] = mapped_column(DateTime)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+    atualizada_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
+

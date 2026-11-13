@@ -5,10 +5,10 @@ UBS: tarefa `saude-ubs`; Mais Médicos: `saude-mais-medicos` (app/collectors/sau
 (`despesa_funcao`), no último ano com o 6º bimestre fechado em quase todos os estados, para os estados poderem ser comparados. Contas por habitante usam a
 população dos municípios (IBGE). As limitações vão junto da resposta.
 """
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models import Municipio, Registro
+from app.models import Coleta, Municipio, Registro
 from app.utils import UFS
 
 NOTAS = [
@@ -163,7 +163,8 @@ def painel(db: Session) -> dict | None:
     ano_gasto, gasto, uniao = _gasto_saude(db)
     dsus = {t: {c: d for c, d in db.execute(select(Registro.chave, Registro.dados).where(Registro.fonte == "datasus", Registro.tipo == t))}
             for t in ("leitos_uf", "medicos_uf", "mortalidade_infantil_uf", "causas_morte_uf", "internacoes_uf", "dengue_uf")}
-    if not ubs and not mm and not gasto and not any(dsus.values()):
+    if not ubs and not mm and not gasto and not any(dsus.values()) and not db.scalar(
+            select(Registro.id).where(Registro.tipo.in_(("vacinacao_uf", "saude_minimo"))).limit(1)):
         return None
     estados = {}
     for uf in UFS:
@@ -185,6 +186,10 @@ def painel(db: Session) -> dict | None:
                      pct_do_gasto=_pct(g["saude"], g["total"]))
         if len(e) > 1:
             estados[uf] = e
+    ext_uf, ext_br = extras_painel(db)
+    for uf, x in ext_uf.items():
+        estados.setdefault(uf, {"populacao": pop_uf.get(uf) or None}).update(x)
+    estados = {uf: e for uf, e in estados.items() if len(e) > 1}
     pop_br = sum(pop_uf.values()) or None
     soma = lambda k: sum(e.get(k) or 0 for e in estados.values())  # noqa: E731
     br = {"populacao": pop_br, "municipios": sum(n_mun.values()) or None}
@@ -207,17 +212,168 @@ def painel(db: Session) -> dict | None:
         if l:
             comp = {"leitos": l.get("competencia_internacao"), "uti": l.get("competencia_uti"), "medicos": (dsus["medicos_uf"].get(u) or {}).get("competencia")}
             break
-    return {"ano_gasto": ano_gasto, "competencias": comp, "brasil": br, "estados": estados, "notas": NOTAS, "fontes": FONTES}
+    br.update(ext_br)
+    return {"ano_gasto": ano_gasto, "competencias": comp, "brasil": br, "estados": estados, "notas": NOTAS + list(NOTAS_MUN.values()), "fontes": FONTES,
+            "fontes_novas": fontes_municipais(db)}
+
+
+# ---------- leitos, vacinação e mínimo constitucional por município (saude-leitos-municipios, saude-vacinacao, siconfi-saude-minimo) ----------
+LEITOS_LINK = "https://dadosabertos.saude.gov.br/dataset/hospitais-e-leitos"
+VACINA_LINK = "http://tabnet.datasus.gov.br/cgi/dhdat.exe?bd_pni/cpnibr.def"
+MINIMO_LINK = "https://siconfi.tesouro.gov.br/siconfi/pages/public/consulta_finbra_rreo/finbra_rreo_list.jsf"
+NOTAS_MUN = {
+    "leitos": "Leitos EXISTENTES cadastrados no CNES no mês indicado (arquivo Hospitais e Leitos do Ministério da Saúde), pelo município onde o hospital fica. "
+              "Existente não quer dizer livre nem em funcionamento no dia: a ocupação não é publicada em base aberta. \"SUS\" é a parte do leito oferecida ao SUS. "
+              "Município sem hospital cadastrado aparece com 0 leitos; município sem dado aparece como \"sem dado\".",
+    "vacinacao": "Cobertura vacinal OFICIAL do Programa Nacional de Imunizações (TabNet/DATASUS) pelo município de residência. A base aberta vai até 2022; de 2023 em diante o "
+                 "Ministério publica só em painel interativo, sem arquivo aberto, e nada é estimado aqui. Cobertura acima de 100% acontece (vacinados de fora, estimativa de população).",
+    "minimo": "Mínimo constitucional em saúde: parte da receita de impostos aplicada em ações e serviços públicos de saúde (LC 141/2012: 15% para municípios e 12% para estados), "
+              "no demonstrativo que o próprio governo entrega ao Tesouro (RREO Anexo 14 do SICONFI, o mesmo cálculo do SIOPS). Quem não entregou aparece como \"sem dado\", nunca como 0%. "
+              "Valor declarado abaixo de 1% ou acima de 100% é erro de digitação provável (ex.: 0,2 em vez de 20%): aparece como \"a conferir\" e não entra nas contagens.",
+}
+
+
+def _ultima_coleta(db: Session, fonte: str, tarefa: str) -> dict:
+    """Situação da coleta para a tela: ok/parcial (com a data), falhou (última tentativa deu erro) ou nunca coletada."""
+    ultima = db.scalars(select(Coleta).where(Coleta.fonte == fonte, Coleta.tarefa == tarefa).order_by(Coleta.inicio.desc()).limit(1)).first()
+    boa = db.scalars(select(Coleta).where(Coleta.fonte == fonte, Coleta.tarefa == tarefa, Coleta.status.in_(("ok", "parcial")))
+                     .order_by(Coleta.fim.desc()).limit(1)).first()
+    status = "nunca_coletada" if not ultima else (ultima.status if ultima.status in ("ok", "parcial", "rodando") else "falhou")
+    return {"status": status, "atualizado_em": boa.fim.isoformat(timespec="minutes") if boa and boa.fim else None}
+
+
+def _dados(db: Session, fonte: str, tipo: str, uf: str | None = None) -> dict:
+    q = select(Registro.chave, Registro.dados).where(Registro.fonte == fonte, Registro.tipo == tipo)
+    if uf:
+        q = q.where(Registro.uf == uf)
+    return {c: d for c, d in db.execute(q)}
+
+
+def _minimo(db: Session, esfera: str, uf: str | None = None) -> tuple[int | None, dict]:
+    """{id_ente(6 ou 2 dígitos): dados} do ano mais recente com dado do mínimo em saúde."""
+    q = select(Registro.ano, Registro.dados).where(Registro.fonte == "siconfi", Registro.tipo == "saude_minimo", Registro.chave.like(f"{esfera}-%"))
+    if uf:
+        q = q.where(Registro.uf == uf)
+    por_ano: dict = {}
+    from app.collectors.siconfi import minimo_suspeito
+    for ano, d in db.execute(q):
+        if minimo_suspeito(d.get("pct_aplicado")):  # vale também para registros gravados antes da marcação
+            d = {**d, "suspeito": True, "cumpriu": None}
+        por_ano.setdefault(ano, {})[str(d.get("id_ente"))[:6]] = d
+    if not por_ano:
+        return None, {}
+    ano = max(por_ano, key=lambda a: (len(por_ano[a]) >= 0.5 * max(len(v) for v in por_ano.values()), a))
+    return ano, por_ano[ano]
+
+
+def fontes_municipais(db: Session) -> dict:
+    leitos_br = db.scalar(select(Registro.dados).where(Registro.fonte == "cnes", Registro.tipo == "leitos_resumo", Registro.chave == "BR")) or {}
+    vac_br = db.scalar(select(Registro.dados).where(Registro.fonte == "datasus", Registro.tipo == "vacinacao_uf", Registro.chave == "BR")) or {}
+    ano_m, _ = _minimo(db, "M")
+    return {
+        "leitos": {"fonte": "CNES — Hospitais e Leitos (Ministério da Saúde)", "link": LEITOS_LINK, "periodo": leitos_br.get("competencia"),
+                   **_ultima_coleta(db, "cnes", "leitos_municipios"), "nota": NOTAS_MUN["leitos"]},
+        "vacinacao": {"fonte": "PNI — TabNet/DATASUS", "link": VACINA_LINK, "periodo": str(vac_br["ano"]) if vac_br.get("ano") else None,
+                      "periodo_indisponivel": f"{vac_br['ano'] + 1} em diante" if vac_br.get("ano") else None,
+                      **_ultima_coleta(db, "datasus", "vacinacao"), "nota": NOTAS_MUN["vacinacao"]},
+        "minimo": {"fonte": "SICONFI — RREO Anexo 14 (Tesouro Nacional)", "link": MINIMO_LINK, "periodo": str(ano_m) if ano_m else None,
+                   **_ultima_coleta(db, "siconfi", "saude_minimo"), "nota": NOTAS_MUN["minimo"]},
+    }
+
+
+def extras_painel(db: Session) -> tuple[dict, dict]:
+    """Mínimo constitucional e cobertura vacinal no painel: ({uf: campos}, campos do Brasil)."""
+    mi = minimo(db)
+    vac = _dados(db, "datasus", "vacinacao_uf")
+    est: dict = {}
+    for uf in UFS:
+        e = {}
+        m = (mi or {}).get("estados", {}).get(uf)
+        if m:
+            if m.get("suspeito"):  # valor declarado impossível: fica fora do mapa, com a marcação
+                e.update(saude_minimo_declarado=m["pct_aplicado"], saude_minimo_suspeito=True, saude_minimo_exigido=m["pct_minimo"])
+            else:
+                e.update(saude_minimo_pct=m["pct_aplicado"], saude_minimo_exigido=m["pct_minimo"], saude_minimo_cumpriu=m["cumpriu"])
+        v = vac.get(uf)
+        if v and v.get("ano"):
+            e.update(vacinacao_ano=v["ano"], vacinacao={va: x for va, s in (v.get("serie") or {}).items() if (x := s.get(str(v["ano"]))) is not None})
+        if e:
+            est[uf] = e
+    br = {}
+    vbr = vac.get("BR")
+    if vbr and vbr.get("ano"):
+        br.update(vacinacao_ano=vbr["ano"], vacinacao={va: x for va, s in (vbr.get("serie") or {}).items() if (x := s.get(str(vbr["ano"]))) is not None})
+    if mi:
+        br.update(saude_minimo_municipios=mi["municipios"], saude_minimo_ano=mi["ano_estados"], saude_minimo_ano_municipios=mi["ano_municipios"])
+    return est, br
 
 
 def municipios(db: Session, uf: str, limite: int = 60) -> list[dict]:
     mun = {m.codigo_ibge[:6]: (m.nome, m.populacao) for m in db.scalars(select(Municipio).where(Municipio.uf == uf))}
     ubs = {c: d.get("ubs", 0) for c, d in db.execute(select(Registro.chave, Registro.dados).where(Registro.fonte == "saude", Registro.tipo == "ubs_municipio", Registro.uf == uf))}
     mm = {c: d for c, d in db.execute(select(Registro.chave, Registro.dados).where(Registro.fonte == "saude", Registro.tipo == "mais_medicos_municipio", Registro.uf == uf))}
+    leitos = _dados(db, "cnes", "leitos_municipio", uf)
+    leitos_coletados = bool(leitos) or db.scalar(select(Registro.id).where(Registro.fonte == "cnes", Registro.tipo == "leitos_resumo").limit(1)) is not None
+    vac = _dados(db, "datasus", "vacinacao_municipio", uf)
+    _, minimo = _minimo(db, "M", uf)
     out = []
     for cod, (nome, pop) in mun.items():
         m = mm.get(cod) or {}
-        out.append({"codigo_ibge": cod, "nome": nome, "populacao": pop, "ubs": ubs.get(cod, 0), "ubs_por_10mil": _por(ubs.get(cod, 0), pop, 10000),
-                    "mm_vagas": m.get("vagas"), "mm_ocupadas": m.get("ocupadas")})
+        u = ubs.get(cod, 0) if ubs else None  # UBS não coletadas: sem dado (None), nunca 0
+        item = {"codigo_ibge": cod, "nome": nome, "populacao": pop, "ubs": u, "ubs_por_10mil": _por(u, pop, 10000),
+                "mm_vagas": m.get("vagas"), "mm_ocupadas": m.get("ocupadas")}
+        if leitos_coletados:  # coletado e sem hospital no arquivo = 0 leitos cadastrados (não é falta de dado)
+            l = leitos.get(cod) or {}
+            item.update(leitos=l.get("existentes", 0), leitos_sus=l.get("sus", 0), leitos_uti=l.get("uti_exist", 0), leitos_uti_sus=l.get("uti_sus", 0),
+                        hospitais=l.get("hospitais", 0), leitos_por_mil=_por(l.get("existentes", 0), pop, 1000), leitos_competencia=l.get("competencia"))
+        v = vac.get(cod)
+        if v:
+            item.update(vacinacao_ano=v.get("ano"), vacinacao=v.get("cobertura"))
+        mi = minimo.get(cod)
+        if mi:
+            item.update(saude_minimo_pct=mi.get("pct_aplicado"), saude_minimo_exigido=mi.get("pct_minimo"), saude_minimo_cumpriu=mi.get("cumpriu"),
+                        saude_minimo_valor=mi.get("valor_asps"), saude_minimo_suspeito=bool(mi.get("suspeito")))
+        out.append(item)
     out.sort(key=lambda x: -(x["populacao"] or 0))
     return out[:limite]
+
+
+def vacinacao(db: Session) -> dict | None:
+    """Série da cobertura vacinal por estado e do Brasil (todas as vacinas coletadas)."""
+    d = _dados(db, "datasus", "vacinacao_uf")
+    if not d:
+        return None
+    br = d.pop("BR", {})
+    return {"ano": br.get("ano"), "anos": br.get("anos"), "vacinas": br.get("vacinas"), "brasil": br.get("serie") or {},
+            "estados": {uf: x.get("serie") or {} for uf, x in sorted(d.items())}, "aviso": br.get("aviso"), "fonte": fontes_municipais(db)["vacinacao"]}
+
+
+def minimo(db: Session) -> dict | None:
+    """Mínimo constitucional em saúde: estados e resumo dos municípios (quantos cumpriram, quantos não entregaram)."""
+    ano_e, est = _minimo(db, "E")
+    ano_m, mun = _minimo(db, "M")
+    if not est and not mun:
+        return None
+    from app.utils import UF_POR_CODIGO_IBGE
+    estados = {UF_POR_CODIGO_IBGE.get(int(k)): {"pct_aplicado": v.get("pct_aplicado"), "pct_minimo": v.get("pct_minimo"), "cumpriu": v.get("cumpriu"),
+                                                "valor": v.get("valor_asps"), "suspeito": bool(v.get("suspeito"))} for k, v in est.items() if k.isdigit() and int(k) in UF_POR_CODIGO_IBGE}
+    resumo = db.scalar(select(Registro.dados).where(Registro.fonte == "siconfi", Registro.tipo == "saude_minimo_resumo", Registro.ano == ano_m)
+                       .order_by(Registro.id.desc()).limit(1)) if ano_m else None
+    total_mun = db.scalar(select(func.count()).select_from(Municipio)) or None
+    por_uf: dict = {}
+    for v in mun.values():
+        u = por_uf.setdefault(UF_POR_CODIGO_IBGE.get(int(str(v.get("id_ente"))[:2]), "?"), {"entregaram": 0, "cumpriram": 0, "pcts": []})
+        u["entregaram"] += 1
+        u["cumpriram"] += bool(v.get("cumpriu"))
+        if not v.get("suspeito"):
+            u["pcts"].append(v.get("pct_aplicado"))
+    for u in por_uf.values():
+        p = sorted(x for x in u.pop("pcts") if x is not None)
+        u["mediana_pct"] = p[len(p) // 2] if p else None
+    return {"ano_estados": ano_e, "ano_municipios": ano_m, "estados": estados,
+            "municipios": {"entregaram": len(mun), "cumpriram": sum(1 for v in mun.values() if v.get("cumpriu")),
+                           "nao_cumpriram": sum(1 for v in mun.values() if v.get("cumpriu") is False),
+                           "a_conferir": sum(1 for v in mun.values() if v.get("suspeito")),
+                           "sem_dado": (total_mun - len(mun)) if total_mun else None, "por_uf": por_uf,
+                           "sem_entrega_coletados": (resumo or {}).get("sem_entrega")},
+            "fonte": fontes_municipais(db)["minimo"]}

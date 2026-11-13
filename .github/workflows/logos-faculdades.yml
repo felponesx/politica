@@ -1,0 +1,32 @@
+name: Logos das faculdades (Wikipédia)
+
+# Procura na Wikipédia o logo das instituições do IGC (site/dados → /igc) e guarda site/midia/logos_faculdades.json como
+# artefato da execução. Não mexe no banco nem faz commit.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  logos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Logos das faculdades
+        env:
+          DATABASE_URL: sqlite:///./vazio.db
+        run: python -m scripts.midia_site --faculdades site/midia site/dados
+      - name: Guardar o resultado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logos-faculdades
+          path: site/midia/logos_faculdades.json
+          if-no-files-found: warn
+          retention-days: 14

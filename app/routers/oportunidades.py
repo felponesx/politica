@@ -1,104 +1,62 @@
-"""Cursos, eventos e concursos. Leitura pública só do que foi aprovado; cadastro e aprovação exigem o X-Admin-Token
-(mesmo critério das fontes cadastradas). Quem cadastra não aprova: a aprovação é um passo separado."""
-from datetime import date, datetime, timezone
-
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
-from pydantic import BaseModel, Field
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from app import oportunidades as op
 from app.db import get_db
-from app.models import Oportunidade
-from app.routers.fontes_cadastro import _exige_admin, _sessao_escrita
+from app.utils import memo, para_uf
 
-router = APIRouter(tags=["Cursos, eventos e concursos"])
-TIPOS = ("curso", "evento", "concurso")
-STATUS = ("pendente", "aprovado", "rejeitado")
+router = APIRouter()
 
 
-class OportunidadeIn(BaseModel):
-    tipo: str = Field(max_length=12)
-    titulo: str = Field(min_length=3, max_length=300)
-    orgao: str | None = Field(default=None, max_length=200)
-    uf: str | None = Field(default=None, min_length=2, max_length=2)
-    cidade: str | None = Field(default=None, max_length=120)
-    data_inicio: date | None = None
-    data_fim: date | None = None
-    inscricoes_ate: date | None = None
-    link: str = Field(min_length=10, max_length=500)
-    fonte: str | None = Field(default=None, max_length=200)
+def _ou_404(d, tarefa: str):
+    if not d:
+        raise HTTPException(404, f"Sem dados. Rode a coleta {tarefa}.")
+    return d
 
 
-def _ver(o: Oportunidade) -> dict:
-    return {"id": o.id, "tipo": o.tipo, "titulo": o.titulo, "orgao": o.orgao, "uf": o.uf, "cidade": o.cidade,
-            "data_inicio": o.data_inicio.isoformat() if o.data_inicio else None,
-            "data_fim": o.data_fim.isoformat() if o.data_fim else None,
-            "inscricoes_ate": o.inscricoes_ate.isoformat() if o.inscricoes_ate else None,
-            "link": o.link, "fonte": o.fonte, "status": o.status,
-            "aprovada_em": o.aprovada_em.isoformat() if o.aprovada_em else None}
+def _uf(uf: str | None) -> str | None:
+    if not uf:
+        return None
+    s = para_uf(uf)
+    if not s:
+        raise HTTPException(422, "UF inválida.")
+    return s
 
 
-@router.get("/oportunidades", tags=["Cursos, eventos e concursos"])
-def listar(request: Request, tipo: str | None = None, uf: str | None = None, status: str = "aprovado",
-           x_admin_token: str | None = Header(default=None), db: Session = Depends(get_db)):
-    if status not in STATUS:
-        raise HTTPException(422, "status inválido")
-    if status != "aprovado":   # pendente e rejeitado não são públicos: só o administrador vê
-        _exige_admin(request, x_admin_token or "")
-    q = select(Oportunidade).where(Oportunidade.status == status).order_by(Oportunidade.inscricoes_ate.is_(None),
-                                                                            Oportunidade.inscricoes_ate, Oportunidade.id.desc())
-    if tipo:
-        q = q.where(Oportunidade.tipo == tipo)
-    if uf:
-        q = q.where(Oportunidade.uf == uf.upper())
-    return [_ver(o) for o in db.scalars(q.limit(500)).all()]
+ATOS_OK = ("abertura", "processo_seletivo", "convocacao", "nomeacao", "homologacao", "retificacao", "prorrogacao")
 
 
-@router.post("/oportunidades", status_code=201, tags=["Cursos, eventos e concursos"])
-def cadastrar(corpo: OportunidadeIn, request: Request, x_admin_token: str = Header(...)):
-    _exige_admin(request, x_admin_token)
-    corpo.uf = corpo.uf.upper() if corpo.uf else None   # UF sempre em maiúsculas, para o filtro achar
-    if corpo.tipo not in TIPOS:
-        raise HTTPException(422, "tipo deve ser curso, evento ou concurso")
-    if not corpo.link.startswith("https://"):
-        raise HTTPException(422, "o link precisa começar com https://")
-    if corpo.data_inicio and corpo.data_fim and corpo.data_fim < corpo.data_inicio:
-        raise HTTPException(422, "a data final é antes da inicial")
-    db = _sessao_escrita()
-    try:
-        existente = db.scalar(select(Oportunidade).where(Oportunidade.tipo == corpo.tipo, Oportunidade.link == corpo.link))
-        if existente:   # o mesmo link atualiza a ficha, sem duplicar; a aprovação anterior não muda sozinha
-            for campo, valor in corpo.model_dump().items():
-                setattr(existente, campo, valor)
-            db.commit()
-            return {**_ver(existente), "atualizada": True}
-        o = Oportunidade(**corpo.model_dump(), status="pendente")
-        db.add(o); db.commit(); db.refresh(o)
-        return _ver(o)
-    finally:
-        db.close()
+@router.get("/concursos", tags=["Concursos e cursos"])
+def concursos(ato: str | None = Query(None, description="convocacao, nomeacao, homologacao, retificacao, prorrogacao; vazio = aberturas"),
+              db: Session = Depends(get_db)):
+    """Concursos e processos seletivos: DOU (federal), diários estaduais (onde há coletor) e diários das prefeituras (Querido Diário),
+    com a situação de cada fonte em `cobertura`."""
+    if ato and ato not in ATOS_OK:
+        raise HTTPException(422, "Tipo de ato inválido.")
+    return _ou_404(memo(("concursos", ato), lambda: op.concursos(db, ato=ato)), "concursos")
 
 
-def _decidir(oid: int, status: str, request: Request, token: str) -> dict:
-    _exige_admin(request, token)
-    db = _sessao_escrita()
-    try:
-        o = db.get(Oportunidade, oid)
-        if not o:
-            raise HTTPException(404, "Não encontrado")
-        o.status = status
-        o.aprovada_em = datetime.now(timezone.utc).replace(tzinfo=None) if status == "aprovado" else None
-        db.commit()
-        return _ver(o)
-    finally:
-        db.close()
+@router.get("/concursos/cobertura", tags=["Concursos e cursos"])
+def concursos_cobertura(db: Session = Depends(get_db)):
+    """Situação de cada fonte de concursos: os 27 diários estaduais (coletor, última coleta bem-sucedida, erro) e o Querido Diário."""
+    return op.cobertura_concursos(db)
 
 
-@router.post("/oportunidades/{oid}/aprovar", tags=["Cursos, eventos e concursos"])
-def aprovar(oid: int, request: Request, x_admin_token: str = Header(...)):
-    return _decidir(oid, "aprovado", request, x_admin_token)
+@router.get("/cursos", tags=["Concursos e cursos"])
+def cursos(db: Session = Depends(get_db)):
+    """Cursos gratuitos: Escola Virtual.Gov (Enap) e Sebrae (só os de preço zero), mais onde procurar os demais."""
+    return _ou_404(memo(("cursos",), lambda: op.cursos(db)), "cursos-gratuitos")
 
 
-@router.post("/oportunidades/{oid}/rejeitar", tags=["Cursos, eventos e concursos"])
-def rejeitar(oid: int, request: Request, x_admin_token: str = Header(...)):
-    return _decidir(oid, "rejeitado", request, x_admin_token)
+@router.get("/eventos", tags=["Eventos"])
+def eventos(uf: str | None = Query(None, max_length=2), db: Session = Depends(get_db)):
+    """Shows contratados por prefeituras, estados e União (PNCP, inexigibilidade). Sem `uf`: resumo do país; com `uf`: todos do estado."""
+    s = _uf(uf)
+    return _ou_404(memo(("eventos", s), lambda: op.eventos(db, s)), "eventos-shows")
+
+
+@router.get("/eventos-patrocinios", tags=["Eventos"])
+def patrocinios(uf: str | None = Query(None, max_length=2), db: Session = Depends(get_db)):
+    """Lei Rouanet: festivais, festas, feiras e shows com valor captado e as empresas patrocinadoras."""
+    s = _uf(uf)
+    return _ou_404(memo(("patrocinios", s), lambda: op.patrocinios(db, s)), "eventos-patrocinios")

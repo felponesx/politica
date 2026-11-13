@@ -9,13 +9,15 @@ Revises: 0014
 import sqlalchemy as sa
 from alembic import op
 
-revision = "0015"
-down_revision = "0014"
+revision = "0019"
+down_revision = "0018"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
+    if "fontes_cadastradas" in sa.inspect(op.get_bind()).get_table_names():
+        return
     op.create_table(
         "fontes_cadastradas",
         sa.Column("id", sa.Integer, primary_key=True),

@@ -36,21 +36,21 @@ def listar_parlamentares(casa: str | None = None, uf: str | None = None, partido
 
 
 @router.get("/parlamentares/{pid}")
-def detalhe_parlamentar(pid: int, db: Session = Depends(get_db)):
-    """Dados para o popout de pessoa: perfil, últimos votos e resumo de gastos."""
+def detalhe_parlamentar(pid: int, votos: int = Query(20, ge=1, le=100), db: Session = Depends(get_db)):
+    """Dados para o popout de pessoa: perfil, últimos votos (1 a 100, padrão 20) e resumo de gastos."""
     p = db.get(Parlamentar, pid)
     if not p:
         raise HTTPException(404, "Parlamentar não encontrado")
     votos = db.execute(
         select(Voto.voto, Votacao).join(Votacao).where(Voto.parlamentar_id == pid)
-        .order_by(Votacao.data.desc()).limit(20)).all()
+        .order_by(Votacao.data.desc()).limit(votos)).all()
     gastos = db.execute(
         select(Despesa.ano, Despesa.tipo, func.sum(Despesa.valor))
         .where(Despesa.parlamentar_id == pid).group_by(Despesa.ano, Despesa.tipo)
         .order_by(Despesa.ano.desc(), func.sum(Despesa.valor).desc())).all()
     return {
         "perfil": ParlamentarOut.model_validate(p),
-        "ultimos_votos": [{"voto": v, "votacao": VotacaoOut.model_validate(vt)} for v, vt in votos],
+        "ultimos_votos": [{"voto": v, "votacao": VotacaoOut.model_validate(vt), "proposicao": _proposicao_da_votacao(db, vt)} for v, vt in votos],
         "gastos_por_tipo": [{"ano": a, "tipo": t, "total": round(s or 0, 2)} for a, t, s in gastos],
         "total_gasto": round(sum(s or 0 for _, _, s in gastos), 2),
     }

@@ -39,27 +39,27 @@ MAPA = {
         reforma-tributaria receita-cbs cgibs-ibs""",
     "dividas": """siconfi-divida pgfn-divida-ativa tesouro-capag bcb-scr-estados receita-empresas-porte
         receita-recuperacao-judicial""",
-    "orgaos": "transparencia-orgaos transparencia-orcamento transparencia-servidores transparencia-viagens",
+    "orgaos": "transparencia-orgaos transparencia-orcamento transparencia-servidores transparencia-viagens concursos concursos-estaduais concursos-municipais",
     "pessoas": "tse-candidatos tse-bens camara-deputados senado-senadores camara-orgaos congresso-atuacao",
-    "eleicoes": "tse-resultados tse-doadores tse-fundos tse-contas",
-    "seguranca": "seguranca-anuario seguranca-efetivo seguranca-prisional seguranca-sinesp isp-rj-batalhoes prf-acidentes",
-    "saude": "saude-ubs saude-mais-medicos saude-datasus",
+    "eleicoes": "tse-resultados tse-doadores tse-fundos tse-contas tse-relatorias",
+    "seguranca": "seguranca-anuario seguranca-efetivo seguranca-prisional seguranca-sinesp isp-rj-batalhoes prf-acidentes prf-pessoas",
+    "saude": "saude-ubs saude-mais-medicos saude-datasus saude-leitos-municipios saude-vacinacao siconfi-saude-minimo",
     "social": """transparencia-social ibge-trabalho ibge-indicadores-sociais ibge-saneamento caged-saldos
         caged-estoque-referencia""",
     "ambiente": """inpe-desmatamento inpe-prodes-mata-atlantica inpe-queimadas mapbiomas-alertas mapbiomas-alertas-territorio
         desastres""",
     "empresas": "pncp-contratos transparencia-contratos cnpj-fornecedores ibge-empresas-economia",
     "obras": "obrasgov-obras",
-    "leis": """camara-proposicoes camara-proposicoes-detalhe camara-proposicoes-situacao camara-tramitacoes camara-votacoes
+    "leis": """stj-votos camara-proposicoes camara-proposicoes-detalhe camara-proposicoes-situacao camara-tramitacoes camara-votacoes
         camara-orientacoes senado-votacoes senado-situacao senado-materias congresso-agenda congresso-cpis assembleias
         assembleia-arquivo legislacao-normas lexml-estaduais cnj-justica""",
     "escandalos": """escandalos-fila cgu-sancoes ibama-multas mte-lista-suja tcu-inabilitados tcu-contas-irregulares""",
     "noticias": "noticias-politica querido-diario",
-    "ensino": "ensino-ideb inep-igc inep-censo-ies",
+    "ensino": "ensino-ideb inep-igc inep-censo-ies cursos-gratuitos",
     "indicadores": """ibge-indicadores bcb-series bcb-financeiro anp-combustiveis aneel-tarifas anatel-banda-larga anac-aerodromos
         tomtom-transito osm-malha-capitais osm-malha-pbf ibge-malha-municipios ibge-malhas ibge-municipios malha-comparar
         indicador-arquivo""",
-    "relatorios": "coletor-ingestao",
+    "relatorios": "coletor-ingestao eventos-patrocinios eventos-pendencias eventos-shows",
     "premios": "",
     "comparar": "",
 }

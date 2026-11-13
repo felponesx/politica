@@ -1,7 +1,15 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (coletor_externo, ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
-                            municipios, tse_financas, obrasgov, pgfn, pncp,
-                            receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
+from app.collectors import (coletor_externo, oportunidades, concursos_estaduais, stj, tse_relatorias, saude_mun, ibge_malha,
+                             osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies,
+                             caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc,
+                             prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia,
+                             anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes,
+                             inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias,
+                             saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag,
+                             cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr,
+                             desastres, ibge, legislacao, lexml,
+                             municipios, tse_financas, obrasgov, pgfn, pncp,
+                             receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
 
 _TAREFAS_BRUTAS = {
     "coletor-ingestao": coletor_externo.coletar_ingestao,   # pasta: dados liberados pelo coletor do celular
@@ -26,6 +34,13 @@ _TAREFAS_BRUTAS = {
     "anp-combustiveis": anp.coletar_anp_combustiveis,
     "congresso-cpis": cpis.coletar_cpis,
     "anac-aerodromos": anac.coletar_anac_aerodromos,
+    "concursos": oportunidades.coletar_concursos,
+    "cursos-gratuitos": oportunidades.coletar_cursos,
+    "eventos-shows": oportunidades.coletar_eventos,
+    "eventos-patrocinios": oportunidades.coletar_patrocinios,
+    "concursos-estaduais": concursos_estaduais.coletar_concursos_estaduais,
+    "concursos-municipais": oportunidades.coletar_concursos_municipais,
+    "eventos-pendencias": oportunidades.coletar_eventos_pendencias,
     "ibama-multas": ibama.coletar_ibama_multas,
     "inpe-queimadas": queimadas.coletar_queimadas,
     "tcu-contas-irregulares": tcu.coletar_tcu_irregulares,
@@ -35,6 +50,7 @@ _TAREFAS_BRUTAS = {
     "transparencia-viagens": social.coletar_viagens,       # anos
     "transparencia-servidores": servidores.coletar_servidores,   # meses
     "prf-acidentes": prf.coletar_prf_acidentes,   # anos
+    "prf-pessoas": prf.coletar_prf_pessoas,       # anos: acidentes por pessoa (pedestre, moto, carro, caminhão)
     "camara-orientacoes": orientacoes.coletar_camara_orientacoes,   # ano_inicial, ano_final
     "inpe-desmatamento": ambiente.coletar_desmatamento,
     "mapbiomas-alertas-territorio": mapbiomas.coletar_mapbiomas_territorio,
@@ -111,6 +127,11 @@ _TAREFAS_BRUTAS = {
     "saude-ubs": saude.coletar_ubs,                                    # Unidades Básicas de Saúde por município (CNES)
     "saude-mais-medicos": saude.coletar_mais_medicos,                  # vagas do Mais Médicos por município
     "saude-datasus": datasus.coletar_saude_datasus,                    # leitos, UTI, médicos e mortalidade infantil por estado (TabNet)
+    "saude-leitos-municipios": saude_mun.coletar_leitos_municipios,    # anos=AAAA,AAAA: leitos existentes, SUS e UTI por município (CNES, arquivo anual)
+    "saude-vacinacao": saude_mun.coletar_vacinacao,                    # cobertura vacinal oficial do PNI por município e série por estado (TabNet, até 2022)
+    "siconfi-saude-minimo": siconfi.coletar_saude_minimo,
+    "stj-votos": stj.coletar_stj_votos,                                # meses=12: posição de cada ministro nos acórdãos do STJ (espelhos, certidão)
+    "tse-relatorias": tse_relatorias.coletar_tse_relatorias,          # anos=AAAA,AAAA: decisões por relator no TSE (sem voto individual)              # ano, bimestre, esferas=E,M: % aplicado em saúde × mínimo (RREO Anexo 14)
 }
 
 

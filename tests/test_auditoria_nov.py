@@ -26,10 +26,20 @@ def test_token_fraco_nao_libera(monkeypatch):
 
 
 def test_nenhuma_rota_de_escrita_alem_das_conhecidas():
-    escrita = {(m, r.path) for r in app.routes for m in (getattr(r, "methods", None) or ()) if m not in ("GET", "HEAD", "OPTIONS")}
+    def rotas(lista):
+        # FastAPI 0.16x guarda cada include_router num invólucro (_IncludedRouter) com o roteador original dentro
+        for r in lista:
+            dentro = getattr(r, "original_router", None)
+            if dentro is not None:
+                yield from rotas(dentro.routes)
+            else:
+                yield r
+    escrita = {(m, r.path) for r in rotas(app.routes) for m in (getattr(r, "methods", None) or ()) if m not in ("GET", "HEAD", "OPTIONS")}
+    assert len(list(rotas(app.routes))) > 100  # a lista precisa ver as rotas de verdade, não só as do topo
     # escritas da API: coleta (token de admin), IA e busca (limites), e contas (login por senha, sessão por cookie, voto por lei com limite)
     assert escrita == {("POST", "/coletas/{tarefa}"), ("POST", "/ia/web"), ("POST", "/busca/web"),
-                       ("POST", "/contas"), ("POST", "/contas/entrar"), ("POST", "/contas/sair"), ("POST", "/proposicoes/{pid}/voto-lei")}
+                       ("POST", "/contas"), ("POST", "/contas/entrar"), ("POST", "/contas/google"), ("POST", "/contas/perfil"), ("POST", "/contas/sair"),
+                       ("POST", "/admin/publicacoes"), ("POST", "/admin/publicacoes/{pid}"), ("POST", "/admin/publicacoes/{pid}/apagar"), ("POST", "/admin/midia"), ("POST", "/admin/configurar"), ("POST", "/proposicoes/{pid}/voto-lei")}
 
 
 def test_cors_nao_aceita_escrita_de_outra_origem():

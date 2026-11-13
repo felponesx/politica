@@ -1,7 +1,7 @@
 from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.busca import ENTIDADES, buscar
@@ -61,8 +61,13 @@ def contratos(uf: str | None = None, ano: int | None = None, esfera: str | None 
         if len(dig) >= 4:
             cond += [Contrato.cnpj_fornecedor.like(dig + "%"), Contrato.cnpj_orgao.like(dig + "%")]
         stmt = stmt.where(or_(*cond))
-    ordem = Contrato.valor.desc().nullslast() if ordenar == "valor" else Contrato.data_assinatura.desc().nullslast()
-    return _pagina(db, stmt.order_by(ordem), limit, offset)
+    if ordenar == "valor":
+        ordens = [Contrato.valor.desc().nullslast()]
+    else:
+        # o PNCP tem datas de assinatura digitadas no futuro (ex.: 2027 numa cópia de 2026): ficam na lista, mas depois das válidas
+        futura = case((Contrato.data_assinatura > date.today(), 1), else_=0)
+        ordens = [futura, Contrato.data_assinatura.desc().nullslast()]
+    return _pagina(db, stmt.order_by(*ordens), limit, offset)
 
 
 @router.get("/contratos/{cid}", tags=["Contratos"])

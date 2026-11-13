@@ -1,0 +1,19 @@
+name: Diagnóstico RAIS layout
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rais:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "py7zr==1.*" "xlrd==2.*"
+      - run: python -m scripts.diag_rais_layout

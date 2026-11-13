@@ -85,7 +85,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Desde 1985: `bcb-series` (SGS) desde 1985 com seletor de período em Indicadores; proposições PEC/PLP/MPV/PDL/PDC/PLN desde 1985
   (`HISTORICO` em `scripts/coleta_ci.py`). Eleições: o TSE só publica dados abertos a partir de 1994 (1989 e antes não existem em base aberta).
 - Impostômetro: federal (Receita) + estaduais e municipais (`siconfi-tributos`, RREO Anexo 03 de cada estado e prefeitura, 12 meses); prefeituras sem relatório estimadas pela média por habitante da UF.
-- Imagens: retratos até 360 px de altura (JPEG 78; Câmara usa a versão `jpgmaior`) e logos até 256 px (PNG); nunca amplia. 720p/1080p reais não cabem no limite de 256 MB do Artifact.
+- Imagens: retratos até 200 px de altura (WebP; a foto maior aparece com 92 px no celular; era 360 px até 10/11/2026) e logos até 160 px (o maior aparece com 61 px); nunca amplia. Reduzir uma cópia pronta: `python -m scripts.reduzir_fotos site/midia` e `python -m scripts.logos_arquivo site/midia/logos.json`.
 
 ## Notícias rápidas (out/2026)
 - `.github/workflows/noticias.yml` + `scripts/noticias_rapido.py`: a cada 15 min lê os feeds (`buscar_feeds` em `app/collectors/noticias.py`),
@@ -625,3 +625,100 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Categorias do painel acompanham o menu do site: `categorias_atuais()` (`app/categorias.py`) lê `const NAV` de `site/index.html` na hora; seção nova no menu vira categoria nova (`nova: true`, ícone padrão `ICONE.outras`). A lista fixa `CATEGORIAS` só dá a ordem e o plano B.
 - Coleta nova sem seção em `MAPA`: continua caindo em Relatórios e Dados, mas `/fontes/status` traz `sem_secao` (por fonte e a lista) e o painel mostra a faixa amarela "Novas coletas sem seção".
 - Quadro genérico `GET /fontes-novas` (`app/fontes_novas.py`): fontes cadastradas pela tela (`campos.categoria` opcional, validado contra o menu) e as do coletor do celular com `adaptador = "linhas"` (`categoria` no `meta.json`). Aparecem no painel (`/fontes/status`, `origem`) e no site (Relatórios e Dados › "Fontes novas"). Tela bonita de verdade para uma fonte continua sendo trabalho de código (rota + `P.<nome>`).
+## Leveza e limpeza (10/11/2026)
+- Pacotes da cópia estática (`scripts/pacotes_copia.py`, chamado pelo exportador; manifest → `pacotes`): as chaves pequenas de cada assunto ficam juntas em
+  `dados/p/<inicio|economia|governo|escandalos|ambiente|geral|eleicoes>.json` (eleicoes só vale na tela de eleições). O site (`snapMapaPacotes`, `snapPacote`) lê o pacote e,
+  se falhar, a parte s<N> como antes. `snapGet` não procura nas partes consultas de lista que não existem (só as `bases`). Resumos prontos da inicial: `/inicio/proposicoes` e os
+  últimos registros. Medido no celular: Início 21 MB → 2,5 MB, Eleições 27,6 → 8,4 MB. Para uma cópia pronta: `python -m scripts.pacotes_copia site/dados`.
+- Fotos só são buscadas perto da tela (`FOTO_IO`); no celular não há pré-carga em segundo plano. Troca de tema: só superfícies grandes animam fundo/borda (0,4 s) — animar
+  todos os elementos travava (Eleições 3,7 s) e View Transitions deixava a tela em branco no app do Claude.
+- CSS: `python -m scripts.enxuga_css site/index.html` tira declarações sobrescritas e seletores impossíveis (conferido: estilo calculado idêntico em 42 telas).
+- Contratos com data de assinatura no futuro (erro do PNCP) vão para o fim da ordem por data e ganham "data a conferir" (`dataFutura`, `dataContrato`).
+- `admin_padrao` (conta admin/admin) é false por padrão; o `.env.local` do PC liga. O teste de rotas de escrita olha dentro dos `_IncludedRouter` do FastAPI 0.16x.
+- Salários por profissão (10/11): nomes da lista OFICIAL da CBO (`app/dados/cbo_nomes.json`: `cbo2002-ocupacao.csv` + `cbo2002-familia.csv` do gov.br; o FTP da RAIS não tem a lista). Comparação
+  entre anos: `python -m app.collectors.rais_profissoes 2024` grava `profissoes_rais_2024.json` (workflow com campo "ano"); `/profissoes` devolve `anos` e `historico` (nominal). Aviso de RAIS nova:
+  `rais-monitor.yml` (dia 7; só pelo branch padrão) coleta e abre issue; o coletor usa o ano completo mais novo e nunca troca dado completo por parcial.
+  RAIS 2024 entrou em 10/11 (`app/dados/profissoes_rais_2024.json`, 48,45 mi vínculos; 2025: 50,48 mi). Média ponderada geral +6,0% (nominal); mediana das profissões com 5 mil+ vínculos +5,3%.
+  Variação acima de 50% num ano vira "a conferir" e sai das ordens de aumento/queda (`prfVar`): ex.: procurador da República R$ 5,5 mil na RAIS 2024 → R$ 58 mil em 2025.
+- Eleições: pacotes `p/el-<ano>-<cargo>-<turno>.json` (mapas por município + resumo por estado) e `p/el-outros.json`; chave grande vai no pacote como marcador `{"__arquivo": "g/…"}` (`snapSegue`).
+  Trocar de ano: 12 MB -> 1,4 MB.
+- Código da página dividido por tela foi testado (estilo e texto idênticos) e NÃO publicado: sem ganho medido (o navegador só compila função usada).
+
+## Empresas públicas, privadas e concessões (10/11/2026)
+- `app/empresas_tipo.py` (tipo pela natureza jurídica: 2011 empresa pública, 2038 economia mista, 1xxx órgão público, cooperativa, sem fins lucrativos, resto privada; concessão pela
+  ATIVIDADE (CNAE) em energia, água e esgoto, rodovias, ferrovias, metrô, aeroportos, portos, gás canalizado, telefonia fixa, ônibus — indício, não o contrato).
+- Coletor `python -m app.collectors.empresas_tipo [site/dados]` (fora do registro de tarefas; roda daqui ou no robô): CVM (cadastro; controle acionário do FCA mais novo — o do cadastro geral
+  fica velho, ex.: Sabesp privada desde 22/07/2024; DFP do último ano cheio: receita 3.01, lucro 3.11, empréstimos 2.01.04+2.02.01, versão mais nova, consolidado), cadastro do CNPJ (BrasilAPI,
+  reserva minhareceita.org; CNPJ já consultado não é pedido de novo) e a dívida com a União das 600 empresas de `/dividas/empresas`. Grava `app/dados/empresas_tipos.json`; `GET /empresas-tipos`.
+  Conferido em 10/11: 1.110 empresas, 643 com faturamento (2025), 48 do governo, 180 concessões. Faturamento por empresa só existe aberto para companhias abertas.
+- Site: aba "Públicas e privadas" em Empresas e Contratos (`telaTiposEmp`, `etChips`, `etCard`): filtro por tipo, ordem por faturamento/lucro/dívida, estado e busca; etiquetas acima do nome
+  também em "Maiores empresas". S.A. privada de controle estatal (subsidiária) mostra só "Controle estatal" e não conta como privada.
+- Falta: estatais federais que não são companhia aberta nem estão nas 600 (ex.: Correios, BNDES) — viriam da lista da SEST (Panorama das Estatais).
+
+## Saúde por município, votos dos tribunais e Mata Atlântica (10/11/2026)
+- Coletas novas (registradas em `app/collectors/__init__.py`, robô `EXTRAS`/`VALIDADE`/`LIMITES`, agendador mensal): `saude-leitos-municipios` e `saude-vacinacao`
+  (`app/collectors/saude_mun.py`), `siconfi-saude-minimo` (RREO Anexo 14, `ano=`, `ids=` refaz só alguns entes; o SIOPS bloqueia robôs; cidades com menos de 50 mil habitantes entregam o
+  "RREO Simplificado" — `anexo_rreo` lê os dois, e `siconfi-tributos` também passou a ler), `stj-votos` (`app/collectors/stj.py`) e `tse-relatorias`
+  (`app/collectors/tse_relatorias.py`). Detalhes e números conferidos em `docs/FONTES.md`.
+- API: `/saude/municipios?uf=` ganhou leitos (existentes, SUS, UTI, por mil), `vacinacao` (cobertura por vacina, 2022) e `saude_minimo_*`, mais `fontes` (fonte, link,
+  período, status da coleta, data). `/saude/painel` traz `saude_minimo_*` e `vacinacao` por estado e `fontes_novas`. Novas: `/saude/vacinacao` (série por estado e vacina)
+  e `/saude/minimo`. `/votos-tribunais` (`app/votos_tribunais.py`): por ministro do STJ, decisões por maioria com a posição de cada um, e o TSE com `votos_individuais: false`.
+- Regras: dado indisponível ≠ zero (chave ausente/None e "sem dado" na tela; 0 só quando a fonte foi lida e não tem o item, como município sem hospital; UBS não coletada não
+  vira 0). Leito existente ≠ disponível. Vacinação de 2023+ não é estimada. Posição de ministro só a escrita na certidão (acompanhou, vencido, ausente, impedido, não
+  participou; "Participaram do julgamento" em decisão por maioria vira "participou", sem deduzir o voto); presidir não é voto. Resultado do colegiado à parte.
+- Site: Saúde (seletor com vacinas e "Impostos aplicados em saúde", gráfico da cobertura vacinal, tabela dos municípios com leitos, Penta e mínimo, rodapé das fontes —
+  `saudeFontes`, `saudeVacMonta`), Leis e Projetos › Julgamentos dos tribunais (`votosTrib`: ministros do STJ, decisões por maioria com etiqueta por ministro, quadro do TSE),
+  Meio ambiente (`maCarregar`: PRODES e MapBiomas da Mata Atlântica lado a lado).
+- Cópia pronta: `DATABASE_URL=... python -m scripts.copia_saude_tribunais [site/dados]` junta os campos novos nas chaves existentes (não apaga nada) e atualiza os pacotes.
+
+## Mapas por município de 2006, 2010 e 2014 (11/11/2026)
+- `tse-resultados ano=2014|2010|2006` (banco SQLite à parte) + `python -m scripts.mapa_eleicao_copia <ano> site/dados` (código IBGE pelo código TSE dos mapas de 2018/2022; zeros à esquerda ignorados).
+- No Artifact (limite de 511 arquivos por versão) esses anos ficam só em 2 pacotes por ano, `p/el-<ano>-presidente.json` e `p/el-<ano>-estaduais.json`, com os valores dentro
+  (sem `g/` nem chave nas partes s<N>). No repositório os pacotes seguem o padrão do `pacotes_copia` (um por cargo e turno).
+
+## Concursos e cursos · Eventos (12/11/2026)
+- Menus novos (`NAV`: `concursos` = "Concursos e cursos" com abas Concursos / Cursos gratuitos, `#/concursos/<aba>`; `eventos` = "Eventos", `#/eventos/<UF>`), código no bloco
+  "Concursos e cursos · Eventos" do site (`P.concursos`, `opConcursos`, `opCursos`, `P.eventos`, `evBrasil`, `evEstado`, `evPatro`). Coletores em `app/collectors/oportunidades.py`, leitura em
+  `app/oportunidades.py`, rotas `/concursos`, `/cursos`, `/eventos[?uf=]`, `/eventos-patrocinios[?uf=]` (`app/routers/oportunidades.py`). Tarefas: `concursos`, `cursos-gratuitos`, `eventos-shows`, `eventos-patrocinios`.
+- Concursos: busca do DOU (`in.gov.br/consulta/-/buscar/dou`, seção 3, bloco JSON `BuscaDouPortlet_params`, até 75 por página, janelas de 7 dias) + texto do artigo; só edital de ABERTURA de vaga
+  (`eh_abertura`: fora retificação/resultado/homologação/convocação, seleção de alunos, licitação). Vagas, salário, inscrições, cargos e banca só se escritos (`detalhes_edital`). Municipais pelo Querido Diário
+  (`api.queridodiario.org.br`, 503/520 em 12/11 → aviso). Estaduais (delegado da Polícia Civil etc.) NÃO entram: cada estado tem seu diário. Conferido em 12/11: 28 editais de abertura em 14 dias.
+- Cursos: Escola Virtual.Gov (`api-evg.enap.gov.br/v1/cursos`, 1.026 cursos, link `/cursos/<slug>`) + Sebrae (GraphQL da loja `loja.sebrae.com.br/graphql`, só preço 0: 489). Senai/Senac/Sesi/CRAS sem catálogo aberto:
+  só links em "Onde mais procurar" (`ONDE_PROCURAR`).
+- Eventos: PNCP `contratacoes/publicacao` modalidade 9 (inexigibilidade) filtrada por `SHOW`/`NAO_SHOW` no objeto; artista, festa e data só do texto (`ler_show`; `reprocessar_eventos` relê os gravados).
+  O PNCP responde devagar (≈10 s/página): dias em paralelo (`paralelos=6`). Valor homologado, senão estimado (marcado). Palco/som/estrutura não somam. 7 dias de nov/2026: 726 shows, R$ 64,8 mi.
+- Patrocínio: não há base aberta de patrocínio de festa de prefeitura. Lei Rouanet (SALIC `api.salic.cultura.gov.br/api/v1/projetos`, área 3 = Música, com captado > 0; o detalhe `/projetos/<PRONAC>` traz
+  `_embedded.captacoes` com o doador). Pessoa física só somada, sem nome. Outras áreas deixam a leitura em horas.
+- Artifact (limite de 511 arquivos): três pacotes só da tela — `p/concursos.json`, `p/eventos.json` e `p/eventos-uf.json` — sem chave nas partes s<N>.
+- Artifact também tem limite de 256 MiB no total da versão (12/11: estava no teto). Para caber, os mapas por município de TODOS os anos ficaram só nos pacotes `p/el-*`
+  (as cópias repetidas nas partes s<N> saíram: −14,4 MB); patrocínio por estado é filtrado na tela a partir da lista do país (`evPatroUF`). Antes de publicar algo grande, some os tamanhos do `list scope=files`.
+
+## Concursos estaduais e municipais, eventos por categoria (12/11/2026)
+- `concursos-estaduais` (`app/collectors/concursos_estaduais.py`): `REGISTRO` com os 27 diários; cada estado roda sozinho (`coletar_estado`) e grava `concurso_uf_status`
+  (status ok/sem_coletor/indisponivel/erro, `ultima_sucesso` preservada quando falha, histórico). Com coletor: SP (API `do-api-web-search.doe.sp.gov.br/v2/advanced-search/publications`
+  + texto completo em `v2/publications/<id>`, órgão pelo `hierarchy`) e MT, ES, GO (plataforma comum `/busca/busca/buscar/query/<pág>/di:/df:/?q=`, texto da página; link
+  `/portal/edicoes/download/<diário>/<página>`; o de ES inclui diários de municípios capixabas → `esfera` municipal). Os outros 23 com o motivo (busca só na tela ou site que não
+  responde daqui — testar pelo robô). Conferido 12/11 (15 dias): SP 888 atos (83 aberturas), MT 88, ES 89, GO 67.
+- Atos (`classificar_ato`): abertura, processo_seletivo, convocacao, nomeacao, homologacao, retificacao, prorrogacao, outro ("outro" = menção de passagem: gravado, não mostrado).
+  Áreas com as polícias separadas (Civil, Militar, Penal, Bombeiros; vaga de professor = Educação). `/concursos?ato=` e `/concursos/cobertura`.
+- `concursos-municipais` (Querido Diário, tarefa própria): até 5 tentativas com espera; `concursos_status` (histórico de falhas, última coleta boa) e `cobertura` (municípios
+  monitorados pela lista `/cities`; sem cobertura só se a tabela `municipios` do IBGE estiver no banco). Trechos (`trecho_apenas`). 12/11: fora do ar (503) o dia todo.
+- Eventos (`eventos-shows modalidades=9,8,6,12`): `categorias_evento` → cachê, palco, som, iluminação, segurança, estrutura, produção ("varios" quando o contrato tem mais de um:
+  o valor NÃO é dividido; produtora que representa o artista não é "produção"; contrato com o próprio ECAD não é evento). Soma (`conta`) só homologado, fora de ata de registro de
+  preços (`srp`) e sem possível republicação (mesmo órgão + objeto + valor, `_marcar_duplicatas`); o resto vai em `fora_da_soma`. 12/11: de R$ 439,7 mi somados antes, R$ 314,5 mi
+  são contratação homologada distinta (R$ 121,8 mi só estimados, R$ 3,3 mi republicações).
+- Página do PNCP que falha vira `pncp_pendencia` (nunca apagada; `resolvida` com data) e as páginas seguintes continuam (antes a coleta do dia parava ali). `eventos-pendencias`
+  relê; pendência na página 1 relê o dia inteiro. `datas=AAAA-MM-DD,...` refaz dias exatos. Registros guardam `publicado`, `coletado_em` e `primeira_coleta`.
+- Diagnóstico dos 27 diários com os endereços da lista do Felipe (`scripts/diag_diarios.py`, também pelo robô `diag-diarios.yml`): os endereços dados para AP, AM, CE, GO, RO, SC e SE
+  NÃO existem no DNS (AM, GO, RO e SC respondem pelo endereço antigo, que fica no `REGISTRO`; os da lista em `ALTERNATIVOS`); BA, DF e TO não respondem de fora do Brasil; AL, MG e PR têm
+  certificado incompleto. Querido Diário fora do ar também pelo robô (12/11).
+- Valor fora do normal (`valor_suspeito` em `app/oportunidades.py`: cachê acima de R$ 5 mi, outros acima de R$ 50 mi) fica visível com "a conferir" e sai da soma (`fora_da_soma.valor_a_conferir`); não é corrigido. Ex.: R$ 399,99 mi de "parceria institucional" em Natal/RN (12/11).
+- `tests/conftest.py` recusa rodar se `DATABASE_URL` não tiver "test" no nome do banco (um `export DATABASE_URL=...` antes do pytest apagou o banco local de coleta em 12/11).
+
+## Catástrofes e acidentes (13/11/2026)
+- Aba "Catástrofes e acidentes" (`#/catastrofes/<tragedias|rodovias|noticias>`, `P.catastrofes`; NAV após Segurança Pública). API `GET /catastrofes?tipo=` e `GET /catastrofes/rodovias?ano=` (`app/catastrofes.py`, `app/routers/catastrofes.py`).
+- Tragédias: cadastro curado em `app/dados/catastrofes.json` (cada uma com URL de fonte; registro sem fonte é descartado). O número de mortos é o que a fonte cita; `mortos_nota` diz o que a conta inclui (ex.: Brumadinho 272 pela Wikipédia, 270 na denúncia do MPMG).
+- Rodovias por estado: coletor `prf-pessoas` (`app/collectors/prf.py`, arquivo "Agrupados por pessoa" da PRF): por UF e ano, OCORRÊNCIAS com pedestre, motociclista, carro, caminhão/carreta, ônibus e bicicleta (uma ocorrência conta em cada categoria que tiver). Porcentagem = sobre os acidentes do estado. Motoboy não é separável (o arquivo traz o condutor de moto).
+- Notícias: feeds `tema="catastrofe"` em `app/collectors/noticias.py` (Google Notícias, 7 dias; veículo vem da tag `<source>`).
+- Cópia estática: `FIXAS` do `exportar_snapshot.py` e `python -m scripts.catastrofes_copia site/dados` (pacote `p/catastrofes.json`).
+- Testes: `tests/test_catastrofes.py`.

@@ -1,0 +1,37 @@
+name: RAIS profissões (coleta)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ano:
+        description: "Ano da RAIS (vazio = o mais novo completo; um ano anterior grava profissoes_rais_<ano>.json para a comparação)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rais-profissoes
+  cancel-in-progress: false
+
+jobs:
+  coleta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt "xlrd==2.*"
+      - name: Coletar salários por profissão (RAIS)
+        run: python -m app.collectors.rais_profissoes "${{ inputs.ano }}"
+      - name: Guardar o resultado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: profissoes-rais
+          path: app/dados/profissoes_rais*.json
+          if-no-files-found: warn
+          retention-days: 30

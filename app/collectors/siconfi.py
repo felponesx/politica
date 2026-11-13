@@ -4,6 +4,8 @@ Docs: https://apidatalake.tesouro.gov.br/docs/siconfi/
 - Arrecadação/receitas: RREO Anexo 01 (balanço orçamentário) e Anexo 03 (receita corrente líquida)
 - Dívida: RGF Anexo 02 (dívida consolidada líquida)
 """
+from sqlalchemy import select
+
 from app import http
 from app.collectors.base import registrar_coleta
 from app.models import Registro
@@ -181,22 +183,19 @@ def coletar_tributos_entes(ano: int, bimestre: int = 6, esferas: list[str] | Non
     """Impostos próprios em 12 meses de cada estado (E) e de cada município (M; precisa de ibge-municipios)."""
     esferas = [e.upper() for e in (esferas or ["E", "M"])]
     entes = [("E", CODIGO_IBGE_POR_UF[uf], uf) for uf in (ufs or UFS) if "E" in esferas]
+    pequenos: set[int] = set()
     if "M" in esferas:
-        from sqlalchemy import select as _sel
-
         from app.db import SessionLocal
         from app.models import Municipio
         with SessionLocal() as _db:
-            entes += [("M", int(m.codigo_ibge), m.uf) for m in _db.scalars(_sel(Municipio).where(Municipio.uf.in_(ufs or UFS)))]
+            for m in _db.scalars(select(Municipio).where(Municipio.uf.in_(ufs or UFS))):
+                entes.append(("M", int(m.codigo_ibge), m.uf))
+                if m.populacao and m.populacao < 50_000:
+                    pequenos.add(int(m.codigo_ibge))
     with registrar_coleta("siconfi", "tributos_entes", ano=ano, bimestre=bimestre, esferas=",".join(esferas)) as (db, n):
         sem = 0
         for k, (esfera, id_ente, uf) in enumerate(entes):
-            try:
-                itens = list(paginar("rreo", {"an_exercicio": ano, "nr_periodo": bimestre, "co_tipo_demonstrativo": "RREO",
-                                              "no_anexo": "RREO-Anexo 03", "co_esfera": esfera, "id_ente": id_ente}))
-            except Exception:
-                sem += 1
-                continue
+            itens, _ = anexo_rreo("RREO-Anexo 03", esfera, id_ente, ano, bimestre, id_ente in pequenos)
             t = tributos_anexo03(itens)
             if not t:
                 sem += 1
@@ -209,4 +208,89 @@ def coletar_tributos_entes(ano: int, bimestre: int = 6, esferas: list[str] | Non
                 db.commit()
         if sem:
             n.avisos.append(f"{sem} de {len(entes)} entes sem o Anexo 03 de {ano} (não entregaram ou mudou o formato)")
+    return n.itens
+
+
+def saude_minimo_anexo14(itens: list[dict]) -> dict | None:
+    """Mínimo constitucional em saúde do RREO Anexo 14 (demonstrativo simplificado): despesa com ações e serviços públicos de
+    saúde (ASPS) paga com impostos, o % mínimo (15% municípios, 12% estados) e o % aplicado até o bimestre. Sem as duas
+    porcentagens: None (não entregou ou mudou o formato) — nunca vira zero."""
+    alvo = [x for x in itens if "SAÚDE" in (x.get("conta") or "").upper() and "AÇÕES E SERVIÇOS" in (x.get("conta") or "").upper()]
+    col = lambda t: next((para_float(x.get("valor")) for x in alvo if t in (x.get("coluna") or "")), None)  # noqa: E731
+    minimo, aplicado, valor = col("Mínimo a Aplicar"), col("% Aplicado"), col("Valor Apurado")
+    if minimo is None or aplicado is None:
+        return None
+    suspeito = minimo_suspeito(aplicado)
+    return {"valor_asps": valor, "pct_minimo": minimo, "pct_aplicado": aplicado, "cumpriu": None if suspeito else aplicado >= minimo,
+            "suspeito": suspeito, "conta": alvo[0].get("conta") if alvo else None}
+
+
+def minimo_suspeito(pct) -> bool:
+    """% aplicado em saúde fora do possível: abaixo de 1% (parece fração digitada: 0,2 em vez de 20%) ou acima de 100% (mais que toda a
+    receita de impostos). O número declarado continua guardado; a tela mostra "a conferir" e ele não conta como cumpriu/não cumpriu."""
+    return pct is not None and (pct < 1 or pct > 100)
+
+
+def anexo_rreo(anexo: str, esfera: str, id_ente: int, ano: int, bimestre: int, pequeno: bool = False) -> tuple[list[dict], str | None]:
+    """Itens de um anexo do RREO do ente no RREO ou no "RREO Simplificado" (que as prefeituras com menos de 50 mil habitantes podem
+    entregar — em 2025 foram ~3.250 das 5.570; para elas, tenta o simplificado primeiro)."""
+    for tipo in (("RREO Simplificado", "RREO") if pequeno else ("RREO", "RREO Simplificado")):
+        try:
+            itens = list(paginar("rreo", {"an_exercicio": ano, "nr_periodo": bimestre, "co_tipo_demonstrativo": tipo,
+                                          "no_anexo": anexo, "co_esfera": esfera, "id_ente": id_ente}))
+        except Exception:  # noqa: BLE001
+            itens = []
+        if itens:
+            return itens, tipo
+    return [], None
+
+
+def coletar_saude_minimo(ano: int, bimestre: int = 6, esferas: list[str] | None = None, ufs: list[str] | None = None, ids: list[int] | None = None):
+    """% da receita de impostos aplicado em saúde por estado (E) e município (M) — RREO Anexo 14 do SICONFI, o mesmo cálculo do
+    SIOPS/LC 141/2012. O SIOPS (siops.datasus.gov.br) recusa o acesso automatizado (BigIP 426/502); o SICONFI traz o resumo oficial
+    que o próprio ente entrega ao Tesouro (RREO ou RREO Simplificado). Ente sem o anexo fica contado em "sem_entrega" (dado
+    indisponível, não zero). `ids` refaz só alguns entes (os outros registros ficam)."""
+    esferas = [e.upper() for e in (esferas or ["E", "M"])]
+    if isinstance(ids, str):
+        ids = ids.split(",")
+    so = {int(i) for i in ids} if ids else None
+    entes = [("E", CODIGO_IBGE_POR_UF[uf], uf) for uf in (ufs or UFS) if "E" in esferas]
+    pequenos: set[int] = set()
+    if "M" in esferas:
+        from app.db import SessionLocal
+        from app.models import Municipio
+        with SessionLocal() as _db:
+            for m in _db.scalars(select(Municipio).where(Municipio.uf.in_(ufs or UFS))):
+                entes.append(("M", int(m.codigo_ibge), m.uf))
+                if m.populacao and m.populacao < 50_000:
+                    pequenos.add(int(m.codigo_ibge))
+    todos = entes
+    if so:
+        entes = [e for e in entes if e[1] in so]
+    with registrar_coleta("siconfi", "saude_minimo", ano=ano, bimestre=bimestre, esferas=",".join(esferas)) as (db, n):
+        for k, (esfera, id_ente, uf) in enumerate(entes):
+            itens, tipo = anexo_rreo("RREO-Anexo 14", esfera, id_ente, ano, bimestre, id_ente in pequenos)
+            m = saude_minimo_anexo14(itens)
+            if not m:
+                continue
+            upsert(db, Registro, {"fonte": "siconfi", "tipo": "saude_minimo", "chave": f"{esfera}-{id_ente}-{ano}"},
+                   {"uf": uf, "ano": ano, "titulo": (itens[0].get("instituicao") if itens else None) or str(id_ente),
+                    "valor": m["pct_aplicado"], "dados": {**m, "esfera": esfera, "id_ente": id_ente, "bimestre": bimestre, "demonstrativo": tipo}})
+            n += 1
+            if k % 200 == 0:
+                db.commit()
+        db.commit()
+        # quem ficou sem o anexo, olhando o banco (vale também quando só alguns entes foram refeitos)
+        tem = {c for c in db.scalars(select(Registro.chave).where(Registro.fonte == "siconfi", Registro.tipo == "saude_minimo", Registro.ano == ano))}
+        sem: dict = {}
+        for esfera, id_ente, uf in todos:
+            if f"{esfera}-{id_ente}-{ano}" not in tem:
+                sem.setdefault(f"{esfera}-{uf}", []).append(id_ente)
+        upsert(db, Registro, {"fonte": "siconfi", "tipo": "saude_minimo_resumo", "chave": f"{ano}-{','.join(esferas)}"},
+               {"ano": ano, "titulo": f"mínimo em saúde {ano}", "dados": {"ano": ano, "bimestre": bimestre, "entes": len(todos),
+                                                                            "sem_entrega": {k: len(v) for k, v in sem.items()},
+                                                                            "sem_entrega_ids": {k: v[:600] for k, v in sem.items()}}})
+        faltam = sum(len(v) for v in sem.values())
+        if faltam:
+            n.avisos.append(f"{faltam} de {len(todos)} entes sem o Anexo 14 de {ano} (não entregaram ou mudou o formato)")
     return n.itens

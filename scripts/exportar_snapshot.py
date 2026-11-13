@@ -61,9 +61,9 @@ LISTAS = {
 }
 # respostas guardadas exatamente como o site pede
 FIXAS = [
-    "/saude", "/cortes", "/cartao-corporativo", "/emendas", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
+    "/profissoes", "/empresas-tipos", "/saude", "/cortes", "/cartao-corporativo", "/emendas", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
     "/mapa/estados", "/agora/eventos", "/partidos/composicao", "/assembleias", "/gastos/entes", "/orgaos",
-    "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/saude/painel", "/ensino", "/sancoes", "/tcu-inabilitados", "/tcu-irregulares", "/justica", "/cpis", "/aeroportos", "/multas-ambientais", "/lista-suja", "/renuncia-fiscal", "/sancoes/contratos?limit=40", "/fidelidade?casa=camara", "/fidelidade?casa=senado", "/social", "/trabalho", "/ambiente", "/viagens", "/servidores", "/acidentes-rodovias", "/igc", "/iva", "/caged", "/ocorrencias?limit=200", "/diarios-oficiais/status", "/transito/malha", "/transito/agora", "/doadores", "/fundos", "/energia-tarifas", "/obras-gestao?escopo=pais", "/indicadores",
+    "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/saude/painel", "/saude/vacinacao", "/saude/minimo", "/votos-tribunais", "/ensino", "/sancoes", "/tcu-inabilitados", "/tcu-irregulares", "/justica", "/cpis", "/aeroportos", "/multas-ambientais", "/lista-suja", "/renuncia-fiscal", "/sancoes/contratos?limit=40", "/fidelidade?casa=camara", "/fidelidade?casa=senado", "/social", "/trabalho", "/ambiente", "/viagens", "/servidores", "/acidentes-rodovias", "/igc", "/iva", "/caged", "/ocorrencias?limit=200", "/diarios-oficiais/status", "/transito/malha", "/transito/agora", "/doadores", "/fundos", "/energia-tarifas", "/obras-gestao?escopo=pais", "/indicadores",
     "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
@@ -71,7 +71,10 @@ FIXAS = [
     "/recuperacao-judicial/resumo", "/recuperacao-judicial/resumo?tipo=falencia",
     "/alertas-mapbiomas/territorio", "/alertas-mapbiomas", "/malha/status", "/caged/estoque", "/escandalos-fila", "/diarios-oficiais", "/seguranca", "/dividas/familias-estados", "/dividas/empresas", "/economia-empresas", "/resumo-contratos", "/escandalos", "/crimes-politicos", "/premios", "/julgamentos", "/faccoes", "/transito",
 ]
+FIXAS += ["/concursos/cobertura"] + [f"/concursos?ato={a}" for a in ("convocacao", "nomeacao", "homologacao", "retificacao", "prorrogacao")]
+FIXAS += ["/concursos", "/cursos", "/eventos", "/eventos-patrocinios"] + [f"/eventos?uf={u}" for u in UFS] + [f"/eventos-patrocinios?uf={u}" for u in UFS]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
+FIXAS += ["/catastrofes", "/catastrofes/rodovias"] + [f"/catastrofes/rodovias?ano={a}" for a in range(2021, date.today().year + 1)]  # aba Catástrofes e acidentes
 FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))
                           if not arq.name.startswith("aisp-")]
 # quantos detalhes (popouts) guardar por tipo
@@ -313,7 +316,11 @@ class Exportador:
         for nome, conteudo in proprios.items():
             (pasta / nome).write_bytes(conteudo)
         # textos e siglas padronizados também nos dados já gravados
-        tamanho = gravar_partes(pasta, {k: limpar(v) for k, v in self.dados.items()})
+        limpos = {k: limpar(v) for k, v in self.dados.items()}
+        tamanho = gravar_partes(pasta, limpos)
+        # pacotes por tela (dados/p/…) e resumos da tela inicial: ver scripts/pacotes_copia.py
+        from scripts.pacotes_copia import gravar_pacotes
+        pacotes = gravar_pacotes(pasta, limpos, FIXAS)
         with SessionLocal() as db:
             ultima = db.scalar(select(func.max(Parlamentar.id)))  # noqa: F841 (só garante que o banco responde)
             contagem = {"parlamentares": db.scalar(select(func.count()).select_from(Parlamentar)),
@@ -322,7 +329,7 @@ class Exportador:
                         "normas": db.scalar(select(func.count()).select_from(Norma))}
         manifest = {"versao": VERSAO, "gerado_em": datetime.now().astimezone().isoformat(timespec="minutes"),
                     "shards": SHARDS, "bases": self.bases, "totais": self.totais, "contagem": contagem,
-                    "consultas": len(self.dados), "bytes": tamanho}
+                    "consultas": len(self.dados), "bytes": tamanho, "pacotes": pacotes}
         (pasta / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1, default=_json), encoding="utf-8")
         return manifest
 

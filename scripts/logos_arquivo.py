@@ -3,7 +3,8 @@
 logos.json é só o índice (`grupos` → arquivo de cada grupo, e a lista `unidades`); as imagens ficam em
 logos_partidos.json, logos_policias.json, logos_estados.json, logos_veiculos.json e logos_empresas.json, para o site
 baixar só o grupo que a tela mostra. Na gravação, cada logo PNG vira WebP (com transparência, qualidade 88) quando fica
-menor: os brasões e logos caem para cerca de 1/5 do tamanho, com a mesma altura.
+menor: os brasões e logos caem para cerca de 1/5 do tamanho. Logos mais altos que ALTURA_MAX são reduzidos: o maior aparece
+com 61 px na tela (brasão na ficha da polícia), e 160 px dá nitidez em tela de densidade 2,5x.
 Cópias antigas (tudo dentro de logos.json) continuam sendo lidas.
 """
 import base64
@@ -12,21 +13,27 @@ import json
 import os
 from datetime import date
 
-GRUPOS = ("partidos", "policias", "estados", "veiculos", "empresas")
+GRUPOS = ("partidos", "policias", "estados", "veiculos", "empresas", "faculdades")
 QUALIDADE = 88
+ALTURA_MAX = 160
 
 
-def webp(uri: str, qualidade: int = QUALIDADE) -> str:
-    """data URI PNG ou JPEG → WebP quando fica menor; o resto volta como está."""
-    if not isinstance(uri, str) or not uri.startswith(("data:image/png;base64,", "data:image/jpeg;base64,")):
+def webp(uri: str, qualidade: int = QUALIDADE, altura_max: int = ALTURA_MAX) -> str:
+    """data URI PNG, JPEG ou WebP → WebP de no máximo `altura_max` px de altura (nunca amplia), quando fica menor."""
+    if not isinstance(uri, str) or not uri.startswith(("data:image/png;base64,", "data:image/jpeg;base64,", "data:image/webp;base64,")):
         return uri
     try:
         from PIL import Image
         bruto = base64.b64decode(uri.split(",", 1)[1])
         im = Image.open(io.BytesIO(bruto))
+        reduz = im.height > altura_max
+        if uri.startswith("data:image/webp") and not reduz:
+            return uri
         im = im.convert("RGBA" if im.mode in ("P", "LA", "RGBA") or "transparency" in im.info else "RGB")
+        if reduz:
+            im = im.resize((max(1, round(im.width * altura_max / im.height)), altura_max), Image.LANCZOS)
         out = io.BytesIO()
-        im.save(out, "WEBP", quality=qualidade, method=4)
+        im.save(out, "WEBP", quality=qualidade, method=6)
         if out.tell() < len(bruto):
             return "data:image/webp;base64," + base64.b64encode(out.getvalue()).decode()
     except Exception:

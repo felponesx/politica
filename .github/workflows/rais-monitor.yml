@@ -1,0 +1,71 @@
+name: RAIS nova? (aviso mensal)
+
+# Todo dia 7, às 14:17 UTC, confere se o Ministério do Trabalho publicou uma RAIS mais nova e completa que a do site.
+# Se sim: coleta (o coletor só grava com os 7 arquivos e 30 mi+ de vínculos; nunca troca dado completo por parcial),
+# guarda o resultado como artefato e abre um aviso (issue) com o link. O GitHub só agenda pelo branch padrão.
+on:
+  schedule:
+    - cron: "17 14 7 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      novo: ${{ steps.dup.outputs.pular != 'sim' && steps.m.outputs.novo || '' }}
+      atual: ${{ steps.m.outputs.atual }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - id: m
+        run: python -m scripts.rais_monitor
+      - name: Já existe aviso aberto para esse ano?
+        id: dup
+        if: steps.m.outputs.novo != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "RAIS ${{ steps.m.outputs.novo }} in:title" --json number --jq 'length' | grep -qv '^0$'; then
+            echo "Aviso já aberto: nada a fazer."; echo "pular=sim" >> "$GITHUB_OUTPUT"
+          fi
+
+  coletar:
+    needs: conferir
+    if: needs.conferir.outputs.novo != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    concurrency:
+      group: rais-profissoes
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt "xlrd==2.*"
+      - run: python -m app.collectors.rais_profissoes
+      - id: art
+        uses: actions/upload-artifact@v4
+        with:
+          name: profissoes-rais-${{ needs.conferir.outputs.novo }}
+          path: app/dados/profissoes_rais.json
+          retention-days: 90
+      - name: Abrir aviso
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "RAIS ${{ needs.conferir.outputs.novo }} saiu e já foi coletada" \
+            --body "O Ministério do Trabalho publicou a RAIS ${{ needs.conferir.outputs.novo }} completa (o site está com ${{ needs.conferir.outputs.atual }}).
+
+          A coleta terminou e o resultado está no artefato: ${{ steps.art.outputs.artifact-url }}
+
+          Para publicar: trocar app/dados/profissoes_rais.json pelo do artefato (o de ${{ needs.conferir.outputs.atual }} pode ser guardado como profissoes_rais_${{ needs.conferir.outputs.atual }}.json para a comparação entre anos) e gerar a cópia do site."
