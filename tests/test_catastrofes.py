@@ -82,6 +82,7 @@ def test_rodovias_porcentagem_sobre_acidentes_do_estado():
             db.commit()
     sp = [e for e in d["estados"] if e["uf"] == "SP"][0]
     assert sp["acidentes"] == 4 and sp["mortos"] == 1 and sp["feridos"] == 3 and sp["ilesos"] == 4
+    assert d["acumulado"]["brasil"]["feridos"] == 3 and d["acumulado"]["anos"] == [2025, 2025]
     assert sp["categorias"]["motorista_carro"]["pct"] == 75.0 and sp["categorias"]["pedestre"]["pct"] == 25.0
     assert d["parcial"] is False
 

@@ -113,12 +113,22 @@ def rodovias(db: Session, ano: int | None = None) -> dict | None:
             tot_cat[c]["mortos"] += x["mortos"]
         tot_ac += ac
         estados.append({"uf": uf, "acidentes": ac, "pessoas": u.get("pessoas"), "mortos": u.get("mortos"), "feridos": u.get("feridos"),
+                        "feridos_leves": u.get("feridos_leves"), "feridos_graves": u.get("feridos_graves"),
                         "ilesos": u.get("ilesos"), "categorias": cats})
     estados.sort(key=lambda e: -e["acidentes"])
-    soma = {k: sum(e.get(k) or 0 for e in estados) for k in ("pessoas", "mortos", "feridos", "ilesos")}
+    soma = {k: sum(e.get(k) or 0 for e in estados) for k in ("pessoas", "mortos", "feridos", "feridos_leves", "feridos_graves", "ilesos")}
+    # soma de todos os anos coletados (cada ano entra uma vez; ano em andamento entra como está)
+    acumulado: dict[str, dict] = {}
+    for a_ in anos_disponiveis:
+        for uf_, u_ in pessoas[a_]["por_uf"].items():
+            t = acumulado.setdefault(uf_, {"acidentes": 0, "pessoas": 0, "feridos": 0, "mortos": 0})
+            for k_ in t:
+                t[k_] += int(u_.get(k_) or 0)
+    acum_brasil = {k_: sum(t[k_] for t in acumulado.values()) for k_ in ("acidentes", "pessoas", "feridos", "mortos")}
     brasil = {"acidentes": tot_ac, **soma, "categorias": {c: {"ocorrencias": v["ocorrencias"], "pct": round(100 * v["ocorrencias"] / tot_ac, 1) if tot_ac else 0.0,
                                                     "mortos": v["mortos"]} for c, v in tot_cat.items()}}
     return {"ano": ano, "parcial": ano >= date.today().year, "anos": anos_disponiveis, "brasil": brasil, "estados": estados, "rotulos": ROTULOS,
+            "acumulado": {"anos": [min(anos_disponiveis), max(anos_disponiveis)], "brasil": acum_brasil, "estados": acumulado},
             "aviso": AVISO_RODOVIAS, "fonte": "Polícia Rodoviária Federal — dados abertos (arquivo por pessoa)",
             "definicao": {"pedestre": "Pessoa com envolvido = Pedestre.", "motociclista": "Condutor de motocicleta ou motoneta.",
                           "motorista_carro": "Condutor de automóvel, caminhonete, camioneta ou utilitário.",

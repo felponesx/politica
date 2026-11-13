@@ -181,12 +181,15 @@ def agregar_pessoas(leitor, cab: list[str]) -> dict:
             continue
         tv, te = l[i["tipo_veiculo"]].strip(), l[i["tipo_envolvido"]].strip()
         mortos = int(num(l[i["mortos"]]))
-        u = por_uf.setdefault(uf, {"ocorrencias": set(), "pessoas": 0, "mortos": 0, "feridos": 0, "ilesos": 0,
+        u = por_uf.setdefault(uf, {"ocorrencias": set(), "pessoas": 0, "mortos": 0, "feridos": 0, "feridos_leves": 0, "feridos_graves": 0, "ilesos": 0,
                                    "categorias": {c: {"ocorrencias": set(), "pessoas": 0, "mortos": 0} for c in CATEGORIAS_PESSOA}})
         u["ocorrencias"].add(l[i["id"]].strip())
         u["pessoas"] += 1
         u["mortos"] += mortos
-        u["feridos"] += int(num(l[i["feridos_leves"]]) + num(l[i["feridos_graves"]]))
+        leves, graves = int(num(l[i["feridos_leves"]])), int(num(l[i["feridos_graves"]]))
+        u["feridos"] += leves + graves
+        u["feridos_leves"] += leves
+        u["feridos_graves"] += graves
         u["ilesos"] += int(num(l[i["ilesos"]]))
         for nome, regra in CATEGORIAS_PESSOA.items():
             if regra(tv, te):
@@ -196,7 +199,8 @@ def agregar_pessoas(leitor, cab: list[str]) -> dict:
                 c["mortos"] += mortos
     saida = {}
     for uf, u in por_uf.items():
-        saida[uf] = {"acidentes": len(u["ocorrencias"]), "pessoas": u["pessoas"], "mortos": u["mortos"], "feridos": u["feridos"], "ilesos": u["ilesos"],
+        saida[uf] = {"acidentes": len(u["ocorrencias"]), "pessoas": u["pessoas"], "mortos": u["mortos"], "feridos": u["feridos"], "feridos_leves": u["feridos_leves"],
+                     "feridos_graves": u["feridos_graves"], "ilesos": u["ilesos"],
                      "categorias": {c: {"ocorrencias": len(v["ocorrencias"]), "pessoas": v["pessoas"], "mortos": v["mortos"]}
                                     for c, v in u["categorias"].items()}}
     return {"por_uf": saida, "acidentes": sum(v["acidentes"] for v in saida.values())}
