@@ -2133,6 +2133,22 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .cat-mini{margin-top:6px;color:var(--ink2);font-size:13px}
 .cat-mini b{color:var(--c);font-size:17px}
 @media (max-width:760px){.cat-hgrid{grid-template-columns:1fr}}
+/* v1.11 · acidentes por estado: ficha com cartões e barras coloridas */
+.ac-head{display:flex;gap:12px;align-items:center}
+.ac-head .flag{height:30px}
+.ac-kp .kpi{border-top:3px solid var(--k,#2F6FED)}
+.ac-destino-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.ac-barra{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--line);margin:8px 0 6px}
+.ac-barra i{display:block;height:100%}
+.ac-legenda{display:flex;gap:14px;flex-wrap:wrap}
+.ac-legenda span{display:inline-flex;align-items:center;gap:6px}
+.ac-legenda i,.ac-env-top i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.ac-env{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.ac-env-top{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.ac-env-top b{font-size:16px}
+.ac-trilho{height:8px;border-radius:999px;background:var(--line);margin:8px 0 6px;overflow:hidden}
+.ac-trilho div{height:100%;border-radius:999px}
 </style>
 </head>
 <body>
@@ -5874,14 +5890,17 @@ function opCursos(D){const L=D.itens||[];let f={of:"",tema:"",q:""};const temas=
     $("#cuN").textContent=`${nf(l.length)} de ${nf(L.length)} cursos`;opLista($("#cuL"),l,opCursoCard,24);orgaosAplicar()};lista();
    $("#cuO").onchange=e=>{f.of=e.target.value;lista()};$("#cuT").onchange=e=>{f.tema=e.target.value;lista()};$("#cuQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
 // ---- Catástrofes e acidentes (tragédias marcantes, acidentes nas rodovias por estado, notícias de desastres)
-const CAT_ABAS=[["tragedias","Tragédias marcantes"],["rodovias","Rodovias por estado"]];
+const CAT_ABAS=[["tragedias","Tragédias marcantes"],["estados","Acidentes por estado"]];
 const CAT_ROT={pedestre:"pedestre",motociclista:"motociclista",motorista_carro:"motorista de carro, caminhonete ou utilitário",caminhao_carreta:"caminhão ou carreta",onibus:"ônibus",bicicleta:"ciclista"};
 const CAT_NOME={pedestre:"Pedestre",motociclista:"Motociclista (moto ou motoneta)",motorista_carro:"Motorista de carro, caminhonete ou utilitário",caminhao_carreta:"Caminhão ou carreta (condutor)",onibus:"Ônibus e micro-ônibus",bicicleta:"Ciclista"};
 const catPct=v=>v==null?"sem dado":lacD(v,1)+"%";
 const CAT_M=(()=>{const m={acidentes:["Acidentes no ano",e=>e.acidentes,v=>nf(v),"Acidentes com vítima nas rodovias federais, por estado"],
- mortos:["Mortos nos acidentes",e=>e.mortos,v=>nf(v),"Pessoas mortas nos acidentes das rodovias federais, por estado"]};
+ pessoas:["Pessoas envolvidas",e=>e.pessoas,v=>nf(v),"Pessoas que estavam nos acidentes (condutores, passageiros, pedestres)"],
+ feridos:["Pessoas feridas",e=>e.feridos,v=>nf(v),"Pessoas feridas (leves e graves) nos acidentes"],
+ mortos:["Pessoas mortas",e=>e.mortos,v=>nf(v),"Pessoas mortas nos acidentes das rodovias federais, por estado"]};
  Object.keys(CAT_ROT).forEach(k=>{m[k]=["Com "+CAT_ROT[k],e=>e.categorias[k].pct,catPct,`% dos acidentes do estado em que há ${CAT_ROT[k]} envolvido`]});return m})();
-const CAT_G=[["Quantidade","acidentes","mortos"],["Quem estava envolvido (% dos acidentes do estado)",...Object.keys(CAT_ROT)]];
+const CAT_G=[["Quantidade","acidentes","pessoas","feridos","mortos"],["Quem estava envolvido (% dos acidentes do estado)",...Object.keys(CAT_ROT)]];
+const CAT_COR_ENV={pedestre:"#E5484D",motociclista:"#F5A524",motorista_carro:"#2F6FED",caminhao_carreta:"#8B5CF6",onibus:"#1BAF7A",bicicleta:"#0EA5E9"};
 const CAT_TIPO_COR={aviao:"#2F6FED",barragem:"#8B5CF6",chuva_deslizamento:"#1BAF7A",incendio:"#EB6834",rodovia:"#F5A524",desabamento:"#E5484D"};
 const CAT_TIPO_NOME={aviao:"Avião",barragem:"Barragem",chuva_deslizamento:"Chuva e deslizamento",incendio:"Incêndio",rodovia:"Rodovia",desabamento:"Desabamento"};
 const CAT_CENT={AC:[-9.0,-70.5],AL:[-9.6,-36.6],AP:[1.4,-51.8],AM:[-4.2,-64.5],BA:[-12.5,-41.7],CE:[-5.2,-39.5],DF:[-15.8,-47.8],ES:[-19.6,-40.7],GO:[-15.9,-49.6],MA:[-5.4,-45.4],MT:[-12.7,-56.0],MS:[-20.5,-54.6],MG:[-18.5,-44.6],PA:[-3.9,-52.7],PB:[-7.2,-36.7],PR:[-24.6,-51.5],PE:[-8.4,-37.9],PI:[-7.7,-42.7],RJ:[-22.3,-42.7],RN:[-5.8,-36.5],RS:[-30.0,-53.2],RO:[-11.0,-62.8],RR:[2.1,-61.4],SC:[-27.3,-50.3],SP:[-22.3,-48.7],SE:[-10.6,-37.4],TO:[-9.8,-48.3]};
@@ -5945,25 +5964,33 @@ function catTragedias(v,D,R){CAT_LISTA=D.itens||[];let f={tipo:""};
  $("#catMapa").onkeydown=e=>{const g=e.target.closest(".pin");if(g&&e.key==="Enter")catAbrir(g.dataset.id)};
  v.onclick=e=>{const c=e.target.closest(".cat-card");if(c){$("#catMapa").scrollIntoView({behavior:"smooth",block:"center"});catAbrir(c.dataset.id)}};
  catLigaAno();if(typeof pilulas==="function")pilulas()}
-P.catastrofes=(...a)=>{const aba=CAT_ABAS.some(x=>x[0]===a[0])?a[0]:"tragedias",uf=a[1]&&UF[String(a[1]).toUpperCase()]?String(a[1]).toUpperCase():"";
+P.catastrofes=(...a)=>{let aba=a[0]==="rodovias"?"estados":a[0];aba=CAT_ABAS.some(x=>x[0]===aba)?aba:"tragedias";const uf=a[1]&&UF[String(a[1]).toUpperCase()]?String(a[1]).toUpperCase():"";
  return{html:`<div class="ph"><div><h1>Catástrofes e acidentes</h1><p>Tragédias que marcaram o país e os acidentes nas rodovias federais por estado.</p></div></div>
   <div class="tabs" style="margin-top:0">${CAT_ABAS.map(([k,n])=>`<a class="tabl ${k===aba?"on":""}" href="#/catastrofes/${k}">${n}</a>`).join("")}</div><div id="catV">${API.on?rload():`<div class="rbanner">Esta tela aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
   mount(){if(!API.on)return;const erro=e=>{const b=$("#catV");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)};
    if(aba==="tragedias")Promise.all([apiGet("/catastrofes"),apiGet("/catastrofes/transferencias").catch(()=>null)]).then(([D,R])=>{const v=$("#catV");if(v)catTragedias(v,D,R)}).catch(erro);
    else apiGet("/catastrofes/rodovias").then(D=>{const v=$("#catV");if(v)catRodovias(v,D,uf)}).catch(erro)}}};
+function catBarraEnv(k,c,ac){const pct=ac?(100*c.ocorrencias/ac):0;return`<div class="ac-env"><div class="ac-env-top"><span><i style="background:${CAT_COR_ENV[k]}"></i>${esc(CAT_NOME[k])}</span><b>${pct.toFixed(1).replace(".",",")}%</b></div><div class="ac-trilho"><div style="width:${Math.min(100,pct).toFixed(1)}%;background:${CAT_COR_ENV[k]}"></div></div><small class="muted">${nf(c.ocorrencias)} acidentes${c.mortos?` · ${nf(c.mortos)} mortos`:""}</small></div>`}
+function catFicha(e,ano){const ac=e.acidentes||0,p=e.pessoas||0,f=e.feridos||0,m=e.mortos||0,il=e.ilesos!=null?e.ilesos:Math.max(0,p-f-m);
+ const tot=Math.max(1,p),pc=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
+ return`<div class="panel mt ac-ficha"><div class="ac-head">${bandeiraImg(e.uf,"flag")}<div><h2>${esc((UF[e.uf]||{}).nome||e.uf)}</h2><p class="small muted" style="margin:2px 0 0">Acidentes nas rodovias federais em ${ano}</p></div></div>
+  <div class="kpis mt ac-kp"><div class="kpi" style="--k:#2F6FED"><span>Acidentes</span><strong>${nf(ac)}</strong></div><div class="kpi" style="--k:#8B5CF6"><span>Pessoas envolvidas</span><strong>${nf(p)}</strong></div><div class="kpi" style="--k:#F5A524"><span>Feridas</span><strong>${nf(f)}</strong></div><div class="kpi" style="--k:#E5484D"><span>Mortas</span><strong>${nf(m)}</strong></div></div>
+  <div class="ac-destino mt"><div class="ac-destino-top"><b>O que aconteceu com as pessoas</b><span class="small muted">${nf(p)} pessoas no total</span></div>
+   <div class="ac-barra"><i style="width:${(100*il/tot).toFixed(1)}%;background:#1BAF7A" title="Ilesas"></i><i style="width:${(100*f/tot).toFixed(1)}%;background:#F5A524" title="Feridas"></i><i style="width:${(100*m/tot).toFixed(1)}%;background:#E5484D" title="Mortas"></i></div>
+   <div class="ac-legenda small"><span><i style="background:#1BAF7A"></i>Ilesas ${nf(il)} (${pc(il)})</span><span><i style="background:#F5A524"></i>Feridas ${nf(f)} (${pc(f)})</span><span><i style="background:#E5484D"></i>Mortas ${nf(m)} (${pc(m)})</span></div></div>
+  <div class="ac-envs mt"><h3 style="margin:0 0 4px">Quem estava envolvido</h3><p class="small muted" style="margin:0 0 8px">Porcentagem sobre os ${nf(ac)} acidentes deste estado. Um acidente com moto e pedestre aparece nas duas linhas.</p>
+   <div class="ac-grid">${Object.keys(CAT_ROT).map(k=>catBarraEnv(k,e.categorias[k],ac)).join("")}</div></div>
+  <p class="small mt"><a href="#/catastrofes/estados">‹ Voltar para todos os estados</a></p></div>`}
 function catRodovias(v,D,uf){if(D.erro){v.innerHTML=rvazio(D.erro);return}
- const E={};D.estados.forEach(e=>E[e.uf]=e);const b=D.brasil;
+ const E={};D.estados.forEach(e=>E[e.uf]=e);const b=D.brasil;const p=b.pessoas||0;
  const kp=[lacKpi("Acidentes em "+D.ano+(D.parcial?" (ano em andamento)":""),nf(b.acidentes),"rodovias federais, PRF"),
-  lacKpi("Com motociclista",catPct(b.categorias.motociclista.pct),"dos acidentes do país"),
-  lacKpi("Com pedestre",catPct(b.categorias.pedestre.pct),"dos acidentes do país"),
-  lacKpi("Com motorista de carro",catPct(b.categorias.motorista_carro.pct),"dos acidentes do país")].join("");
- const ficha=(()=>{const e=E[uf];if(!e)return"";const ac=e.acidentes;
-  return `<div class="panel mt"><h2>${esc((UF[uf]||{}).nome||uf)} em ${D.ano}</h2><p class="small muted" style="margin:0 0 8px">${nf(ac)} acidentes${e.mortos!=null?` · ${nf(e.mortos)} mortos`:""}. Porcentagem sobre os acidentes do estado.</p>
-   ${table([["Envolvido",([k])=>esc(CAT_NOME[k])],["Acidentes",([,c])=>nf(c.ocorrencias)],["% dos acidentes",([,c])=>catPct(c.pct)],["Mortos (pessoas)",([,c])=>nf(c.mortos)]],Object.entries(e.categorias).map(([k,c])=>[k,c]))}
-   <p class="small"><a href="#/catastrofes/rodovias">‹ Voltar para todos os estados</a></p></div>`})();
+  lacKpi("Pessoas envolvidas",nf(p),"condutores, passageiros e pedestres"),
+  lacKpi("Feridas",nf(b.feridos||0),(b.pessoas?(100*b.feridos/b.pessoas).toFixed(1).replace(".",",")+"% das pessoas":"")),
+  lacKpi("Mortas",nf(b.mortos||0),"nas rodovias federais")].join("");
+ const ficha=E[uf]?catFicha(E[uf],D.ano):"";
  const anos=(D.anos||[]).map(y=>`<option value="${y}" ${y===D.ano?"selected":""}>${y}</option>`).join("");
  v.innerHTML=`<div class="filters" style="margin:0 0 8px"><select id="catAno" data-pill="Ano">${anos}</select></div>`;
- lacPainel(v,{E,M:CAT_M,G:CAT_G,rota:"catastrofes/rodovias",kpis:kp,antes:ficha,depois:`<div class="rbanner mt small">${esc(D.aviso)} Fonte: ${esc(D.fonte)}.</div>`});
+ lacPainel(v,{E,M:CAT_M,G:CAT_G,rota:"catastrofes/estados",kpis:kp,antes:ficha,depois:`<div class="rbanner mt small">${esc(D.aviso)} Fonte: ${esc(D.fonte)}.</div>`});
  const sel=$("#catAno");if(sel)sel.onchange=e=>{const y=e.target.value;apiGet("/catastrofes/rodovias?ano="+y).then(N=>{const w=$("#catV");if(w)catRodovias(w,N,uf)}).catch(er=>{const w=$("#catV");if(w)w.innerHTML=rerro(er)})}}
 // ---- Eventos
 const evValor=x=>x.valor?`${brlC(x.valor)}${x.valor_a_conferir?` <span class="small" style="color:#E5484D">a conferir</span>`:x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";

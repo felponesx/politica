@@ -99,7 +99,6 @@ def rodovias(db: Session, ano: int | None = None) -> dict | None:
     if ano not in pessoas:
         return {"anos": anos_disponiveis, "ano": ano, "erro": "sem dados desse ano"}
     d = pessoas[ano]
-    totais = _regs(db, "acidentes_ano").get(ano, {}).get("por_uf", {})  # mortos totais por estado (arquivo por ocorrência)
     estados = []
     tot_ac, tot_mortos = 0, 0
     tot_cat = {c: {"ocorrencias": 0, "mortos": 0} for c in CATEGORIAS_PESSOA}
@@ -113,9 +112,11 @@ def rodovias(db: Session, ano: int | None = None) -> dict | None:
             tot_cat[c]["ocorrencias"] += x["ocorrencias"]
             tot_cat[c]["mortos"] += x["mortos"]
         tot_ac += ac
-        estados.append({"uf": uf, "acidentes": ac, "mortos": (totais.get(uf) or {}).get("mortos") if totais else None, "categorias": cats})
+        estados.append({"uf": uf, "acidentes": ac, "pessoas": u.get("pessoas"), "mortos": u.get("mortos"), "feridos": u.get("feridos"),
+                        "ilesos": u.get("ilesos"), "categorias": cats})
     estados.sort(key=lambda e: -e["acidentes"])
-    brasil = {"acidentes": tot_ac, "categorias": {c: {"ocorrencias": v["ocorrencias"], "pct": round(100 * v["ocorrencias"] / tot_ac, 1) if tot_ac else 0.0,
+    soma = {k: sum(e.get(k) or 0 for e in estados) for k in ("pessoas", "mortos", "feridos", "ilesos")}
+    brasil = {"acidentes": tot_ac, **soma, "categorias": {c: {"ocorrencias": v["ocorrencias"], "pct": round(100 * v["ocorrencias"] / tot_ac, 1) if tot_ac else 0.0,
                                                     "mortos": v["mortos"]} for c, v in tot_cat.items()}}
     return {"ano": ano, "parcial": ano >= date.today().year, "anos": anos_disponiveis, "brasil": brasil, "estados": estados, "rotulos": ROTULOS,
             "aviso": AVISO_RODOVIAS, "fonte": "Polícia Rodoviária Federal — dados abertos (arquivo por pessoa)",
