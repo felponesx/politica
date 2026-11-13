@@ -15,8 +15,12 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("contas", sa.Column("termos_versao", sa.String(20), nullable=True))
-    op.add_column("contas", sa.Column("termos_aceitos_em", sa.DateTime, nullable=True))
+    # idempotente: um banco criado por outra versão deste branch pode já ter estas colunas
+    colunas = {c["name"] for c in sa.inspect(op.get_bind()).get_columns("contas")}
+    if "termos_versao" not in colunas:
+        op.add_column("contas", sa.Column("termos_versao", sa.String(20), nullable=True))
+    if "termos_aceitos_em" not in colunas:
+        op.add_column("contas", sa.Column("termos_aceitos_em", sa.DateTime, nullable=True))
 
 
 def downgrade() -> None:

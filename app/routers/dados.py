@@ -171,6 +171,7 @@ def status_das_fontes(db: Session = Depends(get_db)):
     coletor grava em `coletas` (app/collectors/registro.py), não pelo nome da linha de comando."""
     from datetime import datetime
 
+    from app.categorias import categoria_de, categorias_atuais, tem_secao
     from app.collectors.registro import registro_das_tarefas
     agora = datetime.now()
     linhas = db.execute(select(Coleta.fonte, Coleta.tarefa, Coleta.status, Coleta.fim, Coleta.inicio, Coleta.itens, Coleta.erro)
@@ -178,7 +179,8 @@ def status_das_fontes(db: Session = Depends(get_db)):
     por: dict[tuple, dict] = {}
     for fonte, tarefa, status, fim, inicio, itens, erro in linhas:  # da mais nova para a mais velha
         d = por.setdefault((fonte, tarefa), {"ultima_ok": None, "ultimo_status": status, "ultimo_erro": None, "falhas_recentes": 0})
-        if d["ultimo_erro"] is None and erro and status in ("erro", "parcial", "abortada"):
+        # só mostra o erro se ele é mais novo que a última coleta boa (da mais nova para a mais velha: ultima_ok ainda vazia)
+        if d["ultimo_erro"] is None and d["ultima_ok"] is None and erro and status in ("erro", "parcial", "abortada"):
             from app.limpeza import mascarar
             d["ultimo_erro"] = mascarar(erro, 160)
         if status in ("erro", "abortada") and d["ultima_ok"] is None:
@@ -194,8 +196,25 @@ def status_das_fontes(db: Session = Depends(get_db)):
         d = dict(por.get(chave) or {"ultima_ok": None, "ultimo_status": "nunca_coletada", "ultimo_erro": None, "falhas_recentes": 0}, tarefa=t)
         d["situacao"] = ("nunca_coletada" if d["ultimo_status"] == "nunca_coletada" else "sem_coleta_boa" if d["ultima_ok"] is None
                          else "falhando" if d["ultimo_status"] in ("erro", "abortada") else "ok")
+        # estado para o painel: rodando (anel), ok (verde), parcial = com avisos ou dado a revisar (amarelo), erro (vermelho), parado (cinza)
+        d["rodando"] = d["ultimo_status"] == "rodando"
+        d["estado"] = ("rodando" if d["rodando"] else "aviso" if d["ultimo_status"] == "parcial"
+                       else "erro" if d["ultimo_status"] in ("erro", "abortada")
+                       else "ok" if d["situacao"] == "ok" else "parado")
+        d["categoria"] = categoria_de(t)
+        d["sem_secao"] = not tem_secao(t)   # ainda não posta numa seção: o painel avisa para alguém escolher
         out.append(d)
-    return {"fontes": out, "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
+    try:   # fontes que entraram sem código novo (cadastro pela tela / adaptador `linhas`): também aparecem no painel
+        from app import fontes_novas as fn
+        for f in fn.listar(db)["fontes"]:
+            ok = f["registros"] > 0
+            out.append({"tarefa": f["nome"], "origem": f["origem"], "ultima_ok": f["ultima_atualizacao"], "ultimo_status": "ok" if ok else "nunca_coletada",
+                        "ultimo_erro": None, "falhas_recentes": 0, "itens_ultima_ok": f["registros"],
+                        "situacao": "ok" if ok else "nunca_coletada", "rodando": False, "estado": "ok" if ok else "parado",
+                        "categoria": f["categoria"] or "relatorios", "sem_secao": not f["categoria"]})
+    except Exception:   # nunca derruba a tela de situação por causa das fontes novas
+        pass
+    return {"fontes": out, "categorias": categorias_atuais(), "sem_secao": [d["tarefa"] for d in out if d["sem_secao"]], "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
             "aviso": "Mostra se a coleta rodou, não se o número publicado está certo. Dados históricos são mantidos quando uma fonte falha."}
 
 

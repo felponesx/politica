@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coletas — BRASIL+</title>
+<style>
+  :root {
+    --azul: #2F6FED;
+    --marinho: #1D2939;
+    --cinza: #667085;
+    --linha: #E4E7EC;
+    --fundo: #FFFFFF;
+    --suave: #F5F7FA;
+    --ok: #1BAF7A;
+    --erro: #D92D20;
+    --aviso: #F5A524;
+    --parado: #98A2B3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --marinho: #E4E7EC; --cinza: #98A2B3; --linha: #344054; --fundo: #101828; --suave: #1D2939;
+    }
+  }
+  :root[data-theme="dark"] {
+    --marinho: #E4E7EC; --cinza: #98A2B3; --linha: #344054; --fundo: #101828; --suave: #1D2939;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--fundo); color: var(--marinho);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  h1 { font-size: 22px; margin: 0; }
+  .sub { color: var(--cinza); font-size: 13px; }
+  button {
+    font: inherit; font-size: 14px; color: #fff; background: var(--azul); border: 0;
+    border-radius: 8px; padding: 8px 14px; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.05); }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kpi { border: 1px solid var(--linha); border-radius: 12px; padding: 14px 16px; background: var(--suave); }
+  .kpi b { display: block; font-size: 26px; line-height: 1.2; }
+  .kpi span { color: var(--cinza); font-size: 13px; }
+  .kpi.ok b { color: var(--ok); }
+  .kpi.erro b { color: var(--erro); }
+  .kpi.aviso b { color: var(--aviso); }
+  .kpi.parado b { color: var(--parado); }
+  h2 { font-size: 16px; margin: 28px 0 10px; }
+  .tabela { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .tabela th { text-align: left; color: var(--cinza); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--linha); }
+  .tabela td { padding: 9px 10px; border-bottom: 1px solid var(--linha); vertical-align: top; }
+  .tabela td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .tag.ok { background: #E7F8F1; color: #0F7A55; }
+  .tag.erro { background: #FDECEA; color: #B42318; }
+  .tag.aviso { background: #FFF4E0; color: #A05A00; }
+  .tag.parado { background: #F2F4F7; color: #475467; }
+  .erro-txt { color: var(--erro); font-size: 12px; word-break: break-word; }
+  .aviso-txt { color: var(--cinza); font-size: 12px; margin-top: 12px; }
+  .vazio { color: var(--cinza); padding: 16px 0; }
+  .tabela-wrap { overflow-x: auto; }
+  .form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 8px 0 4px; }
+  .form label { display: grid; gap: 4px; font-size: 13px; color: var(--cinza); }
+  .form label.largo { grid-column: 1 / -1; }
+  .form label.check { display: flex; align-items: center; gap: 8px; }
+  .form input, .form select { font: inherit; font-size: 14px; color: var(--marinho); background: var(--fundo);
+    border: 1px solid var(--linha); border-radius: 8px; padding: 8px 10px; }
+  .form .acoes { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  button.secundario { background: #fff; color: var(--azul); border: 1px solid var(--linha); }
+
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--cinza); margin: 4px 0 14px; }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .pt { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+  .pt.rodando { background: var(--azul); }
+  .pt.ok { background: var(--ok); }
+  .pt.aviso { background: var(--aviso); }
+  .pt.erro { background: var(--erro); }
+  .pt.parado { background: var(--parado); }
+  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .cat { position: relative; text-align: left; color: var(--marinho); background: var(--fundo); border: 1px solid var(--linha);
+    border-radius: 12px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; }
+  .cat:hover { border-color: #B2CCFF; }
+  .cat[aria-pressed="true"] { border-color: var(--azul); box-shadow: 0 0 0 1px var(--azul); }
+  .cat b { font-size: 15px; }
+  .cat small { color: var(--cinza); font-size: 12.5px; }
+  .cat .contas { display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 12.5px; color: var(--cinza); }
+  .cat .contas span { display: inline-flex; align-items: center; gap: 5px; }
+  .icone { position: relative; width: 44px; height: 44px; border-radius: 10px; background: #EEF4FF; color: var(--azul);
+    display: flex; align-items: center; justify-content: center; flex: none; }
+  .icone svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  /* anel que percorre o contorno da caixa (sem girar a caixa): fica sempre dentro do enquadro */
+  .aviso-secao { margin: 8px 0 12px; padding: 10px 14px; border: 1px solid #fcd34d; background: #fffbeb; border-radius: 10px; font-size: 13.5px; color: #92400e; }
+  .aviso-secao b { color: #78350f; }
+  .aviso-secao code { background: #fff; border: 1px solid #fde68a; border-radius: 6px; padding: 1px 6px; }
+  .anel, .icone > svg.anel { position: absolute; left: -5px; top: -5px; width: calc(100% + 10px) !important; height: calc(100% + 10px) !important;
+    max-width: none !important; max-height: none !important; overflow: visible; pointer-events: none; fill: none; stroke: none; }
+  .anel rect { fill: none; stroke: var(--azul); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 22 78; stroke-dashoffset: 0;
+    animation: girar 1.6s linear infinite; }
+  @keyframes girar { to { stroke-dashoffset: -100; } }
+  .detalhe { margin-top: 16px; border: 1px solid var(--linha); border-radius: 12px; overflow: hidden; }
+  .detalhe > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px;
+    background: var(--suave); border-bottom: 1px solid var(--linha); }
+  .detalhe > header b { font-size: 15px; }
+  .detalhe > header button { background: #fff; color: var(--azul); border: 1px solid var(--linha); }
+  .link-linha { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 14px;
+    border-bottom: 1px solid var(--linha); }
+  .link-linha:last-child { border-bottom: 0; }
+  .link-linha .pt-box { position: relative; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+  .link-linha .pt-box .anel { left: -4px; top: -4px; width: calc(100% + 8px) !important; height: calc(100% + 8px) !important; }
+  .link-linha .pt-box .anel rect { rx: 50px; stroke-width: 4; }
+  .link-linha .pt-box { width: 26px; height: 26px; }
+  .link-linha .nome { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; word-break: break-word; }
+  .link-linha .info { font-size: 12.5px; color: var(--cinza); }
+  .link-linha .erro-txt { margin-top: 2px; }
+  .link-linha .dir { text-align: right; font-size: 12.5px; color: var(--cinza); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { .anel rect { animation: none; } }
+  @media (max-width: 640px) {
+    .tabela .oculto-celular { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Coletas do BRASIL+</h1>
+      <div class="sub" id="atualizado">Carregando…</div>
+    </div>
+    <button id="atualizar" type="button">Atualizar</button>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <h2>Cadastrar fonte</h2>
+  <form id="form-fonte" class="form" autocomplete="off">
+    <label>Nome <input name="nome" required maxlength="64" placeholder="ex.: senado-senadores"></label>
+    <label>Produto <input name="produto" value="BRASIL+" maxlength="60"></label>
+    <label class="largo">Endereço (https) <input name="url" required type="url" placeholder="https://..."></label>
+    <label>Intervalo (minutos) <input name="intervalo_min" type="number" value="1440" min="5" max="43200"></label>
+    <label>Formato
+      <select name="formato">
+        <option value="json">JSON</option><option value="csv">CSV</option>
+        <option value="xml">XML</option><option value="zip">ZIP</option>
+      </select>
+    </label>
+    <label>Campo que identifica a linha <input name="chave" required placeholder="ex.: id"></label>
+    <label>Campo do valor <input name="valor"></label>
+    <label>Campo do título <input name="titulo"></label>
+    <label>Campo da UF <input name="uf"></label>
+    <label>Campo da data <input name="data"></label>
+    <label>Lista dentro do arquivo <input name="lista" placeholder="ex.: dados (se houver)"></label>
+    <label class="largo check"><input type="checkbox" name="permitir_pessoas"> Esta fonte traz dados de pessoas (nome, CPF...)</label>
+    <label class="largo">Chave do administrador <input name="token" type="password" required></label>
+    <div class="acoes"><button type="submit">Cadastrar</button><span id="form-msg" class="sub"></span></div>
+  </form>
+
+  <h2>Fontes cadastradas</h2>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead><tr><th>Nome</th><th>Formato</th><th>Intervalo</th><th>Situação</th><th></th></tr></thead>
+      <tbody id="cadastradas"></tbody>
+    </table>
+  </div>
+
+  <h2>Cursos, eventos e concursos</h2>
+  <div class="sub" style="margin-bottom:8px">Só o que já foi aprovado aparece aqui. Cadastro e aprovação ficam na API com o token do administrador.</div>
+  <div class="form" style="margin-bottom:10px"><div class="acoes" id="op-filtros"></div></div>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead><tr><th>Tipo</th><th>Título</th><th>Órgão</th><th>UF</th><th>Inscrições até</th></tr></thead>
+      <tbody id="oportunidades"></tbody>
+    </table>
+  </div>
+
+  <h2>Perguntas que a IA não entendeu</h2>
+  <div class="sub" style="margin-bottom:8px">Cada pergunta frequente aqui vira um tipo novo de resposta.</div>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead><tr><th>Pergunta</th><th class="num">Vezes</th></tr></thead>
+      <tbody id="sem-resposta"></tbody>
+    </table>
+  </div>
+
+  <h2>Categorias</h2>
+  <div class="aviso-secao" id="sem-secao" hidden></div>
+  <div class="legenda" aria-label="Legenda">
+    <span><i class="pt parado"></i>ainda não rodou</span>
+    <span><i class="pt rodando"></i>coletando agora (anel girando)</span>
+    <span><i class="pt ok"></i>em dia</span>
+    <span><i class="pt aviso"></i>com avisos ou para revisar</span>
+    <span><i class="pt erro"></i>falhando</span>
+  </div>
+  <div class="cats" id="cats"></div>
+  <div id="detalhe" class="detalhe" hidden></div>
+  <div class="aviso-txt" id="aviso"></div>
+
+  <h2>Últimas execuções</h2>
+  <div class="tabela-wrap">
+    <table class="tabela">
+      <thead>
+        <tr><th>Tarefa</th><th>Resultado</th><th class="oculto-celular">Início</th><th class="num oculto-celular">Itens</th></tr>
+      </thead>
+      <tbody id="coletas"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ROTULO = {
+    ok: ["Em dia", "ok"],
+    falhando: ["Falhando", "erro"],
+    sem_coleta_boa: ["Sem coleta boa", "aviso"],
+    nunca_coletada: ["Nunca rodou", "parado"]
+  };
+  var ORDEM = { falhando: 0, sem_coleta_boa: 1, nunca_coletada: 2, ok: 3 };
+
+  function el(tag, texto, classe) {
+    var e = document.createElement(tag);
+    if (texto !== undefined && texto !== null) e.textContent = texto;
+    if (classe) e.className = classe;
+    return e;
+  }
+
+  function tag(situacao) {
+    var r = ROTULO[situacao] || ["—", "parado"];
+    return el("span", r[0], "tag " + r[1]);
+  }
+
+  function horas(h) {
+    if (h === null || h === undefined) return "—";
+    if (h < 1) return "menos de 1 h";
+    if (h < 48) return Math.round(h) + " h";
+    return Math.round(h / 24) + " dias";
+  }
+
+  function hora(iso) {
+    if (!iso) return "—";
+    var d = new Date(iso);
+    return d.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+
+  function kpi(classe, numero, rotulo) {
+    var c = el("div", null, "kpi " + classe);
+    c.append(el("b", String(numero)), el("span", rotulo));
+    return c;
+  }
+
+  function pintarResumo(r) {
+    var k = document.getElementById("kpis");
+    k.replaceChildren(
+      kpi("ok", r.ok || 0, "em dia"),
+      kpi("erro", r.falhando || 0, "falhando"),
+      kpi("aviso", r.sem_coleta_boa || 0, "sem coleta boa"),
+      kpi("parado", r.nunca_coletada || 0, "nunca rodou")
+    );
+  }
+
+  var ICONE = {
+    gastos: '<path d="M12 3v18M16 7.5c0-1.7-1.8-3-4-3s-4 1.3-4 3 1.8 2.6 4 3 4 1.3 4 3-1.8 3-4 3-4-1.3-4-3"/>',
+    arrecadacao: '<path d="M4 20V9M10 20V4M16 20v-7M22 20H2"/>',
+    dividas: '<path d="M3 9l9-5 9 5v2H3zM5 11v7M10 11v7M14 11v7M19 11v7M3 20h18"/>',
+    orgaos: '<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/>',
+    pessoas: '<path d="M9 11a3 3 0 100-6 3 3 0 000 6zM3 20c0-3.3 2.7-5 6-5s6 1.7 6 5M16 11a3 3 0 000-6M17 15c2.4.4 4 2 4 5"/>',
+    eleicoes: '<path d="M5 4h14v16H5zM9 12l2.2 2.2L15.5 10"/>',
+    seguranca: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/>',
+    saude: '<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',
+    social: '<path d="M4 20c0-3 2-5 5-5s5 2 5 5M14 9a3 3 0 100-6 3 3 0 000 6zM17 14c2 .4 3.5 2 3.5 5"/>',
+    ambiente: '<path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15M5 19l7-7"/>',
+    empresas: '<path d="M3 21h18M5 21V5h8v16M13 9h6v12M8 9h2M8 13h2M8 17h2"/>',
+    obras: '<path d="M3 20h18M6 20V10l6-6 6 6v10M10 20v-5h4v5"/>',
+    leis: '<path d="M4 5h13v14H4zM17 9h3v10a2 2 0 01-2 2M7 9h6M7 13h6"/>',
+    escandalos: '<path d="M12 4v16M6 20h12M5 7h14M7 7l-3 6h6zM17 7l-3 6h6z"/>',
+    noticias: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    ensino: '<path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/>',
+    premios: '<path d="M8 4h8v5a4 4 0 01-8 0zM8 6H5a3 3 0 003 4M16 6h3a3 3 0 01-3 4M12 13v4M8 20h8"/>',
+    indicadores: '<path d="M3 17l5-5 4 4 8-8M15 8h6v6"/>',
+    comparar: '<path d="M7 4v16M4 7l3-3 3 3M17 20V4M14 17l3 3 3-3"/>',
+    relatorios: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/>'
+  };
+  var ESTADO = { rodando: "Coletando agora", ok: "Em dia", aviso: "Com avisos", erro: "Falhando", parado: "Nunca rodou" };
+  var PRIORIDADE = { rodando: 0, erro: 1, aviso: 2, parado: 3, ok: 4 };
+  var categorias = [], fontesAtuais = [], categoriaAberta = null;
+
+  function icone(id, rodando) {
+    var box = el("span", null, "icone");
+    box.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICONE[id] || ICONE.outras) + '</svg>';
+    if (rodando) box.append(anel());
+    return box;
+  }
+  function anel() {
+    var ns = "http://www.w3.org/2000/svg";
+    var s = document.createElementNS(ns, "svg");
+    s.setAttribute("viewBox", "0 0 100 100"); s.setAttribute("class", "anel"); s.setAttribute("aria-label", "coletando");
+    var c = document.createElementNS(ns, "rect");
+    c.setAttribute("x", "3"); c.setAttribute("y", "3"); c.setAttribute("width", "94"); c.setAttribute("height", "94");
+    c.setAttribute("rx", "27"); c.setAttribute("pathLength", "100");
+    s.append(c);
+    return s;
+  }
+  function contagem(lista) {
+    var c = { rodando: 0, ok: 0, aviso: 0, erro: 0, parado: 0 };
+    lista.forEach(function (f) { c[f.estado] = (c[f.estado] || 0) + 1; });
+    return c;
+  }
+  function porCategoria(id) {
+    return fontesAtuais.filter(function (f) { return f.categoria === id; })
+      .sort(function (a, b) { return (PRIORIDADE[a.estado] - PRIORIDADE[b.estado]) || a.tarefa.localeCompare(b.tarefa); });
+  }
+
+  function pintarCategorias(status) {
+    fontesAtuais = status.fontes || [];
+    categorias = status.categorias || [];
+    var sem = status.sem_secao || [], aviso = document.getElementById("sem-secao");
+    aviso.hidden = !sem.length;
+    aviso.replaceChildren();
+    if (sem.length) {
+      aviso.append(el("b", "Novas coletas sem seção (" + sem.length + "): "));
+      sem.slice(0, 12).forEach(function (n, i) { if (i) aviso.append(document.createTextNode(", ")); aviso.append(el("code", n)); });
+      if (sem.length > 12) aviso.append(document.createTextNode(" e mais " + (sem.length - 12)));
+      aviso.append(el("div", "Elas aparecem em Relatórios e Dados até você escolher a seção (em app/categorias.py, ou o campo categoria ao cadastrar a fonte).", ""));
+    }
+    var grade = document.getElementById("cats");
+    grade.replaceChildren();
+    categorias.forEach(function (cat) {
+      var lista = porCategoria(cat.id);
+      var c = contagem(lista);
+      var b = el("button", null, "cat");
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(categoriaAberta === cat.id));
+      var topo = el("span", null, "");
+      topo.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:8px";
+      topo.append(icone(cat.id, c.rodando > 0));
+      topo.append(el("small", lista.length + (lista.length === 1 ? " link" : " links")));
+      var nome = el("b", cat.nome);
+      var contas = el("span", null, "contas");
+      contas.className = "contas";
+      [["rodando", "coletando"], ["ok", "em dia"], ["aviso", "com aviso"], ["erro", "falhando"]].forEach(function (x) {
+        if (!c[x[0]]) return;
+        var s = el("span"); s.append(el("i", null, "pt " + x[0]), document.createTextNode(c[x[0]] + " " + x[1])); contas.append(s);
+      });
+      if (!lista.length) contas.append(el("span", "sem coleta própria"));
+      else if (!contas.childNodes.length) contas.append(el("span", "ainda não rodou"));
+      b.append(topo, nome, contas);
+      b.addEventListener("click", function () { abrirCategoria(cat.id); });
+      grade.append(b);
+    });
+    if (categoriaAberta) mostrarDetalhe(categoriaAberta);
+  }
+
+  function abrirCategoria(id) {
+    categoriaAberta = categoriaAberta === id ? null : id;
+    pintarCategorias({ fontes: fontesAtuais, categorias: categorias });
+    if (!categoriaAberta) document.getElementById("detalhe").hidden = true;
+  }
+
+  function mostrarDetalhe(id) {
+    var cat = categorias.filter(function (c) { return c.id === id; })[0];
+    var caixa = document.getElementById("detalhe");
+    caixa.hidden = false;
+    caixa.replaceChildren();
+    var topo = el("header");
+    var titulo = el("b", cat ? cat.nome : id);
+    var fechar = el("button", "Fechar"); fechar.type = "button";
+    fechar.addEventListener("click", function () { abrirCategoria(id); });
+    topo.append(titulo, fechar);
+    caixa.append(topo);
+    var lista = porCategoria(id);
+    lista.forEach(function (f) {
+      var linha = el("div", null, "link-linha");
+      var pb = el("span", null, "pt-box");
+      pb.append(el("i", null, "pt " + f.estado));
+      if (f.rodando) pb.append(anel());
+      var meio = el("div");
+      meio.append(el("div", f.tarefa, "nome"));
+      var info = (ESTADO[f.estado] || "") + (f.ultima_ok ? " · última boa " + hora(f.ultima_ok) : "");
+      meio.append(el("div", info, "info"));
+      if (f.ultimo_erro) meio.append(el("div", f.ultimo_erro, "erro-txt"));
+      var dir = el("div", (f.itens_ultima_ok === undefined || f.itens_ultima_ok === null) ? "" : f.itens_ultima_ok + " itens", "dir");
+      linha.append(pb, meio, dir);
+      caixa.append(linha);
+    });
+    if (!lista.length) caixa.append(el("div", "Esta seção não tem coleta própria: os números vêm de outras seções do site.", "vazio"));
+  }
+
+  function pintarColetas(lista) {
+    var corpo = document.getElementById("coletas");
+    corpo.replaceChildren();
+    if (!lista.length) {
+      var v = el("tr"); var td = el("td", "Nenhuma execução ainda.", "vazio"); td.colSpan = 4; v.append(td); corpo.append(v);
+      return;
+    }
+    lista.forEach(function (c) {
+      var tr = el("tr");
+      var nome = c.fonte + " · " + c.tarefa;
+      var resultado = el("td");
+      var situ = c.status === "ok" ? "ok" : c.status === "parcial" ? "aviso" : "erro";
+      var rot = { ok: "Concluída", parcial: "Parcial", erro: "Erro", abortada: "Abortada", rodando: "Rodando" }[c.status] || c.status;
+      resultado.append(el("span", rot, "tag " + situ));
+      if (c.erro) resultado.append(el("div", c.erro, "erro-txt"));
+      tr.append(el("td", nome), resultado, el("td", hora(c.inicio), "oculto-celular"),
+                el("td", c.itens === null || c.itens === undefined ? "—" : String(c.itens), "num oculto-celular"));
+      corpo.append(tr);
+    });
+  }
+
+  function marcarErro(msg) {
+    document.getElementById("atualizado").textContent = msg;
+  }
+
+  async function pegar(caminho) {
+    var r = await fetch(caminho, { cache: "no-store", headers: { "Accept": "application/json" } });
+    if (!r.ok) throw new Error(caminho + " respondeu " + r.status);
+    return r.json();
+  }
+
+  async function carregar() {
+    try {
+      var [status, coletas] = await Promise.all([pegar("/fontes/status"), pegar("/coletas?limit=30")]);
+      pintarResumo(status.resumo || {});
+      pintarCategorias(status);
+      pintarColetas(coletas || []);
+      document.getElementById("aviso").textContent = status.aviso || "";
+      document.getElementById("atualizado").textContent = "Atualizado às " +
+        new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) +
+        " · atualiza sozinho a cada minuto";
+    } catch (e) {
+      marcarErro("Não foi possível carregar os dados. Tente de novo em instantes.");
+    }
+  }
+
+  async function listarSemResposta() {
+    var corpo = document.getElementById("sem-resposta"), lista;
+    try { lista = await pegar("/ia/perguntas-sem-resposta"); } catch (e) { return; }
+    corpo.replaceChildren();
+    if (!lista.length) { var v = el("tr"), td = el("td", "Nenhuma pergunta sem resposta.", "vazio"); td.colSpan = 2; v.append(td); corpo.append(v); return; }
+    lista.forEach(function (x) { corpo.append((function () { var tr = el("tr"); tr.append(el("td", x.pergunta), el("td", String(x.vezes), "num")); return tr; })()); });
+  }
+
+  var TOKEN_KEY = "bp_admin_token";
+  function tokenGuardado() { try { return sessionStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } }
+  function guardarToken(t) { try { sessionStorage.setItem(TOKEN_KEY, t); } catch (e) { /* navegador sem sessão: segue sem guardar */ } }
+
+  async function enviarFonte(ev) {
+    ev.preventDefault();
+    var f = ev.target, msg = document.getElementById("form-msg");
+    var d = new FormData(f), token = String(d.get("token") || "");
+    var campos = {};
+    ["chave", "valor", "titulo", "uf", "data", "lista"].forEach(function (k) {
+      var v = String(d.get(k) || "").trim();
+      if (v) campos[k === "lista" ? "lista" : k] = v;
+    });
+    var corpo = {
+      nome: String(d.get("nome") || "").trim(), produto: String(d.get("produto") || "BRASIL+"),
+      url: String(d.get("url") || "").trim(), intervalo_min: parseInt(d.get("intervalo_min"), 10) || 1440,
+      formato: String(d.get("formato") || "json"), campos: campos, permitir_pessoas: d.get("permitir_pessoas") === "on"
+    };
+    msg.textContent = "Enviando…";
+    try {
+      var r = await fetch("/fontes-cadastradas", { method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Token": token }, body: JSON.stringify(corpo) });
+      var j = await r.json().catch(function () { return {}; });
+      if (!r.ok) { msg.textContent = typeof j.detail === "string" ? j.detail : "Não foi possível cadastrar (" + r.status + ")."; return; }
+      guardarToken(token);
+      f.reset();
+      msg.textContent = "Fonte cadastrada. O coletor pega na próxima rodada.";
+      listarCadastradas();
+    } catch (e) { msg.textContent = "Sem conexão com o servidor."; }
+  }
+
+  async function alternarFonte(id, ativa) {
+    var msg = document.getElementById("form-msg"), token = tokenGuardado();
+    if (!token) { msg.textContent = "Digite a chave do administrador no formulário acima e cadastre uma fonte para liberar esta ação."; return; }
+    try {
+      var r = await fetch("/fontes-cadastradas/" + id, { method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Token": token }, body: JSON.stringify({ ativa: !ativa }) });
+      if (!r.ok) { msg.textContent = "Não foi possível alterar (" + r.status + ")."; return; }
+      listarCadastradas();
+    } catch (e) { msg.textContent = "Sem conexão com o servidor."; }
+  }
+
+  async function listarCadastradas() {
+    var corpo = document.getElementById("cadastradas");
+    var lista;
+    try { lista = await pegar("/fontes-cadastradas"); } catch (e) { return; }
+    corpo.replaceChildren();
+    if (!lista.length) { var v = el("tr"), td = el("td", "Nenhuma fonte cadastrada ainda.", "vazio"); td.colSpan = 5; v.append(td); corpo.append(v); return; }
+    lista.forEach(function (x) {
+      var tr = el("tr");
+      var botao = el("button", x.ativa ? "Pausar" : "Ativar", "secundario");
+      botao.type = "button";
+      botao.addEventListener("click", function () { alternarFonte(x.id, x.ativa); });
+      var situ = el("td");
+      situ.append(el("span", x.ativa ? "Ativa" : "Pausada", "tag " + (x.ativa ? "ok" : "parado")));
+      tr.append(el("td", x.nome), el("td", x.formato.toUpperCase()), el("td", "a cada " + x.intervalo_min + " min"), situ, el("td"));
+      tr.lastChild.append(botao);
+      corpo.append(tr);
+    });
+  }
+
+
+  var OP_TIPOS = [["", "Todos"], ["curso", "Cursos"], ["evento", "Eventos"], ["concurso", "Concursos"]];
+  var opTipo = "";
+  function pintarOportunidades(lista) {
+    var corpo = document.getElementById("oportunidades");
+    corpo.replaceChildren();
+    if (!lista.length) { var v = el("tr"), td = el("td", "Nada aprovado nesta categoria ainda.", "vazio"); td.colSpan = 5; v.append(td); corpo.append(v); return; }
+    lista.forEach(function (o) {
+      var tr = el("tr");
+      var titulo = el("td");
+      var a = el("a", o.titulo); a.href = o.link; a.target = "_blank"; a.rel = "noopener"; a.style.color = "var(--azul)";
+      titulo.append(a);
+      tr.append(el("td", ({curso: "Curso", evento: "Evento", concurso: "Concurso"})[o.tipo] || o.tipo), titulo,
+                el("td", o.orgao || "—"), el("td", o.uf || "—"), el("td", o.inscricoes_ate ? o.inscricoes_ate.split("-").reverse().join("/") : "—"));
+      corpo.append(tr);
+    });
+  }
+  function desenharFiltrosOp() {
+    var box = document.getElementById("op-filtros"); box.replaceChildren();
+    OP_TIPOS.forEach(function (t) {
+      var b = el("button", t[1], t[0] === opTipo ? "" : "secundario"); b.type = "button";
+      b.addEventListener("click", function () { opTipo = t[0]; desenharFiltrosOp(); carregarOportunidades(); });
+      box.append(b);
+    });
+  }
+  async function carregarOportunidades() {
+    try {
+      var q = "/oportunidades" + (opTipo ? "?tipo=" + opTipo : "");
+      pintarOportunidades(await pegar(q));
+    } catch (e) { /* sem a API: a tabela fica como está */ }
+  }
+  desenharFiltrosOp(); carregarOportunidades();
+  document.getElementById("form-fonte").addEventListener("submit", enviarFonte);
+  document.getElementById("atualizar").addEventListener("click", carregar);
+  listarCadastradas();
+  listarSemResposta();
+  carregar();
+  setInterval(carregar, 60000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Copie para destinos.toml e ajuste. Cada [[destino]] recebe o status depois de cada coleta.
+
+# 1) GitHub: pasta de um repositório já clonado (pode ser o do site, com GitHub Pages).
+#    Recebe status.json, painel.html e os dados LIBERADOS pelo corretor (fontes com publicar_dados = true).
+#    Só faz commit quando algo mudou.
+[[destino]]
+nome = "GitHub"
+tipo = "git"
+pasta = "/caminho/para/repositorio-de-publicacao"
+
+# 2) Sistema (ex.: BRASIL+): recebe o status.json por POST, com o token numa variável de ambiente.
+[[destino]]
+nome = "BRASIL+"
+tipo = "http"
+url = "https://exemplo.com.br/api/coletor"
+token_env = "BRASILMAIS_TOKEN"

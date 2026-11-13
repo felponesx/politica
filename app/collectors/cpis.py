@@ -2,7 +2,7 @@
 
 Câmara: `/orgaos?sigla=CPI` e `?sigla=CPMI` (id, nome, apelido) e `/orgaos/{id}` (dataInicio, dataInstalacao, dataFim, situacao, urlWebsite). O número de membros vem de `/orgaos/{id}/membros`.
 Senado: `/dadosabertos/comissao/lista/cpi` (XML; só as em atividade). Guarda uma lista por casa (`cpis_casa`)."""
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET   # XML de fonte externa: sem entidades perigosas
 
 from app import http
 from app.collectors.base import registrar_coleta

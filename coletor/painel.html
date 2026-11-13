@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coletor</title>
+<style>
+body{margin:0;background:#fff}
+/*CSS*/
+.painel{container-type:inline-size;color:#0f172a;font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.painel *{box-sizing:border-box}
+.painel svg{width:18px;height:18px;flex:none}
+.painel .topo{border-bottom:1px solid #e2e8f0}
+.painel .topo .in{max-width:1040px;margin:0 auto;padding:14px 20px 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.painel .brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;letter-spacing:-.01em}
+.painel .brand svg{width:28px;height:28px}
+.painel .brand small{font-size:12.5px;font-weight:400;color:#64748b}
+.painel .acoes{display:flex;align-items:center;gap:12px}
+.painel .upd{font-size:12.5px;color:#64748b}
+.painel .upd.velho{color:#b45309;font-weight:600}
+.painel .btn{font:inherit;font-size:12.5px;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;background:#fff;border:1px solid #e2e8f0;border-radius:7px;color:#334155;cursor:pointer;text-decoration:none;white-space:nowrap}
+.painel .btn:hover{background:#f8fafc;border-color:#cbd5e1}
+.painel .btn svg{width:14px;height:14px}
+.painel .btn.prim{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+.painel .btn.prim:hover{background:#1e40af}
+.painel .btn[aria-disabled="true"],.painel .btn:disabled{opacity:.45;pointer-events:none}
+.painel .abas{max-width:1040px;margin:0 auto;padding:0 12px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.painel .abas::-webkit-scrollbar{display:none}
+.painel .abas button{font:inherit;font-size:14px;font-weight:500;padding:10px 14px;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:#64748b;cursor:pointer;white-space:nowrap}
+.painel .abas button:hover{color:#0f172a}
+.painel .abas button[aria-selected="true"]{color:#1d4ed8;border-bottom-color:#1d4ed8}
+.painel .btn:focus-visible,.painel .abas button:focus-visible,.painel .tr:focus-visible,.painel .seg button:focus-visible,.painel .fil:focus-visible,.painel .mais:focus-visible,.painel .lk:focus-visible{outline:2px solid #1d4ed8;outline-offset:-2px}
+.painel .wrap{max-width:1040px;margin:0 auto;padding:20px 20px 64px}
+.painel .aba{display:flex;flex-direction:column;gap:16px}
+.painel .aba[hidden],.painel [hidden]{display:none}
+
+.painel .banner{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;border:1px solid;font-size:14px}
+.painel .banner svg{width:20px;height:20px}
+.painel .banner b{font-weight:600}
+.painel .banner.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+.painel .banner.err{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.painel .banner.warn{background:#fffbeb;border-color:#fde68a;color:#92400e}
+.painel .banner.idle{background:#f8fafc;border-color:#e2e8f0;color:#475569}
+.painel .banner.run{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+
+.painel .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.painel .kpi{border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;background:#fff}
+.painel .kpi .l{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:#64748b}
+.painel .kpi .l svg{width:16px;height:16px;color:#94a3b8}
+.painel .kpi .v{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:6px;font-variant-numeric:tabular-nums}
+.painel .kpi .v small{font-size:14px;font-weight:500;color:#64748b;margin-left:4px;letter-spacing:0}
+.painel .kpi .s{font-size:12px;color:#94a3b8;margin-top:2px}
+
+.painel .card{border:1px solid #e2e8f0;border-radius:12px;background:#fff;overflow:hidden;margin:0}
+.painel .card>h2{margin:0;padding:14px 16px;font-size:14px;font-weight:600;letter-spacing:0;text-transform:none;color:#0f172a;border-bottom:1px solid #e2e8f0;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.painel .card>h2 span{font-weight:400;font-size:12.5px;color:#94a3b8}
+.painel .tools{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px;border-bottom:1px solid #e2e8f0}
+.painel .busca{position:relative;flex:1 1 200px;min-width:0}
+.painel .busca svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#94a3b8;pointer-events:none}
+.painel .busca input{width:100%;height:32px;padding:0 10px 0 32px;font:inherit;font-size:13px;border:1px solid #e2e8f0;border-radius:7px;color:#0f172a;background:#fff}
+.painel input:focus-visible,.painel select:focus-visible,.painel textarea:focus-visible{outline:2px solid #1d4ed8;outline-offset:1px}
+.painel select{height:32px;font:inherit;font-size:13px;border:1px solid #e2e8f0;border-radius:7px;padding:0 8px;background:#fff;color:#334155}
+.painel .seg{display:inline-flex;border:1px solid #e2e8f0;border-radius:7px;overflow:hidden;flex-wrap:nowrap}
+.painel .seg button{font:inherit;font-size:12.5px;height:30px;padding:0 11px;border:0;border-left:1px solid #e2e8f0;background:#fff;color:#475569;cursor:pointer;white-space:nowrap}
+.painel .seg button:first-child{border-left:0}
+.painel .seg button[aria-pressed="true"]{background:#eff6ff;color:#1d4ed8;font-weight:600}
+.painel .seg i{font-style:normal;color:#94a3b8;margin-left:5px;font-variant-numeric:tabular-nums}
+.painel .vistas{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.painel .th,.painel .tr{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr) 112px 112px 76px 148px 80px;gap:12px;align-items:center;padding:0 16px}
+.painel .th{height:34px;background:#f8fafc;border-bottom:1px solid #e2e8f0}
+.painel .th span{font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:#94a3b8;white-space:nowrap}
+.painel .tr{min-height:58px;width:100%;text-align:left;border:0;border-bottom:1px solid #f1f5f9;background:#fff;font:inherit;color:inherit;cursor:pointer}
+.painel .tr:hover{background:#f8fafc}
+.painel .nm{min-width:0;display:flex;align-items:center;gap:10px}
+.painel .nm .chev{width:14px;height:14px;color:#94a3b8;transition:transform .15s}
+.painel .tr[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.painel .nm div{min-width:0}
+.painel .nm b{display:block;font-weight:600;overflow-wrap:anywhere}
+.painel .nm span{display:block;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.painel .nm .q{display:none;font-family:inherit;color:#64748b}
+.painel .c-cat{color:#475569;font-size:13px}
+.painel .badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.painel .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.painel .b-ok{background:#ecfdf3;color:#15803d}.painel .b-err{background:#fef2f2;color:#b91c1c}.painel .b-idle{background:#f1f5f9;color:#475569}
+.painel .b-run{background:#eff6ff;color:#1d4ed8}.painel .b-run::before{animation:pisca 1.1s ease-in-out infinite}
+.painel .b-warn{background:#fffbeb;color:#b45309}
+@keyframes pisca{50%{opacity:.25}}
+@keyframes giro{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.painel .b-run::before,.painel .ic-run svg{animation:none}}
+.painel .est{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:6px 0}
+.painel .c-quando,.painel .num{font-size:13px;color:#334155;font-variant-numeric:tabular-nums}
+.painel .spark{display:block;width:100%;max-width:148px;height:22px}
+
+.painel .det{padding:16px 16px 18px 40px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}
+.painel .det dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;font-size:13px;align-content:start}
+.painel .det dt{color:#64748b}
+.painel .det dd{margin:0;overflow-wrap:anywhere;color:#0f172a}
+.painel .det dd.erro{color:#b91c1c}
+.painel .det a{color:#1d4ed8;text-decoration:none}.painel .det a:hover{text-decoration:underline}
+.painel .runs{font-size:12.5px;display:grid;gap:5px;align-content:start}
+.painel .runs h3{margin:0 0 4px;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;color:#94a3b8;font-weight:600}
+.painel .run{display:grid;grid-template-columns:16px 1fr auto;gap:8px;align-items:center;color:#334155}
+.painel .run svg{width:16px;height:16px}
+.painel .run em{font-style:normal;color:#94a3b8;font-variant-numeric:tabular-nums}
+
+.painel .ev{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid #f1f5f9}
+.painel .ev:last-child{border-bottom:0}
+.painel .ev b{font-weight:600}
+.painel .ev .m{color:#64748b;margin-left:6px;overflow-wrap:anywhere}
+.painel .ev .t{font-size:12.5px;color:#94a3b8;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.painel .ev .dir{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.painel .ic-ok,.painel .ic-novo{color:#15803d}.painel .ic-err{color:#b91c1c}.painel .ic-igual,.painel .ic-idle{color:#94a3b8}
+.painel .ic-run{color:#1d4ed8}.painel .ic-run svg{animation:giro 1s linear infinite}.painel .ic-warn{color:#b45309}
+.painel .acao{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.painel .acao code{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;background:#f1f5f9;border-radius:5px;padding:2px 7px;color:#334155;overflow-wrap:anywhere}
+.painel .lk{font:inherit;font-size:12.5px;background:none;border:0;color:#1d4ed8;cursor:pointer;padding:2px 4px}
+.painel .mais{display:block;width:100%;padding:11px 16px;font:inherit;font-size:13px;color:#1d4ed8;background:#f8fafc;border:0;border-top:1px solid #e2e8f0;cursor:pointer}
+.painel .mais:hover{background:#eff6ff}
+.painel .vazio{padding:36px 16px;text-align:center;color:#64748b;display:flex;flex-direction:column;align-items:center;gap:8px}
+.painel .vazio svg{width:30px;height:30px;color:#cbd5e1}
+
+.painel .fils{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.painel .fil{font:inherit;text-align:left;color:inherit;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:0 12px;align-items:center}
+.painel .fil:hover{border-color:#cbd5e1}
+.painel .fil[aria-pressed="true"]{border-color:#1d4ed8;box-shadow:0 0 0 1px #1d4ed8}
+.painel .fil svg{width:22px;height:22px;grid-row:span 2}
+.painel .fil b{font-size:22px;font-weight:600;line-height:1.15;font-variant-numeric:tabular-nums}
+.painel .fil span{font-size:12.5px;color:#64748b}
+.painel .f-novo svg,.painel .f-ok svg{color:#15803d}.painel .f-igual svg{color:#64748b}.painel .f-err svg{color:#b91c1c}.painel .f-warn svg{color:#b45309}
+
+.painel .vc{border-bottom:1px solid #e2e8f0}
+.painel .vc:last-child{border-bottom:0}
+.painel .vh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.painel .vh b{font-size:14px}
+.painel .vh .m{color:#64748b;font-size:12.5px;margin-left:8px}
+.painel .vr{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 16px 8px 28px;border-top:1px solid #f1f5f9}
+.painel .vr .u{display:block;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.painel .form{padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.painel .form>*{min-width:0}
+.painel .form label{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;font-size:12.5px;font-weight:600;color:#475569}
+.painel .form input,.painel .form textarea,.painel .form select{font:inherit;font-size:14px;font-weight:400;color:#0f172a;border:1px solid #cbd5e1;border-radius:8px;padding:8px 10px;background:#fff;width:100%;height:auto}
+.painel .form textarea{min-height:104px;resize:vertical;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+.painel .form .aviso{font-size:12.5px;color:#b45309;display:grid;gap:2px}
+.painel .form .botoes{display:flex;gap:8px;flex-wrap:wrap}
+.painel .form .nota{margin:0;font-size:12.5px;color:#64748b}
+.painel .form h3,.painel .sec h3{margin:0;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;color:#94a3b8;font-weight:600}
+
+.painel .sec{padding:16px;display:flex;flex-direction:column;gap:6px}
+.painel .sec h3{margin:14px 0 2px}
+.painel .sec h3:first-child{margin-top:0}
+.painel .sec p{margin:0;color:#475569;font-size:13px}
+.painel .chain{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font:13px/1.9 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-x:auto}
+.painel .tree{margin:0;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto}
+
+@container (max-width:860px){
+  .painel .th,.painel .tr{grid-template-columns:minmax(0,1.6fr) 108px 100px 120px}
+  .painel .c-cat,.painel .c-taxa,.painel .c-tam{display:none}
+}
+@container (max-width:560px){
+  .painel .th,.painel .tr{grid-template-columns:minmax(0,1fr) auto}
+  .painel .c-quando,.painel .c-hist{display:none}
+  .painel .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .painel .fil{grid-template-columns:1fr;padding:10px}.painel .fil svg{display:none}
+  .painel .det{grid-template-columns:1fr;padding-left:16px}
+  .painel .wrap{padding-inline:12px}
+  .painel .nm .q{display:block}
+  .painel .brand small,.painel .btn .rot{display:none}
+  .painel .seg{overflow-x:auto;max-width:100%}
+}
+/*FIMCSS*/
+</style>
+<div class="painel">
+  <header class="topo">
+    <div class="in">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#1d4ed8"/><path d="M12 5.5l6.5 3.2L12 12 5.5 8.7 12 5.5z" fill="#fff"/><path d="M5.5 12.3L12 15.6l6.5-3.3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 15.8L12 19l6.5-3.2" stroke="#fff" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Coletor <small>Captação de dados</small>
+      </div>
+      <div class="acoes"><span class="upd" id="at"></span><button class="btn" id="recarregar" type="button"><span id="recIcon"></span><span class="rot">Atualizar</span></button></div>
+    </div>
+    <nav class="abas" id="abas" role="tablist"></nav>
+  </header>
+  <main class="wrap">
+    <section class="aba" id="aba-painel">
+      <div id="banner" class="banner idle">Carregando…</div>
+      <div class="kpis" id="kpis"></div>
+      <section class="card">
+        <h2>Vínculos <span id="nvinc"></span></h2>
+        <div id="vinc"></div>
+      </section>
+      <section class="card" id="cardpub" hidden>
+        <h2>Publicação <span id="npub"></span></h2>
+        <div id="pub"></div>
+      </section>
+      <section class="card">
+        <h2>O que está acontecendo <span id="nev"></span></h2>
+        <div id="atividade"></div>
+      </section>
+    </section>
+
+    <section class="aba" id="aba-bots" hidden>
+      <div class="vistas">
+        <div class="seg" id="vseg"></div>
+        <button class="btn prim" id="novoV" type="button">+ Novo vínculo</button>
+      </div>
+      <section class="card" id="formcard" hidden>
+        <h2><span style="color:#0f172a;font-size:14px;font-weight:600" id="ftitulo">Novo vínculo</span><button class="lk" id="ffechar" type="button">Fechar</button></h2>
+        <div class="form">
+          <label>Vínculo / produto
+            <input id="fv" list="fvs" placeholder="Ex.: Turismo" maxlength="60" autocomplete="off"><datalist id="fvs"></datalist>
+          </label>
+          <label>Links que serão captados (um por linha)
+            <textarea id="fl" placeholder="https://exemplo.gov.br/dados.json&#10;hoteis https://exemplo.gov.br/hoteis" spellcheck="false"></textarea>
+          </label>
+          <label>Atualizar a cada
+            <select id="fi"><option value="5">5 minutos</option><option value="15">15 minutos</option><option value="60">1 hora</option><option value="360" selected>6 horas</option><option value="1440">24 horas</option></select>
+          </label>
+          <div class="aviso" id="favisos"></div>
+          <div><h3>Arquivo gerado</h3><pre class="tree" id="fsaida" style="margin-top:6px"></pre></div>
+          <div class="botoes"><a class="btn prim" id="fgh" target="_blank" rel="noopener" hidden>Abrir no GitHub</a><button class="btn" id="fcopiar" type="button">Copiar arquivo</button></div>
+          <p class="nota" id="fnota"></p>
+        </div>
+      </section>
+      <section class="card" id="vista-fontes">
+        <h2>Fontes <span id="ntab"></span></h2>
+        <div class="tools" id="tools"></div>
+        <div class="th"><span>Fonte</span><span class="c-cat">Vínculo</span><span>Estado</span><span class="c-quando">Última coleta</span><span class="c-taxa" title="Execuções sem erro nos últimos 7 dias">Sucesso</span><span class="c-hist">Histórico</span><span class="c-tam">Tamanho</span></div>
+        <div id="linhas"></div>
+      </section>
+      <section class="card" id="vista-vinculos" hidden>
+        <h2>Vínculos e links <span id="nvv"></span></h2>
+        <div id="vv"></div>
+      </section>
+    </section>
+
+    <section class="aba" id="aba-dados" hidden>
+      <div class="fils" id="fils"></div>
+      <section class="card">
+        <h2>Dados captados <span id="nd"></span></h2>
+        <div id="eventos"></div>
+      </section>
+    </section>
+
+    <section class="aba" id="aba-fluxos" hidden>
+      <section class="card">
+        <h2>Fluxos e estrutura</h2>
+        <div class="sec">
+          <h3>Cadastrar um vínculo e seus links</h3>
+          <div class="chain">Bots → Vínculos → + Novo vínculo → arquivo vinculos/&lt;produto&gt;.toml no GitHub → o celular recebe</div>
+          <h3>Captação automática</h3>
+          <div class="chain">celular (cron, a cada 5 min) → coletar (só as vencidas) → verificar (Gemini) → publicar</div>
+          <h3>O que chega ao sistema</h3>
+          <div class="chain">dado novo → corretor → liberado: publicado · suspeito: retido (o último dado bom segue publicado)</div>
+          <h3>Pastas</h3>
+<pre class="tree">coletor/
+  coletor.py
+  painel.html
+  .env                 <i>(chaves, fora do git)</i>
+  destinos.toml        <i>(para onde publicar)</i>
+  vinculos/            <i>(um .toml por vínculo, com as fontes)</i>
+  dados/
+    manifesto.db
+    raw/&lt;fonte&gt;/&lt;aa&gt;/&lt;sha256&gt;</pre>
+        </div>
+      </section>
+      <!--EXTRAS-->
+    </section>
+
+    <section class="aba" id="aba-correcao" hidden>
+      <div id="iastat" class="banner idle"></div>
+      <div class="fils" id="cfils"></div>
+      <section class="card">
+        <h2>Verificações <span id="nc"></span></h2>
+        <div id="citens"></div>
+      </section>
+      <section class="card">
+        <h2>Como funciona</h2>
+        <div class="sec">
+          <p>Depois de cada coleta, o dado novo passa por regras locais (arquivo vazio, JSON quebrado, tamanho muito diferente do último dado bom) e, se houver chave, pelo Gemini, que lê uma amostra e diz se está coerente com o que a fonte promete.</p>
+          <p>Dado <b>correto</b> é publicado. Dado <b>suspeito</b> ou com <b>erro</b> fica retido: o último dado bom continua publicado até você aprovar ou rejeitar.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+<script>
+/*RENDER*/
+const $ = id => document.getElementById(id);
+const mk = (t,txt,c) => { const e=document.createElement(t); if(txt!=null)e.textContent=txt; if(c)e.className=c; return e; };
+const svg = c => `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${c}</svg>`;
+const CIRC = '<circle cx="10" cy="10" r="8.25"/>';
+const ICON = {
+  ok:    svg(CIRC + '<path d="M6.6 10.3l2.3 2.3 4.5-4.9"/>'),
+  err:   svg(CIRC + '<path d="M10 6.2v4.6M10 13.6v.05"/>'),
+  idle:  svg(CIRC + '<path d="M10 6v4.2l2.7 1.7"/>'),
+  run:   svg('<path d="M10 2.8a7.2 7.2 0 107.2 7.2"/>'),
+  novo:  svg(CIRC + '<path d="M10 6v7M6.9 10.2L10 13.3l3.1-3.1"/>'),
+  igual: svg(CIRC + '<path d="M6.5 10h7"/>'),
+  alerta: svg('<path d="M10 3l7.5 13h-15L10 3z"/><path d="M10 8.5v3.5M10 14.4v.05"/>'),
+  chev:  svg('<path d="M7.5 5l5 5-5 5"/>'),
+  busca: svg('<circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2L17 17"/>'),
+  atualizar: svg('<path d="M16 10a6 6 0 11-1.8-4.2M16 3.5v3h-3"/>'),
+  camadas: svg('<path d="M10 3l7 3.5-7 3.5-7-3.5L10 3z"/><path d="M3 10l7 3.5 7-3.5M3 13.5L10 17l7-3.5"/>'),
+  pulso:  svg('<path d="M2.5 10h3.2l2-5.5 4.2 11 2-5.5h3.6"/>'),
+  escudo: svg('<path d="M10 2.8l6 2.2v4.6c0 3.6-2.4 6.2-6 7.6-3.6-1.4-6-4-6-7.6V5l6-2.2z"/><path d="M7.2 10l2 2 3.6-3.8"/>'),
+  banco:  svg('<ellipse cx="10" cy="5" rx="6" ry="2.3"/><path d="M4 5v10c0 1.3 2.7 2.3 6 2.3s6-1 6-2.3V5M4 10c0 1.3 2.7 2.3 6 2.3s6-1 6-2.3"/>'),
+  caixa:  svg('<path d="M3 6.5l7-3.5 7 3.5v7L10 17l-7-3.5v-7z"/><path d="M3 6.5L10 10l7-3.5M10 10v7"/>')
+};
+const ROT = {ok:"Ok", err:"Erro", idle:"Pendente", run:"Carregando"};
+const RTXT = {novo:"dado novo", igual:"sem mudança", erro:"erro"};
+const RICON = {novo:"novo", igual:"igual", erro:"err"};
+const TIPO = {git:"via git", http:"via HTTP"};
+const ORDEM = {err:0, run:1, idle:2, ok:3};
+const LIMITE_VELHO_H = 24;
+let dados = null, lista = [], busca = "", filtro = "todos", fvinc = "", fd = null, fc = null, vista = "fontes";
+const abertos = new Set();
+
+const nf = (v,d=1) => v.toLocaleString("pt-BR",{maximumFractionDigits:d});
+const pct = v => nf(v*100) + "%";
+const fmtBytes = b => { if(!b) return "0 B"; const u=["B","KB","MB","GB","TB"]; let i=0; while(b>=1024 && i<u.length-1){ b/=1024; i++; } return nf(b,i?1:0)+" "+u[i]; };
+const fmtMs = ms => ms==null ? "—" : ms<1000 ? ms+" ms" : nf(ms/1000)+" s";
+const abs = iso => iso ? new Date(iso).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}) : "—";
+const host = u => { try { return new URL(u).host; } catch(e) { return u || ""; } };
+const seguro = u => /^https?:\/\//i.test(u || "");
+const slug = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/\+/g,"-mais").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+const rel = iso => {
+  if(!iso) return "";
+  const m = (Date.now() - new Date(iso)) / 60000;
+  if(m < 1) return "agora";
+  if(m < 60) return `há ${Math.floor(m)} min`;
+  if(m < 1440) return `há ${Math.floor(m/60)} h`;
+  return `há ${Math.floor(m/1440)} d`;
+};
+const contar = bs => { const c = {ok:0, err:0, idle:0, run:0}; bs.forEach(b => c[b.status]++); return c; };
+const resumoContagem = c => [c.ok && `${c.ok} ok`, c.err && `${c.err} com erro`, c.run && `${c.run} carregando`, c.idle && `${c.idle} ${c.idle===1?"pendente":"pendentes"}`].filter(Boolean).join(" · ");
+
+function copiar(texto, btn, rotulo){
+  const volta = () => setTimeout(() => btn.textContent = rotulo, 1500);
+  const sel = () => { const t = mk("textarea"); t.value = texto; document.body.append(t); t.select(); try { document.execCommand("copy"); btn.textContent = "Copiado"; } catch(e) { btn.textContent = "Selecione e copie"; } t.remove(); volta(); };
+  if(navigator.clipboard) navigator.clipboard.writeText(texto).then(() => { btn.textContent = "Copiado"; volta(); }, sel); else sel();
+}
+
+function spark(h){
+  const N = 30, w = 6, off = N - h.length;
+  let s = `<svg class="spark" viewBox="0 0 ${N*w-2} 22" role="img" aria-label="Últimas ${h.length} execuções">`;
+  for(let i=0;i<N;i++){
+    const e = h[i-off], x = i*w;
+    if(!e){ s += `<rect x="${x}" y="18" width="4" height="4" rx="1" fill="#e2e8f0"/>`; continue; }
+    const alt = e.r==="igual" ? 12 : 22, cor = e.r==="erro" ? "#dc2626" : e.r==="novo" ? "#16a34a" : "#86efac";
+    s += `<rect x="${x}" y="${22-alt}" width="4" height="${alt}" rx="1" fill="${cor}"><title>${abs(e.em)} · ${RTXT[e.r]||""}</title></rect>`;
+  }
+  return s + "</svg>";
+}
+
+function render(d){
+  dados = d;
+  lista = Object.entries(d.bots).map(([nome,b]) => ({nome, ...b, status: b.status in ROT ? b.status : "idle"}));
+  cabecalho(); faixa(); indicadores(); vinculos(); publicacao(); ferramentas(); linhas(); vinculosView(); formVinculos();
+  eventos($("atividade"), (d.atividade||[]).slice(0,8), true); $("nev").textContent = "mais recentes";
+  dadosTab(); correcaoTab();
+}
+
+function cabecalho(){
+  const at = $("at"); if(!at) return;
+  const velho = (Date.now() - new Date(dados.gerado_em)) / 3600000 > LIMITE_VELHO_H;
+  at.className = "upd" + (velho ? " velho" : "");
+  at.textContent = "Atualizado " + rel(dados.gerado_em);
+  at.title = abs(dados.gerado_em);
+}
+
+function faixa(){
+  const el = $("banner"), c = contar(lista);
+  const erros = lista.filter(b => b.status==="err"), run = lista.filter(b => b.status==="run");
+  const df = (dados.destinos || []).filter(v => v.ok === false);
+  const ret = (dados.correcao && dados.correcao.resumo && dados.correcao.resumo.retidos) || 0;
+  const velho = (Date.now() - new Date(dados.gerado_em)) / 3600000 > LIMITE_VELHO_H;
+  let k, ic, t, s;
+  if(!lista.length){ k="idle"; ic="caixa"; t="Nenhuma fonte cadastrada"; s="Em Bots → Vínculos, cadastre um vínculo e os links que serão captados."; }
+  else if(erros.length || df.length){
+    k="err"; ic="err";
+    t = [erros.length && `${erros.length} ${erros.length===1?"fonte com erro":"fontes com erro"}`,
+         df.length && `${df.length} ${df.length===1?"envio com falha":"envios com falha"}`].filter(Boolean).join(" · ");
+    s = [...erros.map(b => b.nome), ...df.map(v => v.nome)].join(", ");
+  }
+  else if(velho){ k="warn"; ic="idle"; t = "Sem atualização " + rel(dados.gerado_em); s = "O coletor pode ter parado. Verifique o celular e o agendamento."; }
+  else if(ret){ k="warn"; ic="alerta"; t = `${ret} ${ret===1?"dado retido":"dados retidos"} para revisão`; s = "Veja a aba Correção. O último dado bom continua publicado."; }
+  else if(run.length){ k="run"; ic="run"; t = "Coletando agora"; s = run.map(b => b.nome).join(", "); }
+  else if(!c.ok){ k="idle"; ic="idle"; t = "Nenhuma coleta executada ainda"; s = `${c.idle} ${c.idle===1?"fonte aguardando":"fontes aguardando"} a primeira coleta.`; }
+  else { k="ok"; ic="ok"; t = "Operação normal"; s = `${c.ok} ${c.ok===1?"fonte coletando":"fontes coletando"}` + (c.idle ? ` · ${c.idle} ${c.idle===1?"pendente":"pendentes"}` : ""); }
+  el.className = "banner " + k; el.innerHTML = ICON[ic];
+  if(k==="run") el.firstChild.style.animation = "giro 1s linear infinite";
+  const x = mk("div"); x.append(mk("b",t), mk("span"," · " + s)); el.append(x);
+}
+
+function indicadores(){
+  const r = dados.resumo || {}, c = contar(lista);
+  const [vn, vu] = fmtBytes(r.bytes || 0).split(" ");
+  const itens = [
+    ["Fontes", "camadas", String(lista.length), "", resumoContagem(c) || "nenhuma ainda"],
+    ["Coletas em 24 h", "pulso", String(r.coletas_24h ?? 0), "", r.erros_24h ? `${r.erros_24h} com erro` : "nenhum erro"],
+    ["Sucesso em 7 dias", "escudo", r.sucesso_7d==null ? "—" : pct(r.sucesso_7d), "", "execuções sem erro"],
+    ["Armazenamento", "banco", vn, vu, "bruto, sem duplicados"]
+  ];
+  const box = $("kpis"); box.replaceChildren();
+  itens.forEach(([nome,ic,v,u,sub]) => {
+    const k = mk("div",null,"kpi"), l = mk("div",null,"l"), i = mk("span");
+    i.innerHTML = ICON[ic]; l.append(mk("span",nome), i);
+    const val = mk("div",v,"v"); if(u) val.append(mk("small",u));
+    k.append(l, val, mk("div",sub,"s")); box.append(k);
+  });
+}
+
+function vinculos(){
+  const box = $("vinc"); box.replaceChildren();
+  const vs = dados.vinculos || [], ds = dados.destinos || [];
+  $("nvinc").textContent = vs.length ? `${vs.length}` : "";
+  if(!vs.length){
+    const e = mk("div",null,"vazio"); e.innerHTML = ICON.caixa;
+    e.append(mk("span","Nenhum vínculo ainda. Cadastre em Bots → Vínculos.")); box.append(e); return;
+  }
+  vs.forEach(v => {
+    const bs = lista.filter(b => b.vinculo === v.nome), c = contar(bs);
+    const dest = ds.find(d => d.nome.toLowerCase() === v.nome.toLowerCase());
+    const k = c.err || (dest && dest.ok===false) ? "err" : c.run ? "run" : (!bs.length || c.idle===bs.length) ? "idle" : "ok";
+    const l = mk("div",null,"ev"), i = mk("span",null,"ic-"+k); i.innerHTML = ICON[k];
+    const m = mk("div"); m.append(mk("b",v.nome), mk("span", bs.length ? `${bs.length} ${bs.length===1?"fonte":"fontes"} · ${resumoContagem(c)}` : "sem fontes ainda","m"));
+    const dir = mk("div",null,"dir");
+    if(dest) dir.append(mk("span", dest.ok===true ? "entrega ok" : dest.ok===false ? "entrega com falha" : "entrega pendente", "badge " + (dest.ok===true ? "b-ok" : dest.ok===false ? "b-err" : "b-idle")));
+    l.append(i, m, dir); box.append(l);
+  });
+}
+
+function publicacao(){
+  const vs = (dados.vinculos || []).map(v => v.nome.toLowerCase());
+  const ds = (dados.destinos || []).filter(d => !vs.includes(d.nome.toLowerCase()));
+  $("cardpub").hidden = !ds.length;
+  const box = $("pub"); box.replaceChildren();
+  $("npub").textContent = ds.length ? `${ds.filter(x => x.ok===true).length} de ${ds.length} conectados` : "";
+  ds.forEach(x => {
+    const k = x.ok===true ? "ok" : x.ok===false ? "err" : "idle";
+    const l = mk("div",null,"ev"), i = mk("span",null,"ic-"+k); i.innerHTML = ICON[k];
+    const m = mk("div"), tipo = TIPO[x.tipo] || x.tipo || "";
+    m.append(mk("b",x.nome), mk("span", x.ok===false ? (x.erro || "falha no envio") : x.ok===true ? tipo + " · conectado" : tipo + " · ainda não enviado","m"));
+    l.append(i, m, mk("div", x.desde ? (x.ok===false ? "falha " : "ok ") + rel(x.desde) : "","t")); box.append(l);
+  });
+}
+
+function ferramentas(){
+  const t = $("tools");
+  if(!t.firstChild){
+    const b = mk("div",null,"busca"), inp = mk("input");
+    b.innerHTML = ICON.busca; inp.type = "search"; inp.placeholder = "Buscar fonte, vínculo ou site"; inp.setAttribute("aria-label","Buscar");
+    inp.oninput = () => { busca = inp.value.trim().toLowerCase(); linhas(); };
+    b.append(inp);
+    const seg = mk("div",null,"seg"); seg.id = "seg";
+    const sel = mk("select"); sel.id = "selvinc"; sel.setAttribute("aria-label","Vínculo");
+    sel.onchange = () => { fvinc = sel.value; linhas(); };
+    t.append(b, seg, sel);
+  }
+  const c = {todos:lista.length, ...contar(lista)};
+  const seg = $("seg"); seg.replaceChildren();
+  [["todos","Todos"],["ok","Ok"],["err","Erros"],["idle","Pendentes"],["run","Carregando"]].forEach(([k,n]) => {
+    const b = mk("button",n); b.type = "button"; b.setAttribute("aria-pressed", String(filtro===k));
+    b.append(mk("i", String(c[k]))); b.onclick = () => { filtro = k; ferramentas(); linhas(); };
+    seg.append(b);
+  });
+  const sel = $("selvinc"), v = sel.value; sel.replaceChildren();
+  const o0 = mk("option","Todos os vínculos"); o0.value = ""; sel.append(o0);
+  (dados.vinculos || []).map(x => x.nome).forEach(n => { const o = mk("option",n); o.value = n; sel.append(o); });
+  sel.value = v; fvinc = sel.value;
+}
+
+function linhas(){
+  const box = $("linhas"); box.replaceChildren();
+  const vis = lista.filter(b => (filtro==="todos" || b.status===filtro) && (!fvinc || b.vinculo===fvinc)
+      && (!busca || `${b.nome} ${b.vinculo||""} ${host(b.url)}`.toLowerCase().includes(busca)))
+    .sort((a,b) => ORDEM[a.status]-ORDEM[b.status] || a.nome.localeCompare(b.nome));
+  $("ntab").textContent = `${vis.length} de ${lista.length}`;
+  if(!vis.length){
+    const v = mk("div",null,"vazio"); v.innerHTML = ICON.caixa;
+    v.append(mk("span", lista.length ? "Nenhuma fonte com esses filtros." : "Nenhuma fonte cadastrada.")); box.append(v); return;
+  }
+  vis.forEach(b => {
+    const aberta = abertos.has(b.nome);
+    const r = mk("button",null,"tr"); r.type = "button"; r.setAttribute("aria-expanded", String(aberta));
+    const nm = mk("div",null,"nm"); nm.innerHTML = ICON.chev;
+    const t = mk("div"); t.append(mk("b",b.nome), mk("span",host(b.url)),
+      mk("span",[b.vinculo, b.em ? rel(b.em) : "nunca coletada"].filter(Boolean).join(" · "),"q")); nm.append(t);
+    const est = mk("div",null,"est"); est.append(mk("span",ROT[b.status],"badge b-"+b.status));
+    if(b.verificacao && !b.verificacao.liberado && b.verificacao.decisao !== "rejeitado") est.append(mk("span","retido","badge b-warn"));
+    const h = mk("div",null,"c-hist"); h.innerHTML = spark(b.historico || []);
+    r.append(nm, mk("div",b.vinculo||"—","c-cat"), est, mk("div",b.em ? rel(b.em) : "nunca","c-quando"),
+      mk("div",b.taxa_sucesso==null ? "—" : pct(b.taxa_sucesso),"num c-taxa"), h, mk("div",b.bytes ? fmtBytes(b.bytes) : "—","num c-tam"));
+    r.onclick = () => { aberta ? abertos.delete(b.nome) : abertos.add(b.nome); linhas(); };
+    box.append(r);
+    if(aberta) box.append(detalhe(b));
+  });
+}
+
+function detalhe(b){
+  const d = mk("div",null,"det"), dl = mk("dl");
+  const par = (k,v,c) => { dl.append(mk("dt",k)); const dd = mk("dd",null,c||""); if(v instanceof Node) dd.append(v); else dd.textContent = v; dl.append(dd); };
+  if(seguro(b.url)){ const a = mk("a",b.url); a.href = b.url; a.target = "_blank"; a.rel = "noopener"; par("Endereço", a); } else par("Endereço", b.url);
+  par("Vínculo", b.vinculo || "—");
+  par("Última coleta", abs(b.em));
+  par("Último dado novo", abs(b.mudou_em));
+  par("Execuções", String(b.coletas ?? 0));
+  par("Duração da última", fmtMs(b.duracao_ms));
+  par("Armazenado", b.bytes ? fmtBytes(b.bytes) : "—");
+  if(b.verificacao) par("Verificação", `${b.verificacao.veredito} · ${b.verificacao.liberado ? "liberado" : b.verificacao.decisao==="rejeitado" ? "rejeitado" : "retido"}`);
+  if(b.publicar_dados) par("Dados publicados", "sim, o último dado liberado");
+  if(b.correcao) par("Correção de formato", b.correcao.desfeita ? "desfeita" : `${b.correcao.mudancas} alterações · ${b.correcao.regras.join(", ")}`);
+  if(b.status==="err") par("Mensagem", b.detalhe || "", "erro");
+  const runs = mk("div",null,"runs"); runs.append(mk("h3","Últimas execuções"));
+  const h = (b.historico || []).slice(-8).reverse();
+  if(!h.length) runs.append(mk("span","Nenhuma execução ainda."));
+  h.forEach(e => {
+    const l = mk("div",null,"run ic-"+RICON[e.r]); l.innerHTML = ICON[RICON[e.r]];
+    l.append(mk("span",`${RTXT[e.r]} · ${abs(e.em)}`), mk("em", fmtMs(e.ms))); runs.append(l);
+  });
+  d.append(dl, runs); return d;
+}
+
+/* Bots → Vínculos: produtos e seus links; cadastro gera o arquivo para o GitHub */
+function vinculosView(){
+  const seg = $("vseg"); seg.replaceChildren();
+  [["fontes","Fontes"],["vinculos","Vínculos"]].forEach(([k,n]) => {
+    const b = mk("button",n); b.type = "button"; b.setAttribute("aria-pressed", String(vista===k));
+    b.onclick = () => { vista = k; vinculosView(); }; seg.append(b);
+  });
+  $("vista-fontes").hidden = vista !== "fontes"; $("vista-vinculos").hidden = vista !== "vinculos";
+  const box = $("vv"); box.replaceChildren();
+  const vs = dados.vinculos || [];
+  $("nvv").textContent = `${vs.length} ${vs.length===1?"vínculo":"vínculos"}`;
+  if(!vs.length){ const v = mk("div",null,"vazio"); v.innerHTML = ICON.caixa; v.append(mk("span","Nenhum vínculo. Use “+ Novo vínculo”.")); box.append(v); return; }
+  vs.forEach(v => {
+    const bs = lista.filter(b => b.vinculo === v.nome).sort((a,b) => ORDEM[a.status]-ORDEM[b.status] || a.nome.localeCompare(b.nome));
+    const vc = mk("div",null,"vc"), h = mk("div",null,"vh"), t = mk("div");
+    t.append(mk("b",v.nome), mk("span", bs.length ? resumoContagem(contar(bs)) : "sem fontes ainda","m")); h.append(t);
+    const add = mk("button","+ links","btn"); add.type = "button"; add.onclick = () => abrirForm(v.nome); h.append(add); vc.append(h);
+    bs.forEach(b => {
+      const r = mk("div",null,"vr"), i = mk("span",null,"ic-"+b.status); i.innerHTML = ICON[b.status];
+      const m = mk("div"); m.append(mk("b",b.nome), mk("span",b.url,"u"));
+      r.append(i, m, mk("span",ROT[b.status],"badge b-"+b.status)); vc.append(r);
+    });
+    box.append(vc);
+  });
+}
+
+function abrirForm(nome){
+  $("formcard").hidden = false; $("ftitulo").textContent = nome ? `Adicionar links a ${nome}` : "Novo vínculo";
+  $("fv").value = nome || ""; $("fv").readOnly = false; $("fl").value = "";
+  vista = "vinculos"; vinculosView(); gerar(); (nome ? $("fl") : $("fv")).focus();
+  $("formcard").scrollIntoView({block:"nearest"});
+}
+
+let arquivoGerado = {caminho:"", texto:""};
+function gerar(){
+  const v = $("fv").value.trim(), linhas = $("fl").value.split("\n").map(s => s.trim()).filter(Boolean);
+  const usados = new Set(lista.map(b => b.nome)), novos = [], avisos = [];
+  const urls = new Map(lista.map(b => { try { return [new URL(b.url).href, b.nome]; } catch(e) { return [b.url, b.nome]; } }));
+  linhas.forEach(l => {
+    const p = l.split(/\s+/), alvo = p[p.length-1]; let u;
+    try { u = new URL(alvo); if(!/^https?:$/.test(u.protocol)) throw 0; } catch(e) { avisos.push(`Linha ignorada (link inválido): ${l.slice(0,70)}`); return; }
+    if(urls.has(u.href)){ avisos.push(`Linha ignorada (link já cadastrado como ${urls.get(u.href)}): ${u.host}${u.pathname}`.slice(0,110)); return; }
+    let nome = p.length > 1 ? slug(p[0]) : slug(u.hostname.replace(/^www\./,"").split(".").slice(0,2).join("-") + "-" + (u.pathname.split("/").filter(Boolean).pop() || ""));
+    nome = (nome || "fonte").slice(0,40).replace(/-+$/,"") || "fonte";
+    let n = nome, i = 2; while(usados.has(n)) n = nome + "-" + (i++);
+    usados.add(n); urls.set(u.href, n); novos.push({nome:n, url:u.href});
+  });
+  const av = $("favisos"); av.replaceChildren(); avisos.forEach(a => av.append(mk("div",a)));
+  const ok = v && novos.length;
+  const d = new Date(), z = x => String(x).padStart(2,"0"), carimbo = `${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}${z(d.getSeconds())}`;
+  let texto = `nome = ${JSON.stringify(v)}\n`;
+  novos.forEach(f => { texto += `\n[[fonte]]\nnome = ${JSON.stringify(f.nome)}\nurl = ${JSON.stringify(f.url)}\nintervalo_min = ${$("fi").value}\n`; });
+  arquivoGerado = {caminho: `vinculos/${slug(v) || "vinculo"}-${carimbo}.toml`, texto};
+  $("fsaida").textContent = ok ? `# ${arquivoGerado.caminho}\n${texto}` : "Informe o vínculo e ao menos um link válido.";
+  $("fcopiar").disabled = !ok;
+  const repo = dados && dados.config && dados.config.repo, gh = $("fgh");
+  gh.hidden = !repo;
+  if(repo && ok){ gh.href = `${repo.url}/new/${encodeURIComponent(repo.branch)}?filename=${encodeURIComponent(arquivoGerado.caminho)}&value=${encodeURIComponent(texto)}`; gh.removeAttribute("aria-disabled"); }
+  else { gh.removeAttribute("href"); gh.setAttribute("aria-disabled","true"); }
+  $("fnota").textContent = repo
+    ? "No GitHub, confirme em “Commit changes”. O celular recebe o vínculo na próxima verificação (até 5 minutos)."
+    : "Este painel não encontrou o repositório do coletor. Copie o arquivo e crie-o na pasta vinculos/ do repositório.";
+}
+
+function formVinculos(){
+  const dl = $("fvs"); dl.replaceChildren();
+  (dados.vinculos || []).forEach(v => { const o = mk("option"); o.value = v.nome; dl.append(o); });
+  if(!$("formcard").hidden) gerar();
+}
+
+function eventos(box, ev, comLink){
+  box.replaceChildren();
+  if(!ev.length){ const v = mk("div",null,"vazio"); v.innerHTML = ICON.pulso; v.append(mk("span","Nada registrado ainda.")); box.append(v); return; }
+  ev.forEach(e => {
+    const l = mk("div",null,"ev"), i = mk("span",null,"ic-"+RICON[e.r]); i.innerHTML = ICON[RICON[e.r]];
+    const m = mk("div"); m.append(mk("b",e.bot), mk("span", e.r==="erro" ? (e.detalhe || "erro") : RTXT[e.r],"m"));
+    l.append(i, m, mk("div",[e.bytes ? fmtBytes(e.bytes) : "", rel(e.em)].filter(Boolean).join(" · "),"t")); box.append(l);
+  });
+  if(comLink){ const b = mk("button","Ver todos os dados","mais"); b.type = "button"; b.onclick = () => { location.hash = "dados"; }; box.append(b); }
+}
+
+function dadosTab(){
+  const r = dados.resumo || {}, c = {novo:r.novos_24h||0, igual:r.iguais_24h||0, erro:r.erros_24h||0};
+  const box = $("fils"); box.replaceChildren();
+  [["novo","Dados novos","novo","f-novo"],["igual","Não alterados","igual","f-igual"],["erro","Erros","err","f-err"]].forEach(([k,rot,ic,cl]) => {
+    const b = mk("button",null,"fil "+cl); b.type = "button"; b.setAttribute("aria-pressed", String(fd===k)); b.innerHTML = ICON[ic];
+    b.append(mk("b",String(c[k])), mk("span",rot+" · 24 h")); b.onclick = () => { fd = fd===k ? null : k; dadosTab(); }; box.append(b);
+  });
+  const corte = Date.now() - 864e5;   // a lista cobre as mesmas 24 h dos cartões
+  const ev = (dados.atividade || []).filter(e => new Date(e.em) >= corte && (!fd || e.r===fd));
+  const total = fd ? c[fd] : c.novo + c.igual + c.erro;
+  $("nd").textContent = `${ev.length} ${ev.length===1?"registro":"registros"}` + (total > ev.length ? ` de ${total} (os mais recentes)` : "") + " · 24 h";
+  eventos($("eventos"), ev, false);
+}
+
+/* Correção: o que o corretor (regras locais + Gemini) achou antes de liberar */
+function correcaoTab(){
+  const c = dados.correcao || {}, r = c.resumo || {}, ia = c.ia || {};
+  const st = $("iastat"); st.replaceChildren();
+  st.className = "banner " + (ia.ativa ? "ok" : "warn"); st.innerHTML = ICON[ia.ativa ? "ok" : "alerta"];
+  const x = mk("div");
+  if(ia.ativa) x.append(mk("b","Gemini ativo"), mk("span",` · modelo ${ia.modelo}` + (r.sem_ia ? ` · ${r.sem_ia} sem resposta da IA (só regras locais)` : "")));
+  else x.append(mk("b","Gemini desligado"), mk("span"," · defina GEMINI_API_KEY no arquivo .env. Por enquanto valem só as regras locais."));
+  st.append(x);
+  const box = $("cfils"); box.replaceChildren();
+  [["ok","Corretos","ok","f-ok"],["suspeito","Suspeitos","alerta","f-warn"],["erro","Com erro","err","f-err"]].forEach(([k,rot,ic,cl]) => {
+    const b = mk("button",null,"fil "+cl); b.type = "button"; b.setAttribute("aria-pressed", String(fc===k)); b.innerHTML = ICON[ic];
+    b.append(mk("b",String(r[k]||0)), mk("span",rot + (k==="ok" ? "" : " · retidos " + lista.filter(f => f.verificacao && f.verificacao.veredito===k && !f.verificacao.liberado && f.verificacao.decisao!=="rejeitado").length)));
+    b.onclick = () => { fc = fc===k ? null : k; correcaoTab(); }; box.append(b);
+  });
+  const vistos = new Set();   // a lista vem da mais nova para a mais antiga: a 1ª de cada fonte é a atual
+  const todos = (c.itens || []).map(i => { const atual = !vistos.has(i.fonte); vistos.add(i.fonte); return {...i, atual}; });
+  const espera = i => i.atual && !i.liberado && i.decisao !== "rejeitado";
+  const itens = todos.filter(i => !fc || i.veredito===fc).sort((a,b) => espera(b) - espera(a));   // o que espera decisão vem primeiro
+  $("nc").textContent = `${itens.length} ${itens.length===1?"registro":"registros"}`;
+  const lst = $("citens"); lst.replaceChildren();
+  if(!itens.length){ const v = mk("div",null,"vazio"); v.innerHTML = ICON.escudo; v.append(mk("span", todos.length ? "Nada com esse filtro." : "Nenhum dado verificado ainda.")); lst.append(v); return; }
+  itens.forEach(i => {
+    const ic = i.veredito==="ok" ? "ok" : i.veredito==="suspeito" ? "alerta" : "err";
+    const retido = espera(i), maisNovo = i.atual;
+    const l = mk("div",null,"ev"), s = mk("span",null,"ic-" + (i.veredito==="ok" ? "ok" : i.veredito==="suspeito" ? "warn" : "err")); s.innerHTML = ICON[ic];
+    const ms = i.motivos.filter(t => !(i.correcao && t.startsWith("Corrigido automaticamente")));   // a correção tem a sua própria linha
+    const m = mk("div"); m.append(mk("b",i.fonte), mk("span", `${i.vinculo} · ` + (ms.length ? ms.join("; ") : "sem problemas encontrados"), "m"));
+    m.append(mk("div", i.por + (i.ia==="falhou" ? " (IA sem resposta)" : i.ia==="binario" ? " (arquivo binário)" : ""), "m"));
+    if(i.correcao){   // o que o corretor mudou, só no formato; o arquivo original continua guardado
+      const c = i.correcao;
+      m.append(mk("div", c.desfeita ? `Correção de formato desfeita (eram ${c.mudancas} alterações)`
+        : `Corrigido só no formato: ${c.mudancas} ${c.mudancas===1?"alteração":"alterações"} · ${c.regras.join(", ")}`, "m"));
+      if(!c.desfeita && maisNovo){
+        const a = mk("div",null,"acao"), cmd = `python coletor.py desfazer ${i.fonte}`;
+        a.append(mk("code",cmd)); const bt = mk("button","Copiar","lk"); bt.type = "button"; bt.onclick = () => copiar(cmd, bt, "Copiar"); a.append(bt); m.append(a);
+      }
+    }
+    if(retido && maisNovo){
+      const a = mk("div",null,"acao"), cmd = `python coletor.py aprovar ${i.fonte}`;
+      a.append(mk("code",cmd)); const bt = mk("button","Copiar","lk"); bt.type = "button"; bt.onclick = () => copiar(cmd, bt, "Copiar"); a.append(bt); m.append(a);
+    }
+    const dir = mk("div",null,"dir");
+    const rot = i.liberado ? (i.decisao==="aprovado" ? "aprovado" : "liberado") : i.decisao==="rejeitado" ? "rejeitado" : i.atual ? "retido" : "substituído";
+    dir.append(mk("span",rot,"badge " + (i.liberado ? "b-ok" : retido ? "b-warn" : "b-idle")), mk("span",rel(i.em),"t"));
+    l.append(s, m, dir); lst.append(l);
+  });
+}
+/*FIM*/
+const ABAS = [["painel","Painel"],["bots","Bots"],["dados","Dados"],["fluxos","Fluxos"],["correcao","Correção"]];
+ABAS.forEach(([id,nome]) => { const b = mk("button",nome); b.type = "button"; b.role = "tab"; b.dataset.id = id; b.onclick = () => { location.hash = id; }; $("abas").append(b); });
+function rota(){
+  const h = location.hash.slice(1), id = ABAS.some(a => a[0]===h) ? h : "painel";
+  ABAS.forEach(([i]) => { $("aba-"+i).hidden = i !== id; });
+  $("abas").querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.id===id)));
+}
+addEventListener("hashchange", rota); rota();
+$("recIcon").innerHTML = ICON.atualizar;
+$("novoV").onclick = () => abrirForm("");
+$("ffechar").onclick = () => { $("formcard").hidden = true; };
+["fv","fl","fi"].forEach(id => $(id).addEventListener("input", gerar));
+$("fcopiar").onclick = () => copiar(arquivoGerado.texto, $("fcopiar"), "Copiar arquivo");
+/*CARREGAR*/
+async function carregar(){
+  try { const r = await fetch("status.json",{cache:"no-store"}); render(await r.json()); }
+  catch(e) { const b = $("banner"); b.className = "banner err"; b.textContent = "Não foi possível carregar o status.json."; }
+}
+$("recarregar").onclick = carregar;
+carregar(); setInterval(carregar, 60000);
+/*FIMCARREGAR*/
+</script>

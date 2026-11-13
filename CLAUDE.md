@@ -139,6 +139,20 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   em pull requests (aprovação pelo celular só com verde). Falta: passar ao `agendar.py` o que hoje só o robô do GitHub faz (eleições, segurança, notícias a cada 15 min, impostômetro,
   histórico, fotos) e adaptar `revisar_dados` ao banco local.
 
+## Coletor do celular (nov/2026)
+- Coletor separado (repositório próprio, roda no Termux/Android): guarda o bruto de cada fonte sem alterar, confere o dado novo (regras locais + Gemini), corrige só o **formato**
+  numa cópia separada (lista fechada de regras: espaços sobrando, acento quebrado, `&amp;`, vírgula decimal, data dd/mm/aaaa; nunca muda valor), retém o suspeito e publica no
+  GitHub `dados/<fonte>/atual.<ext>` + `meta.json` só o que foi liberado (ou aprovado pelo Felipe). O último dado bom continua publicado enquanto o novo está retido.
+- `coletor-ingestao` (`app/collectors/coletor_externo.py`; `COLETOR_DADOS` = clone desse repositório de dados; o agendador roda a cada 10 min quando a variável existe): lê o
+  `meta.json`, confere o hash do arquivo, ignora o que não foi liberado e o que já foi ingerido (mesmo hash) e grava em `registros` com a MESMA função do coletor próprio
+  (`bcb.gravar_pontos`), então o formato no banco é um só. Cada fonte nova precisa do seu adaptador em `ADAPTADORES`; fonte sem adaptador é ignorada. Piloto: `bcb`
+  (série do SGS pelo código no endereço da fonte).
+- Falhas de validação (hash que não confere, `meta.json` quebrado) ficam em `coletas` (fonte `coletor`, tarefa `ingestao`, parâmetro `bot`) e aparecem na tela de situação das
+  fontes. Quando uma série passar a vir do celular, tire-a de `bcb-series` (`nomes=`) para não coletar duas vezes (o upsert pela mesma chave já evita linha duplicada).
+- Adaptador genérico `linhas`: a fonte declara no vínculo `adaptador = "linhas"` e um `mapa` (`tipo`, `chave`, `valor`, `titulo`, `uf`, `data`, `dados`). Assim uma fonte nova entra sem código novo. Adaptador declarado e inexistente é erro, nunca ignorado.
+- Inventário: `python -m scripts.inventario_vinculos` gera `docs/VINCULOS.md` (uma linha por tarefa, com onde grava e em que etapa está o caminho pelo celular).
+- Testes: `tests/test_coletor_externo.py` (16). Ao rodar testes de arquivos diferentes em sequência, apague `teste.db`: um banco sujo derruba `test_formatos_reais`.
+
 ## Correções de dado (29/10/2026)
 - Obras: o ObrasGov tem valores digitados a mais (dragagem de porto com R$ 403 bi, bloco de hospital com R$ 81 bi). `app/obras_valor.py` (`valor_suspeito`: ≥ R$ 100 bi sempre; Defesa fica; ≥ R$ 10 bi suspeito;
   de R$ 1 a 10 bi só com nome de obra pequena — bloco, vestiário, delegacia, campus... — ou "estradas ... município") marca `valor_suspeito` em `/obras` e `/obras/{id}` (com `aviso_valor`), tira o valor das somas
@@ -571,6 +585,46 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - **Tela dos alertas do MapBiomas (31/10/2026)**: aba Meio ambiente (`#/ambiente`) ganhou o bloco "Alertas de desmatamento do MapBiomas" (`mbPainel`, `mbCarregar` no site): seletor de período (todos os anos ou um ano; o último é parcial), mapa por estado, maiores e menores, biomas e os 100 maiores municípios (só nome, sem UF), sempre com o aviso de que NÃO é o PRODES;
   a ficha do estado (`#/ambiente/<UF>`) mostra os alertas do estado e a linha por ano. Lê `GET /alertas-mapbiomas/territorio` (exportada na cópia estática: `FIXAS` de `exportar_snapshot.py`; vale na próxima geração da cópia pelo robô). Conferido no navegador com dados reais (540.088 alertas, 11,43 mi ha), PC e celular, sem erro de JS.
 
+## IA própria do BRASIL+ (nov/2026) — sem Gemini/Claude/GPT, sem token, sem custo
+- `GET /ia/pergunta?q=...` (`app/ia_propria.py` roteia; `app/ia_consultas.py` tem as consultas; `app/ia_base.py` os utilitários; `app/nomes.py` acha nome escrito errado por pronúncia
+  do português + distância de edição). Reconhece o tipo da pergunta por palavras-chave, acha pessoa/partido/estado/ano, consulta o banco e responde com fonte e o que o dado NÃO cobre.
+  Não entende: PERGUNTA DE VOLTA (`app/ia_esclarecer.py`): devolve `entendi` (assunto, pessoa, estado, partido, ano), `falta`, `pergunta_de_volta` e `sugestoes` (perguntas
+  prontas com o nome preenchido) e guarda o texto (`GET /ia/perguntas-sem-resposta`, no painel) para virar tipo novo. Nome citado que não bate inteiro: só SUGERE "você quis dizer...?", nunca responde.
+- Exemplos das sugestões (`ia_esclarecer.amostra`): nome, ano, estado e partido REAIS do banco, escolhidos de forma estável pela própria pergunta (perguntas diferentes mostram pessoas diferentes; estado/partido/ano citados mandam). Nunca nome fixo no código.
+- Site: com o servidor no ar, a caixa da IA (`iaPropria`, `iaPropriaHTML`) chama `GET /ia/pergunta` primeiro; a resposta mostra fontes, aviso e as sugestões como botões (`data-iaq`) que perguntam de novo. Sem servidor (cópia estática/Artifact) segue o fluxo antigo (Claude/modo simples). Conferido no Chromium, PC e celular.
+- Tabela das 50 perguntas de treinamento: `app/dados/ia_cobertura.json` (`GET /ia/cobertura`, `docs/IA_COBERTURA.md`): `dado` (completo/parcial/nenhum nas fontes abertas) e `motor`
+  (pronto/a_fazer). Um teste faz cada pergunta "pronta" e confere a intenção. Ao adicionar um tipo de pergunta, atualize o JSON e o teste.
+- REGRAS: nunca inventar; investigação, processo e condenação são coisas diferentes; ausência de registro no banco NÃO prova inexistência; nome parecido não é identidade
+  (palavra com inicial maiúscula não pode ser descartada; "Entendi que você se refere a X" quando o nome não é idêntico; respostas gerais só quando a pergunta não cita nome).
+  Processos por pessoa NÃO têm base aberta: só representações (Câmara), registro de candidatura (TSE) e casos curados.
+- Cuidado: `app/nomes.py:normalizar` troca ç por s (pronúncia de NOMES); as palavras-chave da pergunta usam `_norm_kw` (ç vira c). Misturar as duas quebra todo o vocabulário.
+- Assistente local OPCIONAL (`app/ia_local.py`, `docs/IA_LOCAL.md`): modelo no próprio PC (llama.cpp Vulkan; RX 580 não tem ROCm) só ajuda a escolher o tipo da pergunta quando as regras
+  não entendem; MODELO_LOCAL_URL só aceita 127.0.0.1; o motor confere tudo e responde. Desligado por padrão.
+- Programa único (`app/executavel.py`, `instalar/construir-tudo.ps1`, `docs/INSTALAR_WINDOWS.md`): .exe com SQLite embutido, API, painel, agendador e coletor; dados em ~/BRASILMais.
+- Testes: ao rodar a suíte inteira, outros testes deixam dados no mesmo banco; os testes de IA usam partido/estado/ano exclusivos (ZZT, RR, 2099) para não depender de banco limpo.
+
+
+
+## Revisão de segurança e subida em um comando (nov/2026)
+- Ferramentas: `bandit` (código) e `pip-audit` (dependências: nenhuma vulnerabilidade conhecida). Nenhum segredo nem arquivo `.env` real versionado; `.gitignore` agora também barra `config.env`, `*.env`, `destinos.toml`, `*.pem`, `*.key` (testes em `tests/test_seguranca_final.py`).
+- Corrigido: XML de fonte externa lido com `defusedxml` (`escandalos_fila`, `cpis`, `coletor_externo`); `schtasks` sem `shell=True` (`executavel.py`); MD5 do download marcado `usedforsecurity=False`; coletor do celular só aceita fonte `https://`; `/painel` com CSP própria fechada (`default-src 'none'`, só o próprio endereço; o middleware só põe a do site se faltar); `/oportunidades` só mostra pendente/rejeitado com o token do administrador.
+- Aceitos de propósito: FTP do CAGED (o servidor do governo só oferece FTP) e scripts `diag_*` (só diagnóstico, não rodam em produção); SQL por texto em `busca.py` usa só nomes de tabela/coluna fixos do código.
+- Ainda abertos: `GET /fontes-cadastradas` e `GET /ia/perguntas-sem-resposta` são leitura pública (a API só escuta 127.0.0.1/Tailscale; se for exposta, pôr token); o teste `test_nenhuma_rota_de_escrita_alem_das_conhecidas` reprova por defeito do próprio teste (lista de rotas chega vazia) e as rotas de escrita novas (`/fontes-cadastradas`, `/oportunidades`) precisam entrar nele quando for consertado.
+- Subir no PC em um comando: `powershell -ExecutionPolicy Bypass -File instalar\atualizar-e-subir.ps1` (git pull → fecha o programa → gera → abre; dados em `~/BRASILMais` intactos; migrações rodam na abertura).
+- Cursos, eventos e concursos: tabela `oportunidades` (migração 0016), `GET/POST /oportunidades`, `/aprovar` e `/rejeitar`, seção no painel. Falta a aba no site público.
+
+## Organizador de links (nov/2026)
+- `POST /organizar` (`app/organizador.py`, token de administrador): recebe texto com links e devolve uma PROPOSTA por link (categoria, formato, intervalo, destinos). Usa o Gemini (`GEMINI_API_KEY`, `GEMINI_MODEL` no `.env`, saída validada) e, sem chave ou com resposta ruim, a regra local por palavras do endereço. Não baixa o link nem grava nada; ainda NÃO testado com chave real. Na prévia (artefato) a barra fica na aba Bots e usa só a regra local.
+
+## Instalador e atualização automática (nov/2026)
+- `.github/workflows/instalador.yml` (botão ou tag `vX.Y.Z`): PyInstaller sem janela (`--noconsole`), teste que abre o `.exe` e espera `/pronto`, Inno Setup (`instalar/BRASILMais.iss`, instala só para o usuário, atalhos, abrir ao ligar o Windows) e Release com `BRASILMais-Setup.exe` + `.sha256`. Versão em `app/versao.py` (o workflow troca).
+- Programa: ícone perto do relógio (`app/bandeja.py`, pystray), uma instância só (mutex `BRASILMaisMutex`), `--sem-bandeja`, `--versao`. `app/atualizador.py`: a cada 6 h consulta a última Release, baixa, CONFERE o SHA-256 (sem hash, não instala) e roda o instalador em silêncio. `ATUALIZAR_AUTO=0`, `ATUALIZAR_TOKEN` (repositório privado), `ATUALIZAR_REPO`. Testes: `tests/test_atualizador.py`.
+- NUNCA rodado num Windows real ainda (só o teste do workflow no GitHub); Mac/Linux fora do escopo por enquanto.
+
+## Automação painel ↔ BRASIL+ (nov/2026)
+- Categorias do painel acompanham o menu do site: `categorias_atuais()` (`app/categorias.py`) lê `const NAV` de `site/index.html` na hora; seção nova no menu vira categoria nova (`nova: true`, ícone padrão `ICONE.outras`). A lista fixa `CATEGORIAS` só dá a ordem e o plano B.
+- Coleta nova sem seção em `MAPA`: continua caindo em Relatórios e Dados, mas `/fontes/status` traz `sem_secao` (por fonte e a lista) e o painel mostra a faixa amarela "Novas coletas sem seção".
+- Quadro genérico `GET /fontes-novas` (`app/fontes_novas.py`): fontes cadastradas pela tela (`campos.categoria` opcional, validado contra o menu) e as do coletor do celular com `adaptador = "linhas"` (`categoria` no `meta.json`). Aparecem no painel (`/fontes/status`, `origem`) e no site (Relatórios e Dados › "Fontes novas"). Tela bonita de verdade para uma fonte continua sendo trabalho de código (rota + `P.<nome>`).
 ## Leveza e limpeza (10/11/2026)
 - Pacotes da cópia estática (`scripts/pacotes_copia.py`, chamado pelo exportador; manifest → `pacotes`): as chaves pequenas de cada assunto ficam juntas em
   `dados/p/<inicio|economia|governo|escandalos|ambiente|geral|eleicoes>.json` (eleicoes só vale na tela de eleições). O site (`snapMapaPacotes`, `snapPacote`) lê o pacote e,
@@ -669,6 +723,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Cópia estática: `FIXAS` do `exportar_snapshot.py` e `python -m scripts.catastrofes_copia site/dados` (pacote `p/catastrofes.json`).
 - Testes: `tests/test_catastrofes.py`.
 
+## Entrega automática e migrações (nov/2026)
+- `app/entrega.py`: com `ENTREGA_GIT_PASTA` no `config.env`, o agendador do programa (a cada 6 h) gera `site/dados` e envia ao branch atual, só com mudança e só essa pasta (`commit -- site/dados`). Sem a variável, não faz nada. Testes: `tests/test_entrega.py` (remoto Git local).
+- `scripts/exportar_snapshot.py`: só troca `s<N>.json`, `g/` e `manifest.json`; o resto da pasta (pacotes `p/`, eleições, eventos, catástrofes) é guardado e volta. Teste: `tests/test_exportar_preserva.py`.
+- Migrações 0015 (aceite dos termos) e 0016 (Google/papel) só adicionam o que falta, para um banco que já tenha algumas colunas de outra versão do branch. 0019 e 0020 (fontes cadastradas e oportunidades) criam a tabela só se ela não existir.
 ## Catástrofes: mapa, matéria e repasses (13/11/2026)
 - Aba "Tragédias marcantes": mapa do Brasil em cinza com um ponto vermelho por tragédia (`catMapa`, `catAfim`: projeção Albers do mapa do IBGE + ajuste linear sobre o centro aproximado de cada estado, `CAT_CENT`). O ponto é aproximado: mostra a cidade ou o estado, não o local exato (o cartão diz "Ponto no mapa").
   Tocar no ponto aproxima a câmera no estado e abre a matéria (`catAbrir`, `catHistoria`): resumo do verbete da Wikipédia (CC BY-SA, com link), foto com autor e licença, número de mortos com a nota da fonte.

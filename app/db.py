@@ -8,7 +8,23 @@ if settings.database_url.startswith("postgres") and settings.somente_leitura and
     # API pública: uma consulta pesada não segura o banco (as coletas, que usam outro processo, não têm esse limite)
     _connect_args["options"] = f"-c statement_timeout={int(settings.consulta_timeout_ms)}"
 engine = create_engine(settings.database_url, pool_pre_ping=True, connect_args=_connect_args)
+if engine.dialect.name == "sqlite" and settings.sqlite_wal:
+    from sqlalchemy import event
+
+    @event.listens_for(engine, "connect")
+    def _sqlite_pragmas(dbapi_con, _registro):
+        cur = dbapi_con.cursor()
+        cur.execute("PRAGMA journal_mode=WAL")
+        cur.execute("PRAGMA synchronous=NORMAL")
+        cur.execute("PRAGMA busy_timeout=30000")
+        cur.close()
+
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
+
+# Escrita só para o cadastro de fontes (usuário com permissão de escrever, separado do de leitura da API).
+_engine_escrita = (create_engine(settings.database_url_escrita, pool_pre_ping=True)
+                   if settings.database_url_escrita else None)
+SessionEscrita = sessionmaker(bind=_engine_escrita, expire_on_commit=False) if _engine_escrita is not None else None
 
 
 class Base(DeclarativeBase):

@@ -71,6 +71,24 @@ def _ibovespa() -> list[tuple[date, float]]:
     return out
 
 
+def gravar_pontos(db, n, nome: str, dados: list):
+    """Grava em `registros` os pontos de uma série do SGS (lista de {"data", "valor"}). A coleta própria e a ingestão dos dados
+    liberados pelo coletor do celular (`coletor_externo.py`) usam esta mesma função: o formato gravado é um só."""
+    codigo, desc, unidade, per = SERIES[nome]
+    # séries diárias: guarda só o último valor de cada mês (suficiente para gráficos)
+    por_chave = {}
+    for d in dados:
+        dt = para_data(d.get("data"))
+        if not dt:
+            continue
+        por_chave[f"{dt:%Y-%m}" if per == "diaria" else f"{dt:%Y-%m-%d}"] = (dt, para_float(d.get("valor")))
+    for chave, (dt, v) in por_chave.items():
+        upsert(db, Registro, {"fonte": "bcb", "tipo": f"serie:{nome}", "chave": chave},
+               {"ano": dt.year, "titulo": desc, "valor": v,
+                "dados": {"data": dt.isoformat(), "unidade": unidade, "codigo": codigo}})
+        n += 1
+
+
 def coletar_series(anos: int = 42, nomes: list[str] | None = None):
     """Séries do SGS desde 1985 (volta das eleições diretas); as que começam depois vêm do ano em que existem."""
     fim = date.today()
@@ -100,18 +118,7 @@ def coletar_series(anos: int = 42, nomes: list[str] | None = None):
                             raise
                         ini = f + timedelta(days=1)
                         continue
-                    # séries diárias: guarda só o último valor de cada mês (suficiente para gráficos)
-                    por_chave = {}
-                    for d in dados:
-                        dt = para_data(d.get("data"))
-                        if not dt:
-                            continue
-                        por_chave[f"{dt:%Y-%m}" if per == "diaria" else f"{dt:%Y-%m-%d}"] = (dt, para_float(d.get("valor")))
-                    for chave, (dt, v) in por_chave.items():
-                        upsert(db, Registro, {"fonte": "bcb", "tipo": f"serie:{nome}", "chave": chave},
-                               {"ano": dt.year, "titulo": desc, "valor": v,
-                                "dados": {"data": dt.isoformat(), "unidade": unidade, "codigo": codigo}})
-                        n += 1
+                    gravar_pontos(db, n, nome, dados)
                     ini = f + timedelta(days=1)
                 db.commit()
             except Exception as e:

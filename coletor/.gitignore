@@ -1,0 +1,7 @@
+# Dados e configuração local ficam fora do git.
+dados/
+destinos.toml
+__pycache__/
+.env
+coletor.exe
+ciclo.log*

@@ -52,7 +52,7 @@ def _contas_limpas():
 def _lei():
     db = SessionLocal()
     try:
-        p = Proposicao(casa="camara", id_externo=f"teste-lei-{uuid.uuid4().hex}", sigla_tipo="PL", numero="1", ano=2026, ementa="Lei de teste.")
+        p = Proposicao(casa="camara", id_externo=f"tl-{uuid.uuid4().hex[:16]}", sigla_tipo="PL", numero="1", ano=2026, ementa="Lei de teste.")
         db.add(p)
         db.commit()
         return p.id

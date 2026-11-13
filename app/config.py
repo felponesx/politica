@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "sqlite:///./brasilplus.db"
+    # Conexão de ESCRITA, usada só pelo cadastro de fontes (rotas com X-Admin-Token). Vazia = sem escrita pela API.
+    # O resto da API continua com o usuário só de leitura.
+    database_url_escrita: str = ""
+    sqlite_wal: bool = False             # SQLITE_WAL=true: modo WAL (executável de um processo só: a API lê enquanto as coletas gravam)
     transparencia_api_key: str = ""
     mapbiomas_email: str = ""           # MAPBIOMAS_EMAIL / MAPBIOMAS_SENHA: conta da plataforma MapBiomas Alerta (login da API); só no servidor, nunca no site nem no repositório
     mapbiomas_senha: str = ""
@@ -75,6 +79,8 @@ class Settings(BaseSettings):
     perplexity_preset: str = "low"
     perplexity_limite_dia: int = 300     # perguntas por dia (0 = sem limite)
     perplexity_busca_limite_dia: int = 1000  # buscas por dia na Search API, POST /busca/web (0 = sem limite)
+    gemini_api_key: str = ""             # organizador de links (POST /organizar); sem chave usa só a regra local
+    gemini_model: str = "gemini-3.5-flash-lite"
     http_timeout: float = 60.0
     http_retries: int = 4
 
