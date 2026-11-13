@@ -28,7 +28,7 @@ def test_cadastro_real_tem_so_fontes_validas():
 
 
 def _csv(linhas):
-    cab = ["id", "uf", "data_inversa", "tipo_veiculo", "tipo_envolvido", "mortos", "feridos_leves", "feridos_graves"]
+    cab = ["id", "uf", "data_inversa", "tipo_veiculo", "tipo_envolvido", "mortos", "feridos_leves", "feridos_graves", "ilesos"]
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=";")
     w.writerow(cab)
@@ -41,14 +41,14 @@ def _csv(linhas):
 def test_agregar_conta_ocorrencia_uma_vez_por_categoria():
     linhas = [
         # ocorrência 1: moto e pedestre (conta em motociclista e em pedestre; 1 morto no pedestre)
-        ["1", "SP", "2025-01-01", "Motocicleta", "Condutor", "0", "0", "0"],
-        ["1", "SP", "2025-01-01", "NA", "Pedestre", "1", "0", "0"],
+        ["1", "SP", "2025-01-01", "Motocicleta", "Condutor", "0", "0", "0", "1"],
+        ["1", "SP", "2025-01-01", "NA", "Pedestre", "1", "0", "0", "0"],
         # ocorrência 1 de novo com passageiro de moto: não duplica a ocorrência na categoria
-        ["1", "SP", "2025-01-01", "Motocicleta", "Passageiro", "0", "0", "0"],
+        ["1", "SP", "2025-01-01", "Motocicleta", "Passageiro", "0", "0", "0", "1"],
         # ocorrência 2: só carro
-        ["2", "SP", "2025-01-02", "Automóvel", "Condutor", "0", "0", "0"],
+        ["2", "SP", "2025-01-02", "Automóvel", "Condutor", "0", "0", "0", "1"],
         # ocorrência 3 em MG: caminhão-trator
-        ["3", "MG", "2025-01-03", "Caminhão-trator", "Condutor", "2", "0", "0"],
+        ["3", "MG", "2025-01-03", "Caminhão-trator", "Condutor", "2", "0", "0", "0"],
     ]
     r, cab = _csv(linhas)
     ag = prf.agregar_pessoas(r, cab)
@@ -64,7 +64,7 @@ def test_agregar_conta_ocorrencia_uma_vez_por_categoria():
 
 def test_rodovias_porcentagem_sobre_acidentes_do_estado():
     criar_tabelas()
-    dados = {"ano": 2025, "acidentes": 4, "por_uf": {"SP": {"acidentes": 4, "categorias": {
+    dados = {"ano": 2025, "acidentes": 4, "por_uf": {"SP": {"acidentes": 4, "pessoas": 8, "mortos": 1, "feridos": 3, "ilesos": 4, "categorias": {
         "pedestre": {"ocorrencias": 1, "pessoas": 1, "mortos": 1},
         "motociclista": {"ocorrencias": 2, "pessoas": 2, "mortos": 0},
         "motorista_carro": {"ocorrencias": 3, "pessoas": 3, "mortos": 0},
@@ -74,8 +74,6 @@ def test_rodovias_porcentagem_sobre_acidentes_do_estado():
     with SessionLocal() as db:
         db.query(Registro).filter(Registro.fonte == "prf", Registro.tipo.in_(["pessoas_ano", "acidentes_ano"])).delete()
         db.add(Registro(fonte="prf", tipo="pessoas_ano", chave="2025", titulo="t", valor=4.0, dados=dados))
-        db.add(Registro(fonte="prf", tipo="acidentes_ano", chave="2025", titulo="t", valor=4.0,
-                        dados={"por_uf": {"SP": {"acidentes": 4, "mortos": 1, "feridos": 0}}}))
         db.commit()
         try:
             d = catastrofes.rodovias(db)
@@ -83,7 +81,7 @@ def test_rodovias_porcentagem_sobre_acidentes_do_estado():
             db.query(Registro).filter(Registro.fonte == "prf", Registro.tipo.in_(["pessoas_ano", "acidentes_ano"])).delete()
             db.commit()
     sp = [e for e in d["estados"] if e["uf"] == "SP"][0]
-    assert sp["acidentes"] == 4 and sp["mortos"] == 1
+    assert sp["acidentes"] == 4 and sp["mortos"] == 1 and sp["feridos"] == 3 and sp["ilesos"] == 4
     assert sp["categorias"]["motorista_carro"]["pct"] == 75.0 and sp["categorias"]["pedestre"]["pct"] == 25.0
     assert d["parcial"] is False
 
@@ -95,3 +93,25 @@ def test_feeds_de_catastrofe_tem_nome_proprio_e_veiculo_do_source():
            '<source url="https://uol.com.br">UOL</source><pubDate>Mon, 01 Jan 2026 10:00:00 GMT</pubDate></item></rss>')
     itens = noticias.ler_feed(xml, "Catástrofes 0", True, "catastrofe")
     assert itens[0]["veiculo"] == "UOL" and itens[0]["titulo"] == "Avião cai em Minas" and itens[0]["tema"] == "catastrofe"
+
+
+def test_repasses_filtra_defesa_civil_e_soma_valores_com_virgula():
+    from app.collectors import defesa_civil_transf as dc
+    cab = ["ANO / MÊS", "TIPO TRANSFERÊNCIA", "UF", "NOME SUBFUNÇÃO", "NOME AÇÃO", "VALOR TRANSFERIDO"]
+    linhas = [
+        ["202410", "Legais", "RS", "Defesa civil", "ACOES DE PROTECAO E DEFESA CIVIL", "1000,50"],
+        ["202410", "Legais", "RS", "Saúde", "ATENCAO BASICA", "999,00"],               # fora: não é defesa civil
+        ["202410", "Voluntárias", "RS", "Segurança pública", "RESPOSTA A DESASTRES", "-300,25"],  # estorno real
+        ["202410", "Legais", "SC", "Segurança pública", "OUTRA ACAO", "50"],           # fora: sem palavra-chave
+        ["202410", "Legais", "XX", "Defesa civil", "ACOES DE PROTECAO E DEFESA CIVIL", "10"],     # UF inválida
+    ]
+    ag = dc.agregar(linhas, cab)
+    assert list(ag) == ["RS"]
+    assert ag["RS"]["valor"] == 700.25 and ag["RS"]["linhas"] == 2
+    assert ag["RS"]["por_tipo"] == {"Legais": 1000.5, "Voluntárias": -300.25}
+
+
+def test_transferencias_sem_dado_do_ano_devolve_nulo_nao_zero(db=None):
+    from app.catastrofes import tragedias
+    d = tragedias(None, None)  # sem banco: nenhum ano coletado
+    assert all(x["repasse_federal"] is None for x in d["itens"])

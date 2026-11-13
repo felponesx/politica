@@ -1,10 +1,11 @@
 """Grava na cópia estática a aba Catástrofes e acidentes num pacote só dela: p/catastrofes.json.
 
 Uso: DATABASE_URL=... python -m scripts.catastrofes_copia [site/dados] [--sem-partes]
-Chaves: /catastrofes (tragédias), /catastrofes/rodovias e /catastrofes/rodovias?ano=AAAA (um por ano com dados).
+Chaves: /catastrofes (tragédias), /catastrofes/rodovias, /catastrofes/rodovias?ano=AAAA, /catastrofes/transferencias e ?ano=AAAA.
 As notícias de catástrofes já vêm no noticias.json do robô rápido (tema "catastrofe")."""
 from __future__ import annotations
 
+import base64
 import json
 import os
 import sys
@@ -31,6 +32,9 @@ def gravar(pasta: Path, partes: bool = True) -> list[str]:
     r = cli.get("/catastrofes/rodovias")
     if r.status_code == 200:
         chaves += [f"/catastrofes/rodovias?ano={a}" for a in r.json().get("anos", [])]
+    t = cli.get("/catastrofes/transferencias")
+    if t.status_code == 200:
+        chaves += ["/catastrofes/transferencias"] + [f"/catastrofes/transferencias?ano={a}" for a in t.json().get("anos", [])]
     d = {}
     for k in chaves:
         resp = cli.get(k)
@@ -38,6 +42,14 @@ def gravar(pasta: Path, partes: bool = True) -> list[str]:
             d[k] = resp.json()
         elif resp.status_code != 404:
             raise RuntimeError(f"{k}: HTTP {resp.status_code}")
+    # fotos embutidas no pacote (data URI): não criam arquivo novo na cópia (o Artifact tem limite de arquivos)
+    for k, v in d.items():
+        for x in (v.get("itens") or []) if isinstance(v, dict) else []:
+            img = x.get("imagem")
+            if img:
+                arq = pasta.parent / img
+                if arq.exists():
+                    x["imagem"] = "data:image/webp;base64," + base64.b64encode(arq.read_bytes()).decode("ascii")
     (pasta / ARQ).parent.mkdir(exist_ok=True)
     (pasta / ARQ).write_text(_texto(d), encoding="utf-8")
     man.setdefault("pacotes", {})[ARQ] = {"chaves": sorted(d), "telas": ["catastrofes"]}

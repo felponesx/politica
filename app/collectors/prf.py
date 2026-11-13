@@ -161,7 +161,7 @@ CATEGORIAS_PESSOA = {
     "onibus": lambda tv, te: te == "Condutor" and tv in ("Ônibus", "Micro-ônibus"),
     "bicicleta": lambda tv, te: te == "Condutor" and tv == "Bicicleta",
 }
-COLUNAS_PESSOA = ("id", "uf", "data_inversa", "tipo_veiculo", "tipo_envolvido", "mortos", "feridos_leves", "feridos_graves")
+COLUNAS_PESSOA = ("id", "uf", "data_inversa", "tipo_veiculo", "tipo_envolvido", "mortos", "feridos_leves", "feridos_graves", "ilesos")
 MINIMO_PESSOA = {"fechado": 40_000, "corrente": 3_000}  # acidentes (ocorrências), não pessoas
 
 
@@ -172,7 +172,6 @@ def agregar_pessoas(leitor, cab: list[str]) -> dict:
         raise ValueError(f"Arquivo por pessoa da PRF mudou: faltam {faltam}")
     i = {c: cab.index(c) for c in COLUNAS_PESSOA}
     maximo = max(i.values())
-    ocorrencias: dict[str, set] = {}
     por_uf: dict[str, dict] = {}
     for l in leitor:
         if len(l) <= maximo:
@@ -182,8 +181,13 @@ def agregar_pessoas(leitor, cab: list[str]) -> dict:
             continue
         tv, te = l[i["tipo_veiculo"]].strip(), l[i["tipo_envolvido"]].strip()
         mortos = int(num(l[i["mortos"]]))
-        u = por_uf.setdefault(uf, {"ocorrencias": set(), "categorias": {c: {"ocorrencias": set(), "pessoas": 0, "mortos": 0} for c in CATEGORIAS_PESSOA}})
+        u = por_uf.setdefault(uf, {"ocorrencias": set(), "pessoas": 0, "mortos": 0, "feridos": 0, "ilesos": 0,
+                                   "categorias": {c: {"ocorrencias": set(), "pessoas": 0, "mortos": 0} for c in CATEGORIAS_PESSOA}})
         u["ocorrencias"].add(l[i["id"]].strip())
+        u["pessoas"] += 1
+        u["mortos"] += mortos
+        u["feridos"] += int(num(l[i["feridos_leves"]]) + num(l[i["feridos_graves"]]))
+        u["ilesos"] += int(num(l[i["ilesos"]]))
         for nome, regra in CATEGORIAS_PESSOA.items():
             if regra(tv, te):
                 c = u["categorias"][nome]
@@ -192,13 +196,13 @@ def agregar_pessoas(leitor, cab: list[str]) -> dict:
                 c["mortos"] += mortos
     saida = {}
     for uf, u in por_uf.items():
-        saida[uf] = {"acidentes": len(u["ocorrencias"]),
+        saida[uf] = {"acidentes": len(u["ocorrencias"]), "pessoas": u["pessoas"], "mortos": u["mortos"], "feridos": u["feridos"], "ilesos": u["ilesos"],
                      "categorias": {c: {"ocorrencias": len(v["ocorrencias"]), "pessoas": v["pessoas"], "mortos": v["mortos"]}
                                     for c, v in u["categorias"].items()}}
     return {"por_uf": saida, "acidentes": sum(v["acidentes"] for v in saida.values())}
 
 
-def coletar_prf_pessoas(anos: int = 5):
+def coletar_prf_pessoas(anos: int = 5, refazer: bool = False):
     """Importa o arquivo 'Agrupados por pessoa' dos `anos` mais recentes (anos fechados já gravados não são baixados de novo)."""
     with registrar_coleta("prf", "pessoas") as (db, n):
         achados = descobrir(http.get(PAGINA).text, "Agrupados por pessoa")
@@ -206,7 +210,7 @@ def coletar_prf_pessoas(anos: int = 5):
             raise RuntimeError("PRF: nenhum link de 'Agrupados por pessoa' na página oficial (a página mudou?)")
         hoje = date.today().year
         for ano in sorted(achados, reverse=True)[: int(anos)]:
-            if ano < hoje and db.query(Registro).filter_by(fonte="prf", tipo="pessoas_ano", chave=str(ano)).first():
+            if not refazer and ano < hoje and db.query(Registro).filter_by(fonte="prf", tipo="pessoas_ano", chave=str(ano)).first():
                 continue
             try:
                 arq = baixar_ano(ano, achados[ano])

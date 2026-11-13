@@ -46,7 +46,7 @@ MAPA = {
     "saude": "saude-ubs saude-mais-medicos saude-datasus saude-leitos-municipios saude-vacinacao siconfi-saude-minimo",
     "social": """transparencia-social ibge-trabalho ibge-indicadores-sociais ibge-saneamento caged-saldos
         caged-estoque-referencia""",
-    "ambiente": """inpe-desmatamento inpe-prodes-mata-atlantica inpe-queimadas mapbiomas-alertas mapbiomas-alertas-territorio
+    "ambiente": """defesa-civil-transferencias inpe-desmatamento inpe-prodes-mata-atlantica inpe-queimadas mapbiomas-alertas mapbiomas-alertas-territorio
         desastres""",
     "empresas": "pncp-contratos transparencia-contratos cnpj-fornecedores ibge-empresas-economia",
     "obras": "obrasgov-obras",
