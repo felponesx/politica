@@ -88,13 +88,14 @@
   .cat .contas { display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 12.5px; color: var(--cinza); }
   .cat .contas span { display: inline-flex; align-items: center; gap: 5px; }
   .icone { position: relative; width: 44px; height: 44px; border-radius: 10px; background: #EEF4FF; color: var(--azul);
-    display: grid; place-items: center; flex: none; }
+    display: flex; align-items: center; justify-content: center; flex: none; }
   .icone svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .anel { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); pointer-events: none; }
-  .icone > svg.anel { width: calc(100% + 10px); height: calc(100% + 10px); fill: none; stroke: none; stroke-width: 0; }
-  .anel circle { fill: none; stroke: var(--azul); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 26 200;
-    transform-origin: 50% 50%; animation: girar 1.1s linear infinite; }
-  @keyframes girar { to { transform: rotate(360deg); } }
+  /* anel que percorre o contorno da caixa (sem girar a caixa): fica sempre dentro do enquadro */
+  .anel, .icone > svg.anel { position: absolute; left: -5px; top: -5px; width: calc(100% + 10px) !important; height: calc(100% + 10px) !important;
+    max-width: none !important; max-height: none !important; overflow: visible; pointer-events: none; fill: none; stroke: none; }
+  .anel rect { fill: none; stroke: var(--azul); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 22 78; stroke-dashoffset: 0;
+    animation: girar 1.6s linear infinite; }
+  @keyframes girar { to { stroke-dashoffset: -100; } }
   .detalhe { margin-top: 16px; border: 1px solid var(--linha); border-radius: 12px; overflow: hidden; }
   .detalhe > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px;
     background: var(--suave); border-bottom: 1px solid var(--linha); }
@@ -103,15 +104,15 @@
   .link-linha { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 14px;
     border-bottom: 1px solid var(--linha); }
   .link-linha:last-child { border-bottom: 0; }
-  .link-linha .pt-box { position: relative; width: 22px; height: 22px; display: grid; place-items: center; }
-  .link-linha .pt-box .anel { inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); }
-  .link-linha .pt-box .anel circle { stroke-width: 2; }
+  .link-linha .pt-box { position: relative; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+  .link-linha .pt-box .anel { left: -4px; top: -4px; width: calc(100% + 8px) !important; height: calc(100% + 8px) !important; }
+  .link-linha .pt-box .anel rect { rx: 50px; stroke-width: 4; }
   .link-linha .pt-box { width: 26px; height: 26px; }
   .link-linha .nome { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; word-break: break-word; }
   .link-linha .info { font-size: 12.5px; color: var(--cinza); }
   .link-linha .erro-txt { margin-top: 2px; }
   .link-linha .dir { text-align: right; font-size: 12.5px; color: var(--cinza); white-space: nowrap; }
-  @media (prefers-reduced-motion: reduce) { .anel circle { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .anel rect { animation: none; } }
   @media (max-width: 640px) {
     .tabela .oculto-celular { display: none; }
   }
@@ -291,8 +292,9 @@
     var ns = "http://www.w3.org/2000/svg";
     var s = document.createElementNS(ns, "svg");
     s.setAttribute("viewBox", "0 0 100 100"); s.setAttribute("class", "anel"); s.setAttribute("aria-label", "coletando");
-    var c = document.createElementNS(ns, "circle");
-    c.setAttribute("cx", "50"); c.setAttribute("cy", "50"); c.setAttribute("r", "46");
+    var c = document.createElementNS(ns, "rect");
+    c.setAttribute("x", "3"); c.setAttribute("y", "3"); c.setAttribute("width", "94"); c.setAttribute("height", "94");
+    c.setAttribute("rx", "27"); c.setAttribute("pathLength", "100");
     s.append(c);
     return s;
   }
