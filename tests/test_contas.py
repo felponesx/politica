@@ -318,3 +318,16 @@ def test_perfil_recusa_dados_invalidos(cli):
     assert cli.post("/contas/perfil", json={"data_nascimento": "2020-01-01"}, headers=h).status_code == 400  # menor de 16
     cli.cookies.clear()
     assert cli.post("/contas/perfil", json={"uf": "SP"}, headers=h).status_code == 401
+
+
+def test_limite_de_cadastro_devolve_429_e_nao_erro_interno(monkeypatch):
+    """Passou do limite de tentativas: a resposta é 429 com Retry-After (antes dava AttributeError e 'Erro interno')."""
+    from fastapi.testclient import TestClient
+
+    from app import limites
+    from app.main import app
+
+    monkeypatch.setattr(limites, "consumir", lambda chave, limite, janela: limites.Resultado(False, limite + 1, limite, 42))
+    r = TestClient(app).post("/contas", json={"email": "a@b.co", "senha": "x" * 12, "nome": "Teste", "cpf": "0", "aceito_termos": True})
+    assert r.status_code == 429
+    assert r.headers["Retry-After"] == "42"

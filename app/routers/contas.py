@@ -62,7 +62,7 @@ def _limita(chave: str, limite: int, janela_s: int) -> None:
     except limites.LimiteIndisponivel:
         raise HTTPException(503, "Serviço temporariamente indisponível. Tente de novo em instantes.")
     if not r.ok:
-        raise HTTPException(429, "Muitas tentativas. Espere alguns minutos.", headers={"Retry-After": str(r.reinicia)})
+        raise HTTPException(429, "Muitas tentativas. Espere alguns minutos.", headers={"Retry-After": str(r.reinicia_em)})
 
 
 def _cookie(resp: JSONResponse, request: Request, token: str | None) -> None:
