@@ -50,9 +50,9 @@ jobs:
             --paths coletor --distpath build-exe\dist --workpath build-exe\obra --specpath build-exe\obra `
             --collect-submodules uvicorn --collect-submodules alembic --collect-submodules apscheduler `
             --collect-submodules app --collect-submodules scripts --collect-submodules pystray `
-            --add-data "app\dados;app/dados" --add-data "app\static;app/static" `
-            --add-data "migrations;migrations" --add-data "alembic.ini;." `
-            --add-data "coletor\vinculos;coletor/vinculos" `
+            --add-data "$PWD\app\dados;app/dados" --add-data "$PWD\app\static;app/static" `
+            --add-data "$PWD\migrations;migrations" --add-data "$PWD\alembic.ini;." `
+            --add-data "$PWD\coletor\vinculos;coletor/vinculos" `
             executavel.py
           if ($LASTEXITCODE -ne 0) { throw "PyInstaller falhou" }
 
