@@ -2082,7 +2082,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 /* concursos, cursos e eventos */
 .oc-lista{display:flex;flex-direction:column;gap:10px}.oc-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
 .oc-card{display:block;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink);text-decoration:none}
-.oc-card h3{margin:6px 0 2px;font-size:15.5px;line-height:1.3}.oc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.oc-card h3{margin:6px 0 2px;font-size:15.5px;line-height:1.3}.oc-card h3{display:flex;align-items:center;gap:9px}.oc-card h3 span{min-width:0}.orglogo{display:inline-flex;align-items:center;justify-content:center;flex:none;width:30px;height:30px}.orglogo img{max-width:30px;max-height:30px;width:auto;height:auto;object-fit:contain}.orglogo i{width:30px;height:30px;border-radius:50%;background:var(--tint);color:var(--muted);font-style:normal;font-weight:700;font-size:11px;display:inline-flex;align-items:center;justify-content:center}.oc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .oc-facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin:8px 0}.oc-facts div{display:flex;flex-direction:column}.oc-facts span{font-size:11.5px;color:var(--muted)}.oc-facts b{font-size:14px}
 .oc-cargos{margin:4px 0}.oc-res{margin:6px 0}.oc-link{display:inline-block;margin-top:6px;font-weight:600;font-size:13.5px}.oc-mais{width:100%;margin-top:4px}
 .oc-chk{display:flex;align-items:center;gap:6px;white-space:nowrap}.oc-onde{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
@@ -5674,13 +5674,13 @@ const limpaNw=t=>{let x=String(t||"").replace(/<!\[CDATA\[|\]\]>/g," ").replace(
  return x.replace(/<[^>]*>?/g," ").replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim()};
 /* matérias que chegaram com a acentuação perdida ("jur?dicas"): não dá para recuperar as letras, então não aparecem */
 const quebradaNw=t=>/\uFFFD|\p{L}\?\p{L}|\p{L}\?\?\p{L}/u.test(t||"");
-const NW_TEMAS=[["geral","Notícias em geral"],["economia","Notícias econômicas"],["juridico","Notícias jurídicas"],["executivo","Notícias do Executivo"],["legislativo","Notícias do Legislativo"],["fake","Fake news"]];
+const NW_TEMAS=[["geral","Notícias em geral"],["economia","Notícias econômicas"],["juridico","Notícias jurídicas"],["executivo","Notícias do Executivo"],["legislativo","Notícias do Legislativo"]];
 const NW_RE={economia:/\b(econom|inflacao|ipca|juros|selic|dolar|pib\b|orcamento|fiscal|imposto|tributari|haddad|banco central|bolsa|mercado|tarifa|divida|arrecad|salario minimo|desemprego|petrobras|receita federal|reajuste|precos?\b)/,
  juridico:/\b(stf|stj|tse\b|tribunal|supremo|justica|juiz|juiza|desembargad|pgr\b|cnj\b|oab\b|julgamento|condenad|inquerito|denuncia|habeas|moraes|barroso|toffoli|mendonca|gilmar|fux|dino|zanin|policia federal|ministerio publico|sentenca|prisao)/,
  executivo:/\b(lula|planalto|governo federal|presidente da republica|ministro|ministra|ministerio|decreto|governador|prefeit|casa civil|esplanada|medida provisoria|alckmin|bolsonaro|palacio)/,
  legislativo:/\b(camara dos deputados|senado|deputad|senador|congresso|plenario|pec\b|projeto de lei|cpi\b|comissao|relator|alcolumbre|hugo motta|lira|pacheco|votacao|parlament)/};
 const NW_VEIC={economia:["InfoMoney","Exame"],juridico:["Consultor Jurídico (Conjur)","Migalhas","Conselho Nacional de Justiça"],legislativo:["Agência Câmara / TV Câmara","Agência Senado","Congresso em Foco"]};
-function temasNw(n){if(n.tema==="fake")return new Set(["fake"]);const t=new Set(["geral"]);if(n.tema&&n.tema!=="geral")t.add(n.tema);const x=normNw(`${n.titulo} ${n.resumo||""}`);for(const[k,r]of Object.entries(NW_RE))if(r.test(x))t.add(k);for(const[k,l]of Object.entries(NW_VEIC))if(l.includes(n.veiculo))t.add(k);return t}
+function temasNw(n){const t=new Set(["geral"]);if(n.tema&&n.tema!=="geral")t.add(n.tema);const x=normNw(`${n.titulo} ${n.resumo||""}`);for(const[k,r]of Object.entries(NW_RE))if(r.test(x))t.add(k);for(const[k,l]of Object.entries(NW_VEIC))if(l.includes(n.veiculo))t.add(k);return t}
 const vlogo=(v,h=22)=>`<span class="vlogo" data-vlogo="${esc(v)}" data-h="${h}" style="height:${h}px"><i style="width:${h}px;height:${h}px;font-size:${Math.round(h*.45)}px">${esc(v.replace(/[^\p{L}\s]/gu,"").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase())}</i></span>`;
 /* ===================== Escândalos de corrupção =====================
    Casos curados (app/dados/escandalos), cada informação com link da fonte. Situação jurídica com os termos exatos e a
@@ -5770,12 +5770,22 @@ P.concursos=aba=>{aba=OP_ABAS.some(a=>a[0]===aba)?aba:"concursos";
 function opSitu(x){const s=x.situacao||"";const c=/abertas/.test(s)?"#1BAF7A":/encerradas/.test(s)?"#8A919E":/ainda/.test(s)?"#F5A524":"";return c?`<span class="prm-r" style="--c:${c}">${esc(s.charAt(0).toUpperCase()+s.slice(1))}</span>`:""}
 const OP_ATOS=[["","Aberturas e seleções"],["convocacao","Convocações"],["nomeacao","Nomeações"],["homologacao","Resultados e homologações"],["retificacao","Retificações"],["prorrogacao","Prorrogações"]];
 const OP_ESF={federal:"Federal",estadual:"Estadual",municipal:"Municipal"};
+const chaveOrgao=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const ORG_ESTADO=/^(secretaria|policia|corpo de bombeiros|assembleia legislativa|defensoria|procuradoria|departamento|casa civil|companhia|agencia paulista|estado do|ministerio publico|imprensa oficial|detran)/;
+const orgSlot=(nome,uf)=>`<span class="orglogo" data-org="${esc(nome||"")}" data-uf="${esc(uf||"")}"></span>`;
+async function orgaosAplicar(){let[O,E]=await Promise.all([midiaGrupo("orgaos"),midiaGrupo("estados")]);O=O||{};E=E||{};const ks=Object.keys(O);
+ document.querySelectorAll(".orglogo:not([data-ok])").forEach(el=>{el.dataset.ok=1;const nome=el.dataset.org||"",uf=el.dataset.uf||"",k=chaveOrgao(nome);
+  let best=O[k]||null;if(!best){let bk="";for(const kk of ks)if(kk.length>=12&&k.startsWith(kk)&&kk.length>bk.length)bk=kk;if(bk)best=O[bk]}
+  let img=best&&best.img,alt=best&&best.titulo;
+  if(!img&&uf&&E[uf]&&(!k||ORG_ESTADO.test(k))){img=E[uf].img;alt=((UF[uf]||{}).nome||uf)+" (brasão do estado)"}
+  if(img){el.innerHTML=`<img src="${img}" alt="${esc(alt||"")}" title="${esc(alt||"")}">`}
+  else{const ini=(nome||uf||"?").replace(/[^\p{L}\s]/gu,"").trim().split(/\s+/).slice(0,2).map(w=>w[0]||"").join("").toUpperCase();el.innerHTML=`<i title="Sem logo encontrada">${esc(ini||"?")}</i>`}})}
 function opConcCard(x){const f=[];if(x.vagas)f.push(["Vagas",nf(x.vagas)]);if(x.salario_max)f.push(["Salário até",brlC(x.salario_max)]);
  if(x.inscricoes_fim)f.push(["Inscrições até",opData(x.inscricoes_fim)]);if(x.banca)f.push(["Banca",esc(x.banca)]);if(x.escolaridade)f.push(["Nível",esc(x.escolaridade.join(", "))]);
  const onde=x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:(x.uf?esc((UF[x.uf]||{}).nome||x.uf):(x.esfera==="federal"?"Órgão federal":""));
  const falta=(x.incompleto||[]).map(c=>({vagas:"vagas",salario_max:"salário",inscricoes_fim:"prazo de inscrição"})[c]).filter(Boolean);
  return`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.ato_nome||x.tipo||"")}</span><span class="tag">${esc(x.area||"Outras áreas")}</span><span class="tag">${esc(OP_ESF[x.esfera]||x.esfera||"")}</span>${opSitu(x)}</div>
- <h3>${esc(x.orgao||x.titulo)}</h3><div class="small muted">${esc(x.titulo||"")}${x.vinculo&&x.vinculo!==x.orgao?` · ${esc(x.vinculo)}`:""}${onde?` · ${onde}`:""} · publicado em ${opData(x.publicado)}${x.coletado_em?` · lido em ${opData(x.coletado_em)}`:""}</div>
+ <h3>${orgSlot(x.orgao,x.uf)}<span>${esc(x.orgao||x.titulo)}</span></h3><div class="small muted">${esc(x.titulo||"")}${x.vinculo&&x.vinculo!==x.orgao?` · ${esc(x.vinculo)}`:""}${onde?` · ${onde}`:""} · publicado em ${opData(x.publicado)}${x.coletado_em?` · lido em ${opData(x.coletado_em)}`:""}</div>
  ${f.length?`<div class="oc-facts">${f.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join("")}</div>`:""}
  ${x.cargos?`<div class="small oc-cargos"><b>Cargos:</b> ${x.cargos.map(esc).join(" · ")}</div>`:""}
  ${!f.length&&x.resumo?`<p class="small muted oc-res">${esc(x.resumo.slice(0,220))}…</p>`:""}
@@ -5796,22 +5806,22 @@ function opConcursos(D,ato=""){const L=D.itens||[];let f={area:"",tipo:"",esf:""
   <p class="small muted" id="ocN" style="margin:6px 0"></p><div id="ocL" class="oc-lista"></div></div>
   ${opCobertura(D.cobertura)}<div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
   mount(){const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.area||x.area===f.area)&&(!f.esf||x.esfera===f.esf)&&(!f.uf||x.uf===f.uf)&&(!f.abertas||/abertas/.test(x.situacao||""))&&(!q||snapNorm([x.orgao,x.titulo,x.vinculo,x.municipio,x.uf,(x.cargos||[]).join(" "),x.resumo].join(" ")).includes(q)));
-    $("#ocN").textContent=`${nf(l.length)} de ${nf(L.length)}`;opLista($("#ocL"),l,opConcCard)};lista();
+    $("#ocN").textContent=`${nf(l.length)} de ${nf(L.length)}`;opLista($("#ocL"),l,opConcCard);orgaosAplicar()};lista();
    $("#ocAto").onchange=e=>{const v=e.target.value,box=$("#opV");box.innerHTML=rload();apiGet("/concursos"+(v?"?ato="+v:"")).then(D2=>{const o=opConcursos(D2,v);box.innerHTML=o.html;o.mount();if(typeof pilulas==="function")pilulas()}).catch(er=>{box.innerHTML=rerro(er)})};
    $("#ocA").onchange=e=>{f.area=e.target.value;lista()};$("#ocE").onchange=e=>{f.esf=e.target.value;lista()};$("#ocU").onchange=e=>{f.uf=e.target.value;lista()};
    const ab=$("#ocAb");if(ab)ab.onchange=e=>{f.abertas=e.target.checked;lista()};$("#ocQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
 function opCursoCard(x){const f=[];if(x.carga_horaria)f.push(`${nf(x.carga_horaria)} h`);if(x.modalidade)f.push(esc(x.modalidade));if(x.certificado)f.push("Com certificado");
  return`<div class="oc-card oc-curso"><div class="oc-top"><span class="tag">${esc(x.ofertante||"")}</span>${x.tema?`<span class="tag">${esc(x.tema)}</span>`:""}${x.inscricoes_abertas?`<span class="prm-r" style="--c:#1BAF7A">Inscrições abertas</span>`:""}<span class="prm-r" style="--c:#2F6FED">Gratuito</span></div>
- <h3>${esc(x.nome)}</h3>${x.quem_faz&&x.quem_faz!==x.ofertante?`<div class="small muted">Conteúdo: ${esc(x.quem_faz)}</div>`:""}${f.length?`<div class="small">${f.join(" · ")}</div>`:""}
+ <h3>${orgSlot(x.ofertante)}<span>${esc(x.nome)}</span></h3>${x.quem_faz&&x.quem_faz!==x.ofertante?`<div class="small muted">Conteúdo: ${esc(x.quem_faz)}</div>`:""}${f.length?`<div class="small">${f.join(" · ")}</div>`:""}
  ${x.resumo?`<p class="small muted oc-res">${esc(x.resumo)}</p>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver o curso e se inscrever ›</a></div>`}
 function opCursos(D){const L=D.itens||[];let f={of:"",tema:"",q:""};const temas=Object.keys(D.temas||{}),ofs=Object.keys(D.ofertantes||{});
  return{html:`<div class="kpis mt"><div class="kpi"><span>Cursos gratuitos</span><strong>${nf(D.total)}</strong><em>online, para todo o país</em></div>${ofs.map(o=>`<div class="kpi"><span>${esc(o)}</span><strong>${nf(D.ofertantes[o])}</strong><em>cursos</em></div>`).join("")}</div>
   <div class="panel mt"><h2>Cursos gratuitos</h2><div class="filters"><select id="cuO" data-pill="Quem oferece"><option value="">Todos</option>${ofs.map(o=>`<option>${esc(o)}</option>`).join("")}</select><select id="cuT" data-pill="Tema"><option value="">Todos os temas</option>${temas.map(t=>`<option>${esc(t)}</option>`).join("")}</select><input id="cuQ" placeholder="Buscar curso" style="flex:1;min-width:160px" autocomplete="off"></div>
   <p class="small muted" id="cuN" style="margin:6px 0"></p><div id="cuL" class="oc-lista oc-grade"></div></div>
-  <div class="panel mt"><h2>Onde mais procurar cursos gratuitos</h2><p class="small muted" style="margin:0 0 8px">Estes não publicam um catálogo aberto que dê para juntar aqui automaticamente.</p><div class="oc-onde">${(D.onde_procurar||[]).map(o=>`<a class="oc-card" href="${esc(o.url)}" target="_blank" rel="noopener"><h3>${esc(o.nome)} ›</h3><div class="small muted">${esc(o.obs)}</div></a>`).join("")}</div></div>
+  <div class="panel mt"><h2>Onde mais procurar cursos gratuitos</h2><p class="small muted" style="margin:0 0 8px">Estes não publicam um catálogo aberto que dê para juntar aqui automaticamente.</p><div class="oc-onde">${(D.onde_procurar||[]).map(o=>`<a class="oc-card" href="${esc(o.url)}" target="_blank" rel="noopener"><h3>${orgSlot(o.nome)}<span>${esc(o.nome)} ›</span></h3><div class="small muted">${esc(o.obs)}</div></a>`).join("")}</div></div>
   <div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
   mount(){const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.of||x.ofertante===f.of)&&(!f.tema||(x.tema||"Outros")===f.tema)&&(!q||snapNorm([x.nome,x.tema,x.quem_faz,x.resumo].join(" ")).includes(q)));
-    $("#cuN").textContent=`${nf(l.length)} de ${nf(L.length)} cursos`;opLista($("#cuL"),l,opCursoCard,24)};lista();
+    $("#cuN").textContent=`${nf(l.length)} de ${nf(L.length)} cursos`;opLista($("#cuL"),l,opCursoCard,24);orgaosAplicar()};lista();
    $("#cuO").onchange=e=>{f.of=e.target.value;lista()};$("#cuT").onchange=e=>{f.tema=e.target.value;lista()};$("#cuQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
 // ---- Eventos
 const evValor=x=>x.valor?`${brlC(x.valor)}${x.valor_a_conferir?` <span class="small" style="color:#E5484D">a conferir</span>`:x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";
@@ -6239,13 +6249,13 @@ P.noticias=()=>{let f={tema:"geral",veiculo:"",q:""},todas=[],mostra=40;
  mount(){if(!API.on)return;apiGet("/noticias?limit=1500").then(t=>{const box=$("#nwBox");if(!box)return;todas=(t.itens||[]).map(n=>{const m={...n,titulo:limpaNw(n.titulo),resumo:limpaNw(n.resumo)};m._t=temasNw(m);return m}).filter(n=>!quebradaNw(n.titulo+" "+n.resumo));
   box.innerHTML=`<div class="segj-grupos" style="margin-bottom:10px"><div class="segj-w"><span class="segj-l">Assunto</span><div class="seg segj" id="nwT"></div></div><div class="segj-w"><span class="segj-l">Veículo</span><div class="seg segj nw-veic" id="nwV"></div></div></div>
    <div class="filters" style="margin-bottom:12px"><input id="nwQ" placeholder="Buscar nas manchetes" style="flex:1;min-width:180px" autocomplete="off"></div>
-   <p class="small muted" id="nwFk" style="margin:0 0 10px" hidden>Matérias de sites oficiais (governos, prefeituras, tribunais, Câmara e Senado) que desmentem boatos e fake news. Ao tocar, você abre a matéria no site de origem.</p><div id="nwL"></div><div id="nwMw"></div><p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} ${t.atualizado_em?`Atualizado em ${new Date(t.atualizado_em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}; o robô confere os veículos a cada 15 minutos.`:"Atualizado pelo robô do BRASIL+."} Logos: Wikimedia Commons.</p>`;
+   <div id="nwL"></div><div id="nwMw"></div><p class="small muted" style="margin:12px 0 0">${esc(t.aviso||"")} ${t.atualizado_em?`Atualizado em ${new Date(t.atualizado_em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}; o robô confere os veículos a cada 15 minutos.`:"Atualizado pelo robô do BRASIL+."} Logos: Wikimedia Commons.</p>`;
   const noTema=()=>todas.filter(n=>n._t.has(f.tema));
   const lista=()=>{const base=noTema();const cont={};base.forEach(n=>cont[n.veiculo]=(cont[n.veiculo]||0)+1);
    if(f.veiculo&&!cont[f.veiculo])f.veiculo="";
    $("#nwT").innerHTML=NW_TEMAS.map(([k,nm])=>`<button data-t="${k}" class="${k===f.tema?"on":""}">${nm} <small>${nf(todas.filter(n=>n._t.has(k)).length)}</small></button>`).join("");
    $("#nwV").innerHTML=`<button class="vch ${f.veiculo?"":"on"}" data-v="">Todos os veículos <small>${nf(base.length)}</small></button>`+Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([v,n])=>`<button class="vch ${v===f.veiculo?"on":""}" data-v="${esc(v)}">${vlogo(v,20)}<span>${esc(v)}</span> <small>${n}</small></button>`).join("");
-   $("#nwFk").hidden=f.tema!=="fake";const q=normNw(f.q);const it=base.filter(n=>(!f.veiculo||n.veiculo===f.veiculo)&&(!q||normNw(`${n.titulo} ${n.resumo||""}`).includes(q)));
+   const q=normNw(f.q);const it=base.filter(n=>(!f.veiculo||n.veiculo===f.veiculo)&&(!q||normNw(`${n.titulo} ${n.resumo||""}`).includes(q)));
    $("#nwL").innerHTML=it.length?`<div class="nw-lista">${it.slice(0,mostra).map(n=>`<a class="nw" href="${esu(n.link)}" target="_blank" rel="noopener"><span class="nw-v">${vlogo(n.veiculo,16)} ${esc(n.veiculo)} · ${quandoNw(n.data)}</span><b>${esc(n.titulo)}</b>${n.resumo?`<span class="nw-r">${esc(n.resumo.slice(0,220))}${n.resumo.length>220?"…":""}</span>`:""}${(n.casos||[]).map(c=>`<span class="nw-caso" data-caso="${esc(c)}" title="Abrir o caso">${esc(ESC_NOMES[c]||c)}</span>`).join("")}</a>`).join("")}</div>`:rvazio("Nenhuma notícia com esse filtro.");
    $("#nwMw").innerHTML=it.length>mostra?`<button class="btn" id="nwM" type="button">Ver mais (${nf(it.length-mostra)})</button>`:"";
    document.querySelectorAll("#nwT button").forEach(b=>b.onclick=()=>{f.tema=b.dataset.t;mostra=40;lista()});
