@@ -145,6 +145,12 @@ def test_tse_financas(tmp_path):
 
 
 def test_exportar_csv():
+    from app.models import Parlamentar
+    criar_tabelas()
+    with SessionLocal() as db:   # um parlamentar de teste, para o CSV ter linha de dado sempre
+        db.query(Parlamentar).filter(Parlamentar.id_externo == "zzt-csv-1").delete()
+        db.add(Parlamentar(casa="camara", id_externo="zzt-csv-1", nome="ZZT Teste CSV", uf="ZZ", partido="ZZT"))
+        db.commit()
     lista = cliente.get("/exportar").json()
     assert any(c["conjunto"] == "parlamentares" for c in lista)
     r = cliente.get("/exportar/parlamentares.csv")
@@ -152,6 +158,9 @@ def test_exportar_csv():
     linhas = r.content.decode("utf-8-sig").splitlines()
     assert linhas[0].startswith("id;casa;") and len(linhas) >= 2
     assert cliente.get("/exportar/xyz.csv").status_code == 404
+    with SessionLocal() as db:
+        db.query(Parlamentar).filter(Parlamentar.id_externo == "zzt-csv-1").delete()
+        db.commit()
 
 
 def test_bcb_pagina_de_erro_e_coleta_parcial(monkeypatch):

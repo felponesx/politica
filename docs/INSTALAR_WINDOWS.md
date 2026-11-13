@@ -78,3 +78,12 @@ Log do ciclo: `coletor\ciclo.log`.
 
 ## Se algo falhar
 Rode `docker compose -f docker-compose.local.yml --env-file .env.local logs api` e veja o `coletor\ciclo.log`.
+
+## Entrega automática dos dados ao GitHub (opcional)
+No `config.env` do BRASIL+ (`C:\Users\<você>\BRASILMais\config.env`), coloque a pasta do clone do projeto:
+
+    ENTREGA_GIT_PASTA=C:\Users\felip\brasilplus
+
+A cada 6 h o programa gera `site/dados` com o banco dele e envia ao branch atual, só se houver mudança. Usa as credenciais de Git que o seu PC já tem. Para desligar, apague a linha.
+
+Organizador de links (Gemini): ponha `GEMINI_API_KEY=` no `config.env` ou no `.env`, nunca no chat.

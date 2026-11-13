@@ -39,7 +39,10 @@ def test_nenhuma_rota_de_escrita_alem_das_conhecidas():
     # escritas da API: coleta (token de admin), IA e busca (limites), e contas (login por senha, sessão por cookie, voto por lei com limite)
     assert escrita == {("POST", "/coletas/{tarefa}"), ("POST", "/ia/web"), ("POST", "/busca/web"),
                        ("POST", "/contas"), ("POST", "/contas/entrar"), ("POST", "/contas/google"), ("POST", "/contas/perfil"), ("POST", "/contas/sair"),
-                       ("POST", "/admin/publicacoes"), ("POST", "/admin/publicacoes/{pid}"), ("POST", "/admin/publicacoes/{pid}/apagar"), ("POST", "/admin/midia"), ("POST", "/admin/configurar"), ("POST", "/proposicoes/{pid}/voto-lei")}
+                       ("POST", "/admin/publicacoes"), ("POST", "/admin/publicacoes/{pid}"), ("POST", "/admin/publicacoes/{pid}/apagar"), ("POST", "/admin/midia"), ("POST", "/admin/configurar"), ("POST", "/proposicoes/{pid}/voto-lei"),
+                       # cadastros e aprovações: todos exigem o token de administrador (X-Admin-Token)
+                       ("POST", "/fontes-cadastradas"), ("POST", "/fontes-cadastradas/{fonte_id}"), ("POST", "/oportunidades"),
+                       ("POST", "/oportunidades/{oid}/aprovar"), ("POST", "/oportunidades/{oid}/rejeitar"), ("POST", "/organizar")}
 
 
 def test_cors_nao_aceita_escrita_de_outra_origem():

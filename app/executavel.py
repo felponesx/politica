@@ -226,6 +226,10 @@ def montar_agendador():
     agendar_tarefas(s)
     s.add_job(ciclo_coletor, "interval", minutes=5, id="ciclo-coletor", next_run_time=proximo_ciclo(s.timezone))
     s.add_job(fazer_backup, "cron", hour=3, minute=30, id="backup")
+    if os.environ.get("ENTREGA_GIT_PASTA"):   # cópia dos dados para o GitHub a cada 6 h (ver app/entrega.py)
+        from app import entrega
+        s.add_job(lambda: log.info("entrega: %s", entrega.entregar_se_configurado()), "interval", hours=6, id="entrega",
+                  next_run_time=datetime.now(s.timezone) + timedelta(minutes=10))
     return s
 
 

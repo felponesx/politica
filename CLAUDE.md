@@ -722,3 +722,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Notícias: feeds `tema="catastrofe"` em `app/collectors/noticias.py` (Google Notícias, 7 dias; veículo vem da tag `<source>`).
 - Cópia estática: `FIXAS` do `exportar_snapshot.py` e `python -m scripts.catastrofes_copia site/dados` (pacote `p/catastrofes.json`).
 - Testes: `tests/test_catastrofes.py`.
+
+## Entrega automática e migrações (nov/2026)
+- `app/entrega.py`: com `ENTREGA_GIT_PASTA` no `config.env`, o agendador do programa (a cada 6 h) gera `site/dados` e envia ao branch atual, só com mudança e só essa pasta (`commit -- site/dados`). Sem a variável, não faz nada. Testes: `tests/test_entrega.py` (remoto Git local).
+- `scripts/exportar_snapshot.py`: só troca `s<N>.json`, `g/` e `manifest.json`; o resto da pasta (pacotes `p/`, eleições, eventos, catástrofes) é guardado e volta. Teste: `tests/test_exportar_preserva.py`.
+- Migrações 0015 (aceite dos termos) e 0016 (Google/papel) só adicionam o que falta, para um banco que já tenha algumas colunas de outra versão do branch. 0019 e 0020 (fontes cadastradas e oportunidades) criam a tabela só se ela não existir.
