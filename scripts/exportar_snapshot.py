@@ -16,6 +16,7 @@ Como a cópia é organizada:
 import json
 import logging
 import os
+import re
 import shutil
 import sys
 from collections import defaultdict
@@ -41,6 +42,20 @@ log = logging.getLogger("snapshot")
 SHARDS = 256
 GRANDE = 150_000
 ARQUIVOS_DE_OUTROS_ROBOS = ("noticias.json", "contadores_externos.json", "revisao.json")
+_PARTE_DA_EXPORTACAO = re.compile(r"^(s\d+\.json|manifest\.json|g/.*)$")
+
+
+def _e_da_exportacao(rel: str) -> bool:
+    """Arquivo que esta exportação gera de novo (e por isso pode ser trocado)."""
+    return bool(_PARTE_DA_EXPORTACAO.match(rel))
+
+
+def _ler_fora_da_exportacao(pasta: Path) -> dict[str, bytes]:
+    """Conteúdo de tudo que a pasta tem e a exportação NÃO recria (pacotes de outros scripts)."""
+    if not pasta.exists():
+        return {}
+    return {arq.relative_to(pasta).as_posix(): arq.read_bytes() for arq in pasta.rglob("*")
+            if arq.is_file() and not _e_da_exportacao(arq.relative_to(pasta).as_posix())}
 VERSAO = 1
 
 # listas guardadas completas (até o teto): caminho -> (bases com parâmetros fixos, teto de itens)
@@ -309,12 +324,17 @@ class Exportador:
     # ---------- gravação ----------
     def gravar(self, pasta: Path):
         # arquivos de outros robôs (scripts/noticias_rapido.py) não podem sumir junto com a pasta
+        # só o que esta exportação recria (s<N>.json, g/, manifest.json) é trocado; pacotes e cópias feitos por outros
+        # scripts (p/, eleições, eventos, catástrofes...) são guardados e voltam, senão um commit apaga o que não é gerado aqui
         proprios = {a: (pasta / a).read_bytes() for a in ARQUIVOS_DE_OUTROS_ROBOS if (pasta / a).exists()}
+        guardados = _ler_fora_da_exportacao(pasta)
         if pasta.exists():
             shutil.rmtree(pasta)
         pasta.mkdir(parents=True)
-        for nome, conteudo in proprios.items():
-            (pasta / nome).write_bytes(conteudo)
+        for nome, conteudo in {**guardados, **proprios}.items():
+            destino = pasta / nome
+            destino.parent.mkdir(parents=True, exist_ok=True)
+            destino.write_bytes(conteudo)
         # textos e siglas padronizados também nos dados já gravados
         limpos = {k: limpar(v) for k, v in self.dados.items()}
         tamanho = gravar_partes(pasta, limpos)
