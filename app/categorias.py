@@ -12,8 +12,10 @@ CATEGORIAS = [
     {"id": "pessoas", "nome": "Candidatos e Indicações"},
     {"id": "eleicoes", "nome": "Eleições"},
     {"id": "seguranca", "nome": "Segurança Pública"},
+    {"id": "catastrofes", "nome": "Catástrofes e acidentes"},
     {"id": "saude", "nome": "Saúde"},
     {"id": "social", "nome": "Social e Trabalho"},
+    {"id": "profissoes", "nome": "Salários por profissão"},
     {"id": "ambiente", "nome": "Meio ambiente"},
     {"id": "empresas", "nome": "Empresas e Contratos"},
     {"id": "obras", "nome": "Obras"},
@@ -21,6 +23,8 @@ CATEGORIAS = [
     {"id": "escandalos", "nome": "Escândalos e crimes"},
     {"id": "noticias", "nome": "Notícias"},
     {"id": "ensino", "nome": "Ensino"},
+    {"id": "concursos", "nome": "Concursos e cursos"},
+    {"id": "eventos", "nome": "Eventos"},
     {"id": "premios", "nome": "Prêmios"},
     {"id": "indicadores", "nome": "Indicadores"},
     {"id": "comparar", "nome": "Comparar"},
@@ -30,7 +34,8 @@ CATEGORIAS = [
 # seções que o site mostra mas que não têm coleta própria no painel:
 #   comparar: monta a comparação com dados de outras seções
 #   premios: história e imagens vêm da Wikipédia pelo script scripts/premios_wiki.py (ainda não é uma tarefa do programa)
-SEM_COLETA_PROPRIA = {"comparar", "premios"}
+#   profissoes: salários da RAIS, gerados por app/collectors/rais_profissoes.py (workflow à parte), ainda não é tarefa do programa
+SEM_COLETA_PROPRIA = {"comparar", "premios", "profissoes"}
 
 MAPA = {
     "gastos": """camara-despesas senado-ceaps transparencia-cartao transparencia-emendas transparencia-gastos
@@ -39,15 +44,15 @@ MAPA = {
         reforma-tributaria receita-cbs cgibs-ibs""",
     "dividas": """siconfi-divida pgfn-divida-ativa tesouro-capag bcb-scr-estados receita-empresas-porte
         receita-recuperacao-judicial""",
-    "orgaos": "transparencia-orgaos transparencia-orcamento transparencia-servidores transparencia-viagens concursos concursos-estaduais concursos-municipais",
+    "orgaos": "transparencia-orgaos transparencia-orcamento transparencia-servidores transparencia-viagens",
     "pessoas": "tse-candidatos tse-bens camara-deputados senado-senadores camara-orgaos congresso-atuacao",
     "eleicoes": "tse-resultados tse-doadores tse-fundos tse-contas tse-relatorias",
-    "seguranca": "seguranca-anuario seguranca-efetivo seguranca-prisional seguranca-sinesp isp-rj-batalhoes prf-acidentes prf-pessoas",
+    "seguranca": "seguranca-anuario seguranca-efetivo seguranca-prisional seguranca-sinesp isp-rj-batalhoes",
+    "catastrofes": "prf-acidentes prf-pessoas defesa-civil-transferencias desastres",
     "saude": "saude-ubs saude-mais-medicos saude-datasus saude-leitos-municipios saude-vacinacao siconfi-saude-minimo",
     "social": """transparencia-social ibge-trabalho ibge-indicadores-sociais ibge-saneamento caged-saldos
         caged-estoque-referencia""",
-    "ambiente": """defesa-civil-transferencias inpe-desmatamento inpe-prodes-mata-atlantica inpe-queimadas mapbiomas-alertas mapbiomas-alertas-territorio
-        desastres""",
+    "ambiente": """inpe-desmatamento inpe-prodes-mata-atlantica inpe-queimadas mapbiomas-alertas mapbiomas-alertas-territorio""",
     "empresas": "pncp-contratos transparencia-contratos cnpj-fornecedores ibge-empresas-economia",
     "obras": "obrasgov-obras",
     "leis": """stj-votos camara-proposicoes camara-proposicoes-detalhe camara-proposicoes-situacao camara-tramitacoes camara-votacoes
@@ -55,11 +60,14 @@ MAPA = {
         assembleia-arquivo legislacao-normas lexml-estaduais cnj-justica""",
     "escandalos": """escandalos-fila cgu-sancoes ibama-multas mte-lista-suja tcu-inabilitados tcu-contas-irregulares""",
     "noticias": "noticias-politica querido-diario",
-    "ensino": "ensino-ideb inep-igc inep-censo-ies cursos-gratuitos",
+    "ensino": "ensino-ideb inep-igc inep-censo-ies",
+    "concursos": "concursos concursos-estaduais concursos-municipais cursos-gratuitos",
+    "eventos": "eventos-patrocinios eventos-pendencias eventos-shows",
     "indicadores": """ibge-indicadores bcb-series bcb-financeiro anp-combustiveis aneel-tarifas anatel-banda-larga anac-aerodromos
         tomtom-transito osm-malha-capitais osm-malha-pbf ibge-malha-municipios ibge-malhas ibge-municipios malha-comparar
         indicador-arquivo""",
-    "relatorios": "coletor-ingestao eventos-patrocinios eventos-pendencias eventos-shows",
+    "relatorios": "coletor-ingestao",
+    "profissoes": "",
     "premios": "",
     "comparar": "",
 }
@@ -71,6 +79,8 @@ import os
 import re
 from pathlib import Path
 
+# itens do menu do site que não são assunto de dados (início e a área do administrador): não viram categoria do painel
+SECOES_DE_SISTEMA = ("inicio", "admin")
 _NAV_RE = re.compile(r"const NAV=(\[.*?\]);", re.S)
 _cache: dict = {"chave": None, "nav": []}
 
@@ -88,7 +98,7 @@ def nav_do_site() -> list[tuple[str, str]]:
         chave = (str(arq), st.st_mtime_ns, st.st_size)
         if _cache["chave"] != chave:
             m = _NAV_RE.search(arq.read_text(encoding="utf-8"))
-            _cache.update(chave=chave, nav=[(i, n) for i, n in json.loads(m.group(1)) if i != "inicio"] if m else [])
+            _cache.update(chave=chave, nav=[(i, n) for i, n in json.loads(m.group(1)) if i not in SECOES_DE_SISTEMA] if m else [])
         return list(_cache["nav"])
     except (OSError, ValueError, TypeError):
         return []

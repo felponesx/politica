@@ -734,3 +734,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Pacote `p/catastrofes.json` leva as fotos embutidas (data URI): o Artifact tem limite de 511 arquivos, então não se publica arquivo novo para isso.
 - Repasses federais para defesa civil ficam dentro de "Tragédias marcantes" (cartão "Dinheiro federal para defesa civil"). Abas de notícias e de dinheiro foram removidas.
 - Eventos, concursos e cursos: números em cartões coloridos, "fora da soma" recolhido (`ev-fora`), cor por tipo de ato e por oferta (`ATO_COR`, `corDeNome`).
+
+## Painel novo "Coletas do BRASIL+" (13/11/2026)
+- `/painel` agora serve `app/static/painel_novo.html` (visual do artefato "Coletor", ligado aos dados REAIS deste computador); o painel anterior (cadastro de fontes, cursos/eventos/concursos, perguntas sem resposta) fica em `/painel/antigo` (`app/static/painel.html`). Mesma política de segurança (`_CABECALHOS_PAINEL` em `app/main.py`).
+- Abas reais: Início, Bots (categorias e chat organizador), Dados, IA e Atividade. Sem login falso, sem Instagram/Acessos/Correção/Notícias (essas existem só no artefato de prévia). Os dados vêm de `GET /fontes/status` e `GET /coletas?limit=200` pelo tradutor `adaptar()` (atualiza a cada 60 s); o histórico por robô é só o das últimas 200 coletas. IA: `GET /ia/pergunta`. Organizador: com a chave do administrador digitada na página (só em memória) chama `POST /organizar` (Gemini); sem chave usa a regra local.
+- O arquivo foi gerado do artefato e agora é mantido à mão; ao mudar o artefato, aplique a mudança aqui também. `tests/test_painel.py` confere que não leva dado de exemplo nem login de mentira.
+- Seções: `app/categorias.py` ganhou Catástrofes e acidentes, Salários por profissão, Concursos e cursos e Eventos (mesma ordem do menu do site); "Administração" e "Início" do menu não viram categoria (`SECOES_DE_SISTEMA`). Ícones novos em `ICONE` (painel e artefato), incluindo `outras` para seção nova sem ícone.

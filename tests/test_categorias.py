@@ -25,7 +25,7 @@ def test_categorias_sao_as_secoes_do_menu_do_site():
     """A lista do painel acompanha o menu do site: nenhuma seção do menu fica de fora (as novas entram sozinhas)."""
     site = (Path(__file__).resolve().parents[1] / "site" / "index.html").read_text(encoding="utf-8")
     nav = json.loads(re.search(r"const NAV=(\[.*?\]);", site, re.S).group(1))
-    secoes = {i: n for i, n in nav if i != "inicio"}
+    secoes = {i: n for i, n in nav if i not in ("inicio", "admin")}
     atuais = {c["id"]: c["nome"] for c in categorias_atuais()}
     assert set(secoes) <= set(atuais), set(secoes) - set(atuais)
     assert all(atuais[i] == secoes[i] for i in secoes)

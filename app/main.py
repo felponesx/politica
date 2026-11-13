@@ -119,14 +119,21 @@ def site():
 
 
 # Painel de coletas do próprio BRASIL+ (lê /fontes/status e /coletas; só para o seu PC e o celular via Tailscale)
-PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"
+PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"            # painel anterior (cadastro de fontes, cursos e eventos)
+PAINEL_NOVO = Path(__file__).resolve().parent / "static" / "painel_novo.html"  # visual novo, ligado aos dados deste computador
+# só código e dados da própria página; nada de fora, nada de moldura, sem <base> nem formulário para outro site
+_CABECALHOS_PAINEL = {
+    "Cache-Control": "no-cache",
+    "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+                               "img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "X-Frame-Options": "DENY"}
 
 
 @app.get("/painel", include_in_schema=False)
 def painel():
-    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers={
-        "Cache-Control": "no-cache",
-        # só código e dados da própria página; nada de fora, nada de moldura, sem <base> nem formulário para outro site
-        "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
-                                   "img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
-        "X-Frame-Options": "DENY"})
+    return FileResponse(PAINEL_NOVO, media_type="text/html; charset=utf-8", headers=_CABECALHOS_PAINEL)
+
+
+@app.get("/painel/antigo", include_in_schema=False)
+def painel_antigo():
+    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers=_CABECALHOS_PAINEL)
