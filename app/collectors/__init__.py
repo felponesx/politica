@@ -1,9 +1,17 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (defesa_civil_transf, oportunidades, concursos_estaduais, stj, tse_relatorias, saude_mun, ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies, caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf, servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp, anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude, cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj, empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base, congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao, lexml,
-                            municipios, tse_financas, obrasgov, pgfn, pncp,
-                            receita, senado, siconfi, tesouro, transparencia, tse, tse_resultados)
+from app.collectors import (coletor_externo, oportunidades, concursos_estaduais, stj, tse_relatorias, saude_mun,
+                             ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies,
+                             caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf,
+                             servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp,
+                             anatel, cnj, tcu, social, ambiente, economia_extra, sancoes, inep, datasus, saude,
+                             cartao, emendas, bcb_financeiro, agenda, assembleias, saneamento, isp_rj,
+                             empresas_porte, ibge_empresas, bcb, malhas, camara, capag, cnpj, cnpj_base,
+                             congresso_extra, seguranca, noticias, orcamento, bcb_scr, desastres, ibge, legislacao,
+                             lexml, municipios, tse_financas, obrasgov, pgfn, pncp, receita, senado, siconfi,
+                             tesouro, transparencia, tse, tse_resultados, defesa_civil_transf)
 
 _TAREFAS_BRUTAS = {
+    "coletor-ingestao": coletor_externo.coletar_ingestao,   # pasta: dados liberados pelo coletor do celular
     "ensino-ideb": inep.coletar_ensino_ideb,
     "tse-doadores": tse_doadores.coletar_tse_doadores,   # ano, uf
     "osm-malha-capitais": osm_malha.coletar_malha_overpass,   # ufs

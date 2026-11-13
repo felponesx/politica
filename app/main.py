@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from contextlib import asynccontextmanager
 
@@ -13,8 +14,12 @@ from app.config import settings
 from app import observabilidade
 from app.db import criar_tabelas
 from app.seguranca import LimiteCorpo, Protecao
-from app.routers import publicacoes as publicacoes_rotas
-from app.routers import dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas, lacunas as lacunas_rotas, sancoes as sancoes_rotas, saude as saude_rotas, doadores as doadores_rotas, contas as contas_rotas, profissoes as profissoes_rotas, empresas_tipo as empresas_tipo_rotas, oportunidades as oportunidades_rotas, catastrofes as catastrofes_rotas
+from app.routers import (dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas,
+                         lacunas as lacunas_rotas, sancoes as sancoes_rotas, saude as saude_rotas, doadores as doadores_rotas, contas as contas_rotas,
+                         fontes_cadastro as fontes_cadastro_rotas, ia_propria as ia_propria_rotas, organizador as organizador_rotas,
+                         oportunidades as oportunidades_rotas, oportunidades_cadastro as oportunidades_cadastro_rotas,
+                         publicacoes as publicacoes_rotas, profissoes as profissoes_rotas, empresas_tipo as empresas_tipo_rotas,
+                         catastrofes as catastrofes_rotas)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -82,6 +87,9 @@ app.include_router(normalizados.router)
 app.include_router(ligacoes.router)
 app.include_router(v02.router)
 app.include_router(v03.router)
+app.include_router(oportunidades_rotas.router)
+app.include_router(oportunidades_cadastro_rotas.router)
+app.include_router(organizador_rotas.router)
 app.include_router(seguranca.router)
 app.include_router(saude_rotas.router)
 app.include_router(ensino_rotas.router)
@@ -89,15 +97,16 @@ app.include_router(lacunas_rotas.router)
 app.include_router(sancoes_rotas.router)
 app.include_router(doadores_rotas.router)
 app.include_router(contas_rotas.router)
+app.include_router(fontes_cadastro_rotas.router)
+app.include_router(ia_propria_rotas.router)
 app.include_router(publicacoes_rotas.router)
 app.include_router(profissoes_rotas.router)
 app.include_router(empresas_tipo_rotas.router)
-app.include_router(oportunidades_rotas.router)
 app.include_router(catastrofes_rotas.router)
 
 
 # Site (frontend) servido pelo próprio backend: abra http://localhost:8000 e as telas já usam a API.
-SITE = Path(__file__).resolve().parent.parent / "site" / "index.html"
+SITE = (Path(os.environ["BRASILPLUS_SITE"]) if os.environ.get("BRASILPLUS_SITE") else Path(__file__).resolve().parent.parent / "site") / "index.html"
 # fotos e logos gerados pelo robô (scripts/midia_site.py); o site busca em midia/
 app.mount("/midia", StaticFiles(directory=SITE.parent / "midia", check_dir=False), name="midia")
 
@@ -107,3 +116,17 @@ def site():
     if SITE.exists():
         return FileResponse(SITE, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
     return {"status": "ok", "docs": "/docs", "aviso": "Coloque o site em site/index.html para servi-lo aqui."}
+
+
+# Painel de coletas do próprio BRASIL+ (lê /fontes/status e /coletas; só para o seu PC e o celular via Tailscale)
+PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"
+
+
+@app.get("/painel", include_in_schema=False)
+def painel():
+    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers={
+        "Cache-Control": "no-cache",
+        # só código e dados da própria página; nada de fora, nada de moldura, sem <base> nem formulário para outro site
+        "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+                                   "img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+        "X-Frame-Options": "DENY"})

@@ -47,6 +47,17 @@ Deixe o atualizador sempre rodando (`python -m scripts.atualizar_local`), inicia
 | O PC se atualizou? | Aviso "atualizado para …" no Telegram |
 | Algo precisa de mão no PC | Claude Code no PC controlado pelo celular: no PC, `claude remote-control` na pasta do projeto |
 
+## 6. Dados do coletor do celular (opcional)
+O celular coleta, confere e corrige o formato; o que o corretor liberou vai para um repositório de dados no GitHub. O BRASIL+ do PC lê esse repositório e grava no banco
+(tarefa `coletor-ingestao`, a cada 10 minutos). O GitHub é a caixa de correio: se o PC estiver desligado, ele recupera o atraso quando ligar.
+1. Clone o repositório de dados do coletor na pasta `coletor-dados`, ao lado do `docker-compose.local.yml` (ou outra pasta, em `COLETOR_DADOS_PASTA` no `.env.local`).
+   Use uma *deploy key* só de leitura.
+2. **No PC** (não no Docker, a imagem não tem git), deixe uma tarefa agendada a cada 5 minutos: `git -C coletor-dados pull -q --ff-only`.
+   Windows: Agendador de Tarefas · Mac: `launchd` · Linux: `cron` ou `systemd timer`.
+3. `docker compose -f docker-compose.local.yml --env-file .env.local up -d` (o agendador passa a ler a pasta, só leitura).
+4. Confira em `/coletas` as linhas de fonte `coletor`, tarefa `ingestao`. Hoje existe adaptador só para o Banco Central (`bcb`); cada fonte nova precisa do seu em
+   `app/collectors/coletor_externo.py`.
+
 ## Cuidados
 - PC ligado, sem hibernar, com internet. Se desligar, as coletas param e o site some (volta sozinho ao ligar).
 - Backup diário do banco em `./backups` (guarda 7). Copie para fora do PC de vez em quando.

@@ -53,8 +53,13 @@ def grupos(hoje: date | None = None) -> dict[str, list[tuple[str, dict]]]:
                    ("tesouro-capag", {}), ("ibge-malhas", {})],
         "trimestral": [("pgfn-divida-ativa", {"ano": ta, "trimestre": tt})],
     }
+    if os.environ.get("COLETOR_DADOS"):   # dados liberados pelo coletor do celular (clone do repositório de dados)
+        g["ingestao"] = [("coletor-ingestao", {})]
     if settings.tomtom_api_key:   # trânsito das 27 capitais de hora em hora (~54 chamadas por rodada, ~970 por dia: abaixo da franquia gratuita de 2.500)
         g["transito"] = [("tomtom-transito", {})]
+    desligadas = {t.strip() for t in os.environ.get("NATIVAS_DESLIGADAS", "").split(",") if t.strip()}
+    if desligadas:   # tarefas que o coletor passou a fazer (ex.: camara-deputados,senado-senadores): não coletar duas vezes
+        g = {k: [(t, params) for t, params in v if t not in desligadas] for k, v in g.items()}
     return g
 
 
@@ -87,6 +92,20 @@ def _travar():
     return f
 
 
+def agendar_tarefas(s):
+    """Põe as tarefas no agendador `s` (BlockingScheduler no Docker; BackgroundScheduler no executável)."""
+    s.add_job(rodar_grupo, "cron", args=["diario"], hour=2, minute=10, id="diario")
+    s.add_job(rodar_grupo, "cron", args=["agenda"], day_of_week="mon-fri", hour="8-21", minute="*/15", id="agenda")
+    if os.environ.get("COLETOR_DADOS"):
+        s.add_job(rodar_grupo, "cron", args=["ingestao"], minute="*/10", id="ingestao")
+    if settings.tomtom_api_key:
+        s.add_job(rodar_grupo, "cron", args=["transito"], hour="6-22", minute=7, id="transito")
+    s.add_job(rodar_grupo, "cron", args=["semanal"], day_of_week="sun", hour=4, minute=0, id="semanal")
+    s.add_job(rodar_grupo, "cron", args=["mensal"], day=5, hour=5, minute=0, id="mensal")
+    s.add_job(rodar_grupo, "cron", args=["trimestral"], month="2,5,8,11", day=20, hour=6, minute=0, id="trimestral")
+    return s
+
+
 def main(argv):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     if argv and argv[0] == "--listar":
@@ -100,13 +119,7 @@ def main(argv):
     from apscheduler.schedulers.blocking import BlockingScheduler
     s = BlockingScheduler(timezone="America/Sao_Paulo", job_defaults={"coalesce": True, "max_instances": 1,
                                                                       "misfire_grace_time": 3600})
-    s.add_job(rodar_grupo, "cron", args=["diario"], hour=2, minute=10, id="diario")
-    s.add_job(rodar_grupo, "cron", args=["agenda"], day_of_week="mon-fri", hour="8-21", minute="*/15", id="agenda")
-    if settings.tomtom_api_key:
-        s.add_job(rodar_grupo, "cron", args=["transito"], hour="6-22", minute=7, id="transito")
-    s.add_job(rodar_grupo, "cron", args=["semanal"], day_of_week="sun", hour=4, minute=0, id="semanal")
-    s.add_job(rodar_grupo, "cron", args=["mensal"], day=5, hour=5, minute=0, id="mensal")
-    s.add_job(rodar_grupo, "cron", args=["trimestral"], month="2,5,8,11", day=20, hour=6, minute=0, id="trimestral")
+    agendar_tarefas(s)
     log.info("Agendador iniciado: agenda do Congresso a cada 15 min (seg-sex, 8h-22h), diário 02:10, semanal dom 04:00, mensal dia 5 05:00, trimestral dia 20 (fev/mai/ago/nov).")
     s.start()
 

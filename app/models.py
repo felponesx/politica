@@ -578,6 +578,41 @@ class VotoLei(Base):
     atualizado_em: Mapped[datetime] = mapped_column(DateTime, default=agora_utc)
 
 
+class FonteCadastrada(Base):
+    """Fonte cadastrada pela tela (sem git). O coletor do PC lê esta lista pela API e capta no intervalo escolhido."""
+    __tablename__ = "fontes_cadastradas"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    nome: Mapped[str] = mapped_column(String(64), unique=True)
+    produto: Mapped[str] = mapped_column(String(60), default="BRASIL+")
+    url: Mapped[str] = mapped_column(String(500))
+    intervalo_min: Mapped[int] = mapped_column(Integer, default=1440)
+    formato: Mapped[str] = mapped_column(String(10))
+    campos: Mapped[dict] = mapped_column(JSON)   # tipo, chave, valor, titulo, uf, data, lista, dados
+    permitir_pessoas: Mapped[bool] = mapped_column(default=False)
+    ativa: Mapped[bool] = mapped_column(default=True)
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    atualizada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class Oportunidade(Base):
+    """Cursos, eventos e concursos. Entram por cadastro (token) e ficam pendentes até uma aprovação; só o aprovado aparece ao público."""
+    __tablename__ = "oportunidades"
+    __table_args__ = (UniqueConstraint("tipo", "link", name="uq_oportunidade_tipo_link"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    tipo: Mapped[str] = mapped_column(String(12), index=True)  # curso | evento | concurso
+    titulo: Mapped[str] = mapped_column(String(300))
+    orgao: Mapped[str | None] = mapped_column(String(200))
+    uf: Mapped[str | None] = mapped_column(String(2), index=True)
+    cidade: Mapped[str | None] = mapped_column(String(120))
+    data_inicio: Mapped[date | None] = mapped_column(Date)
+    data_fim: Mapped[date | None] = mapped_column(Date)
+    inscricoes_ate: Mapped[date | None] = mapped_column(Date)
+    link: Mapped[str] = mapped_column(String(500))
+    fonte: Mapped[str | None] = mapped_column(String(200))
+    status: Mapped[str] = mapped_column(String(12), default="pendente", index=True)  # pendente | aprovado | rejeitado
+    criada_em: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    aprovada_em: Mapped[datetime | None] = mapped_column(DateTime)
 class Midia(Base):
     """Foto enviada pelo administrador (guardada no banco, até 3 MB). Serve as capas e imagens das publicações."""
     __tablename__ = "midias"

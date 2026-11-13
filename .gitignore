@@ -9,3 +9,17 @@ backups/
 # PC local (docs/PC_LOCAL.md)
 .env.local
 .atualizador/
+
+# clone do repositório de dados do coletor do celular (docker-compose.local.yml)
+coletor-dados/
+build-exe/
+
+# segredos e configuração local: nunca no git
+config.env
+*.env
+!*.env.example
+!*.env.exemplo
+!.env.*.example
+destinos.toml
+*.pem
+*.key

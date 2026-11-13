@@ -38,3 +38,25 @@ def test_status_acha_a_coleta_pelo_par_gravado():
         with SessionLocal() as db:
             db.query(Coleta).filter(Coleta.id.in_(ids)).delete(synchronize_session=False)
             db.commit()
+
+
+def test_erro_antigo_nao_aparece_em_fonte_que_ja_voltou_a_funcionar():
+    from datetime import timedelta
+    criar_tabelas()
+    cliente = TestClient(app)
+    agora = datetime.now()
+    with SessionLocal() as db:
+        novas = [Coleta(fonte="camara", tarefa="proposicoes_situacao", parametros={}, status="erro", inicio=agora - timedelta(hours=3),
+                        fim=agora - timedelta(hours=3), erro="HTTP 500 antigo"),
+                 Coleta(fonte="camara", tarefa="proposicoes_situacao", parametros={}, status="ok", inicio=agora, fim=agora, itens=7)]
+        db.add_all(novas)
+        db.commit()
+        ids = [c.id for c in novas]
+    try:
+        por = {f["tarefa"]: f for f in cliente.get("/fontes/status").json()["fontes"]}
+        f = por["camara-proposicoes-situacao"]
+        assert f["situacao"] == "ok" and f["ultimo_erro"] is None
+    finally:
+        with SessionLocal() as db:
+            db.query(Coleta).filter(Coleta.id.in_(ids)).delete(synchronize_session=False)
+            db.commit()

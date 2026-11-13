@@ -29,7 +29,14 @@ services:
       ALERTA_TELEGRAM_TOKEN: ${ALERTA_TELEGRAM_TOKEN:-}
       ALERTA_TELEGRAM_CHAT: ${ALERTA_TELEGRAM_CHAT:-}
       ALERTA_WEBHOOK_URL: ${ALERTA_WEBHOOK_URL:-}
-    volumes: [coletas_tmp:/tmp]
+      # dados liberados pelo coletor do celular (clone do repositório de dados, só leitura; o PC faz o git pull, veja docs/PC_LOCAL.md)
+      COLETOR_DADOS: /coletor-dados
+      COLETOR_PULL: "0"
+      # tarefas nativas que o coletor já faz (ex.: camara-deputados,senado-senadores): vazio = nenhuma desligada
+      NATIVAS_DESLIGADAS: ${NATIVAS_DESLIGADAS:-}
+    volumes:
+      - coletas_tmp:/tmp
+      - ${COLETOR_DADOS_PASTA:-./coletor-dados}:/coletor-dados:ro
     depends_on:
       db: {condition: service_healthy}
 
@@ -40,6 +47,9 @@ services:
     ports: ["${API_BIND:-127.0.0.1}:8000:8000"]
     environment:
       DATABASE_URL: postgresql+psycopg://brasil_leitura:${DB_LEITURA_SENHA}@db:5432/brasilplus
+      # cadastro de fontes pela tela: escrita só nas rotas com X-Admin-Token (o resto da API continua só de leitura)
+      DATABASE_URL_ESCRITA: postgresql+psycopg://brasil:${DB_SENHA}@db:5432/brasilplus
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
       MIGRAR_AO_INICIAR: "false"
       SOMENTE_LEITURA: "true"
       PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY:-}

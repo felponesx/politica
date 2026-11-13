@@ -15,7 +15,7 @@ from app.collectors.base import registrar_coleta
 from app.models import Registro
 from app.utils import NOME_PARA_UF, UFS, sem_acento, upsert
 
-csv.field_size_limit(sys.maxsize)   # a coluna de geometria do WFS passa de 131 mil caracteres (o Pantanal falhou por isso)
+csv.field_size_limit(2**31 - 1)   # a coluna de geometria do WFS passa de 131 mil caracteres (o Pantanal falhou por isso)
 log = logging.getLogger("brasilplus.ambiente")
 WFS = "https://terrabrasilis.dpi.inpe.br/geoserver/ows"
 PAGINA = 50_000   # o servidor limita cada resposta a 50 mil feições (pedir mais devolve só 50 mil)

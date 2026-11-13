@@ -13,7 +13,7 @@ from app.collectors.bcb_scr import entradas_zip, linhas_entrada
 from app.models import Registro
 from app.utils import UFS, upsert
 
-csv.field_size_limit(sys.maxsize)   # há campos de texto longos no CSV do IBAMA (o limite padrão do csv é 131072)
+csv.field_size_limit(2**31 - 1)   # há campos de texto longos no CSV do IBAMA (o limite padrão do csv é 131072)
 URL = "https://stibamadadosabertosprd.blob.core.windows.net/dados-abertos/dados/SIFISC/auto_infracao/auto_infracao/auto_infracao_csv.zip"
 ANOS = 10   # últimos anos lidos
 MINIMO_AUTOS = 20_000

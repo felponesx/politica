@@ -8,7 +8,7 @@ import hashlib
 import html
 import logging
 import re
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET   # XML de fonte externa: sem entidades perigosas
 from datetime import datetime
 
 from app import http
