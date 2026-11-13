@@ -47,6 +47,15 @@ FEEDS = [
     ("Consultor Jurídico (Conjur)", "https://www.conjur.com.br/rss.xml", True, "juridico"),
     ("Migalhas", "https://www.migalhas.com.br/rss/quentes", True, "juridico"),
     ("Conselho Nacional de Justiça", "https://www.cnj.jus.br/feed/", True, "juridico"),
+    # catástrofes e acidentes (Google Notícias, últimos 7 dias): sem filtro de política; o veículo vem da tag <source>
+    *[(f"Catástrofes {i}", "https://news.google.com/rss/search?q=" + q + "+when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-419", True, "catastrofe") for i, q in enumerate([
+        "queda+de+avi%C3%A3o+mortos",
+        "rompimento+de+barragem",
+        "desabamento+mortos",
+        "deslizamento+de+terra+mortos",
+        "inc%C3%AAndio+mortos",
+        "acidente+%C3%B4nibus+mortos",
+    ])],
 ]
 QUEBRADA = re.compile(r"\ufffd|[^\W\d_]\?{1,2}[^\W\d_]")
 PALAVRAS = re.compile(r"\b(congresso|camara|senado|deputad|senador|governo|presiden|ministr|stf|supremo|tse|eleic|"
@@ -85,6 +94,10 @@ def ler_feed(xml: str, veiculo: str, so_politica: bool, tema: str = "geral") -> 
         if not titulo or not link.startswith("http"):
             continue
         resumo = re.sub(r"\s+", " ", _tag(item, "description") or _tag(item, "atom:subtitle"))[:400]
+        if tema == "catastrofe":
+            # o veículo é o da tag <source> do Google Notícias; o título traz "- Veículo" no fim
+            veiculo = _tag(item, "source") or veiculo
+            titulo = re.sub(r"\s+-\s+" + re.escape(veiculo) + r"$", "", titulo).strip() or titulo
         cat = " ".join(_tag(c, "category") for c in re.findall(r"<category.*?</category>", item, re.S))
         if not so_politica and not PALAVRAS.search(sem_acento(f"{titulo} {resumo} {cat}")):
             continue

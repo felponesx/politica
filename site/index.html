@@ -2171,7 +2171,7 @@ escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6
 profissoes:'<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12.5h18"/>',
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
-concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
+catastrofes:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
@@ -2189,7 +2189,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["saude","Saúde"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;return true}
 function navSubAdmin(){return [["resumo","inicio","Gestão (início)"],["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["bots","bots","Bots"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>x[0]==="resumo"||artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
@@ -5823,6 +5823,50 @@ function opCursos(D){const L=D.itens||[];let f={of:"",tema:"",q:""};const temas=
   mount(){const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.of||x.ofertante===f.of)&&(!f.tema||(x.tema||"Outros")===f.tema)&&(!q||snapNorm([x.nome,x.tema,x.quem_faz,x.resumo].join(" ")).includes(q)));
     $("#cuN").textContent=`${nf(l.length)} de ${nf(L.length)} cursos`;opLista($("#cuL"),l,opCursoCard,24);orgaosAplicar()};lista();
    $("#cuO").onchange=e=>{f.of=e.target.value;lista()};$("#cuT").onchange=e=>{f.tema=e.target.value;lista()};$("#cuQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+// ---- Catástrofes e acidentes (tragédias marcantes, acidentes nas rodovias por estado, notícias de desastres)
+const CAT_ABAS=[["tragedias","Tragédias marcantes"],["rodovias","Rodovias por estado"],["noticias","Notícias recentes"]];
+const CAT_ROT={pedestre:"pedestre",motociclista:"motociclista",motorista_carro:"motorista de carro, caminhonete ou utilitário",caminhao_carreta:"caminhão ou carreta",onibus:"ônibus",bicicleta:"ciclista"};
+const CAT_NOME={pedestre:"Pedestre",motociclista:"Motociclista (moto ou motoneta)",motorista_carro:"Motorista de carro, caminhonete ou utilitário",caminhao_carreta:"Caminhão ou carreta (condutor)",onibus:"Ônibus e micro-ônibus",bicicleta:"Ciclista"};
+const catPct=v=>v==null?"sem dado":lacD(v,1)+"%";
+const CAT_M=(()=>{const m={acidentes:["Acidentes no ano",e=>e.acidentes,v=>nf(v),"Acidentes com vítima nas rodovias federais, por estado"],
+ mortos:["Mortos nos acidentes",e=>e.mortos,v=>nf(v),"Pessoas mortas nos acidentes das rodovias federais, por estado"]};
+ Object.keys(CAT_ROT).forEach(k=>{m[k]=["Com "+CAT_ROT[k],e=>e.categorias[k].pct,catPct,`% dos acidentes do estado em que há ${CAT_ROT[k]} envolvido`]});return m})();
+const CAT_G=[["Quantidade","acidentes","mortos"],["Quem estava envolvido (% dos acidentes do estado)",...Object.keys(CAT_ROT)]];
+P.catastrofes=(...a)=>{const aba=CAT_ABAS.some(x=>x[0]===a[0])?a[0]:"tragedias",uf=a[1]&&UF[String(a[1]).toUpperCase()]?String(a[1]).toUpperCase():"";
+ return{html:`<div class="ph"><div><h1>Catástrofes e acidentes</h1><p>Tragédias que marcaram o país, acidentes nas rodovias federais por estado e notícias de desastres.</p></div></div>
+  <div class="tabs" style="margin-top:0">${CAT_ABAS.map(([k,n])=>`<a class="tabl ${k===aba?"on":""}" href="#/catastrofes/${k}">${n}</a>`).join("")}</div><div id="catV">${API.on?rload():`<div class="rbanner">Esta tela aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+  mount(){if(!API.on)return;const erro=e=>{const b=$("#catV");if(b)b.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)};
+   if(aba==="tragedias")apiGet("/catastrofes").then(D=>{const v=$("#catV");if(v)catTragedias(v,D)}).catch(erro);
+   else if(aba==="rodovias")apiGet("/catastrofes/rodovias").then(D=>{const v=$("#catV");if(v)catRodovias(v,D,uf)}).catch(erro);
+   else apiGet("/noticias?limit=1500").then(D=>{const v=$("#catV");if(v)catNoticias(v,D)}).catch(erro)}}};
+function catTragedias(v,D){const L=D.itens||[];let f={tipo:""};
+ const cartao=x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(D.tipos[x.tipo]||x.tipo)}</span><span class="tag">${esc(x.uf)}</span><span class="small muted">${x.data_texto?esc(x.data_texto):opData(x.data)}</span></div>
+   <h3>${esc(x.titulo)}</h3><div class="small muted">${esc(x.local)} · ${esc((UF[x.uf]||{}).nome||x.uf)}</div>
+   <div class="kpis" style="margin:8px 0 0"><div class="kpi"><span>Mortos</span><strong>${nf(x.mortos)}</strong><em>${esc(x.mortos_nota||"")}</em></div></div>
+   <p class="small oc-res">${esc(x.resumo)}</p>
+   <div class="small">${x.fontes.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.nome)} ›</a>`).join(" · ")}</div></div>`;
+ const lista=()=>{const xs=L.filter(x=>!f.tipo||x.tipo===f.tipo);$("#catN").textContent=`${nf(xs.length)} de ${nf(L.length)} tragédias`;$("#catL").innerHTML=xs.length?xs.map(cartao).join(""):rvazio("Nada com esse filtro.")};
+ v.innerHTML=`<div class="panel mt"><h2>Tragédias que marcaram o país</h2><div class="filters"><select id="catT" data-pill="Tipo"><option value="">Todos os tipos</option>${Object.entries(D.tipos).map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join("")}</select></div>
+   <p class="small muted" id="catN" style="margin:6px 0"></p><div id="catL" class="oc-lista oc-grade"></div></div>
+   <div class="rbanner mt small">${esc(D.aviso||"")}</div>`;
+ $("#catT").onchange=e=>{f.tipo=e.target.value;lista()};lista();if(typeof pilulas==="function")pilulas()}
+function catRodovias(v,D,uf){if(D.erro){v.innerHTML=rvazio(D.erro);return}
+ const E={};D.estados.forEach(e=>E[e.uf]=e);const b=D.brasil;
+ const kp=[lacKpi("Acidentes em "+D.ano+(D.parcial?" (ano em andamento)":""),nf(b.acidentes),"rodovias federais, PRF"),
+  lacKpi("Com motociclista",catPct(b.categorias.motociclista.pct),"dos acidentes do país"),
+  lacKpi("Com pedestre",catPct(b.categorias.pedestre.pct),"dos acidentes do país"),
+  lacKpi("Com motorista de carro",catPct(b.categorias.motorista_carro.pct),"dos acidentes do país")].join("");
+ const ficha=(()=>{const e=E[uf];if(!e)return"";const ac=e.acidentes;
+  return `<div class="panel mt"><h2>${esc((UF[uf]||{}).nome||uf)} em ${D.ano}</h2><p class="small muted" style="margin:0 0 8px">${nf(ac)} acidentes${e.mortos!=null?` · ${nf(e.mortos)} mortos`:""}. Porcentagem sobre os acidentes do estado.</p>
+   ${table([["Envolvido",([k])=>esc(CAT_NOME[k])],["Acidentes",([,c])=>nf(c.ocorrencias)],["% dos acidentes",([,c])=>catPct(c.pct)],["Mortos (pessoas)",([,c])=>nf(c.mortos)]],Object.entries(e.categorias).map(([k,c])=>[k,c]))}
+   <p class="small"><a href="#/catastrofes/rodovias">‹ Voltar para todos os estados</a></p></div>`})();
+ const anos=(D.anos||[]).map(y=>`<option value="${y}" ${y===D.ano?"selected":""}>${y}</option>`).join("");
+ v.innerHTML=`<div class="filters" style="margin:0 0 8px"><select id="catAno" data-pill="Ano">${anos}</select></div>`;
+ lacPainel(v,{E,M:CAT_M,G:CAT_G,rota:"catastrofes/rodovias",kpis:kp,antes:ficha,depois:`<div class="rbanner mt small">${esc(D.aviso)} Fonte: ${esc(D.fonte)}.</div>`});
+ const sel=$("#catAno");if(sel)sel.onchange=e=>{const y=e.target.value;apiGet("/catastrofes/rodovias?ano="+y).then(N=>{const w=$("#catV");if(w)catRodovias(w,N,uf)}).catch(er=>{const w=$("#catV");if(w)w.innerHTML=rerro(er)})}}
+function catNoticias(v,D){const L=(D.itens||[]).filter(n=>n.tema==="catastrofe").sort((x,y)=>(y.data||"").localeCompare(x.data||""));
+ v.innerHTML=`<div class="panel mt"><h2>Notícias de catástrofes e acidentes</h2><p class="small muted" style="margin:0 0 8px">Títulos de matérias dos últimos 7 dias, de vários veículos, com o link para a matéria original. Um título de notícia não confirma o número de vítimas.</p>
+  ${L.length?`<div class="nw-lista">${L.slice(0,80).map(n=>`<a class="nw" href="${esu(n.link)}" target="_blank" rel="noopener"><span class="nw-v">${esc(n.veiculo||"")} · ${opData(n.data)}</span><b>${esc(n.titulo||"")}</b></a>`).join("")}</div>`:rvazio("Ainda não há notícias de catástrofes coletadas. O robô de notícias busca a cada 15 minutos.")}</div>`}
 // ---- Eventos
 const evValor=x=>x.valor?`${brlC(x.valor)}${x.valor_a_conferir?` <span class="small" style="color:#E5484D">a conferir</span>`:x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";
 const evNome=x=>x.artista?`<b>${esc(x.artista)}</b>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`:`<span class="small">${esc((x.objeto||"").slice(0,140))}${(x.objeto||"").length>140?"…":""}</span>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`;
@@ -7159,6 +7203,7 @@ const ART_SEC=[
  ["pessoas","Candidatos e Indicações",["/parlamentares","/candidatos","/partidos","/assembleias","/faccoes"]],
  ["eleicoes","Eleições",["/eleicoes"]],
  ["seguranca","Segurança Pública",["/seguranca","/policias"]],
+ ["catastrofes","Catástrofes e acidentes",["/catastrofes"]],
  ["saude","Saúde",["/saude"]],
  ["social","Social e Trabalho",["/social","/trabalho","/indicadores-sociais"]],
  ["ambiente","Meio ambiente",["/ambiente","/alertas-mapbiomas","/multas-ambientais"]],

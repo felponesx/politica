@@ -1,0 +1,177 @@
+[
+ {
+  "id": "boate-kiss-2013",
+  "data": "2013-01-27",
+  "titulo": "Incêndio na Boate Kiss",
+  "local": "Santa Maria",
+  "uf": "RS",
+  "tipo": "incendio",
+  "resumo": "Incêndio na boate Kiss, em Santa Maria. A tragédia deixou 242 mortos.",
+  "mortos": 242,
+  "mortos_nota": "Número citado pela BBC.",
+  "fontes": [
+   {
+    "nome": "BBC News Brasil",
+    "url": "https://www.bbc.com/news/world-latin-america-59617508"
+   }
+  ]
+ },
+ {
+  "id": "brumadinho-2019",
+  "data": "2019-01-25",
+  "titulo": "Rompimento da barragem de Brumadinho (Vale)",
+  "local": "Brumadinho",
+  "uf": "MG",
+  "tipo": "barragem",
+  "resumo": "Rompimento da barragem B1 da mina Córrego do Feijão, da Vale. A lama de rejeitos atingiu a região da mina e o rio Paraopeba.",
+  "mortos": 272,
+  "mortos_nota": "Contagem da Wikipédia, que inclui dois nascituros. A denúncia do Ministério Público de Minas Gerais fala em 270 mortes causadas pelo rompimento.",
+  "fontes": [
+   {
+    "nome": "Wikipédia: Rompimento de barragem em Brumadinho",
+    "url": "https://pt.wikipedia.org/wiki/Rompimento_de_barragem_em_Brumadinho"
+   }
+  ]
+ },
+ {
+  "id": "voepass-2283-2024",
+  "data": "2024-08-09",
+  "titulo": "Queda do avião da Voepass (voo 2283)",
+  "local": "Vinhedo",
+  "uf": "SP",
+  "tipo": "aviao",
+  "resumo": "Queda de um ATR 72 que fazia a rota Cascavel–Guarulhos. Todos os 62 ocupantes morreram.",
+  "mortos": 62,
+  "mortos_nota": "58 passageiros e 4 tripulantes.",
+  "fontes": [
+   {
+    "nome": "g1: acidente Voepass deixou 62 mortos (2026)",
+    "url": "https://g1.globo.com/sp/campinas-regiao/noticia/2026/10/21/acidente-voepass-quem-sao-os-denunciados-pelo-desastre-aereo-que-matou-62-pessoas-em-vinhedo.ghtml"
+   }
+  ]
+ },
+ {
+  "id": "petropolis-2022",
+  "data": "2022-02-15",
+  "titulo": "Chuvas e deslizamentos em Petrópolis",
+  "local": "Petrópolis",
+  "uf": "RJ",
+  "tipo": "chuva_deslizamento",
+  "resumo": "Chuvas e deslizamentos de terra. A região teve a pior chuva desde 1932, segundo a Agência Brasil.",
+  "mortos": 241,
+  "mortos_nota": "Total de fevereiro e março de 2022, segundo a Wikipédia (com 1 desaparecido). Só o dia 15 de fevereiro tem número próprio nas fontes.",
+  "fontes": [
+   {
+    "nome": "Wikipédia: Enchentes e deslizamentos em Petrópolis em 2022",
+    "url": "https://pt.wikipedia.org/wiki/Enchentes_e_deslizamentos_em_Petr%C3%B3polis_em_2022"
+   }
+  ]
+ },
+ {
+  "id": "mariana-2015",
+  "data": "2015-11-05",
+  "titulo": "Rompimento da barragem de Fundão (Samarco) em Mariana",
+  "local": "Mariana (Bento Rodrigues)",
+  "uf": "MG",
+  "tipo": "barragem",
+  "resumo": "Rompimento da barragem de rejeitos de Fundão. A lama destruiu o distrito de Bento Rodrigues e chegou ao Rio Doce e ao mar do Espírito Santo.",
+  "mortos": 19,
+  "mortos_nota": "Número citado pelo G1 em 2025, dez anos depois.",
+  "fontes": [
+   {
+    "nome": "g1: Mariana, 10 anos (2025)",
+    "url": "https://g1.globo.com/mg/minas-gerais/noticia/2025/11/03/mariana-10-anos-ninguem-foi-condenado-por-tragedia-que-matou-19-pessoas-destruiu-comunidades-e-contaminou-rio-doce.ghtml"
+   }
+  ]
+ },
+ {
+  "id": "tam-3054-2007",
+  "data": "2007-07-17",
+  "titulo": "Acidente do voo TAM 3054",
+  "local": "São Paulo (Congonhas)",
+  "uf": "SP",
+  "tipo": "aviao",
+  "resumo": "Avião de passageiros que pousava em Congonhas. É o acidente aéreo com mais mortes na história da aviação brasileira.",
+  "mortos": 199,
+  "mortos_nota": "Número citado pela Prefeitura de São Paulo (199 vítimas).",
+  "fontes": [
+   {
+    "nome": "Prefeitura de São Paulo: Praça Memorial 17 de Julho",
+    "url": "https://prefeitura.sp.gov.br/web/comunicacao/w/noticias/107367"
+   },
+   {
+    "nome": "Wikipédia: Voo TAM 3054",
+    "url": "https://pt.wikipedia.org/wiki/Voo_TAM_3054"
+   }
+  ]
+ },
+ {
+  "id": "gol-1907-2006",
+  "data": "2006-09-29",
+  "titulo": "Colisão no ar do voo Gol 1907",
+  "local": "Serra do Cachimbo",
+  "uf": "MT",
+  "tipo": "aviao",
+  "resumo": "Um Boeing 737 da Gol colidiu no ar com um jato Legacy sobre Mato Grosso. Todos os 154 ocupantes do Boeing morreram.",
+  "mortos": 154,
+  "mortos_nota": "Ocupantes do Boeing.",
+  "fontes": [
+   {
+    "nome": "g1: voo 1907 completa 20 anos (2026)",
+    "url": "https://g1.globo.com/mt/mato-grosso/noticia/2026/09/29/voo-1907-acidente-aereo-que-matou-154-pessoas-em-mt-completa-20-anos.ghtml"
+   }
+  ]
+ },
+ {
+  "id": "joelma-1974",
+  "data": "1974-02-01",
+  "titulo": "Incêndio no Edifício Joelma",
+  "local": "São Paulo",
+  "uf": "SP",
+  "tipo": "incendio",
+  "resumo": "Incêndio num prédio no centro da cidade. Muitas pessoas morreram sem conseguir sair do edifício.",
+  "mortos": 187,
+  "mortos_nota": "Número citado pelo G1 (50 anos da tragédia).",
+  "fontes": [
+   {
+    "nome": "g1: Edifício Joelma, 50 anos (2024)",
+    "url": "https://g1.globo.com/sp/sao-paulo/noticia/2024/02/01/edificio-joelma-relembre-tragedia-que-ha-50-anos-deixava-187-mortos-e-centenas-de-feridos-em-incendio.ghtml"
+   }
+  ]
+ },
+ {
+  "id": "teofilo-otoni-2024",
+  "data": "2024-12-21",
+  "titulo": "Acidente na BR-116 entre ônibus, carreta e carro",
+  "local": "Teófilo Otoni (Lajinha)",
+  "uf": "MG",
+  "tipo": "rodovia",
+  "resumo": "Colisão de ônibus, carreta e carro na BR-116, de madrugada, em Teófilo Otoni (distrito de Lajinha).",
+  "mortos": 39,
+  "mortos_nota": "Corpos identificados pela polícia, segundo o G1 em janeiro de 2025.",
+  "fontes": [
+   {
+    "nome": "g1: corpos das 39 pessoas identificados (2025)",
+    "url": "https://g1.globo.com/mg/minas-gerais/noticia/2025/01/10/corpos-das-39-pessoas-que-morreram-em-acidente-com-onibus-em-minas-gerais-sao-identificados.ghtml"
+   }
+  ]
+ },
+ {
+  "id": "enchentes-rs-2024",
+  "data": "2024-05-01",
+  "data_texto": "maio de 2024",
+  "titulo": "Enchentes no Rio Grande do Sul",
+  "local": "Rio Grande do Sul (vários municípios)",
+  "uf": "RS",
+  "tipo": "chuva_deslizamento",
+  "resumo": "Chuvas fortes provocaram enchentes em municípios de todo o estado.",
+  "mortos": 185,
+  "mortos_nota": "Balanço da Defesa Civil do RS (185 óbitos confirmados e 23 desaparecidos).",
+  "fontes": [
+   {
+    "nome": "SOS Rio Grande do Sul: situação nos municípios",
+    "url": "https://sosenchentes.rs.gov.br/situacao-nos-municipios"
+   }
+  ]
+ }
+]

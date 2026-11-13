@@ -660,3 +660,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
   certificado incompleto. Querido Diário fora do ar também pelo robô (12/11).
 - Valor fora do normal (`valor_suspeito` em `app/oportunidades.py`: cachê acima de R$ 5 mi, outros acima de R$ 50 mi) fica visível com "a conferir" e sai da soma (`fora_da_soma.valor_a_conferir`); não é corrigido. Ex.: R$ 399,99 mi de "parceria institucional" em Natal/RN (12/11).
 - `tests/conftest.py` recusa rodar se `DATABASE_URL` não tiver "test" no nome do banco (um `export DATABASE_URL=...` antes do pytest apagou o banco local de coleta em 12/11).
+
+## Catástrofes e acidentes (13/11/2026)
+- Aba "Catástrofes e acidentes" (`#/catastrofes/<tragedias|rodovias|noticias>`, `P.catastrofes`; NAV após Segurança Pública). API `GET /catastrofes?tipo=` e `GET /catastrofes/rodovias?ano=` (`app/catastrofes.py`, `app/routers/catastrofes.py`).
+- Tragédias: cadastro curado em `app/dados/catastrofes.json` (cada uma com URL de fonte; registro sem fonte é descartado). O número de mortos é o que a fonte cita; `mortos_nota` diz o que a conta inclui (ex.: Brumadinho 272 pela Wikipédia, 270 na denúncia do MPMG).
+- Rodovias por estado: coletor `prf-pessoas` (`app/collectors/prf.py`, arquivo "Agrupados por pessoa" da PRF): por UF e ano, OCORRÊNCIAS com pedestre, motociclista, carro, caminhão/carreta, ônibus e bicicleta (uma ocorrência conta em cada categoria que tiver). Porcentagem = sobre os acidentes do estado. Motoboy não é separável (o arquivo traz o condutor de moto).
+- Notícias: feeds `tema="catastrofe"` em `app/collectors/noticias.py` (Google Notícias, 7 dias; veículo vem da tag `<source>`).
+- Cópia estática: `FIXAS` do `exportar_snapshot.py` e `python -m scripts.catastrofes_copia site/dados` (pacote `p/catastrofes.json`).
+- Testes: `tests/test_catastrofes.py`.

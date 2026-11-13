@@ -74,6 +74,7 @@ FIXAS = [
 FIXAS += ["/concursos/cobertura"] + [f"/concursos?ato={a}" for a in ("convocacao", "nomeacao", "homologacao", "retificacao", "prorrogacao")]
 FIXAS += ["/concursos", "/cursos", "/eventos", "/eventos-patrocinios"] + [f"/eventos?uf={u}" for u in UFS] + [f"/eventos-patrocinios?uf={u}" for u in UFS]
 FIXAS += [f"/escandalos/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "escandalos").glob("*.json"))]
+FIXAS += ["/catastrofes", "/catastrofes/rodovias"] + [f"/catastrofes/rodovias?ano={a}" for a in range(2021, date.today().year + 1)]  # aba Catástrofes e acidentes
 FIXAS += ["/policias"] + [f"/policias/{arq.stem}" for arq in sorted((Path(__file__).resolve().parents[1] / "app" / "dados" / "policias").glob("*.json"))
                           if not arq.name.startswith("aisp-")]
 # quantos detalhes (popouts) guardar por tipo

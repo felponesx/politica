@@ -41,6 +41,7 @@ _TAREFAS_BRUTAS = {
     "transparencia-viagens": social.coletar_viagens,       # anos
     "transparencia-servidores": servidores.coletar_servidores,   # meses
     "prf-acidentes": prf.coletar_prf_acidentes,   # anos
+    "prf-pessoas": prf.coletar_prf_pessoas,       # anos: acidentes por pessoa (pedestre, moto, carro, caminhão)
     "camara-orientacoes": orientacoes.coletar_camara_orientacoes,   # ano_inicial, ano_final
     "inpe-desmatamento": ambiente.coletar_desmatamento,
     "mapbiomas-alertas-territorio": mapbiomas.coletar_mapbiomas_territorio,

@@ -148,3 +148,87 @@ def coletar_prf_acidentes(anos: int = 5):
         if not n.itens and n.avisos:
             raise RuntimeError("; ".join(n.avisos))
     return n.itens
+
+
+# ---- acidentes por pessoa envolvida (arquivo "Agrupados por pessoa"): pedestre, motociclista, carro, caminhão, ônibus, bicicleta
+# Cada categoria conta OCORRÊNCIAS distintas em que ela aparece (um acidente com moto e pedestre entra nas duas). Pessoas e mortos
+# também são guardados. "Motoboy" não existe no arquivo: o que dá para separar é o condutor de motocicleta ou motoneta.
+CATEGORIAS_PESSOA = {
+    "pedestre": lambda tv, te: te == "Pedestre",
+    "motociclista": lambda tv, te: te == "Condutor" and tv in ("Motocicleta", "Motoneta", "Ciclomotor"),
+    "motorista_carro": lambda tv, te: te == "Condutor" and tv in ("Automóvel", "Caminhonete", "Camioneta", "Utilitário"),
+    "caminhao_carreta": lambda tv, te: te == "Condutor" and tv in ("Caminhão-trator", "Caminhão"),
+    "onibus": lambda tv, te: te == "Condutor" and tv in ("Ônibus", "Micro-ônibus"),
+    "bicicleta": lambda tv, te: te == "Condutor" and tv == "Bicicleta",
+}
+COLUNAS_PESSOA = ("id", "uf", "data_inversa", "tipo_veiculo", "tipo_envolvido", "mortos", "feridos_leves", "feridos_graves")
+MINIMO_PESSOA = {"fechado": 40_000, "corrente": 3_000}  # acidentes (ocorrências), não pessoas
+
+
+def agregar_pessoas(leitor, cab: list[str]) -> dict:
+    """{uf: {acidentes, categorias: {nome: {ocorrencias, pessoas, mortos}}}} e meses; cada ocorrência conta uma vez por categoria."""
+    faltam = [c for c in COLUNAS_PESSOA if c not in cab]
+    if faltam:
+        raise ValueError(f"Arquivo por pessoa da PRF mudou: faltam {faltam}")
+    i = {c: cab.index(c) for c in COLUNAS_PESSOA}
+    maximo = max(i.values())
+    ocorrencias: dict[str, set] = {}
+    por_uf: dict[str, dict] = {}
+    for l in leitor:
+        if len(l) <= maximo:
+            continue
+        uf = l[i["uf"]].strip()
+        if uf not in UFS:
+            continue
+        tv, te = l[i["tipo_veiculo"]].strip(), l[i["tipo_envolvido"]].strip()
+        mortos = int(num(l[i["mortos"]]))
+        u = por_uf.setdefault(uf, {"ocorrencias": set(), "categorias": {c: {"ocorrencias": set(), "pessoas": 0, "mortos": 0} for c in CATEGORIAS_PESSOA}})
+        u["ocorrencias"].add(l[i["id"]].strip())
+        for nome, regra in CATEGORIAS_PESSOA.items():
+            if regra(tv, te):
+                c = u["categorias"][nome]
+                c["ocorrencias"].add(l[i["id"]].strip())
+                c["pessoas"] += 1
+                c["mortos"] += mortos
+    saida = {}
+    for uf, u in por_uf.items():
+        saida[uf] = {"acidentes": len(u["ocorrencias"]),
+                     "categorias": {c: {"ocorrencias": len(v["ocorrencias"]), "pessoas": v["pessoas"], "mortos": v["mortos"]}
+                                    for c, v in u["categorias"].items()}}
+    return {"por_uf": saida, "acidentes": sum(v["acidentes"] for v in saida.values())}
+
+
+def coletar_prf_pessoas(anos: int = 5):
+    """Importa o arquivo 'Agrupados por pessoa' dos `anos` mais recentes (anos fechados já gravados não são baixados de novo)."""
+    with registrar_coleta("prf", "pessoas") as (db, n):
+        achados = descobrir(http.get(PAGINA).text, "Agrupados por pessoa")
+        if not achados:
+            raise RuntimeError("PRF: nenhum link de 'Agrupados por pessoa' na página oficial (a página mudou?)")
+        hoje = date.today().year
+        for ano in sorted(achados, reverse=True)[: int(anos)]:
+            if ano < hoje and db.query(Registro).filter_by(fonte="prf", tipo="pessoas_ano", chave=str(ano)).first():
+                continue
+            try:
+                arq = baixar_ano(ano, achados[ano])
+                impressao = hashlib.sha256(arq.read_bytes()).hexdigest()
+                with zipfile.ZipFile(arq) as z:
+                    if z.testzip() is not None:
+                        raise RuntimeError(f"PRF {ano}: zip corrompido")
+                    nome = next(x for x in z.namelist() if x.lower().endswith(".csv"))
+                    leitor = csv.reader(io.TextIOWrapper(z.open(nome), encoding="latin-1", newline=""), delimiter=";")
+                    ag = agregar_pessoas(leitor, [c.strip().lower() for c in next(leitor)])
+                arq.unlink(missing_ok=True)
+                minimo = MINIMO_PESSOA["corrente" if ano == hoje else "fechado"]
+                if ag["acidentes"] < minimo:
+                    raise RuntimeError(f"PRF {ano}: só {ag['acidentes']:,} acidentes por pessoa (esperado ≥ {minimo:,}); nada foi gravado")
+                d = {"ano": ano, "arquivo": nome, "sha256": impressao, "link_oficial_id": achados[ano], "pagina": PAGINA,
+                     "acidentes": ag["acidentes"], "por_uf": ag["por_uf"], "categorias_definicao": list(CATEGORIAS_PESSOA)}
+                upsert(db, Registro, {"fonte": "prf", "tipo": "pessoas_ano", "chave": str(ano)},
+                       {"ano": ano, "titulo": f"Acidentes por pessoa envolvida nas rodovias federais {ano}", "valor": float(ag["acidentes"]), "dados": d})
+                db.commit()
+                n += 1
+            except Exception as e:  # noqa: BLE001
+                n.avisos.append(f"{ano}: {type(e).__name__}: {str(e)[:150]}")
+        if not n.itens and n.avisos:
+            raise RuntimeError("; ".join(n.avisos))
+    return n.itens
