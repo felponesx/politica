@@ -668,3 +668,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Notícias: feeds `tema="catastrofe"` em `app/collectors/noticias.py` (Google Notícias, 7 dias; veículo vem da tag `<source>`).
 - Cópia estática: `FIXAS` do `exportar_snapshot.py` e `python -m scripts.catastrofes_copia site/dados` (pacote `p/catastrofes.json`).
 - Testes: `tests/test_catastrofes.py`.
+
+## Catástrofes: mapa, matéria e repasses (13/11/2026)
+- Aba "Tragédias marcantes": mapa do Brasil em cinza com um ponto vermelho por tragédia (`catMapa`, `catAfim`: projeção Albers do mapa do IBGE + ajuste linear sobre o centro aproximado de cada estado, `CAT_CENT`). O ponto é aproximado: mostra a cidade ou o estado, não o local exato (o cartão diz "Ponto no mapa").
+  Tocar no ponto aproxima a câmera no estado e abre a matéria (`catAbrir`, `catHistoria`): resumo do verbete da Wikipédia (CC BY-SA, com link), foto com autor e licença, número de mortos com a nota da fonte.
+- Coordenadas, verbete e foto por tragédia: `app/dados/catastrofes.json` (`lat`, `lon`, `ponto`, `wiki`, `imagem`). `imagem: null` = sem foto. Gerar matérias e fotos: `python -m scripts.catastrofes_midia site/midia` (grava `app/dados/catastrofes_midia.json` e `site/midia/catastrofes/*.webp`). Foto só entra se mostrar o acontecimento (revisada à mão; ilustrações de avião e estrada vazia ficaram de fora).
+- Pacote `p/catastrofes.json` leva as fotos embutidas (data URI): o Artifact tem limite de 511 arquivos, então não se publica arquivo novo para isso.
+- Repasses federais para defesa civil ficam dentro de "Tragédias marcantes" (cartão "Dinheiro federal para defesa civil"). Abas de notícias e de dinheiro foram removidas.
+- Eventos, concursos e cursos: números em cartões coloridos, "fora da soma" recolhido (`ev-fora`), cor por tipo de ato e por oferta (`ATO_COR`, `corDeNome`).

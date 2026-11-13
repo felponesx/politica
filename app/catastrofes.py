@@ -18,6 +18,7 @@ from app.models import Registro
 from app.utils import UFS
 
 CADASTRO = Path(__file__).parent / "dados" / "catastrofes.json"
+MIDIA = Path(__file__).parent / "dados" / "catastrofes_midia.json"
 
 ROTULOS = {
     "pedestre": "Pedestre",
@@ -63,6 +64,13 @@ def tragedias(tipo: str | None = None, db: Session | None = None) -> dict:
     if tipo:
         validos = [x for x in validos if x.get("tipo") == tipo]
     validos.sort(key=lambda x: x["data"], reverse=True)
+    midia = json.loads(MIDIA.read_text(encoding="utf-8")) if MIDIA.exists() else {}
+    for x in validos:
+        m = midia.get(x["id"]) or {}
+        x["historia"] = m.get("texto") or None
+        x["historia_pagina"] = m.get("pagina")
+        x["imagem"] = m.get("imagem")
+        x["credito_imagem"] = m.get("credito")
     rep = _repasses(db)
     for x in validos:
         a = rep.get(x["data"][:4])

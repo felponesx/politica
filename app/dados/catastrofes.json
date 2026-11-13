@@ -14,7 +14,12 @@
     "nome": "BBC News Brasil",
     "url": "https://www.bbc.com/news/world-latin-america-59617508"
    }
-  ]
+  ],
+  "wiki": "Incêndio na boate Kiss",
+  "lat": -29.6842,
+  "lon": -53.8069,
+  "ponto": "Santa Maria (RS)",
+  "imagem": null
  },
  {
   "id": "brumadinho-2019",
@@ -31,7 +36,11 @@
     "nome": "Wikipédia: Rompimento de barragem em Brumadinho",
     "url": "https://pt.wikipedia.org/wiki/Rompimento_de_barragem_em_Brumadinho"
    }
-  ]
+  ],
+  "wiki": "Rompimento de barragem em Brumadinho",
+  "lat": -20.1186,
+  "lon": -44.1983,
+  "ponto": "Brumadinho (MG), mina Córrego do Feijão"
  },
  {
   "id": "voepass-2283-2024",
@@ -48,7 +57,12 @@
     "nome": "g1: acidente Voepass deixou 62 mortos (2026)",
     "url": "https://g1.globo.com/sp/campinas-regiao/noticia/2026/10/21/acidente-voepass-quem-sao-os-denunciados-pelo-desastre-aereo-que-matou-62-pessoas-em-vinhedo.ghtml"
    }
-  ]
+  ],
+  "wiki": "Voo Voepass 2283",
+  "lat": -23.0296,
+  "lon": -46.9758,
+  "ponto": "Vinhedo (SP)",
+  "imagem": null
  },
  {
   "id": "petropolis-2022",
@@ -65,7 +79,11 @@
     "nome": "Wikipédia: Enchentes e deslizamentos em Petrópolis em 2022",
     "url": "https://pt.wikipedia.org/wiki/Enchentes_e_deslizamentos_em_Petr%C3%B3polis_em_2022"
    }
-  ]
+  ],
+  "wiki": "Enchentes e deslizamentos em Petrópolis em 2022",
+  "lat": -22.5049,
+  "lon": -43.1789,
+  "ponto": "Petrópolis (RJ)"
  },
  {
   "id": "mariana-2015",
@@ -82,7 +100,11 @@
     "nome": "g1: Mariana, 10 anos (2025)",
     "url": "https://g1.globo.com/mg/minas-gerais/noticia/2025/11/03/mariana-10-anos-ninguem-foi-condenado-por-tragedia-que-matou-19-pessoas-destruiu-comunidades-e-contaminou-rio-doce.ghtml"
    }
-  ]
+  ],
+  "wiki": "Rompimento de barragem em Mariana",
+  "lat": -20.3762,
+  "lon": -43.4322,
+  "ponto": "Bento Rodrigues, Mariana (MG)"
  },
  {
   "id": "tam-3054-2007",
@@ -103,7 +125,11 @@
     "nome": "Wikipédia: Voo TAM 3054",
     "url": "https://pt.wikipedia.org/wiki/Voo_TAM_3054"
    }
-  ]
+  ],
+  "wiki": "Voo TAM 3054",
+  "lat": -23.6261,
+  "lon": -46.6564,
+  "ponto": "Aeroporto de Congonhas, São Paulo (SP)"
  },
  {
   "id": "gol-1907-2006",
@@ -120,7 +146,12 @@
     "nome": "g1: voo 1907 completa 20 anos (2026)",
     "url": "https://g1.globo.com/mt/mato-grosso/noticia/2026/09/29/voo-1907-acidente-aereo-que-matou-154-pessoas-em-mt-completa-20-anos.ghtml"
    }
-  ]
+  ],
+  "wiki": "Voo Gol 1907",
+  "lat": -10.0,
+  "lon": -54.9,
+  "ponto": "Área aproximada na Serra do Cachimbo (MT); ponto genérico",
+  "imagem": null
  },
  {
   "id": "joelma-1974",
@@ -137,7 +168,11 @@
     "nome": "g1: Edifício Joelma, 50 anos (2024)",
     "url": "https://g1.globo.com/sp/sao-paulo/noticia/2024/02/01/edificio-joelma-relembre-tragedia-que-ha-50-anos-deixava-187-mortos-e-centenas-de-feridos-em-incendio.ghtml"
    }
-  ]
+  ],
+  "wiki": "Incêndio no Edifício Joelma",
+  "lat": -23.5456,
+  "lon": -46.6357,
+  "ponto": "Centro de São Paulo (SP)"
  },
  {
   "id": "teofilo-otoni-2024",
@@ -154,7 +189,12 @@
     "nome": "g1: corpos das 39 pessoas identificados (2025)",
     "url": "https://g1.globo.com/mg/minas-gerais/noticia/2025/01/10/corpos-das-39-pessoas-que-morreram-em-acidente-com-onibus-em-minas-gerais-sao-identificados.ghtml"
    }
-  ]
+  ],
+  "wiki": "Acidente rodoviário de Teófilo Otoni",
+  "lat": -17.8579,
+  "lon": -41.5081,
+  "ponto": "BR-116, Teófilo Otoni (MG); ponto da cidade",
+  "imagem": null
  },
  {
   "id": "enchentes-rs-2024",
@@ -172,6 +212,10 @@
     "nome": "SOS Rio Grande do Sul: situação nos municípios",
     "url": "https://sosenchentes.rs.gov.br/situacao-nos-municipios"
    }
-  ]
+  ],
+  "wiki": "Enchentes no Rio Grande do Sul em 2024",
+  "lat": -30.0331,
+  "lon": -51.23,
+  "ponto": "Estado todo; o ponto é a capital, Porto Alegre"
  }
 ]

@@ -5,6 +5,7 @@ Chaves: /catastrofes (tragédias), /catastrofes/rodovias, /catastrofes/rodovias?
 As notícias de catástrofes já vêm no noticias.json do robô rápido (tema "catastrofe")."""
 from __future__ import annotations
 
+import base64
 import json
 import os
 import sys
@@ -41,6 +42,14 @@ def gravar(pasta: Path, partes: bool = True) -> list[str]:
             d[k] = resp.json()
         elif resp.status_code != 404:
             raise RuntimeError(f"{k}: HTTP {resp.status_code}")
+    # fotos embutidas no pacote (data URI): não criam arquivo novo na cópia (o Artifact tem limite de arquivos)
+    for k, v in d.items():
+        for x in (v.get("itens") or []) if isinstance(v, dict) else []:
+            img = x.get("imagem")
+            if img:
+                arq = pasta.parent / img
+                if arq.exists():
+                    x["imagem"] = "data:image/webp;base64," + base64.b64encode(arq.read_bytes()).decode("ascii")
     (pasta / ARQ).parent.mkdir(exist_ok=True)
     (pasta / ARQ).write_text(_texto(d), encoding="utf-8")
     man.setdefault("pacotes", {})[ARQ] = {"chaves": sorted(d), "telas": ["catastrofes"]}
