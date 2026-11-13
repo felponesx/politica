@@ -70,6 +70,13 @@ def listar(ativa: bool | None = None, db: Session = Depends(get_db)):
     return [_ver(f) for f in db.scalars(q).all()]
 
 
+@router.get("/fontes-novas", tags=["Fontes cadastradas"])
+def fontes_novas(db: Session = Depends(get_db)):
+    """Quadro genérico das fontes que entraram sem código novo (cadastro pela tela ou adaptador `linhas` do coletor do celular)."""
+    from app import fontes_novas as fn
+    return fn.listar(db)
+
+
 @router.post("/fontes-cadastradas", status_code=201, tags=["Fontes cadastradas"])
 def cadastrar(corpo: FonteIn, request: Request, x_admin_token: str = Header(...)):
     _exige_admin(request, x_admin_token)

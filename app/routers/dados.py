@@ -171,7 +171,7 @@ def status_das_fontes(db: Session = Depends(get_db)):
     coletor grava em `coletas` (app/collectors/registro.py), não pelo nome da linha de comando."""
     from datetime import datetime
 
-    from app.categorias import CATEGORIAS, categoria_de
+    from app.categorias import categoria_de, categorias_atuais, tem_secao
     from app.collectors.registro import registro_das_tarefas
     agora = datetime.now()
     linhas = db.execute(select(Coleta.fonte, Coleta.tarefa, Coleta.status, Coleta.fim, Coleta.inicio, Coleta.itens, Coleta.erro)
@@ -202,8 +202,19 @@ def status_das_fontes(db: Session = Depends(get_db)):
                        else "erro" if d["ultimo_status"] in ("erro", "abortada")
                        else "ok" if d["situacao"] == "ok" else "parado")
         d["categoria"] = categoria_de(t)
+        d["sem_secao"] = not tem_secao(t)   # ainda não posta numa seção: o painel avisa para alguém escolher
         out.append(d)
-    return {"fontes": out, "categorias": CATEGORIAS, "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
+    try:   # fontes que entraram sem código novo (cadastro pela tela / adaptador `linhas`): também aparecem no painel
+        from app import fontes_novas as fn
+        for f in fn.listar(db)["fontes"]:
+            ok = f["registros"] > 0
+            out.append({"tarefa": f["nome"], "origem": f["origem"], "ultima_ok": f["ultima_atualizacao"], "ultimo_status": "ok" if ok else "nunca_coletada",
+                        "ultimo_erro": None, "falhas_recentes": 0, "itens_ultima_ok": f["registros"],
+                        "situacao": "ok" if ok else "nunca_coletada", "rodando": False, "estado": "ok" if ok else "parado",
+                        "categoria": f["categoria"] or "relatorios", "sem_secao": not f["categoria"]})
+    except Exception:   # nunca derruba a tela de situação por causa das fontes novas
+        pass
+    return {"fontes": out, "categorias": categorias_atuais(), "sem_secao": [d["tarefa"] for d in out if d["sem_secao"]], "resumo": {k: sum(1 for d in out if d["situacao"] == k) for k in ("ok", "falhando", "sem_coleta_boa", "nunca_coletada")},
             "aviso": "Mostra se a coleta rodou, não se o número publicado está certo. Dados históricos são mantidos quando uma fonte falha."}
 
 

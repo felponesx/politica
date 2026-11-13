@@ -66,6 +66,48 @@ MAPA = {
 
 _POR_TAREFA = {tarefa: cat for cat, texto in MAPA.items() for tarefa in texto.split()}
 
+import json
+import os
+import re
+from pathlib import Path
+
+_NAV_RE = re.compile(r"const NAV=(\[.*?\]);", re.S)
+_cache: dict = {"chave": None, "nav": []}
+
+
+def _arquivo_do_site() -> Path:
+    base = Path(os.environ["BRASILPLUS_SITE"]) if os.environ.get("BRASILPLUS_SITE") else Path(__file__).resolve().parent.parent / "site"
+    return base / "index.html"
+
+
+def nav_do_site() -> list[tuple[str, str]]:
+    """Seções do menu do BRASIL+ (`const NAV` do site/index.html), lidas na hora: menu novo no site = categoria nova no painel."""
+    arq = _arquivo_do_site()
+    try:
+        st = arq.stat()
+        chave = (str(arq), st.st_mtime_ns, st.st_size)
+        if _cache["chave"] != chave:
+            m = _NAV_RE.search(arq.read_text(encoding="utf-8"))
+            _cache.update(chave=chave, nav=[(i, n) for i, n in json.loads(m.group(1)) if i != "inicio"] if m else [])
+        return list(_cache["nav"])
+    except (OSError, ValueError, TypeError):
+        return []
+
+
+def categorias_atuais() -> list[dict]:
+    """A lista fixa (com a ordem do painel) + qualquer seção que o menu do site tenha ganhado depois (marcada `nova`, ícone padrão).
+    O nome vem do menu do site, que é quem manda."""
+    nav = dict(nav_do_site())
+    out = [{**c, "nome": nav.get(c["id"], c["nome"])} for c in CATEGORIAS]
+    conhecidas = {c["id"] for c in CATEGORIAS}
+    out += [{"id": i, "nome": n, "nova": True} for i, n in nav.items() if i not in conhecidas]
+    return out
+
+
+def tem_secao(tarefa: str) -> bool:
+    """False = a coleta ainda não foi posta numa seção (cai em Relatórios e Dados até alguém escolher)."""
+    return tarefa in _POR_TAREFA
+
 
 def categoria_de(tarefa: str) -> str:
     """Tarefa sem categoria escrita cai em Relatórios e Dados (o teste garante que nenhuma fica sem categoria)."""

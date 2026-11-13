@@ -16,7 +16,7 @@ CAMPO = re.compile(r"^[A-Za-z0-9_.\-]{1,120}$")
 TIPO = re.compile(r"^[a-z0-9_:\-]{1,60}$")
 PESSOA = re.compile(r"(cpf|nome|e-?mail|telefone|celular|endere[cç]o)", re.I)
 INTERVALO = (5, 43200)
-CAMPOS_PERMITIDOS = {"tipo", "chave", "valor", "titulo", "uf", "data", "lista", "dados"}
+CAMPOS_PERMITIDOS = {"tipo", "chave", "valor", "titulo", "uf", "data", "lista", "dados", "categoria"}
 
 
 def _interno(host: str) -> bool:
@@ -77,12 +77,16 @@ def validar(entrada: dict) -> dict:
     if not TIPO.match(tipo):
         raise ValueError("campos.tipo: use letras minúsculas, números, _ : -")
     campos = {**campos, "tipo": tipo}
-    for caminho in _textos_do_mapa(campos):
+    if campos.get("categoria") is not None:
+        from app.categorias import categorias_atuais
+        if campos["categoria"] not in {c["id"] for c in categorias_atuais()}:
+            raise ValueError("campos.categoria: use o id de uma seção do menu (ex.: saude, gastos)")
+    for caminho in _textos_do_mapa({k: v for k, v in campos.items() if k != "categoria"}):
         if not CAMPO.match(str(caminho)):
             raise ValueError(f"caminho de campo inválido: {caminho!r}")
     permitir = bool(entrada.get("permitir_pessoas", False))
     if not permitir:
-        for caminho in _textos_do_mapa(campos):
+        for caminho in _textos_do_mapa({k: v for k, v in campos.items() if k != "categoria"}):
             if PESSOA.search(str(caminho)):
                 raise ValueError(f"o campo {caminho!r} parece dado de pessoa: marque 'permitir pessoas' para esta fonte")
     return {"nome": nome, "produto": str(entrada.get("produto") or "BRASIL+")[:60], "url": url,
@@ -93,6 +97,6 @@ def para_coletor(fonte) -> dict:
     """Forma que o coletor do PC entende (mesmo formato de um [[fonte]] do vínculo TOML)."""
     campos = fonte.campos or {}
     return {"nome": fonte.nome, "url": fonte.url, "intervalo_min": fonte.intervalo_min,
-            "publicar_dados": True, "adaptador": "linhas", "mapa": campos,
+            "publicar_dados": True, "adaptador": "linhas", "mapa": {k: v for k, v in campos.items() if k != "categoria"},
             "headers": {"Accept": "application/json"},
             "esperado": f"Lista de registros da fonte {fonte.nome} em {fonte.formato}, mapeada pelos campos cadastrados."}

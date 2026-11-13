@@ -7,7 +7,7 @@ import json
 import re
 from pathlib import Path
 
-from app.categorias import CATEGORIAS, MAPA, SEM_COLETA_PROPRIA, categoria_de
+from app.categorias import CATEGORIAS, MAPA, SEM_COLETA_PROPRIA, categoria_de, categorias_atuais, tem_secao
 from app.collectors import TAREFAS
 from app.db import SessionLocal, criar_tabelas
 from app.main import app
@@ -22,13 +22,29 @@ def test_toda_tarefa_tem_categoria_escrita_de_proposito():
 
 
 def test_categorias_sao_as_secoes_do_menu_do_site():
-    """Se alguém criar uma seção no site e esquecer a categoria (ou o contrário), o teste avisa."""
+    """A lista do painel acompanha o menu do site: nenhuma seção do menu fica de fora (as novas entram sozinhas)."""
     site = (Path(__file__).resolve().parents[1] / "site" / "index.html").read_text(encoding="utf-8")
     nav = json.loads(re.search(r"const NAV=(\[.*?\]);", site, re.S).group(1))
     secoes = {i: n for i, n in nav if i != "inicio"}
-    cats = {c["id"]: c["nome"] for c in CATEGORIAS}
-    assert set(cats) == set(secoes), (set(cats) ^ set(secoes))
-    assert all(cats[i] == secoes[i] for i in cats)
+    atuais = {c["id"]: c["nome"] for c in categorias_atuais()}
+    assert set(secoes) <= set(atuais), set(secoes) - set(atuais)
+    assert all(atuais[i] == secoes[i] for i in secoes)
+
+
+def test_secao_nova_no_menu_vira_categoria_sozinha(tmp_path, monkeypatch):
+    pasta = tmp_path / "site"
+    pasta.mkdir()
+    (pasta / "index.html").write_text('<script>const NAV=[["inicio","Início"],["gastos","Gastos Públicos"],["transporte","Transporte"]];</script>', encoding="utf-8")
+    monkeypatch.setenv("BRASILPLUS_SITE", str(pasta))
+    atuais = {c["id"]: c for c in categorias_atuais()}
+    assert atuais["transporte"]["nome"] == "Transporte" and atuais["transporte"]["nova"] is True
+    assert "nova" not in atuais["gastos"] and "saude" in atuais   # as da lista fixa continuam, mesmo fora do menu
+    assert [c["id"] for c in categorias_atuais()][: len(CATEGORIAS)] == [c["id"] for c in CATEGORIAS]
+
+
+def test_coleta_sem_secao_e_avisada():
+    assert tem_secao("bcb-series") and not tem_secao("coleta-nova-sem-secao")
+    assert categoria_de("coleta-nova-sem-secao") == "relatorios"
 
 
 def test_toda_secao_com_coleta_tem_tarefa_e_as_sem_coleta_estao_marcadas():
@@ -44,7 +60,8 @@ def test_status_traz_categoria_e_estado_rodando():
         db.add(Coleta(fonte="bcb", tarefa="series", parametros={"anos": "2"}, status="rodando", inicio=datetime.now()))
         db.commit()
     dados = cliente.get("/fontes/status").json()
-    assert {c["id"] for c in dados["categorias"]} == {c["id"] for c in CATEGORIAS}
+    assert {c["id"] for c in CATEGORIAS} <= {c["id"] for c in dados["categorias"]}
+    assert "sem_secao" in dados and all("sem_secao" in f for f in dados["fontes"])
     bcb = next(f for f in dados["fontes"] if f["tarefa"] == "bcb-series")
     assert bcb["categoria"] == "indicadores" and bcb["rodando"] is True and bcb["estado"] == "rodando"
     assert all(f["estado"] in ("rodando", "aviso", "erro", "ok", "parado") for f in dados["fontes"])
