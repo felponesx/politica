@@ -60,7 +60,7 @@ MAPA = {
         assembleia-arquivo legislacao-normas lexml-estaduais cnj-justica""",
     "escandalos": """escandalos-fila cgu-sancoes ibama-multas mte-lista-suja tcu-inabilitados tcu-contas-irregulares""",
     "noticias": "noticias-politica querido-diario",
-    "ensino": "ensino-ideb inep-igc inep-censo-ies",
+    "ensino": "ensino-ideb inep-igc inep-censo-ies censo-escolar",
     "concursos": "concursos concursos-estaduais concursos-municipais cursos-gratuitos",
     "eventos": "eventos-patrocinios eventos-pendencias eventos-shows",
     "indicadores": """ibge-indicadores bcb-series bcb-financeiro anp-combustiveis aneel-tarifas anatel-banda-larga anac-aerodromos
