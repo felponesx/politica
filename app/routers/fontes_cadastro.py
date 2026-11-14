@@ -39,8 +39,25 @@ def _ver(f: FonteCadastrada) -> dict:
             "atualizada_em": f.atualizada_em.isoformat() if f.atualizada_em else None}
 
 
-def _exige_admin(request: Request, token: str) -> None:
-    """Mesmo critério das coletas pela API: token de 24+ caracteres e no máximo 10 tentativas por minuto por IP."""
+def _sessao_autoriza(request: Request, secao: str, nivel: str) -> bool | None:
+    """None = sem sessão; True/False = conta logada com/sem permissão na seção (app/painel_acesso.py). Só leitura do banco."""
+    from app import contas, painel_acesso
+    from app.db import SessionLocal
+    with SessionLocal() as db:
+        conta = contas.conta_da_sessao(db, request.cookies.get(contas.COOKIE))
+        return None if conta is None else painel_acesso.pode(conta, secao, nivel)
+
+
+def _exige_admin(request: Request, token: str, secao: str = "bots", nivel: str = "alterar") -> None:
+    """Escrita no painel: entra quem tem a SESSÃO de uma conta com permissão na seção, ou quem manda a chave do administrador
+    (scripts). A chave segue o critério das coletas pela API: 24+ caracteres e no máximo 10 tentativas por minuto por IP."""
+    if not token:
+        ok = _sessao_autoriza(request, secao, nivel)
+        if ok:
+            return
+        if ok is False:
+            raise HTTPException(403, "Sua conta não tem permissão para esta ação no painel.")
+        raise HTTPException(401, "Entre no painel com uma conta autorizada ou envie a chave do administrador.")
     if settings.admin_token in ("", "troque-este-token") or len(settings.admin_token) < 24:
         raise HTTPException(403, "Defina um ADMIN_TOKEN forte (24+ caracteres) no .env para cadastrar fontes.")
     try:
@@ -78,7 +95,7 @@ def fontes_novas(db: Session = Depends(get_db)):
 
 
 @router.post("/fontes-cadastradas", status_code=201, tags=["Fontes cadastradas"])
-def cadastrar(corpo: FonteIn, request: Request, x_admin_token: str = Header(...)):
+def cadastrar(corpo: FonteIn, request: Request, x_admin_token: str = Header(default="")):
     _exige_admin(request, x_admin_token)
     try:
         limpa = fontes_cadastro.validar(corpo.model_dump())
@@ -98,7 +115,7 @@ def cadastrar(corpo: FonteIn, request: Request, x_admin_token: str = Header(...)
 
 
 @router.post("/fontes-cadastradas/{fonte_id}", tags=["Fontes cadastradas"])
-def atualizar(fonte_id: int, corpo: FonteAtualiza, request: Request, x_admin_token: str = Header(...)):
+def atualizar(fonte_id: int, corpo: FonteAtualiza, request: Request, x_admin_token: str = Header(default="")):
     _exige_admin(request, x_admin_token)
     db = _sessao_escrita()
     try:

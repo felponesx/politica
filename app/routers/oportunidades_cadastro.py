@@ -44,7 +44,7 @@ def listar(request: Request, tipo: str | None = None, uf: str | None = None, sta
     if status not in STATUS:
         raise HTTPException(422, "status inválido")
     if status != "aprovado":   # pendente e rejeitado não são públicos: só o administrador vê
-        _exige_admin(request, x_admin_token or "")
+        _exige_admin(request, x_admin_token or "", nivel="ver")
     q = select(Oportunidade).where(Oportunidade.status == status).order_by(Oportunidade.inscricoes_ate.is_(None),
                                                                             Oportunidade.inscricoes_ate, Oportunidade.id.desc())
     if tipo:
@@ -55,7 +55,7 @@ def listar(request: Request, tipo: str | None = None, uf: str | None = None, sta
 
 
 @router.post("/oportunidades", status_code=201, tags=["Cursos, eventos e concursos"])
-def cadastrar(corpo: OportunidadeIn, request: Request, x_admin_token: str = Header(...)):
+def cadastrar(corpo: OportunidadeIn, request: Request, x_admin_token: str = Header(default="")):
     _exige_admin(request, x_admin_token)
     corpo.uf = corpo.uf.upper() if corpo.uf else None   # UF sempre em maiúsculas, para o filtro achar
     if corpo.tipo not in TIPOS:
@@ -95,10 +95,10 @@ def _decidir(oid: int, status: str, request: Request, token: str) -> dict:
 
 
 @router.post("/oportunidades/{oid}/aprovar", tags=["Cursos, eventos e concursos"])
-def aprovar(oid: int, request: Request, x_admin_token: str = Header(...)):
+def aprovar(oid: int, request: Request, x_admin_token: str = Header(default="")):
     return _decidir(oid, "aprovado", request, x_admin_token)
 
 
 @router.post("/oportunidades/{oid}/rejeitar", tags=["Cursos, eventos e concursos"])
-def rejeitar(oid: int, request: Request, x_admin_token: str = Header(...)):
+def rejeitar(oid: int, request: Request, x_admin_token: str = Header(default="")):
     return _decidir(oid, "rejeitado", request, x_admin_token)

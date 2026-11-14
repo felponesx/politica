@@ -72,12 +72,19 @@ def preparar(base: Path, porta: int = PORTA_PADRAO) -> dict:
 
     arq = base / "config.env"
     cfg = ler_config(arq)
+    novos: dict[str, str] = {}
     if len(cfg.get("ADMIN_TOKEN", "")) < 24:
-        cfg["ADMIN_TOKEN"] = secrets.token_urlsafe(32)
+        novos["ADMIN_TOKEN"] = secrets.token_urlsafe(32)
+    # chave secreta do código do CPF (sem ela o cadastro de contas é recusado). Gerada uma vez e guardada: trocar depois
+    # faria o mesmo CPF gerar outro código e as contas antigas deixariam de impedir duplicidade.
+    if len(cfg.get("CPF_PEPPER", "")) < 32 and len(os.environ.get("CPF_PEPPER", "")) < 32:
+        novos["CPF_PEPPER"] = secrets.token_hex(32)
+    if novos:
+        cfg.update(novos)
         texto = arq.read_text(encoding="utf-8-sig") if arq.exists() else CABECALHO
         if texto and not texto.endswith("\n"):
             texto += "\n"
-        arq.write_text(texto + f"ADMIN_TOKEN={cfg['ADMIN_TOKEN']}\n", encoding="utf-8")
+        arq.write_text(texto + "".join(f"{k}={v}\n" for k, v in novos.items()), encoding="utf-8")
 
     vinculos = base / "coletor" / "vinculos"
     if not vinculos.exists():
@@ -101,6 +108,7 @@ def preparar(base: Path, porta: int = PORTA_PADRAO) -> dict:
         "COLETOR_RAIZ": str(base / "coletor"),
         "BRASIL_FONTES_URL": f"http://127.0.0.1:{porta}/fontes-cadastradas?ativa=true",
         "BRASILPLUS_SITE": str(site if site.exists() else recurso("site")),
+        "BRASILPLUS_INDEX": str(recurso("site/index.html")),
         "PASTA_ARQUIVOS_COLETA": str(base / "dados-brasilplus"),
     }
     for k, v in {**padrao, **cfg}.items():

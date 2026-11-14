@@ -555,6 +555,9 @@ class Conta(Base):
     uf: Mapped[str | None] = mapped_column(String(2))
     cidade: Mapped[str | None] = mapped_column(String(80))
     interesses: Mapped[str | None] = mapped_column(String(300))  # chaves separadas por vírgula
+    # acesso ao painel de coletas (app/painel_acesso.py): conta bloqueada não entra; permissões por seção sobrepõem o padrão do papel
+    bloqueada: Mapped[bool] = mapped_column(default=False, server_default="0")
+    permissoes: Mapped[dict | None] = mapped_column(JSON)
 
 
 class Sessao(Base):

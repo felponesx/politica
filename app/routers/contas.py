@@ -62,7 +62,7 @@ def _limita(chave: str, limite: int, janela_s: int) -> None:
     except limites.LimiteIndisponivel:
         raise HTTPException(503, "Serviço temporariamente indisponível. Tente de novo em instantes.")
     if not r.ok:
-        raise HTTPException(429, "Muitas tentativas. Espere alguns minutos.", headers={"Retry-After": str(r.reinicia)})
+        raise HTTPException(429, "Muitas tentativas. Espere alguns minutos.", headers={"Retry-After": str(r.reinicia_em)})
 
 
 def _cookie(resp: JSONResponse, request: Request, token: str | None) -> None:
@@ -203,7 +203,9 @@ def eu(request: Request, db: Session = Depends(get_db)):
     conta = contas.conta_da_sessao(db, request.cookies.get(contas.COOKIE))
     if conta is None:
         return {"conta": None}
-    return {"conta": _resumo_conta(conta), "perfil": contas.perfil_de(conta), "admin": contas.e_admin(conta)}
+    from app import painel_acesso
+    return {"conta": _resumo_conta(conta), "perfil": contas.perfil_de(conta), "admin": contas.e_admin(conta),
+            "painel": painel_acesso.permissoes_de(conta), "papel_painel": painel_acesso.papel_efetivo(conta)}
 
 
 @router.post("/contas/perfil")

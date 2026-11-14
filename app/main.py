@@ -19,7 +19,7 @@ from app.routers import (dados, eleicoes, legislacao, legislativo, ligacoes, nor
                          fontes_cadastro as fontes_cadastro_rotas, ia_propria as ia_propria_rotas, organizador as organizador_rotas,
                          oportunidades as oportunidades_rotas, oportunidades_cadastro as oportunidades_cadastro_rotas,
                          publicacoes as publicacoes_rotas, profissoes as profissoes_rotas, empresas_tipo as empresas_tipo_rotas,
-                         catastrofes as catastrofes_rotas)
+                         catastrofes as catastrofes_rotas, painel_contas as painel_contas_rotas, painel_dados as painel_dados_rotas)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -90,6 +90,8 @@ app.include_router(v03.router)
 app.include_router(oportunidades_rotas.router)
 app.include_router(oportunidades_cadastro_rotas.router)
 app.include_router(organizador_rotas.router)
+app.include_router(painel_contas_rotas.router)
+app.include_router(painel_dados_rotas.router)
 app.include_router(seguranca.router)
 app.include_router(saude_rotas.router)
 app.include_router(ensino_rotas.router)
@@ -111,22 +113,34 @@ SITE = (Path(os.environ["BRASILPLUS_SITE"]) if os.environ.get("BRASILPLUS_SITE")
 app.mount("/midia", StaticFiles(directory=SITE.parent / "midia", check_dir=False), name="midia")
 
 
+# O programa instalado leva a página principal junto (sempre a versão nova); fotos e dados continuam na pasta do site.
+INDEX = Path(os.environ["BRASILPLUS_INDEX"]) if os.environ.get("BRASILPLUS_INDEX") else SITE
+
+
 @app.get("/", include_in_schema=False)
 def site():
-    if SITE.exists():
-        return FileResponse(SITE, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
+    pagina = INDEX if INDEX.exists() else SITE
+    if pagina.exists():
+        return FileResponse(pagina, media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
     return {"status": "ok", "docs": "/docs", "aviso": "Coloque o site em site/index.html para servi-lo aqui."}
 
 
 # Painel de coletas do próprio BRASIL+ (lê /fontes/status e /coletas; só para o seu PC e o celular via Tailscale)
-PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"
+PAINEL = Path(__file__).resolve().parent / "static" / "painel.html"            # painel anterior (cadastro de fontes, cursos e eventos)
+PAINEL_NOVO = Path(__file__).resolve().parent / "static" / "painel_novo.html"  # visual novo, ligado aos dados deste computador
+# só código e dados da própria página; nada de fora, nada de moldura, sem <base> nem formulário para outro site
+_CABECALHOS_PAINEL = {
+    "Cache-Control": "no-cache",
+    "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
+                               "img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "X-Frame-Options": "DENY"}
 
 
 @app.get("/painel", include_in_schema=False)
 def painel():
-    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers={
-        "Cache-Control": "no-cache",
-        # só código e dados da própria página; nada de fora, nada de moldura, sem <base> nem formulário para outro site
-        "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
-                                   "img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
-        "X-Frame-Options": "DENY"})
+    return FileResponse(PAINEL_NOVO, media_type="text/html; charset=utf-8", headers=_CABECALHOS_PAINEL)
+
+
+@app.get("/painel/antigo", include_in_schema=False)
+def painel_antigo():
+    return FileResponse(PAINEL, media_type="text/html; charset=utf-8", headers=_CABECALHOS_PAINEL)

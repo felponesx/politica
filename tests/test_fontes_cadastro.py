@@ -68,7 +68,7 @@ def cliente(monkeypatch):
 
 
 def test_cadastrar_exige_token(cliente):
-    assert cliente.post("/fontes-cadastradas", json=BASE).status_code == 422   # sem o cabeçalho
+    assert cliente.post("/fontes-cadastradas", json=BASE).status_code == 401   # sem chave e sem sessão
     r = cliente.post("/fontes-cadastradas", json=BASE, headers={"X-Admin-Token": "errado-errado-errado-errado-1"})
     assert r.status_code == 401
 
