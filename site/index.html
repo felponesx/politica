@@ -2170,6 +2170,17 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #catV.ac-foco .g2{grid-template-columns:1fr}
 #catV.ac-foco #lcMap{max-width:640px;margin:0 auto}
 #catV.ac-foco #lcMap svg.geo{overflow:hidden;filter:none;width:100%;height:auto;max-height:480px}
+/* v1.13 · ensino: salários e redes */
+.ens-sals{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.ens-sal{border:1px solid var(--line);border-top:3px solid var(--c,#2F6FED);border-radius:12px;padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:4px}
+.ens-sal b{font-size:24px;color:var(--ink)}
+.ens-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.ens-rede{margin:12px 0}
+.ens-rede-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}
+.ens-rede-top i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.ens-trilho{height:10px;border-radius:999px;background:var(--line);margin:6px 0;overflow:hidden}
+.ens-trilho div{height:100%;border-radius:999px}
+.ens-materias{border-left:3px solid #F5A524}
 </style>
 </head>
 <body>
@@ -5804,7 +5815,7 @@ handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M
 const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
 /* ---------- Ensino (IDEB, faculdades, escolas) ---------- */
 const ENS_ETAPAS=[["iniciais","Anos iniciais (1º ao 5º ano)"],["finais","Anos finais (6º ao 9º ano)"],["medio","Ensino médio"]],ENS_COR={iniciais:"#2F6FED",finais:"#1BAF7A",medio:"#F5A524"};
-const ENS_ABAS=[["geral","Visão geral"],["estados","Por estado"],["faculdades","Faculdades"],["escolas","Escolas"]];
+const ENS_ABAS=[["geral","Visão geral"],["professores","Professores"],["redes","Redes de ensino"],["estados","Por estado"],["faculdades","Faculdades"],["escolas","Escolas"]];
 const ensN1=v=>v==null?"—":(+v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const ensAnos=o=>Object.keys(o||{}).filter(a=>o[a]!=null).sort();
 const ensUFSel=()=>UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("");
@@ -5843,9 +5854,36 @@ function ensEscolas(D){const E=D.escolas;if(!E||!ENS_ETAPAS.some(([k])=>(E[k]||[
   <div class="pbar" style="margin-bottom:8px"><select id="eeE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}">${esc(t)}</option>`).join("")}</select></div>
   <div class="filters"><select id="eeU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="eeR" data-pill="Rede"><option value="">Todas as redes</option>${redes.map(r=>`<option>${esc(r)}</option>`).join("")}</select><input id="eeQ" placeholder="Buscar escola ou cidade" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensEL"></div></div>`,
   mount(){lista();$("#eeE").onchange=e=>{f.etapa=e.target.value;lista()};$("#eeU").onchange=e=>{f.uf=e.target.value;lista()};$("#eeR").onchange=e=>{f.rede=e.target.value;lista()};$("#eeQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
+// ===== Ensino · professores (RAIS 2024) e redes de ensino (Censo Escolar do INEP): /ensino/professores e /ensino/redes
+const ENS_REDE_COR={estadual:"#2F6FED",privada:"#1BAF7A",municipal:"#F5A524",federal:"#8B5CF6"};
+const ENS_REDE_NOME={estadual:"Estadual",privada:"Privada",municipal:"Municipal",federal:"Federal"};
+const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6"})[k]||"#2F6FED";
+function ensProfessores(D){const N=D.niveis||[];
+ const cards=N.map(n=>`<div class="ens-sal" style="--c:${ensNivelCor(n.chave)}"><span class="small muted">${esc(n.nivel)}</span><b>${brlC(n.media)}</b><em class="small muted">média de ${nf(n.vinculos)} vínculos${n.media_jornada_31h_ou_mais?` · com 31 h ou mais: ${brlC(n.media_jornada_31h_ou_mais)}`:""}</em></div>`).join("");
+ const tabelas=N.map(n=>`<div class="panel mt"><h2 style="margin:0 0 8px"><span class="ens-dot" style="background:${ensNivelCor(n.chave)}"></span>${esc(n.nivel)}</h2>
+  ${table([["Ocupação",x=>esc(x.ocupacao)],["Vínculos",x=>nf(x.vinculos),"n"],["Média",x=>brlC(x.media),"n"],["Faixa típica (10% a 90%)",x=>(x.p10!=null&&x.p90!=null)?`${brlC(x.p10)} a ${brlC(x.p90)}`:"—","n"]],n.ocupacoes)}</div>`).join("");
+ return{html:`<div class="panel mt"><h2>Quanto ganha um professor</h2><p class="small muted" style="margin:0 0 12px">${esc(D.aviso||"")}</p>
+   <div class="ens-sals">${cards}</div></div>${tabelas}
+   <div class="rbanner mt small">Fonte: ${esc(D.fonte||"RAIS 2024 (Ministério do Trabalho e Emprego)")}. Valores nominais de 2024.</div>`}}
+function ensRedes(D,uf){const pais=D.pais||{},ord=D.redes_ordem||REDES_ORDEM_ENS;
+ const tot=ord.reduce((a,r)=>a+((pais[r]||{}).mat_total||0),0)||1;
+ const pct=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
+ const barras=ord.filter(r=>pais[r]).map(r=>{const x=pais[r];return`<div class="ens-rede"><div class="ens-rede-top"><span><i style="background:${ENS_REDE_COR[r]}"></i>${ENS_REDE_NOME[r]}</span><b>${nf(x.mat_total)} matrículas · ${pct(x.mat_total)}</b></div><div class="ens-trilho"><div style="width:${(100*x.mat_total/tot).toFixed(1)}%;background:${ENS_REDE_COR[r]}"></div></div><small class="muted">${nf(x.escolas)} escolas · ${nf(x.mat_fundamental)} no fundamental · ${nf(x.mat_medio)} no médio · ${nf(x.doc_fundamental)} professores no fundamental · ${nf(x.doc_medio)} no médio</small></div>`}).join("");
+ const linhas=(D.estados||[]).map(e=>({uf:e.uf,...e.redes}));
+ const porEstado=uf?"":`<div class="panel mt"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Matrículas em escolas estaduais e privadas em cada estado. Toque no estado para ver as escolas dele.</p>${table([["Estado",x=>`<a href="#/ensino/redes/${x.uf}">${esc((UF[x.uf]||{}).nome||x.uf)}</a>`],["Escolas estaduais",x=>nf((x.estadual||{}).escolas),"n"],["Matrículas estaduais",x=>nf((x.estadual||{}).mat_total),"n"],["Matrículas privadas",x=>nf((x.privada||{}).mat_total),"n"],["% na privada",x=>{const t=(x.estadual||{}).mat_total+(x.privada||{}).mat_total+(x.municipal||{}).mat_total+(x.federal||{}).mat_total||1;return ((100*((x.privada||{}).mat_total||0))/t).toFixed(1).replace(".",",")+"%"},"n"]],linhas)}</div>`;
+ const detalhe=uf?(()=>{const e=(D.estados||[]).find(x=>x.uf===uf);if(!e)return rvazio("Sem dados deste estado.");
+   return`<div class="panel mt"><h2>${esc((UF[uf]||{}).nome||uf)}</h2>${table([["Rede",x=>ENS_REDE_NOME[x[0]]||x[0]],["Escolas",([,v])=>nf(v.escolas),"n"],["Matrículas",([,v])=>nf(v.mat_total),"n"],["Fundamental",([,v])=>nf(v.mat_fundamental),"n"],["Médio",([,v])=>nf(v.mat_medio),"n"],["Professores no fundamental",([,v])=>nf(v.doc_fundamental),"n"],["Professores no médio",([,v])=>nf(v.doc_medio),"n"]],ord.filter(r=>e.redes[r]).map(r=>[r,e.redes[r]]))}
+   <p class="small mt"><a href="#/ensino/redes">‹ Voltar para o país</a></p></div>`})():"";
+ return{html:`<div class="panel mt"><h2>Matrículas por rede de ensino</h2><p class="small muted" style="margin:0 0 10px">${esc(D.aviso||"")}</p>${barras}</div>
+   <div class="panel mt ens-materias"><h2>Matérias dadas em cada rede</h2><p class="small" style="margin:0">Essa informação não está em nenhuma base aberta que a gente consiga ler: o Censo Escolar mostra escolas, matrículas e professores por etapa, mas não diz quais disciplinas cada escola dá. Não estimamos isso.</p></div>
+   ${porEstado}${detalhe}
+   <div class="rbanner mt small">Fonte: ${esc(D.fonte)} (ano ${D.ano}).</div>`}}
+const REDES_ORDEM_ENS=["estadual","privada","municipal","federal"];
+
 P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";
  return{html:`<div class="ph"><div><h1>Ensino</h1><p>Qualidade do ensino no Brasil e em cada estado: evolução do IDEB, melhores faculdades e melhores escolas.</p></div></div><div class="tabs" id="ensTabs" style="margin-top:0">${ENS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/ensino/${a[0]}">${a[1]}</a>`).join("")}</div><div id="ensV">${API.on?rload():`<div class="rbanner">O Ensino aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
-  mount(){if(!API.on)return;apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}const v=$("#ensV");if(!v)return;let o;
+  mount(){if(!API.on)return;if(aba==="professores"||aba==="redes"){const f=aba==="professores"?apiGet("/ensino/professores"):apiGet("/ensino/redes"+(UF[uf]?"?uf="+uf:""));f.then(D=>{const v=$("#ensV");if(!v)return;const o=aba==="professores"?ensProfessores(D):ensRedes(D,UF[uf]?uf:"");v.innerHTML=o.html;if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)});return}
+  apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}const v=$("#ensV");if(!v)return;let o;
    if(aba==="geral")o={html:ensGeral(D)+RSRC()};else if(aba==="estados")o=ensEstados(D,{uf:UF[uf]?uf:""});else if(aba==="faculdades")o=ensFaculdades(D);else o=ensEscolas(D);
    v.innerHTML=o.html;if(o.mount)o.mount();if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)})}}};
 // ===== Concursos e cursos · Eventos (12/11/2026): /concursos, /cursos, /eventos, /eventos-patrocinios (app/oportunidades.py)

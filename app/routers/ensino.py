@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.orm import Session
 
 from app import ensino
@@ -46,4 +46,24 @@ def ensino_painel(db: Session = Depends(get_db)):
     d = memo(("ensino",), lambda: ensino.montar(db))
     if not any(d.get(k) for k in ("ideb", "superior", "escolas")):
         raise HTTPException(404, "Sem dados de ensino. Rode a coleta ensino-ideb.")
+    return d
+
+
+@router.get("/ensino/professores", tags=["Ensino"])
+def ensino_professores():
+    """Remuneração média dos professores por etapa (fundamental anos iniciais e finais, médio), RAIS 2024, com as ocupações."""
+    from app import ensino_extra
+    d = ensino_extra.professores()
+    if not d:
+        raise HTTPException(404, "Sem dados de professores. Rode a coleta de profissões (RAIS).")
+    return d
+
+
+@router.get("/ensino/redes", tags=["Ensino"])
+def ensino_redes(ano: int | None = None, uf: str | None = Query(None, min_length=2, max_length=2), db: Session = Depends(get_db)):
+    """Escolas, matrículas e professores por etapa e por rede (estadual, privada, municipal, federal), Censo Escolar do INEP."""
+    from app import ensino_extra
+    d = ensino_extra.redes(db, ano, uf)
+    if not d:
+        raise HTTPException(404, "Sem dados do Censo Escolar. Rode a coleta censo-escolar.")
     return d

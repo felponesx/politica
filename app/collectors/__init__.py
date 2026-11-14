@@ -1,5 +1,5 @@
 """Registro de todas as tarefas de coleta (usado pela CLI e pela API)."""
-from app.collectors import (coletor_externo, oportunidades, concursos_estaduais, stj, tse_relatorias, saude_mun,
+from app.collectors import (coletor_externo, censo_escolar, oportunidades, concursos_estaduais, stj, tse_relatorias, saude_mun,
                              ibge_malha, osm_pbf, osm_malha, prodes_mata, mapbiomas, escandalos_fila, inep_censo_ies,
                              caged_estoque, reforma, caged, querido_diario, transito, tse_doadores, inep_igc, prf,
                              servidores, orientacoes, queimadas, ibama, trabalho_escravo, renuncia, anac, cpis, anp,
@@ -50,6 +50,7 @@ _TAREFAS_BRUTAS = {
     "transparencia-servidores": servidores.coletar_servidores,   # meses
     "prf-acidentes": prf.coletar_prf_acidentes,   # anos
     "defesa-civil-transferencias": defesa_civil_transf.coletar_defesa_civil_transf,  # anos: repasses federais para defesa civil
+    "censo-escolar": censo_escolar.coletar_censo_escolar,  # ano: escolas, matrículas e professores por estado e rede
     "prf-pessoas": prf.coletar_prf_pessoas,       # anos: acidentes por pessoa (pedestre, moto, carro, caminhão)
     "camara-orientacoes": orientacoes.coletar_camara_orientacoes,   # ano_inicial, ano_final
     "inpe-desmatamento": ambiente.coletar_desmatamento,
