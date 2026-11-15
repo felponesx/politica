@@ -5858,17 +5858,9 @@ function ensIdeb(I,uf,etapa){
  const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(ref[k])))].sort();
  const series=ENS_ETAPAS.map(([k,t])=>({n:t.split(" (")[0],c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
  let h=`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
- if(!uf){
-  const ufs=I.ufs||{},v={};
-  Object.keys(ufs).forEach(u=>{const o=ufs[u][etapa]||{},a=ensAnos(o);if(a.length)v[u]=o[a[a.length-1]]});
-  const anosE=[...new Set(Object.values(ufs).flatMap(o=>ensAnos(o[etapa])))].sort();
-  const ua=anosE[anosE.length-1];
-  const tem=Object.keys(v).length>0;
-  h+=`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2>${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])})),true,5):""}</div></div>`;
- }
  return h;
 }
-function ensRedesBloco(R,uf,todos){
+function ensRedesBloco(R,uf,todos,lista){
  if(!R||!R.pais)return"";
  const ord=R.redes_ordem||REDES_ORDEM_ENS;
  const est=uf?(R.estados||[]).find(e=>e.uf===uf):null;
@@ -5881,6 +5873,7 @@ function ensRedesBloco(R,uf,todos){
  const linhas=(R.estados||[]).map(e=>({uf:e.uf,...e.redes}));
  const mostra=todos?linhas:linhas.slice(0,3);
  const porEstado=uf?"":`<div class="panel mt"><h2>Redes em cada estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado para ver a ficha dele.</p>${mostra.map(x=>`<div class="ens-uf"><a href="#" class="ens-uf-n" data-ensuf="${x.uf}">${bandeiraImg(x.uf,"flag flag-sm")} ${esc(ensUFNome(x.uf))}</a><div class="ens-uf-m"><span><small>Escolas estaduais</small>${nf((x.estadual||{}).escolas)}</span><span><small>Matrículas estaduais</small>${nf((x.estadual||{}).mat_total)}</span><span><small>Matrículas privadas</small>${nf((x.privada||{}).mat_total)}</span><span><small>% na privada</small>${(()=>{const t=ord.reduce((k,r)=>k+((x[r]||{}).mat_total||0),0)||1;return(100*((x.privada||{}).mat_total||0)/t).toFixed(1).replace(".",",")+"%"})()}</span></div></div>`).join("")}${!todos&&linhas.length>3?`<button type="button" class="btn mt" data-ensmais="1">Ver todos (${linhas.length})</button>`:""}</div>`;
+ if(lista)return porEstado;
  return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><p class="small muted" style="margin:0 0 10px">${esc(R.aviso||"")}</p>${barras}</div>${porEstado}`;
 }
 function ensCardProf(n){const c=ensNivelCor(n.chave);const unica=(n.ocupacoes||[]).length===1;
@@ -5916,31 +5909,56 @@ function ensGastoEd(uf){
   box.innerHTML=f&&tot?`<div class="kpis mt"><div class="kpi"><span>Gasto do estado em educação</span><strong>${brlC(f.liquidado)}</strong><em>${pc2(f.liquidado,tot)} do que o estado gastou · ${G.ano}</em></div></div><p class="small muted mt">Fonte: SICONFI, RREO Anexo 02 (despesa liquidada do estado por função).</p>`:""}).catch(()=>{});
 }
 const pc2=(a,b)=>(100*a/b).toFixed(1).replace(".",",")+"%";
+function ensMapaPanel(I,etapa){
+ const ufs=I.ufs||{},v={};
+ Object.keys(ufs).forEach(u=>{const o=ufs[u][etapa]||{},a=ensAnos(o);if(a.length)v[u]=o[a[a.length-1]]});
+ const anosE=[...new Set(Object.values(ufs).flatMap(o=>ensAnos(o[etapa])))].sort();
+ const ua=anosE[anosE.length-1],tem=Object.keys(v).length>0;
+ return`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2><div id="ensMap">${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div></div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])}))):""}</div></div>`;
+}
+function ensZoomHtml(S,uf,etapa){
+ const u=UF[uf]||{nome:uf,reg:""},b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;
+ const hero=`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]||"#2F6FED"}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Ensino</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${esc(u.nome||uf)}</h1><p class="small">IDEB, escolas e redes do estado.</p></div></div>`;
+ return`<div class="ufback"><button class="btn zback">‹ Voltar ao Brasil</button></div>`+hero+(S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):"")+ensFicha(S.redes,uf)+ensRedesBloco(S.redes,uf,true)+`<div id="ensGasto"></div>`;
+}
 function ensCorpo(S,uf,etapa,todos){
- let h=uf?`<p class="small mt"><a href="#" data-ensuf="">‹ Voltar para o Brasil</a></p>`:"";
- h+=S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):ensVazio();
- if(uf)h+=ensFicha(S.redes,uf);
- h+=ensRedesBloco(S.redes,uf,todos)+ensProfBloco(S.prof);
+ const I=S.ideb&&S.ideb.brasil?S.ideb:null;
+ const main=I?ensIdeb(I,null,etapa)+(I.ufs?ensMapaPanel(I,etapa):""):ensVazio();
+ let h=`<div id="ensCard"${uf?' class="stmode"':""}><div id="ensMain"${uf?' style="display:none"':""}>${main}</div><div id="ensHold"${uf?' style="display:block"':' style="display:none"'}>${uf&&I?ensZoomHtml(S,uf,etapa):""}</div></div>`;
+ h+=uf?ensRedesBloco(S.redes,null,todos,true):ensRedesBloco(S.redes,null,todos);
+ h+=ensProfBloco(S.prof);
  h+=`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`;
  const fontes=["IDEB (INEP)","Censo Escolar"+(S.redes&&S.redes.ano?" "+S.redes.ano:""),"RAIS 2024 (Ministério do Trabalho)"];
  return h+`<div class="rbanner mt small">Fontes: ${fontes.map(esc).join("; ")}. Nada aqui é estimado.</div>`+RSRC();
 }
 function ensVisao(el,S,uf0){
  let uf=uf0||"",etapa="iniciais",todos=false;
- const irUF=u=>{uf=u||"";todos=false;pinta();el.scrollIntoView({block:"start"})};
+ const cfg=()=>({card:"#ensCard",main:"#ensMain",holder:"#ensHold",map:"#ensMap",back:"‹ Voltar ao Brasil",
+   render:u=>({html:ensZoomHtml(S,u,etapa),mount:()=>ensGastoEd(u)}),
+   onBack:()=>{uf="";sincroniza()}});
+ const sincroniza=()=>{const s=$("#ensU");if(s)s.value=uf};
+ const aberto=()=>{const c=$("#ensCard");return !!c&&c.classList.contains("stmode")};
+ const vai=(u,pathEl)=>{
+   if(!u||!UF[u]){if(aberto())inlineZoomOut(cfg());uf="";sincroniza();return}
+   const estava=aberto();
+   if(estava)inlineZoomOut(cfg());
+   uf=u;sincroniza();
+   inlineZoomIn(cfg(),u,estava?null:pathEl);
+ };
  const pinta=()=>{
   const ufs=S.ideb&&S.ideb.ufs?Object.keys(S.ideb.ufs).filter(u=>UF[u]).sort((a,b)=>UF[a].nome.localeCompare(UF[b].nome)):[];
-  el.innerHTML=`<div class="pbar mt" id="ensSel"><select id="ensU" data-pill="Estado"><option value="">Brasil</option>${ufs.map(u=>`<option value="${u}"${u===uf?" selected":""}>${esc(UF[u].nome)}</option>`).join("")}</select>${uf?"":`<select id="ensE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}"${k===etapa?" selected":""}>${esc(t)}</option>`).join("")}</select>`}</div><div id="ensB">${ensCorpo(S,uf,etapa,todos)}</div>`;
-  $("#ensU").onchange=e=>{uf=e.target.value;todos=false;pinta()};
-  const ee=$("#ensE");if(ee)ee.onchange=e=>{etapa=e.target.value;pinta()};
+  el.innerHTML=`<div class="pbar mt" id="ensSel"><select id="ensU" data-pill="Estado"><option value="">Brasil</option>${ufs.map(u=>`<option value="${u}"${u===uf?" selected":""}>${esc(UF[u].nome)}</option>`).join("")}</select><select id="ensE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}"${k===etapa?" selected":""}>${esc(t)}</option>`).join("")}</select></div><div id="ensB">${ensCorpo(S,uf,etapa,todos)}</div>`;
+  $("#ensU").onchange=e=>vai(e.target.value);
+  $("#ensE").onchange=e=>{etapa=e.target.value;pinta()};
   if(uf)ensGastoEd(uf);
+  const mp=$("#ensMap");if(mp)bindMap(mp,null,null,(u,b)=>vai(u,b));
+  const zb=el.querySelector("#ensHold .zback");if(zb)zb.onclick=()=>{if(aberto())inlineZoomOut(cfg());uf="";sincroniza()};
   if(typeof pilulas==="function")pilulas();
  };
  el.addEventListener("click",ev=>{
-  const a=ev.target.closest("[data-ensuf]");if(a){ev.preventDefault();irUF(a.dataset.ensuf);return}
+  const a=ev.target.closest("[data-ensuf]");if(a){ev.preventDefault();vai(a.dataset.ensuf||"");return}
   const m=ev.target.closest("[data-ensmais]");if(m){ev.preventDefault();todos=true;pinta();return}
-  const pa=ev.target.closest("#ensB path[data-uf]");if(pa&&S.ideb&&S.ideb.ufs&&S.ideb.ufs[pa.dataset.uf]){ev.preventDefault();irUF(pa.dataset.uf);return}
-  const l=ev.target.closest("#ensB .fl-l");if(l){ev.preventDefault();irUF((l.getAttribute("href")||"").split("/").pop());return}
+  const l=ev.target.closest("#ensMain .fl-l");if(l){ev.preventDefault();vai((l.getAttribute("href")||"").split("/").pop());return}
  });
  pinta();
 }
