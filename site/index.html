@@ -2194,7 +2194,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-mat-v{flex:none;display:flex;flex-direction:column;align-items:flex-end;white-space:nowrap}
 .ens-mat-v small{font-size:10.5px;color:var(--muted)}
 .ens-mat-v b{display:block;font-size:15px;font-weight:600;line-height:1.25}
-.ens-mat-info{font-size:12px;line-height:1.35;margin-top:3px;font-weight:500}
+.ens-mat-info{font-size:11px;line-height:1.3;margin-top:2px;color:color-mix(in srgb,var(--c,#2F6FED) 62%,var(--muted))}
 .ens-mat{margin:12px 0}
 </style>
 </head>
@@ -5880,7 +5880,7 @@ function ensRedesBloco(R,uf){
 function ensCardProf(n){const c=ensNivelCor(n.chave);const unica=(n.ocupacoes||[]).length===1;
  const pc=x=>x.toFixed(1).replace(".",",")+"%";
  const itens=(n.ocupacoes||[]).map(o=>({nome:unica?"Todas as matérias (1º ao 5º ano)":ensMatNome(o),m:o.media,v:o.vinculos,p10:o.p10,p90:o.p90,pct:n.vinculos?100*o.vinculos/n.vinculos:0})).sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR"));
- const linhas=itens.map(x=>`<div class="ens-mat"><div class="ens-mat-top"><span class="ens-mat-n">${esc(x.nome)}</span><span class="ens-mat-v"><small>valor médio</small><b>${brlC(x.m)}</b></span></div><div class="ens-mat-info" style="color:color-mix(in srgb,${c} 72%,#1D2939)">${pc(x.pct)} dos vínculos do nível · ${nf(x.v)} vínculos</div>${x.p10!=null&&x.p90!=null?`<div class="ens-mat-info" style="color:color-mix(in srgb,${c} 72%,#1D2939)">10% ganham até ${brlC(x.p10)} · 10% ganham acima de ${brlC(x.p90)}</div>`:""}</div>`).join("");
+ const linhas=itens.map(x=>`<div class="ens-mat"><div class="ens-mat-top"><span class="ens-mat-n">${esc(x.nome)}</span><span class="ens-mat-v"><small>valor médio</small><b>${brlC(x.m)}</b></span></div><div class="ens-mat-info">${pc(x.pct)} · ${nf(x.v)} vínculos</div>${x.p10!=null&&x.p90!=null?`<div class="ens-mat-info">10% até ${brlC(x.p10)} · 10% acima de ${brlC(x.p90)}</div>`:""}</div>`).join("");
  return`<div class="ens-sal" style="--c:${c}"><span class="ens-sal-t">${esc(ENS_NIVEL_TITULO[n.chave]||n.nivel)}</span><small class="muted">Valor médio</small><b>${brlC(n.media)}</b><em class="small muted">${nf(n.vinculos)} vínculos</em>
   <details class="ens-det"><summary>Ver por matéria</summary>${linhas}</details></div>`}
 function ensProfBloco(D){
