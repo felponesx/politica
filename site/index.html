@@ -2177,6 +2177,19 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-trilho{height:10px;border-radius:999px;background:var(--line);margin:6px 0;overflow:hidden}
 .ens-trilho div{height:100%;border-radius:999px}
 .ens-materias{border-left:3px solid #F5A524}
+/* v1.14 · ensino: cards coloridos com matérias recolhidas */
+.ens-sals{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;align-items:start}
+.ens-sal{border:1px solid color-mix(in srgb,var(--c,#2F6FED) 42%,var(--line));background:color-mix(in srgb,var(--c,#2F6FED) 8%,var(--surface));border-radius:12px;padding:14px 16px}
+.ens-sal-t{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.ens-sal b{display:block;font-size:24px}
+.ens-det{margin-top:12px;border-top:1px solid color-mix(in srgb,var(--c,#2F6FED) 30%,var(--line));padding-top:10px}
+.ens-det>summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--blue,#2F6FED);list-style:none}
+.ens-det>summary::-webkit-details-marker{display:none}
+.ens-mat{margin:9px 0}
+.ens-mat-top{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.ens-mat-top b{font-weight:600}
+.ens-mat-bar{height:6px;border-radius:99px;background:var(--line2);overflow:hidden;margin-top:4px}
+.ens-mat-bar i{display:block;height:100%;border-radius:99px}
 </style>
 </head>
 <body>
@@ -5819,7 +5832,9 @@ function ensVazio(){return`<div class="rbanner">Os dados do INEP (IDEB, IGC e es
 const ENS_REDE_COR={estadual:"#2F6FED",privada:"#1BAF7A",municipal:"#F5A524",federal:"#8B5CF6"};
 const ENS_REDE_NOME={estadual:"Estadual",privada:"Privada",municipal:"Municipal",federal:"Federal"};
 const REDES_ORDEM_ENS=["estadual","privada","municipal","federal"];
-const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6"})[k]||"#2F6FED";
+const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6",superior:"#F5A524"})[k]||"#2F6FED";
+const ENS_NIVEL_TITULO={fundamental_iniciais:"Ensino fundamental — anos iniciais",fundamental_finais:"Ensino fundamental — anos finais",medio:"Ensino médio",superior:"Faculdade"};
+const ensMatNome=o=>{let t=String(o.ocupacao||"").replace(/^Professor(a)?\s+(de\s+|do\s+|da\s+)?/i,"").replace(/\s*\(.*?\)\s*/g," ").replace(/\s+(do|no|na|em)\s+ensino\s+.*$/i,"").replace(/\s+/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)};
 const ensEtapaNome=k=>((ENS_ETAPAS.find(x=>x[0]===k)||[k,k])[1]).split(" (")[0];
 const ensUFNome=u=>(UF[u]||{}).nome||u;
 function ensIdeb(I,uf,etapa){
@@ -5856,11 +5871,15 @@ function ensRedesBloco(R,uf){
  return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><p class="small muted" style="margin:0 0 10px">${esc(R.aviso||"")}</p>${barras}</div>
   ${porEstado}`;
 }
+function ensCardProf(n){const c=ensNivelCor(n.chave);const unica=(n.ocupacoes||[]).length===1;
+ const itens=(n.ocupacoes||[]).map(o=>({nome:unica?"Todas as matérias (1º ao 5º ano)":ensMatNome(o),m:o.media,v:o.vinculos})).sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR"));
+ const mx=Math.max(...itens.map(x=>x.m))||1;
+ const linhas=itens.map(x=>`<div class="ens-mat"><div class="ens-mat-top"><span>${esc(x.nome)}</span><b>${brlC(x.m)}</b></div><div class="ens-mat-bar"><i style="width:${(100*x.m/mx).toFixed(1)}%;background:${c}"></i></div></div>`).join("");
+ return`<div class="ens-sal" style="--c:${c}"><span class="ens-sal-t">${esc(ENS_NIVEL_TITULO[n.chave]||n.nivel)}</span><small class="muted">Valor médio</small><b>${brlC(n.media)}</b><em class="small muted">${nf(n.vinculos)} vínculos</em>
+  <details class="ens-det"><summary>Ver por matéria</summary>${linhas}</details></div>`}
 function ensProfBloco(D){
  const N=(D&&D.niveis)||[];if(!N.length)return"";
- const cards=N.map(n=>`<div class="ens-sal" style="--c:${ensNivelCor(n.chave)}"><span class="small muted">${esc(n.nivel)}</span><b>${brlC(n.media)}</b><em class="small muted">média de ${nf(n.vinculos)} vínculos${n.media_jornada_31h_ou_mais?` · com 31 h ou mais: ${brlC(n.media_jornada_31h_ou_mais)}`:""}</em></div>`).join("");
- const tabelas=N.map(n=>`<div class="panel mt"><h2 style="margin:0 0 8px"><span class="ens-dot" style="background:${ensNivelCor(n.chave)}"></span>${esc(n.nivel)}</h2>${table([["Ocupação",x=>esc(x.ocupacao)],["Vínculos",x=>nf(x.vinculos),"n"],["Média",x=>brlC(x.media),"n"],["Faixa típica (10% a 90%)",x=>(x.p10!=null&&x.p90!=null)?`${brlC(x.p10)} a ${brlC(x.p90)}`:"—","n"]],n.ocupacoes)}</div>`).join("");
- return`<div class="panel mt"><h2>Quanto ganha um professor (país)</h2><p class="small muted" style="margin:0 0 12px">${esc(D.aviso||"")} Estes valores são do país inteiro: a base usada não separa por estado.</p><div class="ens-sals">${cards}</div></div>${tabelas}`;
+ return`<div class="panel mt"><h2>Quanto ganha um professor (país)</h2><p class="small muted" style="margin:0 0 12px">${esc(D.aviso||"")} Estes valores são do país inteiro: a base usada não separa por estado.</p><div class="ens-sals">${N.map(ensCardProf).join("")}</div></div>`;
 }
 function ensCorpo(S,uf,etapa){
  let h=S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):ensVazio();

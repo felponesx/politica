@@ -20,6 +20,8 @@ NIVEIS = [
     ("fundamental_finais", "Ensino fundamental — anos finais (cada disciplina)", ["231305", "231310", "231315", "231320", "231325", "231330", "231335", "231340"]),
     ("medio", "Ensino médio (cada disciplina e disciplinas pedagógicas)", ["232105", "232110", "232115", "232120", "232125", "232130", "232135",
                                                                           "232140", "232145", "232150", "232155", "232165", "232170"]),
+    # faculdade: todas as ocupações da família 234 (professor de ensino superior), montadas a partir da base
+    ("superior", "Faculdade (professor de ensino superior, cada área)", "familia:234"),
 ]
 AVISO_SALARIOS = ("Remuneração média nominal de quem tem vínculo de trabalho ativo em 31/12/2024, segundo a RAIS (Ministério do Trabalho). "
                   "Inclui escola pública e privada, todas as jornadas e todos os vínculos de cada professor (quem tem mais de um vínculo aparece em cada um). "
@@ -44,6 +46,8 @@ def professores() -> dict | None:
     prof = rais.get("profissoes", {})
     niveis = []
     for chave, rotulo, codigos in NIVEIS:
+        if isinstance(codigos, str) and codigos.startswith("familia:"):
+            codigos = sorted(c for c in prof if c.startswith(codigos.split(":", 1)[1]))
         ocup = []
         for c in codigos:
             p = prof.get(c)
