@@ -755,5 +755,6 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 
 ## Ensino: professores e redes (14/11/2026)
 - Aba Ensino ganhou "Professores" (`/ensino/professores`: RAIS 2024, média ponderada por etapa a partir das ocupações do `profissoes_rais_2024.json`) e "Redes de ensino" (`/ensino/redes?ano=&uf=`: Censo Escolar do INEP, coletor `censo-escolar` em `app/collectors/censo_escolar.py`, escolas/matrículas/professores por estado e rede). Lógica em `app/ensino_extra.py`.
+- Desde a unificação: Ensino tem só três abas (Visão geral, Faculdades, Escolas). A "Visão geral" junta IDEB, redes e salários de professores numa tela, com seletor de estado (`ensVisao`, `ensCorpo`). `#/ensino/estados`, `#/ensino/professores` e `#/ensino/redes[/UF]` caem na visão geral (com o estado, quando houver).
 - A RAIS não separa escola pública de privada no agregado: o salário é de todos os vínculos. Matérias (disciplinas) por rede NÃO estão em base aberta lida: a aba diz isso. Professores por etapa não somam entre etapas.
 - Cópia: `python -m scripts.ensino_copia site/dados` (pacote `p/ensino.json`). No Artifact, as chaves foram para `p/geral.json` por causa do limite de 512 arquivos.

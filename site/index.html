@@ -5815,29 +5815,77 @@ handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M
 const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
 /* ---------- Ensino (IDEB, faculdades, escolas) ---------- */
 const ENS_ETAPAS=[["iniciais","Anos iniciais (1º ao 5º ano)"],["finais","Anos finais (6º ao 9º ano)"],["medio","Ensino médio"]],ENS_COR={iniciais:"#2F6FED",finais:"#1BAF7A",medio:"#F5A524"};
-const ENS_ABAS=[["geral","Visão geral"],["professores","Professores"],["redes","Redes de ensino"],["estados","Por estado"],["faculdades","Faculdades"],["escolas","Escolas"]];
+const ENS_ABAS=[["geral","Visão geral"],["faculdades","Faculdades"],["escolas","Escolas"]];
 const ensN1=v=>v==null?"—":(+v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const ensAnos=o=>Object.keys(o||{}).filter(a=>o[a]!=null).sort();
 const ensUFSel=()=>UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>`<option value="${u.uf}">${esc(u.nome)}</option>`).join("");
 function ensVazio(){return`<div class="rbanner">Os dados do INEP (IDEB, IGC e escolas) ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`}
-function ensGeral(D){const I=D.ideb;if(!I||!I.brasil)return ensVazio();
- const kp=ENS_ETAPAS.map(([k,t])=>{const o=I.brasil[k]||{},an=ensAnos(o),u=an[an.length-1],p=an[0];if(!u)return"";const meta=(I.metas&&I.metas[k]||{})[u];
-  return`<div class="kpi"><span>${esc(t)}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
- const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(I.brasil[k])))].sort();
- const series=ENS_ETAPAS.map(([k,t])=>({n:t.split(" (")[0],c:ENS_COR[k],v:anos.map(a=>I.brasil[k]&&I.brasil[k][a]!=null?I.brasil[k][a]:null)})).filter(x=>x.v.some(y=>y!=null));
- return`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da qualidade do ensino no Brasil</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos nas escolas. Medido a cada 2 anos.</p>${lineChart(series,anos,{h:260,fmt:ensN1,periodo:false})}</div>
- <div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa (anos iniciais, anos finais e ensino médio) tem a sua nota e a sua meta. As escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`}
-function ensEstados(D,sel){const I=D.ideb;if(!I||!I.ufs)return{html:ensVazio()};let etapa=sel.etapa||"iniciais",uf=sel.uf||"";
- const vals=e=>{const v={};Object.keys(I.ufs).forEach(u=>{const a=ensAnos(I.ufs[u][e]);if(a.length)v[u]=I.ufs[u][e][a[a.length-1]]});return v};
- const anosE=e=>[...new Set(Object.values(I.ufs).flatMap(o=>ensAnos(o[e])))].sort();
- const pill=(id,lab,opts,cur)=>`<select id="${id}" data-pill="${lab}">${opts.map(([v,t])=>`<option value="${v}"${v===cur?" selected":""}>${esc(t)}</option>`).join("")}</select>`;
- const corpo=()=>{const e=etapa,anos=anosE(e),v=vals(e),ua=anos[anos.length-1];
-  const linhaUF=uf&&I.ufs[uf]?`<div class="panel mt"><h2>${esc(UF[uf].nome)}: ${esc(ENS_ETAPAS.find(x=>x[0]===e)[1])}</h2>${lineChart([{n:UF[uf].nome,c:ENS_COR[e],v:anos.map(a=>(I.ufs[uf][e]||{})[a]??null)},{n:"Brasil",c:"#8A94A6",v:anos.map(a=>(I.brasil[e]||{})[a]??null)}],anos,{h:240,fmt:ensN1,periodo:false})}<p class="small muted" style="margin:8px 0 0">IDEB ${ua}: ${esc(UF[uf].nome)} ${ensN1((I.ufs[uf][e]||{})[ua])} · Brasil ${ensN1((I.brasil[e]||{})[ua])}</p></div>`:"";
-  const serie={};Object.keys(I.ufs).forEach(u=>{serie[u]={};anos.forEach(a=>{const x=(I.ufs[u][e]||{})[a];if(x!=null)serie[u][a]=x})});
-  return`${linhaUF}<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua}</h2>${mapaValores(v,ensN1,{escala:SCALE})}</div><div class="panel"><h2>Todos os estados</h2>${listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])})))}</div></div>
-  <div class="mt">${linhasDuplo(serie,anos,v,ensN1,{alto:"Melhores notas",baixo:"Piores notas",coresAlto:LIN_AZUL})}</div>`};
- return{html:`<div class="pbar mt" id="ensSel">${pill("ensE","Etapa",ENS_ETAPAS,etapa)}${pill("ensU","Estado",[["","Brasil"],...UFS.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(u=>[u.uf,u.nome])],uf)}</div><div id="ensB">${corpo()}</div>`,
-  mount(){const re=()=>{const b=$("#ensB");if(b)b.innerHTML=corpo()};$("#ensE").onchange=e=>{etapa=e.target.value;re()};$("#ensU").onchange=e=>{uf=e.target.value;re()}}}}
+const ENS_REDE_COR={estadual:"#2F6FED",privada:"#1BAF7A",municipal:"#F5A524",federal:"#8B5CF6"};
+const ENS_REDE_NOME={estadual:"Estadual",privada:"Privada",municipal:"Municipal",federal:"Federal"};
+const REDES_ORDEM_ENS=["estadual","privada","municipal","federal"];
+const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6"})[k]||"#2F6FED";
+const ensEtapaNome=k=>((ENS_ETAPAS.find(x=>x[0]===k)||[k,k])[1]).split(" (")[0];
+const ensUFNome=u=>(UF[u]||{}).nome||u;
+function ensIdeb(I,uf,etapa){
+ const ref=uf?(I.ufs||{})[uf]:I.brasil;
+ if(!ref)return`<div class="rbanner mt">Sem dados do IDEB deste estado.</div>`;
+ const kp=ENS_ETAPAS.map(([k,t])=>{const o=ref[k]||{},an=ensAnos(o),u=an[an.length-1],p=an[0];if(!u)return"";
+  const meta=uf?null:((I.metas&&I.metas[k])||{})[u];const ub=ensAnos(I.brasil[k]);const bano=ub[ub.length-1];const bra=uf&&bano?I.brasil[k][bano]:null;
+  return`<div class="kpi"><span>${esc(t.split(" (")[0])}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${bra!=null?` · Brasil ${bano} ${ensN1(bra)}`:""}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
+ const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(ref[k])))].sort();
+ const series=ENS_ETAPAS.map(([k,t])=>({n:t.split(" (")[0],c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
+ let h=`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
+ if(!uf){
+  const ufs=I.ufs||{},v={},serie={};
+  Object.keys(ufs).forEach(u=>{const o=ufs[u][etapa]||{},a=ensAnos(o);serie[u]={};a.forEach(x=>serie[u][x]=o[x]);if(a.length)v[u]=o[a[a.length-1]]});
+  const anosE=[...new Set(Object.values(ufs).flatMap(o=>ensAnos(o[etapa])))].sort();
+  const ua=anosE[anosE.length-1];
+  const tem=Object.keys(v).length>0;
+  h+=`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2>${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])}))):""}</div></div>
+  <div class="mt">${tem?linhasDuplo(serie,anosE,v,ensN1,{alto:"Melhores notas",baixo:"Piores notas",coresAlto:LIN_AZUL}):""}</div>`;
+ }
+ return h;
+}
+function ensRedesBloco(R,uf){
+ if(!R||!R.pais)return"";
+ const ord=R.redes_ordem||REDES_ORDEM_ENS;
+ const est=uf?(R.estados||[]).find(e=>e.uf===uf):null;
+ const base=uf?(est?est.redes:null):R.pais;
+ const titulo=uf?ensUFNome(uf):"Brasil";
+ if(!base)return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><div class="rbanner">Sem dados das redes deste estado.</div></div>`;
+ const tot=ord.reduce((a,r)=>a+((base[r]||{}).mat_total||0),0)||1;
+ const pct=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
+ const barras=ord.filter(r=>base[r]).map(r=>{const x=base[r];return`<div class="ens-rede"><div class="ens-rede-top"><span><i style="background:${ENS_REDE_COR[r]}"></i>${ENS_REDE_NOME[r]}</span><b>${nf(x.mat_total)} matrículas · ${pct(x.mat_total)}</b></div><div class="ens-trilho"><div style="width:${(100*x.mat_total/tot).toFixed(1)}%;background:${ENS_REDE_COR[r]}"></div></div><small class="muted">${nf(x.escolas)} escolas · ${nf(x.mat_fundamental)} matrículas no fundamental · ${nf(x.mat_medio)} no médio · ${nf(x.doc_fundamental)} professores no fundamental · ${nf(x.doc_medio)} no médio</small></div>`}).join("");
+ const linhas=(R.estados||[]).map(e=>({uf:e.uf,...e.redes}));
+ const porEstado=uf?"":`<div class="panel mt"><h2>Redes em cada estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado para ver as redes dele.</p>${table([["Estado",x=>`<a href="#/ensino/geral/${x.uf}">${esc(ensUFNome(x.uf))}</a>`],["Escolas estaduais",x=>nf((x.estadual||{}).escolas),"n"],["Matrículas estaduais",x=>nf((x.estadual||{}).mat_total),"n"],["Matrículas privadas",x=>nf((x.privada||{}).mat_total),"n"],["% na privada",x=>{const t=ord.reduce((a,r)=>a+((x[r]||{}).mat_total||0),0)||1;return(100*((x.privada||{}).mat_total||0)/t).toFixed(1).replace(".",",")+"%"},"n"]],linhas)}</div>`;
+ return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><p class="small muted" style="margin:0 0 10px">${esc(R.aviso||"")}</p>${barras}</div>
+  <div class="panel mt ens-materias"><h2>Matérias dadas em cada rede</h2><p class="small" style="margin:0">Essa informação não está em nenhuma base aberta que a gente consiga ler: o Censo Escolar mostra escolas, matrículas e professores por etapa, mas não diz quais disciplinas cada escola dá. Não estimamos isso.</p></div>
+  ${porEstado}`;
+}
+function ensProfBloco(D){
+ const N=(D&&D.niveis)||[];if(!N.length)return"";
+ const cards=N.map(n=>`<div class="ens-sal" style="--c:${ensNivelCor(n.chave)}"><span class="small muted">${esc(n.nivel)}</span><b>${brlC(n.media)}</b><em class="small muted">média de ${nf(n.vinculos)} vínculos${n.media_jornada_31h_ou_mais?` · com 31 h ou mais: ${brlC(n.media_jornada_31h_ou_mais)}`:""}</em></div>`).join("");
+ const tabelas=N.map(n=>`<div class="panel mt"><h2 style="margin:0 0 8px"><span class="ens-dot" style="background:${ensNivelCor(n.chave)}"></span>${esc(n.nivel)}</h2>${table([["Ocupação",x=>esc(x.ocupacao)],["Vínculos",x=>nf(x.vinculos),"n"],["Média",x=>brlC(x.media),"n"],["Faixa típica (10% a 90%)",x=>(x.p10!=null&&x.p90!=null)?`${brlC(x.p10)} a ${brlC(x.p90)}`:"—","n"]],n.ocupacoes)}</div>`).join("");
+ return`<div class="panel mt"><h2>Quanto ganha um professor (país)</h2><p class="small muted" style="margin:0 0 12px">${esc(D.aviso||"")} Estes valores são do país inteiro: a base usada não separa por estado.</p><div class="ens-sals">${cards}</div></div>${tabelas}`;
+}
+function ensCorpo(S,uf,etapa){
+ let h=S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):ensVazio();
+ h+=ensRedesBloco(S.redes,uf)+ensProfBloco(S.prof);
+ h+=`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`;
+ const fontes=["IDEB (INEP)","Censo Escolar"+(S.redes&&S.redes.ano?" "+S.redes.ano:""),"RAIS 2024 (Ministério do Trabalho)"];
+ return h+`<div class="rbanner mt small">Fontes: ${fontes.map(esc).join("; ")}. Nada aqui é estimado.</div>`+RSRC();
+}
+function ensVisao(el,S,uf0){
+ let uf=uf0||"",etapa="iniciais";
+ const pinta=()=>{
+  const ufs=S.ideb&&S.ideb.ufs?Object.keys(S.ideb.ufs).filter(u=>UF[u]).sort((a,b)=>UF[a].nome.localeCompare(UF[b].nome)):[];
+  el.innerHTML=`<div class="pbar mt" id="ensSel"><select id="ensU" data-pill="Estado"><option value="">Brasil</option>${ufs.map(u=>`<option value="${u}"${u===uf?" selected":""}>${esc(UF[u].nome)}</option>`).join("")}</select>${uf?"":`<select id="ensE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}"${k===etapa?" selected":""}>${esc(t)}</option>`).join("")}</select>`}</div><div id="ensB">${ensCorpo(S,uf,etapa)}</div>`;
+  $("#ensU").onchange=e=>{uf=e.target.value;pinta()};
+  const ee=$("#ensE");if(ee)ee.onchange=e=>{etapa=e.target.value;pinta()};
+  if(typeof pilulas==="function")pilulas();
+ };
+ pinta();
+}
 function ensFaculdades(D){const S=D.superior;if(!S||!(S.instituicoes||[]).length)return{html:ensVazio()};const L=S.instituicoes;let f={uf:"",cat:"",q:""};let FL={};
  const facLogo=x=>{const l=FL[String(x.codigo)];return l&&l.img?`<img class="fac-lg" src="${l.img}" alt="" loading="lazy" decoding="async" title="Logo: Wikipédia">`:""};
  const faixa=x=>x.faixa!=null?`<span class="prm-r" style="--c:${x.faixa>=4?"#1BAF7A":x.faixa===3?"#F5A524":"#E5484D"}">Faixa ${x.faixa}</span>`:"—";
@@ -5854,37 +5902,13 @@ function ensEscolas(D){const E=D.escolas;if(!E||!ENS_ETAPAS.some(([k])=>(E[k]||[
   <div class="pbar" style="margin-bottom:8px"><select id="eeE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}">${esc(t)}</option>`).join("")}</select></div>
   <div class="filters"><select id="eeU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="eeR" data-pill="Rede"><option value="">Todas as redes</option>${redes.map(r=>`<option>${esc(r)}</option>`).join("")}</select><input id="eeQ" placeholder="Buscar escola ou cidade" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensEL"></div></div>`,
   mount(){lista();$("#eeE").onchange=e=>{f.etapa=e.target.value;lista()};$("#eeU").onchange=e=>{f.uf=e.target.value;lista()};$("#eeR").onchange=e=>{f.rede=e.target.value;lista()};$("#eeQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
-// ===== Ensino · professores (RAIS 2024) e redes de ensino (Censo Escolar do INEP): /ensino/professores e /ensino/redes
-const ENS_REDE_COR={estadual:"#2F6FED",privada:"#1BAF7A",municipal:"#F5A524",federal:"#8B5CF6"};
-const ENS_REDE_NOME={estadual:"Estadual",privada:"Privada",municipal:"Municipal",federal:"Federal"};
-const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6"})[k]||"#2F6FED";
-function ensProfessores(D){const N=D.niveis||[];
- const cards=N.map(n=>`<div class="ens-sal" style="--c:${ensNivelCor(n.chave)}"><span class="small muted">${esc(n.nivel)}</span><b>${brlC(n.media)}</b><em class="small muted">média de ${nf(n.vinculos)} vínculos${n.media_jornada_31h_ou_mais?` · com 31 h ou mais: ${brlC(n.media_jornada_31h_ou_mais)}`:""}</em></div>`).join("");
- const tabelas=N.map(n=>`<div class="panel mt"><h2 style="margin:0 0 8px"><span class="ens-dot" style="background:${ensNivelCor(n.chave)}"></span>${esc(n.nivel)}</h2>
-  ${table([["Ocupação",x=>esc(x.ocupacao)],["Vínculos",x=>nf(x.vinculos),"n"],["Média",x=>brlC(x.media),"n"],["Faixa típica (10% a 90%)",x=>(x.p10!=null&&x.p90!=null)?`${brlC(x.p10)} a ${brlC(x.p90)}`:"—","n"]],n.ocupacoes)}</div>`).join("");
- return{html:`<div class="panel mt"><h2>Quanto ganha um professor</h2><p class="small muted" style="margin:0 0 12px">${esc(D.aviso||"")}</p>
-   <div class="ens-sals">${cards}</div></div>${tabelas}
-   <div class="rbanner mt small">Fonte: ${esc(D.fonte||"RAIS 2024 (Ministério do Trabalho e Emprego)")}. Valores nominais de 2024.</div>`}}
-function ensRedes(D,uf){const pais=D.pais||{},ord=D.redes_ordem||REDES_ORDEM_ENS;
- const tot=ord.reduce((a,r)=>a+((pais[r]||{}).mat_total||0),0)||1;
- const pct=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
- const barras=ord.filter(r=>pais[r]).map(r=>{const x=pais[r];return`<div class="ens-rede"><div class="ens-rede-top"><span><i style="background:${ENS_REDE_COR[r]}"></i>${ENS_REDE_NOME[r]}</span><b>${nf(x.mat_total)} matrículas · ${pct(x.mat_total)}</b></div><div class="ens-trilho"><div style="width:${(100*x.mat_total/tot).toFixed(1)}%;background:${ENS_REDE_COR[r]}"></div></div><small class="muted">${nf(x.escolas)} escolas · ${nf(x.mat_fundamental)} no fundamental · ${nf(x.mat_medio)} no médio · ${nf(x.doc_fundamental)} professores no fundamental · ${nf(x.doc_medio)} no médio</small></div>`}).join("");
- const linhas=(D.estados||[]).map(e=>({uf:e.uf,...e.redes}));
- const porEstado=uf?"":`<div class="panel mt"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Matrículas em escolas estaduais e privadas em cada estado. Toque no estado para ver as escolas dele.</p>${table([["Estado",x=>`<a href="#/ensino/redes/${x.uf}">${esc((UF[x.uf]||{}).nome||x.uf)}</a>`],["Escolas estaduais",x=>nf((x.estadual||{}).escolas),"n"],["Matrículas estaduais",x=>nf((x.estadual||{}).mat_total),"n"],["Matrículas privadas",x=>nf((x.privada||{}).mat_total),"n"],["% na privada",x=>{const t=(x.estadual||{}).mat_total+(x.privada||{}).mat_total+(x.municipal||{}).mat_total+(x.federal||{}).mat_total||1;return ((100*((x.privada||{}).mat_total||0))/t).toFixed(1).replace(".",",")+"%"},"n"]],linhas)}</div>`;
- const detalhe=uf?(()=>{const e=(D.estados||[]).find(x=>x.uf===uf);if(!e)return rvazio("Sem dados deste estado.");
-   return`<div class="panel mt"><h2>${esc((UF[uf]||{}).nome||uf)}</h2>${table([["Rede",x=>ENS_REDE_NOME[x[0]]||x[0]],["Escolas",([,v])=>nf(v.escolas),"n"],["Matrículas",([,v])=>nf(v.mat_total),"n"],["Fundamental",([,v])=>nf(v.mat_fundamental),"n"],["Médio",([,v])=>nf(v.mat_medio),"n"],["Professores no fundamental",([,v])=>nf(v.doc_fundamental),"n"],["Professores no médio",([,v])=>nf(v.doc_medio),"n"]],ord.filter(r=>e.redes[r]).map(r=>[r,e.redes[r]]))}
-   <p class="small mt"><a href="#/ensino/redes">‹ Voltar para o país</a></p></div>`})():"";
- return{html:`<div class="panel mt"><h2>Matrículas por rede de ensino</h2><p class="small muted" style="margin:0 0 10px">${esc(D.aviso||"")}</p>${barras}</div>
-   <div class="panel mt ens-materias"><h2>Matérias dadas em cada rede</h2><p class="small" style="margin:0">Essa informação não está em nenhuma base aberta que a gente consiga ler: o Censo Escolar mostra escolas, matrículas e professores por etapa, mas não diz quais disciplinas cada escola dá. Não estimamos isso.</p></div>
-   ${porEstado}${detalhe}
-   <div class="rbanner mt small">Fonte: ${esc(D.fonte)} (ano ${D.ano}).</div>`}}
-const REDES_ORDEM_ENS=["estadual","privada","municipal","federal"];
 
-P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";
- return{html:`<div class="ph"><div><h1>Ensino</h1><p>Qualidade do ensino no Brasil e em cada estado: evolução do IDEB, melhores faculdades e melhores escolas.</p></div></div><div class="tabs" id="ensTabs" style="margin-top:0">${ENS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/ensino/${a[0]}">${a[1]}</a>`).join("")}</div><div id="ensV">${API.on?rload():`<div class="rbanner">O Ensino aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
-  mount(){if(!API.on)return;if(aba==="professores"||aba==="redes"){const f=aba==="professores"?apiGet("/ensino/professores"):apiGet("/ensino/redes"+(UF[uf]?"?uf="+uf:""));f.then(D=>{const v=$("#ensV");if(!v)return;const o=aba==="professores"?ensProfessores(D):ensRedes(D,UF[uf]?uf:"");v.innerHTML=o.html;if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)});return}
-  apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}const v=$("#ensV");if(!v)return;let o;
-   if(aba==="geral")o={html:ensGeral(D)+RSRC()};else if(aba==="estados")o=ensEstados(D,{uf:UF[uf]?uf:""});else if(aba==="faculdades")o=ensFaculdades(D);else o=ensEscolas(D);
+P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";uf=UF[uf]?uf:"";
+ return{html:`<div class="ph"><div><h1>Ensino</h1><p>Qualidade do ensino no Brasil e em cada estado: nota do IDEB, redes de ensino, salário dos professores, melhores faculdades e melhores escolas.</p></div></div><div class="tabs" id="ensTabs" style="margin-top:0">${ENS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/ensino/${a[0]}">${a[1]}</a>`).join("")}</div><div id="ensV">${API.on?rload():`<div class="rbanner">O Ensino aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+  mount(){if(!API.on)return;
+   if(aba==="geral"){Promise.all([apiGet("/ensino"),apiGet("/ensino/professores").catch(()=>null),apiGet("/ensino/redes").catch(()=>null)]).then(([D,Pf,R])=>{const v=$("#ensV");if(!v)return;ensVisao(v,{ideb:D.ideb,prof:Pf,redes:R},uf)}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)});return}
+   apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}
+   const v=$("#ensV");if(!v)return;const o=aba==="faculdades"?ensFaculdades(D):ensEscolas(D);
    v.innerHTML=o.html;if(o.mount)o.mount();if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)})}}};
 // ===== Concursos e cursos · Eventos (12/11/2026): /concursos, /cursos, /eventos, /eventos-patrocinios (app/oportunidades.py)
 const OP_ABAS=[["concursos","Concursos"],["cursos","Cursos gratuitos"]];
