@@ -5221,13 +5221,13 @@ P.candidato=(sq)=>({html:`<div class="crumb"><a href="#/eleicoes">Eleições</a>
   apiGet("/eleicoes/candidato/"+encodeURIComponent(id)).then(d=>desenha(d,false)).catch(e=>{if(ELCAND[id])desenha({},true);else $("#rcd").innerHTML=rerro(e)})}});
 
 /* lista compacta por estado (v2.0): nome, valor grande, linha pequena; ordem maior→menor/menor→maior e "Ver todos" */
-function listaUF(rows,desc=true){const l=rows.slice().sort((a,b)=>desc?b.k-a.k:a.k-b.k);
- return`<div class="fl-box"><div class="fl-ord"><div class="seg sw" role="group" aria-label="Ordem da lista"><button type="button" class="ord-btn on" data-o="d"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Maiores</button><button type="button" class="ord-btn" data-o="a"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Menores</button></div></div><div class="fl-lista">${l.map((e,i)=>`<a class="fl-l${i>=10?" fl-x":""}"${i>=10?" hidden":""} data-k="${e.k}" href="#/uf/${e.uf}"><span class="fl-n">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span><span class="fl-r">${e.r}</span>${e.s?`<span class="fl-s">${e.s}</span>`:""}</a>`).join("")}</div>${l.length>10?`<button type="button" class="btn fl-mais">Ver todos (${l.length})</button>`:""}</div>`}
+function listaUF(rows,desc=true,n=10){const l=rows.slice().sort((a,b)=>desc?b.k-a.k:a.k-b.k);
+ return`<div class="fl-box" data-n="${n}"><div class="fl-ord"><div class="seg sw" role="group" aria-label="Ordem da lista"><button type="button" class="ord-btn on" data-o="d"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Maiores</button><button type="button" class="ord-btn" data-o="a"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Menores</button></div></div><div class="fl-lista">${l.map((e,i)=>`<a class="fl-l${i>=n?" fl-x":""}"${i>=n?" hidden":""} data-k="${e.k}" href="#/uf/${e.uf}"><span class="fl-n">${bandeiraImg(e.uf,"flag flag-sm")}${esc(UF[e.uf]?UF[e.uf].nome:e.uf)}</span><span class="fl-r">${e.r}</span>${e.s?`<span class="fl-s">${e.s}</span>`:""}</a>`).join("")}</div>${l.length>n?`<button type="button" class="btn fl-mais">Ver todos (${l.length})</button>`:""}</div>`}
 document.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest(".fl-box .fl-mais,.fl-box .ord-btn");if(!t)return;const box=t.closest(".fl-box");
  if(t.classList.contains("fl-mais")){box.dataset.todos="1";box.querySelectorAll(".fl-x").forEach(x=>x.hidden=false);t.remove();return}
  if(t.classList.contains("on"))return;t.parentElement.querySelectorAll(".ord-btn").forEach(x=>x.classList.toggle("on",x===t));
  const desc=t.dataset.o==="d",lista=box.querySelector(".fl-lista");
- [...lista.children].sort((a,b)=>desc?b.dataset.k-a.dataset.k:a.dataset.k-b.dataset.k).forEach((x,i)=>{lista.appendChild(x);const oculto=i>=10&&!box.dataset.todos;x.hidden=oculto;x.classList.toggle("fl-x",i>=10)})});
+ [...lista.children].sort((a,b)=>desc?b.dataset.k-a.dataset.k:a.dataset.k-b.dataset.k).forEach((x,i)=>{lista.appendChild(x);const n=Number(box.dataset.n)||10;const oculto=i>=n&&!box.dataset.todos;x.hidden=oculto;x.classList.toggle("fl-x",i>=n)})});
 /* CAPAG em palavras e cores, do verde ao vermelho (a nota A, B, C ou D do Tesouro fica só na explicação) */
 const CAPAGN={A:["Forte","#1BAF7A"],B:["Boa","#8CCB3F"],C:["Fraca","#F5A524"],D:["Ruim","#E5484D"]};
 const capagNiv=k=>{const c=String(k||"").trim().toUpperCase()[0];return CAPAGN[c]?c:null};
@@ -5841,7 +5841,7 @@ function ensIdeb(I,uf,etapa){
   const anosE=[...new Set(Object.values(ufs).flatMap(o=>ensAnos(o[etapa])))].sort();
   const ua=anosE[anosE.length-1];
   const tem=Object.keys(v).length>0;
-  h+=`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2>${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])}))):""}</div></div>
+  h+=`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2>${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])})),true,5):""}</div></div>
   <div class="mt">${tem?linhasDuplo(serie,anosE,v,ensN1,{alto:"Melhores notas",baixo:"Piores notas",coresAlto:LIN_AZUL}):""}</div>`;
  }
  return h;
