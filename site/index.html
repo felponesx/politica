@@ -5832,13 +5832,12 @@ function ensIdeb(I,uf,etapa){
  const series=ENS_ETAPAS.map(([k,t])=>({n:t.split(" (")[0],c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
  let h=`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
  if(!uf){
-  const ufs=I.ufs||{},v={},serie={};
-  Object.keys(ufs).forEach(u=>{const o=ufs[u][etapa]||{},a=ensAnos(o);serie[u]={};a.forEach(x=>serie[u][x]=o[x]);if(a.length)v[u]=o[a[a.length-1]]});
+  const ufs=I.ufs||{},v={};
+  Object.keys(ufs).forEach(u=>{const o=ufs[u][etapa]||{},a=ensAnos(o);if(a.length)v[u]=o[a[a.length-1]]});
   const anosE=[...new Set(Object.values(ufs).flatMap(o=>ensAnos(o[etapa])))].sort();
   const ua=anosE[anosE.length-1];
   const tem=Object.keys(v).length>0;
-  h+=`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2>${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])})),true,5):""}</div></div>
-  <div class="mt">${tem?linhasDuplo(serie,anosE,v,ensN1,{alto:"Melhores notas",baixo:"Piores notas",coresAlto:LIN_AZUL}):""}</div>`;
+  h+=`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2>${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])})),true,5):""}</div></div>`;
  }
  return h;
 }
