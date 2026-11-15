@@ -2196,6 +2196,12 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-mat-v b{display:block;font-size:15px;font-weight:600;line-height:1.25}
 .ens-mat-info{font-size:11px;line-height:1.3;margin-top:2px;color:color-mix(in srgb,var(--c,#2F6FED) 62%,var(--muted))}
 .ens-mat{margin:12px 0}
+/* v1.16 · ensino: lista de estados com redes (3 primeiros e ver todos) */
+.ens-uf{padding:12px 0;border-top:1px solid var(--line2)}
+.ens-uf:first-of-type{border-top:0}
+.ens-uf-n{font-weight:600;color:var(--blue,#2F6FED);text-decoration:none}
+.ens-uf-m{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:8px;font-size:14px}
+.ens-uf-m small{display:block;font-size:11.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -5862,7 +5868,7 @@ function ensIdeb(I,uf,etapa){
  }
  return h;
 }
-function ensRedesBloco(R,uf){
+function ensRedesBloco(R,uf,todos){
  if(!R||!R.pais)return"";
  const ord=R.redes_ordem||REDES_ORDEM_ENS;
  const est=uf?(R.estados||[]).find(e=>e.uf===uf):null;
@@ -5873,9 +5879,9 @@ function ensRedesBloco(R,uf){
  const pct=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
  const barras=ord.filter(r=>base[r]).map(r=>{const x=base[r];return`<div class="ens-rede"><div class="ens-rede-top"><span><i style="background:${ENS_REDE_COR[r]}"></i>${ENS_REDE_NOME[r]}</span><b>${nf(x.mat_total)} matrículas · ${pct(x.mat_total)}</b></div><div class="ens-trilho"><div style="width:${(100*x.mat_total/tot).toFixed(1)}%;background:${ENS_REDE_COR[r]}"></div></div><small class="muted">${nf(x.escolas)} escolas · ${nf(x.mat_fundamental)} matrículas no fundamental · ${nf(x.mat_medio)} no médio · ${nf(x.doc_fundamental)} professores no fundamental · ${nf(x.doc_medio)} no médio</small></div>`}).join("");
  const linhas=(R.estados||[]).map(e=>({uf:e.uf,...e.redes}));
- const porEstado=uf?"":`<div class="panel mt"><h2>Redes em cada estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado para ver as redes dele.</p>${table([["Estado",x=>`<a href="#/ensino/geral/${x.uf}">${bandeiraImg(x.uf,"flag flag-sm")} ${esc(ensUFNome(x.uf))}</a>`],["Escolas estaduais",x=>nf((x.estadual||{}).escolas),"n"],["Matrículas estaduais",x=>nf((x.estadual||{}).mat_total),"n"],["Matrículas privadas",x=>nf((x.privada||{}).mat_total),"n"],["% na privada",x=>{const t=ord.reduce((a,r)=>a+((x[r]||{}).mat_total||0),0)||1;return(100*((x.privada||{}).mat_total||0)/t).toFixed(1).replace(".",",")+"%"},"n"]],linhas)}</div>`;
- return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><p class="small muted" style="margin:0 0 10px">${esc(R.aviso||"")}</p>${barras}</div>
-  ${porEstado}`;
+ const mostra=todos?linhas:linhas.slice(0,3);
+ const porEstado=uf?"":`<div class="panel mt"><h2>Redes em cada estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado para ver a ficha dele.</p>${mostra.map(x=>`<div class="ens-uf"><a href="#" class="ens-uf-n" data-ensuf="${x.uf}">${bandeiraImg(x.uf,"flag flag-sm")} ${esc(ensUFNome(x.uf))}</a><div class="ens-uf-m"><span><small>Escolas estaduais</small>${nf((x.estadual||{}).escolas)}</span><span><small>Matrículas estaduais</small>${nf((x.estadual||{}).mat_total)}</span><span><small>Matrículas privadas</small>${nf((x.privada||{}).mat_total)}</span><span><small>% na privada</small>${(()=>{const t=ord.reduce((k,r)=>k+((x[r]||{}).mat_total||0),0)||1;return(100*((x.privada||{}).mat_total||0)/t).toFixed(1).replace(".",",")+"%"})()}</span></div></div>`).join("")}${!todos&&linhas.length>3?`<button type="button" class="btn mt" data-ensmais="1">Ver todos (${linhas.length})</button>`:""}</div>`;
+ return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><p class="small muted" style="margin:0 0 10px">${esc(R.aviso||"")}</p>${barras}</div>${porEstado}`;
 }
 function ensCardProf(n){const c=ensNivelCor(n.chave);const unica=(n.ocupacoes||[]).length===1;
  const pc=x=>x.toFixed(1).replace(".",",")+"%";
@@ -5887,41 +5893,57 @@ function ensProfBloco(D){
  const N=(D&&D.niveis)||[];if(!N.length)return"";
  return`<div class="panel mt"><h2>Quanto ganha um professor (país)</h2><p class="small muted" style="margin:0 0 12px">${esc(D.aviso||"")} Estes valores são do país inteiro: a base usada não separa por estado.</p><div class="ens-sals">${N.map(ensCardProf).join("")}</div></div>`;
 }
-function ensCorpo(S,uf,etapa){
- let h=S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):ensVazio();
- h+=ensRedesBloco(S.redes,uf)+ensProfBloco(S.prof);
+function ensFicha(R,uf){
+ const est=R&&(R.estados||[]).find(e=>e.uf===uf);if(!est)return"";
+ const ord=["estadual","municipal","federal","privada"];
+ const soma=(red,c,rs)=>rs.reduce((a,r)=>a+(((red[r])||{})[c]||0),0);
+ const E=est.redes,P=R.pais||{};
+ const pc=(a,b)=>b?(100*a/b).toFixed(1).replace(".",",")+"%":"—";
+ const pubs=["estadual","municipal","federal"];
+ const tE=soma(E,"escolas",ord),pE=soma(E,"escolas",pubs),vE=soma(E,"escolas",["privada"]);
+ const tB=soma(P,"escolas",ord),vB=soma(P,"escolas",["privada"]);
+ const mE=soma(E,"mat_total",ord),mpE=soma(E,"mat_total",pubs),mvE=soma(E,"mat_total",["privada"]);
+ const dfE=soma(E,"doc_fundamental",ord),dmE=soma(E,"doc_medio",ord);
+ return`<div class="panel mt"><h2>Escolas em ${esc(ensUFNome(uf))}</h2>
+  <div class="kpis mt"><div class="kpi"><span>Escolas</span><strong>${nf(tE)}</strong></div><div class="kpi"><span>Públicas</span><strong>${nf(pE)}</strong><em>${pc(pE,tE)} do total</em></div><div class="kpi"><span>Particulares</span><strong>${nf(vE)}</strong><em>${pc(vE,tE)} · Brasil ${pc(vB,tB)}</em></div><div class="kpi"><span>Matrículas</span><strong>${nf(mE)}</strong></div></div>
+  <div class="kpis mt"><div class="kpi"><span>Matrículas públicas</span><strong>${nf(mpE)}</strong></div><div class="kpi"><span>Matrículas particulares</span><strong>${nf(mvE)}</strong></div><div class="kpi"><span>Professores no fundamental</span><strong>${nf(dfE)}</strong></div><div class="kpi"><span>Professores no médio</span><strong>${nf(dmE)}</strong></div></div>
+  <p class="small muted mt">Públicas = estaduais, municipais e federais. Particulares = privadas. Quem dá aula em mais de uma etapa conta em cada uma. Salário de professor por estado: a base da RAIS que usamos não separa por estado; os valores de salário abaixo são do país.</p>
+  <div id="ensGasto"></div></div>`;
+}
+function ensGastoEd(uf){
+ apiGet("/gastos/funcao?esfera=E&uf="+uf).then(G=>{const box=$("#ensGasto");if(!box||!G)return;
+  const f=(G.funcoes||[]).find(x=>/educa/i.test(x.funcao||""));const tot=G.total_liquidado||0;
+  box.innerHTML=f&&tot?`<div class="kpis mt"><div class="kpi"><span>Gasto do estado em educação</span><strong>${brlC(f.liquidado)}</strong><em>${pc2(f.liquidado,tot)} do que o estado gastou · ${G.ano}</em></div></div><p class="small muted mt">Fonte: SICONFI, RREO Anexo 02 (despesa liquidada do estado por função).</p>`:""}).catch(()=>{});
+}
+const pc2=(a,b)=>(100*a/b).toFixed(1).replace(".",",")+"%";
+function ensCorpo(S,uf,etapa,todos){
+ let h=uf?`<p class="small mt"><a href="#" data-ensuf="">‹ Voltar para o Brasil</a></p>`:"";
+ h+=S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):ensVazio();
+ if(uf)h+=ensFicha(S.redes,uf);
+ h+=ensRedesBloco(S.redes,uf,todos)+ensProfBloco(S.prof);
  h+=`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`;
  const fontes=["IDEB (INEP)","Censo Escolar"+(S.redes&&S.redes.ano?" "+S.redes.ano:""),"RAIS 2024 (Ministério do Trabalho)"];
  return h+`<div class="rbanner mt small">Fontes: ${fontes.map(esc).join("; ")}. Nada aqui é estimado.</div>`+RSRC();
 }
 function ensVisao(el,S,uf0){
- let uf=uf0||"",etapa="iniciais";
+ let uf=uf0||"",etapa="iniciais",todos=false;
+ const irUF=u=>{uf=u||"";todos=false;pinta();el.scrollIntoView({block:"start"})};
  const pinta=()=>{
   const ufs=S.ideb&&S.ideb.ufs?Object.keys(S.ideb.ufs).filter(u=>UF[u]).sort((a,b)=>UF[a].nome.localeCompare(UF[b].nome)):[];
-  el.innerHTML=`<div class="pbar mt" id="ensSel"><select id="ensU" data-pill="Estado"><option value="">Brasil</option>${ufs.map(u=>`<option value="${u}"${u===uf?" selected":""}>${esc(UF[u].nome)}</option>`).join("")}</select>${uf?"":`<select id="ensE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}"${k===etapa?" selected":""}>${esc(t)}</option>`).join("")}</select>`}</div><div id="ensB">${ensCorpo(S,uf,etapa)}</div>`;
-  $("#ensU").onchange=e=>{uf=e.target.value;pinta()};
+  el.innerHTML=`<div class="pbar mt" id="ensSel"><select id="ensU" data-pill="Estado"><option value="">Brasil</option>${ufs.map(u=>`<option value="${u}"${u===uf?" selected":""}>${esc(UF[u].nome)}</option>`).join("")}</select>${uf?"":`<select id="ensE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}"${k===etapa?" selected":""}>${esc(t)}</option>`).join("")}</select>`}</div><div id="ensB">${ensCorpo(S,uf,etapa,todos)}</div>`;
+  $("#ensU").onchange=e=>{uf=e.target.value;todos=false;pinta()};
   const ee=$("#ensE");if(ee)ee.onchange=e=>{etapa=e.target.value;pinta()};
+  if(uf)ensGastoEd(uf);
   if(typeof pilulas==="function")pilulas();
  };
+ el.addEventListener("click",ev=>{
+  const a=ev.target.closest("[data-ensuf]");if(a){ev.preventDefault();irUF(a.dataset.ensuf);return}
+  const m=ev.target.closest("[data-ensmais]");if(m){ev.preventDefault();todos=true;pinta();return}
+  const pa=ev.target.closest("#ensB path[data-uf]");if(pa&&S.ideb&&S.ideb.ufs&&S.ideb.ufs[pa.dataset.uf]){ev.preventDefault();irUF(pa.dataset.uf);return}
+  const l=ev.target.closest("#ensB .fl-l");if(l){ev.preventDefault();irUF((l.getAttribute("href")||"").split("/").pop());return}
+ });
  pinta();
 }
-function ensFaculdades(D){const S=D.superior;if(!S||!(S.instituicoes||[]).length)return{html:ensVazio()};const L=S.instituicoes;let f={uf:"",cat:"",q:""};let FL={};
- const facLogo=x=>{const l=FL[String(x.codigo)];return l&&l.img?`<img class="fac-lg" src="${l.img}" alt="" loading="lazy" decoding="async" title="Logo: Wikipédia">`:""};
- const faixa=x=>x.faixa!=null?`<span class="prm-r" style="--c:${x.faixa>=4?"#1BAF7A":x.faixa===3?"#F5A524":"#E5484D"}">Faixa ${x.faixa}</span>`:"—";
- const lista=()=>{const q=snapNorm(f.q),l=L.filter(x=>(!f.uf||x.uf===f.uf)&&(!f.cat||x.categoria===f.cat)&&(!q||snapNorm(x.nome+" "+(x.sigla||"")+" "+(x.municipio||"")).includes(q))).sort((a,b)=>(b.igc??-1)-(a.igc??-1));
-  $("#ensFL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(l.length)} instituições · IGC ${S.ano}</p>`+table([["Instituição",x=>`${facLogo(x)}<b>${esc(x.nome)}</b>${x.sigla?` <span class="small muted">${esc(x.sigla)}</span>`:""}`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Tipo",x=>esc(x.categoria||"—")],["IGC contínuo",x=>ensN1(x.igc),"n"],["Faixa",x=>faixa(x)]],l)};
- return{html:`<div class="panel mt"><h2>Melhores faculdades e universidades</h2><p class="small muted" style="margin:0 0 8px">Ranking pelo IGC (Índice Geral de Cursos) do INEP, de ${S.ano}: junta a qualidade dos cursos de graduação, mestrado e doutorado. Faixa 5 é a melhor; só valem instituições avaliadas.</p>
-  <div class="filters"><select id="efU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="efC" data-pill="Tipo"><option value="">Públicas e privadas</option>${[...new Set(L.map(x=>x.categoria).filter(Boolean))].map(c=>`<option>${esc(c)}</option>`).join("")}</select><input id="efQ" placeholder="Buscar instituição" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensFL"></div><p class="small muted" style="margin:10px 0 0">Fonte: INEP, Índice Geral de Cursos (IGC) ${S.ano}. O IGC é a nota da instituição, não de cada curso, e nenhuma nota é estimada.</p></div>`,
-  mount(){lista();midiaGrupo("faculdades").then(G=>{FL=G||{};if(Object.keys(FL).length&&$("#ensFL"))lista()});$("#efU").onchange=e=>{f.uf=e.target.value;lista()};$("#efC").onchange=e=>{f.cat=e.target.value;lista()};$("#efQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
-function ensEscolas(D){const E=D.escolas;if(!E||!ENS_ETAPAS.some(([k])=>(E[k]||[]).length))return{html:ensVazio()};let f={etapa:"iniciais",uf:"",rede:"",q:"",ord:"d"};
- const lista=()=>{const q=snapNorm(f.q),cmp=(a,b)=>{const x=a.ideb,y=b.ideb;if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return f.ord==="a"?x-y:y-x};const L=(E[f.etapa]||[]).filter(x=>(!f.uf||x.uf===f.uf)&&(!f.rede||x.rede===f.rede)&&(!q||snapNorm(x.nome+" "+(x.municipio||"")).includes(q))).sort(cmp);
-  $("#ensEL").innerHTML=`<p class="small muted" style="margin:0 0 8px">${nf(L.length)} escolas · IDEB ${E.ano||""}</p>`+table([["Escola",x=>`<b>${esc(x.nome)}</b><div class="small muted">${esc(x.municipio||"")}</div>`],["Estado",x=>x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" "+esc(x.uf):"—"],["Rede",x=>esc(x.rede||"—")],["IDEB",x=>ensN1(x.ideb),"n"]],L)};
- const redes=[...new Set(ENS_ETAPAS.flatMap(([k])=>(E[k]||[]).map(x=>x.rede)).filter(Boolean))];
- return{html:`<div class="panel mt"><h2>Melhores escolas do país</h2><p class="small muted" style="margin:0 0 8px">As escolas com maior IDEB em cada etapa (INEP): anos iniciais (fundamental 1), anos finais (fundamental 2) e ensino médio. Só entram escolas com nota divulgada.</p>
-  <div class="pbar" style="margin-bottom:8px"><select id="eeE" data-pill="Etapa">${ENS_ETAPAS.map(([k,t])=>`<option value="${k}">${esc(t)}</option>`).join("")}</select></div>
-  <div class="filters"><select id="eeO" data-pill="Ordem"><option value="d">Maior nota primeiro</option><option value="a">Menor nota primeiro</option></select><select id="eeU" data-pill="Estado"><option value="">Todos os estados</option>${ensUFSel()}</select><select id="eeR" data-pill="Rede"><option value="">Todas as redes</option>${redes.map(r=>`<option>${esc(r)}</option>`).join("")}</select><input id="eeQ" placeholder="Buscar escola ou cidade" style="flex:1;min-width:160px" autocomplete="off"></div><div id="ensEL"></div></div>`,
-  mount(){lista();$("#eeE").onchange=e=>{f.etapa=e.target.value;lista()};$("#eeO").onchange=e=>{f.ord=e.target.value;lista()};$("#eeU").onchange=e=>{f.uf=e.target.value;lista()};$("#eeR").onchange=e=>{f.rede=e.target.value;lista()};$("#eeQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
-
 P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";uf=UF[uf]?uf:"";
  return{html:`<div class="ph"><div><h1>Ensino</h1><p>Qualidade do ensino no Brasil e em cada estado: nota do IDEB, redes de ensino, salário dos professores, melhores faculdades e melhores escolas.</p></div></div><div class="tabs" id="ensTabs" style="margin-top:0">${ENS_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/ensino/${a[0]}">${a[1]}</a>`).join("")}</div><div id="ensV">${API.on?rload():`<div class="rbanner">O Ensino aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
   mount(){if(!API.on)return;
