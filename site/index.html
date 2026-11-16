@@ -2222,6 +2222,12 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-leg-top span{margin-left:auto;font-weight:600}
 .ens-leg-n{font-size:13px;margin-top:2px}
 .ens-leg small{display:block;font-size:12px;line-height:1.35;margin-top:2px}
+/* v1.20 · ensino: três etapas do IDEB em quadrados lado a lado */
+.ens-kpi3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ens-kpi3 .kpi{aspect-ratio:1/1;padding:10px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;min-width:0}
+.ens-kpi3 .kpi span{font-size:11.5px;line-height:1.25}
+.ens-kpi3 .kpi strong{font-size:22px;align-self:flex-end}
+.ens-kpi3 .kpi em{font-size:10px;line-height:1.3;font-style:normal}
 </style>
 </head>
 <body>
@@ -5877,7 +5883,7 @@ function ensIdeb(I,uf,etapa){
   return`<div class="kpi"><span>${esc(t)}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${bra!=null?` · Brasil ${bano} ${ensN1(bra)}`:""}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
  const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(ref[k])))].sort();
  const series=ENS_ETAPAS.map(([k,t])=>({n:t,c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
- let h=`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
+ let h=`<div class="ens-kpi3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
  return h;
 }
 function ensPizzaRedes(base,ord,tot,titulo){
