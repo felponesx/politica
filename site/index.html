@@ -5855,7 +5855,7 @@ handebol:["#8B5CF6",'<circle cx="12" cy="12" r="9"/><path d="M8 5.5l4 2.5 4-2.5M
 "jogos-eletronicos":["#D6409F",'<path d="M7 8h10a4 4 0 0 1 4 4.2l-.6 3.6a2.5 2.5 0 0 1-4.2 1.3L14.5 15h-5l-1.700 2.1a2.5 2.5 0 0 1-4.2-1.3L3 12.2A4 4 0 0 1 7 8z"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="15.5" cy="11.5" r=".6"/><circle cx="17.5" cy="13" r=".6"/>']};
 const prmIco=(slug,sz=26)=>{const[c,d]=PRM_IC[slug]||["#2F6FED",'<circle cx="12" cy="12" r="9"/>'];return`<span class="prm-i" style="--c:${c}"><svg viewBox="0 0 24 24" width="${sz}" height="${sz}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg></span>`};
 /* ---------- Ensino (IDEB, faculdades, escolas) ---------- */
-const ENS_ETAPAS=[["iniciais","Anos iniciais (1º ao 5º ano)"],["finais","Anos finais (6º ao 9º ano)"],["medio","Ensino médio"]],ENS_COR={iniciais:"#2F6FED",finais:"#1BAF7A",medio:"#F5A524"};
+const ENS_ETAPAS=[["iniciais","Fundamental 1 (1º ao 5º)"],["finais","Fundamental 2 (6º ao 9º)"],["medio","Médio (1º ao 3º)"]],ENS_COR={iniciais:"#2F6FED",finais:"#1BAF7A",medio:"#F5A524"};
 const ENS_ABAS=[["geral","Visão geral"],["faculdades","Faculdades"],["escolas","Escolas"]];
 const ensN1=v=>v==null?"—":(+v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const ensAnos=o=>Object.keys(o||{}).filter(a=>o[a]!=null).sort();
@@ -5874,9 +5874,9 @@ function ensIdeb(I,uf,etapa){
  if(!ref)return`<div class="rbanner mt">Sem dados do IDEB deste estado.</div>`;
  const kp=ENS_ETAPAS.map(([k,t])=>{const o=ref[k]||{},an=ensAnos(o),u=an[an.length-1],p=an[0];if(!u)return"";
   const meta=uf?null:((I.metas&&I.metas[k])||{})[u];const ub=ensAnos(I.brasil[k]);const bano=ub[ub.length-1];const bra=uf&&bano?I.brasil[k][bano]:null;
-  return`<div class="kpi"><span>${esc(t.split(" (")[0])}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${bra!=null?` · Brasil ${bano} ${ensN1(bra)}`:""}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
+  return`<div class="kpi"><span>${esc(t)}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${bra!=null?` · Brasil ${bano} ${ensN1(bra)}`:""}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
  const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(ref[k])))].sort();
- const series=ENS_ETAPAS.map(([k,t])=>({n:t.split(" (")[0],c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
+ const series=ENS_ETAPAS.map(([k,t])=>({n:t,c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
  let h=`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
  return h;
 }
