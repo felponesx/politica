@@ -5865,7 +5865,7 @@ const ENS_REDE_COR={estadual:"#2F6FED",privada:"#1BAF7A",municipal:"#F5A524",fed
 const ENS_REDE_NOME={estadual:"Estadual",privada:"Privada",municipal:"Municipal",federal:"Federal"};
 const REDES_ORDEM_ENS=["estadual","privada","municipal","federal"];
 const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6",superior:"#F5A524"})[k]||"#2F6FED";
-const ENS_NIVEL_TITULO={fundamental_iniciais:"Ensino fundamental — anos iniciais",fundamental_finais:"Ensino fundamental — anos finais",medio:"Ensino médio",superior:"Faculdade"};
+const ENS_NIVEL_TITULO={fundamental_iniciais:"Fundamental 1 (1º ao 5º)",fundamental_finais:"Fundamental 2 (6º ao 9º)",medio:"Médio (1º ao 3º)",superior:"Faculdade"};
 const ensMatNome=o=>{let t=String(o.ocupacao||"").replace(/^Professor(a)?\s+(de\s+|do\s+|da\s+)?/i,"").replace(/\s*\(.*?\)\s*/g," ").replace(/\s+(do|no|na|em)\s+ensino\s+.*$/i,"").replace(/\s+/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)};
 const ensEtapaNome=k=>((ENS_ETAPAS.find(x=>x[0]===k)||[k,k])[1]).split(" (")[0];
 const ensUFNome=u=>(UF[u]||{}).nome||u;
