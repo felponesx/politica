@@ -5959,7 +5959,8 @@ function ensVisao(el,S,uf0){
  const cfg=()=>({card:"#ensCard",main:"#ensMain",holder:"#ensHold",map:"#ensMap",back:"‹ Voltar",
    render:u=>{const tk=++ensTok;return{html:ensUfHero(u)+'<div id="ensDet"></div>',mount:()=>setTimeout(()=>{if(tk!==ensTok)return;const d=$("#ensDet");if(!d)return;d.innerHTML=ensDetalheHtml(S,u,etapa);ensGastoEd(u);if(typeof pilulas==="function")pilulas()},640)}},
    onBack:()=>{uf="";sincroniza()}});
- const sincroniza=()=>{const s=$("#ensU");if(s)s.value=uf};
+ const etapaVisivel=()=>{const e=$("#ensE");const w=e&&(e.closest(".pill-w")||e);if(w)w.style.display=uf?"none":""};
+ const sincroniza=()=>{const s=$("#ensU");if(s)s.value=uf;etapaVisivel()};
  const aberto=()=>{const c=$("#ensCard");return !!c&&c.classList.contains("stmode")};
  const vai=(u,pathEl)=>{
    ++ensTok;
@@ -5978,6 +5979,7 @@ function ensVisao(el,S,uf0){
   const mp=$("#ensMap");if(mp)bindMap(mp,null,null,(u,b)=>vai(u,b));
   const zb=el.querySelector("#ensHold .zback");if(zb)zb.onclick=()=>{if(aberto())inlineZoomOut(cfg());uf="";sincroniza()};
   if(typeof pilulas==="function")pilulas();
+  etapaVisivel();
  };
  el.addEventListener("click",ev=>{
   const a=ev.target.closest("[data-ensuf]");if(a){ev.preventDefault();vai(a.dataset.ensuf||"");return}
