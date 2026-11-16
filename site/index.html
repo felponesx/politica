@@ -2233,6 +2233,19 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .ens-kpi3 .kpi strong{color:color-mix(in srgb,var(--c,#2F6FED) 72%,#1D2939)}
 /* v1.22 · concursos: fundo pastel pelo tipo de ato (o que está acontecendo) */
 #view .oc-card.oc-conc{background:color-mix(in srgb,var(--c,#2F6FED) 8%,var(--surface));border-color:color-mix(in srgb,var(--c,#2F6FED) 30%,var(--line))}
+/* v1.23 · ensino: cartões de salário menores */
+.ens-sals{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ens-sals .ens-sal{padding:10px 12px;border-radius:10px}
+.ens-sals .ens-sal-t{font-size:12px;margin-bottom:4px;line-height:1.3}
+.ens-sals .ens-sal small{font-size:11px}
+.ens-sals .ens-sal b{font-size:17px}
+.ens-sals .ens-sal em{font-size:11px}
+.ens-sals .ens-det{margin-top:8px;padding-top:8px}
+.ens-sals .ens-det>summary{font-size:12px}
+.ens-sals .ens-mat-top{font-size:12px}
+.ens-sals .ens-mat-v b{font-size:12px}
+.ens-sals .ens-mat-info{font-size:10.5px}
+.ens-sals .ens-mat{margin:8px 0}
 </style>
 </head>
 <body>
@@ -5972,7 +5985,7 @@ function ensMapaPanel(I,etapa){
  Object.keys(ufs).forEach(u=>{const o=ufs[u][etapa]||{},a=ensAnos(o);if(a.length)v[u]=o[a[a.length-1]]});
  const anosE=[...new Set(Object.values(ufs).flatMap(o=>ensAnos(o[etapa])))].sort();
  const ua=anosE[anosE.length-1],tem=Object.keys(v).length>0;
- return`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2><div id="ensMap">${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div></div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])}))):""}</div></div>`;
+ return`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2><div id="ensMap">${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div></div><div class="panel"><h2>Média dos estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])}))):""}</div></div>`;
 }
 const PISO_UNIAO={ano:2026,valor:5130.63,fonte:"Portaria MEC nº 82, de 29/01/2026 (piso do magistério, 40 horas semanais)",link:"https://abmes.org.br/legislacoes/detalhe/5385/portaria-mec-n-82"};
 const ensUfBack=()=>`<div class="ufback"><button class="btn zback">‹ Voltar</button></div>`;
@@ -5994,9 +6007,9 @@ function ensDetalheHtml(S,uf,etapa){
 function ensZoomHtml(S,uf,etapa){return ensUfHero(uf)+ensDetalheHtml(S,uf,etapa)}
 function ensCorpo(S,uf,etapa,todos){
  const I=S.ideb&&S.ideb.brasil?S.ideb:null;
- const main=I?ensIdeb(I,null,etapa)+(I.ufs?ensMapaPanel(I,etapa):""):ensVazio();
+ const main=I?ensIdeb(I,null,etapa)+(I.ufs?ensMapaPanel(I,etapa)+ensProfBloco(S.prof):""):ensVazio();
  let h=`<div id="ensCard"${uf?' class="stmode"':""}><div id="ensMain"${uf?' style="display:none"':""}>${main}</div><div id="ensHold"${uf?' style="display:block"':' style="display:none"'}>${uf&&I?ensUfBack()+ensZoomHtml(S,uf,etapa):""}</div></div>`;
- h+=`<div id="ensBR"${uf?' style="display:none"':""}>`+ensRedesBloco(S.redes,null,todos)+ensProfBloco(S.prof)+`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div></div>`;
+ h+=`<div id="ensBR"${uf?' style="display:none"':""}>`+ensRedesBloco(S.redes,null,todos)+`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div></div>`;
  const fontes=["IDEB (INEP)","Censo Escolar"+(S.redes&&S.redes.ano?" "+S.redes.ano:""),"RAIS 2024 (Ministério do Trabalho)"];
  return h+`<div class="rbanner mt small">Fontes: ${fontes.map(esc).join("; ")}. Nada aqui é estimado.</div>`+RSRC();
 }
