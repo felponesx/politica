@@ -2202,17 +2202,15 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-uf-n{font-weight:600;color:var(--blue,#2F6FED);text-decoration:none}
 .ens-uf-m{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:8px;font-size:14px}
 .ens-uf-m small{display:block;font-size:11.5px;color:var(--muted)}
-/* v1.17 · ensino: entrada da ficha do estado (mapa e cartões em sequência) */
-@keyframes ensMapa{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
-@keyframes ensSobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-#ensHold .ufhero{animation:ensMapa .7s cubic-bezier(.2,.7,.2,1) both}
-#ensHold>*:not(.ufback):not(.ufhero){animation:ensSobe .55s cubic-bezier(.2,.7,.2,1) both}
-#ensHold>*:nth-child(4){animation-delay:.08s}
-#ensHold>*:nth-child(5){animation-delay:.16s}
-#ensHold>*:nth-child(6){animation-delay:.24s}
-#ensHold>*:nth-child(7){animation-delay:.32s}
-#ensHold>*:nth-child(n+8){animation-delay:.4s}
-@media (prefers-reduced-motion:reduce){#ensHold *{animation:none!important}}
+/* v1.18 · ensino: voo do estado sem sombra (fica leve no celular) e ficha entrando em sequência */
+.zoomfx svg.geo{filter:none}
+@keyframes ensSobe{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#ensDet>*{animation:ensSobe .45s ease-out both}
+#ensDet>*:nth-child(2){animation-delay:.05s}
+#ensDet>*:nth-child(3){animation-delay:.1s}
+#ensDet>*:nth-child(4){animation-delay:.15s}
+#ensDet>*:nth-child(n+5){animation-delay:.2s}
+@media (prefers-reduced-motion:reduce){#ensDet>*{animation:none!important}}
 </style>
 </head>
 <body>
@@ -5937,11 +5935,14 @@ function ensSalarioUF(S,uf){
   ${kp?`<div class="kpis mt">${kp}</div>`:""}
   <p class="small muted mt">${esc(UF[uf]?UF[uf].nome:uf)}: média dos professores do estado ainda não disponível. A RAIS que usamos traz só o país, então não estimamos. Os valores acima são do país inteiro.</p></div>`;
 }
-function ensZoomHtml(S,uf,etapa){
+function ensUfHero(uf){
  const u=UF[uf]||{nome:uf,reg:""},b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;
- const hero=`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]||"#2F6FED"}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Ensino</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${esc(u.nome||uf)}</h1><p class="small">IDEB, escolas e redes do estado.</p></div></div>`;
- return hero+ensSalarioUF(S,uf)+(S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):"")+ensFicha(S.redes,uf)+ensRedesBloco(S.redes,uf,true)+`<div id="ensGasto"></div>`;
+ return`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]||"#2F6FED"}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Ensino</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${esc(u.nome||uf)}</h1><p class="small">IDEB, escolas e redes do estado.</p></div></div>`;
 }
+function ensDetalheHtml(S,uf,etapa){
+ return ensSalarioUF(S,uf)+(S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):"")+ensFicha(S.redes,uf)+ensRedesBloco(S.redes,uf,true)+`<div id="ensGasto"></div>`;
+}
+function ensZoomHtml(S,uf,etapa){return ensUfHero(uf)+ensDetalheHtml(S,uf,etapa)}
 function ensCorpo(S,uf,etapa,todos){
  const I=S.ideb&&S.ideb.brasil?S.ideb:null;
  const main=I?ensIdeb(I,null,etapa)+(I.ufs?ensMapaPanel(I,etapa):""):ensVazio();
@@ -5952,14 +5953,16 @@ function ensCorpo(S,uf,etapa,todos){
  const fontes=["IDEB (INEP)","Censo Escolar"+(S.redes&&S.redes.ano?" "+S.redes.ano:""),"RAIS 2024 (Ministério do Trabalho)"];
  return h+`<div class="rbanner mt small">Fontes: ${fontes.map(esc).join("; ")}. Nada aqui é estimado.</div>`+RSRC();
 }
+let ensTok=0;
 function ensVisao(el,S,uf0){
  let uf=uf0||"",etapa="iniciais",todos=false;
  const cfg=()=>({card:"#ensCard",main:"#ensMain",holder:"#ensHold",map:"#ensMap",back:"‹ Voltar",
-   render:u=>({html:ensZoomHtml(S,u,etapa),mount:()=>ensGastoEd(u)}),
+   render:u=>{const tk=++ensTok;return{html:ensUfHero(u)+'<div id="ensDet"></div>',mount:()=>setTimeout(()=>{if(tk!==ensTok)return;const d=$("#ensDet");if(!d)return;d.innerHTML=ensDetalheHtml(S,u,etapa);ensGastoEd(u);if(typeof pilulas==="function")pilulas()},640)}},
    onBack:()=>{uf="";sincroniza()}});
  const sincroniza=()=>{const s=$("#ensU");if(s)s.value=uf};
  const aberto=()=>{const c=$("#ensCard");return !!c&&c.classList.contains("stmode")};
  const vai=(u,pathEl)=>{
+   ++ensTok;
    if(!u||!UF[u]){if(aberto())inlineZoomOut(cfg());uf="";sincroniza();return}
    const estava=aberto();
    if(estava)inlineZoomOut(cfg());
