@@ -2211,6 +2211,17 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #ensDet>*:nth-child(4){animation-delay:.15s}
 #ensDet>*:nth-child(n+5){animation-delay:.2s}
 @media (prefers-reduced-motion:reduce){#ensDet>*{animation:none!important}}
+/* v1.19 · ensino: pizza das redes com legenda explicada */
+.ens-pizza{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
+.ens-pizza-svg{width:190px;height:190px;flex:none}
+.ens-pizza-c1{font-size:13px;font-weight:600;fill:var(--ink)}
+.ens-pizza-c2{font-size:8.5px;fill:var(--muted)}
+.ens-pizza-leg{flex:1;min-width:210px;display:grid;gap:12px}
+.ens-leg-top{display:flex;align-items:center;gap:8px;font-size:14px}
+.ens-leg-top i{width:11px;height:11px;border-radius:50%;flex:none}
+.ens-leg-top span{margin-left:auto;font-weight:600}
+.ens-leg-n{font-size:13px;margin-top:2px}
+.ens-leg small{display:block;font-size:12px;line-height:1.35;margin-top:2px}
 </style>
 </head>
 <body>
@@ -5869,6 +5880,16 @@ function ensIdeb(I,uf,etapa){
  let h=`<div class="kpis3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
  return h;
 }
+function ensPizzaRedes(base,ord,tot,titulo){
+ const itens=ord.filter(r=>base[r]&&base[r].mat_total);
+ if(!itens.length)return"";
+ const pct=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
+ let fatias="";
+ if(itens.length===1){fatias=`<circle cx="60" cy="60" r="54" fill="${ENS_REDE_COR[itens[0]]}" stroke="var(--surface)" stroke-width="1.5"/>`}
+ else{let a0=-Math.PI/2;itens.forEach(r=>{const v=base[r].mat_total,a1=a0+v/tot*Math.PI*2,L=a1-a0>Math.PI?1:0;const P=(a,rr)=>[60+rr*Math.cos(a),60+rr*Math.sin(a)];const[x0,y0]=P(a0,54),[x1,y1]=P(a1,54),[x2,y2]=P(a1,36),[x3,y3]=P(a0,36);fatias+=`<path d="M${x0} ${y0}A54 54 0 ${L} 1 ${x1} ${y1}L${x2} ${y2}A36 36 0 ${L} 0 ${x3} ${y3}Z" fill="${ENS_REDE_COR[r]}" stroke="var(--surface)" stroke-width="1.5"/>`;a0=a1})}
+ const legenda=itens.map(r=>{const x=base[r];return`<div class="ens-leg"><div class="ens-leg-top"><i style="background:${ENS_REDE_COR[r]}"></i><b>${ENS_REDE_NOME[r]}</b><span>${pct(x.mat_total)}</span></div><div class="ens-leg-n">${nf(x.mat_total)} matrículas · ${nf(x.escolas)} escolas</div><small class="muted">Fundamental: ${nf(x.mat_fundamental)} matrículas e ${nf(x.doc_fundamental)} professores. Médio: ${nf(x.mat_medio)} matrículas e ${nf(x.doc_medio)} professores.</small></div>`}).join("");
+ return`<div class="ens-pizza"><svg viewBox="0 0 120 120" class="ens-pizza-svg" role="img" aria-label="Matrículas por rede em ${esc(titulo)}">${fatias}<circle cx="60" cy="60" r="36" fill="var(--surface)"/><text x="60" y="58" text-anchor="middle" class="ens-pizza-c1">${(tot/1e6).toFixed(1).replace(".",",")} mi</text><text x="60" y="71" text-anchor="middle" class="ens-pizza-c2">matrículas</text></svg><div class="ens-pizza-leg">${legenda}</div></div><p class="small muted" style="margin:12px 0 0"><b>Como ler:</b> cada cor é uma rede de ensino. O tamanho da fatia mostra a parte dos alunos de ${esc(titulo)} que estudam nessa rede. O número no centro é o total de matrículas das quatro redes.</p>`;
+}
 function ensRedesBloco(R,uf,todos,lista){
  if(!R||!R.pais)return"";
  const ord=R.redes_ordem||REDES_ORDEM_ENS;
@@ -5878,7 +5899,7 @@ function ensRedesBloco(R,uf,todos,lista){
  if(!base)return`<div class="panel mt"><h2>Redes de ensino · ${esc(titulo)}</h2><div class="rbanner">Sem dados das redes deste estado.</div></div>`;
  const tot=ord.reduce((a,r)=>a+((base[r]||{}).mat_total||0),0)||1;
  const pct=x=>(100*x/tot).toFixed(1).replace(".",",")+"%";
- const barras=ord.filter(r=>base[r]).map(r=>{const x=base[r];return`<div class="ens-rede"><div class="ens-rede-top"><span><i style="background:${ENS_REDE_COR[r]}"></i>${ENS_REDE_NOME[r]}</span><b>${nf(x.mat_total)} matrículas · ${pct(x.mat_total)}</b></div><div class="ens-trilho"><div style="width:${(100*x.mat_total/tot).toFixed(1)}%;background:${ENS_REDE_COR[r]}"></div></div><small class="muted">${nf(x.escolas)} escolas · ${nf(x.mat_fundamental)} matrículas no fundamental · ${nf(x.mat_medio)} no médio · ${nf(x.doc_fundamental)} professores no fundamental · ${nf(x.doc_medio)} no médio</small></div>`}).join("");
+ const barras=ensPizzaRedes(base,ord,tot,titulo);
  const linhas=(R.estados||[]).map(e=>({uf:e.uf,...e.redes}));
  const mostra=todos?linhas:linhas.slice(0,3);
  const porEstado=uf?"":`<div class="panel mt"><h2>Redes em cada estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado para ver a ficha dele.</p>${mostra.map(x=>`<div class="ens-uf"><a href="#" class="ens-uf-n" data-ensuf="${x.uf}">${bandeiraImg(x.uf,"flag flag-sm")} ${esc(ensUFNome(x.uf))}</a><div class="ens-uf-m"><span><small>Escolas estaduais</small>${nf((x.estadual||{}).escolas)}</span><span><small>Matrículas estaduais</small>${nf((x.estadual||{}).mat_total)}</span><span><small>Matrículas privadas</small>${nf((x.privada||{}).mat_total)}</span><span><small>% na privada</small>${(()=>{const t=ord.reduce((k,r)=>k+((x[r]||{}).mat_total||0),0)||1;return(100*((x.privada||{}).mat_total||0)/t).toFixed(1).replace(".",",")+"%"})()}</span></div></div>`).join("")}${!todos&&linhas.length>3?`<button type="button" class="btn mt" data-ensmais="1">Ver todos (${linhas.length})</button>`:""}</div>`;
