@@ -83,3 +83,11 @@ def test_rotas():
     db.execute(delete(Registro).where(Registro.tipo.in_(tipos)))
     db.commit()
     db.close()
+
+
+def test_salario_inicial_so_quando_o_edital_diz_inicial():
+    d = detalhes_edital("Cargo de Professor. Remuneração inicial de R$ 3.500,00 mensais. Vagas: 20 vagas.")
+    assert d["salario_inicial"] == 3500.0 and d["salario_max"] == 3500.0
+    d2 = detalhes_edital("vencimento básico inicial R$ 4.120,50; remuneração de R$ 9.000,00")
+    assert d2["salario_inicial"] == 4120.5 and d2["salario_max"] == 9000.0
+    assert "salario_inicial" not in detalhes_edital("remuneração de R$ 5.000,00")

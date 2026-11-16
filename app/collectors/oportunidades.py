@@ -162,6 +162,13 @@ def detalhes_edital(texto: str) -> dict:
             sal.append(v)
     if sal:
         out["salario_max"] = max(sal)
+    ini = []
+    for m in re.finditer(r"(remunera[cç][aã]o|vencimento|sal[aá]rio|subs[ií]dio)\s+(?:b[aá]sic[oa]\s+|mensal\s+)?(?:inicial|de ingresso)[^R]{0,120}R\$\s*([\d.]+,\d{2})", t, re.I):
+        v = _num(m.group(2))
+        if v and 500 < v < 100000:
+            ini.append(v)
+    if ini:
+        out["salario_inicial"] = min(ini)  # o menor salário inicial citado (quando há mais de um cargo)
     m = re.search(r"inscri[cç][oõ]es[^.]{0,200}?(\d{1,2}/\d{1,2}/\d{4})[^.]{0,40}?(?:a|at[eé]|e)\s+(\d{1,2}/\d{1,2}/\d{4})", t, re.I)
     if m:
         out["inscricoes_inicio"], out["inscricoes_fim"] = _iso(m.group(1)), _iso(m.group(2))

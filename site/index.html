@@ -2231,6 +2231,8 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 /* v1.21 · ensino: cada etapa com a sua cor (mesma do gráfico) */
 #view .ens-kpi3 .kpi{background:color-mix(in srgb,var(--c,#2F6FED) 9%,var(--surface));border-color:color-mix(in srgb,var(--c,#2F6FED) 50%,var(--line))}
 #view .ens-kpi3 .kpi strong{color:color-mix(in srgb,var(--c,#2F6FED) 72%,#1D2939)}
+/* v1.22 · concursos: fundo pastel pelo tipo de ato (o que está acontecendo) */
+#view .oc-card.oc-conc{background:color-mix(in srgb,var(--c,#2F6FED) 8%,var(--surface));border-color:color-mix(in srgb,var(--c,#2F6FED) 30%,var(--line))}
 </style>
 </head>
 <body>
@@ -6068,11 +6070,11 @@ async function orgaosAplicar(){let[O,E]=await Promise.all([midiaGrupo("orgaos"),
 const ATO_COR={abertura:"#2F6FED",processo_seletivo:"#1BAF7A",convocacao:"#8B5CF6",nomeacao:"#F5A524",homologacao:"#EB6834",retificacao:"#8A919E",prorrogacao:"#0EA5E9"};
 const PAL_COR=["#2F6FED","#1BAF7A","#8B5CF6","#F5A524","#EB6834","#0EA5E9"];
 const corDeNome=t=>PAL_COR[[...String(t||"")].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL_COR.length];
-function opConcCard(x){const f=[];if(x.vagas)f.push(["Vagas",nf(x.vagas)]);if(x.salario_max)f.push(["Salário até",brlC(x.salario_max)]);
+function opConcCard(x){const f=[];if(x.vagas)f.push(["Vagas",nf(x.vagas)]);if(x.salario_inicial)f.push(["Salário inicial",brlC(x.salario_inicial)]);else if(x.salario_max)f.push(["Salário até",brlC(x.salario_max)]);
  if(x.inscricoes_fim)f.push(["Inscrições até",opData(x.inscricoes_fim)]);if(x.banca)f.push(["Banca",esc(x.banca)]);if(x.escolaridade)f.push(["Nível",esc(x.escolaridade.join(", "))]);
  const onde=x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:(x.uf?esc((UF[x.uf]||{}).nome||x.uf):(x.esfera==="federal"?"Órgão federal":""));
  const falta=(x.incompleto||[]).map(c=>({vagas:"vagas",salario_max:"salário",inscricoes_fim:"prazo de inscrição"})[c]).filter(Boolean);
- return`<div class="oc-card" style="--c:${ATO_COR[x.ato||x.tipo]||"#2F6FED"}"><div class="oc-top"><span class="tag">${esc(x.ato_nome||x.tipo||"")}</span><span class="tag">${esc(x.area||"Outras áreas")}</span><span class="tag">${esc(OP_ESF[x.esfera]||x.esfera||"")}</span>${opSitu(x)}</div>
+ return`<div class="oc-card oc-conc" style="--c:${ATO_COR[x.ato||x.tipo]||"#2F6FED"}"><div class="oc-top"><span class="tag">${esc(x.ato_nome||x.tipo||"")}</span><span class="tag">${esc(x.area||"Outras áreas")}</span><span class="tag">${esc(OP_ESF[x.esfera]||x.esfera||"")}</span>${opSitu(x)}</div>
  <h3>${orgSlot(x.orgao,x.uf)}<span>${esc(x.orgao||x.titulo)}</span></h3><div class="small muted">${esc(x.titulo||"")}${x.vinculo&&x.vinculo!==x.orgao?` · ${esc(x.vinculo)}`:""}${onde?` · ${onde}`:""} · publicado em ${opData(x.publicado)}${x.coletado_em?` · lido em ${opData(x.coletado_em)}`:""}</div>
  ${f.length?`<div class="oc-facts">${f.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join("")}</div>`:""}
  ${x.cargos?`<div class="small oc-cargos"><b>Cargos:</b> ${x.cargos.map(esc).join(" · ")}</div>`:""}
