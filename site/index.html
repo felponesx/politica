@@ -5947,9 +5947,7 @@ function ensCorpo(S,uf,etapa,todos){
  const I=S.ideb&&S.ideb.brasil?S.ideb:null;
  const main=I?ensIdeb(I,null,etapa)+(I.ufs?ensMapaPanel(I,etapa):""):ensVazio();
  let h=`<div id="ensCard"${uf?' class="stmode"':""}><div id="ensMain"${uf?' style="display:none"':""}>${main}</div><div id="ensHold"${uf?' style="display:block"':' style="display:none"'}>${uf&&I?ensUfBack()+ensZoomHtml(S,uf,etapa):""}</div></div>`;
- h+=uf?ensRedesBloco(S.redes,null,todos,true):ensRedesBloco(S.redes,null,todos);
- h+=ensProfBloco(S.prof);
- h+=`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`;
+ h+=`<div id="ensBR"${uf?' style="display:none"':""}>`+ensRedesBloco(S.redes,null,todos)+ensProfBloco(S.prof)+`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div></div>`;
  const fontes=["IDEB (INEP)","Censo Escolar"+(S.redes&&S.redes.ano?" "+S.redes.ano:""),"RAIS 2024 (Ministério do Trabalho)"];
  return h+`<div class="rbanner mt small">Fontes: ${fontes.map(esc).join("; ")}. Nada aqui é estimado.</div>`+RSRC();
 }
@@ -5959,7 +5957,7 @@ function ensVisao(el,S,uf0){
  const cfg=()=>({card:"#ensCard",main:"#ensMain",holder:"#ensHold",map:"#ensMap",back:"‹ Voltar",
    render:u=>{const tk=++ensTok;return{html:ensUfHero(u)+'<div id="ensDet"></div>',mount:()=>setTimeout(()=>{if(tk!==ensTok)return;const d=$("#ensDet");if(!d)return;d.innerHTML=ensDetalheHtml(S,u,etapa);ensGastoEd(u);if(typeof pilulas==="function")pilulas()},640)}},
    onBack:()=>{uf="";sincroniza()}});
- const etapaVisivel=()=>{const e=$("#ensE");const w=e&&(e.closest(".pill-w")||e);if(w)w.style.display=uf?"none":""};
+ const etapaVisivel=()=>{const e=$("#ensE");const w=e&&(e.closest(".pill-w")||e);if(w)w.style.display=uf?"none":"";const br=$("#ensBR");if(br)br.style.display=uf?"none":""};
  const sincroniza=()=>{const s=$("#ensU");if(s)s.value=uf;etapaVisivel()};
  const aberto=()=>{const c=$("#ensCard");return !!c&&c.classList.contains("stmode")};
  const vai=(u,pathEl)=>{
