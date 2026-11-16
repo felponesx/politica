@@ -2228,6 +2228,9 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-kpi3 .kpi span{font-size:11.5px;line-height:1.25}
 .ens-kpi3 .kpi strong{font-size:24px}
 .ens-kpi3 .kpi em{font-size:10px;line-height:1.3;font-style:normal}
+/* v1.21 · ensino: cada etapa com a sua cor (mesma do gráfico) */
+#view .ens-kpi3 .kpi{background:color-mix(in srgb,var(--c,#2F6FED) 9%,var(--surface));border-color:color-mix(in srgb,var(--c,#2F6FED) 50%,var(--line))}
+#view .ens-kpi3 .kpi strong{color:color-mix(in srgb,var(--c,#2F6FED) 72%,#1D2939)}
 </style>
 </head>
 <body>
@@ -5870,7 +5873,7 @@ function ensVazio(){return`<div class="rbanner">Os dados do INEP (IDEB, IGC e es
 const ENS_REDE_COR={estadual:"#2F6FED",privada:"#1BAF7A",municipal:"#F5A524",federal:"#8B5CF6"};
 const ENS_REDE_NOME={estadual:"Estadual",privada:"Privada",municipal:"Municipal",federal:"Federal"};
 const REDES_ORDEM_ENS=["estadual","privada","municipal","federal"];
-const ensNivelCor=k=>({fundamental_iniciais:"#2F6FED",fundamental_finais:"#1BAF7A",medio:"#8B5CF6",superior:"#F5A524"})[k]||"#2F6FED";
+const ensNivelCor=k=>({fundamental_iniciais:ENS_COR.iniciais,fundamental_finais:ENS_COR.finais,medio:ENS_COR.medio,superior:"#8B5CF6"})[k]||ENS_COR.iniciais;
 const ENS_NIVEL_TITULO={fundamental_iniciais:"Fundamental 1 (1º ao 5º)",fundamental_finais:"Fundamental 2 (6º ao 9º)",medio:"Médio (1º ao 3º)",superior:"Faculdade"};
 const ensMatNome=o=>{let t=String(o.ocupacao||"").replace(/^Professor(a)?\s+(de\s+|do\s+|da\s+)?/i,"").replace(/\s*\(.*?\)\s*/g," ").replace(/\s+(do|no|na|em)\s+ensino\s+.*$/i,"").replace(/\s+/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)};
 const ensEtapaNome=k=>((ENS_ETAPAS.find(x=>x[0]===k)||[k,k])[1]).split(" (")[0];
@@ -5880,7 +5883,7 @@ function ensIdeb(I,uf,etapa){
  if(!ref)return`<div class="rbanner mt">Sem dados do IDEB deste estado.</div>`;
  const kp=ENS_ETAPAS.map(([k,t])=>{const o=ref[k]||{},an=ensAnos(o),u=an[an.length-1],p=an[0];if(!u)return"";
   const meta=uf?null:((I.metas&&I.metas[k])||{})[u];const ub=ensAnos(I.brasil[k]);const bano=ub[ub.length-1];const bra=uf&&bano?I.brasil[k][bano]:null;
-  return`<div class="kpi"><span>${esc(t)}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${bra!=null?` · Brasil ${bano} ${ensN1(bra)}`:""}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
+  return`<div class="kpi" style="--c:${ENS_COR[k]}"><span>${esc(t)}</span><strong>${ensN1(o[u])}</strong><em>IDEB ${u}${bra!=null?` · Brasil ${bano} ${ensN1(bra)}`:""}${p&&p!==u?` · em ${p} era ${ensN1(o[p])}`:""}${meta!=null?` · meta ${ensN1(meta)}`:""}</em></div>`}).join("");
  const anos=[...new Set(ENS_ETAPAS.flatMap(([k])=>ensAnos(ref[k])))].sort();
  const series=ENS_ETAPAS.map(([k,t])=>({n:t,c:ENS_COR[k],v:anos.map(a=>(ref[k]||{})[a]??null)})).filter(x=>x.v.some(y=>y!=null));
  let h=`<div class="ens-kpi3 mt">${kp}</div><div class="panel mt"><h2>Evolução da nota (IDEB)${uf?" · "+esc(ensUFNome(uf)):" no Brasil"}</h2><p class="small muted" style="margin:0 0 8px">IDEB: nota de 0 a 10 que junta o aprendizado (Saeb) e a aprovação dos alunos. Medido a cada 2 anos.</p>${series.length?lineChart(series,anos,{h:260,fmt:ensN1,periodo:false}):""}</div>`;
