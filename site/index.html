@@ -2202,6 +2202,17 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-uf-n{font-weight:600;color:var(--blue,#2F6FED);text-decoration:none}
 .ens-uf-m{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:8px;font-size:14px}
 .ens-uf-m small{display:block;font-size:11.5px;color:var(--muted)}
+/* v1.17 · ensino: entrada da ficha do estado (mapa e cartões em sequência) */
+@keyframes ensMapa{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes ensSobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#ensHold .ufhero{animation:ensMapa .7s cubic-bezier(.2,.7,.2,1) both}
+#ensHold>*:not(.ufback):not(.ufhero){animation:ensSobe .55s cubic-bezier(.2,.7,.2,1) both}
+#ensHold>*:nth-child(4){animation-delay:.08s}
+#ensHold>*:nth-child(5){animation-delay:.16s}
+#ensHold>*:nth-child(6){animation-delay:.24s}
+#ensHold>*:nth-child(7){animation-delay:.32s}
+#ensHold>*:nth-child(n+8){animation-delay:.4s}
+@media (prefers-reduced-motion:reduce){#ensHold *{animation:none!important}}
 </style>
 </head>
 <body>
@@ -5916,15 +5927,25 @@ function ensMapaPanel(I,etapa){
  const ua=anosE[anosE.length-1],tem=Object.keys(v).length>0;
  return`<div class="grid g2 mt"><div class="panel"><h2>Mapa do IDEB ${ua||""} · ${esc(ensEtapaNome(etapa))}</h2><div id="ensMap">${tem?mapaValores(v,ensN1,{escala:SCALE}):`<div class="rbanner">Sem dados desta etapa.</div>`}</div></div><div class="panel"><h2>Todos os estados</h2>${tem?listaUF(Object.keys(v).filter(u=>UF[u]).map(u=>({uf:u,k:v[u],r:ensN1(v[u])}))):""}</div></div>`;
 }
+const PISO_UNIAO={ano:2026,valor:5130.63,fonte:"Portaria MEC nº 82, de 29/01/2026 (piso do magistério, 40 horas semanais)",link:"https://abmes.org.br/legislacoes/detalhe/5385/portaria-mec-n-82"};
+const ensUfBack=()=>`<div class="ufback"><button class="btn zback">‹ Voltar</button></div>`;
+function ensSalarioUF(S,uf){
+ const N=(S.prof&&S.prof.niveis)||[];
+ const kp=N.map(n=>`<div class="kpi"><span>${esc(ENS_NIVEL_TITULO[n.chave]||n.nivel)}</span><strong>${brlC(n.media)}</strong><em>média no país</em></div>`).join("");
+ return`<div class="panel mt"><h2>Salário dos professores</h2>
+  <div class="kpis mt"><div class="kpi"><span>Referência da União (piso nacional)</span><strong>R$ ${PISO_UNIAO.valor.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><em>${PISO_UNIAO.ano} · 40 horas · <a href="${PISO_UNIAO.link}" target="_blank" rel="noopener">${esc(PISO_UNIAO.fonte)}</a></em></div></div>
+  ${kp?`<div class="kpis mt">${kp}</div>`:""}
+  <p class="small muted mt">${esc(UF[uf]?UF[uf].nome:uf)}: média dos professores do estado ainda não disponível. A RAIS que usamos traz só o país, então não estimamos. Os valores acima são do país inteiro.</p></div>`;
+}
 function ensZoomHtml(S,uf,etapa){
  const u=UF[uf]||{nome:uf,reg:""},b=geoBBox(uf),pad=Math.max(b.w,b.h)*.04;
  const hero=`<div class="ufhero"><svg class="ufhero-svg" viewBox="${b.x-pad} ${b.y-pad} ${b.w+2*pad} ${b.h+2*pad}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path id="ufHeroPath" d="${GEO.p[uf]}" fill="${REGCOL[u.reg]||"#2F6FED"}" stroke="var(--surface)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><div class="ufhero-t"><div class="small muted">Ensino</div><h1 class="h1flag">${bandeiraImg(uf,"flag flag-sm")}${esc(u.nome||uf)}</h1><p class="small">IDEB, escolas e redes do estado.</p></div></div>`;
- return`<div class="ufback"><button class="btn zback">‹ Voltar ao Brasil</button></div>`+hero+(S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):"")+ensFicha(S.redes,uf)+ensRedesBloco(S.redes,uf,true)+`<div id="ensGasto"></div>`;
+ return hero+ensSalarioUF(S,uf)+(S.ideb&&S.ideb.brasil?ensIdeb(S.ideb,uf,etapa):"")+ensFicha(S.redes,uf)+ensRedesBloco(S.redes,uf,true)+`<div id="ensGasto"></div>`;
 }
 function ensCorpo(S,uf,etapa,todos){
  const I=S.ideb&&S.ideb.brasil?S.ideb:null;
  const main=I?ensIdeb(I,null,etapa)+(I.ufs?ensMapaPanel(I,etapa):""):ensVazio();
- let h=`<div id="ensCard"${uf?' class="stmode"':""}><div id="ensMain"${uf?' style="display:none"':""}>${main}</div><div id="ensHold"${uf?' style="display:block"':' style="display:none"'}>${uf&&I?ensZoomHtml(S,uf,etapa):""}</div></div>`;
+ let h=`<div id="ensCard"${uf?' class="stmode"':""}><div id="ensMain"${uf?' style="display:none"':""}>${main}</div><div id="ensHold"${uf?' style="display:block"':' style="display:none"'}>${uf&&I?ensUfBack()+ensZoomHtml(S,uf,etapa):""}</div></div>`;
  h+=uf?ensRedesBloco(S.redes,null,todos,true):ensRedesBloco(S.redes,null,todos);
  h+=ensProfBloco(S.prof);
  h+=`<div class="panel mt"><h2>O que é o IDEB</h2><p class="small" style="margin:0">O Índice de Desenvolvimento da Educação Básica (INEP) vai de 0 a 10. Combina a nota dos alunos na prova do Saeb com a taxa de aprovação. Cada etapa tem a sua nota e a sua meta. Escolas públicas e privadas entram no cálculo do Brasil e dos estados.</p></div>`;
@@ -5933,7 +5954,7 @@ function ensCorpo(S,uf,etapa,todos){
 }
 function ensVisao(el,S,uf0){
  let uf=uf0||"",etapa="iniciais",todos=false;
- const cfg=()=>({card:"#ensCard",main:"#ensMain",holder:"#ensHold",map:"#ensMap",back:"‹ Voltar ao Brasil",
+ const cfg=()=>({card:"#ensCard",main:"#ensMain",holder:"#ensHold",map:"#ensMap",back:"‹ Voltar",
    render:u=>({html:ensZoomHtml(S,u,etapa),mount:()=>ensGastoEd(u)}),
    onBack:()=>{uf="";sincroniza()}});
  const sincroniza=()=>{const s=$("#ensU");if(s)s.value=uf};
