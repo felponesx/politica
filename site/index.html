@@ -6101,7 +6101,7 @@ function opConcursos(D,ato=""){const L=D.itens||[];let f={area:"",tipo:"",esf:""
    $("#ocA").onchange=e=>{f.area=e.target.value;lista()};$("#ocE").onchange=e=>{f.esf=e.target.value;lista()};$("#ocU").onchange=e=>{f.uf=e.target.value;lista()};
    const ab=$("#ocAb");if(ab)ab.onchange=e=>{f.abertas=e.target.checked;lista()};$("#ocQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200)}}}
 function opCursoCard(x){const f=[];if(x.carga_horaria)f.push(`${nf(x.carga_horaria)} h`);if(x.modalidade)f.push(esc(x.modalidade));if(x.certificado)f.push("Com certificado");
- return`<div class="oc-card oc-curso" style="--c:${corDeNome(x.ofertante)}"><div class="oc-top"><span class="tag">${esc(x.ofertante||"")}</span>${x.tema?`<span class="tag">${esc(x.tema)}</span>`:""}${x.inscricoes_abertas?`<span class="prm-r" style="--c:#1BAF7A">Inscrições abertas</span>`:""}</div>
+ return`<div class="oc-card oc-curso oc-conc" style="--c:${corDeNome(x.ofertante)}"><div class="oc-top"><span class="tag">${esc(x.ofertante||"")}</span>${x.tema?`<span class="tag">${esc(x.tema)}</span>`:""}${x.inscricoes_abertas?`<span class="prm-r" style="--c:#1BAF7A">Inscrições abertas</span>`:""}</div>
  <h3>${orgSlot(x.ofertante)}<span>${esc(x.nome)}</span></h3>${x.quem_faz&&x.quem_faz!==x.ofertante?`<div class="small muted">Conteúdo: ${esc(x.quem_faz)}</div>`:""}${f.length?`<div class="small">${f.join(" · ")}</div>`:""}
  ${x.resumo?`<p class="small muted oc-res">${esc(x.resumo)}</p>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver o curso e se inscrever ›</a></div>`}
 function opCursos(D){const L=D.itens||[];let f={of:"",tema:"",q:""};const temas=Object.keys(D.temas||{}),ofs=Object.keys(D.ofertantes||{});
