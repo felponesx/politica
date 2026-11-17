@@ -759,3 +759,8 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Professores em 4 níveis: fundamental anos iniciais, fundamental anos finais, médio e faculdade (`superior` = toda a família CBO 234, montada a partir da base). Cada card mostra a média do nível e, em "Ver por matéria", a média de cada ocupação.
 - A RAIS não separa escola pública de privada no agregado: o salário é de todos os vínculos. Matérias (disciplinas) por rede NÃO estão em base aberta lida: a aba diz isso. Professores por etapa não somam entre etapas.
 - Cópia: `python -m scripts.ensino_copia site/dados` (pacote `p/ensino.json`). No Artifact, as chaves foram para `p/geral.json` por causa do limite de 512 arquivos.
+
+## Meio ambiente: mapa por bioma e mapa único (nov/2026)
+- Tela do Brasil (`P.ambiente`): um só mapa de estados com seletor (PRODES km², acumulado, série, DETER e, como outra medida, os alertas do MapBiomas em hectares: `AMB_M.alerta`, nunca somados ao PRODES). O painel de alertas do MapBiomas (`mbPainel(el,D,uf,{semMapa:true})`) não repete mais o mapa.
+- "Por bioma" mostra o total em km² e a % de cada bioma; no estado, o total do estado e a % de cada bioma.
+- "Mapa por bioma" (`BIO_COR`, `#bioMapa`): cada estado na cor do bioma em que mais houve desmatamento no último ano (`por_bioma` do estado). Não é a divisa dos biomas (não há polígono de bioma no sistema) e o painel diz isso. KPI "Biomas monitorados".

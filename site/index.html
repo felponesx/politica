@@ -2331,6 +2331,9 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .pt-dif-f b{background:#EB6834;color:#fff}
 #view .pt-dif-x b{background:#E5484D;color:#fff}
 #view .pt-dif-ok b{background:#8A919E;color:#fff}
+/* v1.35 · meio ambiente: mapa por bioma */
+#view .bio-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink2);margin:10px 0 0}
+#view .bio-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
 </style>
 </head>
 <body>
@@ -6670,6 +6673,7 @@ const AMB_M={km2:["Desmatamento no último ano (km²)",e=>e.km2,lacKm,"Área de 
  focos:["Focos de queimadas no último ano",e=>e.focos,lacN,"Pontos com calor detectados por satélite no ano (INPE). Um foco não mede a área queimada nem diz se o fogo é criminoso; estados maiores tendem a ter mais.",e=>e.focos_serie,SCALE_VERM,a=>a,"#E5484D"],
  deter:["Alertas de desmatamento nos últimos 12 meses (km²)",e=>e.deter_12m,lacKm,"Alertas do DETER (Amazônia e Cerrado) nos últimos 12 meses completos. É sinal rápido, não a taxa oficial.",deterMensal,SCALE_VERM,null,"#E5484D"],
  alerta:["Área alertada pelo MapBiomas (hectares)",e=>e.alerta_ha,v=>lacHa(v),"Alertas validados pelo MapBiomas Alerta, em hectares, no ano em que foram detectados. É outro método e outro calendário: não compare nem some com o PRODES.",e=>e.alerta_serie,SCALE_VERM,null,"#8B5CF6"]};
+const BIO_COR={"Cerrado":"#F5A524","Amazônia":"#1BAF7A","Caatinga":"#EB6834","Mata Atlântica":"#2F6FED","Pampa":"#8B5CF6","Pantanal":"#0EA5A5"};
 function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{},an=Object.keys(s).sort();
  const kp=[e.km2!=null?lacKpi("Desmatamento em "+e.ultimo_ano,lacKm(e.km2),"PRODES, corte raso"):"",e.total_desde_inicio!=null?lacKpi("Desde 2008",lacKm(e.total_desde_inicio)):"",e.deter_12m!=null?lacKpi("Alertas em 12 meses",lacKm(e.deter_12m),"DETER"):""].filter(Boolean).join("");
  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento em ${esc(n)} <small>km² por ano</small></h2>${lineChart([{n,v:an.map(a=>s[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
@@ -6680,12 +6684,16 @@ P.ambiente=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"
   if(uf)return ambienteUF(v,D,uf);
   const an=Object.keys(D.brasil).sort(),u=an[an.length-1],ant=an[an.length-2],bio=Object.values(D.biomas).filter(b=>b.total[b.ultimo_ano]!=null).sort((x,y)=>y.total[y.ultimo_ano]-x.total[x.ultimo_ano]);
   const kp=[lacKpi("Desmatamento em "+u,lacKm(D.brasil[u]),ant?`${D.brasil[ant]?((D.brasil[u]/D.brasil[ant]-1)*100>=0?"+":"−")+lacD(Math.abs((D.brasil[u]/D.brasil[ant]-1)*100),0)+"% sobre "+ant:""}`:"PRODES, corte raso"),
+   bio.length?lacKpi("Biomas monitorados",lacN(bio.length),"PRODES, INPE"):"",
    D.deter&&D.deter.ultimos_meses.length?lacKpi("Alertas em 12 meses",lacKm(Object.values(D.estados).reduce((s,x)=>s+(x.deter_12m||0),0)),"DETER, Amazônia e Cerrado"):""].join("");
   const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento no Brasil <small>km² por ano, soma dos biomas</small></h2>${lineChart([{n:"Brasil",v:an.map(a=>D.brasil[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
   const pbv=bio.map(b=>[b.nome,b.total[b.ultimo_ano]]),pbt=pbv.reduce((t,x)=>t+x[1],0);
   const pb=bio.length?`<div class="panel mt"><h2>Por bioma, em ${u} <small>total do Brasil: ${lacKm(pbt)}</small></h2>${hbars(pbv,{fmt:(v)=>lacKm(v)+" · "+(v/pbt*100).toFixed(1).replace(".",",")+"% do total"})}<p class="small muted" style="margin:6px 0 0">Cada bioma tem o seu último ano no PRODES (a Amazônia fecha em julho; os outros, no ano seguinte).</p></div>`:"";
   const E={...D.estados};if(T&&T.por_uf)UFS.forEach(u=>{const t=T.por_uf[u.uf];if(t)E[u.uf]={...(E[u.uf]||{}),alerta_ha:t.area_ha_total,alerta_serie:t.area_ha_por_ano}});
-  lacPainel(v,{E,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb,depois:'<div id="mbT"></div><div id="maT"></div>'+lacFim(D)});if(T)mbPainel($("#mbT"),T,"",{semMapa:true});maCarregar($("#maT"),D)},uf)};
+  const dom={};UFS.forEach(u=>{const m=Object.entries((D.estados[u.uf]||{}).por_bioma||{}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];if(m)dom[u.uf]=m[0]});
+  const contaBio={};Object.values(dom).forEach(b=>contaBio[b]=(contaBio[b]||0)+1);
+  const bmapa=Object.keys(dom).length?`<div class="panel mt"><h2>Mapa por bioma <small>cada estado na cor do bioma que mais desmatou em ${u}</small></h2><div id="bioMapa"></div><div class="bio-leg">${Object.entries(contaBio).sort((a,b)=>b[1]-a[1]).map(([b,n])=>`<span><i style="background:${BIO_COR[b]||"#8A919E"}"></i>${esc(b)} · ${n} ${n===1?"estado":"estados"}</span>`).join("")}</div><p class="small muted" style="margin:8px 0 0">O mapa não mostra a divisa dos biomas: pinta cada estado inteiro com o bioma em que houve mais desmatamento no último ano (PRODES). Toque num estado para ver os detalhes.</p></div>`:"";
+  lacPainel(v,{E,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb+bmapa,depois:'<div id="mbT"></div><div id="maT"></div>'+lacFim(D)});if(T)mbPainel($("#mbT"),T,"",{semMapa:true});maCarregar($("#maT"),D);const bm=$("#bioMapa");if(bm){bm.innerHTML=brMap(null,null,null,{fillFn:u=>BIO_COR[dom[u.uf]]||"#E4E8EE",legend:false});bindMap(bm,null,null,u=>{location.hash="#/ambiente/"+u})}},uf)};
 /* ----- Mata Atlântica: PRODES (INPE, km², taxa anual) e MapBiomas Alerta (hectares de alertas validados) lado a lado, NUNCA somados ----- */
 function maCarregar(el,A){if(!el)return;const P=A&&A.biomas&&A.biomas.mata_atlantica;
  Promise.all([apiGet("/alertas-mapbiomas/territorio").catch(()=>null),apiGet("/alertas-mapbiomas").catch(()=>null)]).then(([T,C])=>{if(!document.body.contains(el))return;
