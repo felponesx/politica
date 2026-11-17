@@ -6355,7 +6355,7 @@ function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd)
   <div class="panel mt"><h2>Maiores cachês</h2>${table(evCols,D.maiores||[])}</div>
   <div class="g2 mt"><div class="panel"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado no seletor acima para ver todos os shows e cidades.</p>${listaUF(pu.map(([u,v])=>({uf:u,k:v.valor,r:brl(v.valor)+` · ${nf(v.qtd)} shows`})))}</div>
   <div class="panel"><h2>Cidades que mais gastaram</h2>${table([["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>`<span class="ev-caixa">${brlC(x.valor)}</span>`,"n"]],D.cidades||[])}</div></div>
-  <div class="rbanner mt small">${esc(D.aviso||"")}</div>`}}
+`}}
 function evEstado(D){const L=D.itens||[];let q="";
  return{html:evKpis(D,(D.cidades||[]).length)+`<div class="panel mt"><h2>Cidades de ${esc((UF[D.uf]||{}).nome||D.uf)}</h2>${table([["Cidade",x=>esc(x.municipio)],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div>
   <div class="panel mt"><h2>Todos os shows</h2><div class="filters"><input id="evQ" placeholder="Buscar cidade, artista ou festa" style="flex:1;min-width:160px" autocomplete="off"></div><div id="evL"></div></div><div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
