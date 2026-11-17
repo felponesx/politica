@@ -2246,6 +2246,10 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ens-sals .ens-mat-v b{font-size:12px}
 .ens-sals .ens-mat-info{font-size:10.5px}
 .ens-sals .ens-mat{margin:8px 0}
+/* v1.24 · eventos: frases em vez de gráfico no quadro do dinheiro */
+.ev-frases{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.ev-frases li{font-size:15px;line-height:1.5;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.ev-frases b{font-weight:600;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -6290,10 +6294,19 @@ P.eventos=uf=>{uf=UF[uf]?uf:"";
 function evPatroUF(D,uf){const pj=(D.projetos||[]).filter(p=>p.uf===uf||(p.locais||[]).some(l=>String(l).endsWith("/"+uf))),e={};
  pj.forEach(p=>(p.patrocinadores||[]).forEach(s=>{if(!s.cnpj)return;const x=e[s.nome]||(e[s.nome]={nome:s.nome,valor:0,projetos:0});x.valor+=s.valor||0;x.projetos++}));
  return Object.assign({},D,{uf,total:pj.length,captado_total:pj.reduce((a,p)=>a+(p.captado||0),0),projetos:pj,empresas:Object.values(e).sort((a,b)=>b.valor-a.valor).slice(0,40)})}
+function evFrases(D){const cats=Object.values(D.por_categoria||{}),tot=cats.reduce((a,v)=>a+(v.valor_contratado||0),0)||1;
+ const cache=cats.find(v=>/cach/i.test(v.nome||"")),vari=cats.find(v=>/v[aá]rios/i.test(v.nome||""));
+ const fr=[];
+ if(cache&&cache.valor_contratado)fr.push(`De cada <b>R$ 100</b> contratados, <b>R$ ${nf(Math.round(100*cache.valor_contratado/tot))}</b> foram para cachês de artistas.`);
+ if(cache&&cache.qtd)fr.push(`Cada cachê saiu, em média, por <b>${brlC(cache.valor_contratado/cache.qtd)}</b>.`);
+ if(D.periodo&&D.total){const dias=Math.max(1,Math.round((new Date(D.periodo.ate)-new Date(D.periodo.de))/864e5)+1);fr.push(`<b>${nf(D.total)}</b> contratações de eventos em <b>${nf(dias)}</b> dias: quase <b>${nf(Math.round(D.total/dias))}</b> por dia.`)}
+ if(vari&&vari.valor_contratado)fr.push(`Contratos com vários itens somam <b>${brlC(vari.valor_contratado)}</b>. O valor não é dividido entre os itens, então não dá para saber quanto foi para cada um.`);
+ if(!fr.length)return"";
+ return`<div class="panel mt"><h2>O que esse dinheiro significa</h2><ul class="ev-frases">${fr.map(f=>`<li>${f}</li>`).join("")}</ul><p class="small muted" style="margin:10px 0 0">Contas feitas sobre o valor homologado, sem repetir contratos.</p></div>`}
 function evKpis(D,cid){const fs=D.fora_da_soma||{},pc=Object.entries(D.por_categoria||{}).sort((a,b)=>b[1].valor_contratado-a[1].valor_contratado),pe=D.pendencias||{};
  const fora=(fs.estimado_sem_homologacao||0)+(fs.registro_precos_teto||0)+(fs.possiveis_duplicatas||0)+(fs.valor_a_conferir||0);
  return`<div class="kpis ev-kpis mt"><div class="kpi" style="--k:#2F6FED"><span>Contratações de eventos</span><strong>${nf(D.total)}</strong><em>${D.periodo?`de ${opData(D.periodo.de)} a ${opData(D.periodo.ate)}`:""}</em></div><div class="kpi" style="--k:#1BAF7A"><span>Valor contratado</span><strong>${brl(D.valor_total)}</strong><em>só o homologado, sem repetir</em></div><div class="kpi" style="--k:#F5A524"><span>Cidades com evento</span><strong>${nf(cid)}</strong><em>contrataram pelo menos um</em></div></div>
- ${pc.length>1?`<div class="panel mt"><h2>Para que o dinheiro foi</h2><p class="small muted" style="margin:0 0 10px">Valor homologado por tipo de item. Contrato com mais de um item conta em "Vários itens", sem dividir o valor.</p>${hbars(pc.map(([k,v])=>[`${v.nome} (${nf(v.qtd)})`,v.valor_contratado]))}</div>`:""}
+ ${pc.length>1?evFrases(D):""}
  <details class="ev-fora mt"><summary>Ver o que ficou de fora da soma${fora?` · ${brl(fora)}`:""}</summary>
  <p class="small muted" style="margin:0">${brl(fs.estimado_sem_homologacao||0)} só estimados (sem homologação). ${brl(fs.registro_precos_teto||0)} em atas de registro de preços (é o teto, não o gasto). ${brl(fs.possiveis_duplicatas||0)} em possíveis republicações do mesmo contrato${fs.valor_a_conferir?`. ${brl(fs.valor_a_conferir)} com valor a conferir (alto demais para o tipo de contrato; provável erro de digitação na fonte, mostrado sem correção)`:""}.${pe.abertas?` ${nf(pe.abertas)} página(s) do PNCP com defeito serão lidas de novo (${esc((pe.dias_com_falha||[]).map(opData).join(", "))}).`:""}</p></details>`}
 function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd);
