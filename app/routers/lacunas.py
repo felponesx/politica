@@ -44,6 +44,15 @@ def ambiente(db: Session = Depends(get_db)):
     return _ou_404(memo(("ambiente",), lambda: lacunas.ambiente(db)), "inpe-desmatamento")
 
 
+@router.get("/ambiente/bioma-municipios", tags=["Meio ambiente"])
+def ambiente_bioma_municipios():
+    """Bioma dominante de cada município (IBGE, por sobreposição de área), com o segundo bioma quando o município fica em divisa."""
+    d = memo(("bioma-municipios",), lambda: lacunas.bioma_municipios())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.bioma_municipios.")
+    return d
+
+
 @router.get("/viagens", tags=["Dinheiro público"])
 def viagens(db: Session = Depends(get_db)):
     """Viagens a serviço do governo federal: diárias e passagens por órgão e ano."""

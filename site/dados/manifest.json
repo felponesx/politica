@@ -376,6 +376,7 @@
     "/alertas-mapbiomas",
     "/alertas-mapbiomas/territorio",
     "/ambiente",
+    "/ambiente/bioma-municipios",
     "/malha/status",
     "/multas-ambientais",
     "/saude",

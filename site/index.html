@@ -3882,7 +3882,7 @@ async function snapLer(k){if(k==="/noticias"){const x=await snapNoticias();if(x)
 function snapMapaPacotes(m){const o={};for(const[arq,p]of Object.entries(m.pacotes||{}))for(const k of p.chaves||[])if(!o[k])o[k]={arquivo:arq,telas:p.telas||null};return o}
 function snapPacote(arq){if(!SNAP.cache[arq])SNAP.cache[arq]=fetch("dados/"+arq).then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[arq];throw e});return SNAP.cache[arq]}
 async function snapLer0(k){const pk=SNAP.pk&&SNAP.pk[k];
- if(pk&&(!pk.telas||pk.telas.includes((location.hash.replace(/^#\/?/,"").split("/")[0])||"inicio"))){try{const P=await snapPacote(pk.arquivo);if(P&&k in P)return snapSegue(P[k])}catch(e){}}
+ if(pk&&(!pk.telas||k.startsWith("/malhas/")||pk.telas.includes((location.hash.replace(/^#\/?/,"").split("/")[0])||"inicio"))){try{const P=await snapPacote(pk.arquivo);if(P&&k in P)return snapSegue(P[k])}catch(e){}}
  const n=snapHash(k)%SNAP.m.shards;
  if(!SNAP.cache[n])SNAP.cache[n]=fetch("dados/s"+n+".json").then(r=>{if(!r.ok)throw new Error("Erro "+r.status+" ao ler a cópia dos dados");return r.json()}).catch(e=>{delete SNAP.cache[n];throw e});
  const v=(await SNAP.cache[n])[k];
@@ -6674,6 +6674,36 @@ const AMB_M={km2:["Desmatamento no último ano (km²)",e=>e.km2,lacKm,"Área de 
  deter:["Alertas de desmatamento nos últimos 12 meses (km²)",e=>e.deter_12m,lacKm,"Alertas do DETER (Amazônia e Cerrado) nos últimos 12 meses completos. É sinal rápido, não a taxa oficial.",deterMensal,SCALE_VERM,null,"#E5484D"],
  alerta:["Área alertada pelo MapBiomas (hectares)",e=>e.alerta_ha,v=>lacHa(v),"Alertas validados pelo MapBiomas Alerta, em hectares, no ano em que foram detectados. É outro método e outro calendário: não compare nem some com o PRODES.",e=>e.alerta_serie,SCALE_VERM,null,"#8B5CF6"]};
 const BIO_COR={"Cerrado":"#F5A524","Amazônia":"#1BAF7A","Caatinga":"#EB6834","Mata Atlântica":"#2F6FED","Pampa":"#8B5CF6","Pantanal":"#0EA5A5"};
+// mapa por bioma: primeiro o desenho dos estados; quando o painel chega perto da tela, cada município ganha a cor do seu bioma (IBGE)
+function bioMapaIniciar(box,dom,contaBio,ano){
+ box.innerHTML=brMap(null,null,null,{fillFn:u=>"var(--mapa-vazio)",legend:false});
+ const fim=()=>{const st=$("#bioNota");if(st&&!st.textContent)st.textContent="Carregando os municípios…"};fim();
+ const go=()=>bioMunDesenha(box,dom,contaBio,ano);
+ if(!("IntersectionObserver" in window)){go();return}
+ const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();go()}},{rootMargin:"400px"});io.observe(box)}
+function bioMapaEstados(box,dom,contaBio,ano){
+ box.innerHTML=brMap(null,null,null,{fillFn:u=>BIO_COR[dom[u.uf]]||"var(--mapa-vazio)",legend:false});bindMap(box,null,null,u=>{location.hash="#/ambiente/"+u});
+ const t=$("#bioSub");if(t)t.textContent="cada estado na cor do bioma que mais desmatou em "+ano;
+ const l=$("#bioLeg");if(l)l.innerHTML=Object.entries(contaBio).sort((a,b)=>b[1]-a[1]).map(([b,n])=>`<span><i style="background:${BIO_COR[b]||"#8A919E"}"></i>${esc(b)} · ${n} ${n===1?"estado":"estados"}</span>`).join("");
+ const nt=$("#bioNota");if(nt)nt.textContent="Não foi possível carregar o desenho dos municípios, por isso cada estado inteiro aparece na cor do bioma em que houve mais desmatamento no último ano (PRODES). Não é a divisa dos biomas."}
+async function bioMunDesenha(box,dom,contaBio,ano){
+ try{
+  const B=await apiGet("/ambiente/bioma-municipios");if(!B||!B.municipios||!document.body.contains(box))return bioMapaEstados(box,dom,contaBio,ano);
+  const res={},ufs=UFS.map(u=>u.uf);let i=0;
+  await Promise.all(Array.from({length:4},async()=>{while(i<ufs.length){const uf=ufs[i++];try{res[uf]=await malhaUF(uf)}catch(e){}}}));
+  if(!document.body.contains(box))return;
+  if(Object.keys(res).length<20)return bioMapaEstados(box,dom,contaBio,ano);
+  const svg=box.querySelector("svg.geo"),st=svg&&svg.querySelector("path.st");if(!svg||!st)return;
+  const cont={};let h="";
+  UFS.forEach(u=>{const r=res[u.uf];if(!r)return;h+=`<g transform="${r.t}">`+r.ms.map(c=>{const b=B.municipios[c.codigo],nm=b?B.biomas[b[0]]:null;if(nm)cont[nm]=(cont[nm]||0)+1;
+   return`<path d="${c.d}" fill="${nm?(BIO_COR[nm]||"#8A919E"):"var(--mapa-vazio)"}" data-uf="${u.uf}" data-c="${c.codigo}"/>`}).join("")+"</g>"});
+  const g=document.createElementNS("http://www.w3.org/2000/svg","g");g.setAttribute("class","mun-layer");g.innerHTML=h;
+  svg.insertBefore(g,st);svg.classList.add("com-mun","mun-venc");
+  g.addEventListener("click",e=>{const p=e.target.closest("path[data-uf]");if(p)location.hash="#/ambiente/"+p.dataset.uf});
+  const t=$("#bioSub");if(t)t.textContent="cada município na cor do seu bioma";
+  const l=$("#bioLeg");if(l)l.innerHTML=Object.entries(cont).sort((a,b)=>b[1]-a[1]).map(([b,n])=>`<span><i style="background:${BIO_COR[b]||"#8A919E"}"></i>${esc(b)} · ${nf(n)} ${n===1?"município":"municípios"}</span>`).join("");
+  const nt=$("#bioNota");if(nt)nt.textContent="Cada município está na cor do bioma que cobre a maior parte da sua área (IBGE: Biomas 1:250.000 e malha municipal 2025). Município em divisa entre biomas aparece com um só. A cor mostra onde fica cada bioma, não quanto desmatou. Toque num município para abrir o estado."
+ }catch(e){bioMapaEstados(box,dom,contaBio,ano)}}
 function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{},an=Object.keys(s).sort();
  const kp=[e.km2!=null?lacKpi("Desmatamento em "+e.ultimo_ano,lacKm(e.km2),"PRODES, corte raso"):"",e.total_desde_inicio!=null?lacKpi("Desde 2008",lacKm(e.total_desde_inicio)):"",e.deter_12m!=null?lacKpi("Alertas em 12 meses",lacKm(e.deter_12m),"DETER"):""].filter(Boolean).join("");
  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento em ${esc(n)} <small>km² por ano</small></h2>${lineChart([{n,v:an.map(a=>s[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
@@ -6692,8 +6722,8 @@ P.ambiente=a=>{const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"
   const E={...D.estados};if(T&&T.por_uf)UFS.forEach(u=>{const t=T.por_uf[u.uf];if(t)E[u.uf]={...(E[u.uf]||{}),alerta_ha:t.area_ha_total,alerta_serie:t.area_ha_por_ano}});
   const dom={};UFS.forEach(u=>{const m=Object.entries((D.estados[u.uf]||{}).por_bioma||{}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];if(m)dom[u.uf]=m[0]});
   const contaBio={};Object.values(dom).forEach(b=>contaBio[b]=(contaBio[b]||0)+1);
-  const bmapa=Object.keys(dom).length?`<div class="panel mt"><h2>Mapa por bioma <small>cada estado na cor do bioma que mais desmatou em ${u}</small></h2><div id="bioMapa"></div><div class="bio-leg">${Object.entries(contaBio).sort((a,b)=>b[1]-a[1]).map(([b,n])=>`<span><i style="background:${BIO_COR[b]||"#8A919E"}"></i>${esc(b)} · ${n} ${n===1?"estado":"estados"}</span>`).join("")}</div><p class="small muted" style="margin:8px 0 0">O mapa não mostra a divisa dos biomas: pinta cada estado inteiro com o bioma em que houve mais desmatamento no último ano (PRODES). Toque num estado para ver os detalhes.</p></div>`:"";
-  lacPainel(v,{E,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb+bmapa,depois:'<div id="mbT"></div><div id="maT"></div>'+lacFim(D)});if(T)mbPainel($("#mbT"),T,"",{semMapa:true});maCarregar($("#maT"),D);const bm=$("#bioMapa");if(bm){bm.innerHTML=brMap(null,null,null,{fillFn:u=>BIO_COR[dom[u.uf]]||"#E4E8EE",legend:false});bindMap(bm,null,null,u=>{location.hash="#/ambiente/"+u})}},uf)};
+  const bmapa=`<div class="panel mt"><h2>Mapa por bioma <small id="bioSub">onde fica cada bioma</small></h2><div id="bioMapa"></div><div class="bio-leg" id="bioLeg"></div><p class="small muted" id="bioNota" style="margin:8px 0 0"></p></div>`;
+  lacPainel(v,{E,M:AMB_M,G:AMB_G,rota:"ambiente",kpis:kp,antes:graf+pb+bmapa,depois:'<div id="mbT"></div><div id="maT"></div>'+lacFim(D)});if(T)mbPainel($("#mbT"),T,"",{semMapa:true});maCarregar($("#maT"),D);const bm=$("#bioMapa");if(bm)bioMapaIniciar(bm,dom,contaBio,u)},uf)};
 /* ----- Mata Atlântica: PRODES (INPE, km², taxa anual) e MapBiomas Alerta (hectares de alertas validados) lado a lado, NUNCA somados ----- */
 function maCarregar(el,A){if(!el)return;const P=A&&A.biomas&&A.biomas.mata_atlantica;
  Promise.all([apiGet("/alertas-mapbiomas/territorio").catch(()=>null),apiGet("/alertas-mapbiomas").catch(()=>null)]).then(([T,C])=>{if(!document.body.contains(el))return;

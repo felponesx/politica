@@ -531,3 +531,13 @@ AVISO_IRREGULARES = ("Contas julgadas irregulares pelo TCU com decisão que não
 def tcu_irregulares(db: Session) -> dict | None:
     d = db.scalar(select(Registro.dados).where(Registro.fonte == "tcu", Registro.tipo == "tcu_irregulares", Registro.chave == "BR"))
     return {**d, "aviso": AVISO_IRREGULARES, "fontes": ["Tribunal de Contas da União — responsáveis com contas julgadas irregulares"]} if d else None
+
+
+def bioma_municipios() -> dict | None:
+    """Bioma de cada município (calculado por scripts/bioma_municipios.py a partir dos biomas e da malha do IBGE)."""
+    import json
+    from pathlib import Path
+    arq = Path(__file__).resolve().parent / "dados" / "bioma_municipio.json"
+    if not arq.exists():
+        return None
+    return json.loads(arq.read_text(encoding="utf-8"))
