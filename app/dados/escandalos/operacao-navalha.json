@@ -8,7 +8,7 @@
   "inicio": "2007"
  },
  "ano_revelado": 2007,
- "resumo": "Deflagrada pela Polícia Federal em maio de 2007, a Operação Navalha investigou um esquema de fraude em licitações de obras públicas. Em março de 2008, a 2ª Turma do STF confirmou a liberdade de investigados ligados à construtora Gautama, por entender que os decretos de prisão preventiva não estavam fundamentados. Os investigados têm presunção de inocência.",
+ "resumo": "Deflagrada pela Polícia Federal em maio de 2007, a Operação Navalha investigou um esquema de fraude em licitações de obras públicas. Segundo reportagem do Estado de S. Paulo de 23/05/2007, reproduzida no acervo do Senado, havia presos na semana anterior e a investigação envolvia a construtora Gautama. Em março de 2008, a 2ª Turma do STF confirmou a liberdade de investigados ligados à Gautama, por entender que os decretos de prisão preventiva não estavam fundamentados. Os investigados têm presunção de inocência.",
  "valores": {
   "desviado": {
    "valor": null,
@@ -35,8 +35,8 @@
  "andamento": [
   {
    "data": "2007-05",
-   "fato": "Polícia Federal deflagra a Operação Navalha, sobre fraude em licitações de obras públicas",
-   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-confirma-habeas-para-funcionarios-da-gautama/"
+   "fato": "Polícia Federal deflagra a Operação Navalha, sobre fraude em licitações de obras públicas (reportagem de 23/05/2007 cita prisões feitas 'na semana passada')",
+   "fonte": "https://www2.senado.leg.br/bdsf/bitstream/handle/id/327829/complemento_2.htm?sequence=3&isAllowed=y"
   },
   {
    "data": "2008-03-18",
@@ -47,6 +47,7 @@
  "situacao_atual": null,
  "pessoas": [],
  "fontes": [
+  "https://www2.senado.leg.br/bdsf/bitstream/handle/id/327829/complemento_2.htm?sequence=3&isAllowed=y",
   "https://noticias.stf.jus.br/postsnoticias/2a-turma-confirma-habeas-para-funcionarios-da-gautama/"
  ],
  "verificado_em": "2026-11-17"

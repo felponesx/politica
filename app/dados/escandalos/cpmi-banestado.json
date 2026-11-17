@@ -15,7 +15,7 @@
  "resumo": "A Operação Macuco, da Polícia Federal, apurou a evasão de cerca de US$ 30 bilhões para o exterior entre 1996 e 2002, por meio das chamadas contas CC5. A CPMI do Banestado, criada em 2003, investigou as responsabilidades; o relatório final, do relator deputado José Mentor, foi publicado em 2004. A Câmara noticiou que o relatório indiciava 91 pessoas, mas que não trouxe muitos dos nomes que se esperavam. Os valores são os apurados pela investigação; quem é citado tem presunção de inocência.",
  "valores": {
   "desviado": {
-   "valor": 30000000000,
+   "valor": null,
    "texto": "US$ 30 bilhões (dólares) de evasão entre 1996 e 2002, por meio das contas CC5, segundo o relatório da CPMI.",
    "fonte": "https://www2.senado.leg.br/bdsf/handle/id/609990"
   },
@@ -24,7 +24,7 @@
    "texto": "Não há valor recuperado nesta fonte.",
    "fonte": null
   },
-  "observacao": "Valor em dólares, conforme o relatório da CPMI. É o montante apurado pela investigação, não valor recuperado nem condenação."
+  "observacao": "Valor em dólares (US$), conforme o relatório da CPMI; não foi convertido para reais. É o montante apurado pela investigação, não valor recuperado nem condenação."
  },
  "orgaos": [
   {
