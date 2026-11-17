@@ -2303,6 +2303,9 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .ev-tab table.resp td .flag{display:inline-block;vertical-align:middle;margin:0 4px 0 0}
 }
 @media (max-width:760px){#view .ev-cid-panel{margin-top:14px}}
+/* v1.34 · patrocínio: separação entre as empresas que patrocinam e os projetos */
+#view .pt-div{height:1px;background:var(--line);margin:26px 0 0}
+#view .pt-h{margin:20px 0 12px}
 #view .ev-busca:focus{outline:none;border-color:var(--c1,#2F6FED);box-shadow:0 0 0 3px var(--foco,rgba(47,111,237,.14))}
 /* v1.32 · patrocínio: cores com sentido fixo (verde captado, azul aprovado, âmbar faltou, roxo passou); bandeira e logos dos patrocinadores */
 #view .pt-cap{display:inline-block;background:#1BAF7A;color:#fff;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35;white-space:nowrap}
@@ -6428,7 +6431,7 @@ function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
   <div class="pt-leg"><span><i style="background:#1BAF7A"></i>Captado: entrou de fato</span><span><i style="background:#2F6FED"></i>Aprovado: teto autorizado</span><span><i style="background:#F5A524"></i>Faltou</span><span><i style="background:#8B5CF6"></i>Estourou</span><span><i style="background:#8A919E"></i>Igualou</span></div>
   <div class="kpis"><div class="kpi"><span>Projetos de música com patrocínio</span><strong>${nf(D.total)}</strong></div><div class="kpi"><span>Valor captado</span><strong>${brl(D.captado_total)}</strong></div></div>
   ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>`<span class="emp-slot" data-c8="${esc(empCnpjMapa(D)[x.nome]||"")}" data-n="${esc(x.nome)}"></span>${esc(x.nome)}`],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>`<span class="pt-cap">${brlC(x.valor)}</span>`,"n"]],D.empresas)}`:""}
-  <h3 class="mt">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
+  <div class="pt-div"></div><h3 class="pt-h">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
  empLogosFill(p);
  opLista($("#evPL"),pj,x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.segmento||"Música")}</span>${x.inicio?`<span class="small muted">${opData(x.inicio)} a ${opData(x.fim)}</span>`:""}</div><h3>${esc(x.nome)}</h3>
   <div class="small muted pt-loc">${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm"):""}<span>${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</span></div><div class="oc-facts pt-facts"><div><span>Captado</span><b><span class="pt-cap">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b><span class="pt-apr">${brlC(x.aprovado)}</span></b></div>${evDifHtml(x)}</div>
