@@ -2303,6 +2303,17 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .ev-tab table.resp td .flag{display:inline-block;vertical-align:middle;margin:0 4px 0 0}
 }
 #view .ev-busca:focus{outline:none;border-color:var(--c1,#2F6FED);box-shadow:0 0 0 3px var(--foco,rgba(47,111,237,.14))}
+/* v1.32 · patrocínio: cores com sentido fixo (verde captado, azul aprovado, âmbar faltou, roxo passou); bandeira e logos dos patrocinadores */
+#view .pt-cap{display:inline-block;background:#A8E3CB;color:#1D2939;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35;white-space:nowrap}
+#view .pt-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink2);margin:0 0 12px}
+#view .pt-leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+#view .pt-loc{display:flex;align-items:flex-start;gap:7px}
+#view .pt-loc .flag{margin:2px 0 0;flex:none}
+#view .pt-loc>span{min-width:0;flex:1 1 auto}
+#view .ev-dif-x{background:#CDBDF7}
+#view .oc-cargos .emp-slot,#view .oc-cargos .emp-slot img{width:18px;height:18px;border-radius:4px}
+#view .oc-cargos .emp-slot{margin-right:5px}
+#view .oc-cargos .emp-ini{width:18px;height:18px;font-size:7px;border-radius:4px}
 </style>
 </head>
 <body>
@@ -6118,7 +6129,7 @@ const opData=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"";
 const opVazio=t=>`<div class="rbanner">Os dados ${t} ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`;
 const opSemAPI=`<div class="rbanner">Aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
 const opMais=(id,n,tot)=>tot>n?`<button class="btn oc-mais" data-opmais="${id}">Ver mais (${nf(tot-n)} restantes)</button>`:"";
-function opLista(box,itens,card,passo=30){let n=passo;const pinta=()=>{box.innerHTML=itens.length?itens.slice(0,n).map(card).join("")+opMais(box.id,n,itens.length):rvazio("Nada encontrado com esses filtros.");
+function opLista(box,itens,card,passo=30,depois){let n=passo;const pinta=()=>{box.innerHTML=itens.length?itens.slice(0,n).map(card).join("")+opMais(box.id,n,itens.length):rvazio("Nada encontrado com esses filtros.");if(depois)depois(box);
   const b=box.querySelector("[data-opmais]");if(b)b.onclick=()=>{n+=passo;pinta()}};pinta()}
 P.concursos=aba=>{aba=OP_ABAS.some(a=>a[0]===aba)?aba:"concursos";
  return{html:`<div class="ph"><div><h1>Concursos e cursos</h1><p>Concursos públicos abertos e cursos gratuitos num lugar só, tirados direto das fontes oficiais.</p></div></div><div class="tabs" style="margin-top:0">${OP_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/concursos/${a[0]}">${a[1]}</a>`).join("")}</div><div id="opV">${API.on?rload():opSemAPI}</div>`,
@@ -6394,14 +6405,16 @@ function evEstado(D){const L=D.itens||[];let q="";
   <div class="panel mt"><h2>Todos os shows</h2><div class="filters"><input id="evQ" placeholder="Buscar cidade, artista ou festa" style="flex:1;min-width:160px" autocomplete="off"></div><div id="evL" class="ev-tab"></div></div><div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
   mount(){const pinta=()=>{const n=snapNorm(q),l=n?L.filter(x=>snapNorm([x.municipio,x.artista,x.evento,x.objeto].join(" ")).includes(n)):L;$("#evL").innerHTML=l.length?table(evCols,l):rvazio("Nada encontrado.")};pinta();$("#evQ").oninput=debounce(e=>{q=e.target.value.trim();pinta()},200)}}}
 function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
+ const cn8=s=>String(s||"").replace(/\D/g,"").slice(0,8);
  p.innerHTML=`<div class="panel mt"><h2>Patrocínio de eventos (Lei Rouanet)</h2><p class="small muted" style="margin:0 0 8px">${esc(D.aviso||"")}</p>
+  <div class="pt-leg"><span><i style="background:#A8E3CB"></i>Captado: entrou de fato</span><span><i style="background:#D6E4FB"></i>Aprovado: teto autorizado</span><span><i style="background:#F5C97A"></i>Faltou para o aprovado</span><span><i style="background:#CDBDF7"></i>Passou do aprovado</span></div>
   <div class="kpis"><div class="kpi"><span>Projetos de música com patrocínio</span><strong>${nf(D.total)}</strong></div><div class="kpi"><span>Valor captado</span><strong>${brl(D.captado_total)}</strong></div></div>
-  ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>`<span class="emp-slot" data-c8="${esc(empCnpjMapa(D)[x.nome]||"")}" data-n="${esc(x.nome)}"></span>${esc(x.nome)}`],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>`<span class="ev-verde">${brlC(x.valor)}</span>`,"n"]],D.empresas)}`:""}
+  ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>`<span class="emp-slot" data-c8="${esc(empCnpjMapa(D)[x.nome]||"")}" data-n="${esc(x.nome)}"></span>${esc(x.nome)}`],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>`<span class="pt-cap">${brlC(x.valor)}</span>`,"n"]],D.empresas)}`:""}
   <h3 class="mt">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
  empLogosFill(p);
  opLista($("#evPL"),pj,x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.segmento||"Música")}</span>${x.inicio?`<span class="small muted">${opData(x.inicio)} a ${opData(x.fim)}</span>`:""}</div><h3>${esc(x.nome)}</h3>
-  <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b><span class="ev-valor">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b><span class="ev-azul">${brlC(x.aprovado)}</span></b></div></div>${evDifHtml(x)}
-  ${(x.patrocinadores||[]).length?`<div class="small oc-cargos"><b>Patrocinadores:</b> ${x.patrocinadores.map(s=>`${esc(s.nome)} (${brlC(s.valor)})`).join(" · ")}</div>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver no VerSalic ›</a></div>`,10)}
+  <div class="small muted pt-loc">${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm"):""}<span>${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</span></div><div class="oc-facts"><div><span>Captado</span><b><span class="pt-cap">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b><span class="ev-azul">${brlC(x.aprovado)}</span></b></div></div>${evDifHtml(x)}
+  ${(x.patrocinadores||[]).length?`<div class="small oc-cargos"><b>Patrocinadores:</b> ${x.patrocinadores.map(s=>`<span class="oc-sp"><span class="emp-slot" data-c8="${esc(cn8(s.cnpj))}" data-n="${esc(s.nome)}"></span>${esc(s.nome)} (${brlC(s.valor)})</span>`).join(" · ")}</div>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver no VerSalic ›</a></div>`,10,b=>empLogosFill(b))}
 P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premios").then(d=>{const box=$("#prmD");if(!box)return;let C,G,E;
   for(const c of d.categorias)for(const g of c.grupos){const e=g.brasil.find(x=>x.chave===chave);if(e){C=c;G=g;E=e}}
   if(!E){box.innerHTML=rvazio("Título não encontrado.");return}
