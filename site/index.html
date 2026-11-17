@@ -2329,7 +2329,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .pt-dif b{display:inline-block;width:fit-content;border-radius:8px;padding:2px 6px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.35}
 #view .pt-dif em{font-style:normal;font-size:11.5px;color:var(--ink2);line-height:1.2}
 #view .pt-dif-f b{background:#EB6834;color:#fff}
-#view .pt-dif-x b{background:#8B5CF6;color:#fff}
+#view .pt-dif-x b{background:#E5484D;color:#fff}
 #view .pt-dif-ok b{background:#8A919E;color:#fff}
 </style>
 </head>
@@ -6429,7 +6429,7 @@ function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
  const cn8=s=>String(s||"").replace(/\D/g,"").slice(0,8);
  const emp=(D.empresas||[]).length?`<div class="panel mt"><h2>Empresas que mais patrocinaram</h2><p class="small muted" style="margin:0 0 8px">${esc(D.aviso||"")}</p>${table([["Empresa",x=>`<span class="emp-slot" data-c8="${esc(empCnpjMapa(D)[x.nome]||"")}" data-n="${esc(x.nome)}"></span>${esc(x.nome)}`],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>`<span class="pt-cap">${brlC(x.valor)}</span>`,"n"]],D.empresas)}</div>`:"";
  p.innerHTML=`${emp}<div class="panel mt"><h2>Projetos com a Lei Rouanet</h2><p class="small muted" style="margin:0 0 8px">Projetos culturais de música que captaram recursos pela Lei Rouanet (sistema SALIC), com o valor captado e o aprovado.</p>
-  <div class="pt-leg"><span><i style="background:#1BAF7A"></i>Captado: entrou de fato</span><span><i style="background:#2F6FED"></i>Aprovado: teto autorizado</span><span><i style="background:#EB6834"></i>Limite restante</span><span><i style="background:#8B5CF6"></i>Estourou</span><span><i style="background:#8A919E"></i>Igualou</span></div>
+  <div class="pt-leg"><span><i style="background:#1BAF7A"></i>Captado: entrou de fato</span><span><i style="background:#2F6FED"></i>Aprovado: teto autorizado</span><span><i style="background:#EB6834"></i>Limite restante</span><span><i style="background:#E5484D"></i>Estourou</span><span><i style="background:#8A919E"></i>Igualou</span></div>
   <div class="kpis"><div class="kpi"><span>Projetos de música com patrocínio</span><strong>${nf(D.total)}</strong></div><div class="kpi"><span>Valor captado</span><strong>${brl(D.captado_total)}</strong></div></div>
   <div class="oc-lista mt" id="evPL"></div></div>`;
  empLogosFill(p);
