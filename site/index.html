@@ -2284,7 +2284,10 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .ev-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:8px}
 #view .ev-cab h2{margin:0;flex:1 1 auto}
 #view .ev-busca{flex:0 1 240px;width:100%;max-width:260px;min-width:0;font:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
-#view .ev-lugar{display:inline-block;min-width:2.1em;margin-right:6px;font-weight:700;color:var(--blue,#2F6FED);font-variant-numeric:tabular-nums}
+#view .ev-cid{display:flex;align-items:center;gap:8px;min-width:0}
+#view .ev-cid .flag{margin:0;flex:none}
+#view .ev-cid>span:last-child{min-width:0}
+#view .ev-lugar{flex:none;min-width:2.1em;font-weight:700;color:var(--blue,#2F6FED);font-variant-numeric:tabular-nums}
 #view .ev-busca:focus{outline:none;border-color:var(--c1,#2F6FED);box-shadow:0 0 0 3px var(--foco,rgba(47,111,237,.14))}
 </style>
 </head>
@@ -6358,7 +6361,7 @@ function evKpis(D,cid){const fs=D.fora_da_soma||{},pc=Object.entries(D.por_categ
 function evBusca(id,ph){return`<input id="${id}" class="ev-busca" type="search" placeholder="${esc(ph)}" autocomplete="off" aria-label="${esc(ph)}">`}
 function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd);
  const PX=D.proximos||[],CI=(D.cidades||[]).map((x,i)=>Object.assign({},x,{lugar:i+1}));
- const cidCols=[["Cidade",x=>`<span class="ev-lugar">${x.lugar}º</span>${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>`<span class="ev-caixa">${brlC(x.valor)}</span>`,"n"]];
+ const cidCols=[["Cidade",x=>`<span class="ev-cid"><span class="ev-lugar">${x.lugar}º</span>${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm"):""}<span>${esc(x.municipio)}/${esc(x.uf||"")}</span></span>`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>`<span class="ev-caixa">${brlC(x.valor)}</span>`,"n"]];
  return{html:evKpis(D,D.cidades_total??CI.length)+
   `${PX.length?`<div class="panel mt"><div class="ev-cab"><h2>Próximos shows</h2>${evBusca("evQP","Buscar cidade, artista ou festa")}</div><p class="small muted" style="margin:0 0 8px">Os que têm a data escrita no contrato, a partir de hoje.</p><div id="evLP">${table(evCols,PX)}</div></div>`:""}
   <div class="panel mt"><h2>Maiores cachês</h2>${table(evCols,D.maiores||[])}</div>
