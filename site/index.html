@@ -2251,7 +2251,8 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ev-frases li{font-size:15px;line-height:1.5;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
 .ev-frases b{font-weight:600;color:var(--ink)}
 /* v1.25 · eventos: valor do show em vermelho pastel */
-.ev-valor{color:#C2565C;font-weight:600}
+.ev-valor{display:inline-block;background:#F9D7D9;color:#1D2939;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35}
+.oc-facts .ev-valor{color:#1D2939;font-size:inherit;font-weight:600}
 </style>
 </head>
 <body>
@@ -6281,10 +6282,10 @@ function catRodovias(v,D,uf){if(D.erro){v.innerHTML=rvazio(D.erro);return}
  if(uf&&E[uf])catEstadoZoom(uf,D,E);
  const sel=$("#catAno");if(sel)sel.onchange=e=>{const y=e.target.value;apiGet("/catastrofes/rodovias?ano="+y).then(N=>{const w=$("#catV");if(w)catRodovias(w,N,uf)}).catch(er=>{const w=$("#catV");if(w)w.innerHTML=rerro(er)})}}
 // ---- Eventos
-const evValor=x=>x.valor?`${brlC(x.valor)}${x.valor_a_conferir?` <span class="small" style="color:#E5484D">a conferir</span>`:x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";
+const evValor=x=>x.valor?`<span class="ev-valor">${brlC(x.valor)}</span>${x.valor_a_conferir?` <span class="small" style="color:#E5484D">a conferir</span>`:x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";
 const evNome=x=>x.artista?`<b>${esc(x.artista)}</b>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`:`<span class="small">${esc((x.objeto||"").slice(0,140))}${(x.objeto||"").length>140?"…":""}</span>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`;
 const EV_CAT={cache:"Cachê",palco:"Palco",som:"Som",iluminacao:"Iluminação",seguranca:"Segurança",estrutura:"Estrutura",producao:"Produção",varios:"Vários itens"};
-const evCols=[["Contratação",x=>`${x.categoria&&x.categoria!=="cache"?`<span class="tag">${esc(EV_CAT[x.categoria]||x.categoria)}</span> `:""}${evNome(x)}${x.registro_precos?`<div class="small muted">ata de registro de preços (teto, fora da soma)</div>`:""}${x.possivel_duplicata?`<div class="small muted">possível republicação: fora da soma</div>`:""}`],["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:esc(x.uf||"—")}`],["Data do show",x=>x.data_evento?opData(x.data_evento):"—"],["Quem paga",x=>esc(x.esfera==="municipal"?"Prefeitura":x.esfera==="estadual"?"Governo do estado":x.esfera==="federal"?"União":x.orgao||"—")],["Valor",x=>`<span class="ev-valor">${evValor(x)}</span>`,"n"],["Contrato",x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">PNCP ›</a>`]];
+const evCols=[["Contratação",x=>`${x.categoria&&x.categoria!=="cache"?`<span class="tag">${esc(EV_CAT[x.categoria]||x.categoria)}</span> `:""}${evNome(x)}${x.registro_precos?`<div class="small muted">ata de registro de preços (teto, fora da soma)</div>`:""}${x.possivel_duplicata?`<div class="small muted">possível republicação: fora da soma</div>`:""}`],["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:esc(x.uf||"—")}`],["Data do show",x=>x.data_evento?opData(x.data_evento):"—"],["Quem paga",x=>esc(x.esfera==="municipal"?"Prefeitura":x.esfera==="estadual"?"Governo do estado":x.esfera==="federal"?"União":x.orgao||"—")],["Valor",evValor,"n"],["Contrato",x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">PNCP ›</a>`]];
 P.eventos=uf=>{uf=UF[uf]?uf:"";
  return{html:`<div class="ph"><div><h1>Eventos</h1><p>Shows e festas pagos por prefeituras e governos: quem vai tocar, onde, quando e quanto custou o cachê. E as empresas que patrocinam eventos culturais pela Lei Rouanet.</p></div></div>
   <div class="filters">${UFSel("evUF","Todo o Brasil")}</div><div id="evV">${API.on?rload():opSemAPI}</div><div id="evP"></div>`,
@@ -6328,7 +6329,7 @@ function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
   ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>esc(x.nome)],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>brlC(x.valor),"n"]],D.empresas)}`:""}
   <h3 class="mt">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
  opLista($("#evPL"),pj,x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.segmento||"Música")}</span>${x.inicio?`<span class="small muted">${opData(x.inicio)} a ${opData(x.fim)}</span>`:""}</div><h3>${esc(x.nome)}</h3>
-  <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b>${brlC(x.captado)}</b></div><div><span>Aprovado</span><b>${brlC(x.aprovado)}</b></div></div>
+  <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b><span class="ev-valor">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b>${brlC(x.aprovado)}</b></div></div>
   ${(x.patrocinadores||[]).length?`<div class="small oc-cargos"><b>Patrocinadores:</b> ${x.patrocinadores.map(s=>`${esc(s.nome)} (${brlC(s.valor)})`).join(" · ")}</div>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver no VerSalic ›</a></div>`,10)}
 P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premios").then(d=>{const box=$("#prmD");if(!box)return;let C,G,E;
   for(const c of d.categorias)for(const g of c.grupos){const e=g.brasil.find(x=>x.chave===chave);if(e){C=c;G=g;E=e}}
