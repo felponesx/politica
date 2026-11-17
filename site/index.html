@@ -2280,6 +2280,11 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .ev-frases{gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 #view .ev-frases li{border:0;border-radius:0;background:transparent;padding:12px 14px;border-top:1px solid var(--line2);font-size:14.5px;line-height:1.5}
 #view .ev-frases li:first-child{border-top:0}
+/* v1.30 · busca ao lado do título (Próximos shows, Cidades que mais gastaram) */
+#view .ev-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:8px}
+#view .ev-cab h2{margin:0;flex:1 1 auto}
+#view .ev-busca{flex:0 1 240px;width:100%;max-width:260px;min-width:0;font:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+#view .ev-busca:focus{outline:none;border-color:var(--c1,#2F6FED);box-shadow:0 0 0 3px var(--foco,rgba(47,111,237,.14))}
 </style>
 </head>
 <body>
@@ -6349,13 +6354,23 @@ function evKpis(D,cid){const fs=D.fora_da_soma||{},pc=Object.entries(D.por_categ
  ${pc.length>1?evFrases(D):""}
  <details class="ev-fora mt"><summary>Ver o que ficou de fora da soma${fora?` · ${brl(fora)}`:""}</summary>
  <p class="small muted" style="margin:0">${brl(fs.estimado_sem_homologacao||0)} só estimados (sem homologação). ${brl(fs.registro_precos_teto||0)} em atas de registro de preços (é o teto, não o gasto). ${brl(fs.possiveis_duplicatas||0)} em possíveis republicações do mesmo contrato${fs.valor_a_conferir?`. ${brl(fs.valor_a_conferir)} com valor a conferir (alto demais para o tipo de contrato; provável erro de digitação na fonte, mostrado sem correção)`:""}.${pe.abertas?` ${nf(pe.abertas)} página(s) do PNCP com defeito serão lidas de novo (${esc((pe.dias_com_falha||[]).map(opData).join(", "))}).`:""}</p></details>`}
+function evBusca(id,ph){return`<input id="${id}" class="ev-busca" type="search" placeholder="${esc(ph)}" autocomplete="off" aria-label="${esc(ph)}">`}
 function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd);
- return{html:evKpis(D,D.cidades_total??(D.cidades||[]).length)+
-  `${(D.proximos||[]).length?`<div class="panel mt"><h2>Próximos shows</h2><p class="small muted" style="margin:0 0 8px">Os que têm a data escrita no contrato, a partir de hoje.</p>${table(evCols,D.proximos)}</div>`:""}
+ const PX=D.proximos||[],CI=D.cidades||[];
+ const cidCols=[["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>`<span class="ev-caixa">${brlC(x.valor)}</span>`,"n"]];
+ return{html:evKpis(D,D.cidades_total??CI.length)+
+  `${PX.length?`<div class="panel mt"><div class="ev-cab"><h2>Próximos shows</h2>${evBusca("evQP","Buscar cidade, artista ou festa")}</div><p class="small muted" style="margin:0 0 8px">Os que têm a data escrita no contrato, a partir de hoje.</p><div id="evLP">${table(evCols,PX)}</div></div>`:""}
   <div class="panel mt"><h2>Maiores cachês</h2>${table(evCols,D.maiores||[])}</div>
   <div class="g2 mt"><div class="panel"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado no seletor acima para ver todos os shows e cidades.</p>${listaUF(pu.map(([u,v])=>({uf:u,k:v.valor,r:brl(v.valor)+` · ${nf(v.qtd)} shows`})))}</div>
-  <div class="panel"><h2>Cidades que mais gastaram</h2>${table([["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>`<span class="ev-caixa">${brlC(x.valor)}</span>`,"n"]],D.cidades||[])}</div></div>
-`}}
+  <div class="panel"><div class="ev-cab"><h2>Cidades que mais gastaram</h2>${evBusca("evQC","Buscar cidade ou UF")}</div><div id="evLC">${table(cidCols,CI)}</div></div></div>
+`,
+ mount(){
+   const filtra=(L,q,campos)=>{const n=snapNorm(q);return n?L.filter(x=>snapNorm(campos(x).join(" ")).includes(n)):L};
+   const pinta=(sel,L,q,campos,cols)=>{const el=$(sel);if(el)el.innerHTML=(filtra(L,q,campos)).length?table(cols,filtra(L,q,campos)):rvazio("Nada encontrado.")};
+   const ip=$("#evQP"),ic=$("#evQC");
+   if(ip)ip.oninput=debounce(e=>pinta("#evLP",PX,e.target.value.trim(),x=>[x.municipio,x.uf,x.artista,x.evento,x.objeto],evCols),200);
+   if(ic)ic.oninput=debounce(e=>pinta("#evLC",CI,e.target.value.trim(),x=>[x.municipio,x.uf],cidCols),200);
+ }}}
 function evEstado(D){const L=D.itens||[];let q="";
  return{html:evKpis(D,(D.cidades||[]).length)+`<div class="panel mt"><h2>Cidades de ${esc((UF[D.uf]||{}).nome||D.uf)}</h2>${table([["Cidade",x=>esc(x.municipio)],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div>
   <div class="panel mt"><h2>Todos os shows</h2><div class="filters"><input id="evQ" placeholder="Buscar cidade, artista ou festa" style="flex:1;min-width:160px" autocomplete="off"></div><div id="evL"></div></div><div class="rbanner mt small">${esc(D.aviso||"")}</div>`,
