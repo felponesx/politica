@@ -2354,6 +2354,18 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view #bioMapa svg,#view #bioMapa .mun-layer,#view #bioMapa .mun-layer path,#view #bioMapa path.st{pointer-events:none;cursor:default}
 #view #bioMapa .mun-layer{animation:none}
 #view #bioMapa{max-width:430px;margin:0 auto}
+/* v1.38 · focos de calor embaixo do gráfico de desmatamento */
+#view .fogo{margin-top:16px;padding-top:12px;border-top:1px solid var(--line2)}
+#view .fogo h3{margin:0 0 8px;font-size:15px}
+#view .fogo h3 small{font-weight:400}
+#view .fogo-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#view .fogo-b{display:flex;flex-direction:column;gap:3px;min-width:0;padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:var(--soft,#F7F8F9)}
+#view .fogo-b span{font-size:11.5px;color:var(--muted);line-height:1.25}
+#view .fogo-b strong{font-size:19px;line-height:1.15;color:var(--ink);font-weight:700}
+#view .fogo-b em{font-style:normal;font-size:11.5px;color:var(--ink2);line-height:1.25}
+#view .fogo-up strong{color:#E5484D}
+#view .fogo-down strong{color:#1BAF7A}
+@media (max-width:760px){#view .fogo-g{gap:7px}#view .fogo-b{padding:8px 8px}#view .fogo-b strong{font-size:16px}#view .fogo-b span,#view .fogo-b em{font-size:10.5px}}
 </style>
 </head>
 <body>
@@ -6793,7 +6805,12 @@ P.ambiente=a=>{const x=a?String(a).toLowerCase():"";
   const kp=[lacKpi("Desmatamento em "+u,lacKm(D.brasil[u]),ant?`${D.brasil[ant]?((D.brasil[u]/D.brasil[ant]-1)*100>=0?"+":"−")+lacD(Math.abs((D.brasil[u]/D.brasil[ant]-1)*100),0)+"% sobre "+ant:""}`:"PRODES, corte raso"),
    bio.length?lacKpi("Biomas monitorados",lacN(bio.length),"PRODES, INPE"):"",
    D.deter&&D.deter.ultimos_meses.length?lacKpi("Alertas em 12 meses",lacKm(Object.values(D.estados).reduce((s,x)=>s+(x.deter_12m||0),0)),"DETER, Amazônia e Cerrado"):""].join("");
-  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento no Brasil <small>km² por ano, soma dos biomas</small></h2>${lineChart([{n:"Brasil",v:an.map(a=>D.brasil[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}</div>`:"";
+  // focos de calor por ano (INPE Queimadas): menor, maior e a variação do último ano sobre o anterior
+  const fg=D.focos&&D.focos.total?Object.entries(D.focos.total).filter(x=>x[1]!=null).sort((a,b)=>a[0]-b[0]):[];
+  let fogo="";
+  if(fg.length>=2){const mn=fg.reduce((a,x)=>x[1]<a[1]?x:a),mx=fg.reduce((a,x)=>x[1]>a[1]?x:a),ul=fg[fg.length-1],an2=fg[fg.length-2],pv=an2[1]?(ul[1]/an2[1]-1)*100:null;
+   fogo=`<div class="fogo" data-nocount><h3>Focos de calor <small>detectados por satélite, ${fg[0][0]} a ${ul[0]}</small></h3><div class="fogo-g"><div class="fogo-b"><span>Menor índice</span><strong>${nf(mn[1])}</strong><em>em ${mn[0]}</em></div><div class="fogo-b"><span>Maior índice</span><strong>${nf(mx[1])}</strong><em>em ${mx[0]}</em></div>${pv==null?"":`<div class="fogo-b ${pv>0?"fogo-up":pv<0?"fogo-down":""}"><span>${ul[0]} sobre ${an2[0]}</span><strong>${pv>0?"+":pv<0?"−":""}${lacD(Math.abs(pv),1)}%</strong><em>${pv>0?"subiu":pv<0?"desceu":"igual"}: ${nf(an2[1])} → ${nf(ul[1])}</em></div>`}</div><p class="small muted" style="margin:8px 0 0">Fonte: INPE, Programa Queimadas. Foco de calor é um ponto com calor visto por satélite: não mede a área queimada nem diz se o fogo foi criminoso. A série de focos só tem anos completos até ${ul[0]}.</p></div>`}
+  const graf=an.length>=2?`<div class="panel mt"><h2>Desmatamento no Brasil <small>km² por ano, soma dos biomas</small></h2>${lineChart([{n:"Brasil",v:an.map(a=>D.brasil[a]),c:"#E5484D"}],an,{h:220,fmt:x=>lacN(x)+" km²"})}${fogo}</div>`:"";
   const pbv=bio.map(b=>[b.nome,b.total[b.ultimo_ano]]),pbt=pbv.reduce((t,x)=>t+x[1],0);
   const pbmx=Math.max(...pbv.map(x=>x[1]),1),corB=n=>BIO_COR[n]||"#8A919E";
   const pb=bio.length?`<div class="panel mt"><h2>Desmatamento por bioma <small>em ${u} · total do Brasil: ${lacKm(pbt)}</small></h2><div class="dbio" data-nocount>${pbv.map(([n,k])=>`<div class="dbio-l"><span class="dbio-n"><i style="background:${corB(n)}"></i>${esc(n)}</span><span class="dbio-b"><i style="width:${Math.max(2,k/pbmx*100).toFixed(1)}%;background:${corB(n)}"></i></span><b>${lacKm(k)}</b><em>${(k/pbt*100).toFixed(1).replace(".",",")}%</em></div>`).join("")}</div><p class="small muted" style="margin:8px 0 0">Cada bioma tem o seu último ano no PRODES (a Amazônia fecha em julho; os outros, no ano seguinte).</p></div>`:"";
