@@ -326,3 +326,52 @@ def test_igc_por_municipio_mostra_nota_da_instituicao_e_nao_inventa_nota_municip
         db.query(Registro).filter(Registro.fonte == "inep", Registro.tipo == "igc_edicao").delete()
         db.commit()
         db.close()
+
+
+def test_ambiente_ignora_o_ano_que_so_alguns_biomas_fecharam():
+    """O Cerrado já tem 2025 e a Amazônia só 2024: 2025 é parcial e não pode virar o 'último ano' nem derrubar o total do estado."""
+    criar_tabelas()
+    cliente = TestClient(app)
+    from app.utils import _MEMO
+    with SessionLocal() as db:
+        db.query(Registro).filter(Registro.fonte == "inpe", Registro.tipo.in_(["prodes_bioma", "deter_bioma"])).delete(synchronize_session=False)
+        db.add(Registro(fonte="inpe", tipo="prodes_bioma", chave="amazonia", dados={"bioma": "Amazônia", "ultimo_ano": "2024", "total": {"2023": 50.0, "2024": 40.0}, "por_uf": {"RO": {"2023": 50.0, "2024": 40.0}}}))
+        db.add(Registro(fonte="inpe", tipo="prodes_bioma", chave="cerrado", dados={"bioma": "Cerrado", "ultimo_ano": "2025", "total": {"2023": 5.0, "2024": 4.0, "2025": 3.0}, "por_uf": {"RO": {"2023": 5.0, "2024": 4.0, "2025": 3.0}}}))
+        db.commit()
+    try:
+        _MEMO.clear()
+        a = cliente.get("/ambiente").json()
+        assert a["ano_completo"] == "2024" and a["ultimo_ano"] == "2024"
+        assert "2025" not in a["brasil"] and a["brasil"]["2024"] == 44.0
+        ro = a["estados"]["RO"]
+        assert ro["ultimo_ano"] == "2024" and ro["km2"] == 44.0 and "2025" not in ro["serie"] and ro["por_bioma"] == {"Amazônia": 40.0, "Cerrado": 4.0}
+        assert a["anos_parciais"] == {"2025": {"biomas": ["Cerrado"], "km2": 3.0}}       # o ano parcial fica visível, só não entra nos totais
+        assert a["biomas"]["cerrado"]["ultimo_ano"] == "2025"                            # o painel por bioma continua com o último ano de cada um
+    finally:
+        with SessionLocal() as db:
+            db.query(Registro).filter(Registro.fonte == "inpe", Registro.tipo.in_(["prodes_bioma", "deter_bioma"])).delete(synchronize_session=False)
+            db.commit()
+        _MEMO.clear()
+
+
+def test_ambiente_so_usa_anos_seguidos_com_todos_os_biomas():
+    """Bioma sem mapa num ano dá soma parcial: só vale a última sequência ano a ano em que todos têm dado."""
+    criar_tabelas()
+    cliente = TestClient(app)
+    from app.utils import _MEMO
+    with SessionLocal() as db:
+        db.query(Registro).filter(Registro.fonte == "inpe", Registro.tipo.in_(["prodes_bioma", "deter_bioma"])).delete(synchronize_session=False)
+        db.add(Registro(fonte="inpe", tipo="prodes_bioma", chave="amazonia", dados={"bioma": "Amazônia", "ultimo_ano": "2013", "total": {"2010": 9.0, "2011": 8.0, "2012": 7.0, "2013": 6.0}, "por_uf": {"PA": {"2010": 9.0, "2011": 8.0, "2012": 7.0, "2013": 6.0}}}))
+        db.add(Registro(fonte="inpe", tipo="prodes_bioma", chave="cerrado", dados={"bioma": "Cerrado", "ultimo_ano": "2013", "total": {"2010": 100.0, "2012": 70.0, "2013": 60.0}, "por_uf": {"PA": {"2010": 100.0, "2012": 70.0, "2013": 60.0}}}))
+        db.commit()
+    try:
+        _MEMO.clear()
+        a = cliente.get("/ambiente").json()
+        assert sorted(a["brasil"]) == ["2012", "2013"] and a["serie_desde"] == "2012"          # 2010 vem antes do buraco de 2011
+        assert a["brasil"]["2012"] == 77.0 and sorted(a["estados"]["PA"]["serie"]) == ["2012", "2013"]
+        assert a["estados"]["PA"]["total_desde_inicio"] == 143.0
+    finally:
+        with SessionLocal() as db:
+            db.query(Registro).filter(Registro.fonte == "inpe", Registro.tipo.in_(["prodes_bioma", "deter_bioma"])).delete(synchronize_session=False)
+            db.commit()
+        _MEMO.clear()

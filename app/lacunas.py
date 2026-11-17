@@ -10,7 +10,8 @@ AVISO_SOCIAL = ("Bolsa Família e BPC (Benefício de Prestação Continuada) pag
 AVISO_TRABALHO = "PNAD Contínua trimestral (IBGE): desocupação é a parcela da força de trabalho sem emprego que procurou vaga; rendimento é o médio real habitual de todos os trabalhos. É pesquisa por amostra: estados pequenos oscilam."
 AVISO_AMBIENTE = ("PRODES (INPE) mede o desmatamento por corte raso em cada ano (de agosto a julho) pelos satélites; os seis biomas não se sobrepõem e a soma é do estado. DETER é alerta rápido, "
                   "não é a taxa oficial, e cobre só a Amazônia e o Cerrado. Km² = quilômetros quadrados; 100 km² ≈ 10 mil campos de futebol. "
-                  "Nesta cópia só entram os biomas que a coleta conseguiu ler por inteiro (hoje Amazônia e Pampa); no Pampa, anos com valor zero ou quase zero são lacunas da fonte, não desmatamento nulo.")
+                  "Os totais do país e dos estados usam o último ano que TODOS os biomas já fecharam (os biomas fecham em datas diferentes; o ano mais novo de um deles aparece só no painel por bioma). "
+                  "As séries usam só os anos seguidos em que todos os biomas têm dado (nos anos antigos alguns biomas não têm mapa e a soma sairia parcial). No Pampa, anos com valor zero ou quase zero podem ser lacunas da fonte, não desmatamento nulo.")
 AVISO_VIAGENS = ("Viagens a serviço de servidores e colaboradores do governo federal (Portal da Transparência): diárias, passagens e outros gastos, menos o que foi devolvido. "
                  "Nomes e CPFs não são guardados. O ano corrente está em andamento.")
 AVISO_SERVIDORES = ("Servidores civis federais do SIAPE (Portal da Transparência), por órgão e estado, no último mês publicado. Só somas: nomes, CPFs e matrículas não são guardados. "
@@ -129,6 +130,35 @@ def ambiente(db: Session) -> dict | None:
         for uf, s in d["por_uf"].items():
             for a, km in s.items():
                 por_uf.setdefault(uf, {})[a] = round(por_uf.setdefault(uf, {}).get(a, 0.0) + km, 2)
+    # Cada bioma fecha o ano numa data (a Amazônia em julho, o Cerrado antes): um ano que só alguns biomas já têm é PARCIAL e não
+    # entra nos totais do país nem dos estados (senão o ano mais novo aparece com uma fração do desmatamento e parece queda).
+    ano_completo = min((d["ultimo_ano"] for d in prodes.values() if d.get("ultimo_ano")), default=None)
+    parciais: dict[str, dict] = {}
+    if ano_completo:
+        for d in prodes.values():
+            for s in d["por_uf"].values():
+                for a, km in s.items():
+                    if a > ano_completo:
+                        x = parciais.setdefault(a, {"biomas": [], "km2": 0.0})
+                        if d["bioma"] not in x["biomas"]:
+                            x["biomas"].append(d["bioma"])
+                        x["km2"] = round(x["km2"] + km, 2)
+    # Só entram os anos SEGUIDOS em que TODOS os biomas têm dado: ano em que um bioma não tem mapa dá soma parcial (pico e queda falsos)
+    anos_ok: set[str] = set()
+    if prodes:
+        comuns = sorted(set.intersection(*[{a for a, v in d["total"].items() if v is not None} for d in prodes.values()]))
+        if ano_completo:
+            comuns = [a for a in comuns if a <= ano_completo]
+        seq: list[str] = []
+        for a in reversed(comuns):
+            if seq and int(a) != int(seq[-1]) - 1:
+                break
+            seq.append(a)
+        anos_ok = set(seq)
+    if anos_ok:
+        por_uf = {uf: {a: v for a, v in s.items() if a in anos_ok} for uf, s in por_uf.items()}
+    elif ano_completo:
+        por_uf = {uf: {a: v for a, v in s.items() if a <= ano_completo} for uf, s in por_uf.items()}
     anos = sorted({a for s in por_uf.values() for a in s})
     brasil = {a: round(sum(s.get(a, 0) for s in por_uf.values()), 2) for a in anos}
     estados = {}
@@ -161,7 +191,7 @@ def ambiente(db: Session) -> dict | None:
             e = estados.setdefault(uf, {})
             e["focos"] = serie.get(focos["ultimo_ano"])
             e["focos_serie"] = serie
-    return {"brasil": brasil, "ultimo_ano": anos[-1] if anos else None, "biomas": biomas, "estados": estados,
+    return {"brasil": brasil, "ultimo_ano": anos[-1] if anos else None, "ano_completo": ano_completo, "serie_desde": min(anos_ok) if anos_ok else None, "anos_parciais": parciais, "biomas": biomas, "estados": estados,
             "focos": ({"ultimo_ano": focos["ultimo_ano"], "total": focos["total"], "por_bioma": focos["por_bioma"]} if focos else None),
             "deter": {"desde": desde, "ultimos_meses": ult12, "mensal": {m: {k: round(v, 2) for k, v in alertas["mensal"][m].items()} for m in meses}},
             "aviso": AVISO_AMBIENTE, "fontes": ["INPE — PRODES e DETER (TerraBrasilis)", "INPE — Programa Queimadas (focos de calor)"]}
