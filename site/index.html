@@ -2259,6 +2259,12 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .emp-slot img{width:26px;height:26px;object-fit:contain;border-radius:6px;background:var(--surface)}
 .emp-ini{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:var(--line2);color:var(--muted);font-size:10px;font-weight:600}
 .ev-verde{display:inline-block;border:2px solid #8A9A5B;border-radius:8px;padding:1px 8px;color:#1D2939;font-weight:600;line-height:1.35;background:#8A9A5B}
+/* v1.27 · patrocínio: valor aprovado em azul e diferença para o aprovado */
+.ev-azul{display:inline-block;background:#D6E4FB;color:#1D2939;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35}
+.ev-dif{display:block;width:fit-content;margin-top:8px;font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:8px}
+.ev-dif-x{background:#E5484D;color:#1D2939}
+.ev-dif-f{background:#F5C97A;color:#1D2939}
+.ev-dif-ok{background:#D6E4FB;color:#1D2939}
 </style>
 </head>
 <body>
@@ -6300,6 +6306,11 @@ P.eventos=uf=>{uf=UF[uf]?uf:"";
     .catch(e=>{const v=$("#evV");if(v)v.innerHTML=e.status===404?opVazio("dos eventos"):rerro(e)});
    apiGet("/eventos-patrocinios").then(D=>evPatro(uf?evPatroUF(D,uf):D)).catch(()=>{const p=$("#evP");if(p)p.innerHTML=""})}}};
 // patrocínio de um estado: projetos do estado ou com local de realização nele; empresas somadas de novo
+function evDifHtml(x){const c=+x.captado||0,a=+x.aprovado||0;if(!a)return"";
+ const d=c-a,pt=(Math.abs(d)/a*100).toFixed(1).replace(".",",")+"%";
+ if(d>0)return`<span class="ev-dif ev-dif-x">Passou ${brlC(d)} do aprovado (${pt})</span>`;
+ if(d<0)return`<span class="ev-dif ev-dif-f">Faltou ${brlC(-d)} para chegar ao aprovado (${pt})</span>`;
+ return`<span class="ev-dif ev-dif-ok">Captou exatamente o aprovado</span>`}
 function empCnpjMapa(D){const m={};(D.projetos||[]).forEach(pj=>(pj.patrocinadores||[]).forEach(s=>{if(s.cnpj&&s.nome&&!m[s.nome])m[s.nome]=String(s.cnpj).replace(/\D/g,"").slice(0,8)}));return m}
 const iniciaisNome=n=>String(n||"").split(/\s+/).filter(w=>w.length>2&&!/^(S\.?A\.?|LTDA\.?|DE|DO|DA|E)$/i.test(w)).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"?";
 function empLogosFill(root){const slots=[...root.querySelectorAll(".emp-slot")];if(!slots.length)return;
@@ -6341,7 +6352,7 @@ function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
   <h3 class="mt">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
  empLogosFill(p);
  opLista($("#evPL"),pj,x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.segmento||"Música")}</span>${x.inicio?`<span class="small muted">${opData(x.inicio)} a ${opData(x.fim)}</span>`:""}</div><h3>${esc(x.nome)}</h3>
-  <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b><span class="ev-valor">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b>${brlC(x.aprovado)}</b></div></div>
+  <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b><span class="ev-valor">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b><span class="ev-azul">${brlC(x.aprovado)}</span></b></div></div>${evDifHtml(x)}
   ${(x.patrocinadores||[]).length?`<div class="small oc-cargos"><b>Patrocinadores:</b> ${x.patrocinadores.map(s=>`${esc(s.nome)} (${brlC(s.valor)})`).join(" · ")}</div>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver no VerSalic ›</a></div>`,10)}
 P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premios").then(d=>{const box=$("#prmD");if(!box)return;let C,G,E;
   for(const c of d.categorias)for(const g of c.grupos){const e=g.brasil.find(x=>x.chave===chave);if(e){C=c;G=g;E=e}}
