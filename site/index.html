@@ -2250,6 +2250,8 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ev-frases{margin:0;padding:0;list-style:none;display:grid;gap:12px}
 .ev-frases li{font-size:15px;line-height:1.5;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
 .ev-frases b{font-weight:600;color:var(--ink)}
+/* v1.25 · eventos: valor do show em vermelho pastel */
+.ev-valor{color:#C2565C;font-weight:600}
 </style>
 </head>
 <body>
@@ -6282,7 +6284,7 @@ function catRodovias(v,D,uf){if(D.erro){v.innerHTML=rvazio(D.erro);return}
 const evValor=x=>x.valor?`${brlC(x.valor)}${x.valor_a_conferir?` <span class="small" style="color:#E5484D">a conferir</span>`:x.valor_tipo==="estimado"?` <span class="small muted">estimado</span>`:""}`:"—";
 const evNome=x=>x.artista?`<b>${esc(x.artista)}</b>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`:`<span class="small">${esc((x.objeto||"").slice(0,140))}${(x.objeto||"").length>140?"…":""}</span>${x.evento?`<div class="small muted">${esc(x.evento)}</div>`:""}`;
 const EV_CAT={cache:"Cachê",palco:"Palco",som:"Som",iluminacao:"Iluminação",seguranca:"Segurança",estrutura:"Estrutura",producao:"Produção",varios:"Vários itens"};
-const evCols=[["Contratação",x=>`${x.categoria&&x.categoria!=="cache"?`<span class="tag">${esc(EV_CAT[x.categoria]||x.categoria)}</span> `:""}${evNome(x)}${x.registro_precos?`<div class="small muted">ata de registro de preços (teto, fora da soma)</div>`:""}${x.possivel_duplicata?`<div class="small muted">possível republicação: fora da soma</div>`:""}`],["Cidade",x=>x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:esc(x.uf||"—")],["Data do show",x=>x.data_evento?opData(x.data_evento):"—"],["Quem paga",x=>esc(x.esfera==="municipal"?"Prefeitura":x.esfera==="estadual"?"Governo do estado":x.esfera==="federal"?"União":x.orgao||"—")],["Valor",evValor,"n"],["Contrato",x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">PNCP ›</a>`]];
+const evCols=[["Contratação",x=>`${x.categoria&&x.categoria!=="cache"?`<span class="tag">${esc(EV_CAT[x.categoria]||x.categoria)}</span> `:""}${evNome(x)}${x.registro_precos?`<div class="small muted">ata de registro de preços (teto, fora da soma)</div>`:""}${x.possivel_duplicata?`<div class="small muted">possível republicação: fora da soma</div>`:""}`],["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${x.municipio?`${esc(x.municipio)}/${esc(x.uf||"")}`:esc(x.uf||"—")}`],["Data do show",x=>x.data_evento?opData(x.data_evento):"—"],["Quem paga",x=>esc(x.esfera==="municipal"?"Prefeitura":x.esfera==="estadual"?"Governo do estado":x.esfera==="federal"?"União":x.orgao||"—")],["Valor",x=>`<span class="ev-valor">${evValor(x)}</span>`,"n"],["Contrato",x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">PNCP ›</a>`]];
 P.eventos=uf=>{uf=UF[uf]?uf:"";
  return{html:`<div class="ph"><div><h1>Eventos</h1><p>Shows e festas pagos por prefeituras e governos: quem vai tocar, onde, quando e quanto custou o cachê. E as empresas que patrocinam eventos culturais pela Lei Rouanet.</p></div></div>
   <div class="filters">${UFSel("evUF","Todo o Brasil")}</div><div id="evV">${API.on?rload():opSemAPI}</div><div id="evP"></div>`,
