@@ -2265,6 +2265,9 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ev-dif-x{background:#E5484D;color:#1D2939}
 .ev-dif-f{background:#F5C97A;color:#1D2939}
 .ev-dif-ok{background:#D6E4FB;color:#1D2939}
+/* v1.28 · eventos: valores em destaque que não quebram linha */
+.ev-num{white-space:nowrap;display:inline-block;background:#F9D7D9;border-radius:6px;padding:0 6px;font-weight:600;color:#1D2939;line-height:1.5}
+.ev-num-g{padding:2px 10px;line-height:1.35;font-size:inherit}
 </style>
 </head>
 <body>
@@ -6322,15 +6325,15 @@ function evPatroUF(D,uf){const pj=(D.projetos||[]).filter(p=>p.uf===uf||(p.locai
 function evFrases(D){const cats=Object.values(D.por_categoria||{}),tot=cats.reduce((a,v)=>a+(v.valor_contratado||0),0)||1;
  const cache=cats.find(v=>/cach/i.test(v.nome||"")),vari=cats.find(v=>/v[aá]rios/i.test(v.nome||""));
  const fr=[];
- if(cache&&cache.valor_contratado)fr.push(`De cada <b>R$ 100</b> contratados, <b>R$ ${nf(Math.round(100*cache.valor_contratado/tot))}</b> foram para cachês de artistas.`);
- if(cache&&cache.qtd)fr.push(`Cada cachê saiu, em média, por <b>${brlC(cache.valor_contratado/cache.qtd)}</b>.`);
+ if(cache&&cache.valor_contratado)fr.push(`De cada <b>R$ 100</b> contratados, <span class="ev-num">R$ ${nf(Math.round(100*cache.valor_contratado/tot))}</span> foram para cachês de artistas.`);
+ if(cache&&cache.qtd)fr.push(`Cada cachê saiu, em média, por <span class="ev-num">${brlC(cache.valor_contratado/cache.qtd)}</span>.`);
  if(D.periodo&&D.total){const dias=Math.max(1,Math.round((new Date(D.periodo.ate)-new Date(D.periodo.de))/864e5)+1);fr.push(`<b>${nf(D.total)}</b> contratações de eventos em <b>${nf(dias)}</b> dias: quase <b>${nf(Math.round(D.total/dias))}</b> por dia.`)}
- if(vari&&vari.valor_contratado)fr.push(`Contratos com vários itens somam <b>${brlC(vari.valor_contratado)}</b>. O valor não é dividido entre os itens, então não dá para saber quanto foi para cada um.`);
+ if(vari&&vari.valor_contratado)fr.push(`Contratos com vários itens somam <span class="ev-num">${brlC(vari.valor_contratado)}</span>. O valor não é dividido entre os itens, então não dá para saber quanto foi para cada um.`);
  if(!fr.length)return"";
  return`<div class="panel mt"><h2>O que esse dinheiro significa</h2><ul class="ev-frases">${fr.map(f=>`<li>${f}</li>`).join("")}</ul><p class="small muted" style="margin:10px 0 0">Contas feitas sobre o valor homologado, sem repetir contratos.</p></div>`}
 function evKpis(D,cid){const fs=D.fora_da_soma||{},pc=Object.entries(D.por_categoria||{}).sort((a,b)=>b[1].valor_contratado-a[1].valor_contratado),pe=D.pendencias||{};
  const fora=(fs.estimado_sem_homologacao||0)+(fs.registro_precos_teto||0)+(fs.possiveis_duplicatas||0)+(fs.valor_a_conferir||0);
- return`<div class="kpis ev-kpis mt"><div class="kpi" style="--k:#2F6FED"><span>Contratações de eventos</span><strong>${nf(D.total)}</strong><em>${D.periodo?`de ${opData(D.periodo.de)} a ${opData(D.periodo.ate)}`:""}</em></div><div class="kpi" style="--k:#1BAF7A"><span>Valor contratado</span><strong>${brl(D.valor_total)}</strong><em>só o homologado, sem repetir</em></div><div class="kpi" style="--k:#F5A524"><span>Cidades com evento</span><strong>${nf(cid)}</strong><em>contrataram pelo menos um</em></div></div>
+ return`<div class="kpis ev-kpis mt"><div class="kpi" style="--k:#2F6FED"><span>Contratações de eventos</span><strong>${nf(D.total)}</strong><em>${D.periodo?`de ${opData(D.periodo.de)} a ${opData(D.periodo.ate)}`:""}</em></div><div class="kpi" style="--k:#1BAF7A"><span>Valor contratado</span><strong><span class="ev-num ev-num-g">${brl(D.valor_total)}</span></strong><em>só o homologado, sem repetir</em></div><div class="kpi" style="--k:#F5A524"><span>Cidades com evento</span><strong>${nf(cid)}</strong><em>contrataram pelo menos um</em></div></div>
  ${pc.length>1?evFrases(D):""}
  <details class="ev-fora mt"><summary>Ver o que ficou de fora da soma${fora?` · ${brl(fora)}`:""}</summary>
  <p class="small muted" style="margin:0">${brl(fs.estimado_sem_homologacao||0)} só estimados (sem homologação). ${brl(fs.registro_precos_teto||0)} em atas de registro de preços (é o teto, não o gasto). ${brl(fs.possiveis_duplicatas||0)} em possíveis republicações do mesmo contrato${fs.valor_a_conferir?`. ${brl(fs.valor_a_conferir)} com valor a conferir (alto demais para o tipo de contrato; provável erro de digitação na fonte, mostrado sem correção)`:""}.${pe.abertas?` ${nf(pe.abertas)} página(s) do PNCP com defeito serão lidas de novo (${esc((pe.dias_com_falha||[]).map(opData).join(", "))}).`:""}</p></details>`}
