@@ -2253,6 +2253,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 /* v1.25 · eventos: valor do show em vermelho pastel */
 .ev-valor{display:inline-block;background:#F9D7D9;color:#1D2939;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35}
 .oc-facts .ev-valor{color:#1D2939;font-size:inherit;font-weight:600}
+.ev-caixa{display:inline-block;border:2px solid #E5484D;border-radius:8px;padding:1px 8px;color:#1D2939;font-weight:600;line-height:1.35;background:var(--surface)}
 </style>
 </head>
 <body>
@@ -6317,7 +6318,7 @@ function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd)
   `${(D.proximos||[]).length?`<div class="panel mt"><h2>Próximos shows</h2><p class="small muted" style="margin:0 0 8px">Os que têm a data escrita no contrato, a partir de hoje.</p>${table(evCols,D.proximos)}</div>`:""}
   <div class="panel mt"><h2>Maiores cachês</h2>${table(evCols,D.maiores||[])}</div>
   <div class="g2 mt"><div class="panel"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado no seletor acima para ver todos os shows e cidades.</p>${listaUF(pu.map(([u,v])=>({uf:u,k:v.valor,r:brl(v.valor)+` · ${nf(v.qtd)} shows`})))}</div>
-  <div class="panel"><h2>Cidades que mais gastaram</h2>${table([["Cidade",x=>`${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div></div>
+  <div class="panel"><h2>Cidades que mais gastaram</h2>${table([["Cidade",x=>`${x.uf&&UF[x.uf]?bandeiraImg(x.uf,"flag flag-sm")+" ":""}${esc(x.municipio)}/${esc(x.uf||"")}`],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>`<span class="ev-caixa">${brlC(x.valor)}</span>`,"n"]],D.cidades||[])}</div></div>
   <div class="rbanner mt small">${esc(D.aviso||"")}</div>`}}
 function evEstado(D){const L=D.itens||[];let q="";
  return{html:evKpis(D,(D.cidades||[]).length)+`<div class="panel mt"><h2>Cidades de ${esc((UF[D.uf]||{}).nome||D.uf)}</h2>${table([["Cidade",x=>esc(x.municipio)],["Shows",x=>nf(x.qtd),"n"],["Valor",x=>brlC(x.valor),"n"]],D.cidades||[])}</div>
