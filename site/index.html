@@ -2254,6 +2254,11 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 .ev-valor{display:inline-block;background:#F9D7D9;color:#1D2939;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35}
 .oc-facts .ev-valor{color:#1D2939;font-size:inherit;font-weight:600}
 .ev-caixa{display:inline-block;border:2px solid #E5484D;border-radius:8px;padding:1px 8px;color:#1D2939;font-weight:600;line-height:1.35;background:var(--surface)}
+/* v1.26 · eventos: logo da empresa e valor captado em quadrado verde-oliva */
+.emp-slot{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin-right:8px;vertical-align:middle;flex:none}
+.emp-slot img{width:26px;height:26px;object-fit:contain;border-radius:6px;background:var(--surface)}
+.emp-ini{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:var(--line2);color:var(--muted);font-size:10px;font-weight:600}
+.ev-verde{display:inline-block;border:2px solid #8A9A5B;border-radius:8px;padding:1px 8px;color:#1D2939;font-weight:600;line-height:1.35;background:#F1F4E6}
 </style>
 </head>
 <body>
@@ -6295,6 +6300,11 @@ P.eventos=uf=>{uf=UF[uf]?uf:"";
     .catch(e=>{const v=$("#evV");if(v)v.innerHTML=e.status===404?opVazio("dos eventos"):rerro(e)});
    apiGet("/eventos-patrocinios").then(D=>evPatro(uf?evPatroUF(D,uf):D)).catch(()=>{const p=$("#evP");if(p)p.innerHTML=""})}}};
 // patrocínio de um estado: projetos do estado ou com local de realização nele; empresas somadas de novo
+function empCnpjMapa(D){const m={};(D.projetos||[]).forEach(pj=>(pj.patrocinadores||[]).forEach(s=>{if(s.cnpj&&s.nome&&!m[s.nome])m[s.nome]=String(s.cnpj).replace(/\D/g,"").slice(0,8)}));return m}
+const iniciaisNome=n=>String(n||"").split(/\s+/).filter(w=>w.length>2&&!/^(S\.?A\.?|LTDA\.?|DE|DO|DA|E)$/i.test(w)).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"?";
+function empLogosFill(root){const slots=[...root.querySelectorAll(".emp-slot")];if(!slots.length)return;
+ const ini=el=>`<span class="emp-ini">${esc(iniciaisNome(el.dataset.n))}</span>`;
+ midiaGrupo("empresas").then(G=>{G=G||{};slots.forEach(el=>{const l=el.dataset.c8?G[el.dataset.c8]:null;el.innerHTML=l&&l.img?`<img src="${esc(l.img)}" alt="" loading="lazy" decoding="async">`:ini(el)})}).catch(()=>slots.forEach(el=>{el.innerHTML=ini(el)}))}
 function evPatroUF(D,uf){const pj=(D.projetos||[]).filter(p=>p.uf===uf||(p.locais||[]).some(l=>String(l).endsWith("/"+uf))),e={};
  pj.forEach(p=>(p.patrocinadores||[]).forEach(s=>{if(!s.cnpj)return;const x=e[s.nome]||(e[s.nome]={nome:s.nome,valor:0,projetos:0});x.valor+=s.valor||0;x.projetos++}));
  return Object.assign({},D,{uf,total:pj.length,captado_total:pj.reduce((a,p)=>a+(p.captado||0),0),projetos:pj,empresas:Object.values(e).sort((a,b)=>b.valor-a.valor).slice(0,40)})}
@@ -6327,8 +6337,9 @@ function evEstado(D){const L=D.itens||[];let q="";
 function evPatro(D){const p=$("#evP");if(!p)return;const pj=D.projetos||[];
  p.innerHTML=`<div class="panel mt"><h2>Patrocínio de eventos (Lei Rouanet)</h2><p class="small muted" style="margin:0 0 8px">${esc(D.aviso||"")}</p>
   <div class="kpis"><div class="kpi"><span>Projetos de música com patrocínio</span><strong>${nf(D.total)}</strong></div><div class="kpi"><span>Valor captado</span><strong>${brl(D.captado_total)}</strong></div></div>
-  ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>esc(x.nome)],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>brlC(x.valor),"n"]],D.empresas)}`:""}
+  ${(D.empresas||[]).length?`<h3 class="mt">Empresas que mais patrocinaram</h3>${table([["Empresa",x=>`<span class="emp-slot" data-c8="${esc(empCnpjMapa(D)[x.nome]||"")}" data-n="${esc(x.nome)}"></span>${esc(x.nome)}`],["Projetos",x=>nf(x.projetos),"n"],["Valor",x=>`<span class="ev-verde">${brlC(x.valor)}</span>`,"n"]],D.empresas)}`:""}
   <h3 class="mt">Projetos e seus patrocinadores</h3><div class="oc-lista" id="evPL"></div></div>`;
+ empLogosFill(p);
  opLista($("#evPL"),pj,x=>`<div class="oc-card"><div class="oc-top"><span class="tag">${esc(x.segmento||"Música")}</span>${x.inicio?`<span class="small muted">${opData(x.inicio)} a ${opData(x.fim)}</span>`:""}</div><h3>${esc(x.nome)}</h3>
   <div class="small muted">${esc(x.municipio||"")}/${esc(x.uf||"")} · proponente: ${esc(x.proponente||"")}</div><div class="oc-facts"><div><span>Captado</span><b><span class="ev-valor">${brlC(x.captado)}</span></b></div><div><span>Aprovado</span><b>${brlC(x.aprovado)}</b></div></div>
   ${(x.patrocinadores||[]).length?`<div class="small oc-cargos"><b>Patrocinadores:</b> ${x.patrocinadores.map(s=>`${esc(s.nome)} (${brlC(s.valor)})`).join(" · ")}</div>`:""}<a class="oc-link" href="${esc(x.url)}" target="_blank" rel="noopener">Ver no VerSalic ›</a></div>`,10)}
