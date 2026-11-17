@@ -2302,6 +2302,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .ev-tab table.resp td:nth-child(6)::before{display:inline;margin-right:4px}
 #view .ev-tab table.resp td .flag{display:inline-block;vertical-align:middle;margin:0 4px 0 0}
 }
+@media (max-width:760px){#view .ev-cid-panel{margin-top:14px}}
 #view .ev-busca:focus{outline:none;border-color:var(--c1,#2F6FED);box-shadow:0 0 0 3px var(--foco,rgba(47,111,237,.14))}
 /* v1.32 · patrocínio: cores com sentido fixo (verde captado, azul aprovado, âmbar faltou, roxo passou); bandeira e logos dos patrocinadores */
 #view .pt-cap{display:inline-block;background:#A8E3CB;color:#1D2939;font-weight:600;border-radius:8px;padding:1px 8px;line-height:1.35;white-space:nowrap}
@@ -6395,7 +6396,7 @@ function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd)
   `${PX.length?`<div class="panel mt"><div class="ev-cab"><h2>Próximos shows</h2>${evBusca("evQP","Buscar cidade, artista ou festa")}</div><p class="small muted" style="margin:0 0 8px">Os que têm a data escrita no contrato, a partir de hoje.</p><div id="evLP" class="ev-tab">${table(evCols,PX)}</div></div>`:""}
   <div class="panel mt"><h2>Maiores cachês</h2><div class="ev-tab">${table(evCols,D.maiores||[])}</div></div>
   <div class="g2 mt"><div class="panel"><h2>Por estado</h2><p class="small muted" style="margin:0 0 8px">Toque no estado no seletor acima para ver todos os shows e cidades.</p>${listaUF(pu.map(([u,v])=>({uf:u,k:v.valor,r:brl(v.valor)+` · ${nf(v.qtd)} shows`})))}</div>
-  <div class="panel"><div class="ev-cab"><h2>Cidades que mais gastaram</h2>${evBusca("evQC","Buscar cidade ou UF")}</div><div id="evLC">${table(cidCols,CI)}</div></div></div>
+  <div class="panel ev-cid-panel"><div class="ev-cab"><h2>Cidades que mais gastaram</h2>${evBusca("evQC","Buscar cidade ou UF")}</div><div id="evLC">${table(cidCols,CI)}</div></div></div>
 `,
  mount(){
    const filtra=(L,q,campos)=>{const n=snapNorm(q);return n?L.filter(x=>snapNorm(campos(x).join(" ")).includes(n)):L};
