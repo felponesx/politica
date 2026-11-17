@@ -6209,15 +6209,18 @@ function catRepBloco(R){if(!R||R.erro)return"";const top=(R.estados||[]).slice(0
   <div class="kpis cat-kp mt"><div class="kpi" style="--k:#2F6FED"><span>Total repassado em ${R.ano}${R.parcial?" (em andamento)":""}</span><strong>${brlC(R.brasil)}</strong><em>${R.meses_coletados} de 12 meses coletados</em></div><div class="kpi" style="--k:#8B5CF6"><span>Doações da população</span><strong>sem base aberta</strong><em>não há dado oficial; não estimamos</em></div></div>
   <div class="mt">${hbars(top.map(e=>[(UF[e.uf]||{}).nome||e.uf,e.valor]))}</div><p class="small muted" style="margin:8px 0 0">Os 8 estados que mais receberam no ano.</p></div>`}
 function catLigaAno(){const sel=$("#catAnoD");if(!sel)return;sel.onchange=e=>apiGet("/catastrofes/transferencias?ano="+e.target.value).then(N=>{const b=document.querySelector(".cat-rep-box");if(b)b.outerHTML=catRepBloco(N);catLigaAno()}).catch(()=>{})}
-function catTragedias(v,D,R){CAT_LISTA=D.itens||[];let f={tipo:""};
+function catTragedias(v,D,R){CAT_LISTA=D.itens||[];let f={tipo:"",uf:"",per:"",q:""};
+ const perOf=x=>{const y=+String(x.data||"").slice(0,4);return y<1950?"antes":y<2000?"1950":"2000"};
+ const ufsCat=[...new Set(CAT_LISTA.map(x=>x.uf).filter(Boolean))].sort((a,b)=>((UF[a]||{}).nome||a).localeCompare((UF[b]||{}).nome||b));
  v.innerHTML=`<div class="panel cat-mapa-box"><div class="cat-mhead"><div><h2>Onde aconteceram</h2><p class="small muted" style="margin:4px 0 0">Toque em um ponto vermelho para ver o que aconteceu. Pontos muito próximos são afastados no desenho para poderem ser tocados; o local certo está em cada cartão.</p></div><span class="cat-leg"><i></i>tragédia marcante</span></div><div id="catMapa"></div><div id="catHist"></div></div>
   ${catRepBloco(R)}
   <div class="panel mt"><div class="cat-lhead"><h2>Todas as tragédias</h2><select id="catT" data-pill="Tipo"><option value="">Todos os tipos</option>${Object.entries(D.tipos||{}).map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join("")}</select></div>
+  <div class="filters" style="margin:10px 0 4px"><input id="catQ" placeholder="Buscar por nome, cidade ou estado" style="flex:1;min-width:180px" autocomplete="off"><select id="catU" data-pill="Estado"><option value="">Todos os estados</option>${ufsCat.map(u=>`<option value="${u}">${esc((UF[u]||{}).nome||u)}</option>`).join("")}</select><select id="catP" data-pill="Período"><option value="">Qualquer período</option><option value="2000">2000 em diante</option><option value="1950">1950 a 1999</option><option value="antes">Antes de 1950</option></select></div>
   <p class="small muted" id="catN" style="margin:4px 0 10px"></p><div id="catL" class="cat-grid"></div></div>
   <div class="rbanner mt small">${esc(D.aviso||"")}</div>`;
  const cartao=x=>`<button class="cat-card" style="--c:${CAT_TIPO_COR[x.tipo]||"#2F6FED"}" data-id="${esc(x.id)}"><span class="cat-faixa"></span><span class="small muted">${x.data_texto?esc(x.data_texto):opData(x.data)} · ${esc(x.uf)}</span><b>${esc(x.titulo)}</b><span class="small muted">${esc(x.local)}</span><span class="cat-mini"><b>${nf(x.mortos)}</b> mortos</span></button>`;
- const lista=()=>{const xs=CAT_LISTA.filter(x=>!f.tipo||x.tipo===f.tipo);$("#catN").textContent=`${nf(xs.length)} de ${nf(CAT_LISTA.length)}`;$("#catL").innerHTML=xs.length?xs.map(cartao).join(""):rvazio("Nada com esse filtro.")};
- $("#catT").onchange=e=>{f.tipo=e.target.value;lista()};lista();
+ const lista=()=>{const q=snapNorm(f.q);const xs=CAT_LISTA.filter(x=>(!f.tipo||x.tipo===f.tipo)&&(!f.uf||x.uf===f.uf)&&(!f.per||perOf(x)===f.per)&&(!q||snapNorm(`${x.titulo} ${x.local||""} ${x.uf||""} ${x.resumo||""}`).includes(q)));$("#catN").textContent=`${nf(xs.length)} de ${nf(CAT_LISTA.length)}`;$("#catL").innerHTML=xs.length?xs.map(cartao).join(""):rvazio("Nada com esse filtro.")};
+ $("#catT").onchange=e=>{f.tipo=e.target.value;lista()};$("#catU").onchange=e=>{f.uf=e.target.value;lista()};$("#catP").onchange=e=>{f.per=e.target.value;lista()};$("#catQ").oninput=debounce(e=>{f.q=e.target.value.trim();lista()},200);lista();
  catMapa(CAT_LISTA);
  $("#catMapa").onclick=e=>{const g=e.target.closest(".pin");if(g)catAbrir(g.dataset.id)};
  $("#catMapa").onkeydown=e=>{const g=e.target.closest(".pin");if(g&&e.key==="Enter")catAbrir(g.dataset.id)};

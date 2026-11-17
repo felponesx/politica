@@ -217,5 +217,93 @@
   "lat": -29.7865,
   "lon": -53.2452,
   "ponto": "Centro do estado do Rio Grande do Sul: a enchente atingiu muitos municípios"
+ },
+ {
+  "id": "gran-circus-niteroi-1961",
+  "data": "1961-12-17",
+  "titulo": "Incêndio no Gran Circus Norte-Americano",
+  "local": "Niterói",
+  "uf": "RJ",
+  "tipo": "incendio",
+  "resumo": "Incêndio durante espetáculo com cerca de 3 mil pessoas, a maioria crianças. Foi o maior incêndio do Brasil em número de mortos.",
+  "mortos": 503,
+  "mortos_nota": "Número oficial mais citado (503). Há relatos de que o total real pode ter sido maior; a contagem oficial subiu nos dias seguintes.",
+  "fontes": [
+   {
+    "nome": "Wikipedia (inglês): Niterói circus fire",
+    "url": "https://en.wikipedia.org/wiki/Niter%C3%B3i_circus_fire"
+   }
+  ],
+  "wiki": "Incêndio no Gran Circus Norte-Americano",
+  "lat": -22.8833,
+  "lon": -43.1036,
+  "ponto": "Centro de Niterói (RJ)",
+  "imagem": null
+ },
+ {
+  "id": "andraus-sp-1972",
+  "data": "1972-02-24",
+  "titulo": "Incêndio no Edifício Andraus",
+  "local": "São Paulo",
+  "uf": "SP",
+  "tipo": "incendio",
+  "resumo": "Incêndio em prédio de 32 andares na Avenida São João. O resgate com helicópteros e uma ponte improvisada evitou mais mortes.",
+  "mortos": 16,
+  "mortos_nota": "A maioria das fontes cita 16 mortos (algumas, 17). Feridos: cerca de 330 a 345, conforme a fonte.",
+  "fontes": [
+   {
+    "nome": "Megacurioso: Edifício Andraus, a maior tragédia antes do Joelma",
+    "url": "https://www.megacurioso.com.br/estilo-de-vida/118373-edificio-andraus-a-maior-tragedia-antes-do-incendio-no-joelma.htm"
+   }
+  ],
+  "wiki": "Edifício Andraus",
+  "lat": -23.5438,
+  "lon": -46.6372,
+  "ponto": "Avenida São João, centro de São Paulo (SP)",
+  "imagem": null
+ },
+ {
+  "id": "vila-soco-cubatao-1984",
+  "data": "1984-02-25",
+  "titulo": "Explosão e incêndio na Vila Socó",
+  "local": "Cubatão",
+  "uf": "SP",
+  "tipo": "incendio",
+  "resumo": "Vazamento de gasolina de duto da Petrobras atingiu bairro às margens do canal; o fogo se espalhou pelas casas de palafita.",
+  "mortos": 93,
+  "mortos_nota": "Número oficial da época (93 corpos encontrados). Moradores, a OAB de Cubatão e o Ministério Público da época estimaram centenas de mortos (até 508, e até 700 em estimativa do MP).",
+  "fontes": [
+   {
+    "nome": "Agência Brasil (via Ojacaré): 40 anos da Vila Socó",
+    "url": "https://www.ojacare.com.br/2024/02/24/vila-soco-ha-40-anos-incendio-matou-pelo-menos-93-pessoas"
+   }
+  ],
+  "wiki": "Vila Socó",
+  "lat": -23.8945,
+  "lon": -46.4262,
+  "ponto": "Vila Socó, Cubatão (SP)",
+  "imagem": null
+ },
+ {
+  "id": "osasco-plaza-1996",
+  "data": "1996-06-11",
+  "titulo": "Explosão no Osasco Plaza Shopping",
+  "local": "Osasco",
+  "uf": "SP",
+  "tipo": "desabamento",
+  "resumo": "Vazamento de gás provocou explosão na praça de alimentação do shopping, véspera do Dia dos Namorados, com o prédio cheio. Parte das lojas desabou.",
+  "mortos": 42,
+  "mortos_nota": "42 mortos citados pela imprensa. Feridos: entre cerca de 300 e mais de 400, conforme a fonte.",
+  "fontes": [
+   {
+    "nome": "Portal Tela: 30 anos da explosão no Osasco Plaza (2026)",
+    "url": "https://www.portaltela.com/noticias/geral/2026/05/13/explosao-em-shopping-de-osasco-ha-30-anos-deixa-42-mortos-e-300-feridos/"
+   }
+  ],
+  "wiki": "Osasco Plaza Shopping",
+  "lat": -23.5335,
+  "lon": -46.7913,
+  "ponto": "Osasco Plaza Shopping, Osasco (SP)",
+  "imagem": null
  }
 ]
