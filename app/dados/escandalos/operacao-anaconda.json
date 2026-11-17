@@ -1,0 +1,63 @@
+{
+ "slug": "operacao-anaconda",
+ "nome": "Operação Anaconda",
+ "outros_nomes": [
+  "Caso Anaconda",
+  "Venda de sentenças (SP)"
+ ],
+ "periodo": {
+  "inicio": "2003"
+ },
+ "ano_revelado": 2003,
+ "resumo": "Deflagrada em 2003 pelo Ministério Público Federal e pela Polícia Federal, a Operação Anaconda investigou uma suposta quadrilha especializada em venda de sentenças judiciais. O caso começou com uma denúncia recebida em Alagoas, e a Justiça de Maceió autorizou escutas. Segundo a reportagem do Jornal do Brasil, de janeiro de 2005, a organização tinha base em São Paulo e ramificações no Pará, Alagoas e Rio Grande do Sul, e estavam entre os denunciados juízes, delegados, advogados e empresários. Quem é citado tem presunção de inocência até decisão definitiva.",
+ "valores": {
+  "desviado": {
+   "valor": null,
+   "texto": "Não há valor oficial confirmado nesta fonte.",
+   "fonte": null
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não foi encontrado valor recuperado nesta fonte.",
+   "fonte": null
+  },
+  "observacao": ""
+ },
+ "orgaos": [
+  {
+   "nome": "Ministério Público Federal",
+   "papel": "denúncias"
+  },
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Tribunal Regional Federal da 3ª Região",
+   "papel": "recebimento das denúncias"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2003-10-13",
+   "fato": "MPF oferece quatro denúncias ao TRF da 3ª Região contra juízes, advogados, empresários e policiais",
+   "fonte": "https://www2.senado.leg.br/bdsf/bitstream/handle/id/68015/complemento_2.htm?sequence=3&isAllowed=y"
+  },
+  {
+   "data": "2003-12-19",
+   "fato": "TRF da 3ª Região aceita as denúncias do MPF e afasta dois juízes federais",
+   "fonte": "https://www2.senado.leg.br/bdsf/bitstream/handle/id/68015/complemento_2.htm?sequence=3&isAllowed=y"
+  },
+  {
+   "data": "2005-01-15",
+   "fato": "Reportagem do Jornal do Brasil informa 16 denúncias apresentadas e 11 recebidas pela Justiça",
+   "fonte": "https://www2.senado.leg.br/bdsf/bitstream/handle/id/68015/complemento_2.htm?sequence=3&isAllowed=y"
+  }
+ ],
+ "situacao_atual": null,
+ "pessoas": [],
+ "fontes": [
+  "https://www2.senado.leg.br/bdsf/bitstream/handle/id/68015/complemento_2.htm?sequence=3&isAllowed=y"
+ ],
+ "verificado_em": "2026-11-17"
+}

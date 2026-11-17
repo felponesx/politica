@@ -1,0 +1,53 @@
+{
+ "slug": "operacao-navalha",
+ "nome": "Operação Navalha",
+ "outros_nomes": [
+  "Caso Gautama"
+ ],
+ "periodo": {
+  "inicio": "2007"
+ },
+ "ano_revelado": 2007,
+ "resumo": "Deflagrada pela Polícia Federal em maio de 2007, a Operação Navalha investigou um esquema de fraude em licitações de obras públicas. Em março de 2008, a 2ª Turma do STF confirmou a liberdade de investigados ligados à construtora Gautama, por entender que os decretos de prisão preventiva não estavam fundamentados. Os investigados têm presunção de inocência.",
+ "valores": {
+  "desviado": {
+   "valor": null,
+   "texto": "Não há valor oficial confirmado nesta fonte.",
+   "fonte": null
+  },
+  "recuperado": {
+   "valor": null,
+   "texto": "Não foi encontrado valor recuperado nesta fonte.",
+   "fonte": null
+  },
+  "observacao": ""
+ },
+ "orgaos": [
+  {
+   "nome": "Polícia Federal",
+   "papel": "investigação"
+  },
+  {
+   "nome": "Supremo Tribunal Federal",
+   "papel": "julgamento de habeas corpus"
+  }
+ ],
+ "andamento": [
+  {
+   "data": "2007-05",
+   "fato": "Polícia Federal deflagra a Operação Navalha, sobre fraude em licitações de obras públicas",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-confirma-habeas-para-funcionarios-da-gautama/"
+  },
+  {
+   "data": "2008-03-18",
+   "fato": "2ª Turma do STF confirma habeas corpus para investigados ligados à construtora Gautama",
+   "fonte": "https://noticias.stf.jus.br/postsnoticias/2a-turma-confirma-habeas-para-funcionarios-da-gautama/"
+  }
+ ],
+ "situacao_atual": null,
+ "pessoas": [],
+ "fontes": [
+  "https://noticias.stf.jus.br/postsnoticias/2a-turma-confirma-habeas-para-funcionarios-da-gautama/"
+ ],
+ "verificado_em": "2026-11-17"
+}
