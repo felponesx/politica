@@ -6351,7 +6351,7 @@ P.eventos=uf=>{uf=UF[uf]?uf:"";
  return{html:`<div class="ph"><div><h1>Eventos</h1><p>Shows e festas pagos por prefeituras e governos: quem vai tocar, onde, quando e quanto custou o cachê. E as empresas que patrocinam eventos culturais pela Lei Rouanet.</p></div></div>
   <div class="filters">${UFSel("evUF","Todo o Brasil")}</div><div id="evV">${API.on?rload():opSemAPI}</div><div id="evP"></div>`,
   mount(){if(!API.on)return;const s=$("#evUF");if(s){s.value=uf;s.onchange=e=>{location.hash="#/eventos"+(e.target.value?"/"+e.target.value:"")}}
-   apiGet("/eventos"+(uf?"?uf="+uf:"")).then(D=>{const v=$("#evV");if(!v)return;const o=uf?evEstado(D):evBrasil(D);v.innerHTML=o.html;o.mount&&o.mount();if(typeof pilulas==="function")pilulas()})
+   apiGet("/eventos"+(uf?"?uf="+uf:"")).then(D=>(!uf&&(D.cidades_total||0)>(D.cidades||[]).length?evTodasCidades(D):D)).then(D=>{const v=$("#evV");if(!v)return;const o=uf?evEstado(D):evBrasil(D);v.innerHTML=o.html;o.mount&&o.mount();if(typeof pilulas==="function")pilulas()})
     .catch(e=>{const v=$("#evV");if(v)v.innerHTML=e.status===404?opVazio("dos eventos"):rerro(e)});
    apiGet("/eventos-patrocinios").then(D=>evPatro(uf?evPatroUF(D,uf):D)).catch(()=>{const p=$("#evP");if(p)p.innerHTML=""})}}};
 // patrocínio de um estado: projetos do estado ou com local de realização nele; empresas somadas de novo
@@ -6383,6 +6383,10 @@ function evKpis(D,cid){const fs=D.fora_da_soma||{},pc=Object.entries(D.por_categ
  ${pc.length>1?evFrases(D):""}
  <details class="ev-fora mt"><summary>Ver o que ficou de fora da soma${fora?` · ${brl(fora)}`:""}</summary>
  <p class="small muted" style="margin:0">${brl(fs.estimado_sem_homologacao||0)} só estimados (sem homologação). ${brl(fs.registro_precos_teto||0)} em atas de registro de preços (é o teto, não o gasto). ${brl(fs.possiveis_duplicatas||0)} em possíveis republicações do mesmo contrato${fs.valor_a_conferir?`. ${brl(fs.valor_a_conferir)} com valor a conferir (alto demais para o tipo de contrato; provável erro de digitação na fonte, mostrado sem correção)`:""}.${pe.abertas?` ${nf(pe.abertas)} página(s) do PNCP com defeito serão lidas de novo (${esc((pe.dias_com_falha||[]).map(opData).join(", "))}).`:""}</p></details>`}
+// o Brasil traz só as 60 cidades que mais gastaram; as demais vêm de cada estado (lista completa)
+function evTodasCidades(D){return Promise.all(UFS.map(u=>apiGet("/eventos?uf="+u.uf).then(x=>(x.cidades||[]).map(c=>({...c,uf:u.uf}))).catch(()=>[]))).then(listas=>{
+ const todas=[].concat(...listas);if(todas.length<=(D.cidades||[]).length)return D;
+ todas.sort((a,b)=>(b.valor||0)-(a.valor||0));return {...D,cidades:todas}})}
 function evBusca(id,ph){return`<input id="${id}" class="ev-busca" type="search" placeholder="${esc(ph)}" autocomplete="off" aria-label="${esc(ph)}">`}
 function evBrasil(D){const pu=Object.entries(D.por_uf||{}).filter(([,v])=>v.qtd);
  const PX=D.proximos||[],CI=(D.cidades||[]).map((x,i)=>Object.assign({},x,{lugar:i+1}));
