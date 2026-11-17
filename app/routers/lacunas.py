@@ -53,6 +53,24 @@ def ambiente_bioma_municipios():
     return d
 
 
+@router.get("/ambiente/animais", tags=["Meio ambiente"])
+def ambiente_animais():
+    """Espécies da fauna ameaçadas de extinção (lista oficial do MMA, 2026), com bioma, nome comum e estados quando a base de 2020 traz."""
+    d = memo(("animais-ameacados",), lambda: lacunas.animais_ameacados())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.fauna_ameacada.")
+    return d
+
+
+@router.get("/ambiente/agua", tags=["Meio ambiente"])
+def ambiente_agua():
+    """Área de superfície de água por bioma, estado e região hidrográfica (MapBiomas Água, hectares)."""
+    d = memo(("agua-superficie",), lambda: lacunas.agua_superficie())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.agua_superficie.")
+    return d
+
+
 @router.get("/viagens", tags=["Dinheiro público"])
 def viagens(db: Session = Depends(get_db)):
     """Viagens a serviço do governo federal: diárias e passagens por órgão e ano."""

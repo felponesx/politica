@@ -541,3 +541,20 @@ def bioma_municipios() -> dict | None:
     if not arq.exists():
         return None
     return json.loads(arq.read_text(encoding="utf-8"))
+
+
+def _arquivo_dados(nome: str) -> dict | None:
+    import json
+    from pathlib import Path
+    arq = Path(__file__).resolve().parent / "dados" / nome
+    return json.loads(arq.read_text(encoding="utf-8")) if arq.exists() else None
+
+
+def animais_ameacados() -> dict | None:
+    """Fauna ameaçada de extinção (lista oficial de 2026 do MMA, com bioma, nome comum e estados da base de 2020)."""
+    return _arquivo_dados("fauna_ameacada.json")
+
+
+def agua_superficie() -> dict | None:
+    """Superfície de água por bioma, estado e região hidrográfica (MapBiomas Água, hectares, 1985–2025)."""
+    return _arquivo_dados("agua_superficie.json")

@@ -79,7 +79,7 @@ FIXAS = [
     "/profissoes", "/empresas-tipos", "/saude", "/cortes", "/cartao-corporativo", "/emendas", "/coletas?limit=30", "/fontes/status", "/legislacao-resumo", "/fluxo-federativo", "/eleicoes/anos", "/contadores",
     "/mapa/estados", "/agora/eventos", "/partidos/composicao", "/assembleias", "/gastos/entes", "/orgaos",
     "/dividas/estados", "/historico-estados", "/dividas/municipios", "/dividas/devedores?limit=20", "/indicadores-sociais/nomes", "/saneamento", "/saude/painel", "/saude/vacinacao", "/saude/minimo", "/votos-tribunais", "/ensino", "/sancoes", "/tcu-inabilitados", "/tcu-irregulares", "/justica", "/cpis", "/aeroportos", "/multas-ambientais", "/lista-suja", "/renuncia-fiscal", "/sancoes/contratos?limit=40", "/fidelidade?casa=camara", "/fidelidade?casa=senado", "/social", "/trabalho", "/ambiente", "/viagens", "/servidores", "/acidentes-rodovias", "/igc", "/iva", "/caged", "/ocorrencias?limit=200", "/diarios-oficiais/status", "/transito/malha", "/transito/agora", "/doadores", "/fundos", "/energia-tarifas", "/obras-gestao?escopo=pais", "/indicadores",
-    "/ambiente/bioma-municipios", "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
+    "/ambiente/bioma-municipios", "/ambiente/animais", "/ambiente/agua", "/empresas-setores", "/fornecedores-cruzados?limit=60", "/economia",
     "/economia?nomes=divida_bruta_pib,divida_liquida_pib,juros_nominais_pib,endividamento_familias,inadimplencia_pf,inadimplencia_pj",
     "/economia?nomes=ipca_12m,selic,desemprego,dolar,pib_12m",
     "/economia?nomes=ibovespa,ipca_mes,ipca_12m,selic,salario_minimo,balanca_saldo,balanca_export,balanca_import,pib_var_anual,dolar,desemprego",

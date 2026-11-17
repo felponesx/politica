@@ -226,4 +226,5 @@ def test_exportacao_da_copia_inclui_a_rota_do_mapbiomas_por_territorio_e_a_tela_
     assert '"/alertas-mapbiomas/territorio"' in (raiz / "scripts" / "exportar_snapshot.py").read_text(encoding="utf-8")
     site = (raiz / "site" / "index.html").read_text(encoding="utf-8")
     assert 'apiGet("/alertas-mapbiomas/territorio")' in site and "não é a taxa" in site.lower() or "PRODES" in site   # a tela existe e o aviso vem da API
-    assert re.search(r"mbCarregar\(\$\(\"#mbT\"\)\)", site) and 'mbCarregar($("#mbT"),uf)' in site     # tela do Brasil e ficha do estado
+    # tela do Brasil (usa os dados já carregados, sem repetir o mapa) e ficha do estado
+    assert 'mbPainel($("#mbT"),T,"",{semMapa:true})' in site and 'mbCarregar($("#mbT"),uf)' in site
