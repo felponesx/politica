@@ -785,3 +785,7 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Site: `lacPainel(..., munVal)` recebe `munDes(m)` (ano completo ou soma da série), pinta cada município por faixas de mesmo número de municípios (`faixasDe`) e troca a legenda (valores pequenos com decimais; cinza = "sem corte raso mapeado").
   Sem o arquivo, volta à cor do estado. Continua só visual (sem clique nem animação). A malha de MG fica em arquivo `g/` à parte: ao testar à mão, copie também esse arquivo.
 - Limites: é a área do INPE, não a área do município; município sem polígono no ano é "sem corte raso mapeado" (não prova ausência de desmatamento fora das áreas que o PRODES monitora); polígono na divisa vai inteiro para um só município.
+
+## Alertas do MapBiomas em km² (18/11/2026)
+- O MapBiomas publica em hectares; o site mostra em km² (100 ha = 1 km², a mesma unidade do PRODES, só para dar escala). A função é `lacKm2` (recebe hectares). Continua proibido somar ou comparar com o PRODES no mesmo número.
+- Painel do MapBiomas: aviso curto único (não é a taxa oficial do PRODES; nenhuma propriedade rural nem pessoa), "Por bioma" dentro do painel principal e sem o KPI "Estados com alertas" (o mapa já mostra). Mata Atlântica: um só cabeçalho explicando que as duas medidas não se somam.
