@@ -789,3 +789,5 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 ## Alertas do MapBiomas em km² (18/11/2026)
 - O MapBiomas publica em hectares; o site mostra em km² (100 ha = 1 km², a mesma unidade do PRODES, só para dar escala). A função é `lacKm2` (recebe hectares). Continua proibido somar ou comparar com o PRODES no mesmo número.
 - Painel do MapBiomas: aviso curto único (não é a taxa oficial do PRODES; nenhuma propriedade rural nem pessoa), "Por bioma" dentro do painel principal e sem o KPI "Estados com alertas" (o mapa já mostra). Mata Atlântica: um só cabeçalho explicando que as duas medidas não se somam.
+- Meio ambiente, topo da tela: os três cartões (desmatamento de 2025, biomas monitorados, alertas em 12 meses) ficam numa linha só (`kpiCls:"kpis-3"` no `lacPainel`; no celular a regra de último cartão ímpar em linha cheia, de 520 px, é desligada para eles).
+- Painel do MapBiomas: saíram os cartões "Área alertada" e "Alertas validados"; o total do período fica no título de "Por bioma" (`#mbTot`). Na Mata Atlântica, a contagem de alertas vai no texto (o total de área já está em "Por bioma").
