@@ -378,6 +378,7 @@
     "/ambiente",
     "/ambiente/agua",
     "/ambiente/animais",
+    "/ambiente/animais/fotos",
     "/ambiente/bioma-municipios",
     "/ambiente/desmatamento-municipios",
     "/malha/status",
