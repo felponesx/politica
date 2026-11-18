@@ -6629,14 +6629,20 @@ const lacTri=c=>/^\d{6}$/.test(c)?`${c.slice(0,4)} T${Math.ceil(+c.slice(4)/3)}`
 const lacKpi=(t,v,s)=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`;
 const lacVazio=m=>rvazio(m||"Os dados ainda estão sendo coletados. Quando o robô terminar, esta tela se preenche sozinha.");
 /* painel por estado: seletor de medida, mapa, maiores/menores e lista; M = {chave:[título,(e)=>valor,formato,explicação,(e)=>série opcional]}, G = grupos do seletor */
-function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini,mun=false}){let m=ini||Object.keys(M)[0];
+function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini,mun=false,munVal=null}){let m=ini||Object.keys(M)[0];
  const ops=G.map(g=>`<optgroup label="${g[0]}">${g.slice(1).filter(k=>Object.values(E).some(e=>M[k][1](e)!=null)).map(k=>`<option value="${k}">${M[k][0]}</option>`).join("")}</optgroup>`).join("");
  v.innerHTML=`${kpis?`<div class="kpis kpis-c">${kpis}</div>`:""}${antes}<div class="panel mt"><div class="hd"><div><h2 id="lcT"></h2><p class="small muted" id="lcN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="lcM" data-titulo="Mostrar" data-pill>${ops}</select></div></div>
   <div class="grid g2" style="align-items:start;margin-top:10px"><div id="lcMap"${mun?' class="lc-visual"':""}></div><div id="lcRk"></div></div></div><div class="panel mt"><h2>Todos os estados</h2><div id="lcLs"></div></div>${depois}`;
  const des=()=>{const x=M[m],vals={};UFS.forEach(u=>{const e=E[u.uf],val=e&&x[1](e);if(val!=null)vals[u.uf]=val});
   $("#lcT").textContent=x[0];$("#lcN").textContent=x[3];
   $("#lcMap").innerHTML=Object.keys(vals).length?mapaValores(vals,x[2],x[5]?{escala:x[5]}:{}):rvazio("Sem dados desta medida ainda.");
-  if(mun){if(Object.keys(vals).length){const F=faixasDe(Object.values(vals)),esc2=x[5]||SCALE,cx=$("#lcMap");quandoPerto(cx,()=>munCamada(cx,u=>corFaixa(F,vals[u],esc2)))}}
+  if(mun){if(Object.keys(vals).length){const F=faixasDe(Object.values(vals)),esc2=x[5]||SCALE,cx=$("#lcMap"),mm=m,fmtL=x[2];
+   // com o valor de cada município (munVal), cada um é pintado pelo próprio número e a legenda passa a ser a dos municípios; sem isso, cada um fica na cor do seu estado
+   quandoPerto(cx,async()=>{let mv=null;if(munVal){try{mv=await munVal(mm)}catch(e){}}
+    if(!mv)return munCamada(cx,u=>corFaixa(F,vals[u],esc2));
+    const F2=faixasDe(Object.values(mv));
+    const ok=await munCamada(cx,(uf,c)=>mv[c]!=null?corFaixa(F2,mv[c],esc2):"var(--mapa-vazio)");
+    const lg=ok&&cx.querySelector(".leg-faixas");if(lg){lg.outerHTML=legFaixas(F2,v=>v<1?lacD(v,2)+" km²":v<10?lacD(v,1)+" km²":fmtL(v),esc2).replace("</div>",`<span><i style="background:var(--mapa-vazio)"></i>sem corte raso mapeado</span></div>`);cx.dataset.munval=1}})}}
   else bindMap($("#lcMap"),null,null,u=>{location.hash="#/"+rota+"/"+u});
   const href=u=>"#/"+rota+"/"+u,serie={},anos=new Set();
   if(x[4])UFS.forEach(u=>{const s=E[u.uf]&&x[4](E[u.uf]);if(s){serie[u.uf]=s;Object.keys(s).forEach(a=>anos.add(a))}});
@@ -6711,8 +6717,8 @@ P.profissoes=()=>({html:`<style>.prf-filtros{display:flex;gap:10px;flex-wrap:wra
 const AMB_G=[["Desmatamento (PRODES, ano fechado)","km2","total"]];
 const acumuladoSerie=s=>{let t=0,o={};Object.keys(s||{}).sort().forEach(a=>{t+=s[a]||0;o[a]=Math.round(t*100)/100});return o};
 const deterMensal=e=>e.deter&&e.deter.mensal?Object.fromEntries(Object.entries(e.deter.mensal).map(([m,v])=>[m,Math.round(((v&&v.desmatamento)||0)*100)/100])):null;
-const ambM=(u,ini)=>({km2:["Desmatamento por ano (km²)",e=>e.km2,lacKm,`Área de floresta e vegetação nativa desmatada por corte raso em ${u}, o último ano fechado por todos os biomas (PRODES), somando os biomas do estado. O dado é por estado: no mapa, cada município aparece na cor do seu estado.`,e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
- total:["Desmatamento acumulado (km²)",e=>e.total_desde_inicio,lacKm,`Soma do desmatamento por corte raso de ${ini} a ${u}, os anos seguidos em que todos os biomas têm dado (antes disso falta o mapa de algum bioma). O dado é por estado: no mapa, cada município aparece na cor do seu estado.`,e=>acumuladoSerie(e.serie),SCALE_VERM,a=>a,"#E5484D"]});
+const ambM=(u,ini)=>({km2:["Desmatamento por ano (km²)",e=>e.km2,lacKm,`Área de floresta e vegetação nativa desmatada por corte raso em ${u}, o último ano fechado por todos os biomas (PRODES), somando os biomas do estado. No mapa, cada município tem a cor do seu próprio desmatamento (soma dos polígonos do PRODES dentro dele); sem esse dado, aparece na cor do estado.`,e=>e.serie,SCALE_VERM,a=>a,"#E5484D"],
+ total:["Desmatamento acumulado (km²)",e=>e.total_desde_inicio,lacKm,`Soma do desmatamento por corte raso de ${ini} a ${u}, os anos seguidos em que todos os biomas têm dado (antes disso falta o mapa de algum bioma). No mapa, cada município tem a cor do seu próprio total (soma dos polígonos do PRODES dentro dele); sem esse dado, aparece na cor do estado.`,e=>acumuladoSerie(e.serie),SCALE_VERM,a=>a,"#E5484D"]});
 // ano que só alguns biomas fecharam (o Cerrado fecha antes) fica fora dos totais, e só valem os anos SEGUIDOS em que todos os biomas têm dado
 // (nos anos antigos alguns biomas não têm mapa e a soma sai parcial: pico e queda falsos). Cópia antiga sem "ano_completo" é ajustada aqui.
 function ambCompleto(D){if(!D||D.ano_completo)return D;
@@ -6852,7 +6858,9 @@ P.ambiente=a=>{const x=a?String(a).toLowerCase():"";
   const dom={};UFS.forEach(u=>{const m=Object.entries((D.estados[u.uf]||{}).por_bioma||{}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];if(m)dom[u.uf]=m[0]});
   const contaBio={};Object.values(dom).forEach(b=>contaBio[b]=(contaBio[b]||0)+1);
   const bmapa=`<div class="panel mt"><h2>Mapa por bioma <small id="bioSub">onde fica cada bioma</small></h2><div id="bioMapa"></div><div class="bio-leg" id="bioLeg"></div><p class="small muted" id="bioNota" style="margin:8px 0 0"></p></div>`;
-  lacPainel(v,{E,M:ambM(u,an[0]),G:AMB_G,mun:true,rota:"ambiente",kpis:kp,antes:pb+`<div class="grid g2 amb-par" style="margin-top:14px">${graf}${bmapa}</div>`,depois:'<div id="mbT"></div><div id="maT"></div>'+lacFim(D)});if(T)mbPainel($("#mbT"),T,"",{semMapa:true});maCarregar($("#maT"),D);const bm=$("#bioMapa");if(bm)bioMapaIniciar(bm,dom,contaBio,u)},uf);if(!uf)r.html=r.html.replace('<div id="lcV">',ambAbas("desmatamento")+'<div id="lcV">');return r};
+  const munDes=async m=>{const J=await apiGet("/ambiente/desmatamento-municipios").catch(()=>null);if(!J||!J.municipios)return null;
+   const anos=m==="total"?an:[u],o={};Object.entries(J.municipios).forEach(([c,por])=>{let t=0;anos.forEach(a=>{t+=por[a]||0});if(t>0)o[c]=t});return Object.keys(o).length?o:null};
+  lacPainel(v,{E,M:ambM(u,an[0]),G:AMB_G,mun:true,munVal:munDes,rota:"ambiente",kpis:kp,antes:pb+`<div class="grid g2 amb-par" style="margin-top:14px">${graf}${bmapa}</div>`,depois:'<div id="mbT"></div><div id="maT"></div>'+lacFim(D)});if(T)mbPainel($("#mbT"),T,"",{semMapa:true});maCarregar($("#maT"),D);const bm=$("#bioMapa");if(bm)bioMapaIniciar(bm,dom,contaBio,u)},uf);if(!uf)r.html=r.html.replace('<div id="lcV">',ambAbas("desmatamento")+'<div id="lcV">');return r};
 /* ----- Mata Atlântica: PRODES (INPE, km², taxa anual) e MapBiomas Alerta (hectares de alertas validados) lado a lado, NUNCA somados ----- */
 function maCarregar(el,A){if(!el)return;const P=A&&A.biomas&&A.biomas.mata_atlantica;
  Promise.all([apiGet("/alertas-mapbiomas/territorio").catch(()=>null),apiGet("/alertas-mapbiomas").catch(()=>null)]).then(([T,C])=>{if(!document.body.contains(el))return;

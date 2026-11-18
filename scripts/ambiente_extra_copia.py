@@ -1,9 +1,10 @@
-"""Acrescenta à cópia estática a fauna ameaçada (/ambiente/animais) e a superfície de água (/ambiente/agua).
+"""Acrescenta à cópia estática a fauna ameaçada (/ambiente/animais) e a superfície de água (/ambiente/agua)
+e o desmatamento por município (/ambiente/desmatamento-municipios).
 
     python -m scripts.ambiente_extra_copia [site/dados]
 
 Grava as chaves na parte s<N>, no pacote p/ambiente.json e no manifest. Antes, gere os arquivos com
-python -m scripts.fauna_ameacada e python -m scripts.agua_superficie.
+python -m scripts.fauna_ameacada, python -m scripts.agua_superficie e python -m scripts.desmatamento_municipios.
 """
 import json
 import sys
@@ -12,7 +13,8 @@ from pathlib import Path
 from app import lacunas
 from scripts.exportar_snapshot import fnv1a
 
-CHAVES = {"/ambiente/animais": lacunas.animais_ameacados, "/ambiente/agua": lacunas.agua_superficie}
+CHAVES = {"/ambiente/animais": lacunas.animais_ameacados, "/ambiente/agua": lacunas.agua_superficie,
+          "/ambiente/desmatamento-municipios": lacunas.desmatamento_municipios}
 
 
 def main(argv):

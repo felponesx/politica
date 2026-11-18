@@ -53,6 +53,15 @@ def ambiente_bioma_municipios():
     return d
 
 
+@router.get("/ambiente/desmatamento-municipios", tags=["Meio ambiente"])
+def ambiente_desmatamento_municipios():
+    """Desmatamento por corte raso (PRODES/INPE) de cada município, por ano, em km². Soma dos polígonos de cada bioma na malha municipal do IBGE."""
+    d = memo(("desmatamento-municipios",), lambda: lacunas.desmatamento_municipios())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.desmatamento_municipios.")
+    return d
+
+
 @router.get("/ambiente/animais", tags=["Meio ambiente"])
 def ambiente_animais():
     """Espécies da fauna ameaçadas de extinção (lista oficial do MMA, 2026), com bioma, nome comum e estados quando a base de 2020 traz."""

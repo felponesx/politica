@@ -580,6 +580,11 @@ def _arquivo_dados(nome: str) -> dict | None:
     return json.loads(arq.read_text(encoding="utf-8")) if arq.exists() else None
 
 
+def desmatamento_municipios() -> dict | None:
+    """Desmatamento do PRODES por município e por ano (scripts/desmatamento_municipios.py: shapefiles do INPE somados na malha do IBGE)."""
+    return _arquivo_dados("desmatamento_municipio.json")
+
+
 def animais_ameacados() -> dict | None:
     """Fauna ameaçada de extinção (lista oficial de 2026 do MMA, com bioma, nome comum e estados da base de 2020)."""
     return _arquivo_dados("fauna_ameacada.json")
