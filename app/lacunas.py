@@ -585,6 +585,26 @@ def desmatamento_municipios() -> dict | None:
     return _arquivo_dados("desmatamento_municipio.json")
 
 
+def animais_fotos() -> dict | None:
+    """Foto (WebP em data URI, até 200 px) de cada espécie com foto aberta, com autor, licença e link da observação (GBIF)."""
+    import base64
+    import json
+    from pathlib import Path
+    pasta = Path(__file__).resolve().parent / "dados"
+    idx = pasta / "fauna_fotos.json"
+    if not idx.exists():
+        return None
+    out = {}
+    for nome, r in json.loads(idx.read_text(encoding="utf-8")).items():
+        arq = pasta / "fauna_fotos" / r["arquivo"]
+        if not arq.exists():
+            continue
+        b64 = base64.b64encode(arq.read_bytes()).decode("ascii")
+        out[nome] = {"src": "data:image/webp;base64," + b64, "autor": r.get("autor", ""), "licenca": r.get("licenca", ""),
+                     "obs": r.get("obs", ""), "fonte": r.get("fonte", "GBIF")}
+    return out
+
+
 def animais_ameacados() -> dict | None:
     """Fauna ameaçada de extinção (lista oficial de 2026 do MMA, com bioma, nome comum e estados da base de 2020)."""
     return _arquivo_dados("fauna_ameacada.json")

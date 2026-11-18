@@ -88,7 +88,8 @@ def _atributos(linhas: list[list[str]]) -> dict[str, dict]:
         if not nome:
             continue
         comum = pegar(r, "Nome Comum")
-        out[_chave(nome)] = {"comum": "" if comum == "-" else comum,
+        # a base do MMA põe "Desconhecido" (ou "-") quando não tem o nome popular: isso é falta de dado, não nome
+        out[_chave(nome)] = {"comum": "" if comum in ("-", "Desconhecido") else comum,
                              "biomas": [b for b in _lista(pegar(r, "Bioma")) if b in BIOMAS],
                              "estados": _lista(pegar(r, "Estados de Ocorrência")),
                              "ameacas": _lista(pegar(r, "Principais Ameaças")),

@@ -62,6 +62,15 @@ def ambiente_desmatamento_municipios():
     return d
 
 
+@router.get("/ambiente/animais/fotos", tags=["Meio ambiente"])
+def ambiente_animais_fotos():
+    """Foto de cada espécie ameaçada que tem foto com licença aberta (CC0 ou CC BY), com autor, licença e link da observação."""
+    d = memo(("animais-fotos",), lambda: lacunas.animais_fotos())
+    if not d:
+        raise HTTPException(404, "Sem fotos. Rode python -m scripts.fauna_fotos.")
+    return d
+
+
 @router.get("/ambiente/animais", tags=["Meio ambiente"])
 def ambiente_animais():
     """Espécies da fauna ameaçadas de extinção (lista oficial do MMA, 2026), com bioma, nome comum e estados quando a base de 2020 traz."""

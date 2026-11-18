@@ -478,6 +478,11 @@
     "/profissoes",
     "/seguranca"
    ]
+  },
+  "p/fauna.json": {
+   "chaves": [
+    "/ambiente/animais/fotos"
+   ]
   }
  }
 }

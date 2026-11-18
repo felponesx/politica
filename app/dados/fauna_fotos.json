@@ -1,0 +1,898 @@
+{
+"Acanthochelys macrocephala": {
+"arquivo": "Acanthochelys_macrocephala.webp",
+"autor": "Emma Walker",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/291677372"
+},
+"Acrobatornis fonsecai": {
+"arquivo": "Acrobatornis_fonsecai.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/281498762"
+},
+"Anthus nattereri": {
+"arquivo": "Anthus_nattereri.webp",
+"autor": "vinicius_s_domingues",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/197402554"
+},
+"Asthenes luizae": {
+"arquivo": "Asthenes_luizae.webp",
+"autor": "Nancy Overholtz",
+"fonte": "GBIF",
+"licenca": "CC BY-SA 4.0",
+"obs": "https://www.inaturalist.org/observations/254251762"
+},
+"Astropecten marginatus": {
+"arquivo": "Astropecten_marginatus.webp",
+"autor": "Marcio Santos Ferreira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333367534"
+},
+"Boana buriti": {
+"arquivo": "Boana_buriti.webp",
+"autor": "Reuber Brandão",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/336682948"
+},
+"Bothrops itapetiningae": {
+"arquivo": "Bothrops_itapetiningae.webp",
+"autor": "Leonardo Bergamini",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/65436819"
+},
+"Bothrops jabrensis": {
+"arquivo": "Bothrops_jabrensis.webp",
+"autor": "Alison Guedes",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/215792789"
+},
+"Brachyteles arachnoides": {
+"arquivo": "Brachyteles_arachnoides.webp",
+"autor": "Monkey Safari Tur",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/334956289"
+},
+"Brachyteles hypoxanthus": {
+"arquivo": "Brachyteles_hypoxanthus.webp",
+"autor": "Renato Brito",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/321733414"
+},
+"Calidris canutus": {
+"arquivo": "Calidris_canutus.webp",
+"autor": "Dan Vickers",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/334545738"
+},
+"Calidris pusilla": {
+"arquivo": "Calidris_pusilla.webp",
+"autor": "Thomaz de Carvalho Callado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/334532683"
+},
+"Callicebus personatus": {
+"arquivo": "Callicebus_personatus.webp",
+"autor": "Marcio Santos Ferreira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/361599411"
+},
+"Carcharhinus galapagensis": {
+"arquivo": "Carcharhinus_galapagensis.webp",
+"autor": "Yvan Papa",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/376524291"
+},
+"Carcharhinus plumbeus": {
+"arquivo": "Carcharhinus_plumbeus.webp",
+"autor": "Tom and T Herman",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/337377741"
+},
+"Carcharhinus porosus": {
+"arquivo": "Carcharhinus_porosus.webp",
+"autor": "Isaac Chacón",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/4944288"
+},
+"Cardisoma guanhumi": {
+"arquivo": "Cardisoma_guanhumi.webp",
+"autor": "Josh Baryia",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333377240"
+},
+"Caretta caretta": {
+"arquivo": "Caretta_caretta.webp",
+"autor": "Celina Emilia Iratchet",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/334007623"
+},
+"Cebus kaapori": {
+"arquivo": "Cebus_kaapori.webp",
+"autor": "Christoph Moning",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/248300003"
+},
+"Celeus galeatus": {
+"arquivo": "Celeus_galeatus.webp",
+"autor": "Laura Gaudette",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/411077150"
+},
+"Ceratophrys ornata": {
+"arquivo": "Ceratophrys_ornata.webp",
+"autor": "Abril Bastons",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/200519662"
+},
+"Cerradomys goytaca": {
+"arquivo": "Cerradomys_goytaca.webp",
+"autor": "Henrique Nogueira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/395995046"
+},
+"Chelonoidis carbonarius": {
+"arquivo": "Chelonoidis_carbonarius.webp",
+"autor": "Tommy Andriollo",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/335540378"
+},
+"Chiasmocleis alagoana": {
+"arquivo": "Chiasmocleis_alagoana.webp",
+"autor": "Inacio Oliveira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/340699035"
+},
+"Chiropotes satanas": {
+"arquivo": "Chiropotes_satanas.webp",
+"autor": "Whaldener Endo",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/120704986"
+},
+"Chiropotes utahickae": {
+"arquivo": "Chiropotes_utahickae.webp",
+"autor": "autor não informado",
+"fonte": "GBIF",
+"licenca": "CC BY-SA 4.0",
+"obs": "http://id.zfmk.de/collection_ZFMK/224155081/1231756/425691"
+},
+"Chrysocyon brachyurus": {
+"arquivo": "Chrysocyon_brachyurus.webp",
+"autor": "Celso Henrique Varela Rios",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/336456704"
+},
+"Cnipodectes superrufus": {
+"arquivo": "Cnipodectes_superrufus.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/291085660"
+},
+"Coendou speratus": {
+"arquivo": "Coendou_speratus.webp",
+"autor": "B. Phalan",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/99302860"
+},
+"Columbina cyanopis": {
+"arquivo": "Columbina_cyanopis.webp",
+"autor": "Nancy Overholtz",
+"fonte": "GBIF",
+"licenca": "CC BY-SA 4.0",
+"obs": "https://www.inaturalist.org/observations/254239670"
+},
+"Conopophaga cearae": {
+"arquivo": "Conopophaga_cearae.webp",
+"autor": "Thomaz de Carvalho Callado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/326366592"
+},
+"Crossodactylus dantei": {
+"arquivo": "Crossodactylus_dantei.webp",
+"autor": "B. Phalan",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/143509643"
+},
+"Ctenomys lami": {
+"arquivo": "Ctenomys_lami.webp",
+"autor": "Fernando Sessegolo",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/141419607"
+},
+"Ctenomys minutus": {
+"arquivo": "Ctenomys_minutus.webp",
+"autor": "PampaSorro",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/279847023"
+},
+"Cyclopes rufus": {
+"arquivo": "Cyclopes_rufus.webp",
+"autor": "Vincent A. Vos",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/105623278"
+},
+"Dermochelys coriacea": {
+"arquivo": "Dermochelys_coriacea.webp",
+"autor": "Celina Emilia Iratchet",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/336602853"
+},
+"Echinanthera cephalomaculata": {
+"arquivo": "Echinanthera_cephalomaculata.webp",
+"autor": "Thomaz de Carvalho Callado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/187843169"
+},
+"Elacatinus figaro": {
+"arquivo": "Elacatinus_figaro.webp",
+"autor": "Donald Davesne",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/381808188"
+},
+"Elacatinus phthirophagus": {
+"arquivo": "Elacatinus_phthirophagus.webp",
+"autor": "João D'Andretta",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/99732706"
+},
+"Epinephelus morio": {
+"arquivo": "Epinephelus_morio.webp",
+"autor": "Kai Murphy",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/347689352"
+},
+"Euparkerella robusta": {
+"arquivo": "Euparkerella_robusta.webp",
+"autor": "Henrique Nogueira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/328390448"
+},
+"Formicivora iheringi": {
+"arquivo": "Formicivora_iheringi.webp",
+"autor": "Thomaz de Carvalho Callado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/235454273"
+},
+"Fregata minor": {
+"arquivo": "Fregata_minor.webp",
+"autor": "Damien Wallace",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/335044996"
+},
+"Genidens barbus": {
+"arquivo": "Genidens_barbus.webp",
+"autor": "Lucas Carbone",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/336370790"
+},
+"Geositta poeciloptera": {
+"arquivo": "Geositta_poeciloptera.webp",
+"autor": "Bruno Luka de Souza Bambirra Silveira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/332519078"
+},
+"Ginglymostoma cirratum": {
+"arquivo": "Ginglymostoma_cirratum.webp",
+"autor": "Rui Ribeiro",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/336086939"
+},
+"Gymnura altavela": {
+"arquivo": "Gymnura_altavela.webp",
+"autor": "Ben Jobson",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/334888238"
+},
+"Hippocampus patagonicus": {
+"arquivo": "Hippocampus_patagonicus.webp",
+"autor": "Lucas Bernardinelli",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/199394745"
+},
+"Hippocampus reidi": {
+"arquivo": "Hippocampus_reidi.webp",
+"autor": "Paulo Nogueira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333138874"
+},
+"Hylopezus paraensis": {
+"arquivo": "Hylopezus_paraensis.webp",
+"autor": "Christoph Moning",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/248265200"
+},
+"Hylopezus whittakeri": {
+"arquivo": "Hylopezus_whittakeri.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/235411234"
+},
+"Hyporthodus nigritus": {
+"arquivo": "Hyporthodus_nigritus.webp",
+"autor": "Diogo Luiz",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/138329250"
+},
+"Hyporthodus niveatus": {
+"arquivo": "Hyporthodus_niveatus.webp",
+"autor": "James-LaFontaine",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/316803374"
+},
+"Inia araguaiaensis": {
+"arquivo": "Inia_araguaiaensis.webp",
+"autor": "Conrado Pável de Oliveira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/343191675"
+},
+"Inia geoffrensis": {
+"arquivo": "Inia_geoffrensis.webp",
+"autor": "Brian Gratwicke",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/334853134"
+},
+"Ischnotelson guanambiensis": {
+"arquivo": "Ischnotelson_guanambiensis.webp",
+"autor": "Carlos Santana",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/327251442"
+},
+"Isurus oxyrinchus": {
+"arquivo": "Isurus_oxyrinchus.webp",
+"autor": "Justin Philbois",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/341948644"
+},
+"Johngarthia lagostoma": {
+"arquivo": "Johngarthia_lagostoma.webp",
+"autor": "Nicola Crockford",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/348199780"
+},
+"Leopardus geoffroyi": {
+"arquivo": "Leopardus_geoffroyi.webp",
+"autor": "Pablo Debece",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/336474357"
+},
+"Leopardus guttulus": {
+"arquivo": "Leopardus_guttulus.webp",
+"autor": "Pedro Henrique Maloso Ramos",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/335126689"
+},
+"Linckia guildingi": {
+"arquivo": "Linckia_guildingi.webp",
+"autor": "Derek Duplessis",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/334989859"
+},
+"Liolaemus arambarensis": {
+"arquivo": "Liolaemus_arambarensis.webp",
+"autor": "Martin Klippel",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/297409096"
+},
+"Liolaemus lutzae": {
+"arquivo": "Liolaemus_lutzae.webp",
+"autor": "Diogo Luiz",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/30256194"
+},
+"Liolaemus occipitalis": {
+"arquivo": "Liolaemus_occipitalis.webp",
+"autor": "Fernando Sessegolo",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/336020312"
+},
+"Lipaugus conditus": {
+"arquivo": "Lipaugus_conditus.webp",
+"autor": "filipeprates",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/377179419"
+},
+"Lopholatilus villarii": {
+"arquivo": "Lopholatilus_villarii.webp",
+"autor": "Diogo Luiz",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/150174774"
+},
+"Lophornis gouldii": {
+"arquivo": "Lophornis_gouldii.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/244063669"
+},
+"Makaira nigricans": {
+"arquivo": "Makaira_nigricans.webp",
+"autor": "vinicius_s_domingues",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/342396250"
+},
+"Megalops atlanticus": {
+"arquivo": "Megalops_atlanticus.webp",
+"autor": "Melissa Meadows",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333690508"
+},
+"Mobula birostris": {
+"arquivo": "Mobula_birostris.webp",
+"autor": "Phil",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/342775722"
+},
+"Mobula thurstoni": {
+"arquivo": "Mobula_thurstoni.webp",
+"autor": "steve b",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/262151017"
+},
+"Mustelus canis": {
+"arquivo": "Mustelus_canis.webp",
+"autor": "River Ahlquist",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/359635435"
+},
+"Mycteroperca bonaci": {
+"arquivo": "Mycteroperca_bonaci.webp",
+"autor": "datadan",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/339237352"
+},
+"Myrmotherula urosticta": {
+"arquivo": "Myrmotherula_urosticta.webp",
+"autor": "Thomaz de Carvalho Callado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/234794501"
+},
+"Narcine brasiliensis": {
+"arquivo": "Narcine_brasiliensis.webp",
+"autor": "Diogo Luiz",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/358055855"
+},
+"Negaprion brevirostris": {
+"arquivo": "Negaprion_brevirostris.webp",
+"autor": "John Lyden",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/341431953"
+},
+"Neopelma aurifrons": {
+"arquivo": "Neopelma_aurifrons.webp",
+"autor": "Audrey Whitlock",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/395383052"
+},
+"Notholebias minimus": {
+"arquivo": "Notholebias_minimus.webp",
+"autor": "autor não informado",
+"fonte": "GBIF",
+"licenca": "CC BY-SA 3.0",
+"obs": "https://www.gbif.org/occurrence/1122939259"
+},
+"Panthera onca": {
+"arquivo": "Panthera_onca.webp",
+"autor": "Miguel A. Paixão",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333796888"
+},
+"Parastacus tuerkayi": {
+"arquivo": "Parastacus_tuerkayi.webp",
+"autor": "Alessandher Piva",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/202646539"
+},
+"Paratrygon aiereba": {
+"arquivo": "Paratrygon_aiereba.webp",
+"autor": "autor não informado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://portal.boldsystems.org/record/TOCAN304-23"
+},
+"Penelope pileata": {
+"arquivo": "Penelope_pileata.webp",
+"autor": "Renato Moraes",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/204166586"
+},
+"Phalloptychus iheringii": {
+"arquivo": "Phalloptychus_iheringii.webp",
+"autor": "vinicius_s_domingues",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/195697367"
+},
+"Physeter macrocephalus": {
+"arquivo": "Physeter_macrocephalus.webp",
+"autor": "River Ahlquist",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/336174495"
+},
+"Platyrinchus leucoryphus": {
+"arquivo": "Platyrinchus_leucoryphus.webp",
+"autor": "Marcelo Schmidt Roberti",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/351292083"
+},
+"Plecturocebus bernhardi": {
+"arquivo": "Plecturocebus_bernhardi.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/326609536"
+},
+"Podocnemis sextuberculata": {
+"arquivo": "Podocnemis_sextuberculata.webp",
+"autor": "Charlotte Kirchner",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/337315903"
+},
+"Poecilotriccus albifacies": {
+"arquivo": "Poecilotriccus_albifacies.webp",
+"autor": "Christoph Moning",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/188039135"
+},
+"Pogonias courbina": {
+"arquivo": "Pogonias_courbina.webp",
+"autor": "Diogo Luiz",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/357210264"
+},
+"Potamotrygon marquesi": {
+"arquivo": "Potamotrygon_marquesi.webp",
+"autor": "Whaldener Endo",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/121237930"
+},
+"Pseudoplatystoma corruscans": {
+"arquivo": "Pseudoplatystoma_corruscans.webp",
+"autor": "Rocío Esmeralda Pose",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/269647012"
+},
+"Psilops mucugensis": {
+"arquivo": "Psilops_mucugensis.webp",
+"autor": "Fábio Olmos",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/220869930"
+},
+"Pterodroma incerta": {
+"arquivo": "Pterodroma_incerta.webp",
+"autor": "Ingvild Riska",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/323185654"
+},
+"Pterodroma madeira": {
+"arquivo": "Pterodroma_madeira.webp",
+"autor": "Rob Felix",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/368135227"
+},
+"Puffinus lherminieri": {
+"arquivo": "Puffinus_lherminieri.webp",
+"autor": "William Harmon",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/375412758"
+},
+"Rhegmatorhina gymnops": {
+"arquivo": "Rhegmatorhina_gymnops.webp",
+"autor": "Paulo Mascaretti",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/132885018"
+},
+"Rhegmatorhina hoffmannsi": {
+"arquivo": "Rhegmatorhina_hoffmannsi.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/235376221"
+},
+"Rhopornis ardesiacus": {
+"arquivo": "Rhopornis_ardesiacus.webp",
+"autor": "Audrey Whitlock",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/387754974"
+},
+"Rioraja agassizii": {
+"arquivo": "Rioraja_agassizii.webp",
+"autor": "PampaSorro",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/396775523"
+},
+"Sapajus cay": {
+"arquivo": "Sapajus_cay.webp",
+"autor": "Miguel A. Paixão",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333796848"
+},
+"Sapajus flavius": {
+"arquivo": "Sapajus_flavius.webp",
+"autor": "Marcello Mastroianni Albuquerque Araújo",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/405322912"
+},
+"Sapajus libidinosus": {
+"arquivo": "Sapajus_libidinosus.webp",
+"autor": "Rony Ristow",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/345495748"
+},
+"Sapajus robustus": {
+"arquivo": "Sapajus_robustus.webp",
+"autor": "Conrado Pável de Oliveira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/262986411"
+},
+"Scartella itajobi": {
+"arquivo": "Scartella_itajobi.webp",
+"autor": "Nicola Crockford",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/349133006"
+},
+"Scytalopus novacapitalis": {
+"arquivo": "Scytalopus_novacapitalis.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/192744849"
+},
+"Sparisoma frondosum": {
+"arquivo": "Sparisoma_frondosum.webp",
+"autor": "stephen",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/337269255"
+},
+"Speothos venaticus": {
+"arquivo": "Speothos_venaticus.webp",
+"autor": "Daniel Nicholson",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/411474115"
+},
+"Sphyrna tiburo": {
+"arquivo": "Sphyrna_tiburo.webp",
+"autor": "Niyan Shehan",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/333299667"
+},
+"Sporophila falcirostris": {
+"arquivo": "Sporophila_falcirostris.webp",
+"autor": "Marcelo Schmidt Roberti",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333290531"
+},
+"Sporophila frontalis": {
+"arquivo": "Sporophila_frontalis.webp",
+"autor": "Arthur Bruck",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/351347349"
+},
+"Sterna dougallii": {
+"arquivo": "Sterna_dougallii.webp",
+"autor": "Nathan Ruser",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/347775947"
+},
+"Sterna hirundinacea": {
+"arquivo": "Sterna_hirundinacea.webp",
+"autor": "Ingvild Riska",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/333021872"
+},
+"Sympterygia acuta": {
+"arquivo": "Sympterygia_acuta.webp",
+"autor": "Fede Ferrer",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/339031368"
+},
+"Sympterygia bonapartii": {
+"arquivo": "Sympterygia_bonapartii.webp",
+"autor": "PampaSorro",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/412055566"
+},
+"Tangara cyanocephala cearensis": {
+"arquivo": "Tangara_cyanocephala_cearensis.webp",
+"autor": "NINA WENÓLI",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/241334518"
+},
+"Tangara fastuosa": {
+"arquivo": "Tangara_fastuosa.webp",
+"autor": "Alan Valentino",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/340388290"
+},
+"Thalassarche chlororhynchos": {
+"arquivo": "Thalassarche_chlororhynchos.webp",
+"autor": "Rosario Douglas",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/335604611"
+},
+"Thalasseus acuflavidus": {
+"arquivo": "Thalasseus_acuflavidus.webp",
+"autor": "Rosario Douglas",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/337905068"
+},
+"Thripophaga macroura": {
+"arquivo": "Thripophaga_macroura.webp",
+"autor": "Thomaz de Carvalho Callado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/235455320"
+},
+"Tinamus tao": {
+"arquivo": "Tinamus_tao.webp",
+"autor": "Paulo Mascaretti",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/133773793"
+},
+"Tityus kuryi": {
+"arquivo": "Tityus_kuryi.webp",
+"autor": "Alexandre S. Michelotto",
+"fonte": "GBIF",
+"licenca": "CC BY-SA 4.0",
+"obs": "https://www.inaturalist.org/observations/316198398"
+},
+"Tolypeutes tricinctus": {
+"arquivo": "Tolypeutes_tricinctus.webp",
+"autor": "Reuber Brandão",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/259637571"
+},
+"Touit surdus": {
+"arquivo": "Touit_surdus.webp",
+"autor": "Audrey Whitlock",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/406621106"
+},
+"Trachylepis atlantica": {
+"arquivo": "Trachylepis_atlantica.webp",
+"autor": "Nicola Crockford",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/348855407"
+},
+"Trichechus inunguis": {
+"arquivo": "Trichechus_inunguis.webp",
+"autor": "Enrique Salazar",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/284248649"
+},
+"Trichechus manatus": {
+"arquivo": "Trichechus_manatus.webp",
+"autor": "Niyan Shehan",
+"fonte": "GBIF",
+"licenca": "CC0",
+"obs": "https://www.inaturalist.org/observations/333390446"
+},
+"Tropidurus hygomi": {
+"arquivo": "Tropidurus_hygomi.webp",
+"autor": "Fabrício Mil Homens Riella",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/282487601"
+},
+"Xenohyla truncata": {
+"arquivo": "Xenohyla_truncata.webp",
+"autor": "Henrique Nogueira",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.inaturalist.org/observations/337499685"
+}
+}
