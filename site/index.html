@@ -6632,7 +6632,7 @@ const lacTri=c=>/^\d{6}$/.test(c)?`${c.slice(0,4)} T${Math.ceil(+c.slice(4)/3)}`
 const lacKpi=(t,v,s)=>`<div class="kpi"><span>${t}</span><strong>${v}</strong>${s?`<em>${s}</em>`:""}</div>`;
 const lacVazio=m=>rvazio(m||"Os dados ainda estão sendo coletados. Quando o robô terminar, esta tela se preenche sozinha.");
 /* painel por estado: seletor de medida, mapa, maiores/menores e lista; M = {chave:[título,(e)=>valor,formato,explicação,(e)=>série opcional]}, G = grupos do seletor */
-function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini,mun=false,munVal=null,kpiCls=""}){let m=ini||Object.keys(M)[0];
+function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini,mun=false,munVal=null,kpiCls="",munSem="sem corte raso mapeado"}){let m=ini||Object.keys(M)[0];
  const ops=G.map(g=>`<optgroup label="${g[0]}">${g.slice(1).filter(k=>Object.values(E).some(e=>M[k][1](e)!=null)).map(k=>`<option value="${k}">${M[k][0]}</option>`).join("")}</optgroup>`).join("");
  v.innerHTML=`${kpis?`<div class="kpis kpis-c ${kpiCls}">${kpis}</div>`:""}${antes}<div class="panel mt"><div class="hd"><div><h2 id="lcT"></h2><p class="small muted" id="lcN" style="margin:2px 0 0"></p></div><div class="filters" style="margin:0"><select id="lcM" data-titulo="Mostrar" data-pill>${ops}</select></div></div>
   <div class="grid g2" style="align-items:start;margin-top:10px"><div id="lcMap"${mun?' class="lc-visual"':""}></div><div id="lcRk"></div></div></div><div class="panel mt"><h2>Todos os estados</h2><div id="lcLs"></div></div>${depois}`;
@@ -6645,7 +6645,7 @@ function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini,mun=false,munVal=nu
     if(!mv)return munCamada(cx,u=>corFaixa(F,vals[u],esc2));
     const F2=faixasDe(Object.values(mv));
     const ok=await munCamada(cx,(uf,c)=>mv[c]!=null?corFaixa(F2,mv[c],esc2):"var(--mapa-vazio)");
-    const lg=ok&&cx.querySelector(".leg-faixas");if(lg){lg.outerHTML=legFaixas(F2,v=>v<1?lacD(v,2)+" km²":v<10?lacD(v,1)+" km²":fmtL(v),esc2).replace("</div>",`<span><i style="background:var(--mapa-vazio)"></i>sem corte raso mapeado</span></div>`);cx.dataset.munval=1}})}}
+    const lg=ok&&cx.querySelector(".leg-faixas");if(lg){lg.outerHTML=legFaixas(F2,v=>v<1?lacD(v,2)+" km²":v<10?lacD(v,1)+" km²":fmtL(v),esc2).replace("</div>",`<span><i style="background:var(--mapa-vazio)"></i>${munSem}</span></div>`);cx.dataset.munval=1}})}}
   else bindMap($("#lcMap"),null,null,u=>{location.hash="#/"+rota+"/"+u});
   const href=u=>"#/"+rota+"/"+u,serie={},anos=new Set();
   if(x[4])UFS.forEach(u=>{const s=E[u.uf]&&x[4](E[u.uf]);if(s){serie[u.uf]=s;Object.keys(s).forEach(a=>anos.add(a))}});
@@ -6788,7 +6788,7 @@ function ambAnimais(v,[D,F={}]){
  pinta();if(typeof pilulas==="function")pilulas();
  $("#anQ").oninput=debounce(e=>{f.q=e.target.value.trim();pinta()},200);
  $("#anG").onchange=e=>{f.g=e.target.value;pinta()};$("#anC").onchange=e=>{f.c=e.target.value;pinta()};$("#anB").onchange=e=>{f.b=e.target.value;pinta()}}
-function ambAgua(v,[W]){
+function ambAgua(v,[W,MUN=null]){
  const an=W.anos,u=an[an.length-1],p=an[0],km=h=>h/100;
  const B=Object.fromEntries(an.map(a=>[a,Object.values(W.estados).reduce((t,e)=>t+e.ha[a],0)]));   // Brasil = soma dos 27 estados (o mesmo total do panorama do MapBiomas)
  const arr=o=>Object.entries(o).map(([n,s])=>[n,km(s[u])]).sort((a,b)=>b[1]-a[1]);
@@ -6801,8 +6801,10 @@ function ambAgua(v,[W]){
  const pb=`<div class="panel mt"><h2>Por bioma <small>km² de água em ${u}</small></h2>${hbars(bio,{fmt:x=>lacKm(x)+" · "+pcB(x)+" dos biomas"})}</div>
   <div class="panel mt"><h2>Por região hidrográfica <small>as 12 grandes bacias do país</small></h2>${hbars(reg,{fmt:x=>lacKm(x)+" · "+pcR(x)+" das regiões"})}<p class="small muted" style="margin:8px 0 0">Regiões hidrográficas são as 12 divisões oficiais usadas pela ANA para gerir as águas do país.</p></div>`;
  const E={};Object.entries(W.estados).forEach(([uf,e])=>{E[uf]={agua_km2:km(e.ha[u]),agua_serie:Object.fromEntries(an.map(a=>[a,km(e.ha[a])]))}});
- const M={agua:["Superfície de água por estado (km²)",e=>e.agua_km2,lacKm,"Área de água mapeada por satélite no estado em "+u+": rios, lagos, represas e áreas alagadas. Não é o comprimento dos rios.",e=>e.agua_serie,SCALE,a=>a,"#2F6FED"]};
- lacPainel(v,{E,M,G:[["Água","agua"]],rota:"ambiente",kpis:kp,antes:graf+pb,depois:`<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Fonte: <a href="${esc(W.link)}" target="_blank" rel="noopener">${esc(W.fonte)}</a>. ${esc(W.metodo)} O total do Brasil é a soma dos 27 estados (18,2 milhões de hectares em 2025, o mesmo número do panorama do MapBiomas). Os cortes por bioma e por região hidrográfica usam outros limites e por isso as somas deles não fecham com o total do país. Os valores de cada ano são de uma série de satélite: mudam com a cheia e a seca e não indicam, sozinhos, perda ou ganho de água.</p></div>`})}
+ const M={agua:["Superfície de água por estado (km²)",e=>e.agua_km2,lacKm,"Área de água mapeada por satélite no estado em "+u+": rios, lagos, represas e áreas alagadas. Não é o comprimento dos rios. No mapa, cada município tem a cor da sua própria superfície de água em "+(MUN&&MUN.anos?MUN.anos[MUN.anos.length-1]:u)+" (MapBiomas, por município).",e=>e.agua_serie,SCALE,a=>a,"#2F6FED"]};
+ // mapa por município: cada município na cor da sua superfície de água no último ano (km²); só visual (sem clique)
+ const aguaMun=()=>{if(!MUN||!MUN.municipios)return null;const o={};Object.entries(MUN.municipios).forEach(([c,x])=>{const h=x.v[x.v.length-1];if(h>0)o[c]=h/100});return Object.keys(o).length?o:null};
+ lacPainel(v,{E,M,G:[["Água","agua"]],rota:"ambiente",kpis:kp,mun:true,munVal:aguaMun,munSem:"sem dado de água",antes:graf+pb,depois:`<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Fonte: <a href="${esc(W.link)}" target="_blank" rel="noopener">${esc(W.fonte)}</a>. ${esc(W.metodo)} O total do Brasil é a soma dos 27 estados (18,2 milhões de hectares em 2025, o mesmo número do panorama do MapBiomas). Os cortes por bioma e por região hidrográfica usam outros limites e por isso as somas deles não fecham com o total do país. Os valores de cada ano são de uma série de satélite: mudam com a cheia e a seca e não indicam, sozinhos, perda ou ganho de água.</p></div>`})}
 const BIO_COR={"Cerrado":"#F5A524","Amazônia":"#1BAF7A","Caatinga":"#EB6834","Mata Atlântica":"#2F6FED","Pampa":"#8B5CF6","Pantanal":"#0EA5A5"};
 // mapa por bioma: primeiro o desenho dos estados; quando o painel chega perto da tela, cada município ganha a cor do seu bioma (IBGE)
 function bioMapaIniciar(box,dom,contaBio,ano){
@@ -6840,7 +6842,7 @@ function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{
  v.innerHTML=`<div class="crumb"><a href="#/ambiente">Meio ambiente</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||lacVazio("Sem dados de desmatamento deste estado.")}</div>${graf}${bi.length?`<div class="panel mt"><h2>Em quais biomas, em ${e.ultimo_ano} <small>total do estado: ${lacKm(bi.reduce((t,x)=>t+x[1],0))}</small></h2>${hbars(bi,{fmt:(v)=>lacKm(v)+" · "+(v/bi.reduce((t,x)=>t+x[1],0)*100).toFixed(1).replace(".",",")+"% do estado"})}<p class="small muted" style="margin:8px 0 0">Cada barra mostra a área desmatada no bioma, em km², e a parte dela no total do estado.</p></div>`:""}${lacFim(D)}`}
 P.ambiente=a=>{const x=a?String(a).toLowerCase():"";
  if(x==="animais")return ambTelaExtra("animais","Animais ameaçados de extinção no Brasil: por grupo, por bioma e a lista completa, com a categoria de risco da lista oficial.",()=>[apiGet("/ambiente/animais"),apiGet("/ambiente/animais/fotos").catch(()=>({}))],ambAnimais);
- if(x==="agua")return ambTelaExtra("agua","Quanta água há no Brasil: superfície de água por bioma, estado e região hidrográfica, de 1985 a 2025.",()=>[apiGet("/ambiente/agua")],ambAgua);
+ if(x==="agua")return ambTelaExtra("agua","Quanta água há no Brasil: superfície de água por município, estado, bioma e região hidrográfica, de 1985 a 2025.",()=>[apiGet("/ambiente/agua"),apiGet("/ambiente/agua/municipios").catch(()=>null)],ambAgua);
  const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
  const r=lacTela("Meio ambiente","Desmatamento por estado e bioma (INPE).","ambiente",()=>[apiGet("/ambiente").then(ambCompleto)],(v,[D])=>{
   if(uf)return ambienteUF(v,D,uf);

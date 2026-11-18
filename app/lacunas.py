@@ -605,6 +605,11 @@ def animais_fotos() -> dict | None:
     return out
 
 
+def agua_municipios() -> dict | None:
+    """Superfície de água de cada município (MapBiomas Água, hectares, 2016–2025; scripts/agua_municipios.py)."""
+    return _arquivo_dados("agua_municipio.json")
+
+
 def animais_ameacados() -> dict | None:
     """Fauna ameaçada de extinção (lista oficial de 2026 do MMA, com bioma, nome comum e estados da base de 2020)."""
     return _arquivo_dados("fauna_ameacada.json")

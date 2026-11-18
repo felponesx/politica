@@ -377,6 +377,7 @@
     "/alertas-mapbiomas/territorio",
     "/ambiente",
     "/ambiente/agua",
+    "/ambiente/agua/municipios",
     "/ambiente/animais",
     "/ambiente/animais/fotos",
     "/ambiente/bioma-municipios",

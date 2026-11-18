@@ -80,6 +80,15 @@ def ambiente_animais():
     return d
 
 
+@router.get("/ambiente/agua/municipios", tags=["Meio ambiente"])
+def ambiente_agua_municipios():
+    """Superfície de água por município (IBGE), em hectares, de 2016 a 2025 (MapBiomas Água)."""
+    d = memo(("agua-municipios",), lambda: lacunas.agua_municipios())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.agua_municipios.")
+    return d
+
+
 @router.get("/ambiente/agua", tags=["Meio ambiente"])
 def ambiente_agua():
     """Área de superfície de água por bioma, estado e região hidrográfica (MapBiomas Água, hectares)."""
