@@ -19,6 +19,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -31,6 +32,7 @@ PASTA = DADOS / "flora_fotos"
 INDICE = DADOS / "flora_fotos.json"
 CHAVES = DADOS / "flora_fotos_chaves.json"
 REINO = {"Plantas": "Plantae", "Fungos": "Fungi"}
+ERROS: list[str] = []
 
 
 def chave_gbif(cli, nome: str, reino: str) -> int | None:
@@ -74,18 +76,25 @@ def main(argv: list[str]) -> None:
                     if not baixar_webp(cli, f["url"], arq):
                         return nome, None
                     return nome, {"arquivo": arq.name, "autor": f["autor"], "licenca": f["licenca"], "obs": f["obs"], "fonte": "GBIF"}
-                except Exception:
-                    time.sleep(3 * (tentativa + 1))
+                except Exception as e:
+                    ERROS.append(f"{nome}: {type(e).__name__}")
+                    time.sleep(2 * (tentativa + 1))
             return nome, None
 
         pendentes = [n for n in nomes if refazer or n not in indice]
-        with ThreadPoolExecutor(3) as ex:
+        feitos = 0
+        with ThreadPoolExecutor(6) as ex:
             for nome, reg in ex.map(um, pendentes):
+                feitos += 1
                 if reg:
                     indice[nome] = reg
-                time.sleep(0.05)
+                if feitos % 25 == 0:                       # grava aos poucos: uma interrupção não perde o que já foi baixado
+                    INDICE.write_text(json.dumps(indice, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
+                    print(f"{feitos}/{len(pendentes)} processadas, {len(indice)} com foto", flush=True)
 
     INDICE.write_text(json.dumps(indice, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
+    if ERROS:
+        print(f"{len(ERROS)} falhas de rede (tentadas de novo); exemplos: {ERROS[:3]}", flush=True)
     com_chave = sum(1 for n in nomes if chaves.get(n))
     print(f"{len(nomes)} espécies: {com_chave} com registro no GBIF, {sum(1 for n in nomes if n in indice)} com foto aberta → {INDICE}")
 
