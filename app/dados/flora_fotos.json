@@ -594,6 +594,13 @@
 "licenca": "CC BY-NC 4.0",
 "obs": "https://www.inaturalist.org/observations/257232175"
 },
+"Begonia altamiroi": {
+"arquivo": "Begonia_altamiroi.webp",
+"autor": "Meise Botanic Garden",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.gbif.org/occurrence/4073251174"
+},
 "Begonia bahiensis": {
 "arquivo": "Begonia_bahiensis.webp",
 "autor": "Otávio Torrão",
@@ -2644,6 +2651,48 @@
 "fonte": "GBIF",
 "licenca": "CC BY 4.0",
 "obs": "https://www.gbif.org/occurrence/1701533628"
+},
+"Moldenhawera papillanthera": {
+"arquivo": "Moldenhawera_papillanthera.webp",
+"autor": "Geovane Siqueira",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/196130025"
+},
+"Moquiniastrum cordatum": {
+"arquivo": "Moquiniastrum_cordatum.webp",
+"autor": "Mateus Henrique Schenkel",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/267412312"
+},
+"Myoxanthus ruschii": {
+"arquivo": "Myoxanthus_ruschii.webp",
+"autor": "leopivovar",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/145988429"
+},
+"Myrceugenia franciscensis": {
+"arquivo": "Myrceugenia_franciscensis.webp",
+"autor": "Meise Botanic Garden",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.gbif.org/occurrence/4072830479"
+},
+"Myrceugenia gertii": {
+"arquivo": "Myrceugenia_gertii.webp",
+"autor": "EVALDO BUTTURA (EVB)",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.gbif.org/occurrence/6392814775"
+},
+"Myrceugenia hatschbachii": {
+"arquivo": "Myrceugenia_hatschbachii.webp",
+"autor": "Meise Botanic Garden",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.gbif.org/occurrence/4072909350"
 },
 "Phallus aureolatus": {
 "arquivo": "Phallus_aureolatus.webp",
