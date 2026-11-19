@@ -6798,7 +6798,7 @@ async function munCamada(box,fillDe){const svg=box.querySelector("svg.geo");if(!
 // só carrega quando o quadro chega perto da tela
 function quandoPerto(box,fn){if(!("IntersectionObserver" in window))return fn();const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();fn()}},{rootMargin:"400px"});io.observe(box)}
 /* ----- Meio ambiente › abas Animais e Água (dados oficiais: MMA e MapBiomas Água) ----- */
-const AMB_ABAS=[["desmatamento","Desmatamento"],["animais","Animais"],["agua","Água"]];
+const AMB_ABAS=[["desmatamento","Desmatamento"],["animais","Animais"],["plantas","Plantas e fungos"],["agua","Água"]];
 const ambAbas=aba=>`<div class="tabs" style="margin-top:0">${AMB_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/ambiente${a[0]==="desmatamento"?"":"/"+a[0]}">${a[1]}</a>`).join("")}</div>`;
 function ambTelaExtra(aba,desc,pegar,montar){return{html:`<div class="ph"><div><h1>Meio ambiente</h1><p>${desc}</p></div></div>${ambAbas(aba)}<div id="lcV">${API.on?rload():`<div class="rbanner">Esta tela aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;Promise.all(pegar()).then(D=>{const v=$("#lcV");if(v)montar(v,D)}).catch(e=>{const v=$("#lcV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)})}}}
@@ -6837,6 +6837,39 @@ function ambAnimais(v,[D,F={}]){
  pinta();if(typeof pilulas==="function")pilulas();
  $("#anQ").oninput=debounce(e=>{f.q=e.target.value.trim();pinta()},200);
  $("#anG").onchange=e=>{f.g=e.target.value;pinta()};$("#anC").onchange=e=>{f.c=e.target.value;pinta()};$("#anB").onchange=e=>{f.b=e.target.value;pinta()}}
+function ambPlantas(v,[D]){
+ const T=D.totais,tot=T.especies,pc=n=>(n/tot*100).toFixed(1).replace(".",",")+"%";
+ const L=D.especies.map(e=>({cient:e[0],comum:e[1],tipo:e[2],grupo:e[3],familia:e[4],cat:e[5],biomas:e[6].map(i=>D.biomas[i]),estados:e[7],amea:e[8],excl:!!e[9],dados:!!e[10]}))
+  .sort((a,b)=>(ANI_ORD[a.cat]??9)-(ANI_ORD[b.cat]??9)||(a.comum||a.cient).localeCompare(b.comum||b.cient,"pt-BR"));
+ const c=k=>T.por_categoria[k]||0;
+ const kp=[lacKpi("Espécies ameaçadas",nf(tot),"plantas e fungos, lista oficial de 2026"),lacKpi("Criticamente em perigo",nf(c("CR")+c("CR (PE)")),c("CR (PE)")?`inclui ${nf(c("CR (PE)"))} possivelmente extintas`:"maior risco"),lacKpi("Em perigo",nf(c("EN"))),lacKpi("Vulneráveis",nf(c("VU"))),lacKpi("Fungos ameaçados",nf((T.por_tipo||{}).Fungos||0),"lista de fungos de 2026")].join("");
+ const grupos=hbars(Object.entries(T.por_grupo),{fmt:n=>nf(n)+" · "+pc(n)});
+ const biomas=Object.entries(T.por_bioma).map(([b,m])=>[b,Object.values(m).reduce((t,x)=>t+x,0)]).sort((a,b)=>b[1]-a[1]);
+ const familias=hbars(Object.entries(T.por_familia||{}),{fmt:n=>nf(n)+" espécies"});
+ const leg=Object.keys(ANI_CAT).filter(k=>c(k)).map(k=>`<span><i style="background:${ANI_CAT[k][1]}"></i>${ANI_CAT[k][0]} · ${nf(c(k))}</span>`).join("");
+ const tag=k=>`<span class="tag" style="background:${ANI_CAT[k][1]};color:${ANI_CAT[k][2]}">${ANI_CAT[k][0]}</span>`;
+ v.innerHTML=`<div class="kpis kpis-c">${kp}</div>
+  <div class="panel mt"><h2>Por grupo de plantas e fungos <small>${nf(tot)} espécies</small></h2>${grupos}<p class="small muted" style="margin:8px 0 0">"Não informado" são as espécies que a base de 2020 do MMA não traz, incluindo quase todas incluídas depois de 2020. Não inventamos o grupo delas. Fungos são listados à parte.</p></div>
+  <div class="panel mt"><h2>Por bioma <small>onde as espécies vivem</small></h2>${hbars(biomas,{fmt:n=>nf(n)+" espécies"})}<p class="small muted" style="margin:8px 0 0">Conta só as ${nf(T.com_bioma)} espécies que têm bioma na base de 2020 do MMA. Uma espécie que vive em mais de um bioma entra em cada um deles. Os fungos não têm bioma nessa base.</p></div>
+  <div class="panel mt"><h2>Famílias com mais espécies ameaçadas <small>plantas</small></h2>${familias}<p class="small muted" style="margin:8px 0 0">Família botânica da lista oficial. Uma família com muitas espécies ameaçadas não quer dizer que ela esteja pior que outras: depende do número de espécies conhecidas.</p></div>
+  <div class="panel mt"><h2>Lista de espécies <small id="plN" data-nocount></small></h2>
+   <div class="filters ani-f"><input id="plQ" type="search" placeholder="Buscar pelo nome (ex.: juçara, araucária, orquídea)" autocomplete="off">
+    <select id="plT" data-titulo="Tipo" data-pill><option value="">Plantas e fungos</option><option value="Plantas">Só plantas</option><option value="Fungos">Só fungos</option></select>
+    <select id="plC" data-titulo="Risco" data-pill><option value="">Todos os riscos</option>${Object.keys(ANI_CAT).filter(k=>c(k)).map(k=>`<option value="${k}">${ANI_CAT[k][0]}</option>`).join("")}</select>
+    <select id="plB" data-titulo="Bioma" data-pill><option value="">Todos os biomas</option>${D.biomas.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join("")}</select></div>
+   <div class="ani-leg">${leg}</div><div id="plL" class="ani-tab"></div></div>
+  <div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Fonte: ${esc(D.fonte)}. ${esc(D.metodo)} "Ameaçada" é a categoria da lista oficial (Criticamente em perigo, Em perigo, Vulnerável): não é a contagem de plantas que restam. A lista oficial não diz quais espécies são árvores, por isso não há filtro por árvore. Bioma e estados vêm da base de 2020 do MMA (${nf(T.com_dados_2020)} de ${nf(tot)} espécies constam nela). Nome popular: ${nf(T.com_nome_comum)} espécies têm; ${nf(T.nome_comum_gbif)} vieram do GBIF (Catalogue of Life, Lista Vermelha da IUCN e outras), e as demais aparecem só pelo nome científico. Sem fotos nesta aba.</p></div>`;
+ const cols=[["Espécie",x=>`<div><b>${esc(x.comum||x.cient)}</b>${x.comum?`<div class="small muted"><i>${esc(x.cient)}</i></div>`:""}${x.excl?'<div class="small muted">Só ocorre no Brasil</div>':""}</div>`],
+  ["Tipo",x=>esc(x.tipo==="Fungos"?"Fungo":x.grupo)],["Família",x=>esc(x.familia)],["Risco",x=>tag(x.cat)],
+  ["Onde ocorre",x=>x.biomas.length||x.estados.length?esc([x.biomas.join(", "),x.estados.length?"estados: "+x.estados.join(", "):""].filter(Boolean).join(" · ")):'<span class="muted small">sem dado na base de 2020</span>']];
+ const f={q:"",t:"",c:"",b:""};
+ const palavras=t=>" "+snapNorm(t).replace(/[-\/(),.]/g," ").replace(/\s+/g," ");
+ const pinta=()=>{const n=palavras(f.q).trimEnd();
+  const l=L.filter(x=>(!f.t||x.tipo===f.t)&&(!f.c||x.cat===f.c)&&(!f.b||x.biomas.includes(f.b))&&(n.trim()===""||palavras([x.comum,x.cient,x.familia,x.grupo].join(" ")).includes(n)));
+  $("#plN").textContent=nf(l.length)+(l.length===1?" espécie":" espécies");$("#plL").innerHTML=l.length?table(cols,l):rvazio("Nenhuma espécie encontrada com esses filtros.")};
+ pinta();if(typeof pilulas==="function")pilulas();
+ $("#plQ").oninput=debounce(e=>{f.q=e.target.value.trim();pinta()},200);
+ $("#plT").onchange=e=>{f.t=e.target.value;pinta()};$("#plC").onchange=e=>{f.c=e.target.value;pinta()};$("#plB").onchange=e=>{f.b=e.target.value;pinta()}}
 function ambAgua(v,[W,MUN=null]){
  const an=W.anos,u=an[an.length-1],p=an[0],km=h=>h/100;
  const B=Object.fromEntries(an.map(a=>[a,Object.values(W.estados).reduce((t,e)=>t+e.ha[a],0)]));   // Brasil = soma dos 27 estados (o mesmo total do panorama do MapBiomas)
@@ -6891,6 +6924,7 @@ function ambienteUF(v,D,uf){const e=D.estados[uf]||{},n=UF[uf].nome,s=e.serie||{
  v.innerHTML=`<div class="crumb"><a href="#/ambiente">Meio ambiente</a> / ${esc(n)}</div><div class="kpis kpis-c" style="margin-top:8px">${kp||lacVazio("Sem dados de desmatamento deste estado.")}</div>${graf}${bi.length?`<div class="panel mt"><h2>Em quais biomas, em ${e.ultimo_ano} <small>total do estado: ${lacKm(bi.reduce((t,x)=>t+x[1],0))}</small></h2>${hbars(bi,{fmt:(v)=>lacKm(v)+" · "+(v/bi.reduce((t,x)=>t+x[1],0)*100).toFixed(1).replace(".",",")+"% do estado"})}<p class="small muted" style="margin:8px 0 0">Cada barra mostra a área desmatada no bioma, em km², e a parte dela no total do estado.</p></div>`:""}${lacFim(D)}`}
 P.ambiente=a=>{const x=a?String(a).toLowerCase():"";
  if(x==="animais")return ambTelaExtra("animais","Animais ameaçados de extinção no Brasil: por grupo, por bioma e a lista completa, com a categoria de risco da lista oficial.",()=>[apiGet("/ambiente/animais"),apiGet("/ambiente/animais/fotos").catch(()=>({}))],ambAnimais);
+ if(x==="plantas")return ambTelaExtra("plantas","Plantas e fungos ameaçados de extinção no Brasil: por grupo, por bioma e a lista completa, com a categoria de risco da lista oficial de 2026.",()=>[apiGet("/ambiente/plantas")],ambPlantas);
  if(x==="agua")return ambTelaExtra("agua","Quanta água há no Brasil: superfície de água por município, estado, bioma e região hidrográfica, de 1985 a 2025.",()=>[apiGet("/ambiente/agua"),apiGet("/ambiente/agua/municipios").catch(()=>null)],ambAgua);
  const uf=a&&UF[String(a).toUpperCase()]?String(a).toUpperCase():"";
  const r=lacTela("Meio ambiente","Desmatamento por estado e bioma (INPE).","ambiente",()=>[apiGet("/ambiente").then(ambCompleto)],(v,[D])=>{

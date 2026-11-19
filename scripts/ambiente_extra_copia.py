@@ -1,4 +1,4 @@
-"""Acrescenta à cópia estática a fauna ameaçada (/ambiente/animais) e a superfície de água (/ambiente/agua)
+"""Acrescenta à cópia estática a fauna ameaçada (/ambiente/animais), plantas e fungos (/ambiente/plantas) e a superfície de água (/ambiente/agua)
 e o desmatamento por município (/ambiente/desmatamento-municipios).
 
     python -m scripts.ambiente_extra_copia [site/dados]
@@ -15,7 +15,7 @@ from scripts.exportar_snapshot import fnv1a
 
 CHAVES = {"/ambiente/animais": lacunas.animais_ameacados, "/ambiente/agua": lacunas.agua_superficie,
           "/ambiente/desmatamento-municipios": lacunas.desmatamento_municipios,
-          "/ambiente/agua/municipios": lacunas.agua_municipios}
+          "/ambiente/agua/municipios": lacunas.agua_municipios, "/ambiente/plantas": lacunas.plantas_ameacadas}
 
 
 def main(argv):

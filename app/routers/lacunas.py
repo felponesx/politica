@@ -80,6 +80,15 @@ def ambiente_animais():
     return d
 
 
+@router.get("/ambiente/plantas", tags=["Meio ambiente"])
+def ambiente_plantas():
+    """Plantas e fungos ameaçados de extinção (lista oficial de 2026 do MMA), com grupo, bioma e nome comum quando a base traz."""
+    d = memo(("plantas-ameacadas",), lambda: lacunas.plantas_ameacadas())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.flora_ameacada.")
+    return d
+
+
 @router.get("/ambiente/agua/municipios", tags=["Meio ambiente"])
 def ambiente_agua_municipios():
     """Superfície de água por município (IBGE), em hectares, de 2016 a 2025 (MapBiomas Água)."""

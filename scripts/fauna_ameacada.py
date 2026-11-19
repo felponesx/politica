@@ -75,14 +75,14 @@ def _novas(linhas: list[list[str]], aquatica: bool) -> list[dict]:
     return out
 
 
-def _atributos(linhas: list[list[str]]) -> dict[str, dict]:
-    """Base de 2020 (só fauna): nome comum, biomas, estados e principais ameaças por nome científico."""
+def _atributos(linhas: list[list[str]], tipo: str = "Fauna") -> dict[str, dict]:
+    """Base de 2020 (fauna ou flora, conforme `tipo`): nome comum, grupo, biomas, estados e principais ameaças por nome científico."""
     cab = [c.strip() for c in linhas[0]]
     ix = {c: i for i, c in enumerate(cab)}
     pegar = lambda r, c: r[ix[c]].strip() if c in ix and ix[c] < len(r) else ""
     out = {}
     for r in linhas[1:]:
-        if pegar(r, "Fauna/Flora") != "Fauna":
+        if pegar(r, "Fauna/Flora") != tipo:
             continue
         nome = pegar(r, "Espécie (Simplificado)")
         if not nome:
@@ -90,6 +90,7 @@ def _atributos(linhas: list[list[str]]) -> dict[str, dict]:
         comum = pegar(r, "Nome Comum")
         # a base do MMA põe "Desconhecido" (ou "-") quando não tem o nome popular: isso é falta de dado, não nome
         out[_chave(nome)] = {"comum": "" if comum in ("-", "Desconhecido") else comum,
+                             "grupo": pegar(r, "Grupo"),
                              "biomas": [b for b in _lista(pegar(r, "Bioma")) if b in BIOMAS],
                              "estados": _lista(pegar(r, "Estados de Ocorrência")),
                              "ameacas": _lista(pegar(r, "Principais Ameaças")),
@@ -97,9 +98,9 @@ def _atributos(linhas: list[list[str]]) -> dict[str, dict]:
     return out
 
 
-def _nome_gbif(cli, cientifico: str) -> str:
+def _nome_gbif(cli, cientifico: str, reino: str = "Animalia") -> str:
     """Nome comum em português de uma espécie no GBIF (só quando o nome científico bate exato). Prefere os do Catálogo Taxonômico da Fauna do Brasil."""
-    m = cli.get("https://api.gbif.org/v1/species/match", params={"name": cientifico, "kingdom": "Animalia"}).json()
+    m = cli.get("https://api.gbif.org/v1/species/match", params={"name": cientifico, "kingdom": reino}).json()
     if m.get("matchType") != "EXACT" or not m.get("usageKey"):
         return ""
     res = cli.get(f"https://api.gbif.org/v1/species/{m['usageKey']}/vernacularNames", params={"limit": 200}).json().get("results", [])
@@ -112,7 +113,7 @@ def _nome_gbif(cli, cientifico: str) -> str:
     return mais[:1].upper() + mais[1:]
 
 
-def nomes_gbif(cientificos: list[str], cache: Path = CACHE_NOMES) -> dict[str, str]:
+def nomes_gbif(cientificos: list[str], cache: Path = CACHE_NOMES, reino: str = "Animalia") -> dict[str, str]:
     """Nomes comuns do GBIF, com cache em arquivo (só consulta o que ainda não foi consultado)."""
     import httpx
     from concurrent.futures import ThreadPoolExecutor
@@ -121,7 +122,7 @@ def nomes_gbif(cientificos: list[str], cache: Path = CACHE_NOMES) -> dict[str, s
     if falta:
         def um(c):
             try:
-                return c, _nome_gbif(cli, c)
+                return c, _nome_gbif(cli, c, reino)
             except Exception:
                 return c, None                      # falha de rede: tenta de novo na próxima rodada
         with httpx.Client(timeout=30, headers={"User-Agent": "Mozilla/5.0"}) as cli, ThreadPoolExecutor(8) as ex:

@@ -615,6 +615,11 @@ def animais_ameacados() -> dict | None:
     return _arquivo_dados("fauna_ameacada.json")
 
 
+def plantas_ameacadas() -> dict | None:
+    """Plantas e fungos ameaçados de extinção (lista oficial de 2026 do MMA, com bioma, grupo e estados da base de 2020)."""
+    return _arquivo_dados("flora_ameacada.json")
+
+
 def agua_superficie() -> dict | None:
     """Superfície de água por bioma, estado e região hidrográfica (MapBiomas Água, hectares, 1985–2025)."""
     return _arquivo_dados("agua_superficie.json")
