@@ -14,6 +14,7 @@ CATEGORIAS = [
     {"id": "seguranca", "nome": "Segurança Pública"},
     {"id": "catastrofes", "nome": "Catástrofes e acidentes"},
     {"id": "saude", "nome": "Saúde"},
+    {"id": "populacao", "nome": "População"},
     {"id": "social", "nome": "Social e Trabalho"},
     {"id": "profissoes", "nome": "Salários por profissão"},
     {"id": "ambiente", "nome": "Meio ambiente"},
@@ -34,8 +35,9 @@ CATEGORIAS = [
 # seções que o site mostra mas que não têm coleta própria no painel:
 #   comparar: monta a comparação com dados de outras seções
 #   premios: história e imagens vêm da Wikipédia pelo script scripts/premios_wiki.py (ainda não é uma tarefa do programa)
+#   populacao: população por cor ou raça e sexo vem do Censo 2022 (scripts/populacao_censo.py); a origem de sobrenomes vem da Wikipédia ao vivo
 #   profissoes: salários da RAIS, gerados por app/collectors/rais_profissoes.py (workflow à parte), ainda não é tarefa do programa
-SEM_COLETA_PROPRIA = {"comparar", "premios", "profissoes"}
+SEM_COLETA_PROPRIA = {"comparar", "premios", "profissoes", "populacao"}
 
 MAPA = {
     "gastos": """camara-despesas senado-ceaps transparencia-cartao transparencia-emendas transparencia-gastos
@@ -68,6 +70,7 @@ MAPA = {
         indicador-arquivo""",
     "relatorios": "coletor-ingestao",
     "profissoes": "",
+    "populacao": "",
     "premios": "",
     "comparar": "",
 }

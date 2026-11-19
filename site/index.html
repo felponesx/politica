@@ -2460,6 +2460,7 @@ escandalos:'<path d="m14 4 6 6"/><path d="m10.5 7.5 6 6"/><path d="m12 6-4 4 6 6
 profissoes:'<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3 12.5h18"/>',
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
+populacao:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"/><circle cx="17" cy="8" r="3"/><path d="M22 19v-1.5a3.5 3.5 0 0 0-3-3.46"/>',
 catastrofes:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
@@ -2478,7 +2479,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["populacao","População"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;return true}
 function navSubAdmin(){return [["resumo","inicio","Gestão (início)"],["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["bots","bots","Bots"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>x[0]==="resumo"||artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
@@ -6655,6 +6656,54 @@ function lacPainel(v,{E,M,G,rota,kpis,antes="",depois="",ini,mun=false,munVal=nu
 const lacFim=(D,...mais)=>`<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Dados oficiais, com fonte e período indicados ao lado. Taxas por 100 mil habitantes, sem ajuste por idade. Nada é estimado.</p></div>`;
 function lacTela(nome,desc,rota,pegar,montar,uf){return{html:`<div class="ph"><div><h1>${nome}</h1><p>${desc}</p></div></div><div id="lcV">${API.on?rload():`<div class="rbanner">Esta tela aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;Promise.all(pegar()).then(D=>{const v=$("#lcV");if(v)montar(v,D,uf)}).catch(e=>{const v=$("#lcV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?lacVazio():rerro(e)})}}}
+/* ---------- População: cor ou raça e sexo (Censo 2022), vacinação, mortes e internações; origem de sobrenomes ---------- */
+const POP_PCT=v=>v==null?"—":lacD(v,1)+"%",POP_PCT2=v=>v==null?"—":lacD(v,2)+"%";
+const POP_M_VAC=Object.fromEntries(SAU_VAC.map(([k,l],i)=>["vac"+i,[`Vacina ${l} (%)`,e=>e.s&&e.s.vacinacao?e.s.vacinacao[k]:null,POP_PCT,`Cobertura vacinal (${l}) das crianças, em % do público-alvo, no último ano com dado aberto do PNI (até 2022 na base aberta).`]]));
+const POP_M={
+ indigena:["Indígenas",e=>e.indigena_pct,POP_PCT2,"Pessoas que se declararam indígenas no Censo 2022, em % da população do estado. É a cor ou raça declarada, não a pertença a um povo.",null,null,null,"#2F6FED"],
+ pardos:["Pardos e pretos",e=>e.pardos_pretos_pct,POP_PCT,"Pessoas que se declararam pardas ou pretas, em % da população (cor ou raça autodeclarada, Censo 2022)."],
+ brancas:["Brancos",e=>e.branca_pct,POP_PCT,"Pessoas que se declararam brancas, em % da população (Censo 2022)."],
+ amarelas:["Amarelos",e=>e.amarela_pct,POP_PCT2,"Pessoas que se declararam amarelas, em % da população (Censo 2022)."],
+ mulheres:["Mulheres",e=>e.mulheres_pct,POP_PCT,"Mulheres em % da população (Censo 2022). Mostra só a divisão por sexo: a base aberta não mede desigualdade de gênero (misoginia)."],
+ populacao:["Pessoas",e=>e.total,lacN,"Pessoas residentes em 2022, pelo Censo."],
+ mortes:["Mortes por 100 mil habitantes",e=>e.s?e.s.mortes_por_100mil:null,lacD,"Óbitos por todas as causas no último ano com dado do SIM, por 100 mil habitantes. Taxa bruta, sem ajuste por idade."],
+ internacoes:["Internações por mil habitantes",e=>e.s?e.s.internacoes_por_mil:null,lacD,"Internações hospitalares pelo SUS (por residência) no último ano completo do SIH, por mil habitantes. Mede internação, não o total de doentes."],
+ ...POP_M_VAC};
+const POP_G=[["Cor ou raça (Censo 2022)","indigena","pardos","brancas","amarelas"],["Sexo e população","mulheres","populacao"],["Saúde","mortes","internacoes"],["Vacinação",...Object.keys(POP_M_VAC)]];
+function popJunta(P,S){const E={};Object.keys(P.estados||{}).forEach(u=>{E[u]={...P.estados[u],s:(S&&S.estados&&S.estados[u])||null}});return E}
+function popBrasil(v,P,S){const B=P.brasil||{},sb=(S&&S.brasil)||{},E=popJunta(P,S);
+ const aviso=P.aviso?`<div class="rbanner esc-aviso">${esc(P.aviso)}</div>`:"";
+ const kpis=[lacKpi("Pessoas no Brasil",lacN(B.total),"Censo 2022"),lacKpi("Indígenas",POP_PCT2(B.indigena_pct),`${lacN(B.indigena)} pessoas, cor ou raça`),lacKpi("Pardos e pretos",POP_PCT(B.pardos_pretos_pct),"cor ou raça declarada"),lacKpi("Mulheres",POP_PCT(B.mulheres_pct),"divisão por sexo"),
+  sb.mortes_por_100mil!=null?lacKpi("Mortes por 100 mil",lacD(sb.mortes_por_100mil),`${sb.mortes_ano||""}, todas as causas`):"",
+  sb.internacoes_por_mil!=null?lacKpi("Internações por mil",lacD(sb.internacoes_por_mil),`${sb.internacoes_ano||""}, SUS`):"",
+  sb.vacinacao&&sb.vacinacao.Penta!=null?lacKpi("Vacina Penta",lacD(sb.vacinacao.Penta)+"%",`${sb.vacinacao_ano||""}, cobertura`):""].filter(Boolean).join("");
+ const nota=`<div class="panel mt"><h2>O que a base não tem</h2><p class="small muted" style="margin:0">O Censo 2022 não perguntou a origem da família (italiana, francesa, russa, canadense ou estadunidense). Por isso essas porcentagens não existem em base oficial aberta e não aparecem aqui. A cor ou raça é autodeclarada. As taxas de mortes e internações são brutas, sem ajuste por idade. A base aberta só traz a divisão por sexo, não mede misoginia.</p></div>`;
+ lacPainel(v,{E,M:POP_M,G:POP_G,rota:"populacao",kpis,antes:aviso,depois:nota,ini:"indigena"});
+}
+function popUF(v,P,S,uf){const e=(P.estados||{})[uf],B=P.brasil||{},n=UF[uf].nome,s=(S&&S.estados&&S.estados[uf])||{},sb=(S&&S.brasil)||{};
+ const cab=`<div class="crumb"><a href="#/populacao">População</a> / ${esc(n)}</div>`;
+ if(!e){v.innerHTML=cab+rvazio("Ainda não há dados de população deste estado.");return}
+ const linhas=[["Pessoas",lacN(e.total),lacN(B.total)],["Indígenas",POP_PCT2(e.indigena_pct),POP_PCT2(B.indigena_pct)],["Pardos e pretos",POP_PCT(e.pardos_pretos_pct),POP_PCT(B.pardos_pretos_pct)],["Brancos",POP_PCT(e.branca_pct),POP_PCT(B.branca_pct)],["Mulheres",POP_PCT(e.mulheres_pct),POP_PCT(B.mulheres_pct)]];
+ if(s.mortes_por_100mil!=null||sb.mortes_por_100mil!=null)linhas.push(["Mortes por 100 mil",lacD(s.mortes_por_100mil),lacD(sb.mortes_por_100mil)]);
+ if(s.internacoes_por_mil!=null||sb.internacoes_por_mil!=null)linhas.push(["Internações por mil",lacD(s.internacoes_por_mil),lacD(sb.internacoes_por_mil)]);
+ SAU_VAC.forEach(([k,l])=>{const a=s.vacinacao&&s.vacinacao[k],b=sb.vacinacao&&sb.vacinacao[k];if(a!=null||b!=null)linhas.push([`Vacina ${l} (%)`,a!=null?lacD(a)+"%":"—",b!=null?lacD(b)+"%":"—"])});
+ const kp=[lacKpi("Pessoas",lacN(e.total),`Censo 2022 · ${esc(n)}`),lacKpi("Indígenas",POP_PCT2(e.indigena_pct),`${lacN(e.indigena)} pessoas, cor ou raça`),lacKpi("Pardos e pretos",POP_PCT(e.pardos_pretos_pct),"cor ou raça declarada"),lacKpi("Mulheres",POP_PCT(e.mulheres_pct),"divisão por sexo")].join("");
+ v.innerHTML=`${cab}<div class="kpis kpis-c" style="margin-top:8px">${kp}</div><div class="panel mt"><h2>${esc(n)} e o Brasil</h2><p class="small muted" style="margin:0">Porcentagens sobre a população de cada um. Saúde: último ano com dado aberto de cada fonte. Taxas brutas, sem ajuste por idade.</p><div style="margin-top:10px">${table([["Medida",r=>r[0]],[esc(n),r=>r[1],"n"],["Brasil",r=>r[2],"n"]],linhas)}</div></div>`;
+}
+function popSobHtml(){return `<div class="panel mt"><h2>De onde vem um sobrenome</h2><p class="small muted" style="margin:0">Digite um sobrenome (por exemplo Silva, Freire ou Barros). A origem vem do artigo sobre o sobrenome na Wikipédia em português, com link e licença. Não é teste genético nem prova de parentesco: um sobrenome pode ter mais de uma origem.</p><form id="sobF" class="filters" style="margin:12px 0 0"><input id="sobN" type="text" maxlength="40" placeholder="Ex.: Silva" aria-label="Sobrenome" style="flex:1;min-width:180px"><button class="btn" type="submit">Ver origem</button></form><div id="sobR" class="mt"></div></div>`}
+function popSobResp(d){const link=d.url?`<a href="${esu(d.url)}" target="_blank" rel="noopener">Ver o artigo na Wikipédia</a>`:"";
+ return `<div class="mt"><h3 style="margin:0 0 4px">${esc(d.nome||"")}</h3><p style="margin:0 0 8px"><b>${esc(d.titulo||"")}</b></p><p style="margin:0 0 8px">${esc(d.resumo||"")}</p><p class="small muted" style="margin:0">${link} · ${esc(d.fonte||"Wikipédia")} · licença ${esc(d.licenca||"CC BY-SA 4.0")}</p>${d.aviso?`<p class="small muted" style="margin:8px 0 0">${esc(d.aviso)}</p>`:""}</div>`}
+function popSobMount(){const f=$("#sobF");if(!f)return;f.onsubmit=e=>{e.preventDefault();const n=($("#sobN").value||"").trim(),r=$("#sobR");if(!r)return;
+ if(n.length<2){r.innerHTML=rvazio("Digite pelo menos 2 letras.");return}
+ r.innerHTML=rload();
+ apiGet("/sobrenomes?nome="+encodeURIComponent(n)).then(d=>{const x=$("#sobR");if(x)x.innerHTML=popSobResp(d)}).catch(err=>{const x=$("#sobR");if(!x)return;const st=err.status;
+  x.innerHTML=st===404?rvazio(esc(err.message||"A Wikipédia não tem uma origem registrada para este sobrenome.")):st===422?rvazio("Digite um sobrenome com pelo menos 2 letras."):st===503?rvazio("A consulta à Wikipédia está indisponível agora. Tente de novo em instantes."):rerro(err)})}}
+P.populacao=a=>{const sub=String(a||""),sob=sub.toLowerCase()==="sobrenomes",uf=!sob&&sub&&UF[sub.toUpperCase()]?sub.toUpperCase():"";
+ const tabs=`<div class="tabs"><a class="tabl${sob?"":" on"}" href="#/populacao">Pessoas</a><a class="tabl${sob?" on":""}" href="#/populacao/sobrenomes">Sobrenomes</a></div>`;
+ const cab=`<div class="ph"><div><h1>População</h1><p>${sob?"De onde vem um sobrenome, pela história registrada na Wikipédia.":"Quantas pessoas são indígenas, pardas, pretas, brancas ou mulheres, e a vacinação, as mortes e as internações em cada estado."}</p></div></div>${tabs}`;
+ if(sob)return{html:`${cab}<div id="popV">${API.on?(API.snap?`<div class="rbanner">A busca de sobrenomes precisa do servidor BRASIL+ ligado. A cópia publicada não tem essa consulta.</div>`:popSobHtml()):`<div class="rbanner">Esta busca aparece quando o site está ligado ao servidor BRASIL+.</div>`}</div>`,mount(){if(API.on&&!API.snap)popSobMount()}};
+ return{html:`${cab}<div id="popV">${API.on?rload():`<div class="rbanner">A População aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+  mount(){if(!API.on)return;Promise.all([apiGet("/populacao"),apiGet("/saude/painel").catch(()=>null)]).then(([P,S])=>{const v=$("#popV");if(!v)return;uf?popUF(v,P,S,uf):popBrasil(v,P,S)}).catch(e=>{const v=$("#popV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("Os dados de população ainda não foram gerados."):rerro(e)})}}};
 /* ----- Social e Trabalho ----- */
 const SOC_G=[["Bolsa Família e BPC","bolsa100","bolsaval","bpc100"],["Trabalho e renda","desoc","renda"]];
 const SOC_M={bolsa100:["Beneficiários do Bolsa Família por 100 habitantes",e=>e.bolsa&&e.bolsa.por_100_hab,lacD,"Parcelas do Bolsa Família pagas no mês para cada 100 moradores. Não é % da população: cada parcela é de uma família."],
@@ -7902,6 +7951,7 @@ const ART_SEC=[
  ["seguranca","Segurança Pública",["/seguranca","/policias"]],
  ["catastrofes","Catástrofes e acidentes",["/catastrofes"]],
  ["saude","Saúde",["/saude"]],
+ ["populacao","População",["/populacao"]],
  ["social","Social e Trabalho",["/social","/trabalho","/indicadores-sociais"]],
  ["ambiente","Meio ambiente",["/ambiente","/alertas-mapbiomas","/multas-ambientais"]],
  ["empresas","Empresas e Contratos",["/empresas","/contratos","/economia-empresas","/resumo-contratos","/fornecedores","/fornecedores-cruzados","/sancoes"]],

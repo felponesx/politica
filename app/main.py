@@ -14,7 +14,7 @@ from app.config import settings
 from app import observabilidade
 from app.db import criar_tabelas
 from app.seguranca import LimiteCorpo, Protecao
-from app.routers import (dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas,
+from app.routers import (populacao as populacao_rotas, dados, eleicoes, legislacao, legislativo, ligacoes, normalizados, seguranca, v02, v03, ensino as ensino_rotas,
                          lacunas as lacunas_rotas, sancoes as sancoes_rotas, saude as saude_rotas, doadores as doadores_rotas, contas as contas_rotas,
                          fontes_cadastro as fontes_cadastro_rotas, ia_propria as ia_propria_rotas, organizador as organizador_rotas,
                          oportunidades as oportunidades_rotas, oportunidades_cadastro as oportunidades_cadastro_rotas,
@@ -105,6 +105,7 @@ app.include_router(publicacoes_rotas.router)
 app.include_router(profissoes_rotas.router)
 app.include_router(empresas_tipo_rotas.router)
 app.include_router(catastrofes_rotas.router)
+app.include_router(populacao_rotas.router)
 
 
 # Site (frontend) servido pelo próprio backend: abra http://localhost:8000 e as telas já usam a API.
