@@ -2617,6 +2617,34 @@
 "licenca": "CC BY-NC 4.0",
 "obs": "https://intermountainbiota.org/portal/collections/individual/index.php?occid=16924308"
 },
+"Minasia alpestris": {
+"arquivo": "Minasia_alpestris.webp",
+"autor": "AJDeberdt",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/298514818"
+},
+"Minasia pereirae": {
+"arquivo": "Minasia_pereirae.webp",
+"autor": "Joey Santore",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/172071768"
+},
+"Minasia scapigera": {
+"arquivo": "Minasia_scapigera.webp",
+"autor": "Joey Santore",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/171629879"
+},
+"Mitracarpus eritrichoides": {
+"arquivo": "Mitracarpus_eritrichoides.webp",
+"autor": "autor não informado",
+"fonte": "GBIF",
+"licenca": "CC BY 4.0",
+"obs": "https://www.gbif.org/occurrence/1701533628"
+},
 "Phallus aureolatus": {
 "arquivo": "Phallus_aureolatus.webp",
 "autor": "carlosroblesm",
