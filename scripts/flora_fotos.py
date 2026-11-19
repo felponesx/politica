@@ -24,7 +24,48 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from scripts.fauna_fotos import UA, baixar_webp, foto_da_chave
+from scripts.fauna_fotos import ACEITA, LADO, UA, rotulo
+
+LIMITE_BYTES = 6_000_000     # foto maior que isso não é baixada inteira: a busca passa para a próxima
+
+
+def candidatas(cli, chave: int, com_nc: bool = False) -> list[dict]:
+    """Fotos com licença aberta da espécie (GBIF), na ordem do GBIF."""
+    licencas = ["CC0_1_0", "CC_BY_4_0"] + (["CC_BY_NC_4_0"] if com_nc else [])
+    d = cli.get("https://api.gbif.org/v1/occurrence/search",
+                params=[("taxonKey", chave), ("mediaType", "StillImage")] + [("license", x) for x in licencas] + [("limit", 30)]).json()
+    out = []
+    for r in d.get("results", []):
+        for m in r.get("media", []):
+            if m.get("type") != "StillImage":
+                continue
+            url = m.get("identifier") or ""
+            lic = rotulo(m.get("license", ""), com_nc)
+            if not lic or not url.lower().split("?")[0].endswith((".jpg", ".jpeg", ".png")):
+                continue
+            autor = (m.get("creator") or m.get("rightsHolder") or "").strip()
+            obs = r.get("references") or f"https://www.gbif.org/occurrence/{r.get('key')}"
+            out.append({"url": url, "licenca": lic, "autor": autor or "autor não informado", "obs": obs})
+    return out
+
+
+def baixar_webp(cli, url: str, destino: Path) -> bool:
+    """Baixa a foto em pedaços e desiste se passar de LIMITE_BYTES (sem baixar a imagem inteira)."""
+    import io
+    from PIL import Image
+    dados = bytearray()
+    with cli.stream("GET", url, timeout=30) as r:
+        if r.status_code != 200:
+            return False
+        for pedaco in r.iter_bytes():
+            dados.extend(pedaco)
+            if len(dados) > LIMITE_BYTES:
+                return False
+    im = Image.open(io.BytesIO(bytes(dados))).convert("RGB")
+    im.thumbnail((LADO, LADO))
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    im.save(destino, "WEBP", quality=72, method=6)
+    return True
 
 DADOS = Path(__file__).resolve().parent.parent / "app" / "dados"
 ESPECIES = DADOS / "flora_ameacada.json"
@@ -71,14 +112,15 @@ def main(argv: list[str]) -> None:
                 return nome, None, True                  # sem registro no GBIF: consultado
             for tentativa in range(6):                   # a GBIF limita o ritmo (429): pausa crescente e nova tentativa
                 try:
-                    time.sleep(0.6)
-                    f = foto_da_chave(cli, k, com_nc)
-                    if not f:
-                        return nome, None, True
+                    time.sleep(1.0)                  # ~1 pedido por segundo: abaixo do limite da GBIF
                     arq = PASTA / (re.sub(r"[^A-Za-z0-9]+", "_", nome).strip("_") + ".webp")
-                    if not baixar_webp(cli, f["url"], arq):
-                        return nome, None, True
-                    return nome, {"arquivo": arq.name, "autor": f["autor"], "licenca": f["licenca"], "obs": f["obs"], "fonte": "GBIF"}, True
+                    for f in candidatas(cli, k, com_nc)[:8]:
+                        try:
+                            if baixar_webp(cli, f["url"], arq):
+                                return nome, {"arquivo": arq.name, "autor": f["autor"], "licenca": f["licenca"], "obs": f["obs"], "fonte": "GBIF"}, True
+                        except Exception:
+                            continue                     # essa foto falhou: tenta a próxima da espécie
+                    return nome, None, True
                 except Exception as e:
                     ERROS.append(f"{nome}: {type(e).__name__}")
                     time.sleep(4 * (tentativa + 1))
@@ -86,7 +128,7 @@ def main(argv: list[str]) -> None:
 
         pendentes = [n for n in nomes if refazer or (n not in indice and n not in tentadas)]
         feitos = 0
-        with ThreadPoolExecutor(3) as ex:
+        with ThreadPoolExecutor(1) as ex:                    # uma conexão só: com mais, a GBIF responde 429
             for nome, reg, consultada in ex.map(um, pendentes):
                 feitos += 1
                 if reg:
