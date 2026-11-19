@@ -804,3 +804,9 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Vacinação, mortes e internações na aba vêm de `/saude/painel` (banco do servidor). Não estão na cópia publicada: sem servidor, a tela mostra só o Censo.
 - Sobrenomes (`GET /sobrenomes?nome=`, `app/sobrenomes.py`): resumo da Wikipédia em português (páginas "<nome> (sobrenome)", "(família)" ou o próprio nome), com link e licença CC BY-SA 4.0. Só aceita página que fale de sobrenome, apelido ou família; desambiguação não serve. Não é teste genético nem prova de parentesco. Sem origem registrada → 404 (ex.: Barros). Precisa do servidor: não existe na cópia estática.
 - Site: `P.populacao` (`#/populacao`, `#/populacao/<UF>`, `#/populacao/sobrenomes`), ícone `populacao`, categoria "População" em `app/categorias.py` (sem coleta própria). Testes: `tests/test_populacao.py`.
+
+## Plantas e fungos ameaçados (nov/2026)
+- Aba "Plantas e fungos" no Meio ambiente (`#/ambiente/plantas`, `ambPlantas`). Dados: `scripts/flora_ameacada.py` → `app/dados/flora_ameacada.json` (`GET /ambiente/plantas`; cópia: `python -m scripts.ambiente_extra_copia site/dados`).
+- Categoria de risco: lista oficial de 2026 do MMA (flora, Portaria 1.783/2026; fungos de 2026). Bioma, estados, grupo (angiospermas, gimnospermas, pteridófitas, briófitas) e nome comum vêm da base de 2020 só quando a espécie consta nela; sem isso, "Não informado" (nunca estimado). Nome popular faltante: GBIF (`flora_nomes_gbif.json`, `fungos_nomes_gbif.json`).
+- A lista oficial não diz quais espécies são árvores; não há filtro de árvore. Líquens e algas não aparecem nestas listas. Sem fotos nesta aba.
+- Testes: `tests/test_flora_ameacada.py`.
