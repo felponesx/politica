@@ -65,36 +65,38 @@ def main(argv: list[str]) -> None:
         CHAVES.write_text(json.dumps(chaves, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
 
         def um(nome):
+            """(nome, registro ou None, consultada). Só marca como consultada quando a GBIF respondeu; falha de rede ou limite de pedidos é tentada de novo."""
             k = chaves.get(nome)
             if not k:
-                return nome, None
-            for tentativa in range(4):                    # o GBIF limita o ritmo: pausa e nova tentativa com espera
+                return nome, None, True                  # sem registro no GBIF: consultado
+            for tentativa in range(6):                   # a GBIF limita o ritmo (429): pausa crescente e nova tentativa
                 try:
-                    time.sleep(0.4)
+                    time.sleep(0.6)
                     f = foto_da_chave(cli, k, com_nc)
                     if not f:
-                        return nome, None
+                        return nome, None, True
                     arq = PASTA / (re.sub(r"[^A-Za-z0-9]+", "_", nome).strip("_") + ".webp")
                     if not baixar_webp(cli, f["url"], arq):
-                        return nome, None
-                    return nome, {"arquivo": arq.name, "autor": f["autor"], "licenca": f["licenca"], "obs": f["obs"], "fonte": "GBIF"}
+                        return nome, None, True
+                    return nome, {"arquivo": arq.name, "autor": f["autor"], "licenca": f["licenca"], "obs": f["obs"], "fonte": "GBIF"}, True
                 except Exception as e:
                     ERROS.append(f"{nome}: {type(e).__name__}")
-                    time.sleep(2 * (tentativa + 1))
-            return nome, None
+                    time.sleep(4 * (tentativa + 1))
+            return nome, None, False                     # não respondeu: fica para a próxima rodada
 
         pendentes = [n for n in nomes if refazer or (n not in indice and n not in tentadas)]
         feitos = 0
-        with ThreadPoolExecutor(6) as ex:
-            for nome, reg in ex.map(um, pendentes):
+        with ThreadPoolExecutor(3) as ex:
+            for nome, reg, consultada in ex.map(um, pendentes):
                 feitos += 1
-                tentadas.add(nome)
                 if reg:
                     indice[nome] = reg
+                if consultada:
+                    tentadas.add(nome)
                 if feitos % 25 == 0:                       # grava aos poucos: uma interrupção não perde o que já foi baixado
                     INDICE.write_text(json.dumps(indice, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
                     TENTADAS.write_text(json.dumps(sorted(tentadas), ensure_ascii=False), encoding="utf-8")
-                    print(f"{feitos}/{len(pendentes)} processadas, {len(indice)} com foto", flush=True)
+                    print(f"{feitos}/{len(pendentes)} processadas, {len(indice)} com foto, {len(ERROS)} limites/falhas", flush=True)
 
     INDICE.write_text(json.dumps(indice, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
     TENTADAS.write_text(json.dumps(sorted(tentadas), ensure_ascii=False), encoding="utf-8")
