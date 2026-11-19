@@ -383,6 +383,7 @@
     "/ambiente/bioma-municipios",
     "/ambiente/desmatamento-municipios",
     "/ambiente/plantas",
+    "/ambiente/plantas/fotos",
     "/malha/status",
     "/multas-ambientais",
     "/saude",
