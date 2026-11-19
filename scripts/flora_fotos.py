@@ -31,6 +31,7 @@ ESPECIES = DADOS / "flora_ameacada.json"
 PASTA = DADOS / "flora_fotos"
 INDICE = DADOS / "flora_fotos.json"
 CHAVES = DADOS / "flora_fotos_chaves.json"
+TENTADAS = DADOS / "flora_fotos_tentadas.json"   # espécies já consultadas no GBIF (com ou sem foto): não são pedidas de novo
 REINO = {"Plantas": "Plantae", "Fungos": "Fungi"}
 ERROS: list[str] = []
 
@@ -52,6 +53,7 @@ def main(argv: list[str]) -> None:
     nomes = list(tipo)
     chaves = json.loads(CHAVES.read_text(encoding="utf-8")) if CHAVES.exists() else {}
     indice = json.loads(INDICE.read_text(encoding="utf-8")) if INDICE.exists() else {}
+    tentadas = set(json.loads(TENTADAS.read_text(encoding="utf-8"))) if TENTADAS.exists() else set()
 
     with httpx.Client(timeout=30, headers={"User-Agent": UA}, follow_redirects=True) as cli:
         for n in [n for n in nomes if n not in chaves]:
@@ -81,18 +83,21 @@ def main(argv: list[str]) -> None:
                     time.sleep(2 * (tentativa + 1))
             return nome, None
 
-        pendentes = [n for n in nomes if refazer or n not in indice]
+        pendentes = [n for n in nomes if refazer or (n not in indice and n not in tentadas)]
         feitos = 0
         with ThreadPoolExecutor(6) as ex:
             for nome, reg in ex.map(um, pendentes):
                 feitos += 1
+                tentadas.add(nome)
                 if reg:
                     indice[nome] = reg
                 if feitos % 25 == 0:                       # grava aos poucos: uma interrupção não perde o que já foi baixado
                     INDICE.write_text(json.dumps(indice, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
+                    TENTADAS.write_text(json.dumps(sorted(tentadas), ensure_ascii=False), encoding="utf-8")
                     print(f"{feitos}/{len(pendentes)} processadas, {len(indice)} com foto", flush=True)
 
     INDICE.write_text(json.dumps(indice, ensure_ascii=False, indent=0, sort_keys=True), encoding="utf-8")
+    TENTADAS.write_text(json.dumps(sorted(tentadas), ensure_ascii=False), encoding="utf-8")
     if ERROS:
         print(f"{len(ERROS)} falhas de rede (tentadas de novo); exemplos: {ERROS[:3]}", flush=True)
     com_chave = sum(1 for n in nomes if chaves.get(n))

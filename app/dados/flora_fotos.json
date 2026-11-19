@@ -2603,6 +2603,20 @@
 "licenca": "CC0",
 "obs": "https://www.gbif.org/occurrence/575197183"
 },
+"Mikania pinnatiloba": {
+"arquivo": "Mikania_pinnatiloba.webp",
+"autor": "Santiago Mailhos",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://www.inaturalist.org/observations/346188963"
+},
+"Mimosa balduinii": {
+"arquivo": "Mimosa_balduinii.webp",
+"autor": "Brigham Young University",
+"fonte": "GBIF",
+"licenca": "CC BY-NC 4.0",
+"obs": "https://intermountainbiota.org/portal/collections/individual/index.php?occid=16924308"
+},
 "Phallus aureolatus": {
 "arquivo": "Phallus_aureolatus.webp",
 "autor": "carlosroblesm",
