@@ -80,6 +80,15 @@ def ambiente_animais():
     return d
 
 
+@router.get("/ambiente/plantas/fotos", tags=["Meio ambiente"])
+def ambiente_plantas_fotos():
+    """Foto de cada planta ou fungo ameaçado que tem foto com licença aberta, com autor, licença e link da observação."""
+    d = memo(("plantas-fotos",), lambda: lacunas.plantas_fotos())
+    if not d:
+        raise HTTPException(404, "Sem fotos. Rode python -m scripts.flora_fotos.")
+    return d
+
+
 @router.get("/ambiente/plantas", tags=["Meio ambiente"])
 def ambiente_plantas():
     """Plantas e fungos ameaçados de extinção (lista oficial de 2026 do MMA), com grupo, bioma e nome comum quando a base traz."""

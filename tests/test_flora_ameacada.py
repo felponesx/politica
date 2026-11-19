@@ -58,3 +58,13 @@ def test_rota_plantas_com_o_arquivo_gerado():
     assert "MMA" in d["fonte"] and d["campos"][0] == "nome_cientifico"
     for e in d["especies"][:200]:
         assert e[2] in ("Plantas", "Fungos") and e[5] in d["categorias"]
+
+
+def test_rota_fotos_serve_so_foto_com_licenca_e_arquivo():
+    r = TestClient(app).get("/ambiente/plantas/fotos")
+    if r.status_code == 404:
+        return
+    d = r.json()
+    for nome, f in list(d.items())[:200]:
+        assert f["src"].startswith("data:image/webp;base64,")
+        assert f["autor"] and f["licenca"].startswith(("CC0", "CC BY")) and f["obs"].startswith("http")

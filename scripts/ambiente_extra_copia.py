@@ -15,7 +15,8 @@ from scripts.exportar_snapshot import fnv1a
 
 CHAVES = {"/ambiente/animais": lacunas.animais_ameacados, "/ambiente/agua": lacunas.agua_superficie,
           "/ambiente/desmatamento-municipios": lacunas.desmatamento_municipios,
-          "/ambiente/agua/municipios": lacunas.agua_municipios, "/ambiente/plantas": lacunas.plantas_ameacadas}
+          "/ambiente/agua/municipios": lacunas.agua_municipios, "/ambiente/plantas": lacunas.plantas_ameacadas,
+          "/ambiente/plantas/fotos": lacunas.plantas_fotos}
 
 
 def main(argv):
