@@ -18,6 +18,15 @@ def main(argv):
     shard["/premios"] = premios.dados()
     arq.write_text(json.dumps(shard, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print("premios gravado em", arq)
+    # o site lê primeiro o pacote que traz a chave (p/geral.json): ele também precisa ficar igual
+    man = json.loads((pasta / "manifest.json").read_text(encoding="utf-8"))
+    for nome_pac, info in man.get("pacotes", {}).items():
+        if "/premios" in info.get("chaves", []) and (pasta / nome_pac).exists():
+            pac = pasta / nome_pac
+            P = json.loads(pac.read_text(encoding="utf-8"))
+            P["/premios"] = shard["/premios"]
+            pac.write_text(json.dumps(P, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+            print("premios gravado no pacote", pac)
 
 
 if __name__ == "__main__":

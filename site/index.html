@@ -6000,7 +6000,7 @@ const escVal=v=>!v?"—":`<a href="${esu(v.fonte)}" target="_blank" rel="noopene
 const escData=d=>{if(!d)return"";const m=String(d).match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return esc(d);const M=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];return m[3]?`${+m[3]}/${M[+m[2]-1]}/${m[1]}`:m[2]?`${M[+m[2]-1]}/${m[1]}`:m[1]};
 const escPer=p=>p&&p.inicio?(p.fim&&p.fim!==p.inicio?`${p.inicio}–${p.fim}`:p.fim?p.inicio:`desde ${p.inicio}`):"";
 const escAviso=a=>`<div class="rbanner esc-aviso">${esc(a)}</div>`;
-const PRM_IC={
+const PRM_IC={pessoas:["#8B5CF6",'<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/>'],
 futebol:["#1BAF7A",'<circle cx="12" cy="12" r="9"/><path d="M12 8.2l3.2 2.3-1.2 3.8h-4l-1.2-3.8z"/><path d="M12 8.2V3.2M15.2 10.5l4.7-1.5M14 14.3l2.9 4M10 14.3l-2.9 4M8.8 10.5L4.1 9"/>'],
 volei:["#F5A524",'<circle cx="12" cy="12" r="9"/><path d="M12 3c0 5-3 8-8.5 9M12 3c3 1 6 4 6.8 8M3.6 15.5c5 0 9 1.5 11 5M20.4 15c-3.4-2.5-7.4-2-10.4 0"/>'],
 basquete:["#EB6834",'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3 2.5 3 10.3 0 12.8M18.4 5.6c-3 2.5-3 10.3 0 12.8"/>'],
@@ -6497,7 +6497,7 @@ P.premio=chave=>({html:`<div id="prmD">${rload()}</div>`,mount(){apiGet("/premio
   <h3 class="seg-h">Trajetória do Brasil: ${esc(G.nome)}</h3><div class="prm-trilha">${trilha.map(x=>`<a href="#/premio/${x.chave}" class="${x.chave===chave?"on":""}"><b>${esc(x.ano)}</b><span>${esc(x.resultado)}</span></a>`).join("")}</div>
   <p class="small muted" style="margin:12px 0 0">Fonte da lista: <a href="${esu(G.fonte)}" target="_blank" rel="noopener">${esc(G.fonte.replace(/^https?:\/\//,"").split("/")[0])}</a></p>`}).catch(e=>{const b=$("#prmD");if(b)b.innerHTML=rerro(e)})}});
 P.premios=slug=>{let D=null;
- return{html:`<div class="ph"><div><h1>Prêmios</h1><p>Títulos e medalhas do Brasil nos principais campeonatos mundiais e nos Jogos Olímpicos. Escolha o esporte para ver cada campeonato.</p></div></div><div id="prmBox">${API.on?rload():`<div class="rbanner">Os prêmios aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+ return{html:`<div class="ph"><div><h1>Prêmios</h1><p>Títulos e medalhas do Brasil nos campeonatos e nos Jogos Olímpicos, e pessoas premiadas (Bola de Ouro, Nobel, Medalha Fields e recordes do Guinness). Escolha a categoria.</p></div></div><div id="prmBox">${API.on?rload():`<div class="rbanner">Os prêmios aparecem quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
  mount(){if(!API.on)return;apiGet("/premios").then(d=>{D=d;const box=$("#prmBox");if(!box)return;const cats=d.categorias,cur=cats.find(c=>c.slug===slug);
   const resCor=r=>/^(campe|ouro)/i.test(r)?"#F5A524":/^(vice|prata)/i.test(r)?"#8A94A6":/^bronze/i.test(r)?"#C47A3A":"#2F6FED";
   const cards=`<div class="panel"><div class="filters"><select id="prmSel" data-titulo="Esporte" data-pill="Esporte" data-sembusca><option value="">Todos os esportes</option>${cats.map(c=>`<option value="${c.slug}"${cur&&cur.slug===c.slug?" selected":""}>${esc(c.nome)}</option>`).join("")}</select></div></div>`;

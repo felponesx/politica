@@ -746,6 +746,107 @@
      ]
     }
    ]
+  },
+  {
+   "slug": "pessoas",
+   "nome": "Pessoas e recordes",
+   "icone": "🏅",
+   "resumo": "Brasileiros premiados como melhores do mundo, com o Nobel, com a Medalha Fields e com recordes do Guinness. Lista curada: nem todos os prêmios de pessoas do Brasil estão aqui.",
+   "grupos": [
+    {
+     "nome": "Bola de Ouro (melhor jogador do mundo)",
+     "descricao": "Prêmio da France Football a melhor jogador do mundo no ano. Brasileiros que venceram.",
+     "fonte": "https://ballondor.com/winners",
+     "brasil": [
+      {
+       "ano": 1997,
+       "resultado": "Bola de Ouro",
+       "detalhe": "Ronaldo"
+      },
+      {
+       "ano": 1999,
+       "resultado": "Bola de Ouro",
+       "detalhe": "Rivaldo"
+      },
+      {
+       "ano": 2002,
+       "resultado": "Bola de Ouro",
+       "detalhe": "Ronaldo"
+      },
+      {
+       "ano": 2005,
+       "resultado": "Bola de Ouro",
+       "detalhe": "Ronaldinho"
+      },
+      {
+       "ano": 2007,
+       "resultado": "Bola de Ouro",
+       "detalhe": "Kaká"
+      }
+     ]
+    },
+    {
+     "nome": "Prêmio Nobel",
+     "descricao": "Prêmios de Física, Química, Medicina, Literatura, Paz e Economia. Só o laureado nascido no Brasil, segundo a base oficial do Nobel.",
+     "fonte": "https://www.nobelprize.org/prizes/medicine/1960/medawar/facts/",
+     "brasil": [
+      {
+       "ano": 1960,
+       "resultado": "Nobel de Medicina",
+       "detalhe": "Peter Medawar (nasceu no Rio de Janeiro, segundo o Nobel)"
+      }
+     ]
+    },
+    {
+     "nome": "Medalha Fields (matemática)",
+     "descricao": "Prêmio da União Matemática Internacional para matemáticos com até 40 anos, considerado o Nobel da matemática.",
+     "fonte": "https://pt.wikipedia.org/wiki/Artur_Avila",
+     "brasil": [
+      {
+       "ano": 2014,
+       "resultado": "Medalha Fields",
+       "detalhe": "Artur Ávila (primeiro brasileiro e primeiro latino-americano a receber)"
+      },
+      {
+       "ano": 2011,
+       "resultado": "Prêmio Michael Brin",
+       "detalhe": "Artur Ávila, em sistemas dinâmicos"
+      },
+      {
+       "ano": 2009,
+       "resultado": "Prix Jacques Herbrand",
+       "detalhe": "Artur Ávila"
+      },
+      {
+       "ano": 2008,
+       "resultado": "Prêmio EMS",
+       "detalhe": "Artur Ávila"
+      },
+      {
+       "ano": 2006,
+       "resultado": "Prêmio Salem",
+       "detalhe": "Artur Ávila"
+      }
+     ]
+    },
+    {
+     "nome": "Recordes do Guinness (citados pelo Guinness)",
+     "descricao": "Recordes de brasileiros citados na matéria oficial do Guinness sobre recordes do Brasil. Não é a lista completa dos recordistas brasileiros.",
+     "fonte": "https://www.guinnessworldrecords.com/news/2012/9/best-brazilian-guinness-world-records-in-honor-of-independence-day-44636",
+     "brasil": [
+      {
+       "ano": 2008,
+       "resultado": "Recorde Guinness",
+       "detalhe": "Joaquim Gonçalves: o maior pão (1,571 t), em Curitiba"
+      },
+      {
+       "ano": 2012,
+       "resultado": "Recorde Guinness",
+       "detalhe": "Vado Souza: 40 anos e 7 meses dirigindo e atuando no espetáculo solo 'O Navio Negreiro' (citado na matéria de 2012)"
+      }
+     ]
+    }
+   ]
   }
  ]
 }
