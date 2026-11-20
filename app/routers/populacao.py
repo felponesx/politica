@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from app import populacao, religiao, sobrenomes
+from app import habitantes, populacao, religiao, sobrenomes
 from app.utils import memo
 
 router = APIRouter()
@@ -21,6 +21,15 @@ def religiao_censo():
     d = memo(("religiao",), lambda: religiao.religiao())
     if not d:
         raise HTTPException(404, "Sem dados. Rode python -m scripts.religiao.")
+    return d
+
+
+@router.get("/populacao/extra", tags=["População"])
+def populacao_extra():
+    """Crescimento por tamanho de município (Censo 2010→2022), depressão (PNS 2013) e trabalho por aplicativo (PNAD 2025)."""
+    d = memo(("populacao-extra",), lambda: habitantes.extra())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.habitantes_extra.")
     return d
 
 

@@ -817,3 +817,11 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Organizações religiosas: Cadastro Central de Empresas, IBGE tabela 9528, classe CNAE 94.91-0 (unidades locais registradas, 2022 a 2024). Não é a contagem de todas as igrejas (grupos sem registro ficam de fora). A tabela 6450 (2006–2021) não é comparável: em 2021 dá 85.806 e em 2022, 197.594. Por isso não entra na série.
 - Diferença de até 2 pessoas entre o total e a soma das religiões em alguns estados (arredondamento do IBGE): a tela avisa.
 - Testes: `tests/test_religiao.py`.
+
+## Saúde e trabalho na população (nov/2026)
+- Aba "Saúde e trabalho" em População (`#/populacao/saude-trabalho`, `popSaudeTrabalhoTela`). `GET /populacao/extra` (`app/habitantes.py`), dados em `app/dados/habitantes_extra.json`, gerados por `python -m scripts.habitantes_extra`; cópia: `python -m scripts.habitantes_copia site/dados` (parte s<N>).
+- Interiorização: Censo 2010 (tabela 1378) e 2022 (tabela 9514), municípios agrupados pelo tamanho que tinham em 2010. O Censo mostra população por cidade, não de onde as pessoas vieram: NÃO é medida de migração. Resultado 2010→2022: cidades de 100 a 500 mil +11,9%; acima de 500 mil +2,5%; até 20 mil +2,6%.
+- Depressão: PNS 2013 (tabela 4407), só Brasil: 11,06 milhões de adultos que declaram depressão. Não há porcentagem nem dado por estado nessa tabela (o total com doença crônica vem sem valor no SIDRA). Dado antigo, de 2013.
+- Trabalho por aplicativo: PNAD Contínua 2025 (tabela 10482), só Brasil: 1,959 milhão (transporte particular 1,056 mi; entregas 585 mil; serviços gerais 313 mil; táxi 232 mil). Sem detalhe por estado no SIDRA.
+- Pedidos de demissão (quem sai das empresas): NÃO está na base; o CAGED guarda desligamento sem motivo nos números do BRASIL+.
+- Testes: `tests/test_habitantes_extra.py`.
