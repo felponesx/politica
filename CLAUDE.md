@@ -810,3 +810,10 @@ Não rodados: Portal da Transparência (chave), PGFN, Defesa Civil.
 - Categoria de risco: lista oficial de 2026 do MMA (flora, Portaria 1.783/2026; fungos de 2026). Bioma, estados, grupo (angiospermas, gimnospermas, pteridófitas, briófitas) e nome comum vêm da base de 2020 só quando a espécie consta nela; sem isso, "Não informado" (nunca estimado). Nome popular faltante: GBIF (`flora_nomes_gbif.json`, `fungos_nomes_gbif.json`).
 - A lista oficial não diz quais espécies são árvores; não há filtro de árvore. Líquens e algas não aparecem nestas listas. Sem fotos nesta aba.
 - Testes: `tests/test_flora_ameacada.py`.
+
+## Religião: população por estado e organizações religiosas (nov/2026)
+- Aba "Religião" em População (`#/populacao/religiao`) e bloco de religião na ficha de cada estado (`#/populacao/<UF>`, `popReligiaoUF`). `GET /religiao` (`app/religiao.py`), dados em `app/dados/religiao.json`, gerados por `python -m scripts.religiao`; cópia: `python -m scripts.religiao_copia site/dados` (grava `/religiao` na parte s<N>).
+- Religião: Censo 2022, IBGE tabela 9537, pessoas de 10 anos ou mais (uma religião por pessoa). "Várias religiões" NÃO é medido: o Censo não tem essa pergunta; a API e a tela dizem isso.
+- Organizações religiosas: Cadastro Central de Empresas, IBGE tabela 9528, classe CNAE 94.91-0 (unidades locais registradas, 2022 a 2024). Não é a contagem de todas as igrejas (grupos sem registro ficam de fora). A tabela 6450 (2006–2021) não é comparável: em 2021 dá 85.806 e em 2022, 197.594. Por isso não entra na série.
+- Diferença de até 2 pessoas entre o total e a soma das religiões em alguns estados (arredondamento do IBGE): a tela avisa.
+- Testes: `tests/test_religiao.py`.
