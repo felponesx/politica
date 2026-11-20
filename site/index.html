@@ -6698,10 +6698,12 @@ function popSobMount(){const f=$("#sobF");if(!f)return;f.onsubmit=e=>{e.preventD
  r.innerHTML=rload();
  apiGet("/sobrenomes?nome="+encodeURIComponent(n)).then(d=>{const x=$("#sobR");if(x)x.innerHTML=popSobResp(d)}).catch(err=>{const x=$("#sobR");if(!x)return;const st=err.status;
   x.innerHTML=st===404?rvazio(esc(err.message||"A Wikipédia não tem uma origem registrada para este sobrenome.")):st===422?rvazio("Digite um sobrenome com pelo menos 2 letras."):st===503?rvazio("A consulta à Wikipédia está indisponível agora. Tente de novo em instantes."):rerro(err)})}}
-P.populacao=a=>{const sub=String(a||""),sob=sub.toLowerCase()==="sobrenomes",rel=sub.toLowerCase()==="religiao",sst=sub.toLowerCase()==="saude-trabalho",uf=!sob&&!rel&&!sst&&sub&&UF[sub.toUpperCase()]?sub.toUpperCase():"";
- const tabs=`<div class="tabs"><a class="tabl${!sob&&!rel&&!sst?" on":""}" href="#/populacao">Pessoas</a><a class="tabl${rel?" on":""}" href="#/populacao/religiao">Religião</a><a class="tabl${sst?" on":""}" href="#/populacao/saude-trabalho">Saúde e trabalho</a><a class="tabl${sob?" on":""}" href="#/populacao/sobrenomes">Sobrenomes</a></div>`;
- const cab=`<div class="ph"><div><h1>População</h1><p>${sob?"De onde vem um sobrenome, pela história registrada na Wikipédia.":rel?"Religião declarada no Censo 2022 e organizações religiosas registradas, em cada estado.":sst?"Para onde a população está indo entre as cidades, saúde mental e trabalho por aplicativo.":"Quantas pessoas são indígenas, pardas, pretas, brancas ou mulheres, e a vacinação, as mortes e as internações em cada estado."}</p></div></div>${tabs}`;
+P.populacao=a=>{const sub=String(a||""),sob=sub.toLowerCase()==="sobrenomes",rel=sub.toLowerCase()==="religiao",sst=sub.toLowerCase()==="saude-trabalho",crs=sub.toLowerCase()==="crises",uf=!sob&&!rel&&!sst&&!crs&&sub&&UF[sub.toUpperCase()]?sub.toUpperCase():"";
+ const tabs=`<div class="tabs"><a class="tabl${!sob&&!rel&&!sst&&!crs?" on":""}" href="#/populacao">Pessoas</a><a class="tabl${rel?" on":""}" href="#/populacao/religiao">Religião</a><a class="tabl${sst?" on":""}" href="#/populacao/saude-trabalho">Saúde e trabalho</a><a class="tabl${crs?" on":""}" href="#/populacao/crises">Crises e benefícios</a><a class="tabl${sob?" on":""}" href="#/populacao/sobrenomes">Sobrenomes</a></div>`;
+ const cab=`<div class="ph"><div><h1>População</h1><p>${sob?"De onde vem um sobrenome, pela história registrada na Wikipédia.":rel?"Religião declarada no Censo 2022 e organizações religiosas registradas, em cada estado.":crs?"Saúde mental, deficiência e autismo, benefícios sociais e jovens fora da escola e do trabalho, em cada estado.":sst?"Para onde a população está indo entre as cidades, saúde mental e trabalho por aplicativo.":"Quantas pessoas são indígenas, pardas, pretas, brancas ou mulheres, e a vacinação, as mortes e as internações em cada estado."}</p></div></div>${tabs}`;
  if(sob)return{html:`${cab}<div id="popV">${API.on?(API.snap?`<div class="rbanner">A busca de sobrenomes precisa do servidor BRASIL+ ligado. A cópia publicada não tem essa consulta.</div>`:popSobHtml()):`<div class="rbanner">Esta busca aparece quando o site está ligado ao servidor BRASIL+.</div>`}</div>`,mount(){if(API.on&&!API.snap)popSobMount()}};
+ if(crs)return{html:`${cab}<div id="popV">${API.on?rload():`<div class="rbanner">Esta aba aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
+  mount(){if(!API.on)return;apiGet("/populacao/extra").then(X=>{const v=$("#popV");if(v)popCrisesTela(v,X)}).catch(e=>{const v=$("#popV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("Os dados desta aba ainda não foram gerados."):rerro(e)})}};
  if(sst)return{html:`${cab}<div id="popV">${API.on?rload():`<div class="rbanner">Esta aba aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
   mount(){if(!API.on)return;apiGet("/populacao/extra").then(X=>{const v=$("#popV");if(v)popSaudeTrabalhoTela(v,X)}).catch(e=>{const v=$("#popV");if(v)v.innerHTML=e.status===404||/faz parte da cópia/.test(e.message||"")?rvazio("Os dados desta aba ainda não foram gerados."):rerro(e)})}};
  if(rel)return{html:`${cab}<div id="popV">${API.on?rload():`<div class="rbanner">A religião aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`}</div>`,
@@ -6749,6 +6751,42 @@ function popSaudeTrabalhoTela(v,X){const I=X.interiorizacao,D=I.dados,BR=D.BR||{
  const caged=`<div class="panel mt"><h2>Quem sai das empresas</h2><p class="small muted" style="margin:0">Os pedidos de demissão (quem decide sair da empresa) ainda não estão na base do BRASIL+. O CAGED tem os desligamentos, mas o motivo ainda não é separado nos números guardados. Quando estiver, aparece aqui por estado.</p></div>`;
  const depois=`${depHtml}${platHtml}${caged}<div class="panel mt"><h2>Resumo</h2><p class="small muted" style="margin:0">Fonte do crescimento: ${esc(I.fonte)}. ${esc(I.metodo)}</p></div>`;
  lacPainel(v,{E,M,G,rota:"populacao",kpis:kp,antes,depois,ini:"c100"});
+}
+/* ----- População · crises e benefícios (saúde mental, deficiência e autismo, benefícios e juventude), por estado ----- */
+function popCrisesTela(v,X){
+ const C=X.crises;
+ if(!C||!C.uf){v.innerHTML=rvazio("Os dados desta aba ainda não foram gerados.");return}
+ const U=C.uf,BR=U.BR||{},F=C.fontes||{},P=C.periodos||{},mg=String(P.gas_mes||"");
+ const mesGas=mg.length===6?`${mg.slice(4)}/${mg.slice(0,4)}`:"o último mês publicado";
+ const E={};Object.keys(U).forEach(u=>{if(u!=="BR")E[u]=U[u]});
+ const pct=x=>x==null?"—":lacD(x,1)+"%";
+ const mi=x=>x==null?"—":lacD(x/1e6,1)+" milhões";
+ const M={
+  dep19:["Depressão diagnosticada, 2019",e=>e.depressao_prof_2019_pct,pct,"Adultos de 18 anos ou mais que referem diagnóstico de depressão por profissional de saúde mental, em % dos adultos do estado (PNS 2019)."],
+  dep13:["Depressão diagnosticada, 2013",e=>e.depressao_prof_2013_pct,pct,"O mesmo indicador da PNS 2013, para comparar com 2019."],
+  remedio:["Quem tem depressão e usa remédio",e=>e.depressao_remedio_2019_pct,pct,"Entre as pessoas com depressão, quantas usaram remédio para depressão nas duas semanas antes da pesquisa (PNS 2019)."],
+  outros:["Outros transtornos graves, 2013",e=>e.outros_transtornos_2013_pct,pct,"Esquizofrenia, transtorno bipolar, psicose ou TOC, em % dos adultos (PNS 2013)."],
+  def:["Pessoas com deficiência",e=>e.deficiencia_pct,pct,"Pessoas de 2 anos ou mais com alguma deficiência, pelas perguntas de dificuldade permanente (Censo 2022)."],
+  visual:["Dificuldade para enxergar",e=>e.def_visual_pct,pct,"Pessoas com dificuldade permanente para enxergar, mesmo usando óculos ou lentes (Censo 2022). Uma pessoa pode ter mais de uma dificuldade."],
+  auditiva:["Dificuldade para ouvir",e=>e.def_auditiva_pct,pct,"Pessoas com dificuldade permanente para ouvir, mesmo usando aparelho auditivo (Censo 2022)."],
+  motora:["Dificuldade para andar",e=>e.def_motora_pct,pct,"Pessoas com dificuldade permanente para andar ou subir degraus, mesmo com prótese ou bengala (Censo 2022)."],
+  autismo:["Autismo declarado",e=>e.autismo_pct,pct,"Pessoas que declararam diagnóstico de autismo no Censo 2022, em % da população. Depende do que foi declarado no questionário."],
+  bolsa:["Domicílios com Bolsa Família",e=>e.bolsa_domicilios_pct,pct,"Domicílios em que algum morador recebeu Bolsa Família, em % dos domicílios do estado (PNAD 2025, dividido pelos domicílios do Censo 2022)."],
+  gas:["Pessoas com o Gás do Povo",e=>e.gas_pessoas_pct_pop,pct,"Pessoas nas famílias que receberam o Gás do Povo no último mês publicado, em % da população do estado (Portal da Transparência; população do Censo 2022)."],
+  nemnem:["Jovens que não estudam nem trabalham",e=>e.nem_nem_pct,pct,"Pessoas de 15 a 24 anos que não estavam ocupadas, não estudavam e não faziam curso (PNAD 2025, indicador da ONU)."],
+  analf:["Analfabetismo (15 anos ou mais)",e=>e.analfabetismo_pct,pct,"100 menos a taxa de alfabetização do Censo 2022 (alfabetizado é quem sabe ler e escrever um bilhete simples)."]};
+ const G=[["Saúde mental","dep19","dep13","remedio","outros"],["Deficiência e autismo","def","visual","auditiva","motora","autismo"],["Benefícios sociais","bolsa","gas"],["Jovens e educação","nemnem","analf"]];
+ const kp=[
+  lacKpi("Adultos com depressão diagnosticada",pct(BR.depressao_prof_2019_pct),`2019; em 2013 era ${pct(BR.depressao_prof_2013_pct)}`),
+  lacKpi("Pessoas com deficiência",mi(BR.com_deficiencia),`${pct(BR.deficiencia_pct)} das pessoas de 2 anos ou mais (Censo 2022)`),
+  lacKpi("Autistas declarados",mi(BR.autismo_n),`${pct(BR.autismo_pct)} da população (Censo 2022)`),
+  lacKpi("Domicílios com Bolsa Família",pct(BR.bolsa_domicilios_pct),`${mi(BR.bolsa_domicilios_mil*1000)} de domicílios (PNAD 2025)`),
+  lacKpi("Pessoas com o Gás do Povo",mi(BR.gas_pessoas),`${pct(BR.gas_pessoas_pct_pop)} da população, ${mesGas}`),
+  lacKpi("Jovens que não estudam nem trabalham",pct(BR.nem_nem_pct),"de 15 a 24 anos, 2025")].join("");
+ const antes=`<div class="rbanner esc-aviso">Cada número vem de uma pesquisa ou de um arquivo oficial, e tem o seu ano. Quase tudo é o que a pessoa ou a família declarou ou recebeu: mostra onde o problema aparece, não a causa dele.</div>`;
+ const fontes=Object.values(F).map(f=>`<li>${esc(f.fonte)}${f.link?` — <a href="${esc(f.link)}">abrir a tabela</a>`:""}<br><span class="small muted">${esc(f.metodo)}</span></li>`).join("");
+ const depois=`<div class="panel mt"><h2>De onde vem cada número</h2><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:10px">${fontes}</ul></div><div class="panel mt"><h2>Quem sai das empresas</h2><p class="small muted" style="margin:0">Os pedidos de demissão (quem decide sair da empresa) ainda não estão na base do BRASIL+. O CAGED tem os desligamentos, mas o motivo ainda não é separado nos números guardados.</p></div>`;
+ lacPainel(v,{E,M,G,rota:"populacao",kpis:kp,antes,depois,ini:"dep19"});
 }
 /* ----- Social e Trabalho ----- */
 const SOC_G=[["Bolsa Família e BPC","bolsa100","bolsaval","bpc100"],["Trabalho e renda","desoc","renda"]];
