@@ -749,9 +749,9 @@
   },
   {
    "slug": "pessoas",
-   "nome": "Pessoas e recordes",
+   "nome": "Pessoas e prêmios",
    "icone": "🏅",
-   "resumo": "Brasileiros premiados como melhores do mundo, com o Nobel, com a Medalha Fields e com recordes do Guinness. Lista curada: nem todos os prêmios de pessoas do Brasil estão aqui.",
+   "resumo": "Brasileiros premiados como melhores do mundo, no Grammy e Grammy Latino, com o Nobel, a Medalha Fields, títulos mundiais de Fórmula 1 e recordes do Guinness. Lista curada e incompleta: nem todos os prêmios de pessoas do Brasil estão aqui.",
    "grupos": [
     {
      "nome": "Bola de Ouro (melhor jogador do mundo)",
@@ -843,6 +843,646 @@
        "ano": 2012,
        "resultado": "Recorde Guinness",
        "detalhe": "Vado Souza: 40 anos e 7 meses dirigindo e atuando no espetáculo solo 'O Navio Negreiro' (citado na matéria de 2012)"
+      }
+     ]
+    },
+    {
+     "nome": "Grammy (EUA)",
+     "descricao": "Vencedores brasileiros do Grammy, da Recording Academy. Lista da Wikidata, que pode não estar completa: confira cada item no link.",
+     "fonte": "https://www.grammy.com/",
+     "brasil": [
+      {
+       "ano": 1965,
+       "resultado": "Grammy Award para álbum do ano",
+       "detalhe": "João Gilberto",
+       "fonte": "https://www.wikidata.org/wiki/Q192359"
+      },
+      {
+       "ano": 1965,
+       "resultado": "Prêmio Grammy para Gravação do Ano",
+       "detalhe": "Astrud Gilberto",
+       "fonte": "https://www.wikidata.org/wiki/Q230401"
+      },
+      {
+       "ano": 1989,
+       "resultado": "Grammy Award para melhor álbum de pop latino",
+       "detalhe": "Roberto Carlos",
+       "fonte": "https://www.wikidata.org/wiki/Q465191"
+      },
+      {
+       "ano": 1992,
+       "resultado": "Grammy Award para álbum do ano",
+       "detalhe": "Sérgio Mendes",
+       "fonte": "https://www.wikidata.org/wiki/Q337359"
+      },
+      {
+       "ano": 1993,
+       "resultado": "Grammy Award para Best World Music Album",
+       "detalhe": "Sérgio Mendes",
+       "fonte": "https://www.wikidata.org/wiki/Q337359"
+      },
+      {
+       "ano": 1999,
+       "resultado": "Grammy Award para Best World Music Album",
+       "detalhe": "Gilberto Gil",
+       "fonte": "https://www.wikidata.org/wiki/Q221479"
+      },
+      {
+       "ano": 2000,
+       "resultado": "Grammy Award",
+       "detalhe": "Walter Afanasieff",
+       "fonte": "https://www.wikidata.org/wiki/Q721684"
+      },
+      {
+       "ano": 2001,
+       "resultado": "Grammy Award",
+       "detalhe": "Alex Klein",
+       "fonte": "https://www.wikidata.org/wiki/Q4346111"
+      },
+      {
+       "ano": 2001,
+       "resultado": "Grammy Award para Best World Music Album",
+       "detalhe": "João Gilberto",
+       "fonte": "https://www.wikidata.org/wiki/Q192359"
+      },
+      {
+       "ano": 2005,
+       "resultado": "Grammy Award for Best Contemporary World Music Album",
+       "detalhe": "Gilberto Gil",
+       "fonte": "https://www.wikidata.org/wiki/Q221479"
+      },
+      {
+       "ano": 2005,
+       "resultado": "Grammy Award for Best Contemporary World Music Album",
+       "detalhe": "Liminha (produtor musical)",
+       "fonte": "https://www.wikidata.org/wiki/Q10318381"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Grammy Award para Best World Music Album",
+       "detalhe": "Gilberto Gil",
+       "fonte": "https://www.wikidata.org/wiki/Q221479"
+      }
+     ]
+    },
+    {
+     "nome": "Grammy Latino",
+     "descricao": "Vencedores brasileiros do Grammy Latino, da Latin Recording Academy. Lista da Wikidata, que pode não estar completa: confira cada item no link.",
+     "fonte": "https://www.latingrammy.com/",
+     "brasil": [
+      {
+       "ano": 1996,
+       "resultado": "Grammy Award para Melhor Álbum de Jazz Latino",
+       "detalhe": "Antônio Carlos Jobim",
+       "fonte": "https://www.wikidata.org/wiki/Q200131"
+      },
+      {
+       "ano": 2001,
+       "resultado": "Grammy Latino de Melhor Álbum de Rock ou de Música Alternativa em Língua Portuguesa",
+       "detalhe": "Roberto de Carvalho",
+       "fonte": "https://www.wikidata.org/wiki/Q10363464"
+      },
+      {
+       "ano": 2002,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "Paulo César Pinheiro",
+       "fonte": "https://www.wikidata.org/wiki/Q10346529"
+      },
+      {
+       "ano": 2002,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Chico Buarque",
+       "fonte": "https://www.wikidata.org/wiki/Q333632"
+      },
+      {
+       "ano": 2002,
+       "resultado": "Prêmio Grammy Latino para Melhor Álbum Infantil Latino",
+       "detalhe": "Xuxa",
+       "fonte": "https://www.wikidata.org/wiki/Q275939"
+      },
+      {
+       "ano": 2003,
+       "resultado": "Prêmio Grammy Latino para Melhor Álbum Infantil Latino",
+       "detalhe": "Xuxa",
+       "fonte": "https://www.wikidata.org/wiki/Q275939"
+      },
+      {
+       "ano": 2004,
+       "resultado": "Grammy Latino de Melhor Artista Revelação",
+       "detalhe": "Maria Rita",
+       "fonte": "https://www.wikidata.org/wiki/Q271583"
+      },
+      {
+       "ano": 2004,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Cristã (Língua Portuguesa)",
+       "detalhe": "Ricardo Feghali",
+       "fonte": "https://www.wikidata.org/wiki/Q10361124"
+      },
+      {
+       "ano": 2004,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Roberto Carlos",
+       "fonte": "https://www.wikidata.org/wiki/Q465191"
+      },
+      {
+       "ano": 2005,
+       "resultado": "Grammy Latino de Álbum do Ano",
+       "detalhe": "Ivan Lins",
+       "fonte": "https://www.wikidata.org/wiki/Q703330"
+      },
+      {
+       "ano": 2005,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Jorge Ben Jor",
+       "fonte": "https://www.wikidata.org/wiki/Q119015"
+      },
+      {
+       "ano": 2005,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Sérgio Mendes",
+       "fonte": "https://www.wikidata.org/wiki/Q337359"
+      },
+      {
+       "ano": 2006,
+       "resultado": "Grammy Latino de Melhor Álbum Pop Contemporâneo em Língua Portuguesa",
+       "detalhe": "Sérgio Mendes",
+       "fonte": "https://www.wikidata.org/wiki/Q337359"
+      },
+      {
+       "ano": 2006,
+       "resultado": "Grammy Latino de Melhor Álbum de Rock ou de Música Alternativa em Língua Portuguesa",
+       "detalhe": "Liminha (produtor musical)",
+       "fonte": "https://www.wikidata.org/wiki/Q10318381"
+      },
+      {
+       "ano": 2006,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "César Camargo Mariano",
+       "fonte": "https://www.wikidata.org/wiki/Q5065421"
+      },
+      {
+       "ano": 2007,
+       "resultado": "Grammy Latino de Melhor Álbum de Cantor-Compositor",
+       "detalhe": "Caetano Veloso",
+       "fonte": "https://www.wikidata.org/wiki/Q309983"
+      },
+      {
+       "ano": 2008,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Astrud Gilberto",
+       "fonte": "https://www.wikidata.org/wiki/Q230401"
+      },
+      {
+       "ano": 2009,
+       "resultado": "Grammy Latino de Melhor Álbum Pop Contemporâneo em Língua Portuguesa",
+       "detalhe": "Ricardo Feghali",
+       "fonte": "https://www.wikidata.org/wiki/Q10361124"
+      },
+      {
+       "ano": 2009,
+       "resultado": "Grammy Latino de Melhor Álbum de Cantor-Compositor",
+       "detalhe": "Caetano Veloso",
+       "fonte": "https://www.wikidata.org/wiki/Q309983"
+      },
+      {
+       "ano": 2009,
+       "resultado": "Premio Grammy Latino de Melhor Video Musical Versão Longa",
+       "detalhe": "Guto Graça Mello",
+       "fonte": "https://www.wikidata.org/wiki/Q10293197"
+      },
+      {
+       "ano": 2009,
+       "resultado": "Premio Grammy Latino de Melhor Video Musical Versão Longa",
+       "detalhe": "Monique Gardenberg",
+       "fonte": "https://www.wikidata.org/wiki/Q10331848"
+      },
+      {
+       "ano": 2009,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Beth Carvalho",
+       "fonte": "https://www.wikidata.org/wiki/Q458663"
+      },
+      {
+       "ano": 2010,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Liminha (produtor musical)",
+       "fonte": "https://www.wikidata.org/wiki/Q10318381"
+      },
+      {
+       "ano": 2010,
+       "resultado": "Grammy Latino para Melhor Álbum de Jazz Latino/Jazz",
+       "detalhe": "João Donato",
+       "fonte": "https://www.wikidata.org/wiki/Q1336103"
+      },
+      {
+       "ano": 2010,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "João Donato",
+       "fonte": "https://www.wikidata.org/wiki/Q1336103"
+      },
+      {
+       "ano": 2011,
+       "resultado": "Grammy Latino de Melhor Álbum Pop Contemporâneo em Língua Portuguesa",
+       "detalhe": "Liminha (produtor musical)",
+       "fonte": "https://www.wikidata.org/wiki/Q10318381"
+      },
+      {
+       "ano": 2011,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Cristã (Língua Portuguesa)",
+       "detalhe": "Ricardo Feghali",
+       "fonte": "https://www.wikidata.org/wiki/Q10361124"
+      },
+      {
+       "ano": 2011,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Djavan",
+       "fonte": "https://www.wikidata.org/wiki/Q939829"
+      },
+      {
+       "ano": 2011,
+       "resultado": "Prêmio Grammy Latino para Melhor Álbum Infantil Latino",
+       "detalhe": "John Ulhoa",
+       "fonte": "https://www.wikidata.org/wiki/Q10307902"
+      },
+      {
+       "ano": 2011,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Gal Costa",
+       "fonte": "https://www.wikidata.org/wiki/Q236361"
+      },
+      {
+       "ano": 2012,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "Chico Buarque",
+       "fonte": "https://www.wikidata.org/wiki/Q333632"
+      },
+      {
+       "ano": 2012,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Milton Nascimento",
+       "fonte": "https://www.wikidata.org/wiki/Q542847"
+      },
+      {
+       "ano": 2012,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Toquinho",
+       "fonte": "https://www.wikidata.org/wiki/Q983074"
+      },
+      {
+       "ano": 2013,
+       "resultado": "Grammy Latino de Melhor Álbum de Cantor-Compositor",
+       "detalhe": "Caetano Veloso",
+       "fonte": "https://www.wikidata.org/wiki/Q309983"
+      },
+      {
+       "ano": 2013,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Roberto Menescal",
+       "fonte": "https://www.wikidata.org/wiki/Q2395222"
+      },
+      {
+       "ano": 2014,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Ney Matogrosso",
+       "fonte": "https://www.wikidata.org/wiki/Q742334"
+      },
+      {
+       "ano": 2015,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Djavan",
+       "fonte": "https://www.wikidata.org/wiki/Q939829"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Elza Soares",
+       "fonte": "https://www.wikidata.org/wiki/Q435176"
+      },
+      {
+       "ano": 2016,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Sertaneja",
+       "detalhe": "Paula Fernandes",
+       "fonte": "https://www.wikidata.org/wiki/Q483682"
+      },
+      {
+       "ano": 2017,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "João Bosco",
+       "fonte": "https://www.wikidata.org/wiki/Q1356607"
+      },
+      {
+       "ano": 2018,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Erasmo Carlos",
+       "fonte": "https://www.wikidata.org/wiki/Q2085377"
+      },
+      {
+       "ano": 2019,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Sertaneja",
+       "detalhe": "Marília Mendonça",
+       "fonte": "https://www.wikidata.org/wiki/Q24040310"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "Francisco Bosco",
+       "fonte": "https://www.wikidata.org/wiki/Q48856862"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "João Bosco",
+       "fonte": "https://www.wikidata.org/wiki/Q1356607"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Álbum Pop Contemporâneo em Língua Portuguesa",
+       "detalhe": "Céu",
+       "fonte": "https://www.wikidata.org/wiki/Q468000"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Cristã (Língua Portuguesa)",
+       "detalhe": "Aline Barros",
+       "fonte": "https://www.wikidata.org/wiki/Q968857"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Toninho Horta",
+       "fonte": "https://www.wikidata.org/wiki/Q7821495"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Sertaneja",
+       "detalhe": "Paula Fernandes",
+       "fonte": "https://www.wikidata.org/wiki/Q483682"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Álbum de Música de Raízes em Língua Portuguesa",
+       "detalhe": "Mariana Aydar",
+       "fonte": "https://www.wikidata.org/wiki/Q535738"
+      },
+      {
+       "ano": 2020,
+       "resultado": "Grammy Latino de Melhor Álbum de Rock ou de Música Alternativa em Língua Portuguesa",
+       "detalhe": "Emicida",
+       "fonte": "https://www.wikidata.org/wiki/Q611208"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Grammy Latino de Gravação do Ano",
+       "detalhe": "Caetano Veloso",
+       "fonte": "https://www.wikidata.org/wiki/Q309983"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "Lenine",
+       "fonte": "https://www.wikidata.org/wiki/Q715987"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Zeca Baleiro",
+       "fonte": "https://www.wikidata.org/wiki/Q2914811"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Grammy Latino de Melhor Álbum de Música de Raízes em Língua Portuguesa",
+       "detalhe": "Ivete Sangalo",
+       "fonte": "https://www.wikidata.org/wiki/Q235940"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Grammy Latino de Melhor Álbum de Samba/Pagode",
+       "detalhe": "Paulinho da Viola",
+       "fonte": "https://www.wikidata.org/wiki/Q241801"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Premio Grammy Latino de Melhor Álbum Instrumental",
+       "detalhe": "Toquinho",
+       "fonte": "https://www.wikidata.org/wiki/Q983074"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Premio Grammy Latino de Melhor Álbum Instrumental",
+       "detalhe": "Yamandu Costa",
+       "fonte": "https://www.wikidata.org/wiki/Q655746"
+      },
+      {
+       "ano": 2021,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Martinho da Vila",
+       "fonte": "https://www.wikidata.org/wiki/Q385498"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "Marisa Monte",
+       "fonte": "https://www.wikidata.org/wiki/Q51960"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "Liniker",
+       "fonte": "https://www.wikidata.org/wiki/Q23905341"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Grammy Latino de Melhor Álbum de Música de Raízes em Língua Portuguesa",
+       "detalhe": "Alceu Valença",
+       "fonte": "https://www.wikidata.org/wiki/Q560788"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Grammy Latino de Melhor Álbum de Rock ou de Música Alternativa em Língua Portuguesa",
+       "detalhe": "Erasmo Carlos",
+       "fonte": "https://www.wikidata.org/wiki/Q2085377"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Grammy Latino de Melhor Álbum de Samba/Pagode",
+       "detalhe": "Ludmilla",
+       "fonte": "https://www.wikidata.org/wiki/Q16337938"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Premio Grammy Latino de Melhor Álbum Instrumental",
+       "detalhe": "Hamilton de Holanda",
+       "fonte": "https://www.wikidata.org/wiki/Q5645273"
+      },
+      {
+       "ano": 2022,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Rita Lee",
+       "fonte": "https://www.wikidata.org/wiki/Q265179"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Canção em Língua Portuguesa",
+       "detalhe": "Tiago Iorc",
+       "fonte": "https://www.wikidata.org/wiki/Q7800072"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Interpretação Urbana em Língua Portuguesa",
+       "detalhe": "Criolo",
+       "fonte": "https://www.wikidata.org/wiki/Q5185792"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Álbum Pop Contemporâneo em Língua Portuguesa",
+       "detalhe": "Xênia França",
+       "fonte": "https://www.wikidata.org/wiki/Q64213699"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Popular Brasileira",
+       "detalhe": "João Donato",
+       "fonte": "https://www.wikidata.org/wiki/Q1336103"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Sertaneja",
+       "detalhe": "Marília Mendonça",
+       "fonte": "https://www.wikidata.org/wiki/Q24040310"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Álbum de Música de Raízes em Língua Portuguesa",
+       "detalhe": "Gaby Amarantos",
+       "fonte": "https://www.wikidata.org/wiki/Q4123831"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Grammy Latino de Melhor Álbum de Samba/Pagode",
+       "detalhe": "Martinho da Vila",
+       "fonte": "https://www.wikidata.org/wiki/Q385498"
+      },
+      {
+       "ano": 2023,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Simone",
+       "fonte": "https://www.wikidata.org/wiki/Q2744497"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Grammy Latino de Melhor Interpretação Urbana em Língua Portuguesa",
+       "detalhe": "Gabriel o Pensador",
+       "fonte": "https://www.wikidata.org/wiki/Q2747761"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Grammy Latino de Melhor Interpretação Urbana em Língua Portuguesa",
+       "detalhe": "Lulu Santos",
+       "fonte": "https://www.wikidata.org/wiki/Q524788"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Grammy Latino de Melhor Interpretação Urbana em Língua Portuguesa",
+       "detalhe": "Xamã",
+       "fonte": "https://www.wikidata.org/wiki/Q106977922"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Grammy Latino de Melhor Álbum de Música Sertaneja",
+       "detalhe": "Ana Castela",
+       "fonte": "https://www.wikidata.org/wiki/Q114279907"
+      },
+      {
+       "ano": 2024,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Lulu Santos",
+       "fonte": "https://www.wikidata.org/wiki/Q524788"
+      },
+      {
+       "ano": 2025,
+       "resultado": "Prêmio Grammy Latino à Excelência Musical",
+       "detalhe": "Ivan Lins",
+       "fonte": "https://www.wikidata.org/wiki/Q703330"
+      }
+     ]
+    },
+    {
+     "nome": "Campeões mundiais de Fórmula 1",
+     "descricao": "Títulos de pilotos brasileiros no Campeonato Mundial de Fórmula 1 (oito títulos ao todo).",
+     "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil",
+     "brasil": [
+      {
+       "ano": 1972,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Emerson Fittipaldi",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1974,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Emerson Fittipaldi",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1981,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Nelson Piquet",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1983,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Nelson Piquet",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1987,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Nelson Piquet",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1988,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Ayrton Senna",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1990,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Ayrton Senna",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      },
+      {
+       "ano": 1991,
+       "resultado": "Campeão mundial de F1",
+       "detalhe": "Ayrton Senna",
+       "fonte": "https://en.wikipedia.org/wiki/Formula_One_drivers_from_Brazil"
+      }
+     ]
+    },
+    {
+     "nome": "Bola de Ouro da Copa do Mundo",
+     "descricao": "Melhor jogador de cada Copa do Mundo, pela FIFA. Brasileiros premiados segundo a Wikidata.",
+     "fonte": "https://www.wikidata.org/",
+     "brasil": [
+      {
+       "ano": 1970,
+       "resultado": "Bola de Ouro da Copa",
+       "detalhe": "Pelé",
+       "fonte": "https://www.wikidata.org/wiki/Q12897"
+      },
+      {
+       "ano": 1994,
+       "resultado": "Bola de Ouro da Copa",
+       "detalhe": "Romário",
+       "fonte": "https://www.wikidata.org/wiki/Q178649"
+      },
+      {
+       "ano": 1998,
+       "resultado": "Bola de Ouro da Copa",
+       "detalhe": "Ronaldo",
+       "fonte": "https://www.wikidata.org/wiki/Q529207"
       }
      ]
     }

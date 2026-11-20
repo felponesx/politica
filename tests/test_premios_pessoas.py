@@ -12,7 +12,7 @@ def _pessoas():
 
 def test_todo_item_tem_ano_resultado_quem_e_fonte_https():
     c = _pessoas()
-    assert c["total"] == 13
+    assert c["total"] == 13 + 12 + 79 + 8 + 3 - 0  # grupos antigos (13) + Grammy (12) + Grammy Latino (79) + F1 (8) + Bola de Ouro da Copa (3)
     for g in c["grupos"]:
         assert g["fonte"].startswith("https://"), g["nome"]
         for e in g["brasil"]:
@@ -32,3 +32,14 @@ def test_rota_premios_traz_a_categoria_pessoas():
     r = TestClient(app).get("/premios")
     assert r.status_code == 200
     assert any(c["slug"] == "pessoas" for c in r.json()["categorias"])
+
+
+def test_grupos_novos_e_fonte_por_item():
+    nomes = [g["nome"] for g in _pessoas()["grupos"]]
+    for n in ["Grammy (EUA)", "Grammy Latino", "Campeões mundiais de Fórmula 1", "Bola de Ouro da Copa do Mundo"]:
+        assert n in nomes, n
+    for g in _pessoas()["grupos"]:
+        for e in g["brasil"]:
+            assert e.get("fonte", g["fonte"]).startswith("https://"), (g["nome"], e)
+    f1 = [e["detalhe"] for g in _pessoas()["grupos"] if g["nome"].startswith("Campeões") for e in g["brasil"]]
+    assert f1.count("Ayrton Senna") == 3 and f1.count("Nelson Piquet") == 3 and f1.count("Emerson Fittipaldi") == 2
