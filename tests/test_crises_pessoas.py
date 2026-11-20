@@ -112,3 +112,27 @@ def test_populacao_extra_traz_as_crises():
     if r.status_code == 404:
         return
     assert r.status_code == 200 and "crises" in r.json()
+
+
+def test_sinesp_12_meses_pega_a_janela_ate_o_ultimo_mes_publicado():
+    m25 = {"SP": {"2025-10": {"desaparecidos": 900, "localizados": 500},
+                  "2025-11": {"desaparecidos": 100, "localizados": 50}}}
+    m26 = {"SP": {"2026-01": {"desaparecidos": 200, "localizados": 80}},
+           "AC": {"2026-01": {"desaparecidos": 7}}}
+    r = cp.sinesp_12_meses({2025: m25, 2026: m26})
+    assert r["ultimo_mes"] == "2026-01"
+    # janela de 12 meses: 2025-02 a 2026-01 → inclui 2025-10, 2025-11 e 2026-01 de SP
+    assert r["valores"]["SP"] == {"desaparecidos_12m": 1200, "localizados_12m": 630, "meses_12m": 3}
+    assert r["valores"]["AC"]["meses_12m"] == 1 and r["valores"]["AC"]["desaparecidos_12m"] == 7
+
+
+def test_sinesp_sem_dado_nao_vira_zero():
+    r = cp.sinesp_12_meses({})
+    assert r == {"valores": {}, "ultimo_mes": None}
+
+
+def test_moradores_de_rua_so_com_os_numeros_publicados():
+    assert cp.RUA_BR_DEZ_2025 == 365_822
+    assert cp.RUA_UF_DEZ_2025["SP"] == 150_958 and cp.RUA_UF_DEZ_2025["AP"] == 292
+    # estados sem número publicado não entram (não viram zero)
+    assert "AM" not in cp.RUA_UF_DEZ_2025

@@ -299,6 +299,15 @@ def coletar(mes: str | None = None) -> dict:
     if gas is None:
         falhas.append("Gás do Povo: nenhum mês publicado foi lido")
 
+    por_ano: dict[int, dict] = {}
+    with tempfile.TemporaryDirectory() as tmp:
+        for ano in SINESP_ANOS:
+            try:
+                por_ano[ano] = sinesp_mensal(ano, Path(tmp))
+            except Exception as e:  # noqa: BLE001
+                falhas.append(f"Sinesp {ano}: {str(e)[:160]}")
+    sinesp = sinesp_12_meses(por_ano) if por_ano else None
+
     pop = _populacao()
     periodos: dict[str, str] = {}
     for parte in (dep, deficiencia, autismo, nem):
@@ -322,6 +331,15 @@ def coletar(mes: str | None = None) -> dict:
             dom_sg = (partes.get("domicilios") or {}).get(sg, {}).get("domicilios")
             if dom_sg:
                 d["gas_familias_por_100_domicilios"] = round(d["gas_familias"] / dom_sg * 100, 2)
+    if sinesp:
+        valores_sin = dict(sinesp["valores"])
+        valores_sin["BR"] = {k: sum(d.get(k, 0) for d in sinesp["valores"].values())
+                             for k in ("desaparecidos_12m", "localizados_12m")}
+        partes["sinesp"] = valores_sin
+        periodos["sinesp_ultimo_mes"] = sinesp["ultimo_mes"]
+    partes["rua"] = {**{sg: {"rua_pessoas": v} for sg, v in RUA_UF_DEZ_2025.items()},
+                     "BR": {"rua_pessoas": RUA_BR_DEZ_2025}}
+    periodos["rua_mes"] = "2025-12"
     uf = _juntar(partes)
     pop["BR"] = sum(v for k, v in pop.items() if k != "BR")
     for sg in list(uf):
@@ -333,6 +351,14 @@ def coletar(mes: str | None = None) -> dict:
     if "BR" not in uf:
         uf["BR"] = {}
     uf["BR"]["populacao_2022"] = pop["BR"]
+    for sg, d in uf.items():
+        p_ = pop.get(sg)
+        if p_:
+            if d.get("desaparecidos_12m") is not None:
+                d["desaparecidos_12m_100mil"] = round(d["desaparecidos_12m"] / p_ * 1e5, 1)
+                d["localizados_12m_100mil"] = round(d["localizados_12m"] / p_ * 1e5, 1)
+            if d.get("rua_pessoas") is not None:
+                d["rua_por_100mil"] = round(d["rua_pessoas"] / p_ * 1e5, 1)
     if gas:
         # Brasil: porcentagem de pessoas com o Gás do Povo sobre a população do país
         uf.setdefault("BR", {})["gas_pessoas_pct_pop"] = round(uf["BR"]["gas_pessoas"] / pop["BR"] * 100, 2)
@@ -364,11 +390,71 @@ def coletar(mes: str | None = None) -> dict:
                     "metodo": "Famílias e pessoas (tamanho da família informado no cadastro) com o benefício pago no mês, por estado. "
                               "O Gás do Povo substituiu o Auxílio Gás (Vale-Gás). Só totais; nenhum CPF ou nome foi guardado. "
                               "A porcentagem usa a população do Censo 2022, por isso é aproximada."},
+            "desaparecidos": {"fonte": "Ministério da Justiça: Sinesp, ocorrências mensais (VDE), 2025 e 2026",
+                              "link": "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca/seguranca-publica/estatistica",
+                              "metodo": "Pessoas desaparecidas e localizadas registradas pelas polícias, somadas nos 12 meses até o último mês publicado, por estado. "
+                                        "O relatório anual da Senasp (anos-base 2024 e 2025) traz totais um pouco diferentes, por revisões e pela cobertura dos estados; "
+                                        "o site usa esta planilha. Localizada no período não é necessariamente a mesma pessoa desaparecida no período."},
+            "rua": {"fonte": "OBPopRua/UFMG, com base no CadÚnico (publicado pela Agência Brasil em 14/01/2026)",
+                    "link": "https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-01/estudo-aponta-mais-365-mil-pessoas-em-situacao-de-rua-no-brasil",
+                    "metodo": "Pessoas registradas no CadÚnico como em situação de rua, em dezembro de 2025 (em dezembro de 2024 eram 327.925). "
+                              "A matéria informa o número só de alguns estados e de regiões; estados sem número não aparecem no mapa. "
+                              "Quantas delas recebem Bolsa Família não entrou: o painel do MDS com esse recorte estava fora do ar em 20/11/2026."},
             "analfabetismo": {"fonte": "IBGE: Censo 2022 (tabela 9543)", "link": "https://sidra.ibge.gov.br/tabela/9543",
                               "metodo": "Analfabetismo de 15 anos ou mais = 100 menos a taxa de alfabetização do Censo 2022."},
         },
         "falhas": falhas,
     }
+
+
+RUA_BR_DEZ_2025 = 365_822          # CadÚnico, dez/2025 (OBPopRua/UFMG, Agência Brasil, 14/01/2026)
+RUA_UF_DEZ_2025 = {"SP": 150_958, "RJ": 33_656, "MG": 33_139, "AP": 292}   # só os estados que a matéria informa
+SINESP_ANOS = (2025, 2026)          # anos da planilha mensal de ocorrências do Sinesp (VDE), a parte mais nova entra na soma
+
+
+def sinesp_mensal(ano: int, destino: Path) -> dict:
+    """{UF: {AAAA-MM: {desaparecidos, localizados}}} da planilha mensal do Sinesp. Usa o mesmo leitor do projeto (seguranca.agregar_sinesp)."""
+    import httpx
+    import openpyxl
+    from app.collectors.seguranca import SINESP_URL, agregar_sinesp
+    alvo = destino / f"vde-{ano}.xlsx"
+    with httpx.stream("GET", SINESP_URL.format(ano=ano), headers={"User-Agent": UA}, timeout=900, follow_redirects=True) as r:
+        if r.status_code != 200:
+            raise RuntimeError(f"HTTP {r.status_code}")
+        with open(alvo, "wb") as f:
+            for parte in r.iter_bytes():
+                f.write(parte)
+    wb = openpyxl.load_workbook(alvo, read_only=True, data_only=True)
+    por = agregar_sinesp(wb.worksheets[0].iter_rows(values_only=True))
+    return {uf: {mes: {e: evs[e] for e in ("desaparecidos", "localizados") if e in evs} for mes, evs in m.items()}
+            for uf, m in por.items()}
+
+
+def sinesp_12_meses(por_ano: dict[int, dict]) -> dict:
+    """Soma desaparecidos e localizados dos 12 meses até o último mês publicado, por estado.
+    meses_12m mostra quantos meses da janela o estado tem: abaixo de 12, o total é parcial."""
+    meses: dict[str, dict] = {}
+    for por in por_ano.values():
+        for uf, ms in por.items():
+            for mes, ev in ms.items():
+                meses.setdefault(uf, {})[mes] = ev
+    if not meses:
+        return {"valores": {}, "ultimo_mes": None}
+    ultimo = max(max(ms) for ms in meses.values())
+    ano, mes = int(ultimo[:4]), int(ultimo[5:])
+    janela = []
+    for _ in range(12):
+        janela.append(f"{ano}-{mes:02d}")
+        mes -= 1
+        if mes == 0:
+            mes, ano = 12, ano - 1
+    out = {}
+    for uf, ms in meses.items():
+        com = [k for k in janela if k in ms]
+        out[uf] = {"desaparecidos_12m": sum(ms[k].get("desaparecidos", 0) for k in com),
+                   "localizados_12m": sum(ms[k].get("localizados", 0) for k in com),
+                   "meses_12m": len(com)}
+    return {"valores": out, "ultimo_mes": ultimo}
 
 
 def _mes_anterior(n: int) -> str:

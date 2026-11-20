@@ -6762,6 +6762,12 @@ function popCrisesTela(v,X){
  const pct=x=>x==null?"—":lacD(x,1)+"%";
  const mi=x=>x==null?"—":lacD(x/1e6,1)+" milhões";
  const M={
+  desap12:["Pessoas desaparecidas (12 meses)",e=>e.desaparecidos_12m,nf,"Pessoas registradas como desaparecidas pelas polícias nos 12 meses até out/2026, por estado (Sinesp, planilha mensal)."],
+  loc12:["Pessoas localizadas (12 meses)",e=>e.localizados_12m,nf,"Pessoas localizadas nos mesmos 12 meses (Sinesp). Não é necessariamente a mesma pessoa que foi registrada como desaparecida no período."],
+  desap100k:["Desaparecidas a cada 100 mil habitantes",e=>e.desaparecidos_12m_100mil,v=>lacD(v,1),"Desaparecimentos dos 12 meses por 100 mil habitantes do estado (população do Censo 2022). Cada estado registra de um jeito: compare com cuidado."],
+  loc100k:["Localizadas a cada 100 mil habitantes",e=>e.localizados_12m_100mil,v=>lacD(v,1),"Localizações dos 12 meses por 100 mil habitantes do estado (Sinesp)."],
+  rua:["Em situação de rua (CadÚnico)",e=>e.rua_pessoas,nf,"Pessoas em situação de rua registradas no CadÚnico em dezembro de 2025. A matéria informa só alguns estados; os outros aparecem sem número, nunca como zero."],
+  rua100k:["Em situação de rua a cada 100 mil habitantes",e=>e.rua_por_100mil,v=>lacD(v,1),"Pessoas em situação de rua registradas no CadÚnico, por 100 mil habitantes do estado (dez/2025)."],
   dep19:["Depressão diagnosticada, 2019",e=>e.depressao_prof_2019_pct,pct,"Adultos de 18 anos ou mais que referem diagnóstico de depressão por profissional de saúde mental, em % dos adultos do estado (PNS 2019)."],
   dep13:["Depressão diagnosticada, 2013",e=>e.depressao_prof_2013_pct,pct,"O mesmo indicador da PNS 2013, para comparar com 2019."],
   remedio:["Quem tem depressão e usa remédio",e=>e.depressao_remedio_2019_pct,pct,"Entre as pessoas com depressão, quantas usaram remédio para depressão nas duas semanas antes da pesquisa (PNS 2019)."],
@@ -6775,8 +6781,10 @@ function popCrisesTela(v,X){
   gas:["Pessoas com o Gás do Povo",e=>e.gas_pessoas_pct_pop,pct,"Pessoas nas famílias que receberam o Gás do Povo no último mês publicado, em % da população do estado (Portal da Transparência; população do Censo 2022)."],
   nemnem:["Jovens que não estudam nem trabalham",e=>e.nem_nem_pct,pct,"Pessoas de 15 a 24 anos que não estavam ocupadas, não estudavam e não faziam curso (PNAD 2025, indicador da ONU)."],
   analf:["Analfabetismo (15 anos ou mais)",e=>e.analfabetismo_pct,pct,"100 menos a taxa de alfabetização do Censo 2022 (alfabetizado é quem sabe ler e escrever um bilhete simples)."]};
- const G=[["Saúde mental","dep19","dep13","remedio","outros"],["Deficiência e autismo","def","visual","auditiva","motora","autismo"],["Benefícios sociais","bolsa","gas"],["Jovens e educação","nemnem","analf"]];
+ const G=[["Desaparecidas e em situação de rua","desap100k","desap12","loc100k","loc12","rua","rua100k"],["Saúde mental","dep19","dep13","remedio","outros"],["Deficiência e autismo","def","visual","auditiva","motora","autismo"],["Benefícios sociais","bolsa","gas"],["Jovens e educação","nemnem","analf"]];
  const kp=[
+  lacKpi("Pessoas desaparecidas",nf(BR.desaparecidos_12m),"12 meses até out/2026 (Sinesp)"),
+  lacKpi("Em situação de rua",nf(BR.rua_pessoas),"CadÚnico, dez/2025 (OBPopRua/UFMG)"),
   lacKpi("Adultos com depressão diagnosticada",pct(BR.depressao_prof_2019_pct),`2019; em 2013 era ${pct(BR.depressao_prof_2013_pct)}`),
   lacKpi("Pessoas com deficiência",mi(BR.com_deficiencia),`${pct(BR.deficiencia_pct)} das pessoas de 2 anos ou mais (Censo 2022)`),
   lacKpi("Autistas declarados",mi(BR.autismo_n),`${pct(BR.autismo_pct)} da população (Censo 2022)`),
@@ -6786,7 +6794,7 @@ function popCrisesTela(v,X){
  const antes=`<div class="rbanner esc-aviso">Cada número vem de uma pesquisa ou de um arquivo oficial, e tem o seu ano. Quase tudo é o que a pessoa ou a família declarou ou recebeu: mostra onde o problema aparece, não a causa dele.</div>`;
  const fontes=Object.values(F).map(f=>`<li>${esc(f.fonte)}${f.link?` — <a href="${esc(f.link)}">abrir a tabela</a>`:""}<br><span class="small muted">${esc(f.metodo)}</span></li>`).join("");
  const depois=`<div class="panel mt"><h2>De onde vem cada número</h2><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:10px">${fontes}</ul></div><div class="panel mt"><h2>Quem sai das empresas</h2><p class="small muted" style="margin:0">Os pedidos de demissão (quem decide sair da empresa) ainda não estão na base do BRASIL+. O CAGED tem os desligamentos, mas o motivo ainda não é separado nos números guardados.</p></div>`;
- lacPainel(v,{E,M,G,rota:"populacao",kpis:kp,antes,depois,ini:"dep19"});
+ lacPainel(v,{E,M,G,rota:"populacao",kpis:kp,antes,depois,ini:"desap100k"});
 }
 /* ----- Social e Trabalho ----- */
 const SOC_G=[["Bolsa Família e BPC","bolsa100","bolsaval","bpc100"],["Trabalho e renda","desoc","renda"]];
