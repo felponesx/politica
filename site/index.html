@@ -2375,7 +2375,7 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .amb-par>.panel{display:flex;flex-direction:column}
 #view .amb-par .fogo{margin-top:auto}
 #view .amb-par .lc{margin-bottom:16px}
-.ma-seg{display:none}@media (max-width:760px){.ma-seg{display:flex}#maT .ma-seg{flex-wrap:wrap;overflow:visible;margin:0 0 12px;padding:0}.ma-bl{display:none}.ma-bl.on{display:block}}</style>
+.ma-seg{display:none}@media (max-width:760px){.ma-seg{display:block}#maT .ma-seg{margin:20px 0 16px}.ma-bl{display:none}.ma-bl.on{display:block}}</style>
 </head>
 <body>
 <a class="pular" href="#view" onclick="var v=document.getElementById('view');v.setAttribute('tabindex','-1');v.focus();return false">Pular para o conteúdo</a>
@@ -7047,8 +7047,10 @@ function maCarregar(el,A){if(!el)return;const B=(A&&A.biomas)||{};const ks=Objec
  if(!ks.length){el.innerHTML=`<div class="panel mt">${rvazio("Taxa do PRODES dos biomas ainda não coletada.")}</div>`;return}
  ks.sort((a,b)=>((B[b].total[B[b].ultimo_ano]||0)-(B[a].total[B[a].ultimo_ano]||0)));
  const nomes=ks.map(k=>B[k].nome||k);
- el.innerHTML=`<div class="seg ma-seg">${nomes.map((n,i)=>`<button type="button" data-ma="${i}" class="${i===0?"on":""}">${esc(n)}</button>`).join("")}</div>`+ks.map((k,i)=>`<div class="ma-bl${i===0?" on":""}" data-ma="${i}">${maBloco(nomes[i],B[k])}</div>`).join("");
- el.querySelectorAll(".ma-seg button").forEach(b=>b.onclick=()=>{const i=b.dataset.ma;el.querySelectorAll(".ma-seg button").forEach(x=>x.classList.toggle("on",x===b));el.querySelectorAll(".ma-bl").forEach(x=>x.classList.toggle("on",x.dataset.ma===i))})}
+ el.innerHTML=`<div class="ma-seg"><select data-pill="Bioma" data-titulo="Bioma" aria-label="Escolher o bioma">${nomes.map((n,i)=>`<option value="${i}">${esc(n)}</option>`).join("")}</select></div>`+ks.map((k,i)=>`<div class="ma-bl${i===0?" on":""}" data-ma="${i}">${maBloco(nomes[i],B[k])}</div>`).join("");
+ pilulas();
+ const sel=el.querySelector("select");
+ if(sel)sel.addEventListener("change",()=>{const i=String(sel.value);el.querySelectorAll(".ma-bl").forEach(x=>x.classList.toggle("on",x.dataset.ma===i))})}
 function maBloco(nome,P){const pt=Object.keys(P.total).filter(a=>P.total[a]!=null).sort();let ini=0;for(let i=pt.length-1;i>0;i--){if(+pt[i]-+pt[i-1]!==1){ini=Math.min(i+1,pt.length-1);break}}
  const pa=pt.slice(ini),pini=pa[0],cor=(typeof BIO_COR!=="undefined"&&BIO_COR&&BIO_COR[nome])||"#E5484D",ult=P.total[P.ultimo_ano];
  return `<div class="panel mt"><h2>${esc(nome)} <small>taxa oficial do INPE, km² por ano</small></h2><p class="small muted" style="margin:2px 0 8px">Corte raso da vegetação nativa mapeado pelo INPE com imagens de satélite.${ini?` O gráfico começa em ${pini}, quando a série fica ano a ano: antes disso há anos sem mapeamento e valores que somam mais de um ano.`:""}</p>
