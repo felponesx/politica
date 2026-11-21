@@ -6899,6 +6899,17 @@ const ANI_CAT={CR:["Criticamente em perigo","#E5484D","#fff"],EN:["Em perigo","#
 const ANI_ORD={EW:0,"CR (PE)":1,CR:2,EN:3,VU:4};
 const aniChip=c=>{const k=ANI_CAT[c]||[c,"#8A919E","#fff"];return`<span class="ani-cat" style="background:${k[1]};color:${k[2]}">${esc(k[0])}</span>`};
 const aniPeixe=g=>/^Peixes|^Tubar/.test(g);
+/* ----- Onde há mais espécies: mapa do país por estado (animais e plantas), com seletor de grupo ----- */
+function espPorEstado(lista,ufIdx,grupoIdx,grupo){const o={};lista.forEach(e=>{if(grupo&&e[grupoIdx]!==grupo)return;(e[ufIdx]||[]).forEach(u=>{o[u]=(o[u]||0)+1})});return o}
+function espMapaBloco(grupos){return `<div class="panel mt"><h2>Onde há mais espécies <small>mapa do país, por estado</small></h2>
+  <div class="pbar" style="margin-bottom:10px"><select id="espG" data-titulo="Grupo" data-pill><option value="">Todos os grupos</option>${grupos.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join("")}</select></div>
+  <div id="espM"></div><div id="espR" style="margin-top:12px"></div><p class="small muted" style="margin:8px 0 0" id="espN"></p></div>`}
+function espMapaPinta(lista,ufIdx,grupoIdx,grupo){const doGrupo=lista.filter(e=>!grupo||e[grupoIdx]===grupo),com=doGrupo.filter(e=>(e[ufIdx]||[]).length).length;
+ const vals=espPorEstado(lista,ufIdx,grupoIdx,grupo),ufs=Object.keys(vals);
+ $("#espM").innerHTML=ufs.length?mapaValores(vals,n=>nf(n)+" espécies"):rvazio("Nenhuma espécie deste grupo tem estado na base de 2020 do MMA.");
+ $("#espR").innerHTML=ufs.length?hbars(Object.entries(vals).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([u,n])=>[(UF[u]&&UF[u].nome)||u,n]),{fmt:n=>nf(n)+" espécies"}):"";
+ $("#espN").textContent=`Conta ${nf(com)} das ${nf(doGrupo.length)} espécies deste grupo que têm estado na base de 2020 do MMA. Uma espécie que ocorre em mais de um estado entra em cada um. As demais não aparecem no mapa: nunca estimamos onde elas estão.`}
+function espMapaLiga(lista,ufIdx,grupoIdx){const sel=$("#espG");if(!sel)return;sel.addEventListener("change",()=>espMapaPinta(lista,ufIdx,grupoIdx,sel.value));espMapaPinta(lista,ufIdx,grupoIdx,"")}
 function ambAnimais(v,[D,F={}]){
  const T=D.totais,tot=T.especies,pc=n=>(n/tot*100).toFixed(1).replace(".",",")+"%";
  const L=D.especies.map(e=>({cient:e[0],comum:e[1],grupo:e[2],familia:e[3],cat:e[4],novo:!!e[5],biomas:e[6].map(i=>D.biomas[i]),estados:e[7],amea:e[8],excl:!!e[9],dados:!!e[10],foto:F[e[0]]||null}))
@@ -6912,7 +6923,7 @@ function ambAnimais(v,[D,F={}]){
  v.innerHTML=`<div class="kpis kpis-c">${kp}</div>
   <div class="panel mt"><h2>Por grupo de animais <small>${nf(tot)} espécies</small></h2>${grupos}<p class="small muted" style="margin:8px 0 0">Cada espécie conta uma vez. Invertebrados terrestres são insetos, aranhas e outros bichos sem coluna que vivem em terra.</p></div>
   <div class="panel mt"><h2>Peixes <small>${nf(nPeixes)} espécies ameaçadas</small></h2><div class="kpis kpis-c">${peixes.map(([g,n])=>lacKpi(esc(g.replace(" (ósseos)","")),nf(n),pc(n)+" do total")).join("")}</div><p class="small muted" style="margin:8px 0 0">Inclui peixes de rios e lagos, peixes do mar, tubarões e raias. Use o filtro "Só peixes" na lista abaixo.</p></div>
-  <div class="panel mt"><h2>Por bioma <small>onde as espécies vivem</small></h2>${hbars(biomas,{fmt:n=>nf(n)+" espécies"})}<p class="small muted" style="margin:8px 0 0">Conta só as ${nf(T.com_bioma)} espécies que têm bioma na base de 2020 do MMA. Uma espécie que vive em mais de um bioma entra em cada um deles. As ${nf(tot-T.com_bioma)} restantes (como as incluídas depois de 2020 e as do mar) aparecem sem bioma, nunca estimado.</p></div>
+  ${espMapaBloco(Object.keys(T.por_grupo))}
   <div class="panel mt"><h2>Lista de espécies <small id="anN" data-nocount></small></h2>
    <div class="filters ani-f"><input id="anQ" type="search" placeholder="Buscar pelo nome (ex.: onça, arara, boto, mero)" autocomplete="off">
     <select id="anG" data-titulo="Grupo" data-pill><option value="">Todos os grupos</option><option value="__peixes">Só peixes</option>${Object.keys(T.por_grupo).map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join("")}</select>
@@ -6926,7 +6937,7 @@ function ambAnimais(v,[D,F={}]){
  const pinta=()=>{const n=palavras(f.q).trimEnd();
   const l=L.filter(x=>(!f.g||(f.g==="__peixes"?aniPeixe(x.grupo):x.grupo===f.g))&&(!f.c||x.cat===f.c)&&(!f.b||x.biomas.includes(f.b))&&(n.trim()===""||palavras([x.comum,x.cient,x.familia,x.grupo].join(" ")).includes(n)));
   $("#anN").textContent=nf(l.length)+(l.length===1?" espécie":" espécies");$("#anL").innerHTML=l.length?table(cols,l):rvazio("Nenhuma espécie encontrada com esses filtros.")};
- pinta();if(typeof pilulas==="function")pilulas();
+ pinta();if(typeof pilulas==="function")pilulas();espMapaLiga(D.especies,7,2);
  $("#anQ").oninput=debounce(e=>{f.q=e.target.value.trim();pinta()},200);
  $("#anG").onchange=e=>{f.g=e.target.value;pinta()};$("#anC").onchange=e=>{f.c=e.target.value;pinta()};$("#anB").onchange=e=>{f.b=e.target.value;pinta()}}
 function ambPlantas(v,[D,F={}]){
@@ -6942,7 +6953,7 @@ function ambPlantas(v,[D,F={}]){
  const tag=k=>`<span class="tag" style="background:${ANI_CAT[k][1]};color:${ANI_CAT[k][2]}">${ANI_CAT[k][0]}</span>`;
  v.innerHTML=`<div class="kpis kpis-c">${kp}</div>
   <div class="panel mt"><h2>Por grupo de plantas e fungos <small>${nf(tot)} espécies</small></h2>${grupos}<p class="small muted" style="margin:8px 0 0">"Não informado" são as espécies que a base de 2020 do MMA não traz, incluindo quase todas incluídas depois de 2020. Não inventamos o grupo delas. Fungos são listados à parte.</p></div>
-  <div class="panel mt"><h2>Por bioma <small>onde as espécies vivem</small></h2>${hbars(biomas,{fmt:n=>nf(n)+" espécies"})}<p class="small muted" style="margin:8px 0 0">Conta só as ${nf(T.com_bioma)} espécies que têm bioma na base de 2020 do MMA. Uma espécie que vive em mais de um bioma entra em cada um deles. Os fungos não têm bioma nessa base.</p></div>
+  ${espMapaBloco(Object.keys(T.por_grupo))}
   <div class="panel mt"><h2>Famílias com mais espécies ameaçadas <small>plantas</small></h2>${familias}<p class="small muted" style="margin:8px 0 0">Família botânica da lista oficial. Uma família com muitas espécies ameaçadas não quer dizer que ela esteja pior que outras: depende do número de espécies conhecidas.</p></div>
   <div class="panel mt"><h2>Lista de espécies <small id="plN" data-nocount></small></h2>
    <div class="filters ani-f"><input id="plQ" type="search" placeholder="Buscar pelo nome (ex.: juçara, araucária, orquídea)" autocomplete="off">
@@ -6959,7 +6970,7 @@ function ambPlantas(v,[D,F={}]){
  const pinta=()=>{const n=palavras(f.q).trimEnd();
   const l=L.filter(x=>(!f.t||x.tipo===f.t)&&(!f.c||x.cat===f.c)&&(!f.b||x.biomas.includes(f.b))&&(n.trim()===""||palavras([x.comum,x.cient,x.familia,x.grupo].join(" ")).includes(n)));
   $("#plN").textContent=nf(l.length)+(l.length===1?" espécie":" espécies");$("#plL").innerHTML=l.length?table(cols,l):rvazio("Nenhuma espécie encontrada com esses filtros.")};
- pinta();if(typeof pilulas==="function")pilulas();
+ pinta();if(typeof pilulas==="function")pilulas();espMapaLiga(D.especies,7,3);
  $("#plQ").oninput=debounce(e=>{f.q=e.target.value.trim();pinta()},200);
  $("#plT").onchange=e=>{f.t=e.target.value;pinta()};$("#plC").onchange=e=>{f.c=e.target.value;pinta()};$("#plB").onchange=e=>{f.b=e.target.value;pinta()}}
 function ambAgua(v,[W,MUN=null]){
