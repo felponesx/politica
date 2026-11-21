@@ -7043,13 +7043,15 @@ P.ambiente=a=>{const x=a?String(a).toLowerCase():"";
   lacPainel(v,{E,M:ambM(u,an[0]),G:AMB_G,mun:true,munVal:munDes,rota:"ambiente",kpis:kp,kpiCls:"kpis-3",antes:pb+`<div class="grid g2 amb-par" style="margin-top:14px">${graf}${bmapa}</div>`,depois:'<div id="maT"></div>'});maCarregar($("#maT"),D);const bm=$("#bioMapa");if(bm)bioMapaIniciar(bm,dom,contaBio,u)},uf);if(!uf)r.html=r.html.replace('<div id="lcV">',ambAbas("desmatamento")+'<div id="lcV">');return r};
 /* ----- Mata Atlântica: taxa oficial do PRODES (INPE, km² por ano) ----- */
 const lacKm2=v=>v==null?"—":(v/100<10?lacD(v/100,2):lacN(v/100))+" km²";
-function maCarregar(el,A){if(!el)return;const P=A&&A.biomas&&A.biomas.mata_atlantica;
- if(!P){el.innerHTML=`<div class="panel mt">${rvazio("Taxa do PRODES da Mata Atlântica ainda não coletada.")}</div>`;return}
- const pt=Object.keys(P.total).filter(a=>P.total[a]!=null).sort();let ini=0;for(let i=pt.length-1;i>0;i--){if(+pt[i]-+pt[i-1]!==1){ini=Math.min(i+1,pt.length-1);break}}
- const pa=pt.slice(ini),pini=pa[0];
- el.innerHTML=`<div class="panel mt"><h2>Mata Atlântica <small>taxa oficial do INPE, km² por ano</small></h2><p class="small muted" style="margin:2px 0 8px">Corte raso da vegetação nativa mapeado pelo INPE com imagens de satélite.${ini?` O gráfico começa em ${pini}, quando a série fica ano a ano: antes disso há anos sem mapeamento e valores que somam mais de um ano.`:""}</p>
-  <div class="kpis kpis-c">${lacKpi("Último ano ("+P.ultimo_ano+")",lacD(P.total[P.ultimo_ano],1)+" km²","taxa anual do PRODES")}</div>${pa.length>=2?lineChart([{n:"PRODES",v:pa.map(a=>P.total[a]),c:"#E5484D"}],pa,{h:200,fmt:x=>lacD(x,0)+" km²"}):""}
-  <p class="small muted" style="margin:6px 0 0">Fonte: INPE, PRODES Mata Atlântica (arquivo oficial do TerraBrasilis).</p></div>`}
+function maCarregar(el,A){if(!el)return;const B=(A&&A.biomas)||{};const ks=Object.keys(B).filter(k=>B[k]&&B[k].total&&Object.keys(B[k].total).length);
+ if(!ks.length){el.innerHTML=`<div class="panel mt">${rvazio("Taxa do PRODES dos biomas ainda não coletada.")}</div>`;return}
+ ks.sort((a,b)=>((B[b].total[B[b].ultimo_ano]||0)-(B[a].total[B[a].ultimo_ano]||0)));
+ el.innerHTML=ks.map(k=>maBloco(B[k].nome||k,B[k])).join("")}
+function maBloco(nome,P){const pt=Object.keys(P.total).filter(a=>P.total[a]!=null).sort();let ini=0;for(let i=pt.length-1;i>0;i--){if(+pt[i]-+pt[i-1]!==1){ini=Math.min(i+1,pt.length-1);break}}
+ const pa=pt.slice(ini),pini=pa[0],cor=(typeof BIO_COR!=="undefined"&&BIO_COR&&BIO_COR[nome])||"#E5484D",ult=P.total[P.ultimo_ano];
+ return `<div class="panel mt"><h2>${esc(nome)} <small>taxa oficial do INPE, km² por ano</small></h2><p class="small muted" style="margin:2px 0 8px">Corte raso da vegetação nativa mapeado pelo INPE com imagens de satélite.${ini?` O gráfico começa em ${pini}, quando a série fica ano a ano: antes disso há anos sem mapeamento e valores que somam mais de um ano.`:""}</p>
+  <div class="kpis kpis-c">${lacKpi("Último ano ("+P.ultimo_ano+")",ult!=null?lacD(ult,1)+" km²":"—","taxa anual do PRODES")}</div>${pa.length>=2?lineChart([{n:"PRODES",v:pa.map(a=>P.total[a]),c:cor}],pa,{h:200,fmt:x=>lacD(x,0)+" km²"}):""}
+  <p class="small muted" style="margin:6px 0 0">Fonte: INPE, PRODES ${esc(nome)} (TerraBrasilis).</p></div>`}
 /* ----- Órgãos › Viagens a serviço e Fundo eleitoral; Indicadores › tarifa de energia ----- */
 function telaViagens(){return{html:`<div id="vgL">${rload()}</div>`,mount(){apiGet("/viagens").then(D=>{const b=$("#vgL");if(!b)return;let ano=String(D.anos[0].ano);
  const pinta=()=>{const a=D.anos.find(x=>String(x.ano)===ano)||D.anos[0],og=(D.orgaos[ano]||[]);
