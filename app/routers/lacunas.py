@@ -98,6 +98,15 @@ def ambiente_plantas():
     return d
 
 
+@router.get("/ambiente/especies-municipios", tags=["Meio ambiente"])
+def ambiente_especies_municipios():
+    """Quantas espécies ameaçadas (animais e plantas, por grupo) têm registro no GBIF em cada município. Com o aviso de que o GBIF reflete onde há mais observação."""
+    d = memo(("especies-municipios",), lambda: lacunas.especies_municipios())
+    if not d:
+        raise HTTPException(404, "Sem dados. Rode python -m scripts.especies_municipios coletar e agregar.")
+    return d
+
+
 @router.get("/ambiente/agua/municipios", tags=["Meio ambiente"])
 def ambiente_agua_municipios():
     """Superfície de água por município (IBGE), em hectares, de 2016 a 2025 (MapBiomas Água)."""

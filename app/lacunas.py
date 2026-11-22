@@ -635,6 +635,12 @@ def plantas_fotos() -> dict | None:
     return out
 
 
+def especies_municipios() -> dict | None:
+    """Espécies ameaçadas com registro em cada município (ocorrências do GBIF, com coordenada), para animais e plantas.
+    O GBIF reflete onde há mais gente observando: ver o aviso em `metodo`."""
+    return _arquivo_dados("especies_municipio.json")
+
+
 def plantas_ameacadas() -> dict | None:
     """Plantas e fungos ameaçados de extinção (lista oficial de 2026 do MMA, com bioma, grupo e estados da base de 2020)."""
     return _arquivo_dados("flora_ameacada.json")
