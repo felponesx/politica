@@ -371,5 +371,379 @@
     "lon": -43.3444,
     "ponto": "Centro de Juiz de Fora (MG), ponto aproximado",
     "imagem": null
+  },
+  {
+    "id": "petropolis-2022-02-15",
+    "data": "2022-02-15",
+    "titulo": "Chuva catastrófica e deslizamentos em Petrópolis (RJ)",
+    "local": "Petrópolis",
+    "uf": "RJ",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Mais de 260 mm de chuva em duas horas provocaram deslizamentos de terra no município.",
+    "mortos": 234,
+    "mortos_nota": "234 mortos em 15/02/2022, segundo o Memorial de Petrópolis (conta do município). Outro evento, em 20/03/2022, deixou mais 7 mortes.",
+    "fontes": [
+      {
+        "nome": "Memorial de Petrópolis: linha do tempo das chuvas",
+        "url": "https://www.memorialpetropolis.app/linhadotempo"
+      }
+    ],
+    "wiki": "Petrópolis",
+    "lat": -22.5053,
+    "lon": -43.1789,
+    "ponto": "Centro de Petrópolis (RJ), ponto aproximado",
+    "imagem": null
+  },
+  {
+    "id": "pernambuco-2022-05-25",
+    "data": "2022-05-25",
+    "titulo": "Chuvas e deslizamentos em Pernambuco (Recife e região metropolitana)",
+    "local": "Recife e região metropolitana",
+    "uf": "PE",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas entre 25/05 e 07/06/2022 causaram deslizamentos e enchentes em municípios de Pernambuco, com mais de 120 mil pessoas afetadas.",
+    "mortos": 133,
+    "mortos_nota": "133 mortos, segundo o G1 (maio de 2024, dois anos após a tragédia).",
+    "fontes": [
+      {
+        "nome": "G1 PE: dois anos após tragédia das chuvas com 133 mortos",
+        "url": "https://g1.globo.com/pe/pernambuco/noticia/2024/05/28/dois-anos-apos-tragedia-das-chuvas-com-133-mortos-mais-de-2-mil-pessoas-ainda-nao-voltaram-para-casa.ghtml"
+      }
+    ],
+    "wiki": "Recife",
+    "lat": -8.0476,
+    "lon": -34.877,
+    "ponto": "Recife (PE), ponto de referência; os mortos estão em municípios da região metropolitana",
+    "imagem": null
+  },
+  {
+    "id": "litoral-norte-sp-2023-02-18",
+    "data": "2023-02-18",
+    "titulo": "Temporais e deslizamentos no Litoral Norte de São Paulo",
+    "local": "Litoral Norte (São Sebastião, Ubatuba, Caraguatatuba e outros)",
+    "uf": "SP",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Temporais na madrugada de 18 e 19/02/2023 provocaram deslizamentos de terra em comunidades do Litoral Norte paulista.",
+    "mortos": 65,
+    "mortos_nota": "65 mortos em 26/02/2023, segundo o Nexo Jornal. A contagem oficial subiu ao longo dos dias.",
+    "fontes": [
+      {
+        "nome": "Nexo: chega a 65 o número de vítimas das chuvas no litoral norte paulista",
+        "url": "https://www.nexojornal.com.br/extra/2023/02/26/chega-a-65-o-numero-de-vitimas-das-chuvas-no-litoral-norte-paulista"
+      }
+    ],
+    "wiki": "São Sebastião",
+    "lat": -23.8,
+    "lon": -45.4,
+    "ponto": "São Sebastião (SP), ponto de referência do Litoral Norte",
+    "imagem": null
+  },
+  {
+    "id": "ciclone-rs-sc-2023-09-03",
+    "data": "2023-09-03",
+    "titulo": "Ciclone extratropical no Sul do Brasil",
+    "local": "Rio Grande do Sul e Santa Catarina",
+    "uf": "RS",
+    "tipo": "vendaval",
+    "resumo": "Ciclone extratropical formado em 3/09/2023 trouxe ventos fortes, chuvas e enchentes ao Sul do país.",
+    "mortos": 22,
+    "mortos_nota": "22 mortos contados pela Agência Brasil em 5/09/2023 (21 no RS e 1 em SC). A conta subiu nos dias seguintes.",
+    "fontes": [
+      {
+        "nome": "Agência Brasil: Ciclone deixa 22 mortos e causa enchentes na Região Sul (05/09/2023)",
+        "url": "https://agenciabrasil.ebc.com.br/geral/noticia/2023-09/ciclone-deixa-22-mortos-e-causa-enchentes-na-regiao-sul"
+      }
+    ],
+    "wiki": "Rio Grande do Sul",
+    "lat": -30.0331,
+    "lon": -51.23,
+    "ponto": "Porto Alegre (RS), ponto de referência: o ciclone atingiu o Sul do estado",
+    "imagem": null
+  },
+  {
+    "id": "rs-enchentes-2024-04-26",
+    "data": "2024-04-26",
+    "titulo": "Inundações sem precedentes no Rio Grande do Sul",
+    "local": "Rio Grande do Sul (478 de 497 municípios)",
+    "uf": "RS",
+    "tipo": "enchente",
+    "resumo": "Chuvas de 26/04 a 11/05/2024 afetaram 2.398.255 pessoas. O Guaíba atingiu 5,35 m em Porto Alegre, recorde.",
+    "mortos": 183,
+    "mortos_nota": "183 mortes e 27 desaparecidos, segundo o relatório do Cemaden sobre 2024. É o pior desastre climático do país no período.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Enchente no Rio Grande do Sul em 2024",
+    "lat": -30.0331,
+    "lon": -51.23,
+    "ponto": "Porto Alegre (RS), ponto de referência; a enchente atingiu quase todo o estado",
+    "imagem": null
+  },
+  {
+    "id": "mimoso-do-sul-2024-03-22",
+    "data": "2024-03-22",
+    "titulo": "Chuvas e enchentes em Mimoso do Sul (ES)",
+    "local": "Mimoso do Sul",
+    "uf": "ES",
+    "tipo": "enchente",
+    "resumo": "22 e 23/03/2024: mais de 300 mm em 48 horas, com 231,8 mm em 24 horas no dia 23. Mais de 7 mil pessoas foram deslocadas.",
+    "mortos": 20,
+    "mortos_nota": "20 mortos por enchentes e enxurradas no município, segundo o relatório do Cemaden sobre 2024.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Mimoso do Sul",
+    "lat": -21.0586,
+    "lon": -41.3615,
+    "ponto": "Centro de Mimoso do Sul (ES), ponto aproximado",
+    "imagem": null
+  },
+  {
+    "id": "petropolis-2024-03-22",
+    "data": "2024-03-22",
+    "titulo": "Chuvas e deslizamentos em Petrópolis (RJ), março e abril de 2024",
+    "local": "Petrópolis",
+    "uf": "RJ",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas fortes de março e abril de 2024 provocaram deslizamentos de terra no município.",
+    "mortos": 4,
+    "mortos_nota": "4 mortes em Petrópolis em 2024, segundo o relatório do Cemaden.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Petrópolis",
+    "lat": -22.5053,
+    "lon": -43.1789,
+    "ponto": "Centro de Petrópolis (RJ), ponto aproximado",
+    "imagem": null
+  },
+  {
+    "id": "rio-de-janeiro-2024-01-13",
+    "data": "2024-01-13",
+    "titulo": "Chuvas e deslizamentos na Região Metropolitana do Rio de Janeiro",
+    "local": "Região Metropolitana do Rio de Janeiro",
+    "uf": "RJ",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas fortes de 13 e 14/01/2024 causaram inundações repentinas e deslizamentos de terra.",
+    "mortos": 11,
+    "mortos_nota": "11 mortes e 1 desaparecido em toda a Região Metropolitana, até 15/01/2024 (relatório do Cemaden sobre 2024).",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Rio de Janeiro",
+    "lat": -22.9068,
+    "lon": -43.1729,
+    "ponto": "Rio de Janeiro (RJ), ponto de referência da Região Metropolitana",
+    "imagem": null
+  },
+  {
+    "id": "rio-de-janeiro-2024-02-21",
+    "data": "2024-02-21",
+    "titulo": "Deslizamentos e enchentes no estado do Rio de Janeiro",
+    "local": "Estado do Rio de Janeiro (Zona Oeste da capital e outros municípios)",
+    "uf": "RJ",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas de 21 e 22/02/2024 causaram deslizamentos e enchentes em bairros da Zona Oeste do Rio.",
+    "mortos": 8,
+    "mortos_nota": "Pelo menos 8 mortes em todo o estado, até 22/02/2024 (relatório do Cemaden sobre 2024).",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Rio de Janeiro",
+    "lat": -22.9068,
+    "lon": -43.1729,
+    "ponto": "Rio de Janeiro (RJ), ponto de referência; as mortes estão em todo o estado",
+    "imagem": null
+  },
+  {
+    "id": "bahia-2024-01-26",
+    "data": "2024-01-26",
+    "titulo": "Inundações no estado da Bahia",
+    "local": "Estado da Bahia",
+    "uf": "BA",
+    "tipo": "enchente",
+    "resumo": "Chuvas fortes a partir de 26/01/2024 causaram inundações e danos em municípios baianos.",
+    "mortos": 6,
+    "mortos_nota": "6 pessoas mortas até 30/01/2024, segundo o relatório do Cemaden sobre 2024. O relatório não cita a cidade de cada morte.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Bahia",
+    "lat": -12.96,
+    "lon": -41.7,
+    "ponto": "Centro do estado da Bahia, ponto aproximado: o relatório não traz a cidade",
+    "imagem": null
+  },
+  {
+    "id": "acre-2024-02-23",
+    "data": "2024-02-23",
+    "titulo": "Inundações do rio Acre",
+    "local": "Rio Branco e outros municípios do Acre",
+    "uf": "AC",
+    "tipo": "enchente",
+    "resumo": "Cheia do rio Acre, com 17,89 m em Rio Branco em 6/03/2024. O governo declarou emergência em 17 dos 22 municípios.",
+    "mortos": 2,
+    "mortos_nota": "2 mortes relatadas, segundo o relatório do Cemaden sobre 2024. Mais de 100 mil pessoas foram afetadas.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Rio Branco",
+    "lat": -9.9747,
+    "lon": -67.81,
+    "ponto": "Rio Branco (AC), ponto de referência",
+    "imagem": null
+  },
+  {
+    "id": "manacapuru-2024-10-07",
+    "data": "2024-10-07",
+    "titulo": "Deslizamento de terra (terras caídas) em Manacapuru (AM)",
+    "local": "Manacapuru",
+    "uf": "AM",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Deslizamento de terra às margens do rio, conhecido regionalmente como terras caídas.",
+    "mortos": 3,
+    "mortos_nota": "3 mortes, segundo o relatório do Cemaden sobre 2024.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "Manacapuru",
+    "lat": -3.2953,
+    "lon": -60.6204,
+    "ponto": "Centro de Manacapuru (AM), ponto aproximado",
+    "imagem": null
+  },
+  {
+    "id": "sao-paulo-2024-10-12",
+    "data": "2024-10-12",
+    "titulo": "Tempestade com ventos acima de 107 km/h na capital paulista",
+    "local": "Região Metropolitana de São Paulo",
+    "uf": "SP",
+    "tipo": "vendaval",
+    "resumo": "Ciclone extratropical provocou ventos acima de 107 km/h. Os dois principais aeroportos fecharam e 2,1 milhões de pessoas ficaram sem energia.",
+    "mortos": 11,
+    "mortos_nota": "11 mortes, segundo o relatório do Cemaden sobre 2024.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "São Paulo",
+    "lat": -23.5505,
+    "lon": -46.6333,
+    "ponto": "São Paulo (SP), ponto de referência da Região Metropolitana",
+    "imagem": null
+  },
+  {
+    "id": "sao-paulo-2024-10-23",
+    "data": "2024-10-23",
+    "titulo": "Ventos e chuva intensa na capital paulista",
+    "local": "São Paulo",
+    "uf": "SP",
+    "tipo": "vendaval",
+    "resumo": "Entre 23 e 25/10/2024, ventos acima de 100 km/h derrubaram árvores e 72 mil pessoas ficaram sem energia. A chuva chegou a 87 mm em 24 horas.",
+    "mortos": 3,
+    "mortos_nota": "3 mortes, segundo o relatório do Cemaden sobre 2024.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2024",
+        "url": "https://inctmc2.cemaden.gov.br/wp-content/uploads/2025/03/Relatorio_NT-Clima_Extremos_Desastres-2024-Brasil-digital.pdf"
+      }
+    ],
+    "wiki": "São Paulo",
+    "lat": -23.5505,
+    "lon": -46.6333,
+    "ponto": "São Paulo (SP), ponto de referência",
+    "imagem": null
+  },
+  {
+    "id": "pernambuco-2025-01-11",
+    "data": "2025-01-11",
+    "titulo": "Chuvas e deslizamentos no Agreste e na Zona da Mata de Pernambuco",
+    "local": "Agreste e Zona da Mata (PE)",
+    "uf": "PE",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas de 11 e 12/01/2025 causaram enchentes e deslizamentos. 270 pessoas ficaram desabrigadas ou desalojadas.",
+    "mortos": 7,
+    "mortos_nota": "7 mortes, segundo o relatório do Cemaden sobre 2025.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2025",
+        "url": "https://www.gov.br/cemaden/pt-br/assuntos/monitoramento/estado-do-clima-extremos-de-clima-e-desastres-no-brasil/estado-do-clima-extremos-de-clima-e-desastres-no-brasil-02-2026/relatorioclimaextremosdesastresbrasil2025.pdf"
+      }
+    ],
+    "wiki": "Caruaru",
+    "lat": -8.2842,
+    "lon": -35.9708,
+    "ponto": "Caruaru (PE), ponto de referência do Agreste; as mortes estão em várias cidades",
+    "imagem": null
+  },
+  {
+    "id": "vale-do-aco-2025-01-12",
+    "data": "2025-01-12",
+    "titulo": "Chuvas intensas no Vale do Aço (MG)",
+    "local": "Região Metropolitana do Vale do Aço (inclui Ipatinga)",
+    "uf": "MG",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas extremas entre 12 e 13/01/2025 causaram enchentes e deslizamentos. Milhares ficaram desalojados e desabrigados.",
+    "mortos": 12,
+    "mortos_nota": "Pelo menos 12 mortes confirmadas, segundo o relatório do Cemaden sobre 2025. Ipatinga sozinha teve 10.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2025",
+        "url": "https://www.gov.br/cemaden/pt-br/assuntos/monitoramento/estado-do-clima-extremos-de-clima-e-desastres-no-brasil/estado-do-clima-extremos-de-clima-e-desastres-no-brasil-02-2026/relatorioclimaextremosdesastresbrasil2025.pdf"
+      }
+    ],
+    "wiki": "Ipatinga",
+    "lat": -19.4683,
+    "lon": -42.5367,
+    "ponto": "Ipatinga (MG), ponto de referência do Vale do Aço",
+    "imagem": null
+  },
+  {
+    "id": "santa-catarina-2025-04-01",
+    "data": "2025-04-01",
+    "titulo": "Chuvas e ventos fortes no oeste de Santa Catarina",
+    "local": "Palmitos e Caibi (SC)",
+    "uf": "SC",
+    "tipo": "chuva_deslizamento",
+    "resumo": "Chuvas e ventos fortes em abril e maio de 2025 atingiram o oeste catarinense.",
+    "mortos": 2,
+    "mortos_nota": "2 mortes na região de Palmitos e Caibi até 12/05/2025, segundo o Cemaden. O relatório não diz a causa de cada morte.",
+    "fontes": [
+      {
+        "nome": "Cemaden: Estado do clima, extremos de clima e desastres no Brasil em 2025",
+        "url": "https://www.gov.br/cemaden/pt-br/assuntos/monitoramento/estado-do-clima-extremos-de-clima-e-desastres-no-brasil/estado-do-clima-extremos-de-clima-e-desastres-no-brasil-02-2026/relatorioclimaextremosdesastresbrasil2025.pdf"
+      }
+    ],
+    "wiki": "Palmitos",
+    "lat": -27.0728,
+    "lon": -53.1297,
+    "ponto": "Palmitos (SC), ponto de referência da região",
+    "imagem": null
   }
 ]
