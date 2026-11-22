@@ -29,7 +29,8 @@ ROTULOS = {
     "bicicleta": "Ciclista",
 }
 TIPOS = {"aviao": "Avião", "barragem": "Barragem", "chuva_deslizamento": "Chuva e deslizamento", "incendio": "Incêndio",
-         "rodovia": "Rodovia", "desabamento": "Desabamento", "naufragio": "Naufrágio", "ferrovia": "Ferrovia"}
+         "rodovia": "Rodovia", "desabamento": "Desabamento", "naufragio": "Naufrágio", "ferrovia": "Ferrovia",
+         "vendaval": "Ventania e temporal"}
 AVISO_CATASTROFES = ("Lista de tragédias marcantes, com a fonte de cada número. Os totais de mortos são os citados pela fonte e podem diferir entre "
                      "fontes (a nota de cada caso diz o que a conta inclui). Não é lista completa de acidentes do país.")
 AVISO_RODOVIAS = ("Acidentes nas rodovias federais (PRF), que não cobrem rodovias estaduais nem vias urbanas. A porcentagem de cada tipo é sobre os acidentes "

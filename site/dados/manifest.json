@@ -487,6 +487,14 @@
    "chaves": [
     "/ambiente/animais/fotos"
    ]
+  },
+  "p/catastrofes.json": {
+   "chaves": [
+    "/catastrofes"
+   ],
+   "telas": [
+    "catastrofes"
+   ]
   }
  }
 }
