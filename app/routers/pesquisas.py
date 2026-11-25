@@ -47,7 +47,7 @@ def pesquisas_projeto(proj_id: int):
 
 @router.get("/pesquisas")
 def pesquisas_lista(q: str = "", instituicao: int | None = None, uf: str = "", area: str = "", ano: int | None = None, fonte: str = "",
-                    institucional: bool | None = False, ordem: str = Query("valor", pattern="^(valor|ano)$"),
+                    institucional: bool | None = False, empresa: bool = False, ordem: str = Query("valor", pattern="^(valor|ano)$"),
                     limite: int = Query(50, ge=1, le=200), pagina: int = Query(1, ge=1)):
-    return _ok(pesquisas.listar(q=q, instituicao=instituicao, uf=uf, area=area, ano=ano, fonte=fonte, institucional=institucional,
+    return _ok(pesquisas.listar(q=q, instituicao=instituicao, uf=uf, area=area, ano=ano, fonte=fonte, institucional=institucional, empresa=empresa,
                                 ordem=ordem, limite=limite, pagina=pagina))

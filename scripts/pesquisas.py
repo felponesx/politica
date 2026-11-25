@@ -80,13 +80,15 @@ def limpo(s) -> str | None:
     return t or None
 
 
-def bonito(s: str | None) -> str | None:
+def bonito(s: str | None, sigla_curta: bool = False) -> str | None:
     """Nome de pessoa ou de instituição escrito em CAIXA ALTA vira Título (de, da, dos ficam minúsculos). Só muda a caixa das letras; não corrige nada."""
     s = limpo(s)
     if not s:
         return None
     if s != s.upper():
         return s                                  # já vem com minúsculas: respeita a fonte
+    if sigla_curta and " " not in s and len(s) <= 8:
+        return s                                  # instituição de uma palavra curta toda em maiúsculas é sigla (FAPERGS, FUNDEP): fica como a fonte escreveu
     def peca(t: str, primeira: bool) -> str:
         if t in SIGLAS:
             return t.upper()
@@ -165,16 +167,19 @@ def ler_xlsx(conteudo: bytes) -> tuple[list[str], list[tuple]]:
     return cab, [r for r in linhas if any(c not in (None, "") for c in r)]
 
 
-def ler_finep(conteudo: bytes) -> tuple[str | None, list[str], list[tuple]]:
-    """Aba de projetos não reembolsáveis a ICTs: (posição da planilha, cabeçalho, linhas). O cabeçalho é a linha que começa com "Demanda"."""
-    wb = openpyxl.load_workbook(io.BytesIO(conteudo), read_only=True, data_only=True)
-    nome = next((n for n in wb.sheetnames if chave(n).replace("_", " ") == chave(FINEP_ABA).replace("_", " ")), None)
+def abrir_finep(conteudo: bytes):
+    return openpyxl.load_workbook(io.BytesIO(conteudo), read_only=True, data_only=True)
+
+
+def ler_aba_finep(wb, aba: str) -> tuple[str | None, list[str], list[tuple]]:
+    """Uma aba da planilha da FINEP: (posição da planilha, cabeçalho, linhas). O cabeçalho é a primeira linha (depois da 5ª) com 8 ou mais textos."""
+    nome = next((n for n in wb.sheetnames if chave(n).replace("_", " ") == chave(aba).replace("_", " ")), None)
     if nome is None:
-        raise RuntimeError(f"FINEP: a aba {FINEP_ABA} não está na planilha (abas: {wb.sheetnames[:8]})")
+        raise RuntimeError(f"FINEP: a aba {aba} não está na planilha (abas: {wb.sheetnames[:12]})")
     linhas = list(wb[nome].iter_rows(values_only=True))
-    hi = next((i for i, r in enumerate(linhas) if r and limpo(r[0]) == "Demanda"), None)
+    hi = next((i for i, r in enumerate(linhas) if i >= 4 and sum(1 for c in r if isinstance(c, str) and c.strip()) >= 8), None)
     if hi is None:
-        raise RuntimeError("FINEP: cabeçalho da aba não encontrado")
+        raise RuntimeError(f"FINEP: cabeçalho da aba {aba} não encontrado")
     posicao = next((limpo(r[0]) for r in linhas[:hi] if r and r[0] and "osi" in str(r[0]) and "/" in str(r[0])), None)
     return posicao, [limpo(c) or "" for c in linhas[hi]], [r for r in linhas[hi + 1:] if any(c not in (None, "") for c in r)]
 
@@ -196,7 +201,8 @@ class Dic:
         return self.idx[k]
 
 
-def montar(fapemig_proj: bytes, fapemig_inst: bytes, int_arqs: list[tuple[int, str, str, bytes]], finep: bytes | None = None, hoje: str | None = None) -> dict:
+def montar(fapemig_proj: bytes, fapemig_inst: bytes, int_arqs: list[tuple[int, str, str, bytes]], finep: bytes | None = None, faperj: list[dict] | None = None,
+           hoje: str | None = None) -> dict:
     hoje = hoje or date.today().isoformat()
     inst, area, chamada, modal = Dic(), Dic(), Dic(), Dic()
     projetos: list[list] = []
@@ -214,7 +220,7 @@ def montar(fapemig_proj: bytes, fapemig_inst: bytes, int_arqs: list[tuple[int, s
 
     def instituicao(nome, sigla, uf=None, tipo=None):
         """Uma instituição por nome (mesma razão social, sem acento e caixa) em TODAS as fontes: o que uma fonte não traz (sigla, estado, tipo) é completado pela outra."""
-        n = bonito(nome) or "Instituição não informada pela fonte"
+        n = bonito(nome, sigla_curta=True) or "Instituição não informada pela fonte"
         k = chave(n)
         if k not in inst_idx:
             inst_idx[k] = len(inst.lista)
@@ -307,39 +313,96 @@ def montar(fapemig_proj: bytes, fapemig_inst: bytes, int_arqs: list[tuple[int, s
 
     int_linhas = len(int_visto)
 
-    # ---- FINEP (projetos não reembolsáveis a ICTs): valor contratado e valor liberado (pago) pela própria FINEP
-    finep_info = None
+    # ---- FINEP: três abas da planilha de contratação. O valor liberado (pago) vem da própria FINEP.
+    #  * ICTs (universidades e institutos): fonte "finep", grupo 0 (pesquisa)
+    #  * Subvenção direta (empresas): fonte "finep-empresas", grupo 2 (empresas)
+    #  * Subvenção descentralizada (Centelha/Tecnova, via fundações estaduais): fonte "finep-empresas", grupo 2, com o nome do coordenador que a FINEP publica
+    finep_info: dict[str, dict] = {}
     if finep is not None:
-        posicao, cab, linhas = ler_finep(finep)
+        wb = abrir_finep(finep)
+        sha = hashlib.sha256(finep).hexdigest()[:16]
+        for aba, fonte_i, grupo, tipo_inst, modalidade_fixa in (("Projetos_Não_Reembolsavel_ICTs", 2, 0, None, "Não reembolsável a ICTs"),
+                                                                ("Projetos_Subvenção_Direta", 3, 2, "Empresa", None)):
+            try:
+                posicao, cab, linhas = ler_aba_finep(wb, aba)
+            except RuntimeError:
+                if grupo == 0:
+                    raise                                        # a aba de ICTs é o coração da fonte; as de subvenção podem sumir sem derrubar a coleta
+                continue
+            k = {chave(x): i for i, x in enumerate(cab) if x}
+            faltam = [x for x in ["CONTRATO", "TITULO", "EXECUTOR", "UF EXECUTOR", "VALOR FINEP", "VALOR PAGO", "DATA ASSINATURA"] if x not in k]
+            if faltam:
+                raise RuntimeError(f"FINEP ({aba}): colunas que sumiram: {faltam}")
+            g = lambda r, nome: r[k[chave(nome)]] if chave(nome) in k else None  # noqa: E731
+            vistos_f: set[str] = set()
+            repetidos = 0
+            for r in linhas:
+                contrato = limpo(g(r, "Contrato"))
+                if not contrato:
+                    continue
+                if contrato in vistos_f:
+                    repetidos += 1
+                    continue
+                vistos_f.add(contrato)
+                ass = data_iso(g(r, "Data Assinatura"))
+                exe, prop = limpo(g(r, "Executor")), limpo(g(r, "Proponente"))
+                uf = limpo(g(r, "UF Executor"))
+                ie = instituicao(exe, None, uf.upper() if uf else None, tipo_inst)
+                ig = instituicao(prop, None, (limpo(g(r, "UF Proponente")) or "").upper() or None, tipo_inst) if prop and chave(prop) != chave(exe) else None
+                resumo = limpo(g(r, "Resumo Publicável"))
+                modal_txt = modalidade_fixa or limpo(g(r, "Instrumento")) or "Subvenção direta"
+                projetos.append([fonte_i, int(ass[:4]) if ass else None, contrato, limpo(g(r, "Título")), None, ie, ig, None, chamada(limpo(g(r, "Demanda"))),
+                                 modal(modal_txt), numero(g(r, "Valor Finep")), ass, data_iso(g(r, "Prazo Execução")), grupo,
+                                 {"status": limpo(g(r, "Status")), "municipio": bonito(g(r, "Município Executor")), "resumo": corta(resumo, 300)}, numero(g(r, "Valor Pago"))])
+            finep_info[aba] = {"posicao": posicao, "repetidos": repetidos, "linhas": len(vistos_f), "sha256": sha}
+
+        try:
+            posicao, cab, linhas = ler_aba_finep(wb, "Projetos_Subv__Descentralizada")
+        except RuntimeError:
+            posicao, cab, linhas = None, [], []
         k = {chave(x): i for i, x in enumerate(cab) if x}
-        obrig = ["CONTRATO", "TITULO", "EXECUTOR", "UF EXECUTOR", "VALOR FINEP", "VALOR PAGO", "DATA ASSINATURA"]
-        faltam = [x for x in obrig if x not in k]
+        faltam = [x for x in ["REFERENCIA PROJETO", "RAZAO SOCIAL", "TITULO DO PROJETO", "PARTICIPACAO FINEP", "TOTAL LIBERADO - FINEP", "DATA ASSINATURA"] if x not in k] if cab else []
         if faltam:
-            raise RuntimeError(f"FINEP: colunas que sumiram: {faltam}")
+            raise RuntimeError(f"FINEP (subvenção descentralizada): colunas que sumiram: {faltam}")
         g = lambda r, nome: r[k[chave(nome)]] if chave(nome) in k else None  # noqa: E731
-        vistos_f: set[str] = set()
+        vistos_f = set()
         repetidos = 0
         for r in linhas:
-            contrato = limpo(g(r, "Contrato"))
-            if not contrato:
+            ref = limpo(g(r, "Referência Projeto"))
+            if not ref:
                 continue
-            if contrato in vistos_f:
+            if ref in vistos_f:
                 repetidos += 1
                 continue
-            vistos_f.add(contrato)
-            ass = data_iso(g(r, "Data Assinatura"))
-            exe = limpo(g(r, "Executor"))
-            prop = limpo(g(r, "Proponente"))
-            uf = limpo(g(r, "UF Executor"))
-            ie = instituicao(exe, None, uf.upper() if uf else None, None)
-            ig = instituicao(prop, None, (limpo(g(r, "UF Proponente")) or "").upper() or None, None) if prop and chave(prop) != chave(exe) else None
-            resumo = limpo(g(r, "Resumo Publicável"))
-            projetos.append([2, int(ass[:4]) if ass else None, contrato, limpo(g(r, "Título")), None, ie, ig, None, chamada(limpo(g(r, "Demanda"))),
-                             modal("Não reembolsável a ICTs"), numero(g(r, "Valor Finep")), ass, data_iso(g(r, "Prazo Execução")), 0,
-                             {"status": limpo(g(r, "Status")), "municipio": bonito(g(r, "Município Executor")), "resumo": corta(resumo, 300)},
-                             numero(g(r, "Valor Pago"))])
-        finep_info = {"posicao": posicao, "repetidos": repetidos, "linhas": len(vistos_f), "sha256": hashlib.sha256(finep).hexdigest()[:16]}
+            vistos_f.add(ref)
+            ass = data_iso(g(r, "Data assinatura"))
+            uf = (limpo(g(r, "UF Empresa")) or "").upper() or None
+            ie = instituicao(limpo(g(r, "Razão Social")), None, uf, "Empresa")
+            fap = limpo(g(r, "FAP"))
+            ig = instituicao(fap, None, None, "Fundação estadual de amparo à pesquisa") if fap else None
+            projetos.append([3, int(ass[:4]) if ass else None, ref, limpo(g(r, "Titulo do projeto")), bonito(g(r, "Nome do coordenador")), ie, ig, area(bonito(g(r, "Área temática"))),
+                             chamada(limpo(g(r, "Programa"))), modal("Subvenção descentralizada (via fundação estadual)"), numero(g(r, "Participação Finep")), ass,
+                             data_iso(g(r, "Prazo de Execução")), 2,
+                             {"municipio": bonito(g(r, "Municipio")), "porte": limpo(g(r, "Porte Empresa")), "fap": fap, "valor_total": numero(g(r, "Valor total")),
+                              "contrapartida_empresa": numero(g(r, "Contrapartida da empresa")), "liberado_fap": numero(g(r, "Total Liberado - FAP"))},
+                             numero(g(r, "Total Liberado - Finep"))])
+        if cab:
+            finep_info["Projetos_Subv__Descentralizada"] = {"posicao": posicao, "repetidos": repetidos, "linhas": len(vistos_f), "sha256": sha}
 
+    # ---- FAPERJ (busca pública; não publica valor)
+    faperj_n = 0
+    if faperj:
+        for x in faperj:
+            ed = x.get("edicao") or ""
+            ano_m = re.search(r"(?<!\d)((?:19|20)\d\d)(?!\d)", ed)
+            ie = instituicao(x.get("instituicao"), None, "RJ", None) if x.get("instituicao") else instituicao(None, None, None, None)
+            projetos.append([4, int(ano_m.group(1)) if ano_m else None, f"FAPERJ-{x['id']}", x.get("titulo"), bonito(x.get("pesquisador")), ie, None, area(bonito(x.get("area"))),
+                             chamada(limpo(ed)), None, None, None, None, 0, None, None])      # o resumo na FAPERJ é montado pelo identificador FAPERJ-<atvnumero>
+            faperj_n += 1
+
+    int_linhas = len(int_visto)
+    pos_ict = (finep_info.get("Projetos_Não_Reembolsavel_ICTs") or {}).get("posicao")
+    n_emp = sum(finep_info[a]["linhas"] for a in ("Projetos_Subvenção_Direta", "Projetos_Subv__Descentralizada") if a in finep_info)
     fontes = [
         {"id": "fapemig", "nome": "FAPEMIG — projetos contratados", "financiador": "Fundação de Amparo à Pesquisa do Estado de Minas Gerais", "uf": "MG", "url": FAPEMIG_PAGINA,
          "arquivos": FAPEMIG_ARQ, "tipo_valor": "contratado", "atualizacao": "a cada 3 meses (publicação de 03/06/2026)", "linhas": n_fapemig,
@@ -350,14 +413,25 @@ def montar(fapemig_proj: bytes, fapemig_inst: bytes, int_arqs: list[tuple[int, s
          "arquivos": {f"{a}-{cl}": u for a, cl, u, _ in int_arqs}, "tipo_valor": "pactuado", "atualizacao": "anual", "linhas": int_linhas, "tem_pesquisador": False,
          "por_arquivo": por_arquivo,
          "aviso": "Valor pactuado no contrato; é dinheiro que o INT recebe do cliente. A fonte não traz o nome de quem pesquisa."},
+        {"id": "finep", "nome": "FINEP — projetos não reembolsáveis a ICTs", "financiador": "Financiadora de Estudos e Projetos (FINEP, federal)", "uf": "Brasil", "url": FINEP_PAGINA,
+         "arquivos": {"contratacao": FINEP_ARQ}, "tipo_valor": "contratado", "tem_pago": True, "atualizacao": f"planilha da FINEP, {pos_ict or 'posição não informada'}",
+         "linhas": (finep_info.get("Projetos_Não_Reembolsavel_ICTs") or {}).get("linhas", 0), "tem_pesquisador": False,
+         "descartadas": {"repetido": (finep_info.get("Projetos_Não_Reembolsavel_ICTs") or {}).get("repetidos", 0)},
+         "aviso": "Valor contratado = Valor Finep do contrato; liberado = soma do que a FINEP já repassou ao projeto na posição da planilha (não é o andamento científico). "
+                  "Instituições de ciência e tecnologia (universidades, institutos)."},
+        {"id": "finep-empresas", "nome": "FINEP — subvenção a empresas", "financiador": "FINEP (federal), com fundações estaduais nos programas Centelha e Tecnova", "uf": "Brasil", "url": FINEP_PAGINA,
+         "arquivos": {"contratacao": FINEP_ARQ}, "tipo_valor": "contratado", "tem_pago": True, "atualizacao": f"planilha da FINEP, {pos_ict or 'posição não informada'}",
+         "linhas": n_emp, "tem_pesquisador": True, "grupo": "empresas",
+         "aviso": "Subvenção (dinheiro não reembolsável) a empresas para pesquisa e inovação: subvenção direta e subvenção descentralizada (Centelha, Tecnova, via fundações estaduais). "
+                  "Valor = parte da FINEP (Valor Finep / Participação Finep); liberado = o que a FINEP já liberou. Ficam fora dos rankings de pesquisa e aparecem em Projetos › Empresas. "
+                  "O coordenador é o nome que a FINEP publica para a empresa."},
+        {"id": "faperj", "nome": "FAPERJ — projetos contemplados", "financiador": "Fundação Carlos Chagas Filho de Amparo à Pesquisa do Estado do Rio de Janeiro", "uf": "RJ",
+         "url": "https://siteantigo.faperj.br/servicos/buscaprojetosinfaperj/busca_projeto.phtml", "arquivos": {}, "tipo_valor": "nd",
+         "atualizacao": "busca pública, desde julho de 2007", "linhas": faperj_n, "tem_pesquisador": True,
+         "aviso": "A FAPERJ publica pesquisador, instituição, programa, título e área, mas NÃO o valor de cada auxílio. O estado RJ vem da regra da própria FAPERJ (financia instituições sediadas no estado), "
+                  "não de um campo da busca."},
     ]
-    if finep_info:
-        fontes.append({"id": "finep", "nome": "FINEP — projetos não reembolsáveis a ICTs", "financiador": "Financiadora de Estudos e Projetos (FINEP, federal)", "uf": "Brasil", "url": FINEP_PAGINA,
-                       "arquivos": {"contratacao": FINEP_ARQ}, "tipo_valor": "contratado", "tem_pago": True, "atualizacao": f"planilha da FINEP, {finep_info['posicao'] or 'posição não informada'}",
-                       "linhas": finep_info["linhas"], "tem_pesquisador": False, "descartadas": {"repetido": finep_info["repetidos"]}, "sha256": {"contratacao": finep_info["sha256"]},
-                       "aviso": "Valor contratado = Valor Finep do contrato; liberado = soma do que a FINEP já repassou ao projeto na posição da planilha (não é o andamento científico). "
-                                "Só a aba de instituições de ciência e tecnologia (ICTs): subvenção e crédito a empresas não entram."})
-    return {"fonte": "FAPEMIG, INT e FINEP (dados abertos)", "gerado_em": hoje, "versao": 2, "fontes": fontes,
+    return {"fonte": "FINEP, FAPEMIG, FAPERJ e INT (dados abertos)", "gerado_em": hoje, "versao": 3, "fontes": fontes,
             "inst": inst.lista, "areas": area.lista, "chamadas": chamada.lista, "modalidades": modal.lista, "p": projetos}
 
 
@@ -381,9 +455,17 @@ def main() -> None:
                 print(f"INT {ano} {cli}: ok")
             except RuntimeError as e:
                 print(f"INT {ano} {cli}: NÃO baixou ({e})")
-    d = montar(proj, ins, ints, fin)
+    arq_faperj = RAIZ / "app" / "dados" / "faperj_projetos.json"
+    faperj = None
+    if arq_faperj.exists():
+        fj = json.loads(arq_faperj.read_text(encoding="utf-8"))
+        faperj = fj["projetos"]
+        print(f"FAPERJ: {len(faperj)} projetos da varredura de {fj.get('coletado_em')}" + (" (PARCIAL)" if fj.get("parcial") else ""))
+    else:
+        print("FAPERJ: sem app/dados/faperj_projetos.json (rode python -m scripts.faperj)")
+    d = montar(proj, ins, ints, fin, faperj)
     SAIDA.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    tot = {f["id"]: f["linhas"] for f in d["fontes"]}
+    tot = {f["id"]: f["linhas"] for f in d["fontes"] if f["linhas"]}
     print(f"{len(d['p'])} projetos ({tot}); {len(d['inst'])} instituições; {SAIDA.stat().st_size/1e6:.1f} MB → {SAIDA.name}")
 
 

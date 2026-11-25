@@ -1,5 +1,7 @@
 # Pesquisas financiadas com dinheiro público — inventário de fontes (25/11/2026)
 
+> **Atualização (25/11, noite):** a aba também tem a **FAPERJ** (10.197 projetos, sem valor) e a FINEP completa (instituições, subvenção direta e subvenção descentralizada). CAPES (custeio e capital), EMBRAPII e FAPES foram vistas e ficaram de fora (ver CLAUDE.md).
+>
 > **Atualização (25/11, tarde):** a aba Pesquisas está no ar com **FINEP, FAPEMIG e INT** (ver CLAUDE.md, "Pesquisas"). O diagnóstico pelo robô do GitHub (`diag-pesquisas.yml`) achou as planilhas abertas da
 > FINEP (`https://download.finep.gov.br/Contratacao.xlsx`, `Liberacao.xlsx`, `Nao_Aprovados.xlsx`), que não abriam pela página legada daqui; a aba de projetos para ICTs traz contratado **e liberado** por projeto.
 > O que o robô encontrou nas demais fontes está na seção "Resultado do diagnóstico pelo robô" no fim.
@@ -92,3 +94,20 @@ Nunca usar para inventar valor de financiamento.
 | Portal da Transparência | Página de downloads abre, com "Favorecidos - PJ", "Convênios", "Recursos transferidos"; o HEAD de `despesas/202509` redirecionou para `dadosabertos-download.cgu.gov.br` e deu 403. |
 | Fundações estaduais | Abriram: FAPERGS, FACEPE, FAPESB, FAPES (tem "Resultados de Projetos Apoiados pela Fapes"), Fundação Araucária, FAPEG, FAPEMA, FAPERN, FAPESPA, FAPEMAT, FUNDECT. Não abriram: FUNCAP e FAPESC (erro de certificado), FAPDF, FAPEAM, FAPEAL, FAPESQ, FAPITEC (tempo esgotado ou conexão recusada). Nenhuma mostrou arquivo de projetos na página inicial. |
 | Butantan, Fiocruz, Embrapa, EMBRAPII | Butantan e Fiocruz abrem, sem arquivo de projetos com valor; Embrapa estourou o tempo; EMBRAPII lista projetos em páginas, sem planilha. OpenAlex responde (só identificação). |
+
+
+## FAPERJ (integrada em 25/11/2026)
+
+- Busca "Resumo de projetos contemplados" (`siteantigo.faperj.br/servicos/buscaprojetosinfaperj/busca_projeto.phtml`): POST em `busca_resultados.phtml` (campos `edicao`, `nome_pesquisador`, `titulo_projeto`, `palavra_chave`, `area_conhecimento`, `pessoa_juridica`, `pagina`). Sem filtro (`edicao=0`): 10 projetos por página, ~0,4 s por página, até a página vir vazia.
+- Varredura de 25/11: **10.197 projetos em 1.024 páginas, 0 falhas**. Cada um traz "Nome - Instituição", edição (programa), título, área, palavras-chave (não guardadas) e o `atvnumero` do detalhe (`busca_detalhe.phtml?atvnumero=N`, que tem o resumo e NÃO tem valor). A FAPERJ não publica o valor dos auxílios.
+- Estado RJ: pela regra da FAPERJ (financia instituições sediadas no estado), não por campo da busca; instituição já conhecida de outra fonte mantém o estado que aquela fonte trouxe.
+
+## FINEP — outras abas (integradas em 25/11/2026)
+
+- "Projetos_Subvenção_Direta" (2.104; R$ 8,37 bi contratados, R$ 5,62 bi pagos; mesmas colunas da aba de ICTs mais "Instrumento") e "Projetos_Subv__Descentralizada" (3.165; Centelha e Tecnova via FAPERGS, FAPES, FAPESC, FAPEG, FUNCAP, Araucária e outras; colunas Programa, FAP, Referência Projeto, Razão Social, UF Empresa, Porte, Nome do coordenador, Titulo do projeto, Área temática, Valor total, Participação Finep, contrapartidas, Data assinatura, Prazo de Execução, Total Liberado - Finep e - FAP).
+- Vistas e não integradas: "Projetos_Crédito_Direto" e "Créd. Descentralizado" (empréstimos), "Investimento Direto (Startups)", "ANCINE"; `Liberacao.xlsx` e `Nao_Aprovados.xlsx`.
+
+## Outras vistas em 25/11/2026 e deixadas de fora
+
+- CAPES "Custeio e Capital dos Programas de Fomento PROAP e PROEX" (CSV por período em `dadosabertos.capes.gov.br`): repasses por programa de pós-graduação de cada instituição, não projetos de pesquisa.
+- EMBRAPII (`embrapii.org.br/projetos/`): páginas de histórias de projetos e painéis de dados, sem planilha. FAPES ("Resultados de Projetos Apoiados"): página dinâmica, só um livro em PDF.

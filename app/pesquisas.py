@@ -4,8 +4,9 @@ Cada projeto é uma lista compacta (o arquivo fica pequeno); aqui ela vira dicio
   * valor é sempre do tipo que a fonte diz (contratado na FAPEMIG e na FINEP, pactuado no INT) — a resposta traz `tipo_valor` e nunca soma tipos diferentes;
   * só a FINEP informa também o valor LIBERADO (`pago`: soma do que ela já repassou ao projeto); o percentual liberado é pago ÷ contratado e só existe onde há `pago`;
   * campo ausente fica nulo (a tela escreve "não informado"); nada é estimado;
-  * projetos cuja executora é a SEDE da FAPEMIG (termos de cooperação e programas da própria fundação) ficam fora dos rankings de instituição
-    e de "pesquisa", mas continuam na lista, marcados (`institucional`).
+  * a coluna `institucional` de cada projeto é um grupo: 0 = pesquisa; 1 = termo ou programa da própria FAPEMIG (executora SEDE); 2 = empresa (subvenção da FINEP).
+    Os grupos 1 e 2 ficam fora dos rankings de instituição e das somas de "pesquisa", mas continuam na lista, marcados (`institucional`, `empresa`).
+  * tipo de valor "nd" (FAPERJ): a fonte não publica valor; o valor fica nulo.
 """
 from __future__ import annotations
 
@@ -60,7 +61,8 @@ def _proj(d: dict, i: int) -> dict:
     r["area"] = None if r["area"] is None else d["areas"][r["area"]]
     r["chamada"] = None if r["chamada"] is None else d["chamadas"][r["chamada"]]
     r["modalidade"] = None if r["modalidade"] is None else d["modalidades"][r["modalidade"]]
-    r["institucional"] = bool(r["institucional"])
+    r["empresa"] = r["institucional"] == 2
+    r["institucional"] = r["institucional"] == 1
     r["percentual_liberado"] = round(r["pago"] / r["valor"] * 100, 1) if r["pago"] is not None and r["valor"] else None
     del r["inst"]
     return r
@@ -93,7 +95,7 @@ def _indice() -> dict:
 
 
 def listar(q: str = "", instituicao: int | None = None, uf: str = "", area: str = "", ano: int | None = None, fonte: str = "",
-           institucional: bool | None = False, ordem: str = "valor", limite: int = 50, pagina: int = 1) -> dict | None:
+           institucional: bool | None = False, empresa: bool = False, ordem: str = "valor", limite: int = 50, pagina: int = 1) -> dict | None:
     d = _dados()
     if d is None:
         return None
@@ -101,7 +103,12 @@ def listar(q: str = "", instituicao: int | None = None, uf: str = "", area: str 
     termos = [t for t in _sem_acento(q).split() if t]
     ids = []
     for i, p in enumerate(d["p"]):
-        if institucional is not None and bool(p[13]) != institucional:
+        if empresa:
+            if p[13] != 2:
+                continue
+        elif institucional is not None and (p[13] == 1) != institucional:
+            continue
+        elif institucional is False and p[13] == 2:
             continue
         if instituicao is not None and p[5] != instituicao:
             continue
@@ -200,9 +207,15 @@ def resumo() -> dict | None:
         return None
     ix = _indice()
     por_ano, por_uf, por_area = defaultdict(lambda: [0, 0.0]), defaultdict(lambda: [0, 0.0, 0]), defaultdict(lambda: [0, 0.0])
-    por_fonte = defaultdict(lambda: {"projetos": 0, "valor": 0.0, "sem_valor": 0, "institucional_n": 0, "institucional_valor": 0.0, "pago": 0.0, "valor_com_pago": 0.0})
+    por_fonte = defaultdict(lambda: {"projetos": 0, "valor": 0.0, "sem_valor": 0, "institucional_n": 0, "institucional_valor": 0.0, "empresas_n": 0, "empresas_valor": 0.0,
+                                                      "empresas_pago": 0.0, "pago": 0.0, "valor_com_pago": 0.0})
     for p in d["p"]:
         f = por_fonte[d["fontes"][p[0]]["id"]]
+        if p[13] == 2:                                   # empresas (subvenção da FINEP): contadas à parte, fora de rankings e somas de pesquisa
+            f["empresas_n"] += 1
+            f["empresas_valor"] += p[10] or 0.0
+            f["empresas_pago"] += p[15] or 0.0
+            continue
         if p[13]:
             f["institucional_n"] += 1
             f["institucional_valor"] += p[10] or 0.0
@@ -231,7 +244,7 @@ def resumo() -> dict | None:
     n = sum(f["projetos"] for f in por_fonte.values())
     valor = sum(f["valor"] for f in por_fonte.values())
     return {"gerado_em": d["gerado_em"], "projetos": n, "valor_total": valor, "instituicoes": len(ix["inst"]),
-            "fontes": [{**{k: f.get(k) for k in ("id", "nome", "financiador", "uf", "url", "tipo_valor", "atualizacao", "tem_pesquisador", "tem_pago", "aviso")},
+            "fontes": [{**{k: f.get(k) for k in ("id", "nome", "financiador", "uf", "url", "tipo_valor", "atualizacao", "tem_pesquisador", "tem_pago", "grupo", "aviso")},
                         **por_fonte[f["id"]]} for f in d["fontes"]],
             "por_ano": [{"ano": a, "projetos": v[0], "valor": v[1]} for a, v in sorted(por_ano.items())],
             "por_uf": [{"uf": u, "projetos": v[0], "valor": v[1], "instituicoes": v[2]} for u, v in sorted(por_uf.items(), key=lambda x: -x[1][1])],

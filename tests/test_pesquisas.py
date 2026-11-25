@@ -58,16 +58,38 @@ def finep_arq() -> bytes:
             "UNIVERSIDADE FEDERAL DE MINAS GERAIS", "2", "BELO HORIZONTE", "MG", "SE", "MG", "1000", "0", "0", "400", "EM EXECUÇÃO", "Resumo do projeto."]
     for contrato in ("01.20.0001.00", "01.20.0002.00", "01.20.0001.00"):          # o último repete o contrato
         ws.append([contrato if i == 2 else v for i, v in enumerate(base)])
+    d = wb.create_sheet("Projetos_Subvenção_Direta")
+    for _ in range(5):
+        d.append([])
+    d.append(["Posição: 20/11/2026"])
+    d.append(["Instrumento", "Demanda", "Ref", "Contrato", "Data Assinatura", "Prazo Execução", "Título", "Proponente", "CNPJ Proponente", "Município Proponente", "UF Proponente",
+              "Região Proponente", "Executor", "CNPJ Executor", "Município Executor", "UF Executor", "Valor Finep", "Valor Pago", "Status", "Resumo Publicável"])
+    d.append(["Subvenção Direta", "EDITAL E", "1/21", "13.21.0001.00", datetime(2021, 1, 5), datetime(2023, 1, 5), "Inovação em empresa", "ACME LTDA", "3", "SÃO PAULO", "SP", "SE",
+              "ACME LTDA", "3", "SÃO PAULO", "SP", "5000", "2000", "ENCERRADO", None])
+    c = wb.create_sheet("Projetos_Subv__Descentralizada")
+    for _ in range(5):
+        c.append([])
+    c.append(["Posição: 20/11/2026"])
+    c.append(["Programa", "FAP", "Referência Projeto", "CNPJ Beneficiário", "Razão Social", "Municipio", "UF Empresa", "Porte Empresa", "Nome do coordenador", "Titulo do projeto",
+              "Área temática", "Valor total", "Participação Finep", "Contrapartida da empresa", "Data assinatura", "Prazo de Execução", "Total Liberado - Finep", "Total Liberado - FAP"])
+    c.append(["CENTELHA II", "FAPERGS", "SDCRS1", "9", "STARTUP SA", "PORTO ALEGRE", "RS", "Micro", "MARIA COORDENADORA", "App de saúde", "Saúde", "100", "80", "20",
+              datetime(2023, 6, 1), datetime(2025, 6, 1), "40", "10"])
     b = io.BytesIO()
     wb.save(b)
     return b.getvalue()
+
+
+def faperj_regs():
+    return [{"id": 7, "pesquisador": "ANA DA SILVA", "instituicao": "Centro Brasileiro de Pesquisas Físicas", "edicao": "APQ1 - Auxílio à pesquisa básica 2008/1",
+             "titulo": "TEORIA DE CAMPOS", "area": "Física das Partículas"},
+            {"id": 8, "pesquisador": "BETO", "instituicao": "Universidade Federal de Minas Gerais", "edicao": "APQ1 2012/1", "titulo": "OUTRO", "area": None}]
 
 
 def montar():
     p, i = fapemig()
     a = int_arq([[1, "Projeto A", "desc", "01/12/2025", 1000, "CLIENTE UM"], [2, "Bolsa", "d", "01/09/2025", 8400, "CLIENTE DOIS"], [3, "Bolsa", "d", "01/09/2025", 8400, "CLIENTE DOIS"]])
     b = int_arq([[1, "Projeto A", "desc", "01/12/2025", 1000, "CLIENTE UM"]])     # o mesmo contrato listado em outro arquivo
-    return pq.montar(p, i, [(2025, "governo", "u1", a), (2024, "governo", "u2", b)], finep_arq(), hoje="2026-11-25")
+    return pq.montar(p, i, [(2025, "governo", "u1", a), (2024, "governo", "u2", b)], finep_arq(), faperj_regs(), hoje="2026-11-25")
 
 
 def test_fapemig_um_registro_por_processo_e_campos_da_fonte():
@@ -108,9 +130,32 @@ def test_finep_valor_liberado_e_instituicao_unida_pelo_nome():
     assert p[10] == 1000.0 and p[15] == 400.0 and p[14]["status"] == "EM EXECUÇÃO"  # contratado e liberado (pago) são colunas diferentes
     assert d["inst"][p[5]][:3] == ["Universidade Federal de Minas Gerais", "UFMG", "MG"]   # mesma razão social da FAPEMIG: uma instituição só, com a sigla que a outra fonte traz
     assert p[5] == next(x[5] for x in d["p"] if x[0] == 0 and x[2] == "APQ-1")
-    assert p[6] is not None and d["inst"][p[6]][0] == "Fundep"                    # proponente diferente do executor vira gestora
-    assert all(x[15] is None for x in d["p"] if x[0] != 2)                        # fora da FINEP não existe valor liberado: nulo, nunca zero
+    assert p[6] is not None and d["inst"][p[6]][0] == "FUNDEP"                    # proponente diferente do executor vira gestora
+    assert all(x[15] is None for x in d["p"] if x[0] not in (2, 3))                        # fora da FINEP não existe valor liberado: nulo, nunca zero
     assert d["fontes"][2]["tem_pago"] is True and "20/11/2026" in d["fontes"][2]["atualizacao"]
+
+
+def test_finep_empresas_ficam_em_grupo_proprio_com_coordenador_e_liberado():
+    d = montar()
+    emp = [p for p in d["p"] if p[0] == 3]
+    assert len(emp) == 2 and all(p[13] == 2 for p in emp)                          # grupo 2 = empresas: fora de rankings e somas de pesquisa
+    direta = next(p for p in emp if p[2] == "13.21.0001.00")
+    assert direta[10] == 5000.0 and direta[15] == 2000.0 and d["inst"][direta[5]][3] == "Empresa"
+    desc = next(p for p in emp if p[2] == "SDCRS1")
+    assert desc[4] == "Maria Coordenadora" and desc[10] == 80.0 and desc[15] == 40.0       # parte da FINEP e o que a FINEP liberou (não o total do projeto)
+    assert desc[14]["valor_total"] == 100.0 and desc[14]["fap"] == "FAPERGS" and d["inst"][desc[6]][0] == "FAPERGS"
+    assert d["areas"][desc[7]] == "Saúde" and d["inst"][desc[5]][2] == "RS"
+
+
+def test_faperj_sem_valor_e_estado_pela_regra_da_fundacao():
+    d = montar()
+    fj = [p for p in d["p"] if p[0] == 4]
+    assert len(fj) == 2 and all(p[10] is None and p[15] is None for p in fj)           # a FAPERJ não publica valor: nulo, nunca zero
+    a = next(p for p in fj if p[2] == "FAPERJ-7")
+    assert a[1] == 2008 and a[4] == "Ana da Silva" and d["inst"][a[5]][2] == "RJ"
+    b = next(p for p in fj if p[2] == "FAPERJ-8")
+    assert d["inst"][b[5]][2] == "MG"                                                   # instituição já conhecida de outra fonte mantém o estado dela
+    assert d["fontes"][4]["tipo_valor"] == "nd" and d["fontes"][4]["linhas"] == 2
 
 
 def test_api_com_os_dados_gerados():
@@ -121,7 +166,7 @@ def test_api_com_os_dados_gerados():
     j = r.json()
     assert j["projetos"] > 20000 and "aviso" in j
     # tipos de valor nunca se misturam: cada fonte diz o seu
-    assert {f["id"]: f["tipo_valor"] for f in j["fontes"]} == {"fapemig": "contratado", "int": "pactuado", "finep": "contratado"}
+    assert {f["id"]: f["tipo_valor"] for f in j["fontes"]} == {"fapemig": "contratado", "int": "pactuado", "finep": "contratado", "finep-empresas": "contratado", "faperj": "nd"}
     fin = next(f for f in j["fontes"] if f["id"] == "finep")
     assert fin["tem_pago"] and 0 < fin["pago"] < fin["valor"] * 1.1
     lista = c.get("/pesquisas", params={"q": "nanoestruturas", "limite": 3}).json()
