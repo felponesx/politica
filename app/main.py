@@ -20,7 +20,7 @@ from app.routers import (populacao as populacao_rotas, dados, eleicoes, legislac
                          oportunidades as oportunidades_rotas, oportunidades_cadastro as oportunidades_cadastro_rotas,
                          publicacoes as publicacoes_rotas, profissoes as profissoes_rotas, empresas_tipo as empresas_tipo_rotas,
                          catastrofes as catastrofes_rotas, painel_contas as painel_contas_rotas, painel_dados as painel_dados_rotas,
-                         pesquisas as pesquisas_rotas)
+                         pesquisas as pesquisas_rotas, famosos as famosos_rotas)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -97,6 +97,7 @@ app.include_router(seguranca.router)
 app.include_router(saude_rotas.router)
 app.include_router(ensino_rotas.router)
 app.include_router(pesquisas_rotas.router)
+app.include_router(famosos_rotas.router)
 app.include_router(lacunas_rotas.router)
 app.include_router(sancoes_rotas.router)
 app.include_router(doadores_rotas.router)

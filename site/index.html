@@ -2386,6 +2386,16 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #pqF{display:flex;gap:10px;align-items:flex-end}
 #pqDet h1,#pqIns h1{font-size:19px!important;line-height:1.3!important;overflow-wrap:anywhere}#pqDet .chips{display:flex;flex-wrap:wrap;gap:6px}
 @media (max-width:760px){.pq-card{grid-template-columns:1fr}.pq-v{grid-column:1;grid-row:auto;text-align:left;margin-top:4px;white-space:normal}.pq-v b{display:inline;margin-right:6px}}
+/* Artistas e famosos (25/11/2026) */
+.fm-card{display:grid;grid-template-columns:auto 1fr auto;gap:2px 14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.fm-card:hover{background:var(--bg)}
+.fm-av{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none}.fm-av-g{width:64px;height:64px;font-size:22px}
+.fm-t{font-weight:600;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}.fm-m{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.fm-g{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.fm-g .chip{font-size:11px;padding:2px 8px}
+.fm-v{text-align:right;white-space:nowrap}.fm-v b{display:block;font-size:15px}.fm-v small{color:var(--muted);font-size:11.5px}
+.fm-ob{margin:0;padding-left:18px;line-height:1.7;font-size:13.5px}
+#fmDet h1{overflow-wrap:anywhere}#fmDet .chips{display:flex;flex-wrap:wrap;gap:6px}
+@media (max-width:760px){.fm-card{grid-template-columns:auto 1fr}.fm-v{grid-column:1/-1;text-align:left;white-space:normal;padding-left:58px}.fm-v b{display:inline;margin-right:6px}}
 </style>
 </head>
 <body>
@@ -2472,7 +2482,7 @@ profissoes:'<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
 populacao:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"/><circle cx="17" cy="8" r="3"/><path d="M22 19v-1.5a3.5 3.5 0 0 0-3-3.46"/>',
-pesquisas:'<path d="M10 2v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',catastrofes:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
+famosos:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/><path d="M8 22h8"/>',pesquisas:'<path d="M10 2v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',catastrofes:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
@@ -2490,7 +2500,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["populacao","População"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["pesquisas","Pesquisas"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["populacao","População"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["pesquisas","Pesquisas"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["famosos","Artistas e famosos"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;return true}
 function navSubAdmin(){return [["resumo","inicio","Gestão (início)"],["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["bots","bots","Bots"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>x[0]==="resumo"||artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
@@ -3696,7 +3706,7 @@ $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEven
 
 
 /* ---------- janelas flutuantes ---------- */
-const DETAIL={pesquisa:"Pesquisa",instituto:"Instituição",indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma",premio:"Título"};
+const DETAIL={famoso:"Artista ou famoso",pesquisa:"Pesquisa",instituto:"Instituição",indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma",premio:"Título"};
 let popStack=[];
 function popTitle(path,k){const h=$("#popB h1");return`${DETAIL[k]}: <b>${h?esc(h.textContent):""}</b>`}
 function openPop(path,push=true){const[k,...args]=path.split("/");if(!DETAIL[k]||!P[k])return false;
@@ -6200,6 +6210,126 @@ P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";uf=UF[uf]?uf:""
    apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}
    const v=$("#ensV");if(!v)return;const o=aba==="faculdades"?ensFaculdades(D):ensEscolas(D);
    v.innerHTML=o.html;if(o.mount)o.mount();if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)})}}};
+// ===== Artistas e famosos (25/11/2026): pessoas brasileiras por profissão. Tudo vem de GET /famosos/base (app/famosos.py, scripts/famosos.py: Wikidata + Deezer) e é filtrado no navegador.
+// NÃO existe base aberta de horas ouvidas por artista: o ranking de música usa fãs no Deezer e seguidores com data. Seguidores de redes diferentes nunca se somam. Dado ausente = "não informado".
+const FM_ABAS=[["musicos","Músicos"],["atores","Atores"],["dubladores","Dubladores"],["arquitetos","Arquitetos"],["engenheiros","Engenheiros"],["redes","Redes sociais"],["profissoes","Outras profissões"]];
+const FM_GRUPO={musicos:"musico",atores:"ator",dubladores:"dublador",arquitetos:"arquiteto",engenheiros:"engenheiro",redes:"rede"};
+const FM_REDE={yt:["YouTube","inscritos"],ig:["Instagram","seguidores"],x:["X","seguidores"],tt:["TikTok","seguidores"],fb:["Facebook","seguidores"],sp:["Spotify","seguidores"]};
+const FM_LINK={ig:u=>`https://www.instagram.com/${encodeURIComponent(u)}/`,yt:u=>`https://www.youtube.com/channel/${encodeURIComponent(u)}`,x:u=>`https://x.com/${encodeURIComponent(u)}`,tt:u=>`https://www.tiktok.com/@${encodeURIComponent(u)}`,fb:u=>`https://www.facebook.com/${encodeURIComponent(u)}`,sp:u=>`https://open.spotify.com/artist/${encodeURIComponent(u)}`};
+const FM_ORD={musicos:[["dz","Mais fãs no Deezer"],["ig","Mais seguidores no Instagram"],["yt","Mais inscritos no YouTube"],["sp","Mais seguidores no Spotify"],["s","Mais conhecidos (idiomas na Wikipédia)"],["az","Ordem alfabética"],["jov","Mais jovens"]],
+ redes:[["ig","Mais seguidores no Instagram"],["yt","Mais inscritos no YouTube"],["tt","Mais seguidores no TikTok"],["x","Mais seguidores no X"],["s","Mais conhecidos (idiomas na Wikipédia)"],["az","Ordem alfabética"],["jov","Mais jovens"]],
+ outros:[["s","Mais conhecidos (idiomas na Wikipédia)"],["ig","Mais seguidores no Instagram"],["yt","Mais inscritos no YouTube"],["az","Ordem alfabética"],["jov","Mais jovens"]]};
+let FM_C=null;
+function fmBase(){if(!FM_C)FM_C=apiGet("/famosos/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{B.P=B.p;B.M=new Map(B.p.map(p=>[p.q,p]));return B}).catch(e=>{FM_C=null;throw e});return FM_C}
+const fmN=v=>v==null?"não informado":v>=1e6?(v/1e6).toLocaleString("pt-BR",{maximumFractionDigits:1})+" mi":v>=1e4?Math.round(v/1e3).toLocaleString("pt-BR")+" mil":nf(v);
+const fmData=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"";
+const fmUF=u=>u?(UF[u]?UF[u].nome:u):"";
+const fmBusca=(p)=>p.bq||(p.bq=snapNorm([p.n,(p.oc||[]).join(" "),(p.ge||[]).join(" "),p.d||"",p.c||""].join(" ")));
+const fmSEM_API=`<div class="rbanner">A aba Artistas e famosos aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
+const fmVAZIO=`<div class="rbanner">Os dados de artistas e famosos ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`;
+function fmMetrica(p,ord){
+ if(ord==="dz"&&p.dz)return{v:p.dz[0],rot:`fãs no Deezer · ${fmData(p.dz[1])}`};
+ if(FM_REDE[ord]&&p.rs&&p.rs[ord])return{v:p.rs[ord][0],rot:`${FM_REDE[ord][1]} no ${FM_REDE[ord][0]} · ${fmData(p.rs[ord][1])}`};
+ return null}
+function fmMetricaBase(p,ord){const m=fmMetrica(p,ord);if(m)return m;
+ for(const r of ["dz","ig","yt","tt","x","sp","fb"]){const x=fmMetrica(p,r);if(x)return x}return null}
+const fmOrdena=(l,ord)=>{const k=ord==="s"?p=>p.s:ord==="jov"?p=>p.a||0:p=>{const m=fmMetrica(p,ord);return m?m.v:-1};
+ if(ord==="az")return l.slice().sort((a,b)=>a.n.localeCompare(b.n,"pt"));
+ return l.slice().sort((a,b)=>k(b)-k(a)||b.s-a.s)};
+function fmAv(nome){const h=hs(nome)%360,i=nome.split(/\s+/).filter(w=>/^\p{L}/u.test(w)).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+ return`<span class="fm-av" aria-hidden="true" style="background:hsl(${h} 70% 90%);color:hsl(${h} 45% 28%)">${esc(i)}</span>`}
+function fmCartao(p,ord){const m=fmMetrica(p,ord),vida=p.a?(p.m?`${p.a}–${p.m}`:`nasceu em ${p.a}`):"";
+ const meta=[(p.oc||[]).slice(0,3).join(", "),p.c&&p.u?`${p.c} (${p.u})`:fmUF(p.u)||p.c||"",vida].filter(Boolean).map(esc).join(" · ");
+ return`<a class="fm-card" href="#/famoso/${p.q}">${fmAv(p.n)}<div class="fm-b"><div class="fm-t">${esc(p.n)}</div><div class="fm-m">${meta||esc(p.d||"")}</div>${p.ge&&p.ge.length?`<div class="fm-g">${p.ge.slice(0,4).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>`:""}</div>
+ <div class="fm-v">${m?`<b>${fmN(m.v)}</b><small>${esc(m.rot)}</small>`:ord==="s"?`<b>${p.s}</b><small>idiomas na Wikipédia</small>`:`<small>sem esse número na fonte</small>`}</div></a>`}
+function fmContaPor(lista,chave){const o={};lista.forEach(p=>{(Array.isArray(chave(p))?chave(p):[chave(p)]).filter(Boolean).forEach(k=>{o[k]=(o[k]||0)+1})});return o}
+
+function fmTela(el,D,aba){
+ const ehProf=aba==="profissoes",grupos=Object.entries(D.grupos).filter(([k])=>k.startsWith("prof:")).sort((a,b)=>b[1].n-a[1].n);
+ const f={q:"",uf:"",ge:"",oc:"",vida:"",pr:grupos.length?grupos[0][0]:"",ord:""};
+ const ordens=FM_ORD[aba]||FM_ORD.outros;f.ord=ordens[0][0];
+ const base=()=>ehProf?D.P.filter(p=>p.g.includes(f.pr)):D.P.filter(p=>p.g.includes(FM_GRUPO[aba]));
+ const op=(l,v,s)=>`<option value="${esc(v)}"${String(v)===String(s)?" selected":""}>${esc(l)}</option>`;
+ const B0=base(),ehMus=aba==="musicos";
+ const generos=ehMus?Object.entries(fmContaPor(B0,p=>p.ge)).sort((a,b)=>b[1]-a[1]).slice(0,40):[];
+ const ocs=Object.entries(fmContaPor(B0,p=>p.oc)).sort((a,b)=>b[1]-a[1]).slice(0,30);
+ const ufs=[...new Set(D.P.map(p=>p.u).filter(Boolean))].sort();
+ el.innerHTML=`<div id="fmKp"></div><div class="grid g2 mt"><div class="panel"><h2 id="fmRankT">Ranking</h2><div id="fmRank"></div></div><div class="panel"><h2 id="fmCompT"></h2><div id="fmComp"></div></div></div>
+  <div class="grid g2 mt"><div class="panel"><h2>De onde vêm <small>estado de nascimento, como registrado no Wikidata</small></h2><div id="fmMapa"></div></div><div class="panel"><h2>Como ler</h2><ul class="small" style="margin:0;padding-left:18px;line-height:1.6">
+   ${ehMus?`<li><b>Não existe base aberta de horas ouvidas por artista.</b> Spotify, YouTube Music e Apple Music não publicam esse número. O ranking usa os <b>fãs no Deezer</b> (a API pública do Deezer, ligada pela identidade do artista no Wikidata) e os seguidores que o Wikidata guarda, cada um com a data.</li>`:`<li>O ranking usa números que bases abertas publicam: seguidores guardados no Wikidata (cada um com a data) ou o número de idiomas em que a Wikipédia tem um artigo sobre a pessoa. <b>Não é ranking de talento nem de audiência total.</b></li>`}
+   <li>Seguidores de redes diferentes não se somam: muita gente aparece em várias. O número é o do dia registrado, não o de hoje.</li>
+   <li>O estado é o de <b>nascimento</b>, não o de moradia. Quem não tem local de nascimento no Wikidata fica de fora do mapa.</li>
+   <li>O Wikidata é feito por voluntários e é incompleto: quem não aparece, ou aparece sem um dado, não deixou de existir. Dado que falta é "não informado", nunca zero.</li>
+   <li>Fonte: <a href="https://www.wikidata.org" target="_blank" rel="noopener">Wikidata</a> (CC0)${ehMus?` e <a href="https://developers.deezer.com/api" target="_blank" rel="noopener">API do Deezer</a>`:""}. Atualizado em ${esc(fmData(D.gerado))}.</li></ul></div></div>
+  <div class="panel mt"><div class="filters" id="fmF" style="flex-wrap:wrap"><input id="fmQ" type="search" placeholder="Pesquisar por nome, profissão, gênero ou cidade" style="flex:1;min-width:220px" autocomplete="off">
+   ${ehProf?`<select id="fmPR" data-pill="Profissão" data-titulo="Profissão">${grupos.map(([k,v])=>op(`${v.nome} · ${nf(v.n)}`,k,f.pr)).join("")}</select>`:""}
+   <select id="fmUF" data-pill="Estado" data-titulo="Estado de nascimento">${op("Todos os estados","",f.uf)}${ufs.map(u=>op(fmUF(u),u,f.uf)).join("")}</select>
+   ${ehMus?`<select id="fmGE" data-pill="Gênero" data-titulo="Gênero musical"></select>`:`<select id="fmOC" data-pill="Ocupação" data-titulo="Ocupação"></select>`}
+   <select id="fmVI" data-pill="Mostrar" data-titulo="Mostrar">${op("Vivos e falecidos","",f.vida)}${op("Só vivos","vivo",f.vida)}${op("Só falecidos","morto",f.vida)}</select>
+   <select id="fmOR" data-pill="Ordem" data-titulo="Ordem">${ordens.map(o=>op(o[1],o[0],f.ord)).join("")}</select></div>
+   <p id="fmRes" class="small" style="margin:10px 0"></p><div id="fmLista"></div></div>`;
+ const preencheFiltros=()=>{const b=base();
+  if(ehMus){const g=Object.entries(fmContaPor(b,p=>p.ge)).sort((a,b)=>b[1]-a[1]).slice(0,40);$("#fmGE").innerHTML=op("Todos os gêneros","",f.ge)+g.map(([k,n])=>op(`${k} · ${nf(n)}`,k,f.ge)).join("")}
+  else{const o=Object.entries(fmContaPor(b,p=>p.oc)).sort((a,c)=>c[1]-a[1]).slice(0,30);$("#fmOC").innerHTML=op("Todas as ocupações","",f.oc)+o.map(([k,n])=>op(`${k} · ${nf(n)}`,k,f.oc)).join("")}};
+ const pinta=()=>{const b=base(),t=snapNorm(f.q).split(/\s+/).filter(Boolean);
+  const l=b.filter(p=>(!f.uf||p.u===f.uf)&&(!f.ge||(p.ge||[]).includes(f.ge))&&(!f.oc||(p.oc||[]).includes(f.oc))&&(!f.vida||(f.vida==="vivo"?!p.m:!!p.m))&&t.every(x=>fmBusca(p).includes(x)));
+  const ord=fmOrdena(l,f.ord),comNum=l.filter(p=>fmMetrica(p,f.ord)).length;
+  $("#fmKp").innerHTML=`<div class="kpis kpis-c"><div class="kpi"><span>${ehProf?esc(D.grupos[f.pr].nome):esc(FM_ABAS.find(a=>a[0]===aba)[1])}</span><strong>${nf(b.length)}</strong><em>pessoas com registro no Wikidata</em></div>
+   <div class="kpi"><span>Com estado de nascimento</span><strong>${nf(b.filter(p=>p.u).length)}</strong><em>aparecem no mapa</em></div>
+   <div class="kpi"><span>${ehMus?"Com fãs no Deezer":"Com seguidores registrados"}</span><strong>${nf(b.filter(p=>ehMus?p.dz:p.rs).length)}</strong><em>${ehMus?"número lido na API do Deezer":"número e data no Wikidata"}</em></div></div>`;
+  const topo=ord.filter(p=>fmMetrica(p,f.ord)).slice(0,10),metR=FM_REDE[f.ord];
+  const rotOrd=(ordens.find(o=>o[0]===f.ord)||[])[1]||"";
+  $("#fmRankT").innerHTML=`Ranking <small>${esc(rotOrd.toLowerCase())}</small>`;
+  $("#fmRank").innerHTML=topo.length?hbars(topo.map(p=>[p.n,fmMetrica(p,f.ord).v]),{fmt:fmN})+`<p class="small muted" style="margin:8px 0 0">${f.ord==="dz"?"Fãs no Deezer, lidos em "+esc(fmData(D.gerado))+".":`Seguidores no ${metR?esc(metR[0]):"serviço"} como o Wikidata registra; a data de cada um fica no perfil.`} ${nf(comNum)} de ${nf(l.length)} pessoas da lista têm esse número.</p>`:rvazio(f.ord==="s"||f.ord==="az"||f.ord==="jov"?"Escolha uma ordem por fãs ou seguidores para ver o ranking.":"Nenhuma pessoa da lista tem esse número na fonte.");
+  if(ehMus){const g=Object.entries(fmContaPor(l,p=>p.ge)).sort((a,b)=>b[1]-a[1]).slice(0,10),n=l.filter(p=>p.ge&&p.ge.length).length;
+   $("#fmCompT").innerHTML=`Gêneros mais citados <small>${nf(n)} de ${nf(l.length)} músicos têm gênero no Wikidata</small>`;
+   $("#fmComp").innerHTML=g.length?pbars(g.map(([k,c])=>[k,Math.round(c/n*1000)/10]))+`<p class="small muted" style="margin:8px 0 0">Um artista pode ter vários gêneros: por isso as barras não somam 100%.</p>`:rvazio("Sem gênero informado nesta lista.")}
+  else{const o=Object.entries(fmContaPor(l,p=>p.oc)).sort((a,b)=>b[1]-a[1]).slice(0,10);
+   $("#fmCompT").innerHTML=`Ocupações mais citadas <small>a mesma pessoa pode ter várias</small>`;
+   $("#fmComp").innerHTML=o.length?hbars(o,{fmt:nf}):rvazio("Sem ocupação informada nesta lista.")}
+  const porUF=fmContaPor(l,p=>p.u);$("#fmMapa").innerHTML=Object.keys(porUF).length?mapaValores(porUF,n=>nf(n)+(n===1?" pessoa":" pessoas")):rvazio("Sem estado de nascimento nesta lista.");
+  $("#fmRes").innerHTML=`<b>${nf(l.length)}</b> ${l.length===1?"pessoa":"pessoas"}${f.uf?` nascidas em ${esc(fmUF(f.uf))}`:""}`;
+  opLista($("#fmLista"),ord,p=>fmCartao(p,f.ord),30)};
+ const liga=(id,k,antes)=>{const e=$(id);if(e)e.onchange=()=>{f[k]=e.value;if(antes)antes();pinta()}};
+ preencheFiltros();
+ [["#fmUF","uf"],["#fmGE","ge"],["#fmOC","oc"],["#fmVI","vida"],["#fmOR","ord"]].forEach(([i,k])=>liga(i,k));
+ liga("#fmPR","pr",()=>{f.ge="";f.oc="";preencheFiltros();if(typeof pilulas==="function")pilulas()});
+ let tm=null;$("#fmQ").oninput=e=>{clearTimeout(tm);tm=setTimeout(()=>{f.q=e.target.value;pinta()},200)};
+ if(typeof pilulas==="function")pilulas();pinta()}
+
+P.famosos=(aba)=>{aba=FM_ABAS.some(a=>a[0]===aba)?aba:"musicos";
+ return{html:`<div class="ph"><div><h1>Artistas e famosos</h1><p>Músicos, atores, dubladores, arquitetos, engenheiros, famosos das redes e de outras profissões, de todo o Brasil, com dados abertos do Wikidata e do Deezer.</p></div></div><div class="tabs" id="fmTabs" style="margin-top:0">${FM_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/famosos/${a[0]}">${a[1]}</a>`).join("")}</div><div id="fmV">${API.on?rload():fmSEM_API}</div>`,
+  mount(){if(!API.on)return;fmBase().then(D=>{const v=$("#fmV");if(!v)return;fmTela(v,D,aba);if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#fmV");if(v)v.innerHTML=e.status===404?fmVAZIO:rerro(e)})}}};
+
+function fmObras(lista,vazio){return lista&&lista.length?`<ul class="fm-ob">${lista.map(o=>`<li><b>${esc(o[0])}</b>${o[1]?` <span class="muted">(${o[1]})</span>`:""} <span class="chip">${esc(o[2])}</span></li>`).join("")}</ul>`:`<p class="small muted" style="margin:0">${vazio}</p>`}
+P.famoso=(q)=>({html:`<div id="fmDet">${rload()}</div>`,mount(){fmBase().then(D=>{const box=$("#fmDet");if(!box)return;const p=D.M.get(q);if(!p){box.innerHTML=rvazio("Pessoa não encontrada.");return}
+  const lin=(t,v)=>v?`<div><span>${t}</span>${v}</div>`:"";
+  const gr=p.g.map(g=>D.grupos[g]?D.grupos[g].nome:g);
+  const redes=Object.entries(p.rs||{}).sort((a,b)=>b[1][0]-a[1][0]);
+  const kp=[];
+  if(p.dz)kp.push(`<div class="kpi"><span>Fãs no Deezer</span><strong>${fmN(p.dz[0])}</strong><em>lido em ${fmData(p.dz[1])}</em></div>`);
+  redes.forEach(([r,v])=>kp.push(`<div class="kpi"><span>${FM_REDE[r][0]} · ${FM_REDE[r][1]}</span><strong>${fmN(v[0])}</strong><em>dado de ${fmData(v[1])}</em></div>`));
+  kp.push(`<div class="kpi"><span>Projeção</span><strong>${p.s}</strong><em>${p.s===1?"idioma":"idiomas"} com artigo na Wikipédia</em></div>`);
+  const links=[];
+  if(p.wp)links.push(`<a class="btn" href="https://pt.wikipedia.org/wiki/${encodeURIComponent(p.wp.replace(/ /g,"_"))}" target="_blank" rel="noopener">Wikipédia</a>`);
+  links.push(`<a class="btn" href="https://www.wikidata.org/wiki/${esc(p.q)}" target="_blank" rel="noopener">Wikidata</a>`);
+  if(p.dz&&p.dz[2])links.push(`<a class="btn" href="https://www.deezer.com/artist/${encodeURIComponent(p.dz[2])}" target="_blank" rel="noopener">Deezer</a>`);
+  Object.entries(p.ct||{}).forEach(([r,u])=>{if(FM_LINK[r])links.push(`<a class="btn" href="${FM_LINK[r](u)}" target="_blank" rel="noopener">${FM_REDE[r][0]}</a>`)});
+  const tem=p.g.includes("ator")||p.g.includes("dublador"),mus=p.g.includes("musico"),arq=p.g.includes("arquiteto")||p.g.includes("engenheiro");
+  const rotObra=mus?"Álbuns, singles e músicas":tem?"Trabalhos (filmes, séries, novelas)":arq?"Projetos":"Obras";
+  box.innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin:0 0 10px">${fmAv(p.n).replace("fm-av","fm-av fm-av-g")}<div><h1 style="font-size:22px;line-height:1.25;margin:0">${esc(p.n)}</h1>${p.d?`<p class="small muted" style="margin:2px 0 0">${esc(p.d)}</p>`:""}</div></div>
+   <div class="chips" style="margin:0 0 12px">${gr.map(g=>`<span class="chip on">${esc(g)}</span>`).join("")}${(p.oc||[]).slice(0,5).map(o=>`<span class="chip">${esc(o)}</span>`).join("")}${(p.ge||[]).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>
+   <div class="kpis kpis-c">${kp.join("")}</div>
+   <div class="facts" style="margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    ${lin("Nascimento",p.a?`${p.a}`:"não informado")}${p.m?lin("Falecimento",`${p.m}`):""}
+    ${lin("Naturalidade",p.c||p.u?esc([p.c,fmUF(p.u)].filter(Boolean).join(" · ")):"não informada")}
+    ${lin("Gêneros",p.ge&&p.ge.length?p.ge.map(esc).join(", "):"não informado")}
+    ${lin("Prêmios registrados",p.pr?`${p.pr[0]} no Wikidata${p.pr[1].length?` (entre eles: ${p.pr[1].map(esc).join("; ")})`:""}`:"nenhum registrado")}</div>
+   <div class="grid g2 mt"><div class="panel"><h2>${rotObra} <small>mais conhecidos</small></h2>${fmObras(p.ob,"O Wikidata não registra obras desta pessoa.")}</div>
+    <div class="panel"><h2>${rotObra} <small>mais recentes que o Wikidata registra</small></h2>${fmObras(p.ob2,"Sem obra com data registrada.")}</div></div>
+   <p class="small muted" style="margin:14px 0 8px">Os números de seguidores são os que o Wikidata guarda, cada um com a data em que foi anotado; não são de hoje. ${p.dz?`Os fãs no Deezer foram lidos na API do Deezer em ${fmData(p.dz[1])}. `:""}Não existe fonte aberta de horas ouvidas. "Mais conhecidos" = obras com mais idiomas na Wikipédia; "mais recentes" depende do que os voluntários do Wikidata já cadastraram.</p>
+   <div style="display:flex;gap:8px;flex-wrap:wrap">${links.join("")}</div>`}).catch(e=>{const b=$("#fmDet");if(b)b.innerHTML=rerro(e)})}});
+
 // ===== Pesquisas (25/11/2026): projetos de pesquisa financiados com dinheiro público. Tudo vem de GET /pesquisas/base (app/pesquisas.py, scripts/pesquisas.py) e é filtrado no navegador.
 // Valor é sempre do tipo que a fonte diz (FAPEMIG: contratado; INT: pactuado) e os tipos nunca são somados no mesmo número. Dado ausente = "não informado".
 const PQ_ABAS=[["visao","Visão geral"],["projetos","Projetos"],["instituicoes","Instituições"],["fontes","Fontes e limites"]];
@@ -6207,7 +6337,7 @@ const PQ_QUAIS=[["pesq","Pesquisas"],["emp","Empresas (subvenção da FINEP)"],[
 let PQ_C=null,PQ_PRE=null;
 async function pqDescomprime(b64){if(typeof DecompressionStream==="undefined")throw new Error("este navegador não abre a cópia comprimida dos dados");
  const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));return JSON.parse(await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).text())}
-function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{if(B.cols){B.p=B.cols[0].map((_,i)=>B.cols.map(c=>c[i]));delete B.cols}
+function pqBase(){if(!PQ_C)PQ_C=apiGet("/famosos/base", "/pesquisas/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{if(B.cols){B.p=B.cols[0].map((_,i)=>B.cols.map(c=>c[i]));delete B.cols}
   const I=B.inst.map((x,i)=>({i,nome:x[0],sigla:x[1],uf:x[2],tipo:x[3]}));
   const L=B.p.map((p,id)=>{const f=B.fontes[p[0]];return{id,fid:f.id,tipo:f.tipo_valor,ano:p[1],proc:p[2],tit:p[3],pesq:p[4],ie:p[5],ig:p[6],area:p[7]==null?null:B.areas[p[7]],
     cham:p[8]==null?null:B.chamadas[p[8]],modal:p[9]==null?null:B.modalidades[p[9]],v:p[10],ini:p[11],fim:p[12],sede:p[13]===1,emp:p[13]===2,g:p[13]===1?"sede":p[13]===2?"emp":"pesq",ex:p[14],pago:p[15]==null?null:p[15],uf:I[p[5]].uf,bq:null}});
@@ -7884,13 +8014,13 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",pesquisa:"pesquisas",instituto:"pesquisas",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",famoso:"famosos",pesquisa:"pesquisas",instituto:"pesquisas",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",leis:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",pesquisa:"pesquisas",instituto:"pesquisas",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",famoso:"famosos",pesquisa:"pesquisas",instituto:"pesquisas",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));document.querySelectorAll(".nav a[data-sub]").forEach(a=>a.classList.toggle("on",location.hash.indexOf(a.dataset.sub)===0));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
@@ -8298,6 +8428,7 @@ const ART_SEC=[
  ["noticias","Notícias",["/noticias"]],
  ["ensino","Ensino",["/ensino","/igc"]],
  ["pesquisas","Pesquisas",["/pesquisas"]],
+ ["famosos","Artistas e famosos",["/famosos"]],
  ["concursos","Concursos e cursos",["/concursos","/cursos"]],
  ["eventos","Eventos",["/eventos","/eventos-patrocinios"]],
  ["premios","Prêmios",["/premios"]],
