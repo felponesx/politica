@@ -6,6 +6,8 @@ Precisa de app/dados/pesquisas.json (python -m scripts.pesquisas). Não mexe nas
 """
 from __future__ import annotations
 
+import base64
+import gzip
 import json
 import os
 import sys
@@ -24,7 +26,10 @@ def gravar(pasta: Path) -> None:
     base, resumo = pesquisas.base(), pesquisas.resumo()
     if base is None:
         raise SystemExit("Sem app/dados/pesquisas.json. Rode: python -m scripts.pesquisas")
-    d = {"/pesquisas/base": base, "/pesquisas/resumo": resumo}
+    # A cópia estática guarda a base comprimida (gzip em base64): o Artifact tem limite de tamanho total e a base crua passava de 5 MB.
+    # O site descomprime no navegador (DecompressionStream). O servidor (GET /pesquisas/base) continua devolvendo o JSON puro.
+    bruto = json.dumps(base, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    d = {"/pesquisas/base": {"__gz": base64.b64encode(gzip.compress(bruto, 9)).decode("ascii")}, "/pesquisas/resumo": resumo}
     (pasta / ARQ).parent.mkdir(exist_ok=True)
     (pasta / ARQ).write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     man = json.loads((pasta / "manifest.json").read_text(encoding="utf-8"))

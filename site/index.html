@@ -6205,7 +6205,9 @@ P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";uf=UF[uf]?uf:""
 const PQ_ABAS=[["visao","Visão geral"],["projetos","Projetos"],["instituicoes","Instituições"],["fontes","Fontes e limites"]];
 const PQ_QUAIS=[["pesq","Pesquisas"],["sede","Termos e programas da própria FAPEMIG"],["tudo","Tudo"]];
 let PQ_C=null,PQ_PRE=null;
-function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>{
+async function pqDescomprime(b64){if(typeof DecompressionStream==="undefined")throw new Error("este navegador não abre a cópia comprimida dos dados");
+ const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));return JSON.parse(await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).text())}
+function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{
   const I=B.inst.map((x,i)=>({i,nome:x[0],sigla:x[1],uf:x[2],tipo:x[3]}));
   const L=B.p.map((p,id)=>{const f=B.fontes[p[0]];return{id,fid:f.id,tipo:f.tipo_valor,ano:p[1],proc:p[2],tit:p[3],pesq:p[4],ie:p[5],ig:p[6],area:p[7]==null?null:B.areas[p[7]],
     cham:p[8]==null?null:B.chamadas[p[8]],modal:p[9]==null?null:B.modalidades[p[9]],v:p[10],ini:p[11],fim:p[12],sede:!!p[13],ex:p[14],uf:I[p[5]].uf,bq:null}});
