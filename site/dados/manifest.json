@@ -496,6 +496,17 @@
    "telas": [
     "catastrofes"
    ]
+  },
+  "p/pesquisas.json": {
+   "chaves": [
+    "/pesquisas/base",
+    "/pesquisas/resumo"
+   ],
+   "telas": [
+    "pesquisas",
+    "pesquisa",
+    "instituto"
+   ]
   }
  }
 }

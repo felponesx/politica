@@ -2376,7 +2376,17 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #view .amb-par .fogo{margin-top:auto}
 #view .amb-par .lc{margin-bottom:16px}
 .ma-seg{display:none}@media (max-width:760px){.ma-seg{display:block}#maT .ma-seg{margin:0 0 14px}.ma-bl{display:none}.ma-bl.on{display:block}}.bio-mini{height:1.25em;width:auto;vertical-align:-.3em;margin-left:7px;flex:none}.bio-mini .bm-p{fill:#C7CED8}.bio-mini .bm-b{fill:#2F6FED}[data-theme="dark"] .bio-mini .bm-p{fill:#3A4352}[data-theme="dark"] .bio-mini .bm-b{fill:#6C9BFF}
-.flag-mini{width:22px;height:15px;border-radius:3px;margin-right:8px;vertical-align:middle;object-fit:cover;box-shadow:0 0 0 1px var(--line)}</style>
+.flag-mini{width:22px;height:15px;border-radius:3px;margin-right:8px;vertical-align:middle;object-fit:cover;box-shadow:0 0 0 1px var(--line)}/* Pesquisas (25/11/2026) */
+.pq-card{display:grid;grid-template-columns:1fr auto;gap:2px 14px;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.pq-card:hover{background:var(--bg)}
+.pq-t{grid-column:1;font-weight:600;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}
+.pq-m{grid-column:1;font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.pq-v{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap;align-self:center}
+.pq-v b{display:block;font-size:15px}.pq-v small{color:var(--muted);font-size:11.5px}
+#pqF{display:flex;gap:10px;align-items:flex-end}
+#pqDet h1,#pqIns h1{font-size:19px!important;line-height:1.3!important;overflow-wrap:anywhere}#pqDet .chips{display:flex;flex-wrap:wrap;gap:6px}
+@media (max-width:760px){.pq-card{grid-template-columns:1fr}.pq-v{grid-column:1;grid-row:auto;text-align:left;margin-top:4px;white-space:normal}.pq-v b{display:inline;margin-right:6px}}
+</style>
 </head>
 <body>
 <a class="pular" href="#view" onclick="var v=document.getElementById('view');v.setAttribute('tabindex','-1');v.focus();return false">Pular para o conteúdo</a>
@@ -2462,7 +2472,7 @@ profissoes:'<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5
 social:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.4 5 5.8"/>',
 ambiente:'<path d="M12 21c-5 0-8-3.5-8-8 0-5 4-9 16-9 0 10-3 17-8 17z"/><path d="M4 21c3-6 7-9 13-11"/>',
 populacao:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"/><circle cx="17" cy="8" r="3"/><path d="M22 19v-1.5a3.5 3.5 0 0 0-3-3.46"/>',
-catastrofes:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
+pesquisas:'<path d="M10 2v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',catastrofes:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',concursos:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v3h6V3"/><path d="m8.5 13 2.5 2.5 4.5-5"/>',eventos:'<path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',ensino:'<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/>',
 premios:'<path d="M8 4h8v6a4 4 0 0 1-8 0z"/><path d="M8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3"/><path d="M12 14v4M9 20h6"/>',
 noticias:'<path d="M5 5h11v14H6a1 1 0 0 1-1-1z"/><path d="M16 9h3v9a1 1 0 0 1-1 1h-2"/><path d="M8 9h5M8 12h5M8 15h3"/>',
 eleicoes:'<path d="M5 11h14v9H5z"/><path d="M9 11V5h6v6"/><path d="M10 8l1.5 1.5L14 7"/>',
@@ -2480,7 +2490,7 @@ comparar:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
 relatorios:'<path d="M12 4v11M7 10l5 5 5-5M4 20h16"/>',
 fontes:'<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>'
 };
-const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["populacao","População"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
+const NAV=[["admin","Administração"],["inicio","Início"],["gastos","Gastos Públicos"],["arrecadacao","Arrecadação"],["dividas","Dívidas"],["orgaos","Órgãos"],["pessoas","Candidatos e Indicações"],["eleicoes","Eleições"],["seguranca","Segurança Pública"],["catastrofes","Catástrofes e acidentes"],["saude","Saúde"],["populacao","População"],["social","Social e Trabalho"],["profissoes","Salários por profissão"],["ambiente","Meio ambiente"],["empresas","Empresas e Contratos"],["obras","Obras"],["leis","Leis e Projetos"],["escandalos","Escândalos e crimes"],["noticias","Notícias"],["ensino","Ensino"],["pesquisas","Pesquisas"],["concursos","Concursos e cursos"],["eventos","Eventos"],["premios","Prêmios"],["indicadores","Indicadores"],["comparar","Comparar"],["relatorios","Relatórios e Dados"]];
 const svgI=k=>`<svg viewBox="0 0 24 24">${I[k]}</svg>`;
 function navVisivel(n){if(n[0]==="admin")return window.VL_ADMIN===true;return true}
 function navSubAdmin(){return [["resumo","inicio","Gestão (início)"],["posts","noticias","Notícias"],["banco","banco","Banco de dados"],["bots","bots","Bots"],["instagram","instagram","Instagram"],["atividade","atividade","Controle de atividade"]].filter(x=>x[0]==="resumo"||artVer(x[0])).map(([r,ic,t])=>`<a href="#/admin/${r}" data-k="admin-${r}" data-sub="#/admin/${r}">${svgI(ic)}<span>${t}</span></a>`).join("")}
@@ -3686,7 +3696,7 @@ $("#sheetOv").onclick=closeAll;$("#sheetX").onclick=closeAll;$("#sheet").addEven
 
 
 /* ---------- janelas flutuantes ---------- */
-const DETAIL={indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma",premio:"Título"};
+const DETAIL={pesquisa:"Pesquisa",instituto:"Instituição",indicado:"Indicado",pessoa:"Pessoa",orgao:"Órgão",empresa:"Empresa",contrato:"Contrato",obra:"Obra",projeto:"Projeto",votacao:"Votação",norma:"Norma",premio:"Título"};
 let popStack=[];
 function popTitle(path,k){const h=$("#popB h1");return`${DETAIL[k]}: <b>${h?esc(h.textContent):""}</b>`}
 function openPop(path,push=true){const[k,...args]=path.split("/");if(!DETAIL[k]||!P[k])return false;
@@ -6190,6 +6200,142 @@ P.ensino=(aba,uf)=>{aba=ENS_ABAS.some(a=>a[0]===aba)?aba:"geral";uf=UF[uf]?uf:""
    apiGet("/ensino").then(async D=>{if(aba==="faculdades"&&!(D.superior&&(D.superior.instituicoes||[]).length)){try{const g=await apiGet("/igc"),e=g.edicao;D=Object.assign({},D,{superior:{ano:e.ano,instituicoes:(e.lista||[]).map(x=>Object.assign({},x,{faixa:/^\d$/.test(x.faixa)?+x.faixa:null}))}})}catch(_){}}
    const v=$("#ensV");if(!v)return;const o=aba==="faculdades"?ensFaculdades(D):ensEscolas(D);
    v.innerHTML=o.html;if(o.mount)o.mount();if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#ensV");if(v)v.innerHTML=e.status===404?ensVazio():rerro(e)})}}};
+// ===== Pesquisas (25/11/2026): projetos de pesquisa financiados com dinheiro público. Tudo vem de GET /pesquisas/base (app/pesquisas.py, scripts/pesquisas.py) e é filtrado no navegador.
+// Valor é sempre do tipo que a fonte diz (FAPEMIG: contratado; INT: pactuado) e os tipos nunca são somados no mesmo número. Dado ausente = "não informado".
+const PQ_ABAS=[["visao","Visão geral"],["projetos","Projetos"],["instituicoes","Instituições"],["fontes","Fontes e limites"]];
+const PQ_QUAIS=[["pesq","Pesquisas"],["sede","Termos e programas da própria FAPEMIG"],["tudo","Tudo"]];
+let PQ_C=null,PQ_PRE=null;
+function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>{
+  const I=B.inst.map((x,i)=>({i,nome:x[0],sigla:x[1],uf:x[2],tipo:x[3]}));
+  const L=B.p.map((p,id)=>{const f=B.fontes[p[0]];return{id,fid:f.id,tipo:f.tipo_valor,ano:p[1],proc:p[2],tit:p[3],pesq:p[4],ie:p[5],ig:p[6],area:p[7]==null?null:B.areas[p[7]],
+    cham:p[8]==null?null:B.chamadas[p[8]],modal:p[9]==null?null:B.modalidades[p[9]],v:p[10],ini:p[11],fim:p[12],sede:!!p[13],ex:p[14],uf:I[p[5]].uf,bq:null}});
+  return{B,I,L,F:B.fontes}}).catch(e=>{PQ_C=null;throw e});return PQ_C}
+const pqBusca=(p,D)=>p.bq||(p.bq=snapNorm([p.tit,p.pesq,p.proc,D.I[p.ie].nome,D.I[p.ie].sigla,p.area].filter(Boolean).join(" ")));
+const pqNome=i=>i.sigla&&i.sigla.toUpperCase()!==i.nome.toUpperCase()?`${i.nome} (${i.sigla})`:i.nome;
+const pqData=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"não informado";
+const pqVal=v=>v==null?"não informado":brlC(v);
+const pqCurto=v=>v==null?"não informado":brl(v);
+function pqSoma(lista,chave){const o={};lista.forEach(p=>{const k=chave(p),a=o[k]||(o[k]={n:0,valor:0,sem:0});a.n++;if(p.v==null)a.sem++;else a.valor+=p.v});return o}
+const pqTipoTxt=t=>t==="pactuado"?"pactuado":"contratado";
+function pqFonteCurta(f){return f.nome.split(" — ")[0]}
+const pqTotais=(lista,D)=>{const s=pqSoma(lista,p=>p.tipo);return Object.keys(s).sort().map(t=>`<b>${pqCurto(s[t].valor)}</b> ${pqTipoTxt(t)}${s[t].sem?` <span class="muted">(${nf(s[t].sem)} sem valor informado)</span>`:""}`).join(" · ")};
+const PQ_SEM_API=`<div class="rbanner">A aba Pesquisas aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
+const PQ_VAZIO=`<div class="rbanner">Os dados de pesquisas ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`;
+function pqCartao(p,D){const i=D.I[p.ie],meta=[p.pesq?esc(p.pesq):"pesquisador não informado",`<b>${esc(i.sigla||i.nome)}</b>${i.uf?" · "+i.uf:""}`,p.area?esc(p.area):"",p.ano?String(p.ano):""].filter(Boolean).join(" · ");
+ return`<a class="pq-card" href="#/pesquisa/${p.id}"><div class="pq-t">${p.tit?esc(p.tit):"<i>Título não informado</i>"}</div><div class="pq-m">${meta}</div><div class="pq-v"><b>${pqCurto(p.v)}</b><small>${pqTipoTxt(p.tipo)}${p.sede?" · programa da FAPEMIG":""}</small></div></a>`}
+function pqPorInst(D,lista){const m=new Map();lista.forEach(p=>{const a=m.get(p.ie)||{i:D.I[p.ie],n:0,valor:0,sem:0,anos:[],tipos:new Set()};a.n++;if(p.v==null)a.sem++;else a.valor+=p.v;if(p.ano)a.anos.push(p.ano);a.tipos.add(p.tipo);m.set(p.ie,a)});return[...m.values()]}
+const pqPeriodo=a=>a.anos.length?(Math.min(...a.anos)===Math.max(...a.anos)?String(a.anos[0]):`${Math.min(...a.anos)}–${Math.max(...a.anos)}`):"—";
+
+function pqVisao(el,D){
+ const ativos=D.L.filter(p=>!p.sede),sede=D.L.filter(p=>p.sede),porF=pqSoma(ativos,p=>p.fid),insts=pqPorInst(D,ativos);
+ const kp=`<div class="kpis kpis-c"><div class="kpi"><span>Projetos de pesquisa</span><strong>${nf(ativos.length)}</strong><em>nas fontes ligadas</em></div><div class="kpi"><span>Instituições que executam</span><strong>${nf(insts.length)}</strong><em>universidades, institutos, empresas</em></div>`+
+  D.F.map(f=>{const s=porF[f.id]||{n:0,valor:0,sem:0};return`<div class="kpi"><span>${esc(pqFonteCurta(f))} · valor ${pqTipoTxt(f.tipo_valor)}</span><strong>${pqCurto(s.valor)}</strong><em>${nf(s.n)} projetos${s.sem?` · ${nf(s.sem)} sem valor informado`:""}</em></div>`}).join("")+`</div>`;
+ const porUF={};ativos.forEach(p=>{if(p.uf)porUF[p.uf]=(porUF[p.uf]||0)+1});
+ const semUF=UFS.filter(u=>!porUF[u.uf]).map(u=>u.nome);
+ const fap=ativos.filter(p=>p.fid==="fapemig"&&p.ano&&p.v!=null),anos={};fap.forEach(p=>{anos[p.ano]=(anos[p.ano]||0)+p.v});
+ const ak=Object.keys(anos).map(Number).filter(a=>a<=new Date().getFullYear()-1).sort((a,b)=>a-b);
+ const areas={};ativos.filter(p=>p.fid==="fapemig"&&p.area&&p.v!=null).forEach(p=>{areas[p.area]=(areas[p.area]||0)+p.v});
+ const topA=Object.entries(areas).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ const top=insts.slice().sort((a,b)=>b.valor-a.valor).slice(0,12);
+ el.innerHTML=kp+`<div class="grid g2 mt"><div class="panel"><h2>Onde estão as pesquisas <small>projetos por estado da instituição que executa</small></h2><div id="pqMapa">${mapaValores(porUF,n=>nf(n)+(n===1?" projeto":" projetos"))}</div>
+  <p class="small muted" style="margin:10px 0 0">Estado da instituição que executa o projeto, como consta no cadastro da fonte; o financiador pode ser de outro estado. <b>Sem dados nas fontes ligadas até agora:</b> ${semUF.length?semUF.map(esc).join(", "):"nenhum"}. Cada fundação estadual publica de um jeito, e os outros estados ainda não entraram (veja "Fontes e limites").</p></div>
+  <div class="panel"><h2>Áreas que mais receberam <small>FAPEMIG, valor contratado</small></h2>${topA.length?hbars(topA,{fmt:pqCurto}):rvazio("Sem áreas informadas.")}</div></div>
+  <div class="grid g2 mt"><div class="panel"><h2>Valor contratado por ano <small>FAPEMIG, por ano do projeto</small></h2>${ak.length>=2?lineChart([{n:"Contratado",v:ak.map(a=>anos[a])}],ak.map(String),{h:210,fmt:pqCurto,datas:ak.map(String)}):rvazio("Sem série suficiente.")}</div>
+  <div class="panel"><h2>Quem mais recebeu <small>valor do tipo que a fonte informa</small></h2>${table([["Instituição",r=>`<a href="#/instituto/${r.i.i}">${esc(pqNome(r.i))}</a>`],["Estado",r=>esc(r.i.uf||"—"),"c"],["Projetos",r=>nf(r.n),"r"],["Valor",r=>`${pqCurto(r.valor)} <small class="muted">${[...r.tipos].map(pqTipoTxt).join("/")}</small>`,"r"]],top)}</div></div>
+  <div class="panel mt"><p class="small muted" style="margin:0"><b>Como ler.</b> Cada fonte registra um tipo de valor: a FAPEMIG, o valor <b>contratado</b> com o pesquisador; o INT, o valor <b>pactuado</b> em contrato com o cliente. Os dois não são somados. Valor contratado não é valor pago e nenhuma fonte aberta informa o andamento científico da pesquisa.
+  ${sede.length?` Ficaram fora desta conta ${nf(sede.length)} termos e programas da própria FAPEMIG (${pqTotais(sede,D)}), que não são pesquisa de um pesquisador; aparecem em Projetos, marcados.`:""}</p></div>`}
+
+function pqProjetos(el,D){
+ const f=Object.assign({q:"",uf:"",area:"",ano:"",fonte:"",inst:"",quais:"pesq",ordem:"valor"},PQ_PRE||{});PQ_PRE=null;
+ const ufs=[...new Set(D.L.map(p=>p.uf).filter(Boolean))].sort(),areas=[...new Set(D.L.map(p=>p.area).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt")),
+  anos=[...new Set(D.L.map(p=>p.ano).filter(Boolean))].sort((a,b)=>b-a),pi=pqPorInst(D,D.L.filter(p=>!p.sede)).sort((a,b)=>b.n-a.n);
+ const op=(l,v,s)=>`<option value="${esc(v)}"${String(v)===String(s)?" selected":""}>${esc(l)}</option>`;
+ el.innerHTML=`<div class="panel"><div class="filters" id="pqF" style="flex-wrap:wrap"><input id="pqQ" type="search" placeholder="Pesquisar por título, pesquisador ou instituição" value="${esc(f.q)}" style="flex:1;min-width:220px" autocomplete="off">
+  <select id="pqUF" data-pill="Estado" data-titulo="Estado">${op("Todos os estados","",f.uf)}${ufs.map(u=>op(UF[u]?UF[u].nome:u,u,f.uf)).join("")}</select>
+  <select id="pqIN" data-pill="Instituição" data-titulo="Instituição">${op("Todas as instituições","",f.inst)}${pi.map(a=>op(`${pqNome(a.i)} · ${nf(a.n)}`,a.i.i,f.inst)).join("")}</select>
+  <select id="pqAR" data-pill="Área" data-titulo="Área">${op("Todas as áreas","",f.area)}${areas.map(a=>op(a,a,f.area)).join("")}</select>
+  <select id="pqAN" data-pill="Ano" data-titulo="Ano do projeto">${op("Todos os anos","",f.ano)}${anos.map(a=>op(a,a,f.ano)).join("")}</select>
+  <select id="pqFO" data-pill="Fonte" data-titulo="Fonte">${op("Todas as fontes","",f.fonte)}${D.F.map(x=>op(pqFonteCurta(x),x.id,f.fonte)).join("")}</select>
+  <select id="pqQU" data-pill="Mostrar" data-titulo="Mostrar">${PQ_QUAIS.map(x=>op(x[1],x[0],f.quais)).join("")}</select>
+  <select id="pqOR" data-pill="Ordem" data-titulo="Ordem">${op("Maior valor primeiro","valor",f.ordem)}${op("Mais recentes primeiro","ano",f.ordem)}</select></div>
+  <p id="pqRes" class="small" style="margin:10px 0"></p><div id="pqLista"></div></div>`;
+ const pinta=()=>{const t=snapNorm(f.q).split(/\s+/).filter(Boolean);
+  const l=D.L.filter(p=>(f.quais==="tudo"||(f.quais==="sede")===p.sede)&&(!f.uf||p.uf===f.uf)&&(!f.area||p.area===f.area)&&(!f.ano||String(p.ano)===String(f.ano))&&(!f.fonte||p.fid===f.fonte)&&(!f.inst||String(p.ie)===String(f.inst))&&t.every(x=>pqBusca(p,D).includes(x)))
+   .sort(f.ordem==="ano"?(a,b)=>(b.ano||0)-(a.ano||0)||(b.v||0)-(a.v||0):(a,b)=>(b.v!=null)-(a.v!=null)||(b.v||0)-(a.v||0));
+  $("#pqRes").innerHTML=l.length?`<b>${nf(l.length)}</b> ${l.length===1?"projeto":"projetos"} · ${pqTotais(l,D)}`:"";
+  opLista($("#pqLista"),l,p=>pqCartao(p,D),30)};
+ const liga=(id,k)=>{const e=$(id);if(e)e.onchange=()=>{f[k]=e.value;pinta()}};
+ [["#pqUF","uf"],["#pqIN","inst"],["#pqAR","area"],["#pqAN","ano"],["#pqFO","fonte"],["#pqQU","quais"],["#pqOR","ordem"]].forEach(([i,k])=>liga(i,k));
+ let tm=null;$("#pqQ").oninput=e=>{clearTimeout(tm);tm=setTimeout(()=>{f.q=e.target.value;pinta()},200)};
+ if(typeof pilulas==="function")pilulas();pinta()}
+
+function pqInstituicoes(el,D){
+ const ufs=[...new Set(D.I.map(i=>i.uf).filter(Boolean))].sort(),todas=pqPorInst(D,D.L.filter(p=>!p.sede));let q="",uf="";
+ el.innerHTML=`<div class="panel"><div class="filters"><input id="piQ" type="search" placeholder="Pesquisar instituição" style="flex:1;min-width:220px" autocomplete="off"><select id="piUF" data-pill="Estado" data-titulo="Estado"><option value="">Todos os estados</option>${ufs.map(u=>`<option value="${u}">${esc(UF[u]?UF[u].nome:u)}</option>`).join("")}</select></div><p id="piRes" class="small muted" style="margin:10px 0"></p><div id="piTab"></div></div>`;
+ const pinta=()=>{const t=snapNorm(q).split(/\s+/).filter(Boolean),l=todas.filter(a=>(!uf||a.i.uf===uf)&&t.every(x=>snapNorm(a.i.nome+" "+(a.i.sigla||"")).includes(x))).sort((a,b)=>b.valor-a.valor);
+  $("#piRes").textContent=`${nf(l.length)} instituições. Ordenadas pelo valor do tipo que a fonte informa (contratado ou pactuado); termos e programas da própria FAPEMIG ficam de fora.`;
+  $("#piTab").innerHTML=l.length?table([["Instituição",r=>`<a href="#/instituto/${r.i.i}">${esc(pqNome(r.i))}</a>${r.i.tipo?`<br><small class="muted">${esc(r.i.tipo)}</small>`:""}`],["Estado",r=>esc(r.i.uf||"—"),"c"],["Projetos",r=>nf(r.n),"r"],["Valor",r=>`${pqCurto(r.valor)}<br><small class="muted">${[...r.tipos].map(pqTipoTxt).join("/")}${r.sem?` · ${nf(r.sem)} sem valor`:""}</small>`,"r"],["Período",r=>pqPeriodo(r),"c"]],l):rvazio("Nenhuma instituição encontrada.")};
+ $("#piQ").oninput=e=>{q=e.target.value;pinta()};$("#piUF").onchange=e=>{uf=e.target.value;pinta()};if(typeof pilulas==="function")pilulas();pinta()}
+
+const PQ_FALTA=[["FINEP","projetos contratados desde 2002","O site de transparência não abriu para o robô; o painel público é Power BI. Em verificação."],
+ ["CNPq","bolsas, auxílios e projetos","Os painéis são agregados (Tableau e Power BI), sem lista de projetos e pesquisadores; o endereço de dados abertos não abriu."],
+ ["FAPESP (SP)","projetos, pesquisador responsável e instituição sede","A Biblioteca Virtual é um site de consulta, sem arquivo para baixar. É onde estaria, por exemplo, a pesquisa do Instituto Butantan e de outros institutos de São Paulo."],
+ ["FAPERJ (RJ)","projetos contemplados","Há busca por formulário; falta confirmar se aceita consulta automática."],
+ ["Outras 22 fundações estaduais","FAPERGS, FACEPE, FUNCAP, FAPESB, FAPES, FAPESC e demais","Cada uma publica de um jeito; ainda não foi confirmada uma base aberta de projetos em cada uma."],
+ ["Pagamentos federais por instituição","Portal da Transparência e Transferegov","Mostram o que o governo federal pagou a cada instituição (como o Butantan), mas não dizem qual pesquisa foi paga."]];
+function pqFontes(el,D){
+ el.innerHTML=`<div class="grid g2">${D.F.map(f=>`<div class="panel"><h2>${esc(f.nome)}</h2><div class="facts" style="grid-template-columns:1fr 1fr"><div><span>Quem financia</span>${esc(f.financiador)}</div><div><span>Estado</span>${esc(f.uf)}</div><div><span>Tipo de valor</span>${pqTipoTxt(f.tipo_valor)}</div><div><span>Atualização</span>${esc(f.atualizacao)}</div><div><span>Registros lidos</span>${nf(f.linhas)}</div><div><span>Nome do pesquisador</span>${f.tem_pesquisador?"sim, publicado pela fonte":"a fonte não traz"}</div></div>
+  <p class="small muted" style="margin:10px 0">${esc(f.aviso)}</p><a class="btn" href="${esc(f.url)}" target="_blank" rel="noopener">Abrir a fonte oficial</a></div>`).join("")}</div>
+  <div class="panel mt"><h2>O que ainda não está aqui</h2><p class="small muted" style="margin:0 0 10px">Não existe base nacional única de pesquisas financiadas. Cada fonte abaixo foi investigada e só entra quando traz projeto, instituição e valor em dado aberto que o robô consegue ler.</p>
+  ${table([["Fonte",r=>`<b>${esc(r[0])}</b>`],["O que teria",r=>esc(r[1])],["Situação",r=>esc(r[2])]],PQ_FALTA)}</div>
+  <div class="panel mt"><h2>Regras desta aba</h2><ul class="small" style="margin:0;padding-left:18px;line-height:1.6"><li>Valor é sempre do tipo que a fonte diz (contratado ou pactuado). Não é valor pago e não mede o andamento nem o resultado da pesquisa; nenhuma fonte aberta informa isso.</li><li>O nome do pesquisador aparece só quando a própria fonte o publica. Não há CPF, e-mail nem ligação com outras bases por nome parecido.</li><li>Dado que a fonte não traz aparece como "não informado". Nada é estimado.</li><li>Quem executa a pesquisa (universidade, instituto) é mostrado como instituição; a fundação de apoio que administra o dinheiro aparece como gestora.</li><li>Termos e programas da própria FAPEMIG (executora "SEDE") ficam fora das contas e dos rankings e podem ser vistos à parte em Projetos.</li></ul></div>`}
+
+P.pesquisas=(aba)=>{aba=PQ_ABAS.some(a=>a[0]===aba)?aba:"visao";
+ return{html:`<div class="ph"><div><h1>Pesquisas</h1><p>Projetos de pesquisa financiados com dinheiro público: quem pesquisa, em que instituição, em que estado e quanto a fonte registra de valor.</p></div></div><div class="tabs" id="pqTabs" style="margin-top:0">${PQ_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/pesquisas/${a[0]}">${a[1]}</a>`).join("")}</div><div id="pqV">${API.on?rload():PQ_SEM_API}</div>`,
+  mount(){if(!API.on)return;pqBase().then(D=>{const v=$("#pqV");if(!v)return;({visao:pqVisao,projetos:pqProjetos,instituicoes:pqInstituicoes,fontes:pqFontes})[aba](v,D);if(typeof pilulas==="function")pilulas()}).catch(e=>{const v=$("#pqV");if(v)v.innerHTML=e.status===404?PQ_VAZIO:rerro(e)})}}};
+
+function pqPrazo(p){if(!p.ini||!p.fim)return"";const a=Date.parse(p.ini),b=Date.parse(p.fim),h=Date.now();if(!(b>a))return"";const pc=Math.max(0,Math.min(100,(h-a)/(b-a)*100));
+ return`<div style="margin-top:6px">${pbars([["Prazo do contrato já decorrido",pc]])}<p class="small muted" style="margin:4px 0 0">Conta só as datas de início e término que a fonte informa. Não é o andamento da pesquisa nem quanto do dinheiro já foi pago.</p></div>`}
+P.pesquisa=(id)=>({html:`<div id="pqDet">${rload()}</div>`,mount(){pqBase().then(D=>{const box=$("#pqDet");if(!box)return;const p=D.L[+id];if(!p){box.innerHTML=rvazio("Projeto não encontrado.");return}
+  const i=D.I[p.ie],g=p.ig==null?null:D.I[p.ig],f=D.F.find(x=>x.id===p.fid),ex=p.ex||{};
+  const lin=(t,v)=>v?`<div><span>${t}</span>${v}</div>`:"";
+  box.innerHTML=`<h1 style="font-size:22px;line-height:1.25;margin:0 0 8px">${p.tit?esc(p.tit):"Título não informado pela fonte"}</h1>
+   <div class="chips" style="margin:0 0 12px"><span class="chip on">${esc(pqFonteCurta(f))}</span><span class="chip">valor ${pqTipoTxt(p.tipo)}</span>${p.sede?`<span class="chip">Termo ou programa da própria FAPEMIG</span>`:""}</div>
+   <div class="kpis kpis-c"><div class="kpi"><span>Valor ${pqTipoTxt(p.tipo)}</span><strong>${pqVal(p.v)}</strong><em>${p.tipo==="pactuado"?"fixado em contrato com o cliente":"fixado em contrato com o pesquisador"}</em></div></div>
+   <div class="facts" style="margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    ${lin("Pesquisador responsável",p.pesq?esc(p.pesq):(f.tem_pesquisador?"não informado":"a fonte não informa quem pesquisa"))}
+    ${lin("Instituição que executa",`<a href="#/instituto/${i.i}">${esc(pqNome(i))}</a>${i.tipo?` · ${esc(i.tipo)}`:""}`)}
+    ${lin("Estado da instituição",i.uf?esc(UF[i.uf]?UF[i.uf].nome:i.uf):"não informado")}
+    ${g?lin("Gestora do recurso (fundação de apoio)",`<a href="#/instituto/${g.i}">${esc(pqNome(g))}</a>`):""}
+    ${lin("Área do conhecimento",p.area?esc(p.area):"não informada")}
+    ${lin("Chamada ou edital",p.cham?esc(p.cham):"")}${lin("Modalidade",p.modal?esc(p.modal):"")}
+    ${lin("Início",pqData(p.ini))}${lin("Término previsto",pqData(p.fim))}
+    ${lin("Ano do projeto",p.ano?String(p.ano):"não informado")}
+    ${lin("Quem financia",esc(f.financiador))}
+    ${ex.cliente?lin("Cliente do contrato",esc(ex.cliente)):""}${ex.fonte_recurso?lin("Fonte do recurso",esc(ex.fonte_recurso)):""}
+    ${ex.listado_em&&ex.listado_em.length?lin("Listado nos anos",ex.listado_em.slice().sort().join(", ")):""}
+    ${lin("Identificador na fonte",`<code>${esc(p.proc)}</code>`)}</div>
+   ${pqPrazo(p)}
+   ${ex.descricao?`<h3 style="margin:16px 0 4px;font-size:15px">Descrição (como escrita pela fonte)</h3><p class="small" style="margin:0">${esc(ex.descricao)}</p>`:""}
+   <p class="small muted" style="margin:16px 0 8px">A fonte informa o valor ${pqTipoTxt(p.tipo)} e as datas. Ela <b>não informa</b> quanto já foi pago nem o andamento científico da pesquisa.</p>
+   <a class="btn" href="${esc(f.url)}" target="_blank" rel="noopener">Abrir a fonte oficial (${esc(pqFonteCurta(f))})</a>`}).catch(e=>{const b=$("#pqDet");if(b)b.innerHTML=rerro(e)})}});
+
+P.instituto=(id)=>({html:`<div id="pqIns">${rload()}</div>`,mount(){pqBase().then(D=>{const box=$("#pqIns");if(!box)return;const i=D.I[+id];if(!i){box.innerHTML=rvazio("Instituição não encontrada.");return}
+  const meus=D.L.filter(p=>p.ie===i.i&&!p.sede),sede=D.L.filter(p=>p.ie===i.i&&p.sede),gest=D.L.filter(p=>p.ig===i.i&&!p.sede);
+  const porF=pqSoma(meus,p=>p.fid),anos={},areas={};
+  meus.forEach(p=>{if(p.ano)anos[p.ano]=(anos[p.ano]||0)+(p.v||0);const a=p.area||"Não informada";areas[a]=(areas[a]||0)+(p.v||0)});
+  const ak=Object.keys(anos).map(Number).sort((a,b)=>a-b),topA=Object.entries(areas).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maiores=meus.slice().sort((a,b)=>(b.v!=null)-(a.v!=null)||(b.v||0)-(a.v||0)).slice(0,10);
+  const kp=D.F.filter(f=>porF[f.id]).map(f=>{const s=porF[f.id];return`<div class="kpi"><span>${esc(pqFonteCurta(f))} · valor ${pqTipoTxt(f.tipo_valor)}</span><strong>${pqCurto(s.valor)}</strong><em>${nf(s.n)} projetos${s.sem?` · ${nf(s.sem)} sem valor informado`:""}</em></div>`}).join("");
+  box.innerHTML=`<h1 style="font-size:22px;margin:0 0 4px">${esc(pqNome(i))}</h1><p class="muted small" style="margin:0 0 12px">${[i.tipo,i.uf?(UF[i.uf]?UF[i.uf].nome:i.uf):""].filter(Boolean).map(esc).join(" · ")||"Tipo e estado não informados"}</p>
+   ${meus.length?`<div class="kpis kpis-c">${kp}</div>`:rvazio("Esta instituição aparece só como gestora de recursos (fundação de apoio), não como executora de projetos.")}
+   ${ak.length>=2?`<div class="panel mt"><h2>Valor por ano <small>do projeto</small></h2>${lineChart([{n:"Valor",v:ak.map(a=>anos[a])}],ak.map(String),{h:190,fmt:pqCurto,datas:ak.map(String)})}</div>`:""}
+   ${topA.length?`<div class="panel mt"><h2>Áreas</h2>${hbars(topA,{fmt:pqCurto})}</div>`:""}
+   ${maiores.length?`<div class="panel mt"><h2>Maiores projetos</h2>${maiores.map(p=>pqCartao(p,D)).join("")}<p style="margin:10px 0 0"><a class="btn" href="#/pesquisas/projetos" data-pqinst="${i.i}">Ver todos os ${nf(meus.length)} projetos</a></p></div>`:""}
+   ${gest.length?`<p class="small muted" style="margin-top:12px">Como fundação de apoio, também administra o recurso de ${nf(gest.length)} projetos de outras instituições.</p>`:""}
+   ${sede.length?`<p class="small muted" style="margin-top:8px">Há ainda ${nf(sede.length)} termos e programas da própria FAPEMIG (${pqTotais(sede,D)}), fora da conta acima.</p>`:""}
+   <p class="small muted" style="margin-top:12px">${esc(D.B.aviso)}</p>`}).catch(e=>{const b=$("#pqIns");if(b)b.innerHTML=rerro(e)})}});
+document.addEventListener("click",e=>{const a=e.target.closest("[data-pqinst]");if(a)PQ_PRE={inst:a.dataset.pqinst}},true);
 // ===== Concursos e cursos · Eventos (12/11/2026): /concursos, /cursos, /eventos, /eventos-patrocinios (app/oportunidades.py)
 const OP_ABAS=[["concursos","Concursos"],["cursos","Cursos gratuitos"]];
 const opData=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"";
@@ -7729,13 +7875,13 @@ P.policia=s=>({html:`<div id="polD">${API.on?rload():SEG_SEM}</div>`,
 function renderRoute(h){const volta=navMarca(h);$("#view").classList.remove("zooming");const[k,...args]=h.split("/");const fn=P[k]||P.inicio;closeAll();closeSearch();closePop();fecharPicker();
 const r=fn(...args);const V=$("#view");
 // páginas de detalhe (fora do menu) ganham "‹ Voltar" no topo, que volta para a tela anterior no mesmo ponto da rolagem
-const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
+const ehSecao=NAV.some(n=>n[0]===k),secPai={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",pesquisa:"pesquisas",instituto:"pesquisas",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",parlamentar:"pessoas",candidato:"eleicoes",orgao:"orgaos",empresa:"empresas",contrato:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||"inicio";
 const ant=NAVH.pilha.length>=2?NAVH.pilha[NAVH.pilha.length-2]:null,nomeAnt=ant&&((NAV.find(n=>n[0]===ant.split("/")[0])||[])[1]);
 const barra=ehSecao||/class="backbar"|data-voltar/.test(r.html)?"":`<div class="backbar navvolta"><a class="btn" href="#/${ant||secPai}" data-voltar="${secPai}">‹ Voltar${nomeAnt?` para ${esc(nomeAnt)}`:ant?"":` para ${esc(((NAV.find(n=>n[0]===secPai)||[])[1])||"o início")}`}</a></div>`;
 V.innerHTML=barra+r.html;V.classList.remove("entra");void V.offsetWidth;V.classList.add("entra");r.mount&&r.mount();
 document.querySelectorAll("[data-open-search]").forEach(el=>{el.onclick=()=>openSearch();el.onkeydown=e=>{if(e.key==="Enter")openSearch()}});
 CURSEC={dividas:"dividas",arrecadacao:"arrecadacao",eleicoes:"eleicoes",obras:"obras",gastos:"gastos",empresas:"contratos",contratos:"contratos",projetos:"projetos",leis:"projetos",pessoas:"pessoas"}[k]||null;
-const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
+const sec={indicado:"pessoas",escandalo:"escandalos",premio:"premios",escola:"ensino",pesquisa:"pesquisas",instituto:"pesquisas",policia:"seguranca",policias:"seguranca",indicacoes:"pessoas",pessoa:"pessoas",orgao:"orgaos",empresa:"empresas",contrato:"empresas",contratos:"empresas",norma:"leis",obra:"obras",projeto:"leis",votacao:"agora",uf:"inicio",mapa:"inicio"}[k]||k;
 document.querySelectorAll(".nav a").forEach(a=>a.classList.toggle("on",a.dataset.k===sec));document.querySelectorAll(".nav a[data-sub]").forEach(a=>a.classList.toggle("on",location.hash.indexOf(a.dataset.sub)===0));
 document.querySelectorAll(".bnav a").forEach(a=>a.classList.toggle("on",a.dataset.b===sec));
 volta?navRestaura(h):window.scrollTo(0,0)}
@@ -8142,6 +8288,7 @@ const ART_SEC=[
  ["escandalos","Escândalos e crimes",["/escandalos","/crimes-politicos","/lista-suja","/tcu-inabilitados","/tcu-irregulares"]],
  ["noticias","Notícias",["/noticias"]],
  ["ensino","Ensino",["/ensino","/igc"]],
+ ["pesquisas","Pesquisas",["/pesquisas"]],
  ["concursos","Concursos e cursos",["/concursos","/cursos"]],
  ["eventos","Eventos",["/eventos","/eventos-patrocinios"]],
  ["premios","Prêmios",["/premios"]],
