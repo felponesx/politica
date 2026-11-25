@@ -336,7 +336,7 @@ def montar(fapemig_proj: bytes, fapemig_inst: bytes, int_arqs: list[tuple[int, s
             resumo = limpo(g(r, "Resumo Publicável"))
             projetos.append([2, int(ass[:4]) if ass else None, contrato, limpo(g(r, "Título")), None, ie, ig, None, chamada(limpo(g(r, "Demanda"))),
                              modal("Não reembolsável a ICTs"), numero(g(r, "Valor Finep")), ass, data_iso(g(r, "Prazo Execução")), 0,
-                             {"status": limpo(g(r, "Status")), "municipio": bonito(g(r, "Município Executor")), "resumo": corta(resumo, 420), "posicao": posicao},
+                             {"status": limpo(g(r, "Status")), "municipio": bonito(g(r, "Município Executor")), "resumo": corta(resumo, 300)},
                              numero(g(r, "Valor Pago"))])
         finep_info = {"posicao": posicao, "repetidos": repetidos, "linhas": len(vistos_f), "sha256": hashlib.sha256(finep).hexdigest()[:16]}
 

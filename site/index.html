@@ -6207,7 +6207,7 @@ const PQ_QUAIS=[["pesq","Pesquisas"],["sede","Termos e programas da própria FAP
 let PQ_C=null,PQ_PRE=null;
 async function pqDescomprime(b64){if(typeof DecompressionStream==="undefined")throw new Error("este navegador não abre a cópia comprimida dos dados");
  const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));return JSON.parse(await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).text())}
-function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{
+function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{if(B.cols){B.p=B.cols[0].map((_,i)=>B.cols.map(c=>c[i]));delete B.cols}
   const I=B.inst.map((x,i)=>({i,nome:x[0],sigla:x[1],uf:x[2],tipo:x[3]}));
   const L=B.p.map((p,id)=>{const f=B.fontes[p[0]];return{id,fid:f.id,tipo:f.tipo_valor,ano:p[1],proc:p[2],tit:p[3],pesq:p[4],ie:p[5],ig:p[6],area:p[7]==null?null:B.areas[p[7]],
     cham:p[8]==null?null:B.chamadas[p[8]],modal:p[9]==null?null:B.modalidades[p[9]],v:p[10],ini:p[11],fim:p[12],sede:!!p[13],ex:p[14],pago:p[15]==null?null:p[15],uf:I[p[5]].uf,bq:null}});
@@ -6308,7 +6308,7 @@ P.pesquisa=(id)=>({html:`<div id="pqDet">${rload()}</div>`,mount(){pqBase().then
   box.innerHTML=`<h1 style="font-size:22px;line-height:1.25;margin:0 0 8px">${p.tit?esc(p.tit):"Título não informado pela fonte"}</h1>
    <div class="chips" style="margin:0 0 12px"><span class="chip on">${esc(pqFonteCurta(f))}</span><span class="chip">valor ${pqTipoTxt(p.tipo)}</span>${p.sede?`<span class="chip">Termo ou programa da própria FAPEMIG</span>`:""}</div>
    <div class="kpis kpis-c"><div class="kpi"><span>Valor ${pqTipoTxt(p.tipo)}</span><strong>${pqVal(p.v)}</strong><em>${p.tipo==="pactuado"?"fixado em contrato com o cliente":f.id==="finep"?"valor do contrato com a FINEP":"fixado em contrato com o pesquisador"}</em></div>${p.pago!=null?`<div class="kpi"><span>Já liberado pela FINEP</span><strong>${pqVal(p.pago)}</strong><em>${p.v?pqPctTxt(pqPct(p.pago,p.v))+" do valor contratado":"valor contratado não informado"}</em></div>`:""}</div>
-   ${p.pago!=null&&p.v?`<div style="margin-top:10px">${pbars([["Já liberado do valor contratado",Math.min(100,pqPct(p.pago,p.v))]])}<p class="small muted" style="margin:4px 0 0">Liberado = soma do que a FINEP já repassou ao projeto${ex.posicao?` (${esc(String(ex.posicao).replace(/^Posi[cç][aã]o:\s*/i,"posição de "))})`:""}. Não é o andamento científico da pesquisa.${pqPct(p.pago,p.v)>100?" O liberado passa do contratado nesta fonte; mostramos como veio.":""}</p></div>`:""}
+   ${p.pago!=null&&p.v?`<div style="margin-top:10px">${pbars([["Já liberado do valor contratado",Math.min(100,pqPct(p.pago,p.v))]])}<p class="small muted" style="margin:4px 0 0">Liberado = soma do que a FINEP já repassou ao projeto${(m=>m?` (posição de ${m[1]})`:"")(/(\d{2}\/\d{2}\/\d{4})/.exec(f.atualizacao||""))}. Não é o andamento científico da pesquisa.${pqPct(p.pago,p.v)>100?" O liberado passa do contratado nesta fonte; mostramos como veio.":""}</p></div>`:""}
    <div class="facts" style="margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
     ${lin("Pesquisador responsável",p.pesq?esc(p.pesq):(f.tem_pesquisador?"não informado":"a fonte não informa quem pesquisa"))}
     ${lin("Instituição que executa",`<a href="#/instituto/${i.i}">${esc(pqNome(i))}</a>${i.tipo?` · ${esc(i.tipo)}`:""}`)}

@@ -28,7 +28,10 @@ def gravar(pasta: Path) -> None:
         raise SystemExit("Sem app/dados/pesquisas.json. Rode: python -m scripts.pesquisas")
     # A cópia estática guarda a base comprimida (gzip em base64): o Artifact tem limite de tamanho total e a base crua passava de 5 MB.
     # O site descomprime no navegador (DecompressionStream). O servidor (GET /pesquisas/base) continua devolvendo o JSON puro.
-    bruto = json.dumps(base, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    # Em colunas (um array por campo) o gzip acha muito mais repetição que em linhas: o pacote cai de 3,3 para ~2,6 MB. O site refaz as linhas (pqBase).
+    colunar = {k: v for k, v in base.items() if k != "p"}
+    colunar["cols"] = [list(c) for c in zip(*base["p"])]
+    bruto = json.dumps(colunar, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     d = {"/pesquisas/base": {"__gz": base64.b64encode(gzip.compress(bruto, 9)).decode("ascii")}, "/pesquisas/resumo": resumo}
     (pasta / ARQ).parent.mkdir(exist_ok=True)
     (pasta / ARQ).write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
