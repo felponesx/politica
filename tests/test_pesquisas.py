@@ -44,11 +44,30 @@ def int_arq(linhas):
     return xlsx(["N.", "Título do Projeto", "Descrição do Projeto", "Data de Assinatura do Contrato", "Valor Pactuado (R$)", "Nome do Cliente/Razão Social"], linhas)
 
 
+def finep_arq() -> bytes:
+    wb = openpyxl.Workbook()
+    wb.active.title = "Guia_de_Leitura"
+    ws = wb.create_sheet("Projetos_Não_Reembolsavel_ICTs")
+    for _ in range(5):
+        ws.append([])
+    ws.append(["Posição: 20/11/2026"])
+    ws.append(["Demanda", "Ref", "Contrato", "Data Assinatura", "Prazo Execução", "Título", "Proponente", "CNPJ Proponente", "Município Proponente", "UF Proponente", "Região Proponente",
+               "Executor", "CNPJ Executor", "Município Executor", "UF Executor", "Região Executor", "UF Projeto", "Valor Finep", "Contrapartida Financeira",
+               "Contrapartida Não-Financeira", "Valor Pago", "Status", "Resumo Publicável"])
+    base = ["EDITAL X", "1/20", None, datetime(2020, 3, 1), datetime(2024, 3, 1), "Laboratório de física", "FUNDEP", "1", "BH", "MG", "SE",
+            "UNIVERSIDADE FEDERAL DE MINAS GERAIS", "2", "BELO HORIZONTE", "MG", "SE", "MG", "1000", "0", "0", "400", "EM EXECUÇÃO", "Resumo do projeto."]
+    for contrato in ("01.20.0001.00", "01.20.0002.00", "01.20.0001.00"):          # o último repete o contrato
+        ws.append([contrato if i == 2 else v for i, v in enumerate(base)])
+    b = io.BytesIO()
+    wb.save(b)
+    return b.getvalue()
+
+
 def montar():
     p, i = fapemig()
     a = int_arq([[1, "Projeto A", "desc", "01/12/2025", 1000, "CLIENTE UM"], [2, "Bolsa", "d", "01/09/2025", 8400, "CLIENTE DOIS"], [3, "Bolsa", "d", "01/09/2025", 8400, "CLIENTE DOIS"]])
     b = int_arq([[1, "Projeto A", "desc", "01/12/2025", 1000, "CLIENTE UM"]])     # o mesmo contrato listado em outro arquivo
-    return pq.montar(p, i, [(2025, "governo", "u1", a), (2024, "governo", "u2", b)], hoje="2026-11-25")
+    return pq.montar(p, i, [(2025, "governo", "u1", a), (2024, "governo", "u2", b)], finep_arq(), hoje="2026-11-25")
 
 
 def test_fapemig_um_registro_por_processo_e_campos_da_fonte():
@@ -81,6 +100,19 @@ def test_int_une_so_entre_arquivos_diferentes():
     assert d["fontes"][1]["tipo_valor"] == "pactuado"
 
 
+def test_finep_valor_liberado_e_instituicao_unida_pelo_nome():
+    d = montar()
+    f = [p for p in d["p"] if p[0] == 2]
+    assert len(f) == 2 and d["fontes"][2]["descartadas"]["repetido"] == 1       # contrato repetido some
+    p = f[0]
+    assert p[10] == 1000.0 and p[15] == 400.0 and p[14]["status"] == "EM EXECUÇÃO"  # contratado e liberado (pago) são colunas diferentes
+    assert d["inst"][p[5]][:3] == ["Universidade Federal de Minas Gerais", "UFMG", "MG"]   # mesma razão social da FAPEMIG: uma instituição só, com a sigla que a outra fonte traz
+    assert p[5] == next(x[5] for x in d["p"] if x[0] == 0 and x[2] == "APQ-1")
+    assert p[6] is not None and d["inst"][p[6]][0] == "Fundep"                    # proponente diferente do executor vira gestora
+    assert all(x[15] is None for x in d["p"] if x[0] != 2)                        # fora da FINEP não existe valor liberado: nulo, nunca zero
+    assert d["fontes"][2]["tem_pago"] is True and "20/11/2026" in d["fontes"][2]["atualizacao"]
+
+
 def test_api_com_os_dados_gerados():
     c = TestClient(app)
     r = c.get("/pesquisas/resumo")
@@ -89,7 +121,9 @@ def test_api_com_os_dados_gerados():
     j = r.json()
     assert j["projetos"] > 20000 and "aviso" in j
     # tipos de valor nunca se misturam: cada fonte diz o seu
-    assert {f["id"]: f["tipo_valor"] for f in j["fontes"]} == {"fapemig": "contratado", "int": "pactuado"}
+    assert {f["id"]: f["tipo_valor"] for f in j["fontes"]} == {"fapemig": "contratado", "int": "pactuado", "finep": "contratado"}
+    fin = next(f for f in j["fontes"] if f["id"] == "finep")
+    assert fin["tem_pago"] and 0 < fin["pago"] < fin["valor"] * 1.1
     lista = c.get("/pesquisas", params={"q": "nanoestruturas", "limite": 3}).json()
     assert lista["total"] > 0 and len(lista["projetos"]) <= 3
     p = lista["projetos"][0]

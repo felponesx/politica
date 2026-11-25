@@ -1,7 +1,8 @@
 """Pesquisas financiadas com dinheiro público: leitura de app/dados/pesquisas.json (gerado por scripts/pesquisas.py).
 
 Cada projeto é uma lista compacta (o arquivo fica pequeno); aqui ela vira dicionário. Regras que valem para toda a aba:
-  * valor é sempre do tipo que a fonte diz (contratado na FAPEMIG, pactuado no INT) — a resposta traz `tipo_valor` e nunca soma tipos diferentes;
+  * valor é sempre do tipo que a fonte diz (contratado na FAPEMIG e na FINEP, pactuado no INT) — a resposta traz `tipo_valor` e nunca soma tipos diferentes;
+  * só a FINEP informa também o valor LIBERADO (`pago`: soma do que ela já repassou ao projeto); o percentual liberado é pago ÷ contratado e só existe onde há `pago`;
   * campo ausente fica nulo (a tela escreve "não informado"); nada é estimado;
   * projetos cuja executora é a SEDE da FAPEMIG (termos de cooperação e programas da própria fundação) ficam fora dos rankings de instituição
     e de "pesquisa", mas continuam na lista, marcados (`institucional`).
@@ -19,7 +20,7 @@ ARQ = Path(__file__).resolve().parent / "dados" / "pesquisas.json"
 AVISO = ("Dinheiro público destinado a projetos de pesquisa, como registrado por cada fonte. Valor contratado ou pactuado não é valor pago, "
          "e não mede o andamento nem o resultado científico da pesquisa. Cada fonte cobre só o que ela própria financia: não existe base nacional única.")
 
-COLS = ["fonte", "ano", "processo", "titulo", "pesquisador", "inst", "gestora", "area", "chamada", "modalidade", "valor", "inicio", "fim", "institucional", "extra"]
+COLS = ["fonte", "ano", "processo", "titulo", "pesquisador", "inst", "gestora", "area", "chamada", "modalidade", "valor", "inicio", "fim", "institucional", "extra", "pago"]
 
 
 def _sem_acento(s: str) -> str:
@@ -60,6 +61,7 @@ def _proj(d: dict, i: int) -> dict:
     r["chamada"] = None if r["chamada"] is None else d["chamadas"][r["chamada"]]
     r["modalidade"] = None if r["modalidade"] is None else d["modalidades"][r["modalidade"]]
     r["institucional"] = bool(r["institucional"])
+    r["percentual_liberado"] = round(r["pago"] / r["valor"] * 100, 1) if r["pago"] is not None and r["valor"] else None
     del r["inst"]
     return r
 
@@ -68,7 +70,7 @@ def _proj(d: dict, i: int) -> dict:
 def _indice() -> dict:
     """Texto sem acento de cada projeto (para a busca) e somas por instituição."""
     d = _dados()
-    busca, por_inst = [], defaultdict(lambda: {"n": 0, "valor": 0.0, "sem_valor": 0, "anos": set(), "fontes": set()})
+    busca, por_inst = [], defaultdict(lambda: {"n": 0, "valor": 0.0, "sem_valor": 0, "anos": set(), "fontes": set(), "pago": 0.0, "valor_com_pago": 0.0})
     for i, p in enumerate(d["p"]):
         inst = d["inst"][p[5]]
         area = d["areas"][p[7]] if p[7] is not None else ""
@@ -81,6 +83,9 @@ def _indice() -> dict:
             a["sem_valor"] += 1
         else:
             a["valor"] += p[10]
+        if p[15] is not None:
+            a["pago"] += p[15]
+            a["valor_com_pago"] += p[10] or 0.0
         if p[1]:
             a["anos"].add(p[1])
         a["fontes"].add(d["fontes"][p[0]]["id"])
@@ -147,6 +152,7 @@ def instituicoes(uf: str = "", q: str = "") -> dict | None:
         if termos and not all(t in _sem_acento(f"{nome} {sigla or ''}") for t in termos):
             continue
         out.append({"id": i, "nome": nome, "sigla": sigla, "uf": u, "tipo": tipo, "projetos": a["n"], "valor": a["valor"], "sem_valor": a["sem_valor"],
+                    "pago": a["pago"] if a["valor_com_pago"] else None, "percentual_liberado": round(a["pago"] / a["valor_com_pago"] * 100, 1) if a["valor_com_pago"] else None,
                     "primeiro_ano": min(a["anos"]) if a["anos"] else None, "ultimo_ano": max(a["anos"]) if a["anos"] else None, "fontes": sorted(a["fontes"])})
     out.sort(key=lambda x: x["valor"], reverse=True)
     return {"total": len(out), "instituicoes": out, "aviso": AVISO}
@@ -176,7 +182,10 @@ def instituicao(i: int) -> dict | None:
             gest[g][0] += 1
             gest[g][1] += d["p"][k][10] or 0.0
     valores = [d["p"][k][10] for k in meus if d["p"][k][10] is not None]
+    com_pago = [k for k in meus if d["p"][k][15] is not None]
+    pago, base_pago = sum(d["p"][k][15] for k in com_pago), sum(d["p"][k][10] or 0.0 for k in com_pago)
     return {"id": i, "nome": nome, "sigla": sigla, "uf": uf, "tipo": tipo, "projetos": len(meus), "valor": sum(valores), "sem_valor": len(meus) - len(valores),
+            "pago": pago if com_pago else None, "contratado_com_pago": base_pago if com_pago else None, "percentual_liberado": round(pago / base_pago * 100, 1) if base_pago else None,
             "por_ano": [{"ano": a, "projetos": v[0], "valor": v[1]} for a, v in sorted(por_ano.items())],
             "por_area": sorted(({"area": a, "projetos": v[0], "valor": v[1]} for a, v in por_area.items()), key=lambda x: -x["valor"])[:12],
             "gestoras": sorted(({"id": g, "nome": d["inst"][g][0], "sigla": d["inst"][g][1], "projetos": v[0], "valor": v[1]} for g, v in gest.items()),
@@ -191,7 +200,7 @@ def resumo() -> dict | None:
         return None
     ix = _indice()
     por_ano, por_uf, por_area = defaultdict(lambda: [0, 0.0]), defaultdict(lambda: [0, 0.0, 0]), defaultdict(lambda: [0, 0.0])
-    por_fonte = defaultdict(lambda: {"projetos": 0, "valor": 0.0, "sem_valor": 0, "institucional_n": 0, "institucional_valor": 0.0})
+    por_fonte = defaultdict(lambda: {"projetos": 0, "valor": 0.0, "sem_valor": 0, "institucional_n": 0, "institucional_valor": 0.0, "pago": 0.0, "valor_com_pago": 0.0})
     for p in d["p"]:
         f = por_fonte[d["fontes"][p[0]]["id"]]
         if p[13]:
@@ -203,6 +212,9 @@ def resumo() -> dict | None:
             f["sem_valor"] += 1
         else:
             f["valor"] += p[10]
+        if p[15] is not None:
+            f["pago"] += p[15]
+            f["valor_com_pago"] += p[10] or 0.0
         v = p[10] or 0.0
         if p[1]:
             por_ano[p[1]][0] += 1
@@ -219,7 +231,7 @@ def resumo() -> dict | None:
     n = sum(f["projetos"] for f in por_fonte.values())
     valor = sum(f["valor"] for f in por_fonte.values())
     return {"gerado_em": d["gerado_em"], "projetos": n, "valor_total": valor, "instituicoes": len(ix["inst"]),
-            "fontes": [{**{k: f[k] for k in ("id", "nome", "financiador", "uf", "url", "tipo_valor", "atualizacao", "tem_pesquisador", "aviso")},
+            "fontes": [{**{k: f.get(k) for k in ("id", "nome", "financiador", "uf", "url", "tipo_valor", "atualizacao", "tem_pesquisador", "tem_pago", "aviso")},
                         **por_fonte[f["id"]]} for f in d["fontes"]],
             "por_ano": [{"ano": a, "projetos": v[0], "valor": v[1]} for a, v in sorted(por_ano.items())],
             "por_uf": [{"uf": u, "projetos": v[0], "valor": v[1], "instituicoes": v[2]} for u, v in sorted(por_uf.items(), key=lambda x: -x[1][1])],

@@ -1,5 +1,9 @@
 # Pesquisas financiadas com dinheiro público — inventário de fontes (25/11/2026)
 
+> **Atualização (25/11, tarde):** a aba Pesquisas está no ar com **FINEP, FAPEMIG e INT** (ver CLAUDE.md, "Pesquisas"). O diagnóstico pelo robô do GitHub (`diag-pesquisas.yml`) achou as planilhas abertas da
+> FINEP (`https://download.finep.gov.br/Contratacao.xlsx`, `Liberacao.xlsx`, `Nao_Aprovados.xlsx`), que não abriam pela página legada daqui; a aba de projetos para ICTs traz contratado **e liberado** por projeto.
+> O que o robô encontrou nas demais fontes está na seção "Resultado do diagnóstico pelo robô" no fim.
+
 Etapa de **investigação** da aba "Pesquisas" (nada foi integrado ao banco nem ao site ainda). Cada linha abaixo foi testada daqui (ambiente do Claude na nuvem);
 "não abriu daqui" não quer dizer que a fonte não existe: pode abrir pelo robô do GitHub (`diagnostico.yml`) ou de um computador no Brasil.
 
@@ -67,3 +71,24 @@ Nunca usar para inventar valor de financiamento.
 2. Rodar FINEP, CNPq, FAPERJ e FAPESP pelo robô de diagnóstico para ver o que responde de fora da nuvem do Claude.
 3. Pagamentos federais por instituição (Portal da Transparência) e Transferegov, para as instituições federais (Butantan, institutos de Física e Química).
 4. Estender às demais fundações estaduais, uma a uma, só depois de testar a resposta real de cada uma.
+
+
+## FINEP (integrada em 25/11/2026)
+
+- `https://download.finep.gov.br/Contratacao.xlsx` (7,8 MB, posição de 20/11/2026), várias abas; usamos `Projetos_Não_Reembolsavel_ICTs` (cabeçalho na linha que começa com "Demanda"): Demanda (edital), Ref, Contrato, Data Assinatura, Prazo Execução, Título,
+  Proponente e Executor (com CNPJ, município, UF, região), UF Projeto, Valor Finep, contrapartidas, **Valor Pago**, Intervenientes, Status (ENCERRADO, EM PRESTACAO DE CONTAS, EM EXECUÇÃO, EM DESEMBOLSO, RESCINDIDO) e Resumo Publicável.
+- Conferido: 9.114 contratos únicos, 2002–2026, R$ 25,61 bi contratados, R$ 21,06 bi liberados (82,3%), todos os estados (SP 1.783, RJ 1.615, RS 824, MG 754, PR 467...). 5 projetos com liberado acima do contratado. Sem nome de pesquisador.
+- Outras abas (não usadas): crédito direto e descentralizado, subvenção direta e descentralizada (empresas), investimento direto (startups), ANCINE. `Liberacao.xlsx` (32 MB) tem os desembolsos por data: daria a curva de liberação de cada projeto.
+
+## Resultado do diagnóstico pelo robô (25/11/2026, `scripts/diag_pesquisas.py`)
+
+| Fonte | O que o robô achou |
+|---|---|
+| FINEP | Planilhas abertas em `download.finep.gov.br` (ver acima). O site novo (`www.finep.gov.br/transparencia`) dá 404; o legado abre. |
+| CNPq | `dadosabertos.cnpq.br` e `gov.br/.../consulta-de-dados` resetam a conexão até pelo robô. `bi.cnpq.br` abre, mas é painel agregado (Tableau). |
+| FAPERJ | Busca em `siteantigo.faperj.br/servicos/buscaprojetosinfaperj/busca_projeto.phtml`, formulário POST para `busca_resultados.phtml` (campos `edicao`, `nome_pesquisador`, `titulo_projeto`, `palavra_chave`, `area_conhecimento`, `pessoa_juridica`, `pagina`). Resposta de verdade ainda não testada. |
+| FAPESP | `bv.fapesp.br/pt/` abre; `pt/pesquisador/` e `pt/dados-abertos/` estouraram 60 s; `dadosabertos.fapesp.br` não existe. Sem arquivo achado. |
+| Transferegov | `dadosabertos.transferegov.sistema.gov.br` e `www.transferegov.sistema.gov.br` não resolvem DNS no robô; `api.transferegov.gestao.gov.br` dá 404 na raiz. |
+| Portal da Transparência | Página de downloads abre, com "Favorecidos - PJ", "Convênios", "Recursos transferidos"; o HEAD de `despesas/202509` redirecionou para `dadosabertos-download.cgu.gov.br` e deu 403. |
+| Fundações estaduais | Abriram: FAPERGS, FACEPE, FAPESB, FAPES (tem "Resultados de Projetos Apoiados pela Fapes"), Fundação Araucária, FAPEG, FAPEMA, FAPERN, FAPESPA, FAPEMAT, FUNDECT. Não abriram: FUNCAP e FAPESC (erro de certificado), FAPDF, FAPEAM, FAPEAL, FAPESQ, FAPITEC (tempo esgotado ou conexão recusada). Nenhuma mostrou arquivo de projetos na página inicial. |
+| Butantan, Fiocruz, Embrapa, EMBRAPII | Butantan e Fiocruz abrem, sem arquivo de projetos com valor; Embrapa estourou o tempo; EMBRAPII lista projetos em páginas, sem planilha. OpenAlex responde (só identificação). |

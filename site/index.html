@@ -6210,10 +6210,13 @@ async function pqDescomprime(b64){if(typeof DecompressionStream==="undefined")th
 function pqBase(){if(!PQ_C)PQ_C=apiGet("/pesquisas/base").then(B=>B&&B.__gz?pqDescomprime(B.__gz):B).then(B=>{
   const I=B.inst.map((x,i)=>({i,nome:x[0],sigla:x[1],uf:x[2],tipo:x[3]}));
   const L=B.p.map((p,id)=>{const f=B.fontes[p[0]];return{id,fid:f.id,tipo:f.tipo_valor,ano:p[1],proc:p[2],tit:p[3],pesq:p[4],ie:p[5],ig:p[6],area:p[7]==null?null:B.areas[p[7]],
-    cham:p[8]==null?null:B.chamadas[p[8]],modal:p[9]==null?null:B.modalidades[p[9]],v:p[10],ini:p[11],fim:p[12],sede:!!p[13],ex:p[14],uf:I[p[5]].uf,bq:null}});
+    cham:p[8]==null?null:B.chamadas[p[8]],modal:p[9]==null?null:B.modalidades[p[9]],v:p[10],ini:p[11],fim:p[12],sede:!!p[13],ex:p[14],pago:p[15]==null?null:p[15],uf:I[p[5]].uf,bq:null}});
   return{B,I,L,F:B.fontes}}).catch(e=>{PQ_C=null;throw e});return PQ_C}
 const pqBusca=(p,D)=>p.bq||(p.bq=snapNorm([p.tit,p.pesq,p.proc,D.I[p.ie].nome,D.I[p.ie].sigla,p.area].filter(Boolean).join(" ")));
 const pqNome=i=>i.sigla&&i.sigla.toUpperCase()!==i.nome.toUpperCase()?`${i.nome} (${i.sigla})`:i.nome;
+const pqPct=(a,b)=>b>0&&a!=null?Math.round(a/b*1000)/10:null;
+const pqPctTxt=v=>v==null?"não informado":v.toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
+const pqLib=(lista)=>{const c=lista.filter(p=>p.pago!=null);return{n:c.length,pago:c.reduce((a,p)=>a+p.pago,0),base:c.reduce((a,p)=>a+(p.v||0),0)}};
 const pqData=d=>d?String(d).slice(0,10).split("-").reverse().join("/"):"não informado";
 const pqVal=v=>v==null?"não informado":brlC(v);
 const pqCurto=v=>v==null?"não informado":brl(v);
@@ -6224,73 +6227,74 @@ const pqTotais=(lista,D)=>{const s=pqSoma(lista,p=>p.tipo);return Object.keys(s)
 const PQ_SEM_API=`<div class="rbanner">A aba Pesquisas aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
 const PQ_VAZIO=`<div class="rbanner">Os dados de pesquisas ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`;
 function pqCartao(p,D){const i=D.I[p.ie],meta=[p.pesq?esc(p.pesq):"pesquisador não informado",`<b>${esc(i.sigla||i.nome)}</b>${i.uf?" · "+i.uf:""}`,p.area?esc(p.area):"",p.ano?String(p.ano):""].filter(Boolean).join(" · ");
- return`<a class="pq-card" href="#/pesquisa/${p.id}"><div class="pq-t">${p.tit?esc(p.tit):"<i>Título não informado</i>"}</div><div class="pq-m">${meta}</div><div class="pq-v"><b>${pqCurto(p.v)}</b><small>${pqTipoTxt(p.tipo)}${p.sede?" · programa da FAPEMIG":""}</small></div></a>`}
+ return`<a class="pq-card" href="#/pesquisa/${p.id}"><div class="pq-t">${p.tit?esc(p.tit):"<i>Título não informado</i>"}</div><div class="pq-m">${meta}</div><div class="pq-v"><b>${pqCurto(p.v)}</b><small>${pqTipoTxt(p.tipo)}${p.sede?" · programa da FAPEMIG":""}${p.pago!=null&&p.v?` · liberado ${pqPctTxt(pqPct(p.pago,p.v))}`:""}</small></div></a>`}
 function pqPorInst(D,lista){const m=new Map();lista.forEach(p=>{const a=m.get(p.ie)||{i:D.I[p.ie],n:0,valor:0,sem:0,anos:[],tipos:new Set()};a.n++;if(p.v==null)a.sem++;else a.valor+=p.v;if(p.ano)a.anos.push(p.ano);a.tipos.add(p.tipo);m.set(p.ie,a)});return[...m.values()]}
 const pqPeriodo=a=>a.anos.length?(Math.min(...a.anos)===Math.max(...a.anos)?String(a.anos[0]):`${Math.min(...a.anos)}–${Math.max(...a.anos)}`):"—";
 
 function pqVisao(el,D){
  const ativos=D.L.filter(p=>!p.sede),sede=D.L.filter(p=>p.sede),porF=pqSoma(ativos,p=>p.fid),insts=pqPorInst(D,ativos);
  const kp=`<div class="kpis kpis-c"><div class="kpi"><span>Projetos de pesquisa</span><strong>${nf(ativos.length)}</strong><em>nas fontes ligadas</em></div><div class="kpi"><span>Instituições que executam</span><strong>${nf(insts.length)}</strong><em>universidades, institutos, empresas</em></div>`+
-  D.F.map(f=>{const s=porF[f.id]||{n:0,valor:0,sem:0};return`<div class="kpi"><span>${esc(pqFonteCurta(f))} · valor ${pqTipoTxt(f.tipo_valor)}</span><strong>${pqCurto(s.valor)}</strong><em>${nf(s.n)} projetos${s.sem?` · ${nf(s.sem)} sem valor informado`:""}</em></div>`}).join("")+`</div>`;
+  D.F.map(f=>{const s=porF[f.id]||{n:0,valor:0,sem:0},lb=f.tem_pago?pqLib(ativos.filter(p=>p.fid===f.id)):null;return`<div class="kpi"><span>${esc(pqFonteCurta(f))} · valor ${pqTipoTxt(f.tipo_valor)}</span><strong>${pqCurto(s.valor)}</strong><em>${nf(s.n)} projetos${s.sem?` · ${nf(s.sem)} sem valor informado`:""}${lb&&lb.n?` · <b>${pqCurto(lb.pago)} já liberados (${pqPctTxt(pqPct(lb.pago,lb.base))})</b>`:""}</em></div>`}).join("")+`</div>`;
  const porUF={};ativos.forEach(p=>{if(p.uf)porUF[p.uf]=(porUF[p.uf]||0)+1});
  const semUF=UFS.filter(u=>!porUF[u.uf]).map(u=>u.nome);
- const fap=ativos.filter(p=>p.fid==="fapemig"&&p.ano&&p.v!=null),anos={};fap.forEach(p=>{anos[p.ano]=(anos[p.ano]||0)+p.v});
+ const fap=ativos.filter(p=>p.fid!=="int"&&p.ano&&p.v!=null),anos={};fap.forEach(p=>{anos[p.ano]=(anos[p.ano]||0)+p.v});
  const ak=Object.keys(anos).map(Number).filter(a=>a<=new Date().getFullYear()-1).sort((a,b)=>a-b);
  const areas={};ativos.filter(p=>p.fid==="fapemig"&&p.area&&p.v!=null).forEach(p=>{areas[p.area]=(areas[p.area]||0)+p.v});
  const topA=Object.entries(areas).sort((a,b)=>b[1]-a[1]).slice(0,10);
  const top=insts.slice().sort((a,b)=>b.valor-a.valor).slice(0,12);
  el.innerHTML=kp+`<div class="grid g2 mt"><div class="panel"><h2>Onde estão as pesquisas <small>projetos por estado da instituição que executa</small></h2><div id="pqMapa">${mapaValores(porUF,n=>nf(n)+(n===1?" projeto":" projetos"))}</div>
-  <p class="small muted" style="margin:10px 0 0">Estado da instituição que executa o projeto, como consta no cadastro da fonte; o financiador pode ser de outro estado. <b>Sem dados nas fontes ligadas até agora:</b> ${semUF.length?semUF.map(esc).join(", "):"nenhum"}. Cada fundação estadual publica de um jeito, e os outros estados ainda não entraram (veja "Fontes e limites").</p></div>
-  <div class="panel"><h2>Áreas que mais receberam <small>FAPEMIG, valor contratado</small></h2>${topA.length?hbars(topA,{fmt:pqCurto}):rvazio("Sem áreas informadas.")}</div></div>
-  <div class="grid g2 mt"><div class="panel"><h2>Valor contratado por ano <small>FAPEMIG, por ano do projeto</small></h2>${ak.length>=2?lineChart([{n:"Contratado",v:ak.map(a=>anos[a])}],ak.map(String),{h:210,fmt:pqCurto,datas:ak.map(String)}):rvazio("Sem série suficiente.")}</div>
+  <p class="small muted" style="margin:10px 0 0">Estado da instituição que executa o projeto, como consta no cadastro da fonte; o financiador pode ser de outro estado. <b>Sem dados nas fontes ligadas até agora:</b> ${semUF.length?semUF.map(esc).join(", "):"nenhum"}. A FINEP cobre o país todo; as fundações estaduais só entram uma a uma (hoje só a FAPEMIG, de Minas). Por isso o mapa mostra mais projetos onde há mais fontes, não necessariamente mais pesquisa (veja "Fontes e limites").</p></div>
+  <div class="panel"><h2>Áreas que mais receberam <small>FAPEMIG, valor contratado (a FINEP e o INT não informam área)</small></h2>${topA.length?hbars(topA,{fmt:pqCurto}):rvazio("Sem áreas informadas.")}</div></div>
+  <div class="grid g2 mt"><div class="panel"><h2>Valor contratado por ano <small>FAPEMIG e FINEP, por ano do projeto</small></h2>${ak.length>=2?lineChart([{n:"Contratado",v:ak.map(a=>anos[a])}],ak.map(String),{h:210,fmt:pqCurto,datas:ak.map(String)}):rvazio("Sem série suficiente.")}</div>
   <div class="panel"><h2>Quem mais recebeu <small>valor do tipo que a fonte informa</small></h2>${table([["Instituição",r=>`<a href="#/instituto/${r.i.i}">${esc(pqNome(r.i))}</a>`],["Estado",r=>esc(r.i.uf||"—"),"c"],["Projetos",r=>nf(r.n),"r"],["Valor",r=>`${pqCurto(r.valor)} <small class="muted">${[...r.tipos].map(pqTipoTxt).join("/")}</small>`,"r"]],top)}</div></div>
-  <div class="panel mt"><p class="small muted" style="margin:0"><b>Como ler.</b> Cada fonte registra um tipo de valor: a FAPEMIG, o valor <b>contratado</b> com o pesquisador; o INT, o valor <b>pactuado</b> em contrato com o cliente. Os dois não são somados. Valor contratado não é valor pago e nenhuma fonte aberta informa o andamento científico da pesquisa.
+  <div class="panel mt"><p class="small muted" style="margin:0"><b>Como ler.</b> A FAPEMIG e a FINEP registram o valor <b>contratado</b>; o INT, o valor <b>pactuado</b> com o cliente; os tipos diferentes não são somados. Só a FINEP informa também quanto já foi <b>liberado</b> (pago) a cada projeto: o percentual liberado é "pago ÷ contratado" e não mede o andamento científico, que nenhuma fonte aberta informa.
   ${sede.length?` Ficaram fora desta conta ${nf(sede.length)} termos e programas da própria FAPEMIG (${pqTotais(sede,D)}), que não são pesquisa de um pesquisador; aparecem em Projetos, marcados.`:""}</p></div>`}
 
 function pqProjetos(el,D){
- const f=Object.assign({q:"",uf:"",area:"",ano:"",fonte:"",inst:"",quais:"pesq",ordem:"valor"},PQ_PRE||{});PQ_PRE=null;
+ const f=Object.assign({q:"",uf:"",area:"",ano:"",fonte:"",inst:"",st:"",quais:"pesq",ordem:"valor"},PQ_PRE||{});PQ_PRE=null;
  const ufs=[...new Set(D.L.map(p=>p.uf).filter(Boolean))].sort(),areas=[...new Set(D.L.map(p=>p.area).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt")),
-  anos=[...new Set(D.L.map(p=>p.ano).filter(Boolean))].sort((a,b)=>b-a),pi=pqPorInst(D,D.L.filter(p=>!p.sede)).sort((a,b)=>b.n-a.n);
+  anos=[...new Set(D.L.map(p=>p.ano).filter(Boolean))].sort((a,b)=>b-a),sts=[...new Set(D.L.map(p=>p.ex&&p.ex.status).filter(Boolean))].sort(),pi=pqPorInst(D,D.L.filter(p=>!p.sede)).sort((a,b)=>b.n-a.n);
  const op=(l,v,s)=>`<option value="${esc(v)}"${String(v)===String(s)?" selected":""}>${esc(l)}</option>`;
  el.innerHTML=`<div class="panel"><div class="filters" id="pqF" style="flex-wrap:wrap"><input id="pqQ" type="search" placeholder="Pesquisar por título, pesquisador ou instituição" value="${esc(f.q)}" style="flex:1;min-width:220px" autocomplete="off">
   <select id="pqUF" data-pill="Estado" data-titulo="Estado">${op("Todos os estados","",f.uf)}${ufs.map(u=>op(UF[u]?UF[u].nome:u,u,f.uf)).join("")}</select>
   <select id="pqIN" data-pill="Instituição" data-titulo="Instituição">${op("Todas as instituições","",f.inst)}${pi.map(a=>op(`${pqNome(a.i)} · ${nf(a.n)}`,a.i.i,f.inst)).join("")}</select>
   <select id="pqAR" data-pill="Área" data-titulo="Área">${op("Todas as áreas","",f.area)}${areas.map(a=>op(a,a,f.area)).join("")}</select>
   <select id="pqAN" data-pill="Ano" data-titulo="Ano do projeto">${op("Todos os anos","",f.ano)}${anos.map(a=>op(a,a,f.ano)).join("")}</select>
+  <select id="pqST" data-pill="Situação" data-titulo="Situação do projeto (FINEP)">${op("Todas as situações","",f.st)}${sts.map(x=>op(x.charAt(0)+x.slice(1).toLowerCase(),x,f.st)).join("")}</select>
   <select id="pqFO" data-pill="Fonte" data-titulo="Fonte">${op("Todas as fontes","",f.fonte)}${D.F.map(x=>op(pqFonteCurta(x),x.id,f.fonte)).join("")}</select>
   <select id="pqQU" data-pill="Mostrar" data-titulo="Mostrar">${PQ_QUAIS.map(x=>op(x[1],x[0],f.quais)).join("")}</select>
   <select id="pqOR" data-pill="Ordem" data-titulo="Ordem">${op("Maior valor primeiro","valor",f.ordem)}${op("Mais recentes primeiro","ano",f.ordem)}</select></div>
   <p id="pqRes" class="small" style="margin:10px 0"></p><div id="pqLista"></div></div>`;
  const pinta=()=>{const t=snapNorm(f.q).split(/\s+/).filter(Boolean);
-  const l=D.L.filter(p=>(f.quais==="tudo"||(f.quais==="sede")===p.sede)&&(!f.uf||p.uf===f.uf)&&(!f.area||p.area===f.area)&&(!f.ano||String(p.ano)===String(f.ano))&&(!f.fonte||p.fid===f.fonte)&&(!f.inst||String(p.ie)===String(f.inst))&&t.every(x=>pqBusca(p,D).includes(x)))
+  const l=D.L.filter(p=>(f.quais==="tudo"||(f.quais==="sede")===p.sede)&&(!f.uf||p.uf===f.uf)&&(!f.area||p.area===f.area)&&(!f.ano||String(p.ano)===String(f.ano))&&(!f.fonte||p.fid===f.fonte)&&(!f.st||(p.ex&&p.ex.status===f.st))&&(!f.inst||String(p.ie)===String(f.inst))&&t.every(x=>pqBusca(p,D).includes(x)))
    .sort(f.ordem==="ano"?(a,b)=>(b.ano||0)-(a.ano||0)||(b.v||0)-(a.v||0):(a,b)=>(b.v!=null)-(a.v!=null)||(b.v||0)-(a.v||0));
-  $("#pqRes").innerHTML=l.length?`<b>${nf(l.length)}</b> ${l.length===1?"projeto":"projetos"} · ${pqTotais(l,D)}`:"";
+  const lb=pqLib(l);$("#pqRes").innerHTML=l.length?`<b>${nf(l.length)}</b> ${l.length===1?"projeto":"projetos"} · ${pqTotais(l,D)}${lb.n?` · <b>${pqCurto(lb.pago)}</b> liberados em ${nf(lb.n)} projetos da FINEP (${pqPctTxt(pqPct(lb.pago,lb.base))} do contratado deles)`:""}`:"";
   opLista($("#pqLista"),l,p=>pqCartao(p,D),30)};
  const liga=(id,k)=>{const e=$(id);if(e)e.onchange=()=>{f[k]=e.value;pinta()}};
- [["#pqUF","uf"],["#pqIN","inst"],["#pqAR","area"],["#pqAN","ano"],["#pqFO","fonte"],["#pqQU","quais"],["#pqOR","ordem"]].forEach(([i,k])=>liga(i,k));
+ [["#pqUF","uf"],["#pqIN","inst"],["#pqAR","area"],["#pqAN","ano"],["#pqST","st"],["#pqFO","fonte"],["#pqQU","quais"],["#pqOR","ordem"]].forEach(([i,k])=>liga(i,k));
  let tm=null;$("#pqQ").oninput=e=>{clearTimeout(tm);tm=setTimeout(()=>{f.q=e.target.value;pinta()},200)};
  if(typeof pilulas==="function")pilulas();pinta()}
 
 function pqInstituicoes(el,D){
- const ufs=[...new Set(D.I.map(i=>i.uf).filter(Boolean))].sort(),todas=pqPorInst(D,D.L.filter(p=>!p.sede));let q="",uf="";
+ const ufs=[...new Set(D.I.map(i=>i.uf).filter(Boolean))].sort(),pl=D.L.filter(p=>!p.sede),todas=pqPorInst(D,pl);const lbs={};pl.forEach(p=>{if(p.pago!=null){const a=lbs[p.ie]||(lbs[p.ie]={n:0,pago:0,base:0});a.n++;a.pago+=p.pago;a.base+=p.v||0}});todas.forEach(a=>{a.lb=lbs[a.i.i]});let q="",uf="";
  el.innerHTML=`<div class="panel"><div class="filters"><input id="piQ" type="search" placeholder="Pesquisar instituição" style="flex:1;min-width:220px" autocomplete="off"><select id="piUF" data-pill="Estado" data-titulo="Estado"><option value="">Todos os estados</option>${ufs.map(u=>`<option value="${u}">${esc(UF[u]?UF[u].nome:u)}</option>`).join("")}</select></div><p id="piRes" class="small muted" style="margin:10px 0"></p><div id="piTab"></div></div>`;
  const pinta=()=>{const t=snapNorm(q).split(/\s+/).filter(Boolean),l=todas.filter(a=>(!uf||a.i.uf===uf)&&t.every(x=>snapNorm(a.i.nome+" "+(a.i.sigla||"")).includes(x))).sort((a,b)=>b.valor-a.valor);
   $("#piRes").textContent=`${nf(l.length)} instituições. Ordenadas pelo valor do tipo que a fonte informa (contratado ou pactuado); termos e programas da própria FAPEMIG ficam de fora.`;
-  $("#piTab").innerHTML=l.length?table([["Instituição",r=>`<a href="#/instituto/${r.i.i}">${esc(pqNome(r.i))}</a>${r.i.tipo?`<br><small class="muted">${esc(r.i.tipo)}</small>`:""}`],["Estado",r=>esc(r.i.uf||"—"),"c"],["Projetos",r=>nf(r.n),"r"],["Valor",r=>`${pqCurto(r.valor)}<br><small class="muted">${[...r.tipos].map(pqTipoTxt).join("/")}${r.sem?` · ${nf(r.sem)} sem valor`:""}</small>`,"r"],["Período",r=>pqPeriodo(r),"c"]],l):rvazio("Nenhuma instituição encontrada.")};
+  $("#piTab").innerHTML=l.length?table([["Instituição",r=>`<a href="#/instituto/${r.i.i}">${esc(pqNome(r.i))}</a>${r.i.tipo?`<br><small class="muted">${esc(r.i.tipo)}</small>`:""}`],["Estado",r=>esc(r.i.uf||"—"),"c"],["Projetos",r=>nf(r.n),"r"],["Valor",r=>`${pqCurto(r.valor)}<br><small class="muted">${[...r.tipos].map(pqTipoTxt).join("/")}${r.sem?` · ${nf(r.sem)} sem valor`:""}</small>`,"r"],["Liberado (FINEP)",r=>r.lb&&r.lb.n?`${pqPctTxt(pqPct(r.lb.pago,r.lb.base))}<br><small class="muted">${pqCurto(r.lb.pago)}</small>`:"—","r"],["Período",r=>pqPeriodo(r),"c"]],l):rvazio("Nenhuma instituição encontrada.")};
  $("#piQ").oninput=e=>{q=e.target.value;pinta()};$("#piUF").onchange=e=>{uf=e.target.value;pinta()};if(typeof pilulas==="function")pilulas();pinta()}
 
-const PQ_FALTA=[["FINEP","projetos contratados desde 2002","O site de transparência não abriu para o robô; o painel público é Power BI. Em verificação."],
+const PQ_FALTA=[["FINEP — subvenção e crédito a empresas","projetos de inovação em empresas","Ficam de fora: só entram os projetos com instituições de ciência e tecnologia (ICTs). A planilha também tem as demais abas, e a de desembolsos mês a mês (Liberacao.xlsx)."],
  ["CNPq","bolsas, auxílios e projetos","Os painéis são agregados (Tableau e Power BI), sem lista de projetos e pesquisadores; o endereço de dados abertos não abriu."],
  ["FAPESP (SP)","projetos, pesquisador responsável e instituição sede","A Biblioteca Virtual é um site de consulta, sem arquivo para baixar. É onde estaria, por exemplo, a pesquisa do Instituto Butantan e de outros institutos de São Paulo."],
  ["FAPERJ (RJ)","projetos contemplados","Há busca por formulário; falta confirmar se aceita consulta automática."],
  ["Outras 22 fundações estaduais","FAPERGS, FACEPE, FUNCAP, FAPESB, FAPES, FAPESC e demais","Cada uma publica de um jeito; ainda não foi confirmada uma base aberta de projetos em cada uma."],
- ["Pagamentos federais por instituição","Portal da Transparência e Transferegov","Mostram o que o governo federal pagou a cada instituição (como o Butantan), mas não dizem qual pesquisa foi paga."]];
+ ["Pagamentos federais por instituição","Portal da Transparência (Favorecidos e Convênios) e Transferegov","Os arquivos existem, mas são grandes e não dizem qual pesquisa foi paga; falta integrar para mostrar, por exemplo, o que o governo federal pagou ao Instituto Butantan."]];
 function pqFontes(el,D){
- el.innerHTML=`<div class="grid g2">${D.F.map(f=>`<div class="panel"><h2>${esc(f.nome)}</h2><div class="facts" style="grid-template-columns:1fr 1fr"><div><span>Quem financia</span>${esc(f.financiador)}</div><div><span>Estado</span>${esc(f.uf)}</div><div><span>Tipo de valor</span>${pqTipoTxt(f.tipo_valor)}</div><div><span>Atualização</span>${esc(f.atualizacao)}</div><div><span>Registros lidos</span>${nf(f.linhas)}</div><div><span>Nome do pesquisador</span>${f.tem_pesquisador?"sim, publicado pela fonte":"a fonte não traz"}</div></div>
+ el.innerHTML=`<div class="grid g2">${D.F.map(f=>`<div class="panel"><h2>${esc(f.nome)}</h2><div class="facts" style="grid-template-columns:1fr 1fr"><div><span>Quem financia</span>${esc(f.financiador)}</div><div><span>Estado</span>${esc(f.uf)}</div><div><span>Tipo de valor</span>${pqTipoTxt(f.tipo_valor)}</div><div><span>Atualização</span>${esc(f.atualizacao)}</div><div><span>Registros lidos</span>${nf(f.linhas)}</div><div><span>Nome do pesquisador</span>${f.tem_pesquisador?"sim, publicado pela fonte":"a fonte não traz"}</div><div><span>Valor liberado (pago)</span>${f.tem_pago?"sim, por projeto":"a fonte não traz"}</div></div>
   <p class="small muted" style="margin:10px 0">${esc(f.aviso)}</p><a class="btn" href="${esc(f.url)}" target="_blank" rel="noopener">Abrir a fonte oficial</a></div>`).join("")}</div>
   <div class="panel mt"><h2>O que ainda não está aqui</h2><p class="small muted" style="margin:0 0 10px">Não existe base nacional única de pesquisas financiadas. Cada fonte abaixo foi investigada e só entra quando traz projeto, instituição e valor em dado aberto que o robô consegue ler.</p>
   ${table([["Fonte",r=>`<b>${esc(r[0])}</b>`],["O que teria",r=>esc(r[1])],["Situação",r=>esc(r[2])]],PQ_FALTA)}</div>
-  <div class="panel mt"><h2>Regras desta aba</h2><ul class="small" style="margin:0;padding-left:18px;line-height:1.6"><li>Valor é sempre do tipo que a fonte diz (contratado ou pactuado). Não é valor pago e não mede o andamento nem o resultado da pesquisa; nenhuma fonte aberta informa isso.</li><li>O nome do pesquisador aparece só quando a própria fonte o publica. Não há CPF, e-mail nem ligação com outras bases por nome parecido.</li><li>Dado que a fonte não traz aparece como "não informado". Nada é estimado.</li><li>Quem executa a pesquisa (universidade, instituto) é mostrado como instituição; a fundação de apoio que administra o dinheiro aparece como gestora.</li><li>Termos e programas da própria FAPEMIG (executora "SEDE") ficam fora das contas e dos rankings e podem ser vistos à parte em Projetos.</li></ul></div>`}
+  <div class="panel mt"><h2>Regras desta aba</h2><ul class="small" style="margin:0;padding-left:18px;line-height:1.6"><li>Valor é sempre do tipo que a fonte diz (contratado ou pactuado). Só a FINEP informa também quanto já foi liberado; o percentual liberado é "pago ÷ contratado" e não mede o andamento nem o resultado da pesquisa, que nenhuma fonte aberta informa.</li><li>O nome do pesquisador aparece só quando a própria fonte o publica. Não há CPF, e-mail nem ligação com outras bases por nome parecido.</li><li>Dado que a fonte não traz aparece como "não informado". Nada é estimado.</li><li>Quem executa a pesquisa (universidade, instituto) é mostrado como instituição; a fundação de apoio que administra o dinheiro aparece como gestora.</li><li>Termos e programas da própria FAPEMIG (executora "SEDE") ficam fora das contas e dos rankings e podem ser vistos à parte em Projetos.</li></ul></div>`}
 
 P.pesquisas=(aba)=>{aba=PQ_ABAS.some(a=>a[0]===aba)?aba:"visao";
  return{html:`<div class="ph"><div><h1>Pesquisas</h1><p>Projetos de pesquisa financiados com dinheiro público: quem pesquisa, em que instituição, em que estado e quanto a fonte registra de valor.</p></div></div><div class="tabs" id="pqTabs" style="margin-top:0">${PQ_ABAS.map(a=>`<a class="tabl ${a[0]===aba?"on":""}" href="#/pesquisas/${a[0]}">${a[1]}</a>`).join("")}</div><div id="pqV">${API.on?rload():PQ_SEM_API}</div>`,
@@ -6303,7 +6307,8 @@ P.pesquisa=(id)=>({html:`<div id="pqDet">${rload()}</div>`,mount(){pqBase().then
   const lin=(t,v)=>v?`<div><span>${t}</span>${v}</div>`:"";
   box.innerHTML=`<h1 style="font-size:22px;line-height:1.25;margin:0 0 8px">${p.tit?esc(p.tit):"Título não informado pela fonte"}</h1>
    <div class="chips" style="margin:0 0 12px"><span class="chip on">${esc(pqFonteCurta(f))}</span><span class="chip">valor ${pqTipoTxt(p.tipo)}</span>${p.sede?`<span class="chip">Termo ou programa da própria FAPEMIG</span>`:""}</div>
-   <div class="kpis kpis-c"><div class="kpi"><span>Valor ${pqTipoTxt(p.tipo)}</span><strong>${pqVal(p.v)}</strong><em>${p.tipo==="pactuado"?"fixado em contrato com o cliente":"fixado em contrato com o pesquisador"}</em></div></div>
+   <div class="kpis kpis-c"><div class="kpi"><span>Valor ${pqTipoTxt(p.tipo)}</span><strong>${pqVal(p.v)}</strong><em>${p.tipo==="pactuado"?"fixado em contrato com o cliente":f.id==="finep"?"valor do contrato com a FINEP":"fixado em contrato com o pesquisador"}</em></div>${p.pago!=null?`<div class="kpi"><span>Já liberado pela FINEP</span><strong>${pqVal(p.pago)}</strong><em>${p.v?pqPctTxt(pqPct(p.pago,p.v))+" do valor contratado":"valor contratado não informado"}</em></div>`:""}</div>
+   ${p.pago!=null&&p.v?`<div style="margin-top:10px">${pbars([["Já liberado do valor contratado",Math.min(100,pqPct(p.pago,p.v))]])}<p class="small muted" style="margin:4px 0 0">Liberado = soma do que a FINEP já repassou ao projeto${ex.posicao?` (${esc(String(ex.posicao).replace(/^Posi[cç][aã]o:\s*/i,"posição de "))})`:""}. Não é o andamento científico da pesquisa.${pqPct(p.pago,p.v)>100?" O liberado passa do contratado nesta fonte; mostramos como veio.":""}</p></div>`:""}
    <div class="facts" style="margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
     ${lin("Pesquisador responsável",p.pesq?esc(p.pesq):(f.tem_pesquisador?"não informado":"a fonte não informa quem pesquisa"))}
     ${lin("Instituição que executa",`<a href="#/instituto/${i.i}">${esc(pqNome(i))}</a>${i.tipo?` · ${esc(i.tipo)}`:""}`)}
@@ -6316,10 +6321,11 @@ P.pesquisa=(id)=>({html:`<div id="pqDet">${rload()}</div>`,mount(){pqBase().then
     ${lin("Quem financia",esc(f.financiador))}
     ${ex.cliente?lin("Cliente do contrato",esc(ex.cliente)):""}${ex.fonte_recurso?lin("Fonte do recurso",esc(ex.fonte_recurso)):""}
     ${ex.listado_em&&ex.listado_em.length?lin("Listado nos anos",ex.listado_em.slice().sort().join(", ")):""}
+    ${ex.status?lin("Situação do projeto",esc(ex.status.charAt(0)+ex.status.slice(1).toLowerCase())):""}${ex.municipio?lin("Município da instituição",esc(ex.municipio)):""}
     ${lin("Identificador na fonte",`<code>${esc(p.proc)}</code>`)}</div>
    ${pqPrazo(p)}
-   ${ex.descricao?`<h3 style="margin:16px 0 4px;font-size:15px">Descrição (como escrita pela fonte)</h3><p class="small" style="margin:0">${esc(ex.descricao)}</p>`:""}
-   <p class="small muted" style="margin:16px 0 8px">A fonte informa o valor ${pqTipoTxt(p.tipo)} e as datas. Ela <b>não informa</b> quanto já foi pago nem o andamento científico da pesquisa.</p>
+   ${ex.descricao||ex.resumo?`<h3 style="margin:16px 0 4px;font-size:15px">${ex.resumo?"Resumo (como publicado pela FINEP)":"Descrição (como escrita pela fonte)"}</h3><p class="small" style="margin:0">${esc(ex.resumo||ex.descricao)}</p>`:""}
+   <p class="small muted" style="margin:16px 0 8px">${p.pago!=null?`A fonte informa o valor contratado, o quanto já foi liberado e as datas. Ela <b>não informa</b> o andamento científico da pesquisa.`:`A fonte informa o valor ${pqTipoTxt(p.tipo)} e as datas. Ela <b>não informa</b> quanto já foi pago nem o andamento científico da pesquisa.`}</p>
    <a class="btn" href="${esc(f.url)}" target="_blank" rel="noopener">Abrir a fonte oficial (${esc(pqFonteCurta(f))})</a>`}).catch(e=>{const b=$("#pqDet");if(b)b.innerHTML=rerro(e)})}});
 
 P.instituto=(id)=>({html:`<div id="pqIns">${rload()}</div>`,mount(){pqBase().then(D=>{const box=$("#pqIns");if(!box)return;const i=D.I[+id];if(!i){box.innerHTML=rvazio("Instituição não encontrada.");return}
@@ -6328,7 +6334,7 @@ P.instituto=(id)=>({html:`<div id="pqIns">${rload()}</div>`,mount(){pqBase().the
   meus.forEach(p=>{if(p.ano)anos[p.ano]=(anos[p.ano]||0)+(p.v||0);const a=p.area||"Não informada";areas[a]=(areas[a]||0)+(p.v||0)});
   const ak=Object.keys(anos).map(Number).sort((a,b)=>a-b),topA=Object.entries(areas).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const maiores=meus.slice().sort((a,b)=>(b.v!=null)-(a.v!=null)||(b.v||0)-(a.v||0)).slice(0,10);
-  const kp=D.F.filter(f=>porF[f.id]).map(f=>{const s=porF[f.id];return`<div class="kpi"><span>${esc(pqFonteCurta(f))} · valor ${pqTipoTxt(f.tipo_valor)}</span><strong>${pqCurto(s.valor)}</strong><em>${nf(s.n)} projetos${s.sem?` · ${nf(s.sem)} sem valor informado`:""}</em></div>`}).join("");
+  const kp=D.F.filter(f=>porF[f.id]).map(f=>{const s=porF[f.id],lb=f.tem_pago?pqLib(meus.filter(p=>p.fid===f.id)):null;return`<div class="kpi"><span>${esc(pqFonteCurta(f))} · valor ${pqTipoTxt(f.tipo_valor)}</span><strong>${pqCurto(s.valor)}</strong><em>${nf(s.n)} projetos${s.sem?` · ${nf(s.sem)} sem valor informado`:""}${lb&&lb.n?` · <b>${pqCurto(lb.pago)} liberados (${pqPctTxt(pqPct(lb.pago,lb.base))})</b>`:""}</em></div>`}).join("");
   box.innerHTML=`<h1 style="font-size:22px;margin:0 0 4px">${esc(pqNome(i))}</h1><p class="muted small" style="margin:0 0 12px">${[i.tipo,i.uf?(UF[i.uf]?UF[i.uf].nome:i.uf):""].filter(Boolean).map(esc).join(" · ")||"Tipo e estado não informados"}</p>
    ${meus.length?`<div class="kpis kpis-c">${kp}</div>`:rvazio("Esta instituição aparece só como gestora de recursos (fundação de apoio), não como executora de projetos.")}
    ${ak.length>=2?`<div class="panel mt"><h2>Valor por ano <small>do projeto</small></h2>${lineChart([{n:"Valor",v:ak.map(a=>anos[a])}],ak.map(String),{h:190,fmt:pqCurto,datas:ak.map(String)})}</div>`:""}
