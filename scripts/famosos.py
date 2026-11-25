@@ -141,6 +141,12 @@ def rotulo(v):
     return None if (not v or re.fullmatch(r"Q\d+", v)) else v.strip()
 
 
+def genero_norm(g):
+    """Gêneros vêm do Wikidata com a caixa misturada (\"Arrocha\", \"sertanejo\"): inicial minúscula, menos siglas (MPB, R&B)."""
+    g = g.strip()
+    return g if len(g) < 2 or g.isupper() or g[1].isupper() else g[0].lower() + g[1:]
+
+
 def ano(s):
     m = re.match(r"^(-?\d{4})", s or "")
     return int(m.group(1)) if m else None
@@ -372,7 +378,7 @@ def main(teste=False, so_lista=False):
         if p["m"]: reg["m"] = p["m"]
         if i in local and local[i][0]: reg["c"] = local[i][0]
         if i in local and local[i][1]: reg["u"] = local[i][1]
-        if generos.get(i): reg["ge"] = sorted(generos[i], key=str.lower)[:8]
+        if generos.get(i): reg["ge"] = sorted({genero_norm(x) for x in generos[i]}, key=str.lower)[:8]
         if ocupacoes.get(i): reg["oc"] = sorted(ocupacoes[i], key=str.lower)[:6]
         if premios: reg["pr"] = [len(premios), [k for k, _ in premios[:3]]]
         if conhecidas: reg["ob"] = [[o[0], o[1], o[2]] for o in conhecidas]

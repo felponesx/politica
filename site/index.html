@@ -6228,6 +6228,7 @@ const fmBusca=(p)=>p.bq||(p.bq=snapNorm([p.n,(p.oc||[]).join(" "),(p.ge||[]).joi
 const fmSEM_API=`<div class="rbanner">A aba Artistas e famosos aparece quando o site está ligado ao servidor BRASIL+ ou à cópia dos dados oficiais.</div>`;
 const fmVAZIO=`<div class="rbanner">Os dados de artistas e famosos ainda estão sendo coletados. Quando o robô terminar, esta aba se preenche sozinha.</div>`;
 function fmMetrica(p,ord){
+ if(ord==="s")return{v:p.s,rot:"idiomas na Wikipédia"};
  if(ord==="dz"&&p.dz)return{v:p.dz[0],rot:`fãs no Deezer · ${fmData(p.dz[1])}`};
  if(FM_REDE[ord]&&p.rs&&p.rs[ord])return{v:p.rs[ord][0],rot:`${FM_REDE[ord][1]} no ${FM_REDE[ord][0]} · ${fmData(p.rs[ord][1])}`};
  return null}
@@ -6241,7 +6242,7 @@ function fmAv(nome){const h=hs(nome)%360,i=nome.split(/\s+/).filter(w=>/^\p{L}/u
 function fmCartao(p,ord){const m=fmMetrica(p,ord),vida=p.a?(p.m?`${p.a}–${p.m}`:`nasceu em ${p.a}`):"";
  const meta=[(p.oc||[]).slice(0,3).join(", "),p.c&&p.u?`${p.c} (${p.u})`:fmUF(p.u)||p.c||"",vida].filter(Boolean).map(esc).join(" · ");
  return`<a class="fm-card" href="#/famoso/${p.q}">${fmAv(p.n)}<div class="fm-b"><div class="fm-t">${esc(p.n)}</div><div class="fm-m">${meta||esc(p.d||"")}</div>${p.ge&&p.ge.length?`<div class="fm-g">${p.ge.slice(0,4).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>`:""}</div>
- <div class="fm-v">${m?`<b>${fmN(m.v)}</b><small>${esc(m.rot)}</small>`:ord==="s"?`<b>${p.s}</b><small>idiomas na Wikipédia</small>`:`<small>sem esse número na fonte</small>`}</div></a>`}
+ <div class="fm-v">${m?`<b>${fmN(m.v)}</b><small>${esc(m.rot)}</small>`:`<small>sem esse número na fonte</small>`}</div></a>`}
 function fmContaPor(lista,chave){const o={};lista.forEach(p=>{(Array.isArray(chave(p))?chave(p):[chave(p)]).filter(Boolean).forEach(k=>{o[k]=(o[k]||0)+1})});return o}
 
 function fmTela(el,D,aba){
@@ -6279,8 +6280,8 @@ function fmTela(el,D,aba){
    <div class="kpi"><span>${ehMus?"Com fãs no Deezer":"Com seguidores registrados"}</span><strong>${nf(b.filter(p=>ehMus?p.dz:p.rs).length)}</strong><em>${ehMus?"número lido na API do Deezer":"número e data no Wikidata"}</em></div></div>`;
   const topo=ord.filter(p=>fmMetrica(p,f.ord)).slice(0,10),metR=FM_REDE[f.ord];
   const rotOrd=(ordens.find(o=>o[0]===f.ord)||[])[1]||"";
-  $("#fmRankT").innerHTML=`Ranking <small>${esc(rotOrd.toLowerCase())}</small>`;
-  $("#fmRank").innerHTML=topo.length?hbars(topo.map(p=>[p.n,fmMetrica(p,f.ord).v]),{fmt:fmN})+`<p class="small muted" style="margin:8px 0 0">${f.ord==="dz"?"Fãs no Deezer, lidos em "+esc(fmData(D.gerado))+".":`Seguidores no ${metR?esc(metR[0]):"serviço"} como o Wikidata registra; a data de cada um fica no perfil.`} ${nf(comNum)} de ${nf(l.length)} pessoas da lista têm esse número.</p>`:rvazio(f.ord==="s"||f.ord==="az"||f.ord==="jov"?"Escolha uma ordem por fãs ou seguidores para ver o ranking.":"Nenhuma pessoa da lista tem esse número na fonte.");
+  $("#fmRankT").innerHTML=`Ranking <small>${esc(rotOrd)}</small>`;
+  $("#fmRank").innerHTML=topo.length?hbars(topo.map(p=>[p.n,fmMetrica(p,f.ord).v]),{fmt:fmN})+`<p class="small muted" style="margin:8px 0 0">${f.ord==="dz"?"Fãs no Deezer, lidos em "+esc(fmData(D.gerado))+".":f.ord==="s"?"Número de idiomas em que a Wikipédia tem um artigo sobre a pessoa: mede projeção, não audiência nem talento.":`Seguidores no ${metR?esc(metR[0]):"serviço"} como o Wikidata registra; a data de cada um fica no perfil.`} ${nf(comNum)} de ${nf(l.length)} pessoas da lista têm esse número.</p>`:rvazio(f.ord==="s"||f.ord==="az"||f.ord==="jov"?"Escolha uma ordem por fãs ou seguidores para ver o ranking.":"Nenhuma pessoa da lista tem esse número na fonte.");
   if(ehMus){const g=Object.entries(fmContaPor(l,p=>p.ge)).sort((a,b)=>b[1]-a[1]).slice(0,10),n=l.filter(p=>p.ge&&p.ge.length).length;
    $("#fmCompT").innerHTML=`Gêneros mais citados <small>${nf(n)} de ${nf(l.length)} músicos têm gênero no Wikidata</small>`;
    $("#fmComp").innerHTML=g.length?pbars(g.map(([k,c])=>[k,Math.round(c/n*1000)/10]))+`<p class="small muted" style="margin:8px 0 0">Um artista pode ter vários gêneros: por isso as barras não somam 100%.</p>`:rvazio("Sem gênero informado nesta lista.")}

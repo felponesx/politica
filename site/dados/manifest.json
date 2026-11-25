@@ -507,6 +507,16 @@
     "pesquisa",
     "instituto"
    ]
+  },
+  "p/famosos.json": {
+   "chaves": [
+    "/famosos/base",
+    "/famosos/resumo"
+   ],
+   "telas": [
+    "famosos",
+    "famoso"
+   ]
   }
  }
 }

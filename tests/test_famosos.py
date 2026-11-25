@@ -92,3 +92,10 @@ def test_sem_arquivo_responde_404(tmp_path, monkeypatch):
     assert c.get("/famosos/resumo").status_code == 404
     assert c.get("/famosos/pessoa/Q1").status_code == 404
     famosos.recarregar()
+
+
+def test_genero_norm():
+    assert fm.genero_norm("Arrocha") == "arrocha"
+    assert fm.genero_norm("MPB") == "MPB"
+    assert fm.genero_norm("R&B") == "R&B"
+    assert fm.genero_norm("música pop") == "música pop"
