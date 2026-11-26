@@ -58,7 +58,7 @@ def get_json(url, tentativas=5):
             with urllib.request.urlopen(req, timeout=40) as r:
                 return json.load(r)
         except urllib.error.HTTPError as e:
-            time.sleep(int(e.headers.get("Retry-After") or 10 * (t + 1)) if e.code == 429 else 4 * (t + 1))
+            time.sleep(min(int(e.headers.get("Retry-After") or 10 * (t + 1)), 60) if e.code == 429 else 4 * (t + 1))
         except Exception:
             time.sleep(4 * (t + 1))
     return None
@@ -73,7 +73,7 @@ def baixa(url, tentativas=5):
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 return None
-            time.sleep(int(e.headers.get("Retry-After") or 8 * (t + 1)) if e.code == 429 else 4 * (t + 1))
+            time.sleep(min(int(e.headers.get("Retry-After") or 8 * (t + 1)), 60) if e.code == 429 else 4 * (t + 1))
         except Exception:
             time.sleep(4 * (t + 1))
     return None
