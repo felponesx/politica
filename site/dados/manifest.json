@@ -517,6 +517,51 @@
     "famosos",
     "famoso"
    ]
+  },
+  "p/famosos-fotos-0.json": {
+   "chaves": [
+    "/famosos/fotos/0"
+   ],
+   "telas": [
+    "famosos",
+    "famoso"
+   ]
+  },
+  "p/famosos-fotos-1.json": {
+   "chaves": [
+    "/famosos/fotos/1"
+   ],
+   "telas": [
+    "famosos",
+    "famoso"
+   ]
+  },
+  "p/famosos-fotos-2.json": {
+   "chaves": [
+    "/famosos/fotos/2"
+   ],
+   "telas": [
+    "famosos",
+    "famoso"
+   ]
+  },
+  "p/famosos-fotos-3.json": {
+   "chaves": [
+    "/famosos/fotos/3"
+   ],
+   "telas": [
+    "famosos",
+    "famoso"
+   ]
+  },
+  "p/famosos-fotos-4.json": {
+   "chaves": [
+    "/famosos/fotos/4"
+   ],
+   "telas": [
+    "famosos",
+    "famoso"
+   ]
   }
  }
 }
