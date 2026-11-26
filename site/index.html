@@ -2387,15 +2387,15 @@ html.tema-troca :is(body,.app,.top,.side,.nav a,.bnav,.page,.panel,.kpi,.kpis,.f
 #pqDet h1,#pqIns h1{font-size:19px!important;line-height:1.3!important;overflow-wrap:anywhere}#pqDet .chips{display:flex;flex-wrap:wrap;gap:6px}
 @media (max-width:760px){.pq-card{grid-template-columns:1fr}.pq-v{grid-column:1;grid-row:auto;text-align:left;margin-top:4px;white-space:normal}.pq-v b{display:inline;margin-right:6px}}
 /* Artistas e famosos (25/11/2026) */
-.fm-card{display:grid;grid-template-columns:auto 1fr auto;gap:2px 14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.fm-card{display:grid;grid-template-columns:auto 1fr auto;gap:2px 14px;align-items:start;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
 .fm-card:hover{background:var(--bg)}
-.fm-av{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none}.fm-av-g{width:64px;height:64px;font-size:22px}
+.fm-av{width:60px;height:60px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex:none;overflow:hidden;align-self:start}.fm-av-g{width:96px;height:96px;font-size:28px;border-radius:14px}.fm-av img{width:100%;height:100%;object-fit:cover;display:block}.fm-d{margin-top:5px;font-size:13px;line-height:1.4}
 .fm-t{font-weight:600;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}.fm-m{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
 .fm-g{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.fm-g .chip{font-size:11px;padding:2px 8px}
 .fm-v{text-align:right;white-space:nowrap}.fm-v b{display:block;font-size:15px}.fm-v small{color:var(--muted);font-size:11.5px}
 .fm-ob{margin:0;padding-left:18px;line-height:1.7;font-size:13.5px}
 #fmDet h1{overflow-wrap:anywhere}#fmDet .chips{display:flex;flex-wrap:wrap;gap:6px}
-@media (max-width:760px){.fm-card{grid-template-columns:auto 1fr}.fm-v{grid-column:1/-1;text-align:left;white-space:normal;padding-left:58px}.fm-v b{display:inline;margin-right:6px}}
+@media (max-width:760px){.fm-card{grid-template-columns:auto 1fr}.fm-v{grid-column:1/-1;text-align:left;white-space:normal;padding-left:74px}.fm-v b{display:inline;margin-right:6px}}
 </style>
 </head>
 <body>
@@ -6237,14 +6237,39 @@ function fmMetricaBase(p,ord){const m=fmMetrica(p,ord);if(m)return m;
 const fmOrdena=(l,ord)=>{const k=ord==="s"?p=>p.s:ord==="jov"?p=>p.a||0:p=>{const m=fmMetrica(p,ord);return m?m.v:-1};
  if(ord==="az")return l.slice().sort((a,b)=>a.n.localeCompare(b.n,"pt"));
  return l.slice().sort((a,b)=>k(b)-k(a)||b.s-a.s)};
-function fmAv(nome){const h=hs(nome)%360,i=nome.split(/\s+/).filter(w=>/^\p{L}/u.test(w)).map(w=>w[0]).slice(0,2).join("").toUpperCase();
- return`<span class="fm-av" aria-hidden="true" style="background:hsl(${h} 70% 90%);color:hsl(${h} 45% 28%)">${esc(i)}</span>`}
-function fmCartao(p,ord){const m=fmMetrica(p,ord),vida=p.a?(p.m?`${p.a}–${p.m}`:`nasceu em ${p.a}`):"";
- const meta=[(p.oc||[]).slice(0,3).join(", "),p.c&&p.u?`${p.c} (${p.u})`:fmUF(p.u)||p.c||"",vida].filter(Boolean).map(esc).join(" · ");
- return`<a class="fm-card" href="#/famoso/${p.q}">${fmAv(p.n)}<div class="fm-b"><div class="fm-t">${esc(p.n)}</div><div class="fm-m">${meta||esc(p.d||"")}</div>${p.ge&&p.ge.length?`<div class="fm-g">${p.ge.slice(0,4).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>`:""}</div>
+const FM_FOTO={};
+function fmFotoArq(n){if(!FM_FOTO[n])FM_FOTO[n]=apiGet("/famosos/fotos/"+n).catch(()=>({}));return FM_FOTO[n]}
+/* foto quadrada (Wikimedia Commons, licença livre): o avatar com iniciais vira a foto quando o arquivo de fotos chega; o crédito fica no title, no perfil e em "Créditos das fotos" */
+function fmFotosAplica(){const ns=new Set();document.querySelectorAll("[data-fq]:not([data-ok])").forEach(e=>ns.add(e.dataset.ft));
+ ns.forEach(n=>fmFotoArq(n).then(F=>{document.querySelectorAll(`[data-fq][data-ft="${n}"]:not([data-ok])`).forEach(e=>{const f=F[e.dataset.fq];if(!f)return;e.dataset.ok="1";
+  e.innerHTML=`<img src="data:image/webp;base64,${f[0]}" alt="" decoding="async">`;e.classList.add("fm-foto");e.title=`Foto: ${f[1]||"autor não informado"} · ${f[2]} · Wikimedia Commons`;
+  const c=e.parentElement&&e.parentElement.querySelector("#fmCredDet");if(c)c.innerHTML=fmCredito(f)})}))}
+const fmCredito=f=>`Foto: ${esc(f[1]||"autor não informado")} · <a href="${esc(f[3]||"https://creativecommons.org")}" target="_blank" rel="noopener">${esc(f[2])}</a> · <a href="${esc(f[4])}" target="_blank" rel="noopener">Wikimedia Commons</a>`;
+function fmAv(p,g){const h=hs(p.n)%360,i=p.n.split(/\s+/).filter(w=>/^\p{L}/u.test(w)).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+ return`<span class="fm-av${g?" fm-av-g":""}"${p.ft!=null?` data-fq="${p.q}" data-ft="${p.ft}"`:""} aria-hidden="true" style="background:hsl(${h} 70% 90%);color:hsl(${h} 45% 28%)">${esc(i)}</span>`}
+const fmVida=p=>p.m?`${p.a||"?"} – ${p.m}`:p.a?`nasceu em ${p.a}`:"";
+const fmUnicas=l=>l.filter((o,i)=>l.findIndex(x=>x[0]===o[0])===i);
+const fmNomesObra=(l,n)=>fmUnicas(l).slice(0,n).map(o=>`<b>${esc(o[0])}</b>${o[1]?` <span class="muted">(${o[1]})</span>`:""}`).join(", ");
+/* a linha de destaque depende da aba (a mesma pessoa pode ser músico e ator): dublador de quê, principais obras, mais conhecido por… Só o que o Wikidata registra */
+function fmDestaque(p,grupo){const ob=p.ob||[];
+ if(grupo==="dublador"){const v=ob.filter(o=>o[2]==="voz");return v.length?`Dublador de ${fmNomesObra(v,3)}`:`Dublador <span class="muted">· personagens não informados no Wikidata</span>`}
+ if(grupo==="arquiteto"||grupo==="engenheiro"){const o=ob.filter(x=>x[2]==="projeto"||x[2]==="obra notável");return o.length?`Principais obras: ${fmNomesObra(o,2)}`:`<span class="muted">Obras não informadas no Wikidata</span>`}
+ if(grupo==="musico"){const o=ob.filter(x=>x[2]==="música"||x[2]==="obra notável");return o.length?`Mais conhecido por: ${fmNomesObra(o,1)}`:""}
+ if(grupo==="ator"){const o=ob.filter(x=>x[2]==="atuação");return o.length?`Mais conhecido por: ${fmNomesObra(o,2)}`:""}
+ return ob.length?`Obra mais conhecida: ${fmNomesObra(ob,1)}`:""}
+function fmCartao(p,ord,grupo){const m=fmMetrica(p,ord),loc=p.c&&p.u?`${p.c} (${p.u})`:fmUF(p.u)||p.c||"",dest=fmDestaque(p,grupo);
+ return`<a class="fm-card" href="#/famoso/${p.q}">${fmAv(p)}<div class="fm-b"><div class="fm-t">${esc(p.n)}</div>
+ <div class="fm-m">${[fmVida(p),loc].filter(Boolean).map(esc).join(" · ")}</div>
+ <div class="fm-m">${esc((p.oc||[]).slice(0,3).join(" · "))}</div>
+ ${p.ge&&p.ge.length?`<div class="fm-g">${p.ge.slice(0,4).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>`:""}
+ ${dest?`<div class="fm-d">${dest}</div>`:""}</div>
  <div class="fm-v">${m?`<b>${fmN(m.v)}</b><small>${esc(m.rot)}</small>`:`<small>sem esse número na fonte</small>`}</div></a>`}
 function fmContaPor(lista,chave){const o={};lista.forEach(p=>{(Array.isArray(chave(p))?chave(p):[chave(p)]).filter(Boolean).forEach(k=>{o[k]=(o[k]||0)+1})});return o}
 
+/* "Créditos das fotos": quem aparece na lista atual e já tem foto carregada, com autor, licença (link) e a página do arquivo no Commons */
+function fmCredPinta(l){const box=$("#fmCredT");if(!box)return;const com=l.filter(p=>p.ft!=null);
+ const ns=[...new Set(com.map(p=>p.ft))];Promise.all(ns.map(n=>fmFotoArq(n))).then(Fs=>{const F=Object.assign({},...Fs),linhas=com.filter(p=>F[p.q]).map(p=>[p,F[p.q]]);
+  const el=$("#fmCredT");if(!el)return;el.innerHTML=linhas.length?table([["Pessoa",r=>`<a href="#/famoso/${r[0].q}">${esc(r[0].n)}</a>`],["Autor da foto",r=>esc(r[1][1]||"não informado")],["Licença",r=>`<a href="${esc(r[1][3]||"https://creativecommons.org")}" target="_blank" rel="noopener">${esc(r[1][2])}</a>`,"c"],["Arquivo",r=>`<a href="${esc(r[1][4])}" target="_blank" rel="noopener">Commons</a>`,"c"]],linhas)+`<p class="small muted" style="margin:8px 0 0">Fotos do Wikimedia Commons, escolhidas pelo Wikidata como imagem principal da pessoa. ${nf(linhas.length)} de ${nf(l.length)} pessoas da lista têm foto; as outras aparecem com as iniciais.</p>`:`<p class="small muted" style="margin:0">Nenhuma foto nesta lista.</p>`})}
 function fmTela(el,D,aba){
  const ehProf=aba==="profissoes",grupos=Object.entries(D.grupos).filter(([k])=>k.startsWith("prof:")).sort((a,b)=>b[1].n-a[1].n);
  const f={q:"",uf:"",ge:"",oc:"",vida:"",pr:grupos.length?grupos[0][0]:"",ord:""};
@@ -6268,7 +6293,8 @@ function fmTela(el,D,aba){
    ${ehMus?`<select id="fmGE" data-pill="Gênero" data-titulo="Gênero musical"></select>`:`<select id="fmOC" data-pill="Ocupação" data-titulo="Ocupação"></select>`}
    <select id="fmVI" data-pill="Mostrar" data-titulo="Mostrar">${op("Vivos e falecidos","",f.vida)}${op("Só vivos","vivo",f.vida)}${op("Só falecidos","morto",f.vida)}</select>
    <select id="fmOR" data-pill="Ordem" data-titulo="Ordem">${ordens.map(o=>op(o[1],o[0],f.ord)).join("")}</select></div>
-   <p id="fmRes" class="small" style="margin:10px 0"></p><div id="fmLista"></div></div>`;
+   <p id="fmRes" class="small" style="margin:10px 0"></p><div id="fmLista"></div>
+   <details id="fmCred" class="small" style="margin-top:14px"><summary style="cursor:pointer"><b>Créditos das fotos</b> <span class="muted">· autor e licença de cada foto (Wikimedia Commons)</span></summary><div id="fmCredT" style="margin-top:8px"></div></details></div>`;
  const preencheFiltros=()=>{const b=base();
   if(ehMus){const g=Object.entries(fmContaPor(b,p=>p.ge)).sort((a,b)=>b[1]-a[1]).slice(0,40);$("#fmGE").innerHTML=op("Todos os gêneros","",f.ge)+g.map(([k,n])=>op(`${k} · ${nf(n)}`,k,f.ge)).join("")}
   else{const o=Object.entries(fmContaPor(b,p=>p.oc)).sort((a,c)=>c[1]-a[1]).slice(0,30);$("#fmOC").innerHTML=op("Todas as ocupações","",f.oc)+o.map(([k,n])=>op(`${k} · ${nf(n)}`,k,f.oc)).join("")}};
@@ -6290,7 +6316,7 @@ function fmTela(el,D,aba){
    $("#fmComp").innerHTML=o.length?hbars(o,{fmt:nf}):rvazio("Sem ocupação informada nesta lista.")}
   const porUF=fmContaPor(l,p=>p.u);$("#fmMapa").innerHTML=Object.keys(porUF).length?mapaValores(porUF,n=>nf(n)+(n===1?" pessoa":" pessoas")):rvazio("Sem estado de nascimento nesta lista.");
   $("#fmRes").innerHTML=`<b>${nf(l.length)}</b> ${l.length===1?"pessoa":"pessoas"}${f.uf?` nascidas em ${esc(fmUF(f.uf))}`:""}`;
-  opLista($("#fmLista"),ord,p=>fmCartao(p,f.ord),30)};
+  opLista($("#fmLista"),ord,p=>fmCartao(p,f.ord,ehProf?f.pr:FM_GRUPO[aba]),30,()=>{fmFotosAplica();fmCredPinta(l)})};
  const liga=(id,k,antes)=>{const e=$(id);if(e)e.onchange=()=>{f[k]=e.value;if(antes)antes();pinta()}};
  preencheFiltros();
  [["#fmUF","uf"],["#fmGE","ge"],["#fmOC","oc"],["#fmVI","vida"],["#fmOR","ord"]].forEach(([i,k])=>liga(i,k));
@@ -6318,7 +6344,7 @@ P.famoso=(q)=>({html:`<div id="fmDet">${rload()}</div>`,mount(){fmBase().then(D=
   Object.entries(p.ct||{}).forEach(([r,u])=>{if(FM_LINK[r])links.push(`<a class="btn" href="${FM_LINK[r](u)}" target="_blank" rel="noopener">${FM_REDE[r][0]}</a>`)});
   const tem=p.g.includes("ator")||p.g.includes("dublador"),mus=p.g.includes("musico"),arq=p.g.includes("arquiteto")||p.g.includes("engenheiro");
   const rotObra=mus?"Álbuns, singles e músicas":tem?"Trabalhos (filmes, séries, novelas)":arq?"Projetos":"Obras";
-  box.innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin:0 0 10px">${fmAv(p.n).replace("fm-av","fm-av fm-av-g")}<div><h1 style="font-size:22px;line-height:1.25;margin:0">${esc(p.n)}</h1>${p.d?`<p class="small muted" style="margin:2px 0 0">${esc(p.d)}</p>`:""}</div></div>
+  box.innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin:0 0 10px">${fmAv(p,true)}<div><h1 style="font-size:22px;line-height:1.25;margin:0">${esc(p.n)}</h1>${p.d?`<p class="small muted" style="margin:2px 0 0">${esc(p.d)}</p>`:""}${p.ft!=null?`<p id="fmCredDet" class="small muted" style="margin:4px 0 0"></p>`:""}</div></div>
    <div class="chips" style="margin:0 0 12px">${gr.map(g=>`<span class="chip on">${esc(g)}</span>`).join("")}${(p.oc||[]).slice(0,5).map(o=>`<span class="chip">${esc(o)}</span>`).join("")}${(p.ge||[]).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}</div>
    <div class="kpis kpis-c">${kp.join("")}</div>
    <div class="facts" style="margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
@@ -6329,7 +6355,7 @@ P.famoso=(q)=>({html:`<div id="fmDet">${rload()}</div>`,mount(){fmBase().then(D=
    <div class="grid g2 mt"><div class="panel"><h2>${rotObra} <small>mais conhecidos</small></h2>${fmObras(p.ob,"O Wikidata não registra obras desta pessoa.")}</div>
     <div class="panel"><h2>${rotObra} <small>mais recentes que o Wikidata registra</small></h2>${fmObras(p.ob2,"Sem obra com data registrada.")}</div></div>
    <p class="small muted" style="margin:14px 0 8px">Os números de seguidores são os que o Wikidata guarda, cada um com a data em que foi anotado; não são de hoje. ${p.dz?`Os fãs no Deezer foram lidos na API do Deezer em ${fmData(p.dz[1])}. `:""}Não existe fonte aberta de horas ouvidas. "Mais conhecidos" = obras com mais idiomas na Wikipédia; "mais recentes" depende do que os voluntários do Wikidata já cadastraram.</p>
-   <div style="display:flex;gap:8px;flex-wrap:wrap">${links.join("")}</div>`}).catch(e=>{const b=$("#fmDet");if(b)b.innerHTML=rerro(e)})}});
+   <div style="display:flex;gap:8px;flex-wrap:wrap">${links.join("")}</div>`;fmFotosAplica()}).catch(e=>{const b=$("#fmDet");if(b)b.innerHTML=rerro(e)})}});
 
 // ===== Pesquisas (25/11/2026): projetos de pesquisa financiados com dinheiro público. Tudo vem de GET /pesquisas/base (app/pesquisas.py, scripts/pesquisas.py) e é filtrado no navegador.
 // Valor é sempre do tipo que a fonte diz (FAPEMIG: contratado; INT: pactuado) e os tipos nunca são somados no mesmo número. Dado ausente = "não informado".

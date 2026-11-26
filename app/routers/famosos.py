@@ -31,3 +31,9 @@ def famosos_pessoa(q: str):
     if r is None:
         raise HTTPException(404, "Pessoa não encontrada")
     return r
+
+
+@router.get("/famosos/fotos/{n}")
+def famosos_fotos(n: int):
+    """Fotos (WebP 96 px em base64) com autor, licença e link do Commons, em 5 arquivos por tipo de pessoa."""
+    return _ok(famosos.fotos(n))

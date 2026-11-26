@@ -37,7 +37,7 @@ PAUSA = 1.2  # segundos entre consultas ao Wikidata
 GRUPOS = {
     "musico": ("Músicos", ["Q639669", "Q177220"], 1),
     "ator": ("Atores", ["Q33999"], 1),
-    "dublador": ("Dubladores", ["Q214917"], 1),
+    "dublador": ("Dubladores", ["Q2405480"], 1),  # ator de voz (Q214917 é dramaturgo)
     "arquiteto": ("Arquitetos", ["Q42973"], 1),
     "engenheiro": ("Engenheiros", ["Q81096"], 1),
     "rede": ("Redes sociais", ["Q17125263", "Q2906862", "Q2045208", "Q57414145", "Q8246794", "Q4110598", "Q111263847"], 1),
@@ -299,23 +299,8 @@ def deezer_fas(id_, tentativas=4):
     return None
 
 
-def main(teste=False, so_lista=False):
-    hoje = date.today().isoformat()
-    limite = 25 if teste else None
-    pessoas, grupos = {}, {}
-    todos = {**{k: v for k, v in GRUPOS.items()}, **{"prof:" + k: v for k, v in PROFS.items()}}
-    for chave, (rot, ocup, minsl) in todos.items():
-        log("lista", chave)
-        for i, p in listar_ocupacao(ocup, minsl, limite).items():
-            pessoas.setdefault(i, p)
-            grupos.setdefault(i, set()).add(chave)
-    if not teste:
-        for i, p in listar_seguidores().items():
-            pessoas.setdefault(i, p)
-            grupos.setdefault(i, set()).add("rede")
-    log("pessoas:", len(pessoas))
-    if so_lista:
-        return
+def montar_registros(pessoas, grupos, hoje):
+    """Busca as propriedades de cada pessoa (em lotes, com cache) e devolve os registros."""
     ids = sorted(pessoas)
     com = lambda g: [i for i in ids if g in grupos[i]]  # noqa: E731
 
@@ -388,6 +373,61 @@ def main(teste=False, so_lista=False):
         if i in dz: reg["dz"] = dz[i]
         if i in wiki: reg["wp"] = wiki[i]
         saida.append(reg)
+    return saida
+
+
+def corrigir_dubladores():
+    """Atualiza SÓ o grupo Dubladores no arquivo já gerado (o código antigo, Q214917, era o de dramaturgo):
+    tira o grupo de todos, põe nos atores de voz certos (coletando só quem ainda não está no arquivo) e traz os personagens dublados (P725)."""
+    hoje = date.today().isoformat()
+    doc = json.loads(SAIDA.read_text(encoding="utf-8"))
+    reg = {r["q"]: r for r in doc["p"]}
+    lista = listar_ocupacao(GRUPOS["dublador"][1], 1)
+    for r in reg.values():
+        if "dublador" in r["g"]:
+            r["g"].remove("dublador")
+    faltam = {i: p for i, p in lista.items() if i not in reg}
+    log("dubladores:", len(lista), "| novos no arquivo:", len(faltam))
+    if faltam:
+        for r in montar_registros(faltam, {i: {"dublador"} for i in faltam}, hoje):
+            reg[r["q"]] = r
+    for i in lista:
+        r = reg[i]
+        if "dublador" not in r["g"]:
+            r["g"] = sorted(r["g"] + ["dublador"])
+    voz = {}
+    juntar_obras(em_lotes(q_voz, sorted(lista), 40), "voz", voz)
+    for i in lista:
+        v = sorted(voz.get(i, {}).values(), key=lambda o: -o[3])
+        if v:
+            r = reg[i]
+            r["ob"] = ([[o[0], o[1], o[2]] for o in v[:5]] + [o for o in r.get("ob", []) if o[2] != "voz"])[:6]
+    saida = sorted((r for r in reg.values() if r["g"]), key=lambda r: -r["s"])
+    todos = {**GRUPOS, **{"prof:" + k: v for k, v in PROFS.items()}}
+    doc["p"] = saida
+    doc["grupos"] = {k: {"nome": v[0], "n": sum(1 for r in saida if k in r["g"])} for k, v in todos.items()}
+    SAIDA.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    log("gravado", len(saida), "pessoas;", doc["grupos"]["dublador"]["n"], "dubladores;", sum(1 for i in lista if reg[i].get("ob") and any(o[2] == "voz" for o in reg[i]["ob"])), "com personagem")
+
+
+def main(teste=False, so_lista=False):
+    hoje = date.today().isoformat()
+    limite = 25 if teste else None
+    pessoas, grupos = {}, {}
+    todos = {**{k: v for k, v in GRUPOS.items()}, **{"prof:" + k: v for k, v in PROFS.items()}}
+    for chave, (rot, ocup, minsl) in todos.items():
+        log("lista", chave)
+        for i, p in listar_ocupacao(ocup, minsl, limite).items():
+            pessoas.setdefault(i, p)
+            grupos.setdefault(i, set()).add(chave)
+    if not teste:
+        for i, p in listar_seguidores().items():
+            pessoas.setdefault(i, p)
+            grupos.setdefault(i, set()).add("rede")
+    log("pessoas:", len(pessoas))
+    if so_lista:
+        return
+    saida = montar_registros(pessoas, grupos, hoje)
     saida.sort(key=lambda r: -r["s"])
     contagem = {k: sum(1 for r in saida if k in r["g"]) for k in todos}
     doc = {
@@ -403,4 +443,6 @@ def main(teste=False, so_lista=False):
 
 
 if __name__ == "__main__":
+    if "--dubladores" in sys.argv:
+        raise SystemExit(corrigir_dubladores())
     main(teste="--teste" in sys.argv, so_lista="--so-lista" in sys.argv)
