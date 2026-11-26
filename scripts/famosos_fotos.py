@@ -180,27 +180,38 @@ def main(limite=None, so_escolha=False):
     fm.log("a baixar:", len(falta))
     nomes = sorted({img[q] for q in falta})
     meta = metadados(nomes)
-    ok = sem_lic = falhas = 0
-    for k, q in enumerate(falta):
+    from concurrent.futures import ThreadPoolExecutor
+    import threading
+    trava = threading.Lock()
+    cont = {"ok": 0, "sem_lic": 0, "falhas": 0}
+
+    def trata(q):
         m = meta.get(img[q])
         if not m or not m["thumb"]:
-            falhas += 1
-            continue
-        if not m["licenca"] or not LIC_OK.match(m["licenca"]):
-            sem_lic += 1
-            continue
-        dados = baixa(m["thumb"])
-        w = quadrado(dados) if dados else None
-        if not w:
-            falhas += 1
-            continue
-        (PASTA / f"{q}.webp").write_bytes(w)
-        cred[q] = [m["autor"], m["licenca"], m["url_licenca"], m["pagina"]]
-        ok += 1
-        time.sleep(0.4)
-        if k % 100 == 0:
-            INDICE.write_text(json.dumps(cred, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-            fm.log("  fotos", k, "/", len(falta), "| ok", ok, "| licença não aceita", sem_lic, "| falhas", falhas)
+            r = "falhas"
+        elif not m["licenca"] or not LIC_OK.match(m["licenca"]):
+            r = "sem_lic"
+        else:
+            dados = baixa(m["thumb"])
+            w = quadrado(dados) if dados else None
+            if not w:
+                r = "falhas"
+            else:
+                (PASTA / f"{q}.webp").write_bytes(w)
+                with trava:
+                    cred[q] = [m["autor"], m["licenca"], m["url_licenca"], m["pagina"]]
+                r = "ok"
+            time.sleep(0.3)
+        with trava:
+            cont[r] += 1
+            feitos = sum(cont.values())
+            if feitos % 100 == 0:
+                INDICE.write_text(json.dumps(cred, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+                fm.log("  fotos", feitos, "/", len(falta), "|", cont)
+
+    with ThreadPoolExecutor(6) as ex:  # upload.wikimedia.org aguenta bem; só a API de metadados é lenta
+        list(ex.map(trata, falta))
+    ok, sem_lic, falhas = cont["ok"], cont["sem_lic"], cont["falhas"]
     INDICE.write_text(json.dumps(cred, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     fm.log("fim | ok", ok, "| licença não aceita", sem_lic, "| falhas", falhas, "| total com foto", len(cred))
 
