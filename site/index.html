@@ -6242,7 +6242,12 @@ function fmFotoArq(n){if(!FM_FOTO[n])FM_FOTO[n]=apiGet("/famosos/fotos/"+n).catc
 /* foto quadrada (Wikimedia Commons, licença livre): o avatar com iniciais vira a foto quando o arquivo de fotos chega; o crédito fica no title, no perfil e em "Créditos das fotos" */
 function fmFotosAplica(){const ns=new Set();document.querySelectorAll("[data-fq]:not([data-ok])").forEach(e=>ns.add(e.dataset.ft));
  ns.forEach(n=>fmFotoArq(n).then(F=>{document.querySelectorAll(`[data-fq][data-ft="${n}"]:not([data-ok])`).forEach(e=>{const f=F[e.dataset.fq];if(!f)return;e.dataset.ok="1";
-  e.innerHTML=`<img src="data:image/webp;base64,${f[0]}" alt="" decoding="async">`;e.classList.add("fm-foto");e.title=`Foto: ${f[1]||"autor não informado"} · ${f[2]} · Wikimedia Commons`;
+  const S=F.__sprite;
+  if(typeof f[0]==="number"&&S){/* cópia estática: uma folha de miniaturas; o quadrado mostra só a posição da pessoa (porcentagens: vale em qualquer tamanho) */
+   const c=f[0]%S.cols,r=Math.floor(f[0]/S.cols);e.textContent="";
+   e.style.backgroundImage=`url("${S.url}")`;e.style.backgroundSize=`${S.cols*100}% ${S.rows*100}%`;e.style.backgroundPosition=`${S.cols>1?c/(S.cols-1)*100:0}% ${S.rows>1?r/(S.rows-1)*100:0}%`;e.style.backgroundRepeat="no-repeat"}
+  else e.innerHTML=`<img src="data:image/webp;base64,${f[0]}" alt="" decoding="async">`;
+  e.classList.add("fm-foto");e.title=`Foto: ${f[1]||"autor não informado"} · ${f[2]} · Wikimedia Commons`;
   const c=e.parentElement&&e.parentElement.querySelector("#fmCredDet");if(c)c.innerHTML=fmCredito(f)})}))}
 const fmCredito=f=>`Foto: ${esc(f[1]||"autor não informado")} · <a href="${esc(f[3]||"https://creativecommons.org")}" target="_blank" rel="noopener">${esc(f[2])}</a> · <a href="${esc(f[4])}" target="_blank" rel="noopener">Wikimedia Commons</a>`;
 function fmAv(p,g){const h=hs(p.n)%360,i=p.n.split(/\s+/).filter(w=>/^\p{L}/u.test(w)).map(w=>w[0]).slice(0,2).join("").toUpperCase();

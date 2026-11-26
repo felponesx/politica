@@ -17,7 +17,10 @@ from pathlib import Path
 os.environ.setdefault("LIMITE_REQ_POR_MINUTO", "0")
 os.environ.setdefault("LIMITE_PESADO_POR_MINUTO", "0")
 
+from PIL import Image  # noqa: E402
+
 from app import famosos  # noqa: E402
+from scripts import famosos_fotos  # noqa: E402
 
 ARQ = "p/famosos.json"
 TELAS = ["famosos", "famoso"]
@@ -33,13 +36,24 @@ def gravar(pasta: Path) -> None:
     (pasta / ARQ).write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     man = json.loads((pasta / "manifest.json").read_text(encoding="utf-8"))
     man.setdefault("pacotes", {})[ARQ] = {"chaves": sorted(d), "telas": TELAS}
-    # fotos: um arquivo por tipo de pessoa (famosos.arquivo_da_foto), baixado só quando a tela precisa dele
+    # fotos: uma "folha" de miniaturas WebP por tipo de pessoa (famosos.arquivo_da_foto) + um pacote JSON com a posição, o autor e a licença de cada foto.
+    # A folha é uma imagem só (p/famosos-fotos-N.webp, sem base64: ~25% menor); no Artifact ela sobe como asset e o "url" do pacote aponta para o asset.
     for n in range(famosos.N_FOTOS):
-        f = famosos.fotos(n) or {}
-        arq = f"p/famosos-fotos-{n}.json"
-        (pasta / arq).write_text(json.dumps({f"/famosos/fotos/{n}": f}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        qs = [p["q"] for p in famosos.base()["p"] if p.get("ft") == n]
+        cred = famosos._creditos()
+        cols = 32
+        rows = max(1, -(-len(qs) // cols))
+        arq, folha = f"p/famosos-fotos-{n}.json", f"p/famosos-fotos-{n}.webp"
+        if qs:
+            im = Image.new("RGB", (cols * famosos_fotos.LADO, rows * famosos_fotos.LADO), (255, 255, 255))
+            for i, q in enumerate(qs):
+                im.paste(Image.open(famosos.PASTA_FOTOS / f"{q}.webp").convert("RGB"), ((i % cols) * famosos_fotos.LADO, (i // cols) * famosos_fotos.LADO))
+            im.save(pasta / folha, "WEBP", quality=70, method=6)
+        d_fotos = {"__sprite": {"url": f"dados/{folha}", "cols": cols, "rows": rows, "lado": famosos_fotos.LADO}}
+        d_fotos.update({q: [i, *cred[q]] for i, q in enumerate(qs)})
+        (pasta / arq).write_text(json.dumps({f"/famosos/fotos/{n}": d_fotos}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         man["pacotes"][arq] = {"chaves": [f"/famosos/fotos/{n}"], "telas": TELAS}
-        print(f"{arq}: {len(f)} fotos, {(pasta / arq).stat().st_size // 1024} KB")
+        print(f"{arq}: {len(qs)} fotos, JSON {(pasta / arq).stat().st_size // 1024} KB, folha {((pasta / folha).stat().st_size // 1024) if qs else 0} KB")
     (pasta / "manifest.json").write_text(json.dumps(man, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{ARQ}: {len(d)} chaves, {(pasta / ARQ).stat().st_size // 1024} KB")
 
